@@ -1,4 +1,3 @@
-import * as tsgql from '@ts-gql/schema';
 import {
   types,
   FindManyArgsValue,
@@ -38,11 +37,6 @@ import {
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
 import { InputResolvers, resolveWhereInput } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
-
-const sortDirectionEnum = types.enum({
-  name: 'SortDirection',
-  values: types.enumValues(['asc', 'desc']),
-});
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -349,7 +343,7 @@ export function initialiseLists(
         fields: Object.fromEntries(
           Object.entries(list.fields).map(([fieldPath, fieldFunc]) => [
             fieldPath,
-            fieldFunc({ fieldPath, listKey, lists: listInfos }),
+            fieldFunc({ fieldKey: fieldPath, listKey, lists: listInfos }),
           ])
         ),
         ...getNamesFromList(listKey, list),
@@ -496,45 +490,9 @@ export function initialiseLists(
     const sortBy = types.inputObject({
       name: names.listSortName,
       fields: Object.fromEntries(
-        Object.entries(fields).flatMap(([key, { dbField }]): [string, tsgql.Arg<any, any>][] => {
-          // note the conditions are intentionally checking that the db field is not a db field that doesn't support ordering
-          // so that there will be a TS error if a new DBField type is added that doesn't support ordering
-          // and when a new DBField type that does support ordering is added, it will just work
-          if (
-            dbField.kind !== 'none' &&
-            dbField.kind !== 'relation' &&
-            dbField.kind !== 'multi' &&
-            dbField.isOrderable
-          ) {
-            return [[key, types.arg({ type: sortDirectionEnum })]];
-          }
-
-          // TODO: given multi db fields, maybe fields will want to customise this so the sort by type(and a resolver) should be a thing on field types?
-          // (also probs useful bc of soon to be released filtering by relations in prisma)
-          if (dbField.kind === 'multi') {
-            let fields = Object.fromEntries(
-              Object.entries(dbField.fields).flatMap(([key, dbField]) => {
-                if (dbField.kind !== 'enum' && dbField.isOrderable) {
-                  return [[key, types.arg({ type: sortDirectionEnum })]];
-                }
-                return [];
-              })
-            );
-            if (fields.length) {
-              return [
-                [
-                  key,
-                  types.arg({
-                    type: types.inputObject({
-                      name: `${listKey}_${key}SortBy`,
-                      fields,
-                    }),
-                  }),
-                ],
-              ];
-            }
-          }
-          return [];
+        Object.entries(fields).flatMap(([key, field]) => {
+          if (!field.input?.sortBy?.arg || field.access.read === false) return [];
+          return [[key, field.input.sortBy.arg]] as const;
         })
       ),
     });

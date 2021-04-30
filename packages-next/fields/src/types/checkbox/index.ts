@@ -1,7 +1,13 @@
-import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  FieldDefaultValue,
+  fieldType,
+  FieldTypeFunc,
+  sortDirectionEnum,
+  types,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
-import { Checkbox, PrismaCheckboxInterface } from './Implementation';
 
 export type CheckboxFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -12,12 +18,16 @@ export type CheckboxFieldConfig<
 
 export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: CheckboxFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => ({
-  type: {
-    type: 'Checkbox',
-    implementation: Checkbox,
-    adapter: PrismaCheckboxInterface,
-  },
-  config,
-  views: resolveView('checkbox/views'),
-});
+): FieldTypeFunc => () =>
+  fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
+    ...config,
+    input: {
+      create: { arg: types.arg({ type: types.Boolean }) },
+      update: { arg: types.arg({ type: types.Boolean }) },
+      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+    },
+    output: types.field({
+      type: types.Boolean,
+    }),
+    views: resolveView('checkbox/views'),
+  });

@@ -3,14 +3,14 @@ import { checkbox, password, relationship, text, timestamp } from '@keystone-nex
 
 // this implementation for createdBy and updatedBy is currently wrong so they're disabled for now
 const trackingFields = {
-  createdAt: timestamp({
-    access: { create: false, read: true, update: false },
-    defaultValue: () => new Date().toISOString(),
-    ui: {
-      createView: { fieldMode: 'hidden' },
-      itemView: { fieldMode: 'read' },
-    },
-  }),
+  // createdAt: timestamp({
+  //   access: { create: false, read: true, update: false },
+  //   defaultValue: () => new Date().toISOString(),
+  //   ui: {
+  //     createView: { fieldMode: 'hidden' },
+  //     itemView: { fieldMode: 'read' },
+  //   },
+  // }),
   // createdBy: relationship({
   //   ref: 'User',
   //   access: { create: false, read: true, update: false },
@@ -21,16 +21,16 @@ const trackingFields = {
   //     itemView: { fieldMode: 'read' },
   //   },
   // }),
-  updatedAt: timestamp({
-    access: { create: false, read: true, update: false },
-    hooks: {
-      resolveInput: () => new Date().toISOString(),
-    },
-    ui: {
-      createView: { fieldMode: 'hidden' },
-      itemView: { fieldMode: 'read' },
-    },
-  }),
+  // updatedAt: timestamp({
+  //   access: { create: false, read: true, update: false },
+  //   hooks: {
+  //     resolveInput: () => new Date().toISOString(),
+  //   },
+  //   ui: {
+  //     createView: { fieldMode: 'hidden' },
+  //     itemView: { fieldMode: 'read' },
+  //   },
+  // }),
   // updatedBy: relationship({
   //   ref: 'User',
   //   access: { create: false, read: true, update: false },
@@ -48,34 +48,34 @@ export const lists = createSchema({
   Todo: list({
     ui: {
       listView: {
-        initialColumns: ['label', 'isComplete', 'createdAt', 'updatedAt'],
+        initialColumns: ['label', 'isComplete'],
       },
     },
     fields: {
-      label: text({ isRequired: true }),
+      label: text({}),
       isComplete: checkbox(),
-      assignedTo: relationship({ ref: 'User.tasks' }),
-      finishBy: timestamp(),
+      // assignedTo: relationship({ ref: 'User.tasks' }),
+      // finishBy: timestamp(),
       ...trackingFields,
     },
   }),
   User: list({
     ui: {
       listView: {
-        initialColumns: ['name', 'tasks', 'createdAt', 'updatedAt'],
+        initialColumns: ['name'],
       },
     },
     fields: {
-      name: text({ isRequired: true }),
+      name: text({}),
       email: text(),
-      password: password(),
-      tasks: relationship({
-        ref: 'Todo.assignedTo',
-        many: true,
-        ui: {
-          itemView: { fieldMode: 'read' },
-        },
-      }),
+      // password: password(),
+      // tasks: relationship({
+      //   ref: 'Todo.assignedTo',
+      //   many: true,
+      //   ui: {
+      //     itemView: { fieldMode: 'read' },
+      //   },
+      // }),
       ...trackingFields,
     },
   }),

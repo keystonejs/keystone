@@ -68,6 +68,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       console.log('✨ Generating Admin UI code');
       await generateAdminUI(
         config,
+        lists,
         graphQLSchema,
         createAdminMeta(config, lists),
         getAdminPath(cwd)

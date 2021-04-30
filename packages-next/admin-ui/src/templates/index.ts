@@ -2,6 +2,7 @@ import * as Path from 'path';
 import type { AdminMetaRootVal, KeystoneConfig } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { GraphQLSchema } from 'graphql';
+import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
 import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
@@ -13,6 +14,7 @@ const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.jso
 
 export const writeAdminFiles = (
   config: KeystoneConfig,
+  lists: Record<string, InitialisedList>,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean,
@@ -26,7 +28,7 @@ export const writeAdminFiles = (
   {
     mode: 'write',
     outputPath: 'pages/_app.js',
-    src: appTemplate(config, graphQLSchema, { configFileExists, projectAdminPath }),
+    src: appTemplate(lists, graphQLSchema, { configFileExists, projectAdminPath }),
   },
   { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
   ...adminMeta.lists.map(

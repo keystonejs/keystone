@@ -1,30 +1,33 @@
+import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
+import * as keystoneTypes from '@keystone-next/types';
 import {
   KeystoneContext,
   KeystoneConfig,
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
-  JSONValue,
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
-import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
 export function getAdminMetaSchema({
   config,
   schema,
+  lists,
   adminMeta: adminMetaRoot,
 }: {
   adminMeta: AdminMetaRootVal;
   config: KeystoneConfig;
+  lists: Record<string, InitialisedList>;
   schema: GraphQLSchema;
 }) {
   const isAccessAllowed =
     config.session === undefined
       ? undefined
       : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
-  const jsonScalar = types.scalar<JSONValue>(schema.getType('JSON') as GraphQLScalarType);
+  const jsonScalar = keystoneTypes.types.JSON;
 
   const KeystoneAdminUIFieldMeta = types.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
@@ -60,7 +63,7 @@ export function getAdminMetaSchema({
                   }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
-                    listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
+                    lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.createView?.fieldMode ??
                     listConfig.ui?.createView?.defaultFieldMode;
                   return runMaybeFunction(sessionFunction, 'edit', { session: context.session });
                 },
@@ -92,7 +95,7 @@ export function getAdminMetaSchema({
                   }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
-                    listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
+                    lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.listView?.fieldMode ??
                     listConfig.ui?.listView?.defaultFieldMode;
                   return runMaybeFunction(sessionFunction, 'read', { session: context.session });
                 },
@@ -131,7 +134,7 @@ export function getAdminMetaSchema({
                   .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =
-                  listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+                  lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
                   listConfig.ui?.itemView?.defaultFieldMode;
                 return runMaybeFunction(sessionFunction, 'edit', {
                   session: context.session,

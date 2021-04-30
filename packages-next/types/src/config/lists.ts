@@ -1,5 +1,5 @@
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
-import { NextFieldType } from '../next-fields';
+import { FieldTypeFunc } from '../next-fields';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields } from './fields';
@@ -21,7 +21,7 @@ export type ListConfig<
     */
   fields: Fields;
 
-  idField?: NextFieldType;
+  idField?: FieldTypeFunc;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change

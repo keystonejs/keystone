@@ -31,7 +31,7 @@ export type ListInfo = { types: TypesForList; inputResolvers: InputResolvers };
 export type FieldData = {
   lists: Record<string, ListInfo>;
   listKey: string;
-  fieldPath: string;
+  fieldKey: string;
 };
 
 export type FieldTypeFunc<
@@ -104,8 +104,12 @@ export type ScalarDBField<
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
-  isOrderable?: boolean;
 };
+
+export const sortDirectionEnum = types.enum({
+  name: 'SortDirection',
+  values: types.enumValues(['asc', 'desc']),
+});
 
 export type RelationDBField<Mode extends 'many' | 'one'> = {
   kind: 'relation';
@@ -121,7 +125,6 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   mode: Mode;
   default?: Value;
   index?: 'unique' | 'index';
-  isOrderable?: boolean;
 };
 
 export type NoDBField = { kind: 'none' };

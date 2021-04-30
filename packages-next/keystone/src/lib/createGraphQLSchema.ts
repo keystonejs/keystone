@@ -24,6 +24,6 @@ export function createGraphQLSchema(
   }
 
   // Merge in the admin-meta graphQL API
-  graphQLSchema = getAdminMetaSchema({ config, schema: graphQLSchema, adminMeta });
+  graphQLSchema = getAdminMetaSchema({ config, schema: graphQLSchema, adminMeta, lists });
   return graphQLSchema;
 }

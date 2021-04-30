@@ -1,14 +1,19 @@
-import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  FieldDefaultValue,
+  fieldType,
+  types,
+  sortDirectionEnum,
+  FieldTypeFunc,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
-import { Text, PrismaTextInterface } from './Implementation';
 
 export type TextFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = CommonFieldConfig<TGeneratedListTypes> & {
   defaultValue?: FieldDefaultValue<string>;
-  isRequired?: boolean;
-  isUnique?: boolean;
+  index?: 'index' | 'unique';
   ui?: {
     displayMode?: 'input' | 'textarea';
   };
@@ -16,13 +21,19 @@ export type TextFieldConfig<
 
 export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TextFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => ({
-  type: {
-    type: 'Text',
-    implementation: Text,
-    adapter: PrismaTextInterface,
-  },
-  config,
-  views: resolveView('text/views'),
-  getAdminMeta: () => ({ displayMode: config.ui?.displayMode ?? 'input' }),
-});
+): FieldTypeFunc => () =>
+  fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String' })({
+    ...config,
+    input: {
+      create: { arg: types.arg({ type: types.String }) },
+      update: { arg: types.arg({ type: types.String }) },
+      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+    },
+    output: types.field({
+      type: types.String,
+    }),
+    views: resolveView('text/views'),
+    getAdminMeta() {
+      return { displayMode: config.ui?.displayMode ?? 'input' };
+    },
+  });

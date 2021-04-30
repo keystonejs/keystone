@@ -1,5 +1,4 @@
 import Path from 'path';
-import type { KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -11,13 +10,14 @@ import {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql';
+import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
 export const appTemplate = (
-  config: KeystoneConfig,
+  lists: Record<string, InitialisedList>,
   graphQLSchema: GraphQLSchema,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
@@ -33,15 +33,14 @@ export const appTemplate = (
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
   const _allViews = new Set<string>();
-  Object.values(config.lists).forEach(list => {
-    for (const fieldKey of Object.keys(list.fields)) {
-      const field: FieldType<any> = list.fields[fieldKey];
+  for (const list of Object.values(lists)) {
+    for (const field of Object.values(list.fields)) {
       _allViews.add(field.views);
-      if (field.config.ui?.views) {
-        _allViews.add(field.config.ui.views);
+      if (field.ui?.views) {
+        _allViews.add(field.ui.views);
       }
     }
-  });
+  }
   const allViews = [..._allViews].map(views => {
     const viewPath = Path.isAbsolute(views)
       ? Path.relative(Path.join(projectAdminPath, 'pages'), views)

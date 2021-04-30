@@ -229,16 +229,19 @@ async function resolveInputHook(
   existingItem: Record<string, any> | undefined
 ) {
   const args = { context, listKey, operation, originalInput, resolvedData, existingItem };
-  resolvedData = await Promise.all(
-    Object.entries(list.fields).map(([fieldKey, field]) => {
-      if (field.hooks.resolveInput === undefined) {
-        return [fieldKey, resolvedData[fieldKey]];
-      }
-      field.hooks.resolveInput({
-        ...args,
-        fieldPath: fieldKey,
-      });
-    })
+  resolvedData = Object.fromEntries(
+    await Promise.all(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        if (field.hooks.resolveInput === undefined) {
+          return [fieldKey, resolvedData[fieldKey]];
+        }
+        const value = await field.hooks.resolveInput({
+          ...args,
+          fieldPath: fieldKey,
+        });
+        return [fieldKey, value];
+      })
+    )
   );
   if (list.hooks.resolveInput) {
     // TODO: the resolveInput types are wrong
