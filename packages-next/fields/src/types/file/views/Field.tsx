@@ -189,7 +189,7 @@ function FileView({
                   </a>
                 </Text>
                 <Button size="small" tone="passive" onClick={copyRef}>
-                  Copy
+                  Copy ref
                 </Button>
               </Stack>
               <Text size="xsmall">{bytes(value.data.filesize)}</Text>
@@ -216,7 +216,7 @@ function FileView({
                   });
                 }}
               >
-                Paste
+                Paste ref
               </Button>
             ) : null}
             {value.kind === 'from-server' && (
