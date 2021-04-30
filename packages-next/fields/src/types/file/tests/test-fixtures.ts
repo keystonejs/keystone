@@ -79,7 +79,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           `,
         });
         expect(data).not.toBe(null);
-        expect(data.secretFile.ref).toEqual(`local:${data.secretFile.filename}`);
+        expect(data.secretFile.ref).toEqual(`local:file:${data.secretFile.filename}`);
         expect(data.secretFile.src).toEqual(`/files/${data.secretFile.filename}`);
         expect(data.secretFile.filesize).toEqual(3250);
         expect(data.secretFile.mode).toEqual('local');
