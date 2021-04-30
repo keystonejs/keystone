@@ -66,7 +66,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       const safeFilename = generateSafeFilename(filename, config.transformFilename);
       const writeStream = fs.createWriteStream(path.join(storagePath, safeFilename));
       const observeStreamErrors: Promise<void> = new Promise((resolve, reject) => {
-        stream.on('end', () => {
+        writeStream.on('close', () => {
           resolve();
         });
         // reject on both writeStream and read stream errors
@@ -81,6 +81,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       for await (let chunk of stream) {
         writeStream.write(chunk);
       }
+      writeStream.close();
 
       try {
         await observeStreamErrors;
