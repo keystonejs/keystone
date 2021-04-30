@@ -46,18 +46,15 @@ export default function App({ Component, pageProps }: AppProps) {
         }
         .hint.tip {
           background: var(--blue-50);
-          color: var(--blue-900);
-          border: 1px solid var(--blue-200);
+          border: 1px solid var(--blue-100);
         }
         .hint.warn {
           background: var(--yellow-50);
-          color: var(--yellow-900);
-          border: 1px solid var(--yellow-200);
+          border: 1px solid var(--yellow-100);
         }
         .hint.error {
           background: var(--red-50);
-          color: var(--red-900);
-          border: 1px solid var(--red-200);
+          border: 1px solid var(--red-100);
         }
       `}
       />
