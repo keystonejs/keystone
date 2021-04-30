@@ -1,15 +1,21 @@
 import path from 'path';
-import { v4 as uuid } from 'uuid';
+import crypto from 'crypto';
 import filenamify from 'filenamify';
 import { FilesConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 
 import { parseFileRef } from '@keystone-next/utils-legacy';
+import slugify from '@sindresorhus/slugify';
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
 
-const generateSafeFilename = (filename: string) => {
+const defaultTransformer = (str: string) => slugify(str);
+
+const generateSafeFilename = (
+  filename: string,
+  transformFilename: (str: string) => string = defaultTransformer
+) => {
   // Appends a UUID to the filename so that people can't brute-force guess stored filenames
   //
   // This regex lazily matches for any characters that aren't a new line
@@ -17,12 +23,21 @@ const generateSafeFilename = (filename: string) => {
   // followed by any alphabetical character before the end of the string
   const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
 
-  const id = uuid();
-  const urlSafeName = filenamify(name, { replacement: '_' }).toLowerCase();
+  const id = crypto
+    .randomBytes(24)
+    .toString('base64')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .slice(12);
+
+  // console.log(id, id.length, id.slice(12).length);
+  const urlSafeName = filenamify(transformFilename(name), {
+    maxLength: 100 - id.length,
+    replacement: '-',
+  });
   if (ext) {
-    return `${urlSafeName}_${id}${ext}`;
+    return `${urlSafeName}-${id}${ext}`;
   }
-  return `${urlSafeName}_${id}`;
+  return `${urlSafeName}-${id}`;
 };
 
 export function createFilesContext(config?: FilesConfig): FilesContext | undefined {
@@ -48,7 +63,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
     },
     getDataFromStream: async (stream, filename) => {
       const { upload: mode } = config;
-      const safeFilename = generateSafeFilename(filename);
+      const safeFilename = generateSafeFilename(filename, config.transformFilename);
       const writeStream = fs.createWriteStream(path.join(storagePath, safeFilename));
       const observeStreamErrors: Promise<void> = new Promise((resolve, reject) => {
         stream.on('end', () => {

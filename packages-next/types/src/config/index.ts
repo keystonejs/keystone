@@ -150,6 +150,7 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone
 
 export type FilesConfig = {
   upload: FileMode;
+  transformFilename?: (str: string) => string;
   local?: {
     /**
      * The path local files are uploaded to.
