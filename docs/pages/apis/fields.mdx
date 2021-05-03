@@ -111,10 +111,10 @@ A `checkbox` field represents a boolean (`true`/`false`) value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a boolean value or an async function which takes an argument `({ context, originalItem })` and returns a boolean value.
+- `defaultValue` (default: `undefined`): Can be either a boolean value or an async function which takes an argument `({ context, originalInput })` and returns a boolean value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
@@ -144,10 +144,10 @@ An `integer` field represents an integer value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either an integer value or an async function which takes an argument `({ context, originalItem })` and returns an integer value.
+- `defaultValue` (default: `undefined`): Can be either an integer value or an async function which takes an argument `({ context, originalInput })` and returns an integer value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
@@ -179,10 +179,10 @@ A `float` field represents a floating point value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a float value or an async function which takes an argument `({ context, originalItem })` and returns a float value.
+- `defaultValue` (default: `undefined`): Can be either a float value or an async function which takes an argument `({ context, originalInput })` and returns a float value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
@@ -214,10 +214,10 @@ A `decimal` field represents a decimal value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a decimal value or an async function which takes an argument `({ context, originalItem })` and returns a decimal value.
+- `defaultValue` (default: `undefined`): Can be either a decimal value or an async function which takes an argument `({ context, originalInput })` and returns a decimal value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
@@ -294,10 +294,10 @@ Options:
   `label` is a string to be displayed in the Admin UI.
   `value` is either a `string` (for `{ dataType: 'string' }` or `{ dataType: 'enum' }`), or a `number` (for `{ dataType: 'integer' }`).
   The `value` will be used in the GraphQL API and stored in the database.
-- `defaultValue`: (default: `undefined`): Can be either a string/integer value or an async function which takes an argument `({ context, originalItem })` and returns a string/integer value.
+- `defaultValue`: (default: `undefined`): Can be either a string/integer value or an async function which takes an argument `({ context, originalInput })` and returns a string/integer value.
   This value will be used for the field when creating items if no explicit value is set, and must be one of the values defined in `options`.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
@@ -337,10 +337,10 @@ A `text` field represents a string value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a string value or an async function which takes an argument `({ context, originalItem })` and returns a string value.
+- `defaultValue` (default: `undefined`): Can be either a string value or an async function which takes an argument `({ context, originalInput })` and returns a string value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
@@ -375,11 +375,11 @@ A `timestamp` field represents a time value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a string value or an async function which takes an argument `({ context, originalItem })` and returns a string value.
+- `defaultValue` (default: `undefined`): Can be either a string value or an async function which takes an argument `({ context, originalInput })` and returns a string value.
   The string value must be an ISO8601 formatted timestamp string, e.g. `'1970-01-01T00:00:00.000Z'`.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
@@ -415,10 +415,10 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldPath>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
-- `defaultValue` (default: `undefined`): Can be either a relationship input value or an async function which takes an argument `({ context, originalItem })` and returns a relationship input value.
+- `defaultValue` (default: `undefined`): Can be either a relationship input value or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `ui` (default: `{ hideCreate: false, displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
   - `hideCreate` (default: `false`). If `true`, the "Create related item" button is not shown in the item view.
   - `displayMode` (default: `'select'`): Controls the mode used to display the field in the item view. The mode `'select'` displays related items in a select component, while `'cards'` displays the related items in a card layout. Each display mode supports further configuration.
