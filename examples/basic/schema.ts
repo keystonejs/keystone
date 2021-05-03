@@ -125,6 +125,9 @@ export const lists = createSchema({
   Post: list({
     fields: {
       title: text(),
+      // TODO: expand this out into a proper example project
+      // Enable this line to test custom field views
+      // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
       status: select({
         options: [
           { label: 'Published', value: 'published' },
