@@ -225,7 +225,7 @@ function ImgView({
                   </a>
                 </Text>
                 <Button size="small" tone="passive" onClick={copyRef}>
-                  Copy
+                  Copy Ref
                 </Button>
               </Stack>
               <Text size="xsmall">{`${value.data.width} x ${value.data.height} (${bytes(
@@ -254,7 +254,7 @@ function ImgView({
                   });
                 }}
               >
-                Paste
+                Paste Ref
               </Button>
             ) : null}
             {value.kind === 'from-server' && (

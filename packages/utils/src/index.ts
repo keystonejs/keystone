@@ -258,11 +258,11 @@ export const humanize = (str: string) => {
     .join(' ');
 };
 
-const IMAGEREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
+const IMAGEREGEX = /^(local):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
 
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
-  `${mode}:${id}.${extension}`;
+  `${mode}:image:${id}.${extension}`;
 
 export const getFileRef = (mode: FileMode, name: string) => `${mode}:file:${name}`;
 export const parseFileRef = (ref: string) => {
