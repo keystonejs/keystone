@@ -1,5 +1,6 @@
 import path from 'path';
 import crypto from 'crypto';
+import { pipeline } from 'stream';
 import filenamify from 'filenamify';
 import { FilesConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
@@ -66,26 +67,30 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       const safeFilename = generateSafeFilename(filename, config.transformFilename);
       const writeStream = fs.createWriteStream(path.join(storagePath, safeFilename));
       const observeStreamErrors: Promise<void> = new Promise((resolve, reject) => {
-        writeStream.on('close', () => {
-          resolve();
+        pipeline(stream, writeStream, err => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
         });
-        // reject on both writeStream and read stream errors
-        writeStream.on('error', err => {
-          reject(err);
-        });
-        stream.on('error', err => {
-          reject(err);
-        });
+        // stream.on('end', () => {
+        //   resolve();
+        // });
+        // // reject on both writeStream and read stream errors
+        // writeStream.on('error', err => {});
+        // stream.on('error', err => {
+        //   reject(err);
+        // });
       });
 
-      for await (let chunk of stream) {
-        writeStream.write(chunk);
-      }
-      writeStream.close();
+      // writeStream.close();
 
       try {
         await observeStreamErrors;
+        // writeStream.close();
         const { size: filesize } = await fs.stat(path.join(storagePath, safeFilename));
+
         return { mode, filesize, filename: safeFilename };
       } catch (e) {
         await fs.remove(path.join(storagePath, safeFilename));
