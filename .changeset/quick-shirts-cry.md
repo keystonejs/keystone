@@ -2,4 +2,4 @@
 '@keystone-next/keystone': patch
 ---
 
-Fix uncaught exception in file stream
+Fixed uncaught exception in file stream.
