@@ -48,9 +48,9 @@ Now that we've got a sense of what a hook is, let's look at how we can use hooks
 
 When a `create` or `update` operation is called, you might want to apply some pre-processing to the data before saving it to your database.
 For example, if you have a blog post, you might want to ensure that the `title` field always starts with an upper-case letter.
-The `resolveInput` hook lets use take the data which has been provided to the GraphQL mutation and modify it before it is saved.
+The `resolveInput` hook lets us take the data which has been provided to the GraphQL mutation and modify it before it is saved.
 
-Let's write a hook which takes the data for a blog post and converts the first letter to be upper-cased.
+Let's write a hook which takes the data for a blog post and converts the first letter to upper-case.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -96,7 +96,7 @@ Finally, all hooks are provided with a `context` argument, which gives you acces
 ## Validating inputs
 
 Before writing the resolved data to the database you will often want to check that it conforms to certain rules, depending on your application's needs.
-For example, you might want to ensure that blog posts dont have a blank title.
+For example, you might want to ensure that blog posts don't have a blank title.
 An empty string, `""`, is a perfectly valid `String` value to pass into GraphQL.
 Let's use a validation hook to ensure that this value doesn't make it into our database.
 
@@ -135,7 +135,7 @@ Keystone will abort the operation and convert these error messages into GraphQL 
 
 The `validateInput` hook also receives the `operation`, `originalInput`, `existingItem` and `context` arguments if you want to perform more advanced checks.
 
-?> Don't confuse data **validation** with **access control**! If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
+?> Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
 
 ## Triggering side-effects
 
