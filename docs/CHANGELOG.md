@@ -1,5 +1,14 @@
 # @keystone-next/website
 
+## 2.0.1
+
+### Patch Changes
+
+- [#5544](https://github.com/keystonejs/keystone/pull/5544) [`b49befd9c`](https://github.com/keystonejs/keystone/commit/b49befd9c9ed6403a685580bb92b4caff6f11f76) Thanks [@raveling](https://github.com/raveling)! - copy changes to document-fields guide
+
+- Updated dependencies []:
+  - @keystone-next/fields-document@5.0.1
+
 ## 2.0.0
 
 ### Major Changes

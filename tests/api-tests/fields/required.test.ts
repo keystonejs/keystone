@@ -17,6 +17,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           describe(`${mod.name} - ${matrixValue} - isRequired`, () => {
+            beforeEach(() => {
+              if (mod.beforeEach) {
+                mod.beforeEach();
+              }
+            });
+            afterEach(async () => {
+              if (mod.afterEach) {
+                await mod.afterEach();
+              }
+            });
             beforeAll(() => {
               if (mod.beforeAll) {
                 mod.beforeAll();
@@ -45,6 +55,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                         }),
                       }),
                       images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                      files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
                     }),
                   }),
                 testFn

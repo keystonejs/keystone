@@ -1,7 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import semver from 'semver';
-import { ImageMode, ImageExtension } from '@keystone-next/types';
+import { FileMode, ImageMode, ImageExtension } from '@keystone-next/types';
 
 export const noop = <T>(x: T): T => x;
 export const identity = noop;
@@ -258,17 +258,31 @@ export const humanize = (str: string) => {
     .join(' ');
 };
 
-const REFREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
+const IMAGEREGEX = /^(local):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
+const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
 
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
-  `${mode}:${id}.${extension}`;
+  `${mode}:image:${id}.${extension}`;
+
+export const getFileRef = (mode: FileMode, name: string) => `${mode}:file:${name}`;
+export const parseFileRef = (ref: string) => {
+  const match = ref.match(FILEREGEX);
+  if (match) {
+    const [, mode, filename] = match;
+    return {
+      mode: mode as FileMode,
+      filename: filename as string,
+    };
+  }
+  return undefined;
+};
 
 export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 
 export const parseImageRef = (
   ref: string
 ): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
-  const match = ref.match(REFREGEX);
+  const match = ref.match(IMAGEREGEX);
   if (match) {
     const [, mode, id, ext] = match;
     return {
