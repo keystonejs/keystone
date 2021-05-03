@@ -4,7 +4,7 @@
   "license": "MIT",
   "dependencies": {
     "@apollo/client": "^3.3.16",
-    "@babel/runtime": "^7.13.17",
+    "@babel/runtime": "^7.14.0",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/admin-ui-utils": "^4.0.0",

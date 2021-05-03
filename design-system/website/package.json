@@ -7,7 +7,7 @@
     "dev": "next -p 8080"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.17",
+    "@babel/runtime": "^7.14.0",
     "@keystone-ui/button": "^4.0.0",
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^3.0.0",
