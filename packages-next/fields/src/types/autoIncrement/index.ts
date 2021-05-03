@@ -1,6 +1,5 @@
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   sortDirectionEnum,
@@ -11,11 +10,7 @@ import type { CommonFieldConfig } from '../../interfaces';
 
 export type AutoIncrementFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = CommonFieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
-  isUnique?: boolean;
-  defaultValue?: FieldDefaultValue<number>;
-};
+> = CommonFieldConfig<TGeneratedListTypes>;
 
 export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: AutoIncrementFieldConfig<TGeneratedListTypes> = {}

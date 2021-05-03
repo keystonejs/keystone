@@ -27,7 +27,7 @@ export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
-  const { listsWithResolvedRelations } = initialiseLists(config.lists);
+  const { listsWithResolvedRelations } = initialiseLists(config.lists, getDBProvider(config.db));
   const prismaSchema = printPrismaSchema(
     listsWithResolvedRelations,
     getDBProvider(config.db),

@@ -17,7 +17,7 @@ export function getDBProvider(db: KeystoneConfig['db']): Provider {
   }
 }
 
-function getInternalGraphQLSchema(config: KeystoneConfig) {
+function getInternalGraphQLSchema(config: KeystoneConfig, provider: Provider) {
   const transformedConfig: KeystoneConfig = {
     ...config,
     lists: Object.fromEntries(
@@ -42,22 +42,23 @@ function getInternalGraphQLSchema(config: KeystoneConfig) {
       })
     ),
   };
-  const { lists } = initialiseLists(transformedConfig.lists);
+  const { lists } = initialiseLists(transformedConfig.lists, provider);
   const adminMeta = createAdminMeta(transformedConfig, lists);
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
 export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
-  const { lists } = initialiseLists(config.lists);
+  const provider = getDBProvider(config.db);
+  const { lists } = initialiseLists(config.lists, provider);
 
   const adminMeta = createAdminMeta(config, lists);
 
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
 
-  const internalGraphQLSchema = getInternalGraphQLSchema(config);
+  const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
 
   const prismaClient = PrismaClient
-    ? new PrismaClient({ datasources: { [getDBProvider(config.db)]: { url: config.db.url } } })
+    ? new PrismaClient({ datasources: { [provider]: { url: config.db.url } } })
     : undefined;
   const createContext = makeCreateContext({
     graphQLSchema,

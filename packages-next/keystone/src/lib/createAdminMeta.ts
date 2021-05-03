@@ -63,7 +63,7 @@ export function createAdminMeta(
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       if (field.access.read === false) continue;
       adminMetaRoot.listsByKey[key].fields.push({
-        label: field.label ?? humanize(key),
+        label: field.label ?? humanize(fieldKey),
         viewsIndex: getViewId(field.views),
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
         fieldMeta: field.getAdminMeta?.(adminMetaRoot) ?? null,

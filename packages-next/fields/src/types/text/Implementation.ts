@@ -1,5 +1,4 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
 export class Text<P extends string> extends Implementation<P> {

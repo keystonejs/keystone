@@ -19,12 +19,14 @@ export type TextFieldConfig<
   };
 };
 
-export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: TextFieldConfig<TGeneratedListTypes> = {}
-): FieldTypeFunc => () =>
-  fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String' })({
+export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  index,
+  ...config
+}: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => () =>
+  fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String', index })({
     ...config,
     input: {
+      uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.String }) } : undefined,
       create: { arg: types.arg({ type: types.String }) },
       update: { arg: types.arg({ type: types.String }) },
       sortBy: { arg: types.arg({ type: sortDirectionEnum }) },

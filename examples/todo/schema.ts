@@ -1,5 +1,5 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, password, relationship, text, timestamp } from '@keystone-next/fields';
+import { checkbox, password, relationship, text, timestamp, uuid } from '@keystone-next/fields';
 
 // this implementation for createdBy and updatedBy is currently wrong so they're disabled for now
 const trackingFields = {
@@ -46,6 +46,7 @@ const trackingFields = {
 
 export const lists = createSchema({
   Todo: list({
+    idField: uuid(),
     ui: {
       listView: {
         initialColumns: ['label', 'isComplete'],
@@ -60,6 +61,7 @@ export const lists = createSchema({
     },
   }),
   User: list({
+    idField: uuid(),
     ui: {
       listView: {
         initialColumns: ['name'],
@@ -68,6 +70,27 @@ export const lists = createSchema({
     fields: {
       name: text({}),
       email: text(),
+      // password: password(),
+      // tasks: relationship({
+      //   ref: 'Todo.assignedTo',
+      //   many: true,
+      //   ui: {
+      //     itemView: { fieldMode: 'read' },
+      //   },
+      // }),
+      ...trackingFields,
+    },
+  }),
+  Post: list({
+    idField: uuid(),
+    ui: {
+      listView: {
+        initialColumns: ['title'],
+      },
+    },
+    fields: {
+      title: text({}),
+      slug: text({ index: 'unique' }),
       // password: password(),
       // tasks: relationship({
       //   ref: 'Todo.assignedTo',

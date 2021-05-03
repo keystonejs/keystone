@@ -65,6 +65,8 @@ const flattenNestedErrors = (error: any) =>
   );
 
 export const formatError = (error: GraphQLError) => {
+  console.log(error);
+
   const { originalError }: { originalError: any } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;

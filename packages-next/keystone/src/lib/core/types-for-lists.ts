@@ -21,6 +21,7 @@ import {
   ListInfo,
   ListHooks,
   KeystoneConfig,
+  Provider,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
@@ -329,7 +330,8 @@ function getNamesFromList(
 }
 
 export function initialiseLists(
-  lists: KeystoneConfig['lists']
+  lists: KeystoneConfig['lists'],
+  provider: Provider
 ): {
   lists: Record<string, InitialisedList>;
   listsWithResolvedRelations: ListsWithResolvedRelations;
@@ -341,10 +343,12 @@ export function initialiseLists(
       listKey,
       {
         fields: Object.fromEntries(
-          Object.entries(list.fields).map(([fieldPath, fieldFunc]) => [
-            fieldPath,
-            fieldFunc({ fieldKey: fieldPath, listKey, lists: listInfos }),
-          ])
+          Object.entries(list.fields).map(([fieldKey, fieldFunc]) => {
+            if (typeof fieldFunc !== 'function') {
+              throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
+            }
+            return [fieldKey, fieldFunc({ fieldKey, listKey, lists: listInfos, provider })];
+          })
         ),
         ...getNamesFromList(listKey, list),
         hooks: list.hooks,
@@ -415,31 +419,12 @@ export function initialiseLists(
     });
     const uniqueWhere = types.inputObject({
       name: names.whereUniqueInputName,
-      fields: {
-        id: types.arg({
-          type: types.ID,
-        }),
-      },
-      //   fields: fromEntriesButTypedWell(
-      //     Object.entries(fields)
-      //       .map(
-      //         ([key, field]) =>
-      //           [
-      //             key,
-      //             field.dbField.kind === 'scalar' && field.dbField.index === 'unique' ||
-      //               ? types.arg({
-      //                   type:
-      //                     // i don't like this conditional
-      //                     // fields should define their uniqueWhere
-      //                     key === 'id'
-      //                       ? types.ID
-      //                       : prismaScalarsToGraphQLScalars[field.dbField.scalar],
-      //                 })
-      //               : false,
-      //           ] as const
-      //       )
-      //       .filter((x): x is [string, Exclude<typeof x[1], false>] => x[1] !== false)
-      //   ),
+      fields: Object.fromEntries(
+        Object.entries(fields).flatMap(([key, field]) => {
+          if (!field.input?.uniqueWhere || field.access.read === false) return [];
+          return [[key, field.input.uniqueWhere.arg]] as const;
+        })
+      ),
     });
     // TODO: validate no fields are named AND, NOT, or OR
     const where: TypesForList['where'] = types.inputObject({

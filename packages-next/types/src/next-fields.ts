@@ -4,6 +4,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
+import { Provider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
@@ -30,6 +31,7 @@ export type ListInfo = { types: TypesForList; inputResolvers: InputResolvers };
 
 export type FieldData = {
   lists: Record<string, ListInfo>;
+  provider: Provider;
   listKey: string;
   fieldKey: string;
 };

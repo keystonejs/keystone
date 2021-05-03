@@ -76,7 +76,7 @@ function ItemForm({
 
   const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
-      item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
+      item: ${list.gqlNames.updateMutationName}(where: {id:$id}, data: $data) {
         ${selectedFields}
       }
     }`,
