@@ -77,7 +77,7 @@ test('build works with typescript without the user defining a babel config', asy
     ✨ Generating Admin UI code
     ✨ Generating Keystone config code
     ✨ Building Admin UI
-    info  - Using webpack 4. Reason: future.webpack5 option not enabled https://nextjs.org/docs/messages/webpack5
+    info  - Using webpack 4. Reason: custom webpack configuration in next.config.js https://nextjs.org/docs/messages/webpack5
     info  - Checking validity of types...
     info  - Creating an optimized production build...
     info  - Compiled successfully
@@ -92,7 +92,7 @@ test('build works with typescript without the user defining a babel config', asy
     Page                                                           Size     First Load JS
     ┌ ○ /                                                          size         size
     ├   /_app                                                      size             size
-    ├ ○ /404                                                       size         size
+    ├ ○ /404                                                       size          size
     ├ λ /api/__keystone_api_build                                  size             size
     ├ ○ /no-access                                                 size         size
     ├ ○ /todos                                                     size         size

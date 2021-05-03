@@ -6,24 +6,29 @@ import type {
   KeystoneGraphQLAPI,
   BaseKeystone,
   ImagesConfig,
+  FilesConfig,
 } from '@keystone-next/types';
 
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { createImagesContext } from './createImagesContext';
+import { createFilesContext } from './createFilesContext';
 
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
   keystone,
   imagesConfig,
+  filesConfig,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
-  imagesConfig?: ImagesConfig;
+  imagesConfig: ImagesConfig | undefined;
+  filesConfig: FilesConfig | undefined;
 }) {
   const images = createImagesContext(imagesConfig);
+  const files = createFilesContext(filesConfig);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
@@ -94,6 +99,7 @@ export function makeCreateContext({
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
       images,
+      files,
     };
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
     for (const listKey of Object.keys(keystone.lists)) {

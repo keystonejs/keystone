@@ -52,7 +52,7 @@ export function findChildPropPaths(
 }
 
 export function assertNever(arg: never) {
-  throw new Error('expected to never be called but recieved: ' + JSON.stringify(arg));
+  throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
 }
 
 export function getPropsForConditionalChange(

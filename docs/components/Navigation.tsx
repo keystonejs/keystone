@@ -74,9 +74,7 @@ export function Navigation() {
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem href="/guides/hooks" isPlaceholder>
-          Hooks
-        </NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
