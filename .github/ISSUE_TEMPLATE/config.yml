@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: Questions and Chat (Slack)
     url: http://slack.keystonejs.com/
-    about: Reach out to our Slack community with your questions or comments, and get the latest announcements about Keystone Next.
+    about: Reach out to our Slack community with your questions and feedback, and get the latest announcements about Keystone Next.
   - name: Feature request (GitHub Discussions)
     url: https://github.com/keystonejs/keystone/discussions
     about: Share your feature requests and ideas with us!
