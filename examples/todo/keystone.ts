@@ -22,8 +22,8 @@ const { withAuth } = createAuth({
 export default withAuth(
   config({
     db: {
-      provider: 'postgresql',
-      url: process.env.DATABASE_URL || 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
     lists,
     ui: {
