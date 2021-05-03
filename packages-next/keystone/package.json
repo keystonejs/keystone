@@ -21,9 +21,9 @@
     "keystone-next": "bin/cli.js"
   },
   "dependencies": {
-    "@babel/core": "^7.13.16",
-    "@babel/plugin-transform-modules-commonjs": "^7.13.8",
-    "@babel/runtime": "^7.13.17",
+    "@babel/core": "^7.14.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
+    "@babel/runtime": "^7.14.0",
     "@graphql-tools/merge": "^6.2.13",
     "@graphql-tools/schema": "^7.1.5",
     "@hapi/iron": "^6.0.0",
