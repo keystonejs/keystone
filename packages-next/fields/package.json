@@ -12,7 +12,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.15",
+    "@apollo/client": "^3.3.16",
     "@babel/runtime": "^7.13.17",
     "@keystone-next/access-control-legacy": "^10.0.1",
     "@keystone-next/adapter-prisma-legacy": "^6.0.1",
