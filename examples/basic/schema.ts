@@ -8,6 +8,7 @@ import {
   select,
   virtual,
   image,
+  file,
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
@@ -43,7 +44,9 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
       email: text({ isRequired: true, isUnique: true }),
+      /** Avatar upload for the users profile, stored locally */
       avatar: image(),
+      attachment: file(),
       /** Used to log in. */
       password: password(),
       /** Administrators have more access to various lists and fields. */

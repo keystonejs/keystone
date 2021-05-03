@@ -1,34 +1,24 @@
 /** @jsx jsx */
-
+import { Fragment, useMemo, useRef, RefObject } from 'react';
 import copy from 'copy-to-clipboard';
 import bytes from 'bytes';
-import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
+import { jsx, Stack, Text } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
-import { TextInput } from '@keystone-ui/fields';
-import { parseImageRef } from '@keystone-next/utils-legacy';
-
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+
+import { TextInput } from '@keystone-ui/fields';
+import { parseFileRef } from '@keystone-next/utils-legacy';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
-import NextImage from '@keystone-next/admin-ui/image';
 
-import { ImageValue } from './index';
+import { FileValue } from './index';
 
-function useObjectURL(fileData: File | undefined) {
-  let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
-  useEffect(() => {
-    if (fileData) {
-      let url = URL.createObjectURL(fileData);
-      setObjectURL(url);
-      return () => {
-        URL.revokeObjectURL(url);
-      };
-    }
-  }, [fileData]);
-  return objectURL;
+export function validateRef({ ref }: { ref: string }) {
+  if (!parseFileRef(ref)) {
+    return 'Invalid ref';
+  }
 }
 
 const RefView = ({
@@ -53,7 +43,7 @@ const RefView = ({
       }}
     >
       <TextInput
-        placeholder="Paste the image ref here"
+        placeholder="Paste the file ref here"
         onChange={event => {
           onChange(event.target.value);
         }}
@@ -119,11 +109,10 @@ export function Field({
           }}
         />
       ) : (
-        <ImgView
+        <FileView
           errorMessage={errorMessage}
           value={value}
           onChange={onChange}
-          field={field}
           inputRef={inputRef}
         />
       )}
@@ -142,29 +131,27 @@ export function Field({
   );
 }
 
-function ImgView({
+function FileView({
   errorMessage,
   value,
   onChange,
-  field,
   inputRef,
 }: {
   errorMessage?: string;
-  value: Exclude<ImageValue, { kind: 'ref' }>;
-  onChange?: (value: ImageValue) => void;
-  field: ReturnType<typeof import('.').controller>;
+  value: Exclude<FileValue, { kind: 'ref' }>;
+  onChange?: (value: FileValue) => void;
   inputRef: RefObject<HTMLInputElement>;
 }) {
   const { addToast } = useToasts();
 
-  const imagePathFromUpload = useObjectURL(
-    errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
-  );
+  // const imagePathFromUpload = useObjectURL(
+  //   errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
+  // );
   const onSuccess = () => {
-    addToast({ title: 'Copied image ref to clipboard', tone: 'positive' });
+    addToast({ title: 'Copied file ref to clipboard', tone: 'positive' });
   };
   const onFailure = () => {
-    addToast({ title: 'Failed to copy image ref to clipboard', tone: 'negative' });
+    addToast({ title: 'Failed to copy file ref to clipboard', tone: 'negative' });
   };
 
   const copyRef = () => {
@@ -191,46 +178,21 @@ function ImgView({
   };
   return value.kind === 'from-server' || value.kind === 'upload' ? (
     <Stack gap="small" across align="center">
-      {errorMessage === undefined ? (
-        value.kind === 'from-server' ? (
-          <ImageWrapper>
-            <NextImage
-              height={value.data.height}
-              width={value.data.width}
-              src={value.data.src}
-              alt={field.path}
-            />
-          </ImageWrapper>
-        ) : (
-          <ImageWrapper>
-            <img
-              css={{
-                height: 'auto',
-                maxWidth: '100%',
-              }}
-              src={imagePathFromUpload}
-              alt={field.path}
-            />
-          </ImageWrapper>
-        )
-      ) : null}
       {onChange && (
-        <Stack gap="small">
+        <Fragment>
           {value.kind === 'from-server' && (
             <Stack padding="xxsmall" gap="xxsmall">
               <Stack across align="center" gap="small">
-                <Text size="small">
+                <Text size="medium">
                   <a href={value.data.src} target="_blank">
-                    {`${value.data.id}.${value.data.extension}`}
+                    {`${value.data.filename}`}
                   </a>
                 </Text>
                 <Button size="small" tone="passive" onClick={copyRef}>
-                  Copy
+                  Copy Ref
                 </Button>
               </Stack>
-              <Text size="xsmall">{`${value.data.width} x ${value.data.height} (${bytes(
-                value.data.filesize
-              )})`}</Text>
+              <Text size="xsmall">{bytes(value.data.filesize)}</Text>
             </Stack>
           )}
           <Stack across gap="small" align="center">
@@ -254,7 +216,7 @@ function ImgView({
                   });
                 }}
               >
-                Paste
+                Paste Ref
               </Button>
             ) : null}
             {value.kind === 'from-server' && (
@@ -286,12 +248,12 @@ function ImgView({
             ) : (
               value.kind === 'upload' && (
                 <Pill weight="light" tone="positive">
-                  Save to upload this image
+                  Save to upload this file
                 </Pill>
               )
             )}
           </Stack>
-        </Stack>
+        </Fragment>
       )}
     </Stack>
   ) : (
@@ -305,7 +267,7 @@ function ImgView({
           }}
           tone="positive"
         >
-          Upload Image
+          Upload File
         </Button>
         <Button
           size="small"
@@ -348,58 +310,16 @@ function ImgView({
   );
 }
 
-export function validateRef({ ref }: { ref: string }) {
-  if (!parseImageRef(ref)) {
-    return 'Invalid ref';
-  }
-}
-
-function createErrorMessage(value: ImageValue, forceValidation?: boolean) {
+function createErrorMessage(value: FileValue, forceValidation?: boolean) {
   if (value.kind === 'upload') {
-    return validateImage(value.data);
+    return validateFile(value.data);
   } else if (value.kind === 'ref') {
     return forceValidation ? validateRef(value.data) : undefined;
   }
 }
 
-export function validateImage({
-  file,
-  validity,
-}: {
-  file: File;
-  validity: ValidityState;
-}): string | undefined {
+export function validateFile({ validity }: { validity: ValidityState }): string | undefined {
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.';
   }
-  // check if the file is actually an image
-  if (!file.type.includes('image')) {
-    return 'Only image files are allowed. Please try again.';
-  }
 }
-
-// ==============================
-// Styled Components
-// ==============================
-
-const ImageWrapper = ({ children }: { children: ReactNode }) => {
-  const theme = useTheme();
-
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        borderRadius: theme.radii.medium,
-        border: `1px solid ${theme.colors.border}`,
-        flexShrink: 0,
-        lineHeight: 0,
-        padding: 4,
-        position: 'relative',
-        textAlign: 'center',
-        width: '130px', // 120px image + chrome
-      }}
-    >
-      {children}
-    </div>
-  );
-};
