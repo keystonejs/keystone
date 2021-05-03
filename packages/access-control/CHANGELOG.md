@@ -1,5 +1,12 @@
 # @keystonejs/access-control
 
+## 10.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`b7aeb232d`](https://github.com/keystonejs/keystone/commit/b7aeb232db43b32cae0bca3fcb74479d6834c587), [`49dd46843`](https://github.com/keystonejs/keystone/commit/49dd468435a96c537f5649aa2fd9e21103da40e1)]:
+  - @keystone-next/utils-legacy@10.0.0
+
 ## 10.0.0
 
 ### Major Changes
