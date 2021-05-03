@@ -111,10 +111,10 @@ A `checkbox` field represents a boolean (`true`/`false`) value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a boolean value or an async function which takes an argument `({ context, originalItem })` and returns a boolean value.
+- `defaultValue` (default: `undefined`): Can be either a boolean value or an async function which takes an argument `({ context, originalInput })` and returns a boolean value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
-  `originalItem` is an object containing the data passed in to the `create` mutation.
+  `originalInput` is an object containing the raw data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
