@@ -37,6 +37,7 @@ export default auth.withAuth(
       // isAccessAllowed,
     },
     images: { upload: 'local' },
+    files: { upload: 'local' },
     lists,
     extendGraphqlSchema,
     session: withItemData(
