@@ -66,7 +66,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       const { upload: mode } = config;
       const safeFilename = generateSafeFilename(filename, config.transformFilename);
       const writeStream = fs.createWriteStream(path.join(storagePath, safeFilename));
-      const observeStreamErrors: Promise<void> = new Promise((resolve, reject) => {
+      const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
         pipeline(stream, writeStream, err => {
           if (err) {
             reject(err);
@@ -74,23 +74,11 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
             resolve();
           }
         });
-        // stream.on('end', () => {
-        //   resolve();
-        // });
-        // // reject on both writeStream and read stream errors
-        // writeStream.on('error', err => {});
-        // stream.on('error', err => {
-        //   reject(err);
-        // });
       });
 
-      // writeStream.close();
-
       try {
-        await observeStreamErrors;
-        // writeStream.close();
+        await pipeStreams;
         const { size: filesize } = await fs.stat(path.join(storagePath, safeFilename));
-
         return { mode, filesize, filename: safeFilename };
       } catch (e) {
         await fs.remove(path.join(storagePath, safeFilename));
