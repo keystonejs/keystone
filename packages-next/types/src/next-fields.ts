@@ -214,7 +214,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never;
 
-type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
+export type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
 } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
   ? {
@@ -246,7 +246,7 @@ type DBFieldToSortByValue<TDBField extends DBField> = TDBField extends Scalarish
   ? { [Key in keyof Fields]: DBFieldToSortByValue<Fields[Key]> }
   : undefined;
 
-type FieldTypeWithoutDBField<
+export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,

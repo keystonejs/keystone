@@ -1,10 +1,25 @@
 import path from 'path';
-import type { FieldType, BaseGeneratedListTypes, CommonFieldConfig } from '@keystone-next/types';
-import { DocumentImplementation, PrismaDocumentInterface } from './Implementation';
+import {
+  BaseGeneratedListTypes,
+  CommonFieldConfig,
+  FieldTypeFunc,
+  fieldType,
+  Provider,
+  ScalarDBField,
+  FieldTypeWithoutDBField,
+  tsgql,
+  types,
+  JSONValue,
+  ItemRootValue,
+  KeystoneContext,
+  FieldInputArg,
+} from '@keystone-next/types';
+import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
+import { addRelationshipData } from './relationship-data';
 
 type RelationshipsConfig = Record<
   string,
@@ -75,11 +90,177 @@ const views = path.join(
   'views'
 );
 
-export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: DocumentFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => {
+function mapOutputFieldToSQLite(
+  field: tsgql.OutputField<
+    { id: IdType; value: JSONValue; item: ItemRootValue },
+    any,
+    any,
+    'value',
+    KeystoneContext
+  >
+) {
+  const innerResolver = field.resolve || (({ value }) => value);
+  return types.field<
+    { value: string | null; item: ItemRootValue; id: IdType },
+    any,
+    any,
+    'value',
+    KeystoneContext
+  >({
+    type: field.type,
+    args: field.args,
+    deprecationReason: field.deprecationReason,
+    description: field.description,
+    extensions: field.extensions,
+    resolve(rootVal, ...extra) {
+      if (rootVal.value === null) {
+        return innerResolver(rootVal, ...extra);
+      }
+      let value: JSONValue = null;
+      try {
+        value = JSON.parse(rootVal.value);
+      } catch (err) {}
+      return innerResolver({ id: rootVal.id, item: rootVal.item, value }, ...extra);
+    },
+  });
+}
+
+function mapInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
+  arg: FieldInputArg<JSONValue | null | undefined, Arg> | undefined
+): FieldInputArg<string | null | undefined, Arg> | undefined {
+  if (arg === undefined) {
+    return undefined;
+  }
+  return {
+    arg: arg.arg,
+    async resolve(input: tsgql.InferValueFromArg<Arg>, context: KeystoneContext) {
+      const resolvedInput = arg.resolve === undefined ? input : await arg.resolve(input, context);
+      if (resolvedInput === undefined || resolvedInput === null) {
+        return resolvedInput;
+      }
+      return JSON.stringify(resolvedInput);
+    },
+  } as any;
+}
+
+function jsonFieldTypePolyfilledForSQLite<
+  CreateArg extends tsgql.Arg<tsgql.InputType, any>,
+  UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
+  FilterArg extends tsgql.Arg<tsgql.InputType, any>,
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
+>(
+  provider: Provider,
+  config: FieldTypeWithoutDBField<
+    ScalarDBField<'Json', 'optional'>,
+    CreateArg,
+    UpdateArg,
+    FilterArg,
+    UniqueFilterArg
+  >
+) {
+  if (config.input?.uniqueWhere || config.input?.where || config.input?.sortBy) {
+    throw new Error(
+      'jsonFieldTypePolyfilledForSQLite does not support fields that implement uniqueWhere, where or sortBy'
+    );
+  }
+
+  if (provider === 'sqlite') {
+    return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String' })({
+      ...config,
+      input: {
+        create: mapInputArgToSQLite(config.input?.create),
+        update: mapInputArgToSQLite(config.input?.update),
+      },
+      output: mapOutputFieldToSQLite(config.output),
+      extraOutputFields: Object.fromEntries(
+        Object.entries(config.extraOutputFields || {}).map(([key, field]) => [
+          key,
+          mapOutputFieldToSQLite(field),
+        ])
+      ),
+    });
+  }
+  return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Json' })(config);
+}
+
+export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  componentBlocks = {},
+  dividers,
+  formatting,
+  layouts,
+  relationships: configRelationships,
+  links,
+  ...config
+}: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => meta => {
+  const documentFeatures = normaliseDocumentFeatures({
+    dividers,
+    formatting,
+    layouts,
+    links,
+  });
+  const relationships = normaliseRelationships(configRelationships);
+
+  const inputResolver = (data: JSONValue | null | undefined): any => {
+    if (data === null || data === undefined) {
+      return data;
+    }
+    return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
+  };
+
+  return jsonFieldTypePolyfilledForSQLite(meta.provider, {
+    ...config,
+    input: {
+      create: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
+      update: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
+    },
+    output: types.field({
+      type: types.object<{ document: JSONValue }>()({
+        name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
+        fields: {
+          document: types.field({
+            args: {
+              hydrateRelationships: types.arg({
+                type: types.nonNull(types.Boolean),
+                defaultValue: false,
+              }),
+            },
+            type: types.nonNull(types.JSON),
+            resolve({ document }, { hydrateRelationships }, context) {
+              return hydrateRelationships
+                ? addRelationshipData(
+                    document as any,
+                    context.graphql,
+                    relationships,
+                    componentBlocks,
+                    context.gqlNames as any
+                  )
+                : (document as any);
+            },
+          }),
+        },
+      }),
+      resolve({ value }) {
+        if (value === null) {
+          return null;
+        }
+        return { document: value };
+      },
+    }),
+    views,
+    getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+      return {
+        relationships,
+        documentFeatures,
+        componentBlocksPassedOnServer: Object.keys(componentBlocks),
+      };
+    },
+  });
+};
+
+function normaliseRelationships(
+  configRelationships: DocumentFieldConfig<BaseGeneratedListTypes>['relationships']
+) {
   const relationships: Relationships = {};
-  const configRelationships = config.relationships;
   if (configRelationships) {
     Object.keys(configRelationships).forEach(key => {
       const relationship = configRelationships[key];
@@ -93,6 +274,15 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
             };
     });
   }
+  return relationships;
+}
+
+function normaliseDocumentFeatures(
+  config: Pick<
+    DocumentFieldConfig<BaseGeneratedListTypes>,
+    'formatting' | 'dividers' | 'layouts' | 'links'
+  >
+) {
   const formatting: FormattingConfig =
     config.formatting === true
       ? {
@@ -164,27 +354,5 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     ),
     dividers: !!config.dividers,
   };
-  const componentBlocks = config.componentBlocks || {};
-  return {
-    type: {
-      type: 'Document',
-      implementation: DocumentImplementation,
-      adapter: PrismaDocumentInterface,
-    },
-    config: {
-      ...config,
-      componentBlocks,
-      relationships,
-      ___validateAndNormalize: (data: unknown) =>
-        validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships),
-    } as any,
-    getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
-      return {
-        relationships,
-        documentFeatures,
-        componentBlocksPassedOnServer: Object.keys(componentBlocks),
-      };
-    },
-    views,
-  };
-};
+  return documentFeatures;
+}
