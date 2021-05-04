@@ -1,10 +1,4 @@
-import {
-  BaseGeneratedListTypes,
-  FieldDefaultValue,
-  fieldType,
-  FieldTypeFunc,
-  types,
-} from '@keystone-next/types';
+import { BaseGeneratedListTypes, fieldType, FieldTypeFunc, types } from '@keystone-next/types';
 // @ts-ignore
 import inflection from 'inflection';
 import { resolveView } from '../../resolve-view';
@@ -34,24 +28,23 @@ export type SelectFieldConfig<
 
 export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
   index,
+  ui: { displayMode = 'select', ...ui } = {},
   ...config
 }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc => meta => {
-  const getAdminMeta = () => ({
-    options: config.options,
-    dataType: config.dataType ?? 'string',
-    displayMode: config.ui?.displayMode ?? 'select',
-  });
+  const commonConfig = {
+    ...config,
+    ui,
+    views: resolveView('select/views'),
+    getAdminMeta: () => ({
+      options: config.options,
+      dataType: config.dataType ?? 'string',
+      displayMode: displayMode,
+    }),
+  };
+
   if (config.dataType === 'integer') {
-    return fieldType({
-      kind: 'scalar',
-      scalar: 'Int',
-      mode: 'optional',
-      index,
-    })({
-      ...config,
-      views: resolveView('select/views'),
-      getAdminMeta,
-      ui: config.ui,
+    return fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional', index })({
+      ...commonConfig,
       input: {
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
@@ -65,15 +58,19 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       name: enumName,
       values: types.enumValues(config.options.map(x => x.value)),
     });
-    return fieldType({
-      kind: 'enum',
-      values: config.options.map(x => x.value),
-      mode: 'optional',
-      name: enumName,
-      index,
-    })({
-      views: resolveView('select/views'),
-      getAdminMeta,
+    // i do not like this "let's just magically use strings on sqlite"
+    return fieldType(
+      meta.provider === 'sqlite'
+        ? { kind: 'scalar', scalar: 'String', mode: 'optional', index }
+        : {
+            kind: 'enum',
+            values: config.options.map(x => x.value),
+            mode: 'optional',
+            name: enumName,
+            index,
+          }
+    )({
+      ...commonConfig,
       input: {
         create: { arg: types.arg({ type: graphQLType }) },
         update: { arg: types.arg({ type: graphQLType }) },
@@ -83,14 +80,8 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       }),
     });
   }
-  return fieldType({
-    kind: 'scalar',
-    scalar: 'String',
-    mode: 'optional',
-    index,
-  })({
-    views: resolveView('select/views'),
-    getAdminMeta,
+  return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
+    ...commonConfig,
     input: {
       create: { arg: types.arg({ type: types.String }) },
       update: { arg: types.arg({ type: types.String }) },

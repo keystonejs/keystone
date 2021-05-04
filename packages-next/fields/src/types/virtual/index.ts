@@ -1,27 +1,38 @@
-import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  types,
+  tsgql,
+  ItemRootValue,
+  KeystoneContext,
+  FieldTypeFunc,
+  fieldType,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
-import { Virtual, PrismaVirtualInterface } from './Implementation';
 
 export type VirtualFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = CommonFieldConfig<TGeneratedListTypes> & {
-  resolver: (rootVal: any, args: any, context: KeystoneContext, info: any) => any;
-  graphQLReturnType?: string;
+  field: tsgql.OutputField<ItemRootValue, any, any, string, KeystoneContext>;
+  unreferencedConcreteInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
   graphQLReturnFragment?: string;
-  extendGraphQLTypes?: string[];
-  args?: { name: string; type: string }[];
 };
 
-export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: VirtualFieldConfig<TGeneratedListTypes>
-): FieldType<TGeneratedListTypes> => ({
-  type: {
-    type: 'Virtual',
-    implementation: Virtual,
-    adapter: PrismaVirtualInterface,
-  },
-  config,
-  views: resolveView('virtual/views'),
-  getAdminMeta: () => ({ graphQLReturnFragment: config.graphQLReturnFragment ?? '' }),
-});
+export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  graphQLReturnFragment = '',
+  field,
+  ...config
+}: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc => () =>
+  fieldType({
+    kind: 'none',
+  })({
+    ...config,
+    output: types.field({
+      ...(field as any),
+      resolve({ item }, ...args) {
+        return field.resolve!(item as any, ...args);
+      },
+    }),
+    views: resolveView('virtual/views'),
+    getAdminMeta: () => ({ graphQLReturnFragment }),
+  });

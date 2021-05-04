@@ -8,35 +8,27 @@ import {
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
-export type AutoIncrementFieldConfig<
+export type IntegerFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = CommonFieldConfig<TGeneratedListTypes>;
+> = CommonFieldConfig<TGeneratedListTypes> & { index?: 'index' | 'unique' };
 
-export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: AutoIncrementFieldConfig<TGeneratedListTypes> = {}
-): FieldTypeFunc => () =>
+export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  index,
+  ...config
+}: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => () =>
   fieldType({
     kind: 'scalar',
     mode: 'optional',
     scalar: 'Int',
+    index,
   })({
     ...config,
     input: {
-      // TODO: fix the fact that TS did not catch that a resolver is needed here
-      uniqueWhere: {
-        arg: types.arg({ type: types.ID }),
-        resolve(value) {
-          return Number(value);
-        },
-      },
+      uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Int }) } : undefined,
+      create: { arg: types.arg({ type: types.Int }) },
+      update: { arg: types.arg({ type: types.Int }) },
       sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
-    output: types.field({
-      type: types.ID,
-      // TODO: should @ts-gql/schema understand the coercion that graphql-js can do here?
-      resolve({ value }) {
-        return value.toString();
-      },
-    }),
+    output: types.field({ type: types.Int }),
     views: resolveView('integer/views'),
   });
