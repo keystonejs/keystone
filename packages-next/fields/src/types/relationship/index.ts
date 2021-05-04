@@ -1,4 +1,11 @@
-import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import {
+  FieldType,
+  BaseGeneratedListTypes,
+  FieldDefaultValue,
+  FieldTypeFunc,
+  fieldType,
+  types,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 import { Relationship, PrismaRelationshipInterface } from './Implementation';
@@ -43,13 +50,26 @@ export type RelationshipFieldConfig<
   ui?: {
     hideCreate?: boolean;
   };
-  defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
-export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: RelationshipFieldConfig<TGeneratedListTypes>
-): FieldType<TGeneratedListTypes> => ({
+export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  many,
+  ref,
+  ...config
+}: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc => meta => {
+  const [listKey, fieldKey] = ref.split('.');
+  if (many) {
+    return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
+      output: types.field({
+        // args:meta.
+        type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
+        resolve() {},
+      }),
+    });
+  }
+};
+
+const x = {
   type: {
     type: 'Relationship',
     isRelationship: true, // Used internally for this special case
@@ -89,4 +109,4 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
           }),
     };
   },
-});
+};

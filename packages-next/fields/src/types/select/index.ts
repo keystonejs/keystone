@@ -1,4 +1,10 @@
-import { BaseGeneratedListTypes, fieldType, FieldTypeFunc, types } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  fieldType,
+  FieldTypeFunc,
+  sortDirectionEnum,
+  types,
+} from '@keystone-next/types';
 // @ts-ignore
 import inflection from 'inflection';
 import { resolveView } from '../../resolve-view';
@@ -48,6 +54,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       input: {
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
+        sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
       },
       output: types.field({ type: types.Int }),
     });
@@ -74,6 +81,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       input: {
         create: { arg: types.arg({ type: graphQLType }) },
         update: { arg: types.arg({ type: graphQLType }) },
+        sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
       },
       output: types.field({
         type: graphQLType,
@@ -85,6 +93,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
     input: {
       create: { arg: types.arg({ type: types.String }) },
       update: { arg: types.arg({ type: types.String }) },
+      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.String,
