@@ -3,7 +3,7 @@ import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
 
-import type { ImageMode, KeystoneContext } from '..';
+import type { ImageMode, FileMode, KeystoneContext } from '..';
 
 import { CreateContext } from '../core';
 import type { BaseKeystone } from '../base';
@@ -28,6 +28,7 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  files?: FilesConfig;
   images?: ImagesConfig;
   /** Experimental config options */
   experimental?: {
@@ -142,6 +143,25 @@ export type GraphQLConfig = {
 // config.extendGraphqlSchema
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
+
+// config.files
+
+export type FilesConfig = {
+  upload: FileMode;
+  transformFilename?: (str: string) => string;
+  local?: {
+    /**
+     * The path local files are uploaded to.
+     * @default 'public/files'
+     */
+    storagePath?: string;
+    /**
+     * The base of the URL local files will be served from, outside of keystone.
+     * @default '/files'
+     */
+    baseUrl?: string;
+  };
+};
 
 // config.images
 

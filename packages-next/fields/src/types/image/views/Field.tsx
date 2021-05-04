@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
+import copy from 'copy-to-clipboard';
+import bytes from 'bytes';
+import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
+
 import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { TextInput } from '@keystone-ui/fields';
 import { parseImageRef } from '@keystone-next/utils-legacy';
-import copy from 'copy-to-clipboard';
-import bytes from 'bytes';
-import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
@@ -224,7 +225,7 @@ function ImgView({
                   </a>
                 </Text>
                 <Button size="small" tone="passive" onClick={copyRef}>
-                  Copy
+                  Copy Ref
                 </Button>
               </Stack>
               <Text size="xsmall">{`${value.data.width} x ${value.data.height} (${bytes(
@@ -253,7 +254,7 @@ function ImgView({
                   });
                 }}
               >
-                Paste
+                Paste Ref
               </Button>
             ) : null}
             {value.kind === 'from-server' && (

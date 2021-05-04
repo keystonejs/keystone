@@ -34,7 +34,7 @@ export type FormField<Value, Options> = {
    * - on the client in the editor when a user is changing the value.
    *   Returning `false` will block closing the form
    *   and saving the item.
-   * - on the server when a change is recieved before allowing it to be saved
+   * - on the server when a change is received before allowing it to be saved
    *   if `true` is returned
    * @param value The value of the form field. You should NOT trust
    * this value to be of the correct type because it could come from

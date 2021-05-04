@@ -2,4 +2,4 @@
 '@keystone-next/keystone': patch
 ---
 
-Refactored implementation of db lists API
+Fixed uncaught exception in file stream.

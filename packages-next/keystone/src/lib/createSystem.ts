@@ -69,6 +69,7 @@ export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
     gqlNamesByList: Object.fromEntries(
       Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames({ listKey, ...list })])
     ),
+    filesConfig: config.files,
   });
 
   return {

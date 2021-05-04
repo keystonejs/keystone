@@ -13,6 +13,7 @@ export type KeystoneContext = {
   withSession: (session: any) => KeystoneContext;
   // TODO: Correctly type this as a prisma client
   prisma: any;
+  files: FilesContext | undefined;
   images: ImagesContext | undefined;
   totalResults: number;
   maxTotalResults: number;
@@ -145,6 +146,22 @@ export type SessionContext<T> = {
   session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
   startSession(data: T): Promise<string>;
   endSession(): Promise<void>;
+};
+
+// Files API
+
+export type FileMode = 'local';
+
+export type FileData = {
+  mode: FileMode;
+  filename: string;
+  filesize: number;
+};
+
+export type FilesContext = {
+  getSrc: (mode: FileMode, filename: string) => string;
+  getDataFromRef: (ref: string) => Promise<FileData>;
+  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };
 
 // Images API

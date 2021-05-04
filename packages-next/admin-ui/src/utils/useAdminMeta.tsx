@@ -93,7 +93,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             );
           }
         });
-        const views = fieldViews[field.viewsIndex];
+        const views = { ...fieldViews[field.viewsIndex] };
         const customViews: Record<string, any> = {};
         if (field.customViewsIndex !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =

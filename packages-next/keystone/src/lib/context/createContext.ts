@@ -6,28 +6,33 @@ import type {
   KeystoneGraphQLAPI,
   ImagesConfig,
   GqlNames,
+  FilesConfig,
 } from '@keystone-next/types';
 
 import { PrismaClient } from '../core/utils';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
+import { createFilesContext } from './createFilesContext';
 
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
   imagesConfig,
+  filesConfig,
   prismaClient,
   gqlNamesByList,
   maxTotalResults,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
-  imagesConfig?: ImagesConfig;
+  imagesConfig: ImagesConfig | undefined;
+  filesConfig: FilesConfig | undefined;
   prismaClient: PrismaClient;
   maxTotalResults: number;
   gqlNamesByList: Record<string, GqlNames>;
 }) {
   const images = createImagesContext(imagesConfig);
+  const files = createFilesContext(filesConfig);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
@@ -96,6 +101,7 @@ export function makeCreateContext({
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => gqlNamesByList[listKey],
       images,
+      files,
     };
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
