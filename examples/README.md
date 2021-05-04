@@ -18,7 +18,7 @@ You can use these as a starting point for general experimentation in a clean env
 Each of the examples below demonstrates a particular feature of Keystone.
 You can use these projects to learn about, and experiment with specific features.
 
-(coming soon)
+ * [`withAuth`](./with-auth): Adding password based authentication to your Keystone application.
 
 ## Solution Examples
 
