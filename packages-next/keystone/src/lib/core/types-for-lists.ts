@@ -26,7 +26,7 @@ import {
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
-import { validateFieldAccessControl } from './access-control';
+import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
 import { getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
@@ -38,6 +38,7 @@ import {
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
 import { InputResolvers, resolveWhereInput } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
+import { findOneFilter, mapUniqueWhereToWhere } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -63,71 +64,87 @@ export type InitialisedList = {
   adminUILabels: { label: string; singular: string; plural: string; path: string };
 };
 
-// TODO: access control
 function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
-  listKey: string,
-  key: string,
+  localListKey: string,
+  localFieldKey: string,
+  foreignList: InitialisedList,
   context: KeystoneContext
 ) {
-  return dbField.mode === 'many'
-    ? {
-        findMany: async ({ first, skip, sortBy }: FindManyArgsValue) => {
-          return getPrismaModelForList(context.prisma, dbField.list).findMany({
-            where: {
-              AND: [
-                {
-                  [dbField.field]: { id },
-                },
-                //   await runInputResolvers(
-                //     typesForLists,
-                //     lists,
-                //     listKey,
-                //     'where',
-                //     where || {}
-                //   ),
-              ],
-            },
-            // TODO: needs to have input resolvers
-            orderBy: sortBy,
-            take: first ?? undefined,
-            skip,
-          });
-        },
-        count: async ({ first, skip, sortBy }: FindManyArgsValue) => {
-          return getPrismaModelForList(context.prisma, dbField.list).count({
-            where: {
-              AND: [
-                {
-                  [dbField.field]: { id },
-                },
-                //   await runInputResolvers(
-                //     typesForLists,
-                //     lists,
-                //     listKey,
-                //     'where',
-                //     where || {}
-                //   ),
-              ],
-            },
-            // TODO: needs to have input resolvers
-            orderBy: sortBy,
-            take: first ?? undefined,
-            skip,
-          });
-        },
-      }
-    : async () => {
-        return (
-          await getPrismaModelForList(context.prisma, listKey).findUnique({
-            where: {
-              id,
-            },
-            select: { [key]: true },
-          })
-        )?.[key];
-      };
+  if (dbField.mode === 'many') {
+    return {
+      findMany: async ({ first, skip, sortBy }: FindManyArgsValue) => {
+        return getPrismaModelForList(context.prisma, dbField.list).findMany({
+          where: {
+            AND: [
+              {
+                [dbField.field]: { id },
+              },
+              //   await runInputResolvers(
+              //     typesForLists,
+              //     lists,
+              //     listKey,
+              //     'where',
+              //     where || {}
+              //   ),
+            ],
+          },
+          // TODO: needs to have input resolvers
+          orderBy: sortBy,
+          take: first ?? undefined,
+          skip,
+        });
+      },
+      count: async ({ first, skip, sortBy }: FindManyArgsValue) => {
+        return getPrismaModelForList(context.prisma, dbField.list).count({
+          where: {
+            AND: [
+              {
+                [dbField.field]: { id },
+              },
+              //   await runInputResolvers(
+              //     typesForLists,
+              //     lists,
+              //     listKey,
+              //     'where',
+              //     where || {}
+              //   ),
+            ],
+          },
+          // TODO: needs to have input resolvers
+          orderBy: sortBy,
+          take: first ?? undefined,
+          skip,
+        });
+      },
+    };
+  }
+
+  return async () => {
+    const access = await validateNonCreateListAccessControl({
+      access: foreignList.access.read,
+      args: {
+        context,
+        listKey: localListKey,
+        operation: 'read',
+        session: context.session,
+      },
+    });
+    if (access === false) {
+      return false;
+    }
+
+    const where = {
+      [dbField.list]: {
+        id,
+      },
+    };
+
+    return getPrismaModelForList(context.prisma, foreignListKey).findFirst({
+      where: access === true ? [where] : [where, await foreignList.inputResolvers.where(access)],
+    });
+  };
 }
 
 function getValueForDBField(

@@ -14,6 +14,18 @@ export const types = {
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
+export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
+  name: '_QueryMeta',
+  fields: {
+    count: types.field({
+      type: types.Int,
+      resolve({ getCount }) {
+        return getCount();
+      },
+    }),
+  },
+});
+
 export { tsgql };
 
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control

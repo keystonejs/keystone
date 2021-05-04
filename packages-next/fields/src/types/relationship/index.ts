@@ -1,14 +1,14 @@
 import {
-  FieldType,
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   FieldTypeFunc,
   fieldType,
   types,
+  AdminMetaRootVal,
+  getFindManyArgs,
+  QueryMeta,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
-import { Relationship, PrismaRelationshipInterface } from './Implementation';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -53,60 +53,75 @@ export type RelationshipFieldConfig<
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>({
-  many,
+  many = false,
   ref,
   ...config
 }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc => meta => {
   const [listKey, fieldKey] = ref.split('.');
+  const commonConfig = {
+    views: resolveView('relationship/views'),
+    getAdminMeta: (
+      adminMetaRoot: AdminMetaRootVal
+    ): Parameters<
+      typeof import('@keystone-next/fields/types/relationship/views').controller
+    >[0]['fieldMeta'] => {
+      if (!meta.lists[listKey]) {
+        throw new Error(
+          `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
+        );
+      }
+      return {
+        refListKey: listKey,
+        many,
+        hideCreate: config.ui?.hideCreate ?? false,
+        ...(config.ui?.displayMode === 'cards'
+          ? {
+              displayMode: 'cards',
+              cardFields: config.ui.cardFields,
+              linkToItem: config.ui.linkToItem ?? false,
+              removeMode: config.ui.removeMode ?? 'disconnect',
+              inlineCreate: config.ui.inlineCreate ?? null,
+              inlineEdit: config.ui.inlineEdit ?? null,
+              inlineConnect: config.ui.inlineConnect ?? false,
+            }
+          : {
+              displayMode: 'select',
+              refLabelField: adminMetaRoot.listsByKey[listKey].labelField,
+            }),
+      };
+    },
+  };
   if (many) {
     return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
+      ...commonConfig,
       output: types.field({
-        // args:meta.
-        type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
-        resolve() {},
+        // args: getFindManyArgs(meta.lists[listKey].types),
+        // type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
+        type: types.String,
+        resolve({ value }, args) {
+          return value.findMany(args);
+        },
       }),
+      extraOutputFields: {
+        [`_${meta.fieldKey}Meta`]: types.field({
+          type: QueryMeta,
+          // args: getFindManyArgs(meta.lists[listKey].types),
+          resolve({ value }, args) {
+            return {
+              getCount: () => value.count(args),
+            };
+          },
+        }),
+      },
     });
   }
-};
-
-const x = {
-  type: {
-    type: 'Relationship',
-    isRelationship: true, // Used internally for this special case
-    implementation: Relationship,
-    adapter: PrismaRelationshipInterface,
-  },
-  config,
-  views: resolveView('relationship/views'),
-  getAdminMeta: (
-    listKey,
-    path,
-    adminMetaRoot
-  ): Parameters<
-    typeof import('@keystone-next/fields/types/relationship/views').controller
-  >[0]['fieldMeta'] => {
-    const refListKey = config.ref.split('.')[0];
-    if (!adminMetaRoot.listsByKey[refListKey]) {
-      throw new Error(`The ref [${config.ref}] on relationship [${listKey}.${path}] is invalid`);
-    }
-    return {
-      refListKey,
-      many: config.many ?? false,
-      hideCreate: config.ui?.hideCreate ?? false,
-      ...(config.ui?.displayMode === 'cards'
-        ? {
-            displayMode: 'cards',
-            cardFields: config.ui.cardFields,
-            linkToItem: config.ui.linkToItem ?? false,
-            removeMode: config.ui.removeMode ?? 'disconnect',
-            inlineCreate: config.ui.inlineCreate ?? null,
-            inlineEdit: config.ui.inlineEdit ?? null,
-            inlineConnect: config.ui.inlineConnect ?? false,
-          }
-        : {
-            displayMode: 'select',
-            refLabelField: adminMetaRoot.listsByKey[refListKey].labelField,
-          }),
-    };
-  },
+  return fieldType({ kind: 'relation', mode: 'one', list: listKey, field: fieldKey })({
+    ...commonConfig,
+    output: types.field({
+      type: types.String,
+      resolve({ value }) {
+        return value();
+      },
+    }),
+  });
 };

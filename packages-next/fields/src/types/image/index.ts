@@ -16,7 +16,7 @@ export type ImageFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = CommonFieldConfig<TGeneratedListTypes>;
 
-const ImageExtension = types.enum({
+const ImageExtensionEnum = types.enum({
   name: 'ImageExtension',
   values: types.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
 });
@@ -34,7 +34,7 @@ const LocalImageFieldOutput = types.object<ImageData>()({
     filesize: types.field({ type: types.nonNull(types.Int) }),
     height: types.field({ type: types.nonNull(types.Int) }),
     width: types.field({ type: types.nonNull(types.Int) }),
-    extension: types.field({ type: types.nonNull(ImageExtension) }),
+    extension: types.field({ type: types.nonNull(ImageExtensionEnum) }),
     ref: types.field({
       type: types.nonNull(types.String),
       resolve(data) {

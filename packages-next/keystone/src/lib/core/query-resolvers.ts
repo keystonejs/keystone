@@ -1,16 +1,11 @@
 import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
 import { validateNonCreateListAccessControl } from './access-control';
-import {
-  InputFilter,
-  PrismaFilter,
-  UniquePrismaFilter,
-  UniqueInputFilter,
-} from './input-resolvers';
+import { InputFilter, PrismaFilter, UniquePrismaFilter } from './input-resolvers';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
 
 // TODO: search
-export async function getResolvedWhere(
+export async function findManyFilter(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
@@ -63,27 +58,7 @@ export function mapUniqueWhereToWhere(
   return { [key]: val };
 }
 
-export async function getItemByUniqueWhere(
-  context: KeystoneContext,
-  listKey: string,
-  list: InitialisedList,
-  uniqueWhere: UniqueInputFilter,
-  access: InputFilter | boolean
-) {
-  if (access === false) {
-    return null;
-  }
-  let resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(uniqueWhere || {});
-  const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
-  return getPrismaModelForList(context.prisma, listKey).findFirst({
-    where:
-      access === true
-        ? wherePrismaFilter
-        : [wherePrismaFilter, await list.inputResolvers.where(access)],
-  });
-}
-
-export async function findOne(
+export async function findOneFilter(
   { where }: { where: Record<string, any> },
   listKey: string,
   list: InitialisedList,
@@ -98,7 +73,29 @@ export async function findOne(
       session: context.session,
     },
   });
-  return getItemByUniqueWhere(context, listKey, list, where, access);
+  if (access === false) {
+    return false;
+  }
+  let resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(where || {});
+  const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
+  return access === true
+    ? wherePrismaFilter
+    : [wherePrismaFilter, await list.inputResolvers.where(access)];
+}
+
+export async function findOne(
+  args: { where: Record<string, any> },
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  const filter = await findOneFilter(args, listKey, list, context);
+  if (filter === false) {
+    return null;
+  }
+  return getPrismaModelForList(context.prisma, listKey).findFirst({
+    where: filter,
+  });
 }
 
 export async function findMany(
@@ -107,7 +104,7 @@ export async function findMany(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const resolvedWhere = await getResolvedWhere(listKey, list, context, where || {});
+  const resolvedWhere = await findManyFilter(listKey, list, context, where || {});
   if (resolvedWhere === false) {
     return [];
   }
@@ -126,7 +123,7 @@ export async function count(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const resolvedWhere = await getResolvedWhere(listKey, list, context, where || {});
+  const resolvedWhere = await findManyFilter(listKey, list, context, where || {});
   if (resolvedWhere === false) {
     return 0;
   }

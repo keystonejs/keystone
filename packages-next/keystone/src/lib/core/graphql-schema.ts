@@ -1,22 +1,10 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getGqlNames, Provider, types } from '@keystone-next/types';
+import { getGqlNames, Provider, QueryMeta, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
 import * as queries from './query-resolvers';
-
-const queryMeta = types.object<{ getCount: () => Promise<number> }>()({
-  name: '_QueryMeta',
-  fields: {
-    count: types.field({
-      type: types.Int,
-      resolve({ getCount }) {
-        return getCount();
-      },
-    }),
-  },
-});
 
 export function getGraphQLSchema(lists: Record<string, InitialisedList>, provider: Provider) {
   let query = types.object()({
@@ -47,7 +35,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
             },
           });
           const metaQuery = types.field({
-            type: queryMeta,
+            type: QueryMeta,
             args: findManyArgs,
             async resolve(_rootVal, args, context) {
               return {
