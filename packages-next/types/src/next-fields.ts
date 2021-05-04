@@ -2,6 +2,7 @@ import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
 import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
+import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { Provider } from './core';
@@ -9,6 +10,7 @@ import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
   JSON: tsgql.types.scalar<JSONValue>(GraphQLJSON),
+  Upload: tsgql.types.scalar<Promise<FileUpload>>(GraphQLUpload),
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
@@ -146,6 +148,7 @@ export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
 
 export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
 
+// TODO: this probably isn't totally right for create
 type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
   infer Mode
@@ -166,7 +169,8 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   : TDBField extends NoDBField
   ? undefined
   : TDBField extends MultiDBField<infer Fields>
-  ? { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
+  ? // note: this is very intentionally not optional and instead | undefined to force people to explicitly show what they are not setting
+    { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> | undefined }
   : never;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -213,8 +217,18 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
 type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
 } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? { resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> }
-  : { resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> });
+  ? {
+      resolve?(
+        value: tsgql.InferValueFromArg<TArg>,
+        context: KeystoneContext
+      ): MaybePromise<Val | undefined>;
+    }
+  : {
+      resolve(
+        value: tsgql.InferValueFromArg<TArg>,
+        context: KeystoneContext
+      ): MaybePromise<Val | undefined>;
+    });
 
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
