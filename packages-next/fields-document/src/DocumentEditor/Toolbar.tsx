@@ -325,9 +325,8 @@ function InsertBlockMenu() {
   const [showMenu, setShowMenu] = useState(false);
   const relationships = useContext(DocumentFieldRelationshipsContext);
   const blockComponents = useContext(ComponentBlockContext)!;
-  const relationshipsArray = Object.entries(relationships);
-  const blockComponentsArray = Object.keys(blockComponents);
-  const noItemsExist = !blockComponentsArray.length && !relationshipsArray.length;
+  const noItemsExist =
+    !Object.entries(blockComponents).length && !Object.keys(relationships).length;
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
