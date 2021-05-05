@@ -9,13 +9,13 @@ generator client {
 }
 
 model Task {
-  id           Int               @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   label        String?
-  priority     TaskPriorityEnum?
+  priority     String?
   isComplete   Boolean?
   finishBy     DateTime?
-  assignedTo   Person?           @relation("TaskassignedTo", fields: [assignedToId], references: [id])
-  assignedToId Int?              @map("assignedTo")
+  assignedTo   Person?   @relation("TaskassignedTo", fields: [assignedToId], references: [id])
+  assignedToId Int?      @map("assignedTo")
 
   @@index([assignedToId])
   @@index([label])
@@ -24,13 +24,14 @@ model Task {
 }
 
 model Person {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  tasks Task[]  @relation("TaskassignedTo")
-}
+  id       Int     @id @default(autoincrement())
+  name     String?
+  password String?
+  count    Int?
+  price    Float?
+  tasks    Task[]  @relation("TaskassignedTo")
 
-enum TaskPriorityEnum {
-  low
-  medium
-  high
+  @@index([password])
+  @@index([count])
+  @@index([price])
 }

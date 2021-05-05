@@ -1,5 +1,13 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, relationship, text, timestamp } from '@keystone-next/fields';
+import {
+  checkbox,
+  float,
+  integer,
+  password,
+  relationship,
+  text,
+  timestamp,
+} from '@keystone-next/fields';
 import { select } from '@keystone-next/fields';
 
 export const lists = createSchema({
@@ -7,7 +15,7 @@ export const lists = createSchema({
     fields: {
       label: text({ isRequired: true, isIndexed: true }),
       priority: select({
-        dataType: 'enum',
+        dataType: 'string',
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },
@@ -24,6 +32,9 @@ export const lists = createSchema({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+      password: password({ isIndexed: true }),
+      count: integer({ isIndexed: true }),
+      price: float({ isIndexed: true }),
     },
   }),
 });
