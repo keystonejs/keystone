@@ -328,14 +328,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(user.friend).not.toBe(expect.anything());
             expect(friend.friendOf).not.toBe(expect.anything());
 
-            await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { connect: { id: "${friend.id}" } } }
-                  ) { id friend { id } } }
-            `,
+            await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { connect: { id: friend.id } } },
+              query: 'id friend { id }',
             });
 
             const { User, Friend } = await getUserAndFriend(context, user.id, friend.id);
@@ -351,22 +347,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { users } = await createInitialData(context);
             let user = users[0];
             const friendName = sampleOne(alphanumGenerator);
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { create: { name: "${friendName}" } } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { create: { name: friendName } } },
+              query: 'id friend { id name }',
             });
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              user.id,
-              data.updateUser.friend.id
-            );
+            const { User, Friend } = await getUserAndFriend(context, user.id, _user.friend.id);
 
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
@@ -381,18 +368,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { disconnect: { id: "${friend.id}" } } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { disconnect: { id: friend.id } } },
+              query: 'id friend { id name }',
             });
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).toBe(null);
+
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).toBe(null);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
@@ -408,19 +391,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { disconnectAll: true } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { disconnectAll: true } },
+              query: 'id friend { id name }',
             });
 
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).toBe(null);
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).toBe(null);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
@@ -436,21 +414,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query with a null operation
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: null }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: null },
+              query: 'id friend { id name }',
             });
 
             // Check that the friend is still there
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).not.toBe(null);
-            expect(data.updateUser.friend.id).toEqual(friend.id);
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).not.toBe(null);
+            expect(_user.friend.id).toEqual(friend.id);
           })
         );
       });
