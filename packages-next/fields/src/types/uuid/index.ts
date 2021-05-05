@@ -33,7 +33,7 @@ export const uuid = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     ...config,
     input: {
       uniqueWhere: { arg: types.arg({ type: types.ID }) },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({ type: types.ID }),
     views: resolveView('text/views'),

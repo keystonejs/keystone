@@ -158,7 +158,7 @@ function jsonFieldTypePolyfilledForSQLite<
     UniqueFilterArg
   >
 ) {
-  if (config.input?.uniqueWhere || config.input?.where || config.input?.sortBy) {
+  if (config.input?.uniqueWhere || config.input?.where || config.input?.orderBy) {
     throw new Error(
       'jsonFieldTypePolyfilledForSQLite does not support fields that implement uniqueWhere, where or sortBy'
     );

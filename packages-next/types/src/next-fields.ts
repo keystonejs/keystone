@@ -125,7 +125,7 @@ export type ScalarDBField<
 };
 
 export const sortDirectionEnum = types.enum({
-  name: 'SortDirection',
+  name: 'OrderDirection',
   values: types.enumValues(['asc', 'desc']),
 });
 
@@ -250,12 +250,12 @@ type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   KeystoneContext
 >;
 
-export type SortDirection = 'asc' | 'desc';
+export type OrderDirection = 'asc' | 'desc';
 
-type DBFieldToSortByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
-  ? SortDirection
+type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
+  ? OrderDirection
   : TDBField extends MultiDBField<infer Fields>
-  ? { [Key in keyof Fields]: DBFieldToSortByValue<Fields[Key]> }
+  ? { [Key in keyof Fields]: DBFieldToOrderByValue<Fields[Key]> }
   : undefined;
 
 export type FieldTypeWithoutDBField<
@@ -264,14 +264,14 @@ export type FieldTypeWithoutDBField<
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  SortByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   input?: {
     uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
     where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
     create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
     update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
-    sortBy?: FieldInputArg<DBFieldToSortByValue<TDBField>, SortByArg>;
+    orderBy?: FieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
   };
   output: FieldTypeOutputField<TDBField>;
   views: string;
@@ -305,17 +305,16 @@ export type TypesForList = {
   create: AnyInputObj;
   uniqueWhere: AnyInputObj;
   where: AnyInputObj;
-  sortBy: AnyInputObj;
+  orderBy: AnyInputObj;
   output: tsgql.ObjectType<ItemRootValue, string, KeystoneContext>;
 };
 
 export type FindManyArgs = {
   where: tsgql.Arg<tsgql.NonNullType<TypesForList['where']>, {}>;
   sortBy: tsgql.Arg<
-    tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['sortBy']>>>,
-    any
+    tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['orderBy']>>>,
+    Record<string, any>[]
   >;
-  search: tsgql.Arg<typeof types.String>;
   first: tsgql.Arg<typeof types.Int>;
   skip: tsgql.Arg<tsgql.NonNullType<typeof types.Int>, number>;
 };
@@ -328,12 +327,9 @@ export function getFindManyArgs(typesForList: TypesForList): FindManyArgs {
       type: types.nonNull(typesForList.where),
       defaultValue: {},
     }),
-    sortBy: types.arg({
-      type: types.nonNull(types.list(types.nonNull(typesForList.sortBy))),
+    orderBy: types.arg({
+      type: types.nonNull(types.list(types.nonNull(typesForList.orderBy))),
       defaultValue: [],
-    }),
-    search: types.arg({
-      type: types.String,
     }),
     first: types.arg({
       type: types.Int,

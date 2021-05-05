@@ -38,7 +38,6 @@ import {
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
 import { InputResolvers, resolveWhereInput } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
-import { findOneFilter, mapUniqueWhereToWhere } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -74,7 +73,7 @@ function getRelationVal(
 ) {
   if (dbField.mode === 'many') {
     return {
-      findMany: async ({ first, skip, sortBy }: FindManyArgsValue) => {
+      findMany: async ({ first, skip, orderBy: sortBy }: FindManyArgsValue) => {
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
           where: {
             AND: [
@@ -96,7 +95,7 @@ function getRelationVal(
           skip,
         });
       },
-      count: async ({ first, skip, sortBy }: FindManyArgsValue) => {
+      count: async ({ first, skip, orderBy: sortBy }: FindManyArgsValue) => {
         return getPrismaModelForList(context.prisma, dbField.list).count({
           where: {
             AND: [
@@ -493,8 +492,8 @@ export function initialiseLists(
       name: names.listSortName,
       fields: Object.fromEntries(
         Object.entries(fields).flatMap(([key, field]) => {
-          if (!field.input?.sortBy?.arg || field.access.read === false) return [];
-          return [[key, field.input.sortBy.arg]] as const;
+          if (!field.input?.orderBy?.arg || field.access.read === false) return [];
+          return [[key, field.input.orderBy.arg]] as const;
         })
       ),
     });

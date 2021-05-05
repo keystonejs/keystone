@@ -24,7 +24,7 @@ export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     input: {
       create: { arg: types.arg({ type: types.Boolean }) },
       update: { arg: types.arg({ type: types.Boolean }) },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.Boolean,

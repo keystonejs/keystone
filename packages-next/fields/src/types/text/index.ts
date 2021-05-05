@@ -29,7 +29,7 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.String }) } : undefined,
       create: { arg: types.arg({ type: types.String }) },
       update: { arg: types.arg({ type: types.String }) },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.String,

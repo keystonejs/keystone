@@ -27,7 +27,7 @@ export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Int }) } : undefined,
       create: { arg: types.arg({ type: types.Int }) },
       update: { arg: types.arg({ type: types.Int }) },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({ type: types.Int }),
     views: resolveView('integer/views'),

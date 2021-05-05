@@ -54,7 +54,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       input: {
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
-        sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
       },
       output: types.field({ type: types.Int }),
     });
@@ -81,7 +81,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
       input: {
         create: { arg: types.arg({ type: graphQLType }) },
         update: { arg: types.arg({ type: graphQLType }) },
-        sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
       },
       output: types.field({
         type: graphQLType,
@@ -93,7 +93,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>({
     input: {
       create: { arg: types.arg({ type: types.String }) },
       update: { arg: types.arg({ type: types.String }) },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.String,

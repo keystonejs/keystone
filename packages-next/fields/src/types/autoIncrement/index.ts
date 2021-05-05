@@ -35,7 +35,7 @@ export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes
           return Number(value);
         },
       },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.ID,

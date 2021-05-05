@@ -28,7 +28,7 @@ export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     input: {
       create: { arg: types.arg({ type: types.String }), resolve: inputResolver },
       update: { arg: types.arg({ type: types.String }), resolve: inputResolver },
-      sortBy: { arg: types.arg({ type: sortDirectionEnum }) },
+      orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },
     output: types.field({
       type: types.String,
