@@ -183,8 +183,7 @@ class PrismaAdapter {
         ),
         ...flatten(
           listAdapter.fieldAdapters
-            .map(({ field }) => field)
-            .filter(f => f.isIndexed)
+            .filter(f => f.config.isIndexed)
             .map(f => {
               return [`@@index([${f.path}])`];
             })
