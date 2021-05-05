@@ -114,7 +114,7 @@ Options:
     Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
     See the [Fields API](./fields) for details.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
-  - `initialColumns` (default: `[labelField]`). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
+  - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
   - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
