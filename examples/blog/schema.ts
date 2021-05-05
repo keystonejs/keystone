@@ -31,7 +31,6 @@ export const lists = createSchema({
       //     inlineCreate: { fields: ['name', 'email'] },
       //   },
       // }),
-      finishBy: timestamp(),
     },
   }),
   // Author: list({

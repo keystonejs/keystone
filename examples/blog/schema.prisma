@@ -14,5 +14,4 @@ model Post {
   status      String?
   content     String?
   publishDate DateTime?
-  finishBy    DateTime?
 }

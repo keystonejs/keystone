@@ -16,7 +16,6 @@ type Post {
   status: PostStatusType
   content: Post_content_DocumentField
   publishDate: String
-  finishBy: String
 }
 
 input PostWhereInput {
@@ -48,14 +47,6 @@ input PostWhereInput {
   publishDate_gte: String
   publishDate_in: [String]
   publishDate_not_in: [String]
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
 }
 
 input PostWhereUniqueInput {
@@ -71,8 +62,6 @@ enum SortPostsBy {
   status_DESC
   publishDate_ASC
   publishDate_DESC
-  finishBy_ASC
-  finishBy_DESC
 }
 
 input PostUpdateInput {
@@ -80,7 +69,6 @@ input PostUpdateInput {
   status: PostStatusType
   content: JSON
   publishDate: String
-  finishBy: String
 }
 
 input PostsUpdateInput {
@@ -93,7 +81,6 @@ input PostCreateInput {
   status: PostStatusType
   content: JSON
   publishDate: String
-  finishBy: String
 }
 
 input PostsCreateInput {
