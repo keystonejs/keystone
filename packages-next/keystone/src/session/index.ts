@@ -115,7 +115,9 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
   };
 }
 
-export function statelessSessions<T>({
+// This is an internal stateless session handler. We export a more specifically typed
+// version for use with withItemData, and also use it internally in storedSessions.
+function _statelessSessions<T>({
   secret,
   maxAge = MAX_AGE,
   path = '/',
@@ -175,6 +177,14 @@ export function statelessSessions<T>({
   };
 }
 
+// This is the exported handler, which can be used with withItemData. In particular,
+// the type T here needs to have listKey and itemId available.
+export function statelessSessions<T extends { listKey: string; itemId: string }>(
+  args: StatelessSessionsOptions
+) {
+  return _statelessSessions<T>(args);
+}
+
 export function storedSessions({
   store: storeOption,
   maxAge = MAX_AGE,
@@ -183,7 +193,10 @@ export function storedSessions({
   store: SessionStoreFunction;
 } & StatelessSessionsOptions): () => SessionStrategy<JSONValue> {
   return () => {
-    let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge })();
+    let { get, start, end } = _statelessSessions<{ sessionId: string }>({
+      ...statelessSessionsOptions,
+      maxAge,
+    })();
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
     let isConnected = false;
     return {
