@@ -1,31 +1,27 @@
-enum TaskPriorityType {
-  low
-  medium
-  high
+enum PostStatusType {
+  draft
+  published
 }
 
-input PersonRelateToOneInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 """
  A keystone list
 """
-type Task {
+type Post {
   id: ID!
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: Person
+  title: String
+  status: PostStatusType
+  content: Post_content_DocumentField
+  publishDate: String
   finishBy: String
 }
 
-input TaskWhereInput {
-  AND: [TaskWhereInput]
-  OR: [TaskWhereInput]
+input PostWhereInput {
+  AND: [PostWhereInput]
+  OR: [PostWhereInput]
   id: ID
   id_not: ID
   id_lt: ID
@@ -34,20 +30,24 @@ input TaskWhereInput {
   id_gte: ID
   id_in: [ID]
   id_not_in: [ID]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  priority: TaskPriorityType
-  priority_not: TaskPriorityType
-  priority_in: [TaskPriorityType]
-  priority_not_in: [TaskPriorityType]
-  isComplete: Boolean
-  isComplete_not: Boolean
-  assignedTo: PersonWhereInput
-  assignedTo_is_null: Boolean
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_in: [String]
+  title_not_in: [String]
+  status: PostStatusType
+  status_not: PostStatusType
+  status_in: [PostStatusType]
+  status_not_in: [PostStatusType]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
   finishBy: String
   finishBy_not: String
   finishBy_lt: String
@@ -58,145 +58,46 @@ input TaskWhereInput {
   finishBy_not_in: [String]
 }
 
-input TaskWhereUniqueInput {
+input PostWhereUniqueInput {
   id: ID!
 }
 
-enum SortTasksBy {
+enum SortPostsBy {
   id_ASC
   id_DESC
-  label_ASC
-  label_DESC
-  priority_ASC
-  priority_DESC
-  isComplete_ASC
-  isComplete_DESC
-  assignedTo_ASC
-  assignedTo_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  publishDate_ASC
+  publishDate_DESC
   finishBy_ASC
   finishBy_DESC
 }
 
-input TaskUpdateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
+input PostUpdateInput {
+  title: String
+  status: PostStatusType
+  content: JSON
+  publishDate: String
   finishBy: String
 }
 
-input TasksUpdateInput {
+input PostsUpdateInput {
   id: ID!
-  data: TaskUpdateInput
+  data: PostUpdateInput
 }
 
-input TaskCreateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
+input PostCreateInput {
+  title: String
+  status: PostStatusType
+  content: JSON
+  publishDate: String
   finishBy: String
 }
 
-input TasksCreateInput {
-  data: TaskCreateInput
-}
-
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-"""
- A keystone list
-"""
-type Person {
-  id: ID!
-  name: String
-  tasks(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [Task!]!
-  _tasksMeta(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): _QueryMeta
-}
-
-input PersonWhereInput {
-  AND: [PersonWhereInput]
-  OR: [PersonWhereInput]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  tasks_every: TaskWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  tasks_some: TaskWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  tasks_none: TaskWhereInput
-}
-
-input PersonWhereUniqueInput {
-  id: ID!
-}
-
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  tasks_ASC
-  tasks_DESC
-}
-
-input PersonUpdateInput {
-  name: String
-  tasks: TaskRelateToManyInput
-}
-
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
-}
-
-input PersonCreateInput {
-  name: String
-  tasks: TaskRelateToManyInput
-}
-
-input PeopleCreateInput {
-  data: PersonCreateInput
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 """
@@ -213,64 +114,34 @@ type _QueryMeta {
 
 type Mutation {
   """
-   Create a single Task item.
+   Create a single Post item.
   """
-  createTask(data: TaskCreateInput): Task
+  createPost(data: PostCreateInput): Post
 
   """
-   Create multiple Task items.
+   Create multiple Post items.
   """
-  createTasks(data: [TasksCreateInput]): [Task]
+  createPosts(data: [PostsCreateInput]): [Post]
 
   """
-   Update a single Task item by ID.
+   Update a single Post item by ID.
   """
-  updateTask(id: ID!, data: TaskUpdateInput): Task
+  updatePost(id: ID!, data: PostUpdateInput): Post
 
   """
-   Update multiple Task items by ID.
+   Update multiple Post items by ID.
   """
-  updateTasks(data: [TasksUpdateInput]): [Task]
+  updatePosts(data: [PostsUpdateInput]): [Post]
 
   """
-   Delete a single Task item by ID.
+   Delete a single Post item by ID.
   """
-  deleteTask(id: ID!): Task
+  deletePost(id: ID!): Post
 
   """
-   Delete multiple Task items by ID.
+   Delete multiple Post items by ID.
   """
-  deleteTasks(ids: [ID!]): [Task]
-
-  """
-   Create a single Person item.
-  """
-  createPerson(data: PersonCreateInput): Person
-
-  """
-   Create multiple Person items.
-  """
-  createPeople(data: [PeopleCreateInput]): [Person]
-
-  """
-   Update a single Person item by ID.
-  """
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
-
-  """
-   Update multiple Person items by ID.
-  """
-  updatePeople(data: [PeopleUpdateInput]): [Person]
-
-  """
-   Delete a single Person item by ID.
-  """
-  deletePerson(id: ID!): Person
-
-  """
-   Delete multiple Person items by ID.
-  """
-  deletePeople(ids: [ID!]): [Person]
+  deletePosts(ids: [ID!]): [Post]
 }
 
 """
@@ -280,58 +151,29 @@ scalar Upload
 
 type Query {
   """
-   Search for all Task items which match the where clause.
+   Search for all Post items which match the where clause.
   """
-  allTasks(
-    where: TaskWhereInput
+  allPosts(
+    where: PostWhereInput
     search: String
-    sortBy: [SortTasksBy!]
+    sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
     skip: Int
-  ): [Task]
+  ): [Post]
 
   """
-   Search for the Task item with the matching ID.
+   Search for the Post item with the matching ID.
   """
-  Task(where: TaskWhereUniqueInput!): Task
+  Post(where: PostWhereUniqueInput!): Post
 
   """
-   Perform a meta-query on all Task items which match the where clause.
+   Perform a meta-query on all Post items which match the where clause.
   """
-  _allTasksMeta(
-    where: TaskWhereInput
+  _allPostsMeta(
+    where: PostWhereInput
     search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): _QueryMeta
-
-  """
-   Search for all Person items which match the where clause.
-  """
-  allPeople(
-    where: PersonWhereInput
-    search: String
-    sortBy: [SortPeopleBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [Person]
-
-  """
-   Search for the Person item with the matching ID.
-  """
-  Person(where: PersonWhereUniqueInput!): Person
-
-  """
-   Perform a meta-query on all Person items which match the where clause.
-  """
-  _allPeopleMeta(
-    where: PersonWhereInput
-    search: String
-    sortBy: [SortPeopleBy!]
+    sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
     skip: Int

@@ -8,20 +8,11 @@ generator client {
   output   = "node_modules/.prisma/client"
 }
 
-model Task {
-  id           Int       @id @default(autoincrement())
-  label        String?
-  priority     String?
-  isComplete   Boolean?
-  finishBy     DateTime?
-  assignedTo   Person?   @relation("TaskassignedTo", fields: [assignedToId], references: [id])
-  assignedToId Int?      @map("assignedTo")
-
-  @@index([assignedToId])
-}
-
-model Person {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  tasks Task[]  @relation("TaskassignedTo")
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  status      String?
+  content     String?
+  publishDate DateTime?
+  finishBy    DateTime?
 }
