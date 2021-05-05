@@ -8,6 +8,7 @@ export type TimestampFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   defaultValue?: FieldDefaultValue<string>;
   isRequired?: boolean;
+  isIndexed?: boolean;
   isUnique?: boolean;
 };
 
