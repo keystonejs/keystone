@@ -5,7 +5,7 @@ import { select } from '@keystone-next/fields';
 export const lists = createSchema({
   Task: list({
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ isRequired: true, isIndexed: true }),
       priority: select({
         dataType: 'enum',
         options: [
@@ -13,10 +13,11 @@ export const lists = createSchema({
           { label: 'Medium', value: 'medium' },
           { label: 'High', value: 'high' },
         ],
+        isIndexed: true,
       }),
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
-      finishBy: timestamp(),
+      finishBy: timestamp({ isIndexed: true }),
     },
   }),
   Person: list({

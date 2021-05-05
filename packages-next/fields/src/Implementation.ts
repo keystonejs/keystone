@@ -31,6 +31,7 @@ class Field<P extends string> {
   isRequired: boolean;
   defaultValue?: any;
   isOrderable: boolean;
+  isIndexed: boolean;
   hooks: any;
   getListByKey: (key: string) => BaseKeystoneList | undefined;
   listKey: string;
@@ -45,6 +46,7 @@ class Field<P extends string> {
     {
       hooks = {},
       isRequired,
+      isIndexed,
       defaultValue,
       access,
       label,
@@ -58,6 +60,7 @@ class Field<P extends string> {
     this.schemaDoc = schemaDoc;
     this.config = config;
     this.isRequired = !!isRequired;
+    this.isIndexed = !!isIndexed;
     this.defaultValue = defaultValue;
     this.isOrderable = false;
     this.hooks = hooks;
