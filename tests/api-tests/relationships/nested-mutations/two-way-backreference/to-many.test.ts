@@ -33,19 +33,11 @@ function setupKeystone(provider: ProviderName) {
   });
 }
 
-const getTeacher = async (context: KeystoneContext, teacherId: IdType) => {
-  const data = await context.graphql.run({
-    query: `
-      query getTeacher($teacherId: ID!){
-        Teacher(where: { id: $teacherId }) {
-          id
-          students { id }
-        }
-      }`,
-    variables: { teacherId },
+const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
+  context.lists.Teacher.findOne({
+    where: { id: teacherId },
+    query: 'id students { id }',
   });
-  return data.Teacher;
-};
 
 const getStudent = async (context: KeystoneContext, studentId: IdType) => {
   type T = { data: { Student: { id: IdType; teachers: { id: IdType }[] } } };

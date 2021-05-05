@@ -37,22 +37,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'nested create',
         runner(setupKeystone, async ({ context }) => {
           const locationName = sampleOne(alphanumGenerator);
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createCompany(data: {
-                  location: { create: { name: "${locationName}" } }
-                }) {
-                  id
-                  location {
-                    id
-                  }
-                }
-              }`,
+          const _company = await context.lists.Company.createOne({
+            data: { location: { create: { name: locationName } } },
+            query: 'id location { id }',
           });
 
-          const companyId = data.createCompany.id;
-          const locationId = data.createCompany.location.id;
+          const companyId = _company.id;
+          const locationId = _company.location.id;
 
           const company = (await context.lists.Company.findOne({
             where: { id: companyId },
