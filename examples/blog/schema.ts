@@ -1,6 +1,5 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp, image } from '@keystone-next/fields';
-import { document } from '@keystone-next/fields-document';
+import { select, relationship, text, timestamp } from '@keystone-next/fields';
 
 export const lists = createSchema({
   Post: list({
@@ -16,34 +15,30 @@ export const lists = createSchema({
           displayMode: 'segmented-control',
         },
       }),
-      content: document({
-        formatting: true,
-        links: true,
-      }),
+      content: text(),
       publishDate: timestamp(),
-      // author: relationship({
-      //   ref: 'Author.posts',
-      //   ui: {
-      //     displayMode: 'cards',
-      //     cardFields: ['name', 'email'],
-      //     inlineEdit: { fields: ['name', 'email'] },
-      //     linkToItem: true,
-      //     inlineCreate: { fields: ['name', 'email'] },
-      //   },
-      // }),
+      author: relationship({
+        ref: 'Author.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
     },
   }),
-  // Author: list({
-  //   ui: {
-  //     listView: {
-  //       initialColumns: ['name', 'posts', 'avatar'],
-  //     },
-  //   },
-  //   fields: {
-  //     name: text({ isRequired: true }),
-  //     email: text({ isRequired: true, isUnique: true }),
-  //     avatar: image(),
-  //     posts: relationship({ ref: 'Post.author', many: true }),
-  //   },
-  // }),
+  Author: list({
+    ui: {
+      listView: {
+        initialColumns: ['name', 'posts'],
+      },
+    },
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true, isUnique: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
 });
