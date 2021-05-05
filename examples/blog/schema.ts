@@ -18,11 +18,6 @@ export const lists = createSchema({
     },
   }),
   Author: list({
-    ui: {
-      listView: {
-        initialColumns: ['name', 'posts'],
-      },
-    },
     fields: {
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
