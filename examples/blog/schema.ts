@@ -11,9 +11,6 @@ export const lists = createSchema({
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
         ],
-        ui: {
-          displayMode: 'segmented-control',
-        },
       }),
       content: text(),
       publishDate: timestamp(),
