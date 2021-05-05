@@ -74,10 +74,10 @@ type FieldSelections = {
   - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
 */
 
-export function withItemData<T extends { listKey: string; itemId: string }>(
-  createSession: () => SessionStrategy<T>,
+export function withItemData<U extends Record<string, any>>(
+  createSession: () => SessionStrategy<U>,
   fieldSelections: FieldSelections = {}
-): () => SessionStrategy<T & { data: any }> {
+): () => SessionStrategy<U & { listKey: string; itemId: string; data: any }> {
   return (): SessionStrategy<any> => {
     const { get, ...sessionStrategy } = createSession();
     return {
@@ -115,9 +115,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
   };
 }
 
-// This is an internal stateless session handler. We export a more specifically typed
-// version for use with withItemData, and also use it internally in storedSessions.
-function _statelessSessions<T>({
+export function statelessSessions<T extends Record<string, any>>({
   secret,
   maxAge = MAX_AGE,
   path = '/',
@@ -177,14 +175,6 @@ function _statelessSessions<T>({
   };
 }
 
-// This is the exported handler, which can be used with withItemData. In particular,
-// the type T here needs to have listKey and itemId available.
-export function statelessSessions<T extends { listKey: string; itemId: string }>(
-  args: StatelessSessionsOptions
-) {
-  return _statelessSessions<T>(args);
-}
-
 export function storedSessions({
   store: storeOption,
   maxAge = MAX_AGE,
@@ -193,10 +183,7 @@ export function storedSessions({
   store: SessionStoreFunction;
 } & StatelessSessionsOptions): () => SessionStrategy<JSONValue> {
   return () => {
-    let { get, start, end } = _statelessSessions<{ sessionId: string }>({
-      ...statelessSessionsOptions,
-      maxAge,
-    })();
+    let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge })();
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
     let isConnected = false;
     return {
