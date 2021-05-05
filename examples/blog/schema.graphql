@@ -3,8 +3,11 @@ enum PostStatusType {
   published
 }
 
-type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
+input AuthorRelateToOneInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
+  disconnect: AuthorWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 """
@@ -14,8 +17,9 @@ type Post {
   id: ID!
   title: String
   status: PostStatusType
-  content: Post_content_DocumentField
+  content: String
   publishDate: String
+  author: Author
 }
 
 input PostWhereInput {
@@ -39,6 +43,12 @@ input PostWhereInput {
   status_not: PostStatusType
   status_in: [PostStatusType]
   status_not_in: [PostStatusType]
+  content: String
+  content_not: String
+  content_contains: String
+  content_not_contains: String
+  content_in: [String]
+  content_not_in: [String]
   publishDate: String
   publishDate_not: String
   publishDate_lt: String
@@ -47,6 +57,8 @@ input PostWhereInput {
   publishDate_gte: String
   publishDate_in: [String]
   publishDate_not_in: [String]
+  author: AuthorWhereInput
+  author_is_null: Boolean
 }
 
 input PostWhereUniqueInput {
@@ -60,15 +72,20 @@ enum SortPostsBy {
   title_DESC
   status_ASC
   status_DESC
+  content_ASC
+  content_DESC
   publishDate_ASC
   publishDate_DESC
+  author_ASC
+  author_DESC
 }
 
 input PostUpdateInput {
   title: String
   status: PostStatusType
-  content: JSON
+  content: String
   publishDate: String
+  author: AuthorRelateToOneInput
 }
 
 input PostsUpdateInput {
@@ -79,12 +96,121 @@ input PostsUpdateInput {
 input PostCreateInput {
   title: String
   status: PostStatusType
-  content: JSON
+  content: String
   publishDate: String
+  author: AuthorRelateToOneInput
 }
 
 input PostsCreateInput {
   data: PostCreateInput
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Author {
+  id: ID!
+  name: String
+  email: String
+  posts(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Post!]!
+  _postsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+}
+
+input AuthorWhereInput {
+  AND: [AuthorWhereInput]
+  OR: [AuthorWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input AuthorWhereUniqueInput {
+  id: ID!
+}
+
+enum SortAuthorsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  posts_ASC
+  posts_DESC
+}
+
+input AuthorUpdateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+}
+
+input AuthorsUpdateInput {
+  id: ID!
+  data: AuthorUpdateInput
+}
+
+input AuthorCreateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+}
+
+input AuthorsCreateInput {
+  data: AuthorCreateInput
 }
 
 """
@@ -129,6 +255,36 @@ type Mutation {
    Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
+
+  """
+   Create a single Author item.
+  """
+  createAuthor(data: AuthorCreateInput): Author
+
+  """
+   Create multiple Author items.
+  """
+  createAuthors(data: [AuthorsCreateInput]): [Author]
+
+  """
+   Update a single Author item by ID.
+  """
+  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
+
+  """
+   Update multiple Author items by ID.
+  """
+  updateAuthors(data: [AuthorsUpdateInput]): [Author]
+
+  """
+   Delete a single Author item by ID.
+  """
+  deleteAuthor(id: ID!): Author
+
+  """
+   Delete multiple Author items by ID.
+  """
+  deleteAuthors(ids: [ID!]): [Author]
 }
 
 """
@@ -161,6 +317,35 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all Author items which match the where clause.
+  """
+  allAuthors(
+    where: AuthorWhereInput
+    search: String
+    sortBy: [SortAuthorsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Author]
+
+  """
+   Search for the Author item with the matching ID.
+  """
+  Author(where: AuthorWhereUniqueInput!): Author
+
+  """
+   Perform a meta-query on all Author items which match the where clause.
+  """
+  _allAuthorsMeta(
+    where: AuthorWhereInput
+    search: String
+    sortBy: [SortAuthorsBy!]
     orderBy: String
     first: Int
     skip: Int
