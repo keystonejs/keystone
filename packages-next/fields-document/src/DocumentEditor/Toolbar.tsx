@@ -1,10 +1,18 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes, useMemo } from 'react';
+import {
+  Fragment,
+  ReactNode,
+  forwardRef,
+  useState,
+  HTMLAttributes,
+  useMemo,
+  useContext,
+} from 'react';
 import { Editor, Transforms } from 'slate';
 import { applyRefs } from 'apply-ref';
 
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme, Text, Box } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Tooltip } from '@keystone-ui/tooltip';
 
@@ -25,12 +33,12 @@ import {
   ToolbarSeparator,
 } from './primitives';
 import { linkButton } from './link';
-import { BlockComponentsButtons } from './component-blocks';
+import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks';
 import { clearFormatting, Mark, modifierKeyText } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
-import { RelationshipButton } from './relationship';
+import { DocumentFieldRelationshipsContext, RelationshipButton } from './relationship';
 import { codeButton } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
@@ -315,6 +323,11 @@ function HeadingDialog({
 
 function InsertBlockMenu() {
   const [showMenu, setShowMenu] = useState(false);
+  const relationships = useContext(DocumentFieldRelationshipsContext);
+  const blockComponents = useContext(ComponentBlockContext)!;
+  const relationshipsArray = Object.entries(relationships);
+  const blockComponentsArray = Object.keys(blockComponents);
+  const noItemsExist = !blockComponentsArray.length && !relationshipsArray.length;
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -367,8 +380,22 @@ function InsertBlockMenu() {
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ToolbarGroup direction="column">
-            <RelationshipButton onClose={() => setShowMenu(false)} />
-            <BlockComponentsButtons onClose={() => setShowMenu(false)} />
+            {noItemsExist ? (
+              <Box
+                css={{
+                  minWidth: '200px',
+                }}
+                padding="small"
+                textAlign="center"
+              >
+                <Text size="small">No relationships or component blocks specified</Text>
+              </Box>
+            ) : (
+              <Fragment>
+                <RelationshipButton onClose={() => setShowMenu(false)} />
+                <BlockComponentsButtons onClose={() => setShowMenu(false)} />
+              </Fragment>
+            )}
           </ToolbarGroup>
         </InlineDialog>
       ) : null}
