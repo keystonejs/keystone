@@ -1,3 +1,9 @@
+enum TaskPriorityType {
+  low
+  medium
+  high
+}
+
 input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
@@ -11,7 +17,7 @@ input PersonRelateToOneInput {
 type Task {
   id: ID!
   label: String
-  priority: String
+  priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: Person
   finishBy: String
@@ -32,24 +38,12 @@ input TaskWhereInput {
   label_not: String
   label_contains: String
   label_not_contains: String
-  label_starts_with: String
-  label_not_starts_with: String
-  label_ends_with: String
-  label_not_ends_with: String
-  label_i: String
-  label_not_i: String
-  label_contains_i: String
-  label_not_contains_i: String
-  label_starts_with_i: String
-  label_not_starts_with_i: String
-  label_ends_with_i: String
-  label_not_ends_with_i: String
   label_in: [String]
   label_not_in: [String]
-  priority: String
-  priority_not: String
-  priority_in: [String]
-  priority_not_in: [String]
+  priority: TaskPriorityType
+  priority_not: TaskPriorityType
+  priority_in: [TaskPriorityType]
+  priority_not_in: [TaskPriorityType]
   isComplete: Boolean
   isComplete_not: Boolean
   assignedTo: PersonWhereInput
@@ -85,7 +79,7 @@ enum SortTasksBy {
 
 input TaskUpdateInput {
   label: String
-  priority: String
+  priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneInput
   finishBy: String
@@ -98,7 +92,7 @@ input TasksUpdateInput {
 
 input TaskCreateInput {
   label: String
-  priority: String
+  priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneInput
   finishBy: String
@@ -137,9 +131,6 @@ type Person {
     first: Int
     skip: Int
   ): _QueryMeta
-  password_is_set: Boolean
-  count: Int
-  price: Float
 }
 
 input PersonWhereInput {
@@ -157,18 +148,6 @@ input PersonWhereInput {
   name_not: String
   name_contains: String
   name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
 
@@ -186,23 +165,6 @@ input PersonWhereInput {
    condition must be false for all nodes
   """
   tasks_none: TaskWhereInput
-  password_is_set: Boolean
-  count: Int
-  count_not: Int
-  count_lt: Int
-  count_lte: Int
-  count_gt: Int
-  count_gte: Int
-  count_in: [Int]
-  count_not_in: [Int]
-  price: Float
-  price_not: Float
-  price_lt: Float
-  price_lte: Float
-  price_gt: Float
-  price_gte: Float
-  price_in: [Float]
-  price_not_in: [Float]
 }
 
 input PersonWhereUniqueInput {
@@ -216,18 +178,11 @@ enum SortPeopleBy {
   name_DESC
   tasks_ASC
   tasks_DESC
-  count_ASC
-  count_DESC
-  price_ASC
-  price_DESC
 }
 
 input PersonUpdateInput {
   name: String
   tasks: TaskRelateToManyInput
-  password: String
-  count: Int
-  price: Float
 }
 
 input PeopleUpdateInput {
@@ -238,9 +193,6 @@ input PeopleUpdateInput {
 input PersonCreateInput {
   name: String
   tasks: TaskRelateToManyInput
-  password: String
-  count: Int
-  price: Float
 }
 
 input PeopleCreateInput {

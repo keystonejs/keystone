@@ -1,6 +1,6 @@
-datasource postgresql {
+datasource sqlite {
   url      = env("DATABASE_URL")
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 generator client {
@@ -18,20 +18,10 @@ model Task {
   assignedToId Int?      @map("assignedTo")
 
   @@index([assignedToId])
-  @@index([label])
-  @@index([priority])
-  @@index([finishBy])
 }
 
 model Person {
-  id       Int     @id @default(autoincrement())
-  name     String?
-  password String?
-  count    Int?
-  price    Float?
-  tasks    Task[]  @relation("TaskassignedTo")
-
-  @@index([password])
-  @@index([count])
-  @@index([price])
+  id    Int     @id @default(autoincrement())
+  name  String?
+  tasks Task[]  @relation("TaskassignedTo")
 }

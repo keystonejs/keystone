@@ -3,7 +3,7 @@ import { lists } from './schema';
 
 export default config({
   db: {
-    provider: 'postgresql',
+    provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
   lists,
