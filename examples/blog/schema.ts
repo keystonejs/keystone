@@ -14,9 +14,7 @@ export const lists = createSchema({
       }),
       content: text(),
       publishDate: timestamp(),
-      author: relationship({
-        ref: 'Author.posts',
-      }),
+      author: relationship({ ref: 'Author.posts', many: false }),
     },
   }),
   Author: list({
