@@ -189,10 +189,6 @@ enum SortUsersBy {
   isAdmin_DESC
   roles_ASC
   roles_DESC
-  phoneNumbers_ASC
-  phoneNumbers_DESC
-  posts_ASC
-  posts_DESC
 }
 
 input UserUpdateInput {
