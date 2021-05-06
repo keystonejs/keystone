@@ -10,33 +10,32 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 type IdType = any;
 
 const createInitialData = async (context: KeystoneContext) => {
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createCompanies(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-        createLocations(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
+  const companies = (await context.lists.Company.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  })) as { id: IdType }[];
+  const locations = (await context.lists.Location.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  })) as { id: IdType }[];
   const owners = await context.lists.Owner.createMany({
-    data: data.createCompanies.map(({ id }) => ({
+    data: companies.map(({ id }) => ({
       data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
     })),
   });
   const custodians = await context.lists.Custodian.createMany({
-    data: data.createLocations.map(({ id }) => ({
+    data: locations.map(({ id }) => ({
       data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
     })),
   });
-  return { locations: data.createLocations, companies: data.createCompanies, owners, custodians };
+  return { locations, companies, owners, custodians };
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {

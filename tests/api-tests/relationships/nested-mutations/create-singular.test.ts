@@ -118,39 +118,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item that does the nested create
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createEvent(data: {
-                  title: "A thing",
-                  group: { create: { name: "${groupName}" } }
-                }) {
-                  id
-                  group {
-                    id
-                    name
-                  }
-                }
-              }`,
+          const event = await context.lists.Event.createOne({
+            data: { title: 'A thing', group: { create: { name: groupName } } },
+            query: 'id group { id name }',
           });
 
-          expect(data).toMatchObject({
-            createEvent: {
-              id: expect.any(String),
-              group: { id: expect.any(String), name: groupName },
-            },
+          expect(event).toMatchObject({
+            id: expect.any(String),
+            group: { id: expect.any(String), name: groupName },
           });
 
           const { Group } = await context.graphql.run({
             query: `
               query {
-                Group(where: { id: "${data.createEvent.group.id}" }) {
+                Group(where: { id: "${event.group.id}" }) {
                   id
                   name
                 }
               }`,
           });
-          expect(Group).toMatchObject({ id: data.createEvent.group.id, name: groupName });
+          expect(Group).toMatchObject({ id: event.group.id, name: groupName });
         })
       );
 
@@ -163,42 +150,27 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createEvent = await context.lists.Event.createOne({ data: { title: 'A thing' } });
 
           // Update an item that does the nested create
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateEvent(
-                  id: "${createEvent.id}"
-                  data: {
-                    title: "A thing",
-                    group: { create: { name: "${groupName}" } }
-                  }
-                ) {
-                  id
-                  group {
-                    id
-                    name
-                  }
-                }
-              }`,
+          const event = await context.lists.Event.updateOne({
+            id: createEvent.id,
+            data: { title: 'A thing', group: { create: { name: groupName } } },
+            query: 'id group { id name }',
           });
 
-          expect(data).toMatchObject({
-            updateEvent: {
-              id: expect.any(String),
-              group: { id: expect.any(String), name: groupName },
-            },
+          expect(event).toMatchObject({
+            id: expect.any(String),
+            group: { id: expect.any(String), name: groupName },
           });
 
           const { Group } = await context.graphql.run({
             query: `
               query {
-                Group(where: { id: "${data.updateEvent.group.id}" }) {
+                Group(where: { id: "${event.group.id}" }) {
                   id
                   name
                 }
               }`,
           });
-          expect(Group).toMatchObject({ id: data.updateEvent.group.id, name: groupName });
+          expect(Group).toMatchObject({ id: event.group.id, name: groupName });
         })
       );
     });
@@ -219,26 +191,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
               runner(setupKeystone, async ({ context }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-                // Create an item that does the nested create
-                const data = await context.exitSudo().graphql.run({
-                  query: `
-                    mutation {
-                      createEventTo${group.name}(data: {
-                        title: "A thing",
-                        group: { create: { name: "${groupName}" } }
-                      }) {
-                        id
-                      }
-                    }`,
+                // Create an item that does the nested create{
+                const data = await context.exitSudo().lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing', group: { create: { name: groupName } } },
                 });
 
-                expect(data).toMatchObject({
-                  [`createEventTo${group.name}`]: { id: expect.any(String) },
-                });
+                expect(data).toMatchObject({ id: expect.any(String) });
 
                 // See that it actually stored the group ID on the Event record
                 const event = await context.lists[`EventTo${group.name}`].findOne({
-                  where: { id: data[`createEventTo${group.name}`].id },
+                  where: { id: data.id },
                   query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
@@ -258,28 +220,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 });
 
                 // Update an item that does the nested create
-                const data = await context.exitSudo().graphql.run({
-                  query: `
-                    mutation {
-                      updateEventTo${group.name}(
-                        id: "${eventModel.id}"
-                        data: {
-                          title: "A thing",
-                          group: { create: { name: "${groupName}" } }
-                        }
-                      ) {
-                        id
-                      }
-                    }`,
+                const data = await context.exitSudo().lists[`EventTo${group.name}`].updateOne({
+                  id: eventModel.id,
+                  data: { title: 'A thing', group: { create: { name: groupName } } },
                 });
 
-                expect(data).toMatchObject({
-                  [`updateEventTo${group.name}`]: { id: expect.any(String) },
-                });
+                expect(data).toMatchObject({ id: expect.any(String) });
 
                 // See that it actually stored the group ID on the Event record
                 const event = await context.lists[`EventTo${group.name}`].findOne({
-                  where: { id: data[`updateEventTo${group.name}`].id },
+                  where: { id: data.id },
                   query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
