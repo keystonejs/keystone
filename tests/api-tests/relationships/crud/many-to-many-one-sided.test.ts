@@ -269,15 +269,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'With create',
           runner(setupKeystone, async ({ context }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const compny = await context.lists.Company.createOne({
+            const company = await context.lists.Company.createOne({
               data: { locations: { create: [{ name: locationName }] } },
               query: 'id locations { id }',
             });
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
-              compny.id,
-              compny.locations[0].id
+              company.id,
+              company.locations[0].id
             );
 
             // Everything should now be connected
