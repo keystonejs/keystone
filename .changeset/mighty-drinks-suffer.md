@@ -2,4 +2,4 @@
 '@keystone-next/keystone': patch
 ---
 
-Improved the types of `statelessSessions` and `withItemData`.
+Improved the types of `withItemData`.

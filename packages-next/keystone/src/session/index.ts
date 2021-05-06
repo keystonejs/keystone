@@ -74,10 +74,10 @@ type FieldSelections = {
   - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
 */
 
-export function withItemData<U extends Record<string, any>>(
-  createSession: () => SessionStrategy<U>,
+export function withItemData(
+  createSession: () => SessionStrategy<Record<string, any>>,
   fieldSelections: FieldSelections = {}
-): () => SessionStrategy<U & { listKey: string; itemId: string; data: any }> {
+): () => SessionStrategy<{ listKey: string; itemId: string; data: any }> {
   return (): SessionStrategy<any> => {
     const { get, ...sessionStrategy } = createSession();
     return {
@@ -115,7 +115,7 @@ export function withItemData<U extends Record<string, any>>(
   };
 }
 
-export function statelessSessions<T extends Record<string, any>>({
+export function statelessSessions<T>({
   secret,
   maxAge = MAX_AGE,
   path = '/',
