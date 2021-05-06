@@ -16,6 +16,7 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
     graphQLSchema,
     internalSchema,
     imagesConfig: config.images,
+    filesConfig: config.files,
   });
 
   return { keystone, graphQLSchema, createContext };

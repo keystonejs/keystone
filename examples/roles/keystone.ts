@@ -40,9 +40,10 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    db: process.env.DATABASE_URL
-      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
-      : { provider: 'sqlite', url: 'file:./keystone.db' },
+    db: {
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    },
     lists,
     ui: {
       /* Everyone who is signed in can access the Admin UI */

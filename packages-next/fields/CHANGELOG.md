@@ -1,5 +1,42 @@
 # @keystone-next/fields
 
+## 8.1.0
+
+### Minor Changes
+
+- [#5616](https://github.com/keystonejs/keystone/pull/5616) [`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9) Thanks [@timleslie](https://github.com/timleslie)! - Added an `isIndexed` config option to the `text`, `integer`, `float`, `select`, and `timestamp` field types.
+
+### Patch Changes
+
+- Updated dependencies [[`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9), [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b)]:
+  - @keystone-next/adapter-prisma-legacy@6.1.0
+  - @keystone-next/admin-ui@14.1.1
+
+## 8.0.0
+
+### Major Changes
+
+- [#5578](https://github.com/keystonejs/keystone/pull/5578) [`f7d4c9b9f`](https://github.com/keystonejs/keystone/commit/f7d4c9b9f06cc3090b59d4b29e0907e9f3d1faee) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced `mode` field on `ImageFieldOutput` GraphQL type with making `ImageFieldOutput` an interface and having a `LocalImageFieldOutput` type that implements `ImageFieldOutput`.
+
+* [#5582](https://github.com/keystonejs/keystone/pull/5582) [`49dd46843`](https://github.com/keystonejs/keystone/commit/49dd468435a96c537f5649aa2fd9e21103da40e1) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Changed image ref to now be `${mode}:image:${id}`.
+
+### Minor Changes
+
+- [#5529](https://github.com/keystonejs/keystone/pull/5529) [`b7aeb232d`](https://github.com/keystonejs/keystone/commit/b7aeb232db43b32cae0bca3fcb74479d6834c587) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added file field type.
+
+### Patch Changes
+
+- [#5514](https://github.com/keystonejs/keystone/pull/5514) [`8577eb3ba`](https://github.com/keystonejs/keystone/commit/8577eb3baafe9cd61c48d89aca9eff252765e5a6) Thanks [@timleslie](https://github.com/timleslie)! - The field hooks API has deprecated the `addFieldValidationError` argument. It has been replaced with the argument `addValidationError`, and will be removed in a future release.
+
+* [#5587](https://github.com/keystonejs/keystone/pull/5587) [`3e33cd3ff`](https://github.com/keystonejs/keystone/commit/3e33cd3ff46f824ec3516e5810a7e5027b332a5a) Thanks [@timleslie](https://github.com/timleslie)! - Simplified image input resolver.
+
+* Updated dependencies [[`b7aeb232d`](https://github.com/keystonejs/keystone/commit/b7aeb232db43b32cae0bca3fcb74479d6834c587), [`7e81b52b0`](https://github.com/keystonejs/keystone/commit/7e81b52b0f2240f0c590eb8f6733360cab9fe93a), [`fddeacf79`](https://github.com/keystonejs/keystone/commit/fddeacf79d25fea15be57d1a4ec16815bcdc4ab5), [`fdebf79cc`](https://github.com/keystonejs/keystone/commit/fdebf79cc3520ffb65979ddac7d61791f4f37324), [`dbc62ff7c`](https://github.com/keystonejs/keystone/commit/dbc62ff7c71ca4d4db1fab76f3e0ab729af5b80c), [`05d4883ee`](https://github.com/keystonejs/keystone/commit/05d4883ee19bcfdfcbff7f80693a3fa85cf81aaa), [`a0c5aa307`](https://github.com/keystonejs/keystone/commit/a0c5aa30771d187253d0cfe24b4b686e136136cc), [`9fd7cc62a`](https://github.com/keystonejs/keystone/commit/9fd7cc62a889f8a0f8933040bb16fcc36af7795e), [`b7aeb232d`](https://github.com/keystonejs/keystone/commit/b7aeb232db43b32cae0bca3fcb74479d6834c587), [`49dd46843`](https://github.com/keystonejs/keystone/commit/49dd468435a96c537f5649aa2fd9e21103da40e1), [`74fed41e2`](https://github.com/keystonejs/keystone/commit/74fed41e23c3d5c6c073574c54ca339df2235351)]:
+  - @keystone-next/admin-ui@14.1.0
+  - @keystone-next/types@17.0.1
+  - @keystone-next/adapter-prisma-legacy@6.0.1
+  - @keystone-next/utils-legacy@10.0.0
+  - @keystone-next/access-control-legacy@10.0.1
+
 ## 7.0.0
 
 ### Major Changes

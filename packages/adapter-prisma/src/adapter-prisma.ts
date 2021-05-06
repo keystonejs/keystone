@@ -91,6 +91,13 @@ class PrismaAdapter {
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this.url } },
     });
+    this.prisma.$on('beforeExit', async () => {
+      // Prisma is failing to properly clean up its child processes
+      // https://github.com/keystonejs/keystone/issues/5477
+      // We explicitly send a SIGINT signal to the prisma child process on exit
+      // to ensure that the process is cleaned up appropriately.
+      this.prisma._engine.child.kill('SIGINT');
+    });
 
     // Set up all list adapter models
     Object.values(this.listAdapters).forEach(listAdapter => {
@@ -156,23 +163,32 @@ class PrismaAdapter {
         ),
       ];
 
-      const indexes = flatten(
-        listAdapter.fieldAdapters
-          .map(({ field }) => field)
-          .filter(f => f.isRelationship)
-          .map(f => {
-            const r = rels.find(r => r.left === f || r.right === f) as Rel;
-            const isLeft = r.left === f;
-            if (
-              (r.cardinality === 'N:1' && isLeft) ||
-              (r.cardinality === '1:N' && !isLeft) ||
-              (r.cardinality === '1:1' && isLeft)
-            ) {
-              return [`@@index([${f.path}Id])`];
-            }
-            return [];
-          })
-      );
+      const indexes = [
+        ...flatten(
+          listAdapter.fieldAdapters
+            .map(({ field }) => field)
+            .filter(f => f.isRelationship)
+            .map(f => {
+              const r = rels.find(r => r.left === f || r.right === f) as Rel;
+              const isLeft = r.left === f;
+              if (
+                (r.cardinality === 'N:1' && isLeft) ||
+                (r.cardinality === '1:N' && !isLeft) ||
+                (r.cardinality === '1:1' && isLeft)
+              ) {
+                return [`@@index([${f.path}Id])`];
+              }
+              return [];
+            })
+        ),
+        ...flatten(
+          listAdapter.fieldAdapters
+            .filter(f => f.config.isIndexed)
+            .map(f => {
+              return [`@@index([${f.path}])`];
+            })
+        ),
+      ];
 
       return `
         model ${listAdapter.key} {

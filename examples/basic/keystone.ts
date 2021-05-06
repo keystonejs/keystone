@@ -24,9 +24,10 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    db: process.env.DATABASE_URL
-      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
-      : { provider: 'sqlite', url: 'file:./keystone.db' },
+    db: {
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',
@@ -37,6 +38,7 @@ export default auth.withAuth(
       // isAccessAllowed,
     },
     images: { upload: 'local' },
+    files: { upload: 'local' },
     lists,
     extendGraphqlSchema,
     session: withItemData(

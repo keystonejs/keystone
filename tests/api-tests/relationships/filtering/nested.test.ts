@@ -52,31 +52,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = (await context.graphql.run({
-            query: `
-              query {
-                allUsers {
-                  id
-                  posts (where: {
-                    content_contains: "hi",
-                  }){
-                    id
-                    content
-                  }
-                }
-              }
-            `,
-          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toHaveLength(2);
-          data.allUsers[0].posts = data.allUsers[0].posts.map(({ id }) => id).sort();
-          data.allUsers[1].posts = data.allUsers[1].posts.map(({ id }) => id).sort();
-          expect(data.allUsers).toContainEqual({
-            id: user.id,
-            posts: [ids[1].id, ids[2].id].sort(),
-          });
-          expect(data.allUsers).toContainEqual({ id: user2.id, posts: [] });
+          const users = (await context.lists.User.findMany({
+            query: `id posts (where: { content_contains: "hi" }){ id content }`,
+          })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
+          expect(users).toHaveLength(2);
+          users[0].posts = users[0].posts.map(({ id }) => id).sort();
+          users[1].posts = users[1].posts.map(({ id }) => id).sort();
+          expect(users).toContainEqual({ id: user.id, posts: [ids[1].id, ids[2].id].sort() });
+          expect(users).toContainEqual({ id: user2.id, posts: [] });
         })
       );
 
@@ -100,22 +83,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            posts (first: 1, sortBy: content_ASC) {
-              id
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query: 'id posts(first: 1, sortBy: [content_ASC]) { id }',
           });
-
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[0]] });
-          expect(data.allUsers).toContainEqual({ id: user2.id, posts: [ids[0]] });
+          expect(users).toContainEqual({ id: user.id, posts: [ids[0]] });
+          expect(users).toContainEqual({ id: user2.id, posts: [ids[0]] });
         })
       );
 
@@ -137,27 +109,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            posts (where: {
-              AND: [
-                { content_contains: "hi" },
-                { content_contains: "lo" },
-              ]
-            }){
-              id
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query:
+              'id posts(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] }){ id }',
           });
 
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[2]] });
-          expect(data.allUsers).toContainEqual({ id: user2.id, posts: [] });
+          expect(users).toContainEqual({ id: user.id, posts: [ids[2]] });
+          expect(users).toContainEqual({ id: user2.id, posts: [] });
         })
       );
 
@@ -179,34 +137,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            posts (where: {
-              OR: [
-                { content_contains: "i w" },
-                { content_contains: "? O" },
-              ]
-            }){
-              id
-              content
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query:
+              'id posts(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] }){ id content }',
           });
-
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toContainEqual({
+          expect(users).toContainEqual({
             id: user.id,
             posts: expect.arrayContaining([
               expect.objectContaining(ids[1]),
               expect.objectContaining(ids[2]),
             ]),
           });
-          expect(data.allUsers).toContainEqual({ id: user2.id, posts: [] });
+          expect(users).toContainEqual({ id: user2.id, posts: [] });
         })
       );
 
@@ -215,18 +157,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await context.lists.User.createOne({ data: {} });
 
-          const result = await context.graphql.run({
-            query: `
-              query {
-                allUsers(where: { posts_some: { content_contains: "foo" } }) {
-                  posts { id }
-                }
-              }
-            `,
+          const users = await context.lists.User.findMany({
+            where: { posts_some: { content_contains: 'foo' } },
+            query: 'posts { id }',
           });
-
-          expect(Array.isArray(result.allUsers)).toBeTruthy();
-          expect(result.allUsers).toHaveLength(0);
+          expect(users).toHaveLength(0);
         })
       );
     });
@@ -250,23 +185,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            _postsMeta {
-              count
-            }
-          }
-        }
-      `,
-          });
-
-          expect(data.allUsers).toHaveLength(2);
-          expect(data).toHaveProperty('allUsers.0._postsMeta');
-          expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 3 } });
-          expect(data.allUsers).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
+          const users = await context.lists.User.findMany({ query: 'id _postsMeta { count }' });
+          expect(users).toHaveLength(2);
+          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 3 } });
+          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
         })
       );
 
@@ -288,25 +210,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            _postsMeta (where: {
-              content_contains: "hi",
-            }){
-              count
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query: 'id _postsMeta(where: { content_contains: "hi" }){ count }',
           });
-
-          expect(data.allUsers).toHaveLength(2);
-          expect(data).toHaveProperty('allUsers.0._postsMeta');
-          expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
-          expect(data.allUsers).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toHaveLength(2);
+          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
+          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
         })
       );
 
@@ -328,23 +237,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            _postsMeta (first: 1) {
-              count
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query: 'id _postsMeta(first: 1) { count }',
           });
-
-          expect(data).toHaveProperty('allUsers.0._postsMeta');
-          expect(data.allUsers).toHaveLength(2);
-          expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
-          expect(data.allUsers).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
+          expect(users).toHaveLength(2);
+          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
+          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
         })
       );
 
@@ -366,28 +264,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers {
-            id
-            _postsMeta (where: {
-              AND: [
-                { content_contains: "hi" },
-                { content_contains: "lo" },
-              ]
-            }){
-              count
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            query: `id _postsMeta(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] }) { count }`,
           });
 
-          expect(data.allUsers).toHaveLength(2);
-          expect(data).toHaveProperty('allUsers.0._postsMeta');
-          expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
-          expect(data.allUsers).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toHaveLength(2);
+          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
+          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
         })
       );
 
@@ -409,28 +292,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const data = await context.graphql.run({
-            query: `
-              query {
-                allUsers {
-                  id
-                  _postsMeta (where: {
-                    OR: [
-                      { content_contains: "i w" },
-                      { content_contains: "? O" },
-                    ]
-                  }){
-                    count
-                  }
-                }
-              }
-            `,
+          const users = await context.lists.User.findMany({
+            query:
+              'id _postsMeta(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] }){ count }',
           });
-
-          expect(data.allUsers).toHaveLength(2);
-          expect(data).toHaveProperty('allUsers.0._postsMeta');
-          expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
-          expect(data.allUsers).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toHaveLength(2);
+          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
+          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
         })
       );
     });

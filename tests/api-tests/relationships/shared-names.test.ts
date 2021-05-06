@@ -152,15 +152,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
       'Query',
       runner(setupKeystone, async ({ context }) => {
         await createInitialData(context);
-        const data = await context.graphql.run({
-          query: `{
-                  allEmployees(where: {
-                    company: { employees_some: { role: { name: "RoleA" } } }
-                  }) { id name }
-                }`,
+        const employees = await context.lists.Employee.findMany({
+          where: { company: { employees_some: { role: { name: 'RoleA' } } } },
+          query: 'id name',
         });
-        expect(data.allEmployees).toHaveLength(1);
-        expect(data.allEmployees[0].name).toEqual('EmployeeA');
+        expect(employees).toHaveLength(1);
+        expect(employees[0].name).toEqual('EmployeeA');
       })
     );
   })

@@ -1,8 +1,8 @@
+import { FileUpload } from 'graphql-upload';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
 import { ImageData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
 import { Implementation } from '../../Implementation';
-import { handleImageData } from './handle-image-input';
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
@@ -15,18 +15,23 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
 
   getGqlAuxTypes() {
     return [
-      `enum ImageMode {
-        local
-      }
-      input ImageFieldInput {
+      `input ImageFieldInput {
         upload: Upload
         ref: String
       }
       enum ImageExtension {
         ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
       }
-      type ImageFieldOutput {
-        mode: ImageMode!
+      interface ImageFieldOutput {
+        id: ID!
+        filesize: Int!
+        width: Int!
+        height: Int!
+        extension: ImageExtension!
+        ref: String!
+        src: String!
+      }
+      type LocalImageFieldOutput implements ImageFieldOutput {
         id: ID!
         filesize: Int!
         width: Int!
@@ -41,6 +46,11 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
   gqlAuxFieldResolvers() {
     return {
       ImageFieldOutput: {
+        __resolveType() {
+          return 'LocalImageFieldOutput';
+        },
+      },
+      LocalImageFieldOutput: {
         src(data: ImageData, _args: any, context: KeystoneContext) {
           if (!context.images) {
             throw new Error('Image context is undefined');
@@ -75,8 +85,22 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     if (data === undefined) {
       return undefined;
     }
-    const imageData = await handleImageData(data, context);
-    return imageData;
+
+    type ImageInput = {
+      upload?: Promise<FileUpload> | null;
+      ref?: string | null;
+    };
+    const { ref, upload }: ImageInput = data;
+    if (ref) {
+      if (upload) {
+        throw new Error('Only one of ref and upload can be passed to ImageFieldInput');
+      }
+      return context.images!.getDataFromRef(ref);
+    }
+    if (!upload) {
+      throw new Error('Either ref or upload must be passed to ImageFieldInput');
+    }
+    return context.images!.getDataFromStream((await upload).createReadStream());
   }
 
   gqlUpdateInputFields() {

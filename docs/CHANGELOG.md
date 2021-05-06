@@ -1,5 +1,20 @@
 # @keystone-next/website
 
+## 2.0.2
+
+### Patch Changes
+
+- [#5601](https://github.com/keystonejs/keystone/pull/5601) [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Next.js dependency to `^10.2.0`.
+
+## 2.0.1
+
+### Patch Changes
+
+- [#5544](https://github.com/keystonejs/keystone/pull/5544) [`b49befd9c`](https://github.com/keystonejs/keystone/commit/b49befd9c9ed6403a685580bb92b4caff6f11f76) Thanks [@raveling](https://github.com/raveling)! - copy changes to document-fields guide
+
+- Updated dependencies []:
+  - @keystone-next/fields-document@5.0.1
+
 ## 2.0.0
 
 ### Major Changes

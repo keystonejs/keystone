@@ -8,6 +8,7 @@ export type FloatFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   isUnique?: boolean;
+  isIndexed?: boolean;
   defaultValue?: FieldDefaultValue<number>;
 };
 

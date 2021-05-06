@@ -252,11 +252,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
     let ui = keystoneConfig.ui;
-    if (keystoneConfig.ui) {
+    if (!keystoneConfig.ui?.isDisabled) {
       ui = {
         ...keystoneConfig.ui,
-        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicPages],
-        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), getAdditionalFiles],
+        publicPages: [...(keystoneConfig.ui?.publicPages || []), ...publicPages],
+        getAdditionalFiles: [...(keystoneConfig.ui?.getAdditionalFiles || []), getAdditionalFiles],
         pageMiddleware: async args =>
           (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
         enableSessionItem: true,

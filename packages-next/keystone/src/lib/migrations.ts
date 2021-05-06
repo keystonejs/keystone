@@ -287,8 +287,8 @@ function printMigrationId(migrationId: string): string {
 
 async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
   // createDatabase will return false when the database already exists
-  const result = await createDatabase(dbUrl, schemaDir);
-  if (result && result.exitCode === 0) {
+  const created = await createDatabase(dbUrl, schemaDir);
+  if (created) {
     const credentials = uriToCredentials(dbUrl);
     console.log(
       `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(

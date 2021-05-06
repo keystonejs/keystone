@@ -1,10 +1,10 @@
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, GraphQLField } from 'graphql';
 import {
   BaseGeneratedListTypes,
-  BaseKeystoneList,
   KeystoneDbAPI,
   KeystoneListsAPI,
   KeystoneContext,
+  GqlNames,
 } from '@keystone-next/types';
 import {
   getItem,
@@ -16,22 +16,48 @@ import {
   deleteItem,
   deleteItems,
 } from './server-side-graphql-client';
-import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
+import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 
-export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
+// this is generally incorrect because types are open in TS but is correct in the specific usage here.
+// (i mean it's not really any more incorrect than TS is generally is but let's ignore that)
+const objectEntriesButUsingKeyof: <T extends Record<string, any>>(
+  obj: T
+) => [keyof T, T[keyof T]][] = Object.entries as any;
+
+export function getDbAPIFactory(
+  gqlNames: GqlNames,
+  schema: GraphQLSchema
+): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const queryFields = schema.getQueryType()!.getFields();
   const mutationFields = schema.getMutationType()!.getFields();
-  const f = getCoerceAndValidateArgumentsFnForGraphQLField;
-  return {
-    findOne: f(schema, queryFields[list.gqlNames.itemQueryName]),
-    findMany: f(schema, queryFields[list.gqlNames.listQueryName]),
-    count: f(schema, queryFields[list.gqlNames.listQueryMetaName]),
-    createOne: f(schema, mutationFields[list.gqlNames.createMutationName]),
-    createMany: f(schema, mutationFields[list.gqlNames.createManyMutationName]),
-    updateOne: f(schema, mutationFields[list.gqlNames.updateMutationName]),
-    updateMany: f(schema, mutationFields[list.gqlNames.updateManyMutationName]),
-    deleteOne: f(schema, mutationFields[list.gqlNames.deleteMutationName]),
-    deleteMany: f(schema, mutationFields[list.gqlNames.deleteManyMutationName]),
+  const f = (field: GraphQLField<any, any> | undefined) => {
+    if (field === undefined) {
+      return (): never => {
+        throw new Error('You do not have access to this resource');
+      };
+    }
+    return executeGraphQLFieldToRootVal(field);
+  };
+  const api = {
+    findOne: f(queryFields[gqlNames.itemQueryName]),
+    findMany: f(queryFields[gqlNames.listQueryName]),
+    count: f(queryFields[gqlNames.listQueryMetaName]),
+    createOne: f(mutationFields[gqlNames.createMutationName]),
+    createMany: f(mutationFields[gqlNames.createManyMutationName]),
+    updateOne: f(mutationFields[gqlNames.updateMutationName]),
+    updateMany: f(mutationFields[gqlNames.updateManyMutationName]),
+    deleteOne: f(mutationFields[gqlNames.deleteMutationName]),
+    deleteMany: f(mutationFields[gqlNames.deleteManyMutationName]),
+  };
+  return (context: KeystoneContext) => {
+    let obj = Object.fromEntries(
+      objectEntriesButUsingKeyof(api).map(([key, impl]) => [
+        key,
+        (args: Record<string, any>) => impl(args, context),
+      ])
+    );
+    obj.count = async (args: Record<string, any>) => (await api.count(args, context)).getCount();
+    return obj;
   };
 }
 
@@ -53,161 +79,87 @@ function defaultQueryParam(query?: string, resolveFields?: string | false) {
  * We'll be removing the option to use `resolveFields` entirely in a future release.
  */
 export function itemAPIForList(
-  list: BaseKeystoneList,
+  listKey: string,
   context: KeystoneContext,
-  getArgs: ReturnType<typeof getArgsFactory>
+  dbAPI: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string]
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  const listKey = list.key;
   return {
-    findOne({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.findOne) throw new Error('You do not have access to this resource');
+    findOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const args = rawArgs;
         return getItem({ listKey, context, returnFields, itemId: args.where.id });
       } else {
-        const args = getArgs.findOne(rawArgs) as { where: { id: string } };
-        return list.itemQuery(args, context);
+        return dbAPI.findOne(args);
       }
     },
-    findMany({ query, resolveFields, ...rawArgs } = {}) {
-      if (!getArgs.findMany) throw new Error('You do not have access to this resource');
+    findMany({ query, resolveFields, ...args } = {}) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const args = rawArgs;
         return getItems({ listKey, context, returnFields, ...args });
       } else {
-        const args = getArgs.findMany(rawArgs);
-        return list.listQuery(args, context);
+        return dbAPI.findMany(args);
       }
     },
-    async count(rawArgs = {}) {
-      if (!getArgs.count) throw new Error('You do not have access to this resource');
-      const { first, skip, where } = rawArgs;
+    async count(args = {}) {
+      const { first, skip, where } = args;
       const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
       const query = `query ($first: Int, $skip: Int, $where: ${whereInputName}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
       const response = await context.graphql.run({ query, variables: { first, skip, where } });
       return response[listQueryMetaName].count;
     },
-    createOne({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.createOne) throw new Error('You do not have access to this resource');
+    createOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { data } = rawArgs;
+        const { data } = args;
         return createItem({ listKey, context, returnFields, item: data });
       } else {
-        const { data } = getArgs.createOne(rawArgs);
-        return list.createMutation(data, context);
+        return dbAPI.createOne(args);
       }
     },
-    createMany({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.createMany) throw new Error('You do not have access to this resource');
+    createMany({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { data } = rawArgs;
+        const { data } = args;
         return createItems({ listKey, context, returnFields, items: data });
       } else {
-        const { data } = getArgs.createMany(rawArgs);
-        return list.createManyMutation(data, context);
+        return dbAPI.createMany(args);
       }
     },
-    updateOne({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.updateOne) throw new Error('You do not have access to this resource');
+    updateOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { id, data } = rawArgs;
+        const { id, data } = args;
         return updateItem({ listKey, context, returnFields, item: { id, data } });
       } else {
-        const { id, data } = getArgs.updateOne(rawArgs);
-        return list.updateMutation(id, data, context);
+        return dbAPI.updateOne(args);
       }
     },
-    updateMany({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.updateMany) throw new Error('You do not have access to this resource');
+    updateMany({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { data } = rawArgs;
+        const { data } = args;
         return updateItems({ listKey, context, returnFields, items: data });
       } else {
-        const { data } = getArgs.updateMany(rawArgs);
-        return list.updateManyMutation(data, context);
+        return dbAPI.updateMany(args);
       }
     },
-    deleteOne({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.deleteOne) throw new Error('You do not have access to this resource');
+    deleteOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { id } = rawArgs;
+        const { id } = args;
         return deleteItem({ listKey, context, returnFields, itemId: id });
       } else {
-        const { id } = getArgs.deleteOne(rawArgs);
-        return list.deleteMutation(id, context);
+        return dbAPI.deleteOne(args);
       }
     },
-    deleteMany({ query, resolveFields, ...rawArgs }) {
-      if (!getArgs.deleteMany) throw new Error('You do not have access to this resource');
+    deleteMany({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        const { ids } = rawArgs;
+        const { ids } = args;
         return deleteItems({ listKey, context, returnFields, items: ids });
       } else {
-        const { ids } = getArgs.deleteMany(rawArgs);
-        return list.deleteManyMutation(ids, context);
+        return dbAPI.deleteMany(args);
       }
-    },
-  };
-}
-
-export function itemDbAPIForList(
-  list: BaseKeystoneList,
-  context: KeystoneContext,
-  getArgs: ReturnType<typeof getArgsFactory>
-): KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  return {
-    findOne(rawArgs) {
-      if (!getArgs.findOne) throw new Error('You do not have access to this resource');
-      const args = getArgs.findOne(rawArgs) as { where: { id: string } };
-      return list.itemQuery(args, context);
-    },
-    findMany(rawArgs = {}) {
-      if (!getArgs.findMany) throw new Error('You do not have access to this resource');
-      const args = getArgs.findMany(rawArgs);
-      return list.listQuery(args, context);
-    },
-    async count(rawArgs = {}) {
-      if (!getArgs.count) throw new Error('You do not have access to this resource');
-      const args = getArgs.count(rawArgs!);
-      return (await list.listQueryMeta(args, context)).getCount();
-    },
-    createOne(rawArgs) {
-      if (!getArgs.createOne) throw new Error('You do not have access to this resource');
-      const { data } = getArgs.createOne(rawArgs);
-      return list.createMutation(data, context);
-    },
-    createMany(rawArgs) {
-      if (!getArgs.createMany) throw new Error('You do not have access to this resource');
-      const { data } = getArgs.createMany(rawArgs);
-      return list.createManyMutation(data, context);
-    },
-    updateOne(rawArgs) {
-      if (!getArgs.updateOne) throw new Error('You do not have access to this resource');
-      const { id, data } = getArgs.updateOne(rawArgs);
-      return list.updateMutation(id, data, context);
-    },
-    updateMany(rawArgs) {
-      if (!getArgs.updateMany) throw new Error('You do not have access to this resource');
-      const { data } = getArgs.updateMany(rawArgs);
-      return list.updateManyMutation(data, context);
-    },
-    deleteOne(rawArgs) {
-      if (!getArgs.deleteOne) throw new Error('You do not have access to this resource');
-      const { id } = getArgs.deleteOne(rawArgs);
-      return list.deleteMutation(id, context);
-    },
-    deleteMany(rawArgs) {
-      if (!getArgs.deleteMany) throw new Error('You do not have access to this resource');
-      const { ids } = getArgs.deleteMany(rawArgs);
-      return list.deleteManyMutation(ids, context);
     },
   };
 }

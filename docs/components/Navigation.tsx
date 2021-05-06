@@ -69,19 +69,18 @@ export function Navigation() {
       <Section label="Guides">
         <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
+        <NavItem href="/guides/relationships">Relationships</NavItem>
+        <NavItem href="/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem href="/guides/hooks" isPlaceholder>
-          Hooks
-        </NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
-        <NavItem href="/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/guides/virtual-fields" isPlaceholder>
           Virtual Fields
         </NavItem>
