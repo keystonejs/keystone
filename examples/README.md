@@ -1,39 +1,49 @@
-# Keystone-Next Examples
+# Keystone Examples
 
-👋 These are the example projects for the next version of Keystone.
+Welcome to the Keystone Example Projects 👋.
+Here you'll find a collection of projects which show off the various features in Keystone.
 
-We'll be adding documentation in the coming days and weeks, but in the meantime, you can take a look at these projects to get an idea of what we've been up to.
+You can use these examples as a jumping off point for adding features to your own Keystone project.
 
-The `auth` project has fairly comprehensive documentation of how to use the new auth and session features, while the `basic` project is a sort of "kitchen-sink" that we've been using to test during development.
+## Base Projects
 
-## Getting Started
+There are two base projects which all the other examples build off.
+The [`todo`](./todo) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
 
-To run the projects locally:
+These projects have very simple schemas and none of the bells or whistles you'd expect in a complete project.
+You can use these as a starting point for general experimentation in a clean environment.
 
-- Clone this repo
-- Run `yarn` in the root (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
-- Open one of the example project folders in your terminal and run `yarn dev`
+## Feature Examples
 
-If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
+Each of the examples below demonstrates a particular feature of Keystone.
+You can use these projects to learn about, and experiment with specific features.
 
-## A quick note about the new interfaces
+(coming soon)
 
-We've been calling the next version of Keystone the "new interfaces" because they're just that -- new interfaces for configuring Keystone (including TypeScript support) and a new Admin UI (built with Next.js)
+## Solution Examples
 
-The new config is (we hope) much clearer and easier to get started with; while the new Admin UI is much cleaner and will be significantly more extensible than before.
+The solution examples show you how to bring together all of the features of Keystone to build a complete product solution.
+These examples show how the different features of Keystone work together in a more complex project.
 
-Along side this we've also decoupled from Express, introduced a build process, reworked how auth and session work, and are planning to streamline deployment to various production environments.
+(coming soon)
 
-What hasn't changed is the core of Keystone. So while how you configure and use it is new, under the hood it's using the same battle-tested core GraphQL API, access control system, hooks, database adapters and query engines.
+## Running examples
 
-Please note that this is a **preview release**; we're not calling it alpha, because Keystone itself is quite mature and used in production at scale. However we haven't hit feature parity for the new interfaces yet (e.g many field types haven't been brought across yet, there are some rough user experience edges in the new Admin UI, and there's no build-for-production process yet in the CLI)
+To run an example you should clone this repo and then run the following commands:
 
-We hope you like it!
+```shell
+yarn
+cd examples/<feature>
+yarn dev
+```
+
+If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000).
+See the README in each example for more specific details.
 
 ## Getting in touch
 
-If you have trouble running these examples, or find a bug, please open an issue and tag it with the `new interfaces` tag on GitHub.
+If you have trouble running these examples, or find a bug, please open an issue and tag it with the `examples` tag on GitHub.
 
-Otherwise if you want to ask questions or talk to us about what we're up to, start a [discussion](https://github.com/keystonejs/keystone/discussions)!
+Otherwise if you want to ask questions or have a chat with us, join us in [Slack](http://slack.keystonejs.com/)!
 
-Also [follow @keystonejs on twitter](https://twitter.com/keystonejs) for updates.
+Follow [@KeystoneJS](https://twitter.com/keystonejs) on Twitter for updates.

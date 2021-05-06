@@ -128,6 +128,20 @@ export const Field = ({
     );
   }
 
+  if (value.kind === 'count') {
+    return (
+      <Stack as="fieldset" gap="medium">
+        <FieldLegend>{field.label}</FieldLegend>
+        <div>
+          {value.count === 1
+            ? `There is 1 ${foreignList.singular} `
+            : `There are ${value.count} ${foreignList.plural} `}
+          linked to this {localList.singular}
+        </div>
+      </Stack>
+    );
+  }
+
   return (
     <FieldContainer>
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -245,11 +259,21 @@ export const Field = ({
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey);
+  const { colors } = useTheme();
+
+  if (field.display.mode === 'count') {
+    const count = item[`_${field.path}Meta`]?.count ?? 0;
+    return (
+      <CellContainer>
+        {count} {count === 1 ? list.singular : list.plural}
+      </CellContainer>
+    );
+  }
+
   const data = item[field.path];
   const items = (Array.isArray(data) ? data : [data]).filter(item => item);
   const displayItems = items.length < 5 ? items : items.slice(0, 3);
   const overflow = items.length < 5 ? 0 : items.length - 3;
-  const { colors } = useTheme();
   const styles = {
     color: colors.foreground,
     textDecoration: 'none',
@@ -312,9 +336,13 @@ type CardsRelationshipValue = {
   initialIds: ReadonlySet<string>;
   currentIds: ReadonlySet<string>;
 };
+type CountRelationshipValue = {
+  kind: 'count';
+  count: number;
+};
 
 type RelationshipController = FieldController<
-  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue
+  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue
 > & {
   display:
     | {
@@ -329,7 +357,8 @@ type RelationshipController = FieldController<
         inlineCreate: { fields: string[] } | null;
         inlineEdit: { fields: string[] } | null;
         inlineConnect: boolean;
-      };
+      }
+    | { mode: 'count' };
   listKey: string;
   refListKey: string;
   hideCreate: boolean;
@@ -356,6 +385,7 @@ export const controller = (
           inlineEdit: { fields: string[] } | null;
           inlineConnect: boolean;
         }
+      | { displayMode: 'count' }
     )
   >
 ): RelationshipController => {
@@ -375,6 +405,8 @@ export const controller = (
             removeMode: config.fieldMeta.removeMode,
             inlineConnect: config.fieldMeta.inlineConnect,
           }
+        : config.fieldMeta.displayMode === 'count'
+        ? { mode: 'count' }
         : {
             mode: 'select',
             refLabelField: config.fieldMeta.refLabelField,
@@ -387,6 +419,8 @@ export const controller = (
            ${config.path} {
             id
            }`
+        : config.fieldMeta.displayMode === 'count'
+        ? `_${config.path}Meta {count}`
         : `${config.path} {
              id
              label: ${config.fieldMeta.refLabelField}
@@ -400,6 +434,9 @@ export const controller = (
         }
       : { kind: 'one', value: null, initialValue: null },
     deserialize: data => {
+      if (config.fieldMeta.displayMode === 'count') {
+        return { kind: 'count', count: data[`_${config.path}Meta`]?.count ?? 0 };
+      }
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
           (Array.isArray(data[config.path])

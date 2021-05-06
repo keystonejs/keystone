@@ -71,8 +71,6 @@ enum SortTasksBy {
   priority_DESC
   isComplete_ASC
   isComplete_DESC
-  assignedTo_ASC
-  assignedTo_DESC
   finishBy_ASC
   finishBy_DESC
 }
@@ -176,8 +174,6 @@ enum SortPeopleBy {
   id_DESC
   name_ASC
   name_DESC
-  tasks_ASC
-  tasks_DESC
 }
 
 input PersonUpdateInput {
