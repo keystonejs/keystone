@@ -8,7 +8,7 @@ You can use these examples as a jumping off point for adding features to your ow
 ## Base Projects
 
 There are two base projects which all the other examples build off.
-The `todo` project is a basic task management application, while the `blog` project (coming soon) is a basic blogging app.
+The [`todo`](./todo) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
 
 These projects have very simple schemas and none of the bells or whistles you'd expect in a complete project.
 You can use these as a starting point for general experimentation in a clean environment.
@@ -31,7 +31,7 @@ These examples show how the different features of Keystone work together in a mo
 
 To run an example you should clone this repo and then run the following commands:
 
-```
+```shell
 yarn
 cd examples/<feature>
 yarn dev
