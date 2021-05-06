@@ -113,7 +113,7 @@ export const componentBlocks = {
 };
 ```
 
-You need to import the `componentBlocks` and pass it to the document field along with the path to the file with the component blocks to `views`.
+You need to import the `componentBlocks` and pass it to the document field along with the path to the file with the component blocks to `ui.views`.
 
 `keystone.ts`
 
@@ -127,7 +127,9 @@ export default config({
     ListName: list({
       fields: {
         fieldName: document({
-          views: require.resolve('./component-blocks'),
+          ui: {
+            views: require.resolve('./component-blocks')
+          },
           componentBlocks,
         }),
       },
