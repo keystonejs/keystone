@@ -123,11 +123,6 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     });
     return filtersByFieldThenType;
   }, [router.query, fieldsWithFilters]);
-  // useEffect(() => {
-  //   const listener = () => console.log('SOME KEY IS PRESSED');
-  //   document.addEventListener('keydown', listener);
-  //   return document.removeEventListener('keydown', listener);
-  // });
   const [state, setState] = useState<State>({ kind: 'selecting-field' });
 
   const updateFilters = () => {
