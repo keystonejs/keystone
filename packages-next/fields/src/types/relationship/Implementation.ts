@@ -42,10 +42,10 @@ export class Relationship<P extends string> extends Implementation<P> {
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
-    // FIXME: In general we need to dig deeper on what it means to order by a relationship,
-    // but for now this lets us order one to many related items by their ID, which is
-    // an ok first approximation.
-    this.isOrderable = !many;
+    // FIXME: We should be able to sort by the "one" side of a relationship
+    // but for now this isn't actually implemented, so we explicitly disable
+    // ordering here.
+    this.isOrderable = false;
 
     this.isRelationship = true;
     this.many = !!many;

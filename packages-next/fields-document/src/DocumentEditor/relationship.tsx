@@ -30,7 +30,7 @@ export type Relationships = Record<
   )
 >;
 
-const DocumentFieldRelationshipsContext = createContext<Relationships>({});
+export const DocumentFieldRelationshipsContext = createContext<Relationships>({});
 
 export function useDocumentFieldRelationships() {
   return useContext(DocumentFieldRelationshipsContext);
