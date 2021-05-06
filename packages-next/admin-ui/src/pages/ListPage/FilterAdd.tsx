@@ -123,24 +123,39 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     });
     return filtersByFieldThenType;
   }, [router.query, fieldsWithFilters]);
+  // useEffect(() => {
+  //   const listener = () => console.log('SOME KEY IS PRESSED');
+  //   document.addEventListener('keydown', listener);
+  //   return document.removeEventListener('keydown', listener);
+  // });
   const [state, setState] = useState<State>({ kind: 'selecting-field' });
+
+  const updateFilters = () => {
+    if (state.kind === 'filter-value') {
+      router.push({
+        query: {
+          ...router.query,
+          [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
+        },
+      });
+      onClose();
+    }
+  };
 
   return (
     <Stack
       padding="medium"
       as="form"
+      onKeyDown={(event: React.KeyboardEvent<HTMLFormElement>) => {
+        if (event.code === 'Enter') {
+          event.preventDefault();
+          updateFilters();
+        }
+      }}
       css={{ minWidth: 320 }}
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
-        if (state.kind === 'filter-value') {
-          router.push({
-            query: {
-              ...router.query,
-              [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-            },
-          });
-          onClose();
-        }
+        updateFilters();
       }}
       gap="small"
     >
@@ -180,6 +195,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
       {state.kind === 'selecting-field' && (
         <Options
           components={fieldSelectComponents}
+          autoFocus
           onChange={newVal => {
             const fieldPath: string = (newVal as any).value;
             const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0];
