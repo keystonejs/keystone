@@ -338,7 +338,7 @@ function printField(
       relationIdFieldPath,
       field.foreignIdField === 'owned' ? 'index' : 'unique'
     );
-    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar} @map("${fieldPath}") ${nativeType}${index}`;
+    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar}? @map("${fieldPath}") ${nativeType}${index}`;
     return `${relationField}\n${relationIdField}`;
   }
   // TypeScript's control flow analysis doesn't understand that this will never happen without the assertNever

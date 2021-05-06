@@ -5,7 +5,7 @@ import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resol
 import type { FileUpload } from 'graphql-upload';
 // this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
-import { GraphQLUpload } from 'graphql-upload/public/GraphQLUpload';
+import GraphQLUpload from 'graphql-upload/public/GraphQLUpload';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { Provider } from './core';

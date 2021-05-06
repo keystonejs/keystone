@@ -12,6 +12,7 @@ import {
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
+import { types } from '@keystone-next/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 
 // TODO: Can we generate this type based on withItemData in the main config?
@@ -82,10 +83,12 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
-        graphQLReturnType: 'Float',
-        resolver() {
-          return randomNumber();
-        },
+        field: types.field({
+          type: types.nonNull(types.Float),
+          resolve() {
+            return randomNumber();
+          },
+        }),
       }),
     },
   }),
@@ -96,9 +99,12 @@ export const lists = createSchema({
     },
     fields: {
       label: virtual({
-        resolver(item) {
-          return `${item.type} - ${item.value}`;
-        },
+        field: types.field({
+          type: types.String,
+          resolve(item) {
+            return `${item.type} - ${item.value}`;
+          },
+        }),
         ui: {
           listView: {
             fieldMode: 'hidden',
@@ -180,38 +186,38 @@ export const lists = createSchema({
   }),
 });
 
-export const extendGraphqlSchema = graphQLSchemaExtension({
-  typeDefs: gql`
-    type Query {
-      randomNumber: RandomNumber
-    }
-    type RandomNumber {
-      number: Int
-      generatedAt: Int
-    }
-    type Mutation {
-      createRandomPosts: [Post!]!
-    }
-  `,
-  resolvers: {
-    RandomNumber: {
-      number(rootVal: { number: number }) {
-        return rootVal.number * 1000;
-      },
-    },
-    Mutation: {
-      createRandomPosts(root, args, context) {
-        // TODO: add a way to verify access control here, e.g
-        // await context.verifyAccessControl(userIsAdmin);
-        const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-        return context.lists.Post.createMany({ data });
-      },
-    },
-    Query: {
-      randomNumber: () => ({
-        number: randomNumber(),
-        generatedAt: Date.now(),
-      }),
-    },
-  },
-});
+// export const extendGraphqlSchema = graphQLSchemaExtension({
+//   typeDefs: gql`
+//     type Query {
+//       randomNumber: RandomNumber
+//     }
+//     type RandomNumber {
+//       number: Int
+//       generatedAt: Int
+//     }
+//     type Mutation {
+//       createRandomPosts: [Post!]!
+//     }
+//   `,
+//   resolvers: {
+//     RandomNumber: {
+//       number(rootVal: { number: number }) {
+//         return rootVal.number * 1000;
+//       },
+//     },
+//     Mutation: {
+//       createRandomPosts(root, args, context) {
+//         // TODO: add a way to verify access control here, e.g
+//         // await context.verifyAccessControl(userIsAdmin);
+//         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
+//         return context.lists.Post.createMany({ data });
+//       },
+//     },
+//     Query: {
+//       randomNumber: () => ({
+//         number: randomNumber(),
+//         generatedAt: Date.now(),
+//       }),
+//     },
+//   },
+// });

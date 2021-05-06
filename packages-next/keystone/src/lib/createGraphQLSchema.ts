@@ -13,6 +13,9 @@ export function createGraphQLSchema(
   // Start with the core keystone graphQL schema
   let graphQLSchema = getGraphQLSchema(lists, getDBProvider(config.db));
 
+  // Merge in the admin-meta graphQL API
+  graphQLSchema = getAdminMetaSchema({ config, schema: graphQLSchema, adminMeta, lists });
+
   // Merge in the user defined graphQL API
   if (config.extendGraphqlSchema) {
     graphQLSchema = config.extendGraphqlSchema(graphQLSchema);
@@ -23,7 +26,5 @@ export function createGraphQLSchema(
     graphQLSchema = sessionSchema(graphQLSchema);
   }
 
-  // Merge in the admin-meta graphQL API
-  graphQLSchema = getAdminMetaSchema({ config, schema: graphQLSchema, adminMeta, lists });
   return graphQLSchema;
 }

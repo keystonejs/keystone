@@ -34,37 +34,35 @@ const auth = createAuth({
 // TODO -- Create a separate example for access control in the Admin UI
 // const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
 
-export default auth.withAuth(
-  config({
-    db: {
-      provider: 'sqlite',
-      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    },
-    // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
-    // graphql: {
-    //   path: '/api/graphql',
-    // },
-    ui: {
-      // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
-      // path: '/admin',
-      // isAccessAllowed,
-    },
-    images: { upload: 'local' },
-    files: { upload: 'local' },
-    lists,
-    extendGraphqlSchema,
-    session: withItemData(
-      statelessSessions({
-        maxAge: sessionMaxAge,
-        secret: sessionSecret,
-      }),
-      { User: 'name isAdmin' }
-    ),
-    // TODO -- Create a separate example for stored/redis sessions
-    // session: storedSessions({
-    //   store: new Map(),
-    //   // store: redisSessionStore({ client: redis.createClient() }),
-    //   secret: sessionSecret,
-    // }),
-  })
-);
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+  },
+  // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
+  // graphql: {
+  //   path: '/api/graphql',
+  // },
+  ui: {
+    // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
+    // path: '/admin',
+    // isAccessAllowed,
+  },
+  images: { upload: 'local' },
+  files: { upload: 'local' },
+  lists,
+  extendGraphqlSchema,
+  // session: withItemData(
+  //   statelessSessions({
+  //     maxAge: sessionMaxAge,
+  //     secret: sessionSecret,
+  //   }),
+  //   { User: 'name isAdmin' }
+  // ),
+  // TODO -- Create a separate example for stored/redis sessions
+  // session: storedSessions({
+  //   store: new Map(),
+  //   // store: redisSessionStore({ client: redis.createClient() }),
+  //   secret: sessionSecret,
+  // }),
+});

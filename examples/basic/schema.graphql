@@ -1,6 +1,47 @@
-input ImageFieldInput {
-  upload: Upload
-  ref: String
+type User {
+  id: ID
+  name: String
+  email: String
+  avatar: LocalImageFieldOutput
+  attachment: LocalFileFieldOutput
+  password: PasswordState!
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers(
+    where: PhoneNumberWhereInput! = {}
+    orderBy: [SortPhoneNumbersBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [PhoneNumber!]!
+  _phoneNumbersMeta(
+    where: PhoneNumberWhereInput! = {}
+    orderBy: [SortPhoneNumbersBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [SortPostsBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [SortPostsBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  randomNumber: Float!
+}
+
+type LocalImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  height: Int!
+  width: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
 }
 
 enum ImageExtension {
@@ -10,236 +51,19 @@ enum ImageExtension {
   gif
 }
 
-interface ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-input FileFieldInput {
-  upload: Upload
-  ref: String
-}
-
-interface FileFieldOutput {
+type LocalFileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
   src: String!
 }
 
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  src: String!
+type PasswordState {
+  isSet: Boolean!
 }
 
-input PhoneNumberRelateToManyInput {
-  create: [PhoneNumberCreateInput]
-  connect: [PhoneNumberWhereUniqueInput]
-  disconnect: [PhoneNumberWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-"""
- A keystone list
-"""
-type User {
-  id: ID!
-  name: String
-  email: String
-  avatar: ImageFieldOutput
-  attachment: FileFieldOutput
-  password_is_set: Boolean
-  isAdmin: Boolean
-  roles: String
-  phoneNumbers(
-    where: PhoneNumberWhereInput
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [PhoneNumber!]!
-  _phoneNumbersMeta(
-    where: PhoneNumberWhereInput
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): _QueryMeta
-  posts(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [Post!]!
-  _postsMeta(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): _QueryMeta
-  randomNumber: Float
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
-  roles: String
-  roles_not: String
-  roles_contains: String
-  roles_not_contains: String
-  roles_in: [String]
-  roles_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  phoneNumbers_every: PhoneNumberWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  phoneNumbers_some: PhoneNumberWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  phoneNumbers_none: PhoneNumberWhereInput
-
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
-}
-
-input UserWhereUniqueInput {
-  id: ID!
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  isAdmin_ASC
-  isAdmin_DESC
-  roles_ASC
-  roles_DESC
-  phoneNumbers_ASC
-  phoneNumbers_DESC
-  posts_ASC
-  posts_DESC
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  avatar: ImageFieldInput
-  attachment: FileFieldInput
-  password: String
-  isAdmin: Boolean
-  roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
-}
-
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  avatar: ImageFieldInput
-  attachment: FileFieldInput
-  password: String
-  isAdmin: Boolean
-  roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-"""
- A keystone list
-"""
 type PhoneNumber {
-  id: ID!
+  id: ID
   label: String
   user: User
   type: String
@@ -247,155 +71,36 @@ type PhoneNumber {
 }
 
 input PhoneNumberWhereInput {
-  AND: [PhoneNumberWhereInput]
-  OR: [PhoneNumberWhereInput]
+  AND: [PhoneNumberWhereInput!]
+  OR: [PhoneNumberWhereInput!]
+  NOT: [PhoneNumberWhereInput!]
+}
+
+input SortPhoneNumbersBy {
+  id: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Post {
   id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  user: UserWhereInput
-  user_is_null: Boolean
-  type: String
-  type_not: String
-  type_in: [String]
-  type_not_in: [String]
-  value: String
-  value_not: String
-  value_contains: String
-  value_not_contains: String
-  value_in: [String]
-  value_not_in: [String]
-}
-
-input PhoneNumberWhereUniqueInput {
-  id: ID!
-}
-
-enum SortPhoneNumbersBy {
-  id_ASC
-  id_DESC
-  user_ASC
-  user_DESC
-  type_ASC
-  type_DESC
-  value_ASC
-  value_DESC
-}
-
-input PhoneNumberUpdateInput {
-  user: UserRelateToOneInput
-  type: String
-  value: String
-}
-
-input PhoneNumbersUpdateInput {
-  id: ID!
-  data: PhoneNumberUpdateInput
-}
-
-input PhoneNumberCreateInput {
-  user: UserRelateToOneInput
-  type: String
-  value: String
-}
-
-input PhoneNumbersCreateInput {
-  data: PhoneNumberCreateInput
+  title: String
+  status: String
+  content: Post_content_DocumentField
+  author: User
 }
 
 type Post_content_DocumentField {
   document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-"""
- A keystone list
-"""
-type Post {
-  id: ID!
-  title: String
-  status: String
-  content: Post_content_DocumentField
-  publishDate: String
-  author: User
-}
-
-input PostWhereInput {
-  AND: [PostWhereInput]
-  OR: [PostWhereInput]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
-  author: UserWhereInput
-  author_is_null: Boolean
-}
-
-input PostWhereUniqueInput {
-  id: ID!
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  publishDate_ASC
-  publishDate_DESC
-  author_ASC
-  author_DESC
-}
-
-input PostUpdateInput {
-  title: String
-  status: String
-  content: JSON
-  publishDate: String
-  author: UserRelateToOneInput
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
-}
-
-input PostCreateInput {
-  title: String
-  status: String
-  content: JSON
-  publishDate: String
-  author: UserRelateToOneInput
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
 }
 
 """
@@ -406,109 +111,81 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+}
+
+input SortPostsBy {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+}
+
+input SortUsersBy {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+  roles: OrderDirection
+}
+
+input PhoneNumberWhereUniqueInput {
+  id: ID
+}
+
+input PostWhereUniqueInput {
+  id: ID
 }
 
 type Mutation {
-  """
-   Create a single User item.
-  """
-  createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
+  createUser(data: UserCreateInput! = {}): User!
+  createUsers(data: [UsersCreateInput!]! = []): [User!]!
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): User
   deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
-  deleteUsers(ids: [ID!]): [User]
-
-  """
-   Create a single PhoneNumber item.
-  """
-  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
-
-  """
-   Create multiple PhoneNumber items.
-  """
-  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
-
-  """
-   Update a single PhoneNumber item by ID.
-  """
-  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
-
-  """
-   Update multiple PhoneNumber items by ID.
-  """
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
-
-  """
-   Delete a single PhoneNumber item by ID.
-  """
+  deleteUsers(ids: [ID!]!): [User!]!
+  createPhoneNumber(data: PhoneNumberCreateInput! = {}): PhoneNumber!
+  createPhoneNumbers(data: [PhoneNumbersCreateInput!]! = []): [PhoneNumber!]!
+  updatePhoneNumber(
+    where: PhoneNumberWhereUniqueInput!
+    data: PhoneNumberUpdateInput!
+  ): PhoneNumber
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): PhoneNumber
   deletePhoneNumber(id: ID!): PhoneNumber
-
-  """
-   Delete multiple PhoneNumber items by ID.
-  """
-  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
-
-  """
-   Create a single Post item.
-  """
-  createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
+  deletePhoneNumbers(ids: [ID!]!): [PhoneNumber!]!
+  createPost(data: PostCreateInput! = {}): Post!
+  createPosts(data: [PostsCreateInput!]! = []): [Post!]!
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): Post
   deletePost(id: ID!): Post
+  deletePosts(ids: [ID!]!): [Post!]!
+}
 
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  createRandomPosts: [Post!]!
-  endSession: Boolean!
+input UserCreateInput {
+  name: String
+  email: String
+  avatar: ImageFieldInput
+  attachment: FileFieldInput
+  password: String
+  isAdmin: Boolean
+  roles: String
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
 }
 
 """
@@ -516,130 +193,110 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
+input FileFieldInput {
+  upload: Upload
+  ref: String
 }
 
-type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
+input UsersCreateInput {
+  data: UserCreateInput!
 }
 
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialUserInput {
+input UserUpdateInput {
   name: String
   email: String
+  avatar: ImageFieldInput
+  attachment: FileFieldInput
   password: String
+  isAdmin: Boolean
+  roles: String
 }
 
-type RandomNumber {
-  number: Int
-  generatedAt: Int
+input UsersUpdateInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+input PhoneNumberCreateInput {
+  type: String
+  value: String
+}
+
+input PhoneNumbersCreateInput {
+  data: PhoneNumberCreateInput!
+}
+
+input PhoneNumberUpdateInput {
+  type: String
+  value: String
+}
+
+input PhoneNumbersUpdateInput {
+  where: PhoneNumberWhereUniqueInput!
+  data: PhoneNumberUpdateInput!
+}
+
+input PostCreateInput {
+  title: String
+  status: String
+  content: JSON
+}
+
+input PostsCreateInput {
+  data: PostCreateInput!
+}
+
+input PostUpdateInput {
+  title: String
+  status: String
+  content: JSON
+}
+
+input PostsUpdateInput {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [User]
-
-  """
-   Search for the User item with the matching ID.
-  """
   User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
+  allUsers(
+    where: UserWhereInput! = {}
+    orderBy: [SortUsersBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]!
   _allUsersMeta(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
+    where: UserWhereInput! = {}
+    orderBy: [SortUsersBy!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
-
-  """
-   Search for all PhoneNumber items which match the where clause.
-  """
-  allPhoneNumbers(
-    where: PhoneNumberWhereInput
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [PhoneNumber]
-
-  """
-   Search for the PhoneNumber item with the matching ID.
-  """
   PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
-
-  """
-   Perform a meta-query on all PhoneNumber items which match the where clause.
-  """
+  allPhoneNumbers(
+    where: PhoneNumberWhereInput! = {}
+    orderBy: [SortPhoneNumbersBy!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [PhoneNumber!]!
   _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
+    where: PhoneNumberWhereInput! = {}
+    orderBy: [SortPhoneNumbersBy!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
-
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [Post]
-
-  """
-   Search for the Post item with the matching ID.
-  """
   Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
+  allPosts(
+    where: PostWhereInput! = {}
+    orderBy: [SortPostsBy!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
+  ): [Post!]!
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [SortPostsBy!]! = []
+    first: Int
+    skip: Int! = 0
   ): _QueryMeta
-  authenticatedItem: AuthenticatedItem
-  randomNumber: RandomNumber
   keystone: KeystoneMeta!
 }
 
