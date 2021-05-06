@@ -77,7 +77,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
   const localStorageKey = `keystone.list.${listKey}.list.page.info`;
-  const cacheableQueries = ['sortBy', 'fields'];
+  const storeableQueries = ['sortBy', 'fields'];
 
   const resetToDefaults = () => {
     localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
@@ -90,7 +90,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(() => {
     let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
-      return x.startsWith('!') || cacheableQueries.includes(x);
+      return x.startsWith('!') || storeableQueries.includes(x);
     });
 
     if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
@@ -112,7 +112,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {};
     Object.keys(router.query).forEach(key => {
-      if (key.startsWith('!') || cacheableQueries.includes(key)) {
+      if (key.startsWith('!') || storeableQueries.includes(key)) {
         queryParamsToSerialize[key] = router.query[key] as string;
       }
     });
