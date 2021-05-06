@@ -35,7 +35,7 @@ export const SigninPage = ({
         ... on ${successTypename} {
           item {
             id
-          }  
+          }
         }
         ... on ${failureTypename} {
           message
@@ -142,9 +142,10 @@ export const SigninPage = ({
             >
               Sign In
             </Button>
-            <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
+            {/* Disabled until we come up with a complete password reset workflow */}
+            {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
               Forgot your password?
-            </Button>
+            </Button> */}
           </Stack>
         )}
       </Stack>
