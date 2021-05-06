@@ -25,7 +25,7 @@
     "mime": "^2.5.2"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v16.0.0"
   },
   "preconstruct": {
     "entrypoints": [

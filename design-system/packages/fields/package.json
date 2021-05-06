@@ -20,7 +20,7 @@
     "react-select": "^4.3.0"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v16.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/fields"
 }

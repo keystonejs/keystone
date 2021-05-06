@@ -7,7 +7,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v16.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
