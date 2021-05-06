@@ -49,7 +49,7 @@ In the next month you'll see a new project starter and getting started guide, as
 
 ## Examples
 
-IThe [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
+The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
 
 ## Feedback
 
