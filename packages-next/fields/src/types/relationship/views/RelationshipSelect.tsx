@@ -59,16 +59,16 @@ export const RelationshipSelect = ({
 
   const QUERY: TypedDocumentNode<
     { items: { [idField]: string; [labelField]: string | null }[]; meta: { count: number } },
-    { search: string; first: number; skip: number }
+    { first: number; skip: number }
   > = gql`
-    query RelationshipSelect($search: String!, $first: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+    query RelationshipSelect($first: Int!, $skip: Int!) {
+      items: ${list.gqlNames.listQueryName}( first: $first, skip: $skip) {
         ${idField}: id
         ${labelField}: ${list.labelField}
         ${extraSelection}
       }
 
-      meta: ${list.gqlNames.listQueryMetaName}(search: $search) {
+      meta: ${list.gqlNames.listQueryMetaName} {
         count
       }
     }
@@ -76,7 +76,7 @@ export const RelationshipSelect = ({
 
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { search, first: initialItemsToLoad, skip: 0 },
+    variables: { first: initialItemsToLoad, skip: 0 },
   });
 
   const count = data?.meta.count || 0;
@@ -87,10 +87,10 @@ export const RelationshipSelect = ({
         const loadingRef = useRef(null);
         const QUERY: TypedDocumentNode<
           { items: { [idField]: string; [labelField]: string | null }[] },
-          { search: string; first: number; skip: number }
+          { first: number; skip: number }
         > = gql`
-            query RelationshipSelectMore($search: String!, $first: Int!, $skip: Int!) {
-              items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+            query RelationshipSelectMore($first: Int!, $skip: Int!) {
+              items: ${list.gqlNames.listQueryName}(first: $first, skip: $skip) {
                 ${labelField}: ${list.labelField}
                 ${idField}: id
                 ${extraSelection}
@@ -103,7 +103,6 @@ export const RelationshipSelect = ({
             fetchMore({
               query: QUERY,
               variables: {
-                search,
                 first: subsequentItemsToLoad,
                 skip: props.options.length,
               },

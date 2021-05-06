@@ -67,13 +67,26 @@ function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
   localListKey: string,
-  localFieldKey: string,
   foreignList: InitialisedList,
   context: KeystoneContext
 ) {
+  const getAccess = () =>
+    validateNonCreateListAccessControl({
+      access: foreignList.access.read,
+      args: {
+        context,
+        listKey: localListKey,
+        operation: 'read',
+        session: context.session,
+      },
+    });
   if (dbField.mode === 'many') {
     return {
-      findMany: async ({ first, skip, orderBy: sortBy }: FindManyArgsValue) => {
+      findMany: async ({ first, skip, orderBy }: FindManyArgsValue) => {
+        const access = await getAccess();
+        if (access === false) {
+          return [];
+        }
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
           where: {
             AND: [
@@ -90,12 +103,16 @@ function getRelationVal(
             ],
           },
           // TODO: needs to have input resolvers
-          orderBy: sortBy,
+          orderBy,
           take: first ?? undefined,
           skip,
         });
       },
-      count: async ({ first, skip, orderBy: sortBy }: FindManyArgsValue) => {
+      count: async ({ first, skip, orderBy }: FindManyArgsValue) => {
+        const access = await getAccess();
+        if (access === false) {
+          return 0;
+        }
         return getPrismaModelForList(context.prisma, dbField.list).count({
           where: {
             AND: [
@@ -112,7 +129,7 @@ function getRelationVal(
             ],
           },
           // TODO: needs to have input resolvers
-          orderBy: sortBy,
+          orderBy,
           take: first ?? undefined,
           skip,
         });
@@ -121,26 +138,18 @@ function getRelationVal(
   }
 
   return async () => {
-    const access = await validateNonCreateListAccessControl({
-      access: foreignList.access.read,
-      args: {
-        context,
-        listKey: localListKey,
-        operation: 'read',
-        session: context.session,
-      },
-    });
+    const access = await getAccess();
     if (access === false) {
       return false;
     }
 
     const where = {
-      [dbField.list]: {
+      [dbField.field]: {
         id,
       },
     };
 
-    return getPrismaModelForList(context.prisma, foreignListKey).findFirst({
+    return getPrismaModelForList(context.prisma, dbField.list).findFirst({
       where: access === true ? [where] : [where, await foreignList.inputResolvers.where(access)],
     });
   };
@@ -152,7 +161,8 @@ function getValueForDBField(
   id: IdType,
   listKey: string,
   fieldPath: string,
-  context: KeystoneContext
+  context: KeystoneContext,
+  lists: Record<string, InitialisedList>
 ) {
   if (dbField.kind === 'multi') {
     return Object.fromEntries(
@@ -163,7 +173,7 @@ function getValueForDBField(
     );
   }
   if (dbField.kind === 'relation') {
-    return getRelationVal(dbField, id, listKey, fieldPath, context);
+    return getRelationVal(dbField, id, listKey, lists[dbField.list], context);
   }
   return rootVal[fieldPath] as any;
 }
@@ -174,7 +184,8 @@ function outputTypeField(
   cacheHint: CacheHint | undefined,
   access: IndividualFieldAccessControl<FieldReadAccessArgs>,
   listKey: string,
-  fieldPath: string
+  fieldPath: string,
+  lists: Record<string, InitialisedList>
 ) {
   return types.field<ItemRootValue, any, any, string, KeystoneContext>({
     type: output.type,
@@ -209,7 +220,7 @@ function outputTypeField(
         info.cacheControl.setCacheHint(cacheHint as any);
       }
 
-      const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context);
+      const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context, lists);
 
       if (output.resolve) {
         return output.resolve({ id, value, item: rootVal }, args, context, info);
@@ -353,6 +364,154 @@ export function initialiseLists(
   listsWithResolvedRelations: ListsWithResolvedRelations;
 } {
   const listInfos: Record<string, ListInfo> = {};
+  for (const [listKey, list] of Object.entries(lists)) {
+    const _names = getNamesFromList(listKey, list);
+    const names = getGqlNames({
+      listKey,
+      pluralGraphQLName: _names.pluralGraphQLName,
+    });
+
+    let output = types.object<ItemRootValue>()({
+      name: names.outputTypeName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return {
+          ...Object.fromEntries(
+            Object.entries(fields).flatMap(([fieldPath, field]) => {
+              if (field.access.read === false) return [];
+              return [
+                [fieldPath, field.output] as const,
+                ...Object.entries(field.extraOutputFields || {}),
+              ].map(([outputTypeFieldName, outputField]) => {
+                return [
+                  outputTypeFieldName,
+                  outputTypeField(
+                    outputField,
+                    field.dbField,
+                    field.cacheHint,
+                    field.access.read,
+                    listKey,
+                    fieldPath,
+                    initialisedLists
+                  ),
+                ];
+              });
+            })
+          ),
+        };
+      },
+    });
+    const uniqueWhere = types.inputObject({
+      name: names.whereUniqueInputName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.uniqueWhere || field.access.read === false) return [];
+            return [[key, field.input.uniqueWhere.arg]] as const;
+          })
+        );
+      },
+    });
+    // TODO: validate no fields are named AND, NOT, or OR
+    const where: TypesForList['where'] = types.inputObject({
+      name: names.whereInputName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return {
+          AND: types.arg({
+            type: types.list(types.nonNull(where)),
+          }),
+          OR: types.arg({
+            type: types.list(types.nonNull(where)),
+          }),
+          NOT: types.arg({
+            type: types.list(types.nonNull(where)),
+          }),
+          ...Object.fromEntries(
+            Object.entries(fields).flatMap(([key, field]) => {
+              if (!field.input?.where?.arg || field.access.read === false) return [];
+              return [[key, field.input.where.arg]] as const;
+            })
+          ),
+        };
+      },
+    });
+
+    const create = types.inputObject({
+      name: names.createInputName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.create?.arg || field.access.create === false) return [];
+            return [[key, field.input.create.arg]] as const;
+          })
+        );
+      },
+    });
+
+    const update = types.inputObject({
+      name: names.updateInputName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.update?.arg || field.access.update === false) return [];
+            return [[key, field.input.update.arg]] as const;
+          })
+        );
+      },
+    });
+
+    const orderBy = types.inputObject({
+      name: names.listSortName,
+      fields: () => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.orderBy?.arg || field.access.read === false) return [];
+            return [[key, field.input.orderBy.arg]] as const;
+          })
+        );
+      },
+    });
+
+    const inputResolvers: InputResolvers = {
+      where: input => {
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        return resolveWhereInput(input, fields);
+      },
+      uniqueWhere: async input => {
+        const inputKeys = Object.keys(input);
+        if (inputKeys.length !== 1) {
+          throw new Error(
+            `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
+          );
+        }
+        const key = inputKeys[0];
+        const val = input[key];
+        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const resolver = fields[key].input!.uniqueWhere!.resolve;
+        const resolvedVal = resolver ? await resolver(val) : val;
+        return {
+          [key]: resolvedVal,
+        };
+      },
+    };
+
+    listInfos[listKey] = {
+      inputResolvers,
+      types: {
+        output,
+        uniqueWhere,
+        where,
+        create,
+        orderBy,
+        update,
+      },
+    };
+  }
 
   const listsWithInitialisedFields = Object.fromEntries(
     Object.entries(lists).map(([listKey, list]) => [
@@ -376,167 +535,44 @@ export function initialiseLists(
   const listsWithResolvedDBFields = resolveRelationships(listsWithInitialisedFields);
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
-    Object.entries(listsWithInitialisedFields).map(([listKey, list]) => [
+    Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
+      return [
+        listKey,
+        {
+          ...list,
+          access: parseListAccessControl(list.access),
+          fields: Object.fromEntries(
+            Object.entries(list.fields).map(([fieldKey, field]) => [
+              fieldKey,
+              {
+                ...field,
+                access: parseFieldAccessControl(field.access),
+                dbField: listsWithResolvedDBFields[listKey].fields[fieldKey],
+                hooks: field.hooks ?? {},
+              },
+            ])
+          ),
+        },
+      ];
+    })
+  );
+
+  for (const [listKey, { fields }] of Object.entries(
+    listsWithInitialisedFieldsAndResolvedDbFields
+  )) {
+    assertNoConflictingExtraOutputFields(listKey, fields);
+    assertIdFieldGraphQLTypesCorrect(listKey, fields);
+  }
+
+  const initialisedLists: Record<string, InitialisedList> = Object.fromEntries(
+    Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
       listKey,
-      {
-        ...list,
-        access: parseListAccessControl(list.access),
-        fields: Object.fromEntries(
-          Object.entries(list.fields).map(([fieldKey, field]) => [
-            fieldKey,
-            {
-              ...field,
-              access: parseFieldAccessControl(field.access),
-              dbField: listsWithResolvedDBFields[listKey].fields[fieldKey],
-              hooks: field.hooks ?? {},
-            },
-          ])
-        ),
-      },
+      { ...list, ...listInfos[listKey], hooks: list.hooks || {} },
     ])
   );
 
-  for (const [listKey, { fields, ...list }] of Object.entries(
-    listsWithInitialisedFieldsAndResolvedDbFields
-  )) {
-    const names = getGqlNames({
-      listKey,
-      pluralGraphQLName: list.pluralGraphQLName,
-      singularGraphQLName: list.singularGraphQLName,
-    });
-
-    assertNoConflictingExtraOutputFields(listKey, fields);
-    assertIdFieldGraphQLTypesCorrect(listKey, fields);
-    let output = types.object<ItemRootValue>()({
-      name: names.outputTypeName,
-      fields: () => ({
-        ...Object.fromEntries(
-          Object.entries(fields).flatMap(([fieldPath, field]) => {
-            if (field.access.read === false) return [];
-            return [
-              [fieldPath, field.output] as const,
-              ...Object.entries(field.extraOutputFields || {}),
-            ].map(([outputTypeFieldName, outputField]) => {
-              return [
-                outputTypeFieldName,
-                outputTypeField(
-                  outputField,
-                  field.dbField,
-                  field.cacheHint,
-                  field.access.read,
-                  listKey,
-                  fieldPath
-                ),
-              ];
-            });
-          })
-        ),
-      }),
-    });
-    const uniqueWhere = types.inputObject({
-      name: names.whereUniqueInputName,
-      fields: Object.fromEntries(
-        Object.entries(fields).flatMap(([key, field]) => {
-          if (!field.input?.uniqueWhere || field.access.read === false) return [];
-          return [[key, field.input.uniqueWhere.arg]] as const;
-        })
-      ),
-    });
-    // TODO: validate no fields are named AND, NOT, or OR
-    const where: TypesForList['where'] = types.inputObject({
-      name: names.whereInputName,
-      fields: () => {
-        return {
-          AND: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          OR: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          NOT: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          ...Object.fromEntries(
-            Object.entries(fields).flatMap(([key, field]) => {
-              if (!field.input?.where?.arg || field.access.read === false) return [];
-              return [[key, field.input.where.arg]] as const;
-            })
-          ),
-        };
-      },
-    });
-
-    const create = types.inputObject({
-      name: names.createInputName,
-      fields: () =>
-        Object.fromEntries(
-          Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.create?.arg || field.access.create === false) return [];
-            return [[key, field.input.create.arg]] as const;
-          })
-        ),
-    });
-
-    const update = types.inputObject({
-      name: names.updateInputName,
-      fields: () =>
-        Object.fromEntries(
-          Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.update?.arg || field.access.update === false) return [];
-            return [[key, field.input.update.arg]] as const;
-          })
-        ),
-    });
-
-    const sortBy = types.inputObject({
-      name: names.listSortName,
-      fields: Object.fromEntries(
-        Object.entries(fields).flatMap(([key, field]) => {
-          if (!field.input?.orderBy?.arg || field.access.read === false) return [];
-          return [[key, field.input.orderBy.arg]] as const;
-        })
-      ),
-    });
-
-    const inputResolvers: InputResolvers = {
-      where: input => resolveWhereInput(input, fields),
-      uniqueWhere: async input => {
-        const inputKeys = Object.keys(input);
-        if (inputKeys.length !== 1) {
-          throw new Error(
-            `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
-          );
-        }
-        const key = inputKeys[0];
-        const val = input[key];
-        const resolver = fields[key].input!.uniqueWhere!.resolve;
-        const resolvedVal = resolver ? await resolver(val) : val;
-        return {
-          [key]: resolvedVal,
-        };
-      },
-    };
-
-    listInfos[listKey] = {
-      inputResolvers,
-      types: {
-        output,
-        uniqueWhere,
-        where,
-        create,
-        sortBy,
-        update,
-      },
-    };
-  }
-
   return {
-    lists: Object.fromEntries(
-      Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
-        listKey,
-        { ...list, ...listInfos[listKey], hooks: list.hooks || {} },
-      ])
-    ),
+    lists: initialisedLists,
     listsWithResolvedRelations: listsWithResolvedDBFields,
   };
 }

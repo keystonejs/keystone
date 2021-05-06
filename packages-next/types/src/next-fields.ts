@@ -2,7 +2,10 @@ import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
 import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import type { FileUpload } from 'graphql-upload';
+// this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
+// @ts-ignore
+import { GraphQLUpload } from 'graphql-upload/public/GraphQLUpload';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { Provider } from './core';
@@ -311,7 +314,7 @@ export type TypesForList = {
 
 export type FindManyArgs = {
   where: tsgql.Arg<tsgql.NonNullType<TypesForList['where']>, {}>;
-  sortBy: tsgql.Arg<
+  orderBy: tsgql.Arg<
     tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
   >;

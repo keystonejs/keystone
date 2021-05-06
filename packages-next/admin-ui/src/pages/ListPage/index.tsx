@@ -160,7 +160,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
+        }(where: $where,first: $first, skip: $skip, orderBy: $sortBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'

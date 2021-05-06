@@ -95,9 +95,8 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
       ...commonConfig,
       output: types.field({
-        // args: getFindManyArgs(meta.lists[listKey].types),
-        // type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
-        type: types.String,
+        args: getFindManyArgs(meta.lists[listKey].types),
+        type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
         resolve({ value }, args) {
           return value.findMany(args);
         },
@@ -105,7 +104,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
       extraOutputFields: {
         [`_${meta.fieldKey}Meta`]: types.field({
           type: QueryMeta,
-          // args: getFindManyArgs(meta.lists[listKey].types),
+          args: getFindManyArgs(meta.lists[listKey].types),
           resolve({ value }, args) {
             return {
               getCount: () => value.count(args),
@@ -118,7 +117,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   return fieldType({ kind: 'relation', mode: 'one', list: listKey, field: fieldKey })({
     ...commonConfig,
     output: types.field({
-      type: types.String,
+      type: meta.lists[listKey].types.output,
       resolve({ value }) {
         return value();
       },

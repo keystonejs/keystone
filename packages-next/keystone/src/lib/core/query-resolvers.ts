@@ -99,7 +99,7 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, first, skip, sortBy }: FindManyArgsValue,
+  { where, first, skip, orderBy }: FindManyArgsValue,
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
@@ -111,14 +111,14 @@ export async function findMany(
   return getPrismaModelForList(context.prisma, listKey).findMany({
     where: resolvedWhere,
     // TODO: needs to have input resolvers
-    orderBy: sortBy,
+    orderBy,
     take: first ?? undefined,
     skip,
   });
 }
 
 export async function count(
-  { where, first, skip, sortBy }: FindManyArgsValue,
+  { where, first, skip, orderBy }: FindManyArgsValue,
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
@@ -131,7 +131,7 @@ export async function count(
   return getPrismaModelForList(context.prisma, listKey).count({
     where: resolvedWhere,
     // TODO: needs to have input resolvers
-    orderBy: sortBy,
+    orderBy,
     take: first ?? undefined,
     skip,
   });
