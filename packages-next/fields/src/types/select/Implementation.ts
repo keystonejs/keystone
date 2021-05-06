@@ -17,7 +17,7 @@ function initOptions(options: string | any[]) {
 }
 
 const VALID_DATA_TYPES = ['enum', 'string', 'integer'];
-const DOCS_URL = 'https://keystonejs.com/keystonejs/fields/src/types/select/';
+const DOCS_URL = 'https://next.keystonejs.com/apis/fields#select';
 
 function validateOptions({
   options,
