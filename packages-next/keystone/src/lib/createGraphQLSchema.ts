@@ -16,14 +16,14 @@ export function createGraphQLSchema(
   // Merge in the admin-meta graphQL API
   graphQLSchema = getAdminMetaSchema({ config, schema: graphQLSchema, adminMeta, lists });
 
-  // Merge in the user defined graphQL API
-  if (config.extendGraphqlSchema) {
-    graphQLSchema = config.extendGraphqlSchema(graphQLSchema);
-  }
-
   // Merge in session graphQL API
   if (config.session) {
     graphQLSchema = sessionSchema(graphQLSchema);
+  }
+
+  // Merge in the user defined graphQL API
+  if (config.extendGraphqlSchema) {
+    graphQLSchema = config.extendGraphqlSchema(graphQLSchema);
   }
 
   return graphQLSchema;
