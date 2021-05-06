@@ -1,7 +1,7 @@
-## Base Project - Blog
+## Base Project - Task Manager
 
 This project is a base project which is used as a starter project for our other [feature examples](../).
-It implements a basic blog, with `Posts` and `Authors`.
+It implements a basic task management system, with `Tasks` and `People` who can be assigned to tasks.
 
 You can use this project as a starting place for learning how to use Keystone.
 
