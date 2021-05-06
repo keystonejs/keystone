@@ -62,7 +62,7 @@ export const RelationshipSelect = ({
     { first: number; skip: number }
   > = gql`
     query RelationshipSelect($first: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}( first: $first, skip: $skip) {
+      items: ${list.gqlNames.listQueryName}(first: $first, skip: $skip) {
         ${idField}: id
         ${labelField}: ${list.labelField}
         ${extraSelection}
