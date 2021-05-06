@@ -274,8 +274,6 @@ input PhoneNumberWhereUniqueInput {
 enum SortPhoneNumbersBy {
   id_ASC
   id_DESC
-  user_ASC
-  user_DESC
   type_ASC
   type_DESC
   value_ASC
@@ -365,8 +363,6 @@ enum SortPostsBy {
   status_DESC
   publishDate_ASC
   publishDate_DESC
-  author_ASC
-  author_DESC
 }
 
 input PostUpdateInput {

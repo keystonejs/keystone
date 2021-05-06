@@ -4,4 +4,4 @@
 '@keystone-next/fields': patch
 ---
 
-Disabled sorting for `many` relationship fields.
+Disabled sorting for relationship fields.
