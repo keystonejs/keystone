@@ -147,6 +147,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
       <div css={{ position: 'relative' }}>
         {state.kind !== 'selecting-field' && (
           <button
+            type="button"
             onClick={() => {
               setState({
                 kind: 'selecting-field',
@@ -180,6 +181,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
       {state.kind === 'selecting-field' && (
         <Options
           components={fieldSelectComponents}
+          autoFocus
           onChange={newVal => {
             const fieldPath: string = (newVal as any).value;
             const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0];
