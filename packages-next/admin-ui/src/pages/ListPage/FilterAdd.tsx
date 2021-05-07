@@ -155,9 +155,6 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
             }}
             css={{
               border: 0,
-              '&:focus': {
-                border: '1px solid black',
-              },
               background: 'transparent',
               cursor: 'pointer',
               position: 'absolute',
