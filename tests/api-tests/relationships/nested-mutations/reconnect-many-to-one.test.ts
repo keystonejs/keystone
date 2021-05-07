@@ -67,20 +67,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            type T = { updateUser: { id: IdType; notes: { id: IdType; title: string }[] } };
-            const data = (await context.graphql.run({
-              query: `
-                mutation {
-                  updateUser(id: "${bob.id}" data: {
-                    notes: { connect: [{ id: "${noteB.id}" }] }
-                  }) {
-                    id
-                    notes(sortBy: title_ASC) { id title }
-                  }
-                }`,
+            type T = { id: IdType; notes: { id: IdType; title: string }[] };
+            const user = (await context.lists.User.updateOne({
+              id: bob.id,
+              data: { notes: { connect: [{ id: noteB.id }] } },
+              query: 'id notes(sortBy: [title_ASC]) { id title }',
             })) as T;
-            expect(data.updateUser).toEqual({ id: bob.id, notes: expect.any(Array) });
-            expect(data.updateUser.notes.map(({ title }) => title)).toEqual(['B', 'C', 'D']);
+
+            expect(user).toEqual({ id: bob.id, notes: expect.any(Array) });
+            expect(user.notes.map(({ title }) => title)).toEqual(['B', 'C', 'D']);
           })();
 
           // B should see Bob as its author
