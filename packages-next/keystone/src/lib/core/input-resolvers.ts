@@ -28,7 +28,7 @@ export type PrismaFilter = Record<string, any> & {
 export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input filter' };
 export type UniquePrismaFilter = Record<string, any> & { _____?: 'unique prisma filter' };
 
-export type CreateItemInput = Record<string, any> & { _____?: 'unique input filter' };
+export type CreateItemInput = Record<string, any> & { _____?: 'create item input' };
 export type ResolvedCreateItemInput = Record<string, any> & { _____?: 'unique prisma filter' };
 
 function nestWithAppropiateField(
@@ -47,10 +47,13 @@ function nestWithAppropiateField(
   );
 }
 
-export type InputResolvers = {
+export type FilterInputResolvers = {
   where: (where: InputFilter) => Promise<PrismaFilter>;
+};
+
+export type CreateAndUpdateInputResolvers = {
   uniqueWhere: (where: UniqueInputFilter) => Promise<UniquePrismaFilter>;
-  // create: (args: { where: UniquePrismaFilter }) => Promise<{ updateUniqueInputFilter }>;
+  create: (input: Record<string, any>) => Promise<Record<string, any>>;
 };
 
 export async function resolveWhereInput(

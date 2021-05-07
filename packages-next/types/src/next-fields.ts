@@ -1,7 +1,10 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
-import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
+import {
+  FilterInputResolvers,
+  CreateAndUpdateInputResolvers,
+} from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import type { FileUpload } from 'graphql-upload';
 // this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
@@ -46,7 +49,7 @@ export type ItemRootValue = { id: IdType; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
 
-export type ListInfo = { types: TypesForList; inputResolvers: InputResolvers };
+export type ListInfo = { types: TypesForList };
 
 export type FieldData = {
   lists: Record<string, ListInfo>;
@@ -245,6 +248,28 @@ export type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
       ): MaybePromise<Val | undefined>;
     });
 
+export type FieldInputArgWithInputResolvers<
+  Val,
+  TArg extends tsgql.Arg<tsgql.InputType, any>,
+  InputResolvers
+> = {
+  arg: TArg;
+} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
+  ? {
+      resolve?(
+        value: tsgql.InferValueFromArg<TArg>,
+        context: KeystoneContext,
+        inputResolversByList: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    }
+  : {
+      resolve(
+        value: tsgql.InferValueFromArg<TArg>,
+        context: KeystoneContext,
+        inputResolversByList: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    });
+
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
@@ -271,9 +296,21 @@ export type FieldTypeWithoutDBField<
 > = {
   input?: {
     uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-    where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
-    create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
-    update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+    where?: FieldInputArgWithInputResolvers<
+      DBFieldFilters<TDBField>,
+      FilterArg,
+      FilterInputResolvers
+    >;
+    create?: FieldInputArgWithInputResolvers<
+      DBFieldToInputValue<TDBField>,
+      CreateArg,
+      CreateAndUpdateInputResolvers
+    >;
+    update?: FieldInputArgWithInputResolvers<
+      DBFieldToInputValue<TDBField>,
+      UpdateArg,
+      CreateAndUpdateInputResolvers
+    >;
     orderBy?: FieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
   };
   output: FieldTypeOutputField<TDBField>;
