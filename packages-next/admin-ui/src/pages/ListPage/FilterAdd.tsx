@@ -125,38 +125,29 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
   }, [router.query, fieldsWithFilters]);
   const [state, setState] = useState<State>({ kind: 'selecting-field' });
 
-  const updateFilters = () => {
-    if (state.kind === 'filter-value') {
-      router.push({
-        query: {
-          ...router.query,
-          [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-        },
-      });
-      onClose();
-    }
-  };
-
   return (
     <Stack
       padding="medium"
       as="form"
-      onKeyDown={(event: React.KeyboardEvent<HTMLFormElement>) => {
-        if (event.code === 'Enter') {
-          event.preventDefault();
-          updateFilters();
-        }
-      }}
       css={{ minWidth: 320 }}
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
-        updateFilters();
+        if (state.kind === 'filter-value') {
+          router.push({
+            query: {
+              ...router.query,
+              [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
+            },
+          });
+          onClose();
+        }
       }}
       gap="small"
     >
       <div css={{ position: 'relative' }}>
         {state.kind !== 'selecting-field' && (
           <button
+            type="button"
             onClick={() => {
               setState({
                 kind: 'selecting-field',
@@ -164,6 +155,9 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
             }}
             css={{
               border: 0,
+              '&:focus': {
+                border: '1px solid black',
+              },
               background: 'transparent',
               cursor: 'pointer',
               position: 'absolute',
