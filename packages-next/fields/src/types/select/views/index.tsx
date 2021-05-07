@@ -74,6 +74,11 @@ export const controller = (
     label: x.label,
     value: x.value.toString(),
   }));
+
+  // Transform from string value to dataType appropriate value
+  const t = (v: string | null) =>
+    v === null ? null : config.fieldMeta.dataType === 'integer' ? parseInt(v) : v;
+
   return {
     path: config.path,
     label: config.label,
@@ -93,7 +98,7 @@ export const controller = (
       }
       return null;
     },
-    serialize: value => ({ [config.path]: value?.value ?? null }),
+    serialize: value => ({ [config.path]: t(value?.value ?? null) }),
     filter: {
       Filter(props) {
         return (
@@ -126,7 +131,7 @@ export const controller = (
           key = `${config.path}_not`;
         }
 
-        const value = isMulti ? options.map(x => x.value) : options[0].value;
+        const value = isMulti ? options.map(x => t(x.value)) : t(options[0].value);
 
         return { [key]: value };
       },
