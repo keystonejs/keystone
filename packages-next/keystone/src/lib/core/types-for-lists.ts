@@ -468,6 +468,15 @@ export function initialiseLists(
       },
     });
 
+    const manyRelationWhere = types.inputObject({
+      name: names.manyRelationFilter,
+      fields: {
+        every: types.arg({ type: where }),
+        some: types.arg({ type: where }),
+        none: types.arg({ type: where }),
+      },
+    });
+
     listInfos[listKey] = {
       types: {
         output,
@@ -476,6 +485,7 @@ export function initialiseLists(
         create,
         orderBy,
         update,
+        manyRelationWhere,
       },
     };
   }

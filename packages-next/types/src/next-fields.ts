@@ -270,6 +270,47 @@ export type FieldInputArgWithInputResolvers<
       ): MaybePromise<Val | undefined>;
     });
 
+export type FieldInputArgWithInputResolversWithoutUndefined<
+  Val,
+  TArg extends tsgql.Arg<tsgql.InputType, any>,
+  InputResolvers
+> = {
+  arg: TArg;
+} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
+  ? {
+      resolve?(
+        value: Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
+        context: KeystoneContext,
+        inputResolversByList: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    }
+  : {
+      resolve(
+        value: Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
+        context: KeystoneContext,
+        inputResolversByList: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    });
+
+export type FieldInputArgWithoutUndefinedOrNull<
+  Val,
+  TArg extends tsgql.Arg<tsgql.InputType, any>
+> = {
+  arg: TArg;
+} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
+  ? {
+      resolve?(
+        value: Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
+        context: KeystoneContext
+      ): MaybePromise<Val | undefined>;
+    }
+  : {
+      resolve(
+        value: Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
+        context: KeystoneContext
+      ): MaybePromise<Val | undefined>;
+    });
+
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
@@ -295,8 +336,11 @@ export type FieldTypeWithoutDBField<
   OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   input?: {
-    uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-    where?: FieldInputArgWithInputResolvers<
+    uniqueWhere?: FieldInputArgWithoutUndefinedOrNull<
+      DBFieldUniqueFilter<TDBField>,
+      UniqueFilterArg
+    >;
+    where?: FieldInputArgWithInputResolversWithoutUndefined<
       DBFieldFilters<TDBField>,
       FilterArg,
       FilterInputResolvers
@@ -347,6 +391,11 @@ export type TypesForList = {
   where: AnyInputObj;
   orderBy: AnyInputObj;
   output: tsgql.ObjectType<ItemRootValue, string, KeystoneContext>;
+  manyRelationWhere: tsgql.InputObjectType<{
+    every: tsgql.Arg<AnyInputObj>;
+    some: tsgql.Arg<AnyInputObj>;
+    none: tsgql.Arg<AnyInputObj>;
+  }>;
 };
 
 export type FindManyArgs = {

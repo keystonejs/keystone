@@ -104,6 +104,28 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   if (many) {
     return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
       ...commonConfig,
+      input: {
+        where: {
+          arg: types.arg({ type: meta.lists[listKey].types.manyRelationWhere }),
+          async resolve(value, context, inputResolvers) {
+            if (value === null) {
+              throw new Error('A many relation filter cannot be set to null');
+            }
+            return Object.fromEntries(
+              await Promise.all(
+                Object.entries(value).map(async ([key, val]) => {
+                  if (val === null) {
+                    throw new Error(
+                      `The key ${key} in a many relation filter cannot be set to null`
+                    );
+                  }
+                  return [key, await inputResolvers[listKey].where(val!)];
+                })
+              )
+            );
+          },
+        },
+      },
       output: types.field({
         args: getFindManyArgs(meta.lists[listKey].types),
         type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
@@ -126,6 +148,14 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   }
   return fieldType({ kind: 'relation', mode: 'one', list: listKey, field: fieldKey })({
     ...commonConfig,
+    input: {
+      where: {
+        arg: types.arg({ type: meta.lists[listKey].types.where }),
+        resolve(value, context, inputResolvers) {
+          return inputResolvers[listKey].where(value!);
+        },
+      },
+    },
     output: types.field({
       type: meta.lists[listKey].types.output,
       resolve({ value }) {
