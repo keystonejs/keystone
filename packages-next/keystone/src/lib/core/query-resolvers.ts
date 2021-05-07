@@ -1,10 +1,43 @@
 import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
 import { validateNonCreateListAccessControl } from './access-control';
-import { InputFilter, PrismaFilter, UniquePrismaFilter } from './input-resolvers';
+import {
+  FilterInputResolvers,
+  InputFilter,
+  PrismaFilter,
+  UniquePrismaFilter,
+} from './input-resolvers';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
 
-// TODO: search
+// the tuple preserves the argument name
+function weakMemoize<Args extends [object], Return>(
+  func: (...args: Args) => Return
+): (...args: Args) => Return {
+  let cache = new WeakMap<Arg, Return>();
+  return arg => {
+    if (cache.has(arg)) {
+      return cache.get(arg)!;
+    }
+    let ret = func(arg);
+    cache.set(arg, ret);
+    return ret;
+  };
+}
+
+const filterInputResolvers = weakMemoize(function filterInputResolvers(
+  lists: Record<string, InitialisedList>
+) {
+  return weakMemoize(function filterInputResolversInner(
+    context: KeystoneContext
+  ): Record<string, FilterInputResolvers> {
+    return Object.fromEntries(
+      Object.entries(lists).map(([listKey, list]) => {
+        return [listKey, { where: () => {} }];
+      })
+    );
+  });
+});
+
 export async function findManyFilter(
   listKey: string,
   list: InitialisedList,
@@ -58,7 +91,7 @@ export function mapUniqueWhereToWhere(
   return { [key]: val };
 }
 
-export async function findOneFilter(
+async function findOneFilter(
   { where }: { where: Record<string, any> },
   listKey: string,
   list: InitialisedList,
