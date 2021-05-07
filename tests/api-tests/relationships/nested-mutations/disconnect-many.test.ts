@@ -83,30 +83,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Update the item and link the relationship field
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: { disconnect: [{ id: "${createNote2.id}" }] }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
+            query: 'id notes { id content }',
           });
 
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [{ id: createNote.id, content: noteContent }],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: createNote.id, content: noteContent }],
           });
         })
       );
@@ -136,26 +121,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createUser = await context.lists.User.createOne({ data: {} });
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}",
-                  data: {
-                    notes: {
-                      disconnect: [{ id: "${FAKE_ID}" }]
-                    }
-                  }
-                ) {
-                  id
-                  notes {
-                  id
-                }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { notes: { disconnect: [{ id: FAKE_ID }] } },
+            query: 'id notes { id }',
           });
-          expect(data.updateUser).toMatchObject({ id: expect.any(String), notes: [] });
-          expect(data.updateUser).not.toHaveProperty('errors');
+
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(user).not.toHaveProperty('errors');
         })
       );
 
@@ -181,29 +154,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Update the item and link the relationship field
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    notes: { disconnect: [{ id: "${createNote.id}" }, { id: "${FAKE_ID}" }] }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { notes: { disconnect: [{ id: createNote.id }, { id: FAKE_ID }] } },
+            query: 'id notes { id content }',
           });
 
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [{ id: expect.any(String), content: noteContent2 }],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: expect.any(String), content: noteContent2 }],
           });
         })
       );

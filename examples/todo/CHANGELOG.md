@@ -1,5 +1,21 @@
 # @keystone-next/example-todo
 
+## 3.0.0
+
+### Major Changes
+
+- [#5591](https://github.com/keystonejs/keystone/pull/5591) [`44c1f9494`](https://github.com/keystonejs/keystone/commit/44c1f9494e8a5587a43f9ba793ea1833e15f8ada) Thanks [@timleslie](https://github.com/timleslie)! - Simplified the Todo application to just the basics to allow other examples to build on it.
+
+### Patch Changes
+
+- [#5594](https://github.com/keystonejs/keystone/pull/5594) [`a3d56570e`](https://github.com/keystonejs/keystone/commit/a3d56570e9dc873d7d840d41ed70b545a91d8c19) Thanks [@timleslie](https://github.com/timleslie)! - Updated example projects to only use the sqlite provider.
+
+* [#5601](https://github.com/keystonejs/keystone/pull/5601) [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Next.js dependency to `^10.2.0`.
+
+* Updated dependencies [[`1c0265171`](https://github.com/keystonejs/keystone/commit/1c0265171db2e334c25d014d855ec919c3d4782c), [`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9), [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b), [`1043243ff`](https://github.com/keystonejs/keystone/commit/1043243ff5a22bb067cf4aa6e46d28a529203121)]:
+  - @keystone-next/keystone@17.1.0
+  - @keystone-next/fields@8.1.0
+
 ## 2.0.1
 
 ### Patch Changes

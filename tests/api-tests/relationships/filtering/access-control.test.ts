@@ -65,26 +65,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const data = await context.exitSudo().graphql.run({
-            query: `
-              query {
-                UserToPostLimitedRead(where: { id: "${user.id}" }) {
-                  id
-                  username
-                  posts {
-                    id
-                  }
-                }
-              }
-            `,
+          const item = await context.exitSudo().lists.UserToPostLimitedRead.findOne({
+            where: { id: user.id },
+            query: 'id username posts { id }',
           });
 
-          expect(data).toMatchObject({
-            UserToPostLimitedRead: {
-              id: expect.any(String),
-              username,
-              posts: [{ id: postIds[1] }],
-            },
+          expect(item).toMatchObject({
+            id: expect.any(String),
+            username,
+            posts: [{ id: postIds[1] }],
           });
         })
       );
@@ -113,29 +102,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const data = await context.exitSudo().graphql.run({
-            query: `
-              query {
-                UserToPostLimitedRead(where: { id: "${user.id}" }) {
-                  id
-                  username
-                  # Knowingly filter to an ID I don't have read access to
-                  # To see if the filter is correctly "AND"d with the access control
-                  posts(where: { id_in: ["${postIds[2]}"] }) {
-                    id
-                  }
-                }
-              }
-            `,
+          const item = await context.exitSudo().lists.UserToPostLimitedRead.findOne({
+            where: { id: user.id },
+            // Knowingly filter to an ID I don't have read access to
+            // to see if the filter is correctly "AND"d with the access control
+            query: `id username posts(where: { id_in: ["${postIds[2]}"] }) { id }`,
           });
 
-          expect(data).toMatchObject({
-            UserToPostLimitedRead: {
-              id: expect.any(String),
-              username,
-              posts: [],
-            },
-          });
+          expect(item).toMatchObject({ id: expect.any(String), username, posts: [] });
         })
       );
     });

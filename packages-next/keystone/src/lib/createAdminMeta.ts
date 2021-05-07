@@ -26,6 +26,24 @@ export function createAdminMeta(
         : listConfig.fields.title
         ? 'title'
         : 'id');
+
+    let initialColumns: string[];
+    if (listConfig.ui?.listView?.initialColumns) {
+      // If they've asked for a particular thing, give them that thing
+      initialColumns = listConfig.ui.listView.initialColumns as string[];
+    } else {
+      // Otherwise, we'll start with the labelField on the left and then add
+      // 2 more fields to the right of that. We don't include the 'id' field
+      // unless it happened to be the labelField
+      initialColumns = [
+        labelField,
+        ...Object.keys(listConfig.fields)
+          .filter(fieldKey => listConfig.fields[fieldKey].config.access?.read !== false)
+          .filter(fieldKey => fieldKey !== labelField)
+          .filter(fieldKey => fieldKey !== 'id'),
+      ].slice(0, 3);
+    }
+
     adminMetaRoot.listsByKey[key] = {
       key,
       labelField,
@@ -36,7 +54,7 @@ export function createAdminMeta(
       path: list.adminUILabels.path,
       fields: [],
       pageSize: listConfig.ui?.listView?.pageSize ?? 50,
-      initialColumns: (listConfig.ui?.listView?.initialColumns as string[]) ?? [labelField],
+      initialColumns,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }

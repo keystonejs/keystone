@@ -47,6 +47,10 @@ The [Keystone Next](https://next.keystonejs.com/whats-new) website contains a do
 
 In the next month you'll see a new project starter and getting started guide, as well as a new set of example projects demoing how to use Keystone Next features.
 
+## Examples
+
+The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
+
 ## Feedback
 
 We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) and [subscribe](https://next.keystonejs.com/roadmap#project-status) to be notified of our progress.

@@ -1,5 +1,11 @@
 # @keystone-next/website
 
+## 2.0.2
+
+### Patch Changes
+
+- [#5601](https://github.com/keystonejs/keystone/pull/5601) [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Next.js dependency to `^10.2.0`.
+
 ## 2.0.1
 
 ### Patch Changes

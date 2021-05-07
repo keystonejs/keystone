@@ -398,8 +398,6 @@ describe(`getGqlTypes()`, () => {
         name_DESC
         email_ASC
         email_DESC
-        other_ASC
-        other_DESC
         writeOnce_ASC
         writeOnce_DESC
       }`;

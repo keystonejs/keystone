@@ -2,4 +2,4 @@
 '@keystone-next/keystone': patch
 ---
 
-Fixed uncaught exception in file stream.
+Improved the types of `withItemData`.

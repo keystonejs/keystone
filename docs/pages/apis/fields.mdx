@@ -431,6 +431,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
   - `inlineCreate` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An inline `Create` button will be included in the cards allowing a new related item to be created based on the configured field paths.
   - `inlineEdit` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An `Edit` button will be included in each card, allowing the configured fields to be edited for each related item.
   - `inlineConnect` (default: `false`): If `true`, an inline `Link existing item` button will be present, allowing existing items of the related list to be connected in this field.
+- `ui.displayMode === 'count'` only supports `many` relationships
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -457,6 +458,9 @@ export default config({
             inlineCreate: { fields: [...] },
             inlineEdit: { fields: [...] },
             inlineConnect: true,
+            // Display mode: 'count'
+            // requires many: true above
+            displayMode: 'count',
            },
         }),
         /* ... */

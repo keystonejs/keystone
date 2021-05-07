@@ -1,5 +1,17 @@
 # @keystone-next/fields
 
+## 8.1.0
+
+### Minor Changes
+
+- [#5616](https://github.com/keystonejs/keystone/pull/5616) [`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9) Thanks [@timleslie](https://github.com/timleslie)! - Added an `isIndexed` config option to the `text`, `integer`, `float`, `select`, and `timestamp` field types.
+
+### Patch Changes
+
+- Updated dependencies [[`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9), [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b)]:
+  - @keystone-next/adapter-prisma-legacy@6.1.0
+  - @keystone-next/admin-ui@14.1.1
+
 ## 8.0.0
 
 ### Major Changes
