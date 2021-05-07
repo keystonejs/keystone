@@ -91,11 +91,15 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
         fontWeight: 500,
         justifyContent: 'space-between',
         outline: 0,
-        padding: `${theme.spacing.small}px 0`,
+        padding: `${theme.spacing.small}px`,
         pointerEvents: isDisabled ? 'none' : undefined,
 
         '&:not(:first-of-type)': {
           borderTop: `1px solid ${theme.colors.backgroundDim}`,
+        },
+        ':hover': {
+          background: theme.colors.backgroundHover,
+          color: theme.colors.linkHoverColor,
         },
       }}
       {...innerProps}
