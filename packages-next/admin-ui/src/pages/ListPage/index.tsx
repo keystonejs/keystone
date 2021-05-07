@@ -77,11 +77,23 @@ let listMetaGraphqlQuery: TypedDocumentNode<
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
   const localStorageKey = `keystone.list.${listKey}.list.page.info`;
+  const storeableQueries = ['sortBy', 'fields'];
+
+  const resetToDefaults = () => {
+    localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+    router.replace({
+      query: null,
+    });
+  };
+
+  // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
+  // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(() => {
-    let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(
-      x => x.startsWith('!') || x === 'page' || x === 'pageSize' || x === 'fields'
-    );
-    if (!hasSomeQueryParamsWhichAreAboutListPage) {
+    let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+      return x.startsWith('!') || storeableQueries.includes(x);
+    });
+
+    if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
       const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
       let parsed;
       try {
@@ -96,11 +108,11 @@ function useQueryParamsFromLocalStorage(listKey: string) {
         });
       }
     }
-  }, [localStorageKey]);
+  }, [localStorageKey, router.isReady]);
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {};
     Object.keys(router.query).forEach(key => {
-      if (key.startsWith('!') || key === 'page' || key === 'pageSize' || key === 'fields') {
+      if (key.startsWith('!') || storeableQueries.includes(key)) {
         queryParamsToSerialize[key] = router.query[key] as string;
       }
     });
@@ -113,6 +125,8 @@ function useQueryParamsFromLocalStorage(listKey: string) {
       localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
     }
   }, [localStorageKey, router]);
+
+  return { resetToDefaults };
 }
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />;
@@ -122,7 +136,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const { query } = useRouter();
 
-  useQueryParamsFromLocalStorage(listKey);
+  const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
   let currentPage =
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1;
@@ -237,6 +251,11 @@ const ListPage = ({ listKey }: ListPageProps) => {
             {showCreate && <CreateButton listKey={listKey} />}
             {data.meta.count || filters.filters.length ? <FilterAdd listKey={listKey} /> : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+            {Boolean(Object.keys(query).length) && (
+              <Button size="small" onClick={resetToDefaults}>
+                Reset to defaults
+              </Button>
+            )}
           </Stack>
           {data.meta.count ? (
             <Fragment>

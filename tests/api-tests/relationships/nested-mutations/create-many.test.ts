@@ -133,57 +133,28 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
 
           // Update an item that does the nested create
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: { create: [{ content: "${noteContent}" }] }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
-          });
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [{ id: expect.any(String), content: noteContent }],
-            },
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
+            query: 'id notes { id content }',
           });
 
-          type T = { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
-          const { updateUser } = (await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: {
-                      create: [
-                        { content: "${noteContent2}" },
-                        { content: "${noteContent3}" }
-                      ]
-                    }
-                  }
-                ) {
-                  id
-                  notes(sortBy: content_ASC) {
-                    id
-                    content
-                  }
-                }
-              }`,
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: expect.any(String), content: noteContent }],
+          });
+
+          type T = { id: IdType; notes: { id: IdType; content: string }[] };
+          const _user = (await context.lists.User.updateOne({
+            id: createUser.id,
+            data: {
+              username: 'A thing',
+              notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
+            },
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           })) as T;
 
-          expect(updateUser).toMatchObject({
+          expect(_user).toMatchObject({
             id: expect.any(String),
             notes: [
               { id: expect.any(String), content: noteContent },
@@ -196,15 +167,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const { allNotes } = await context.graphql.run({
             query: `
               query {
-                allNotes(where: { id_in: [${updateUser.notes
-                  .map(({ id }) => `"${id}"`)
-                  .join(',')}] }) {
+                allNotes(where: { id_in: [${_user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
                   id
                   content
                 }
               }`,
           });
-          expect(allNotes).toHaveLength(updateUser.notes.length);
+          expect(allNotes).toHaveLength(_user.notes.length);
         })
       );
     });
