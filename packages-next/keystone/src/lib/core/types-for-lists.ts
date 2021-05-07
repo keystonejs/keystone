@@ -36,8 +36,14 @@ import {
   resolveRelationships,
 } from './prisma-schema';
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
-import { InputResolvers, resolveWhereInput } from './input-resolvers';
+import {
+  CreateAndUpdateInputResolvers,
+  FilterInputResolvers,
+  getFilterInputResolvers,
+  resolveUniqueWhereInput,
+} from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
+import { createOne } from './mutation-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -58,7 +64,15 @@ export type InitialisedList = {
   pluralGraphQLName: string;
   types: TypesForList;
   access: ResolvedListAccessControl;
-  inputResolvers: InputResolvers;
+  inputResolvers: {
+    where: (context: KeystoneContext) => FilterInputResolvers['where'];
+    createAndUpdate: (
+      context: KeystoneContext
+    ) => {
+      resolvers: Record<string, CreateAndUpdateInputResolvers>;
+      afterChange: () => Promise<void>;
+    };
+  };
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
 };
@@ -70,8 +84,8 @@ function getRelationVal(
   foreignList: InitialisedList,
   context: KeystoneContext
 ) {
-  const getAccess = () =>
-    validateNonCreateListAccessControl({
+  const getFilter = async () => {
+    const access = await validateNonCreateListAccessControl({
       access: foreignList.access.read,
       args: {
         context,
@@ -80,28 +94,24 @@ function getRelationVal(
         session: context.session,
       },
     });
+    if (access === false) {
+      return false;
+    }
+    const where = { [dbField.field]: { id } };
+    if (access === true) {
+      return where;
+    }
+    return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
+  };
   if (dbField.mode === 'many') {
     return {
       findMany: async ({ first, skip, orderBy }: FindManyArgsValue) => {
-        const access = await getAccess();
-        if (access === false) {
+        const filter = await getFilter();
+        if (filter === false) {
           return [];
         }
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
-          where: {
-            AND: [
-              {
-                [dbField.field]: { id },
-              },
-              //   await runInputResolvers(
-              //     typesForLists,
-              //     lists,
-              //     listKey,
-              //     'where',
-              //     where || {}
-              //   ),
-            ],
-          },
+          where: filter,
           // TODO: needs to have input resolvers
           orderBy,
           take: first ?? undefined,
@@ -109,25 +119,12 @@ function getRelationVal(
         });
       },
       count: async ({ first, skip, orderBy }: FindManyArgsValue) => {
-        const access = await getAccess();
-        if (access === false) {
+        const filter = await getFilter();
+        if (filter === false) {
           return 0;
         }
         return getPrismaModelForList(context.prisma, dbField.list).count({
-          where: {
-            AND: [
-              {
-                [dbField.field]: { id },
-              },
-              //   await runInputResolvers(
-              //     typesForLists,
-              //     lists,
-              //     listKey,
-              //     'where',
-              //     where || {}
-              //   ),
-            ],
-          },
+          where: filter,
           // TODO: needs to have input resolvers
           orderBy,
           take: first ?? undefined,
@@ -138,19 +135,13 @@ function getRelationVal(
   }
 
   return async () => {
-    const access = await getAccess();
-    if (access === false) {
+    const filter = await getFilter();
+    if (filter === false) {
       return false;
     }
 
-    const where = {
-      [dbField.field]: {
-        id,
-      },
-    };
-
     return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-      where: access === true ? [where] : [where, await foreignList.inputResolvers.where(access)],
+      where: filter,
     });
   };
 }
@@ -477,31 +468,7 @@ export function initialiseLists(
       },
     });
 
-    const inputResolvers: InputResolvers = {
-      where: input => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
-        return resolveWhereInput(input, fields);
-      },
-      uniqueWhere: async input => {
-        const inputKeys = Object.keys(input);
-        if (inputKeys.length !== 1) {
-          throw new Error(
-            `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
-          );
-        }
-        const key = inputKeys[0];
-        const val = input[key];
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
-        const resolver = fields[key].input!.uniqueWhere!.resolve;
-        const resolvedVal = resolver ? await resolver(val) : val;
-        return {
-          [key]: resolvedVal,
-        };
-      },
-    };
-
     listInfos[listKey] = {
-      inputResolvers,
       types: {
         output,
         uniqueWhere,
@@ -564,10 +531,25 @@ export function initialiseLists(
     assertIdFieldGraphQLTypesCorrect(listKey, fields);
   }
 
+  const getWhereInputResolvers = getFilterInputResolvers(
+    listsWithInitialisedFieldsAndResolvedDbFields
+  );
+
   const initialisedLists: Record<string, InitialisedList> = Object.fromEntries(
-    Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
+    Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]): [
+      string,
+      InitialisedList
+    ] => [
       listKey,
-      { ...list, ...listInfos[listKey], hooks: list.hooks || {} },
+      {
+        ...list,
+        ...listInfos[listKey],
+        hooks: list.hooks || {},
+        inputResolvers: {
+          where: context => getWhereInputResolvers(context)[listKey].where,
+          createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
+        },
+      },
     ])
   );
 
@@ -575,4 +557,30 @@ export function initialiseLists(
     lists: initialisedLists,
     listsWithResolvedRelations: listsWithResolvedDBFields,
   };
+}
+
+function createAndUpdateInputResolvers(
+  lists: Record<string, InitialisedList>,
+  context: KeystoneContext
+) {
+  let ret: {
+    resolvers: Record<string, CreateAndUpdateInputResolvers>;
+    afterChange: () => Promise<void>;
+  } = {
+    resolvers: Object.fromEntries(
+      Object.entries(lists).map(([listKey, list]) => {
+        return [
+          listKey,
+          {
+            create: async input => {
+              return (await createOne({ data: input }, listKey, list, context)).id;
+            },
+            uniqueWhere: input => resolveUniqueWhereInput(input, list.fields, context),
+          },
+        ];
+      })
+    ),
+    afterChange: async () => {},
+  };
+  return ret;
 }

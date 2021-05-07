@@ -92,7 +92,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
               inlineEdit: config.ui.inlineEdit ?? null,
               inlineConnect: config.ui.inlineConnect ?? false,
             }
-          : config.ui.displayMode === 'count'
+          : config.ui?.displayMode === 'count'
           ? { displayMode: 'count' }
           : {
               displayMode: 'select',

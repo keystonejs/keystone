@@ -1,42 +1,13 @@
 import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
 import { validateNonCreateListAccessControl } from './access-control';
 import {
-  FilterInputResolvers,
   InputFilter,
   PrismaFilter,
   UniquePrismaFilter,
+  resolveUniqueWhereInput,
 } from './input-resolvers';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
-
-// the tuple preserves the argument name
-function weakMemoize<Args extends [object], Return>(
-  func: (...args: Args) => Return
-): (...args: Args) => Return {
-  let cache = new WeakMap<Arg, Return>();
-  return arg => {
-    if (cache.has(arg)) {
-      return cache.get(arg)!;
-    }
-    let ret = func(arg);
-    cache.set(arg, ret);
-    return ret;
-  };
-}
-
-const filterInputResolvers = weakMemoize(function filterInputResolvers(
-  lists: Record<string, InitialisedList>
-) {
-  return weakMemoize(function filterInputResolversInner(
-    context: KeystoneContext
-  ): Record<string, FilterInputResolvers> {
-    return Object.fromEntries(
-      Object.entries(lists).map(([listKey, list]) => {
-        return [listKey, { where: () => {} }];
-      })
-    );
-  });
-});
 
 export async function findManyFilter(
   listKey: string,
@@ -56,10 +27,11 @@ export async function findManyFilter(
   if (!access) {
     return false;
   }
-  let resolvedWhere = await list.inputResolvers.where(where || {});
+  const whereInputResolver = list.inputResolvers.where(context);
+  let resolvedWhere = await whereInputResolver(where || {});
   if (typeof access === 'object') {
     resolvedWhere = {
-      AND: [resolvedWhere, await list.inputResolvers.where(access)],
+      AND: [resolvedWhere, await whereInputResolver(access)],
     };
   }
   return resolvedWhere;
@@ -109,11 +81,11 @@ async function findOneFilter(
   if (access === false) {
     return false;
   }
-  let resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(where || {});
+  let resolvedUniqueWhere = await resolveUniqueWhereInput(where, list.fields, context);
   const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
   return access === true
     ? wherePrismaFilter
-    : [wherePrismaFilter, await list.inputResolvers.where(access)];
+    : [wherePrismaFilter, await list.inputResolvers.where(context)(access)];
 }
 
 export async function findOne(

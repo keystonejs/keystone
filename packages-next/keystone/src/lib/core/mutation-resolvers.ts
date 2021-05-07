@@ -4,6 +4,7 @@ import {
   applyAccessControlForUpdate,
   processDelete,
   resolveInputForCreateOrUpdate,
+  resolveUniqueWhereInput,
   UniquePrismaFilter,
 } from './input-resolvers';
 import { InitialisedList } from './types-for-lists';
@@ -152,7 +153,7 @@ export async function deleteMany(
 ) {
   const result = await Promise.all(
     ids.map(async id => {
-      const { id: parsedId } = await list.inputResolvers.uniqueWhere({ id });
+      const { id: parsedId } = await resolveUniqueWhereInput({ id }, list.fields, context);
       const { afterDelete, existingItem } = await processDelete(listKey, list, context, parsedId);
       return {
         parsedId,
@@ -175,7 +176,7 @@ export async function deleteOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { id: parsedId } = await list.inputResolvers.uniqueWhere({ id });
+  const { id: parsedId } = await resolveUniqueWhereInput({ id }, list.fields, context);
   const { afterDelete } = await processDelete(listKey, list, context, parsedId);
   const item = await getPrismaModelForList(context.prisma, listKey).delete({
     where: { id: parsedId },

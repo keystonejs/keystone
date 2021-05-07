@@ -53,21 +53,45 @@ export type FilterInputResolvers = {
 
 export type CreateAndUpdateInputResolvers = {
   uniqueWhere: (where: UniqueInputFilter) => Promise<UniquePrismaFilter>;
-  create: (input: Record<string, any>) => Promise<Record<string, any>>;
+  create: (input: Record<string, any>) => Promise<IdType>;
 };
 
-export async function resolveWhereInput(
+export async function resolveUniqueWhereInput(
+  input: UniqueInputFilter,
+  fields: InitialisedList['fields'],
+  context: KeystoneContext
+): Promise<UniquePrismaFilter> {
+  const inputKeys = Object.keys(input);
+  if (inputKeys.length !== 1) {
+    throw new Error(
+      `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
+    );
+  }
+  const key = inputKeys[0];
+  const val = input[key];
+  const resolver = fields[key].input!.uniqueWhere!.resolve;
+  const resolvedVal = resolver ? await resolver(val, context) : val;
+  return {
+    [key]: resolvedVal,
+  };
+}
+
+type FieldInfoRequiredForResolvingWhereInput = Record<
+  string,
+  // i am intentionally only passing in specific things to make it clear this function cares about nothing else
+  {
+    dbField: ResolvedDBField;
+    input?: {
+      where?: NonNullable<NonNullable<NextFieldType['input']>['where']>;
+    };
+  }
+>;
+
+async function resolveWhereInput(
   inputFilter: InputFilter,
-  fields: Record<
-    string,
-    // i am intentionally only passing in specific things to make it clear this function cares about nothing else
-    {
-      dbField: ResolvedDBField;
-      input?: {
-        where?: NonNullable<NonNullable<NextFieldType['input']>['where']>;
-      };
-    }
-  >
+  fields: FieldInfoRequiredForResolvingWhereInput,
+  context: KeystoneContext,
+  inputResolvers: Record<string, FilterInputResolvers>
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
@@ -75,7 +99,7 @@ export async function resolveWhereInput(
         if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
           return {
             [fieldKey]: await Promise.all(
-              value.map((value: any) => resolveWhereInput(value, fields))
+              value.map((value: any) => resolveWhereInput(value, fields, context, inputResolvers))
             ),
           };
         }
@@ -83,7 +107,9 @@ export async function resolveWhereInput(
         // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
         const where = field.input!.where!;
         const dbField = field.dbField;
-        const { AND, OR, NOT, ...rest } = where.resolve ? await where.resolve(value) : value;
+        const { AND, OR, NOT, ...rest } = where.resolve
+          ? await where.resolve(value, context, inputResolvers)
+          : value;
         return {
           AND: AND?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
           OR: OR?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
@@ -93,6 +119,37 @@ export async function resolveWhereInput(
       })
     ),
   };
+}
+
+// the tuple preserves the argument name
+function weakMemoize<Args extends [object], Return>(
+  func: (...args: Args) => Return
+): (...args: Args) => Return {
+  let cache = new WeakMap<Args[0], Return>();
+  return arg => {
+    if (cache.has(arg)) {
+      return cache.get(arg)!;
+    }
+    let ret = (func as any)(arg);
+    cache.set(arg, ret);
+    return ret;
+  };
+}
+
+export function getFilterInputResolvers(
+  lists: Record<string, { fields: FieldInfoRequiredForResolvingWhereInput }>
+) {
+  return weakMemoize(function filterInputResolversInner(context: KeystoneContext) {
+    const inputResolvers = Object.fromEntries(
+      Object.entries(lists).map(([listKey, { fields }]): [string, FilterInputResolvers] => {
+        return [
+          listKey,
+          { where: async input => resolveWhereInput(input, fields, context, inputResolvers) },
+        ];
+      })
+    );
+    return inputResolvers;
+  });
 }
 
 type ValidationError = { msg: string; data: {}; internalData: {} };
@@ -137,7 +194,7 @@ async function getAccessControlledItemByUniqueWhereForMutation(
   const prismaModel = getPrismaModelForList(context.prisma, listKey);
   let where: PrismaFilter = { id };
   if (typeof access === 'object') {
-    where = { AND: [where, await list.inputResolvers.where(access)] };
+    where = { AND: [where, await list.inputResolvers.where(context)(access)] };
   }
   const item = await prismaModel.findFirst({ where });
   if (item === null) {
@@ -275,7 +332,8 @@ export async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined
+  existingItem: Record<string, any> | undefined,
+  inputResolvers: Record<string, CreateAndUpdateInputResolvers>
 ) {
   let resolvedData = Object.fromEntries(
     await Promise.all(
@@ -285,7 +343,9 @@ export async function resolveInputForCreateOrUpdate(
           return [fieldKey, undefined] as const;
         }
         const input = originalInput[fieldKey];
-        const resolved = inputConfig.resolve ? await inputConfig.resolve(input) : input;
+        const resolved = inputConfig.resolve
+          ? await inputConfig.resolve(input, context, inputResolvers)
+          : input;
         return [fieldKey, resolved] as const;
       })
     )
@@ -326,7 +386,7 @@ export async function resolveInputForCreateOrUpdate(
   });
   const originalInputKeys = new Set(Object.keys(originalInput));
   const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
-  runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
+  await runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
@@ -348,7 +408,7 @@ export async function applyAccessControlForUpdate(
   update: Record<string, any>
 ) {
   const prismaModel = getPrismaModelForList(context.prisma, listKey);
-  const resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(uniqueWhere);
+  const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
   const itemId =
     resolvedUniqueWhere.id !== undefined
       ? resolvedUniqueWhere.id
@@ -381,7 +441,9 @@ export async function applyAccessControlForUpdate(
     where:
       accessControl === true
         ? uniqueWhereInWhereForm
-        : { AND: [uniqueWhereInWhereForm, await list.inputResolvers.where(accessControl)] },
+        : {
+            AND: [uniqueWhereInWhereForm, await list.inputResolvers.where(context)(accessControl)],
+          },
   });
   if (!item) {
     throw accessDeniedError('mutation');
