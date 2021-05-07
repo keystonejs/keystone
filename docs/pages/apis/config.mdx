@@ -140,7 +140,9 @@ Advanced configuration:
 - `getAdditionalFiles` (default: `[]`): An async function returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
   If the `mode` is `'write'`, then the code to be written to the file should be provided as the `src` argument.
   If the `mode` is `'copy'` then an `inputPath` value should be provided.
-  The `outputPath` indicates where the new
+  The `outputPath` indicates where the file should be written or copied to
+  **Note**: This API is designed for use by plugins, such as the [`@keystone-next/auth`](./auth) package.
+  See the [Custom Admin UI Pages](../guides/custom-admin-ui-pages) guide for details on simpler ways to customise your Admin UI.
 
 ```typescript
 export default config({

@@ -90,6 +90,9 @@ export function Navigation() {
         <NavItem href="/guides/testing" isPlaceholder>
           Testing
         </NavItem>
+        <NavItem href="/guides/custom-admin-ui-pages" isPlaceholder>
+          Custom Admin UI Pages
+        </NavItem>
         <NavItem href="/guides/custom-field-views" isPlaceholder>
           Custom Field Views
         </NavItem>
