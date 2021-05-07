@@ -12,7 +12,9 @@ export const TYPE = {
   '--font-body':
     'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
   '--font-mono': '"Source Code Pro", monospace',
+};
 
+export const TYPESCALE = {
   '--font-xxsmall': '0.75rem',
   '--font-xsmall': '0.875rem',
   '--font-small': '1rem',
