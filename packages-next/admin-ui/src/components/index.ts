@@ -8,3 +8,4 @@ export { PageContainer } from './PageContainer';
 export { Pagination, PaginationLabel } from './Pagination';
 export { CreateItemDrawer } from './CreateItemDrawer';
 export { GraphQLErrorNotice } from './GraphQLErrorNotice';
+export { SignoutButton } from './SignoutButton';
