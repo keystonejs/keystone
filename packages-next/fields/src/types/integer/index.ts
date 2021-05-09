@@ -8,6 +8,7 @@ export type IntegerFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   isUnique?: boolean;
+  isIndexed?: boolean;
   defaultValue?: FieldDefaultValue<number>;
 };
 

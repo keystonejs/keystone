@@ -1,0 +1,22 @@
+{
+  "name": "@keystone-next/example-blog",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@keystone-next/fields": "^8.0.0",
+    "@keystone-next/keystone": "^17.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "engines": {
+    "node": ">=v12.13.1"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/blog"
+}

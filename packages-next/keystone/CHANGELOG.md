@@ -1,5 +1,22 @@
 # @keystone-next/keystone
 
+## 17.1.0
+
+### Minor Changes
+
+- [#5609](https://github.com/keystonejs/keystone/pull/5609) [`1c0265171`](https://github.com/keystonejs/keystone/commit/1c0265171db2e334c25d014d855ec919c3d4782c) Thanks [@renovate](https://github.com/apps/renovate)! - Upgraded Primsa dependency to `2.22.0`.
+
+### Patch Changes
+
+- [#5601](https://github.com/keystonejs/keystone/pull/5601) [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Next.js dependency to `^10.2.0`.
+
+* [#5592](https://github.com/keystonejs/keystone/pull/5592) [`1043243ff`](https://github.com/keystonejs/keystone/commit/1043243ff5a22bb067cf4aa6e46d28a529203121) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed uncaught exception in file stream.
+
+* Updated dependencies [[`3d3894679`](https://github.com/keystonejs/keystone/commit/3d38946798650d117c39ce522987b169e616b2b9), [`8b77b6971`](https://github.com/keystonejs/keystone/commit/8b77b697187f8d5eb73e862b2c07b8bfbb769e0b)]:
+  - @keystone-next/fields@8.1.0
+  - @keystone-next/adapter-prisma-legacy@6.1.0
+  - @keystone-next/admin-ui@14.1.1
+
 ## 17.0.0
 
 ### Major Changes

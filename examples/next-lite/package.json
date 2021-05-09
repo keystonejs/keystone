@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-next-lite",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/admin-ui": "^14.1.0",
+    "@keystone-next/admin-ui": "^14.1.1",
     "@keystone-next/auth": "^22.0.0",
-    "@keystone-next/fields": "^8.0.0",
-    "@keystone-next/keystone": "^17.0.0",
+    "@keystone-next/fields": "^8.1.0",
+    "@keystone-next/keystone": "^17.1.0",
     "cookie": "^0.4.1",
     "dotenv": "^8.2.0",
-    "next": "^10.1.3",
+    "next": "^10.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

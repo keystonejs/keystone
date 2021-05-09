@@ -35,6 +35,14 @@ type CardsDisplayConfig = {
   };
 };
 
+type CountDisplayConfig = {
+  many: true;
+  ui?: {
+    // Sets the relationship to display as a count
+    displayMode: 'count';
+  };
+};
+
 export type RelationshipFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
@@ -45,7 +53,7 @@ export type RelationshipFieldConfig<
   };
   defaultValue?: FieldDefaultValue<Record<string, unknown>>;
   isUnique?: boolean;
-} & (SelectDisplayConfig | CardsDisplayConfig);
+} & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
@@ -83,6 +91,8 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             inlineEdit: config.ui.inlineEdit ?? null,
             inlineConnect: config.ui.inlineConnect ?? false,
           }
+        : config.ui?.displayMode === 'count'
+        ? { displayMode: 'count' }
         : {
             displayMode: 'select',
             refLabelField: adminMetaRoot.listsByKey[refListKey].labelField,

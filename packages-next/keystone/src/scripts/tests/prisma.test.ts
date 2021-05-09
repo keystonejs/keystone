@@ -57,7 +57,7 @@ test('keystone-next prisma exits with the same code as the prisma child process 
       $ prisma db pull
 
       Push the Prisma schema state to the database
-      $ prisma db push --preview-feature
+      $ prisma db push
     "
   `);
 });

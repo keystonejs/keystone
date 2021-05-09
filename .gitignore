@@ -123,8 +123,3 @@ temp/
 
 # SQLite databases
 *.db
-
-# These are here temporarily until the examples properly use the new CLI
-# This should be removed and these files should be committed
-examples/*/schema.graphql
-examples/*/schema.prisma

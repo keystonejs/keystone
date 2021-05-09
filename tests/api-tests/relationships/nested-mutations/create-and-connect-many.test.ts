@@ -114,52 +114,35 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
 
           // Update the item and link the relationship field
-          type T = { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
-          const data = (await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: {
-                      connect: [{ id: "${createNote.id}" }],
-                      create: [{ content: "${noteContent2}" }]
-                    }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          type T = { id: IdType; notes: { id: IdType; content: string }[] };
+          const user = (await context.lists.User.updateOne({
+            id: createUser.id,
+            data: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
+            },
+            query: 'id notes { id content }',
           })) as T;
 
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [
-                { id: createNote.id, content: noteContent },
-                { id: expect.any(String), content: noteContent2 },
-              ],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [
+              { id: createNote.id, content: noteContent },
+              { id: expect.any(String), content: noteContent2 },
+            ],
           });
 
           // Sanity check that the items are actually created
           const { allNotes } = await context.graphql.run({
             query: `
               query {
-                allNotes(where: { id_in: [${data.updateUser.notes
-                  .map(({ id }) => `"${id}"`)
-                  .join(',')}] }) {
+                allNotes(where: { id_in: [${user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
                   id
                   content
                 }
               }`,
           });
-          expect(allNotes).toHaveLength(data.updateUser.notes.length);
+          expect(allNotes).toHaveLength(user.notes.length);
         })
       );
     });

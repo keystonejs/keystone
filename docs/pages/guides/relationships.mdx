@@ -16,14 +16,13 @@ Your needs here will define whether your relationship needs to be [one, or two-s
 
 2. **How many connections do need on either side of my relationship?**
 
-Understanding this will determine the kind of [cardinality](#establishing-cardinality) you need to configure. 
+Understanding this will determine the kind of [cardinality](#establishing-cardinality) you need to configure.
 
 These topics are easier to understand by example. We’ll explore them, as well as the basics of setting up relationships through the use case of a **blog app** that has a `post` type for blog entries, and `user` type for post authors. Let’s get started…
 
 ## How to define a relationship in Keystone
 
 Relationships are made using the [`relationship`](../apis/fields#relationship) field type within a [`list()`](../apis/schema). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
-
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -42,6 +41,7 @@ export default config({
   }),
 });
 ```
+
 !> The `many` config option relates to _cardinality_ which we explore later
 
 ## One-sided & two-sided relationships
@@ -110,6 +110,7 @@ Query {
   }
 }
 ```
+
 ?> **Things to keep in mind:**<br/><br/>Two-sided relationships are declared in two places, but **there is only one relationship between both lists**.<br/><br/>**Both fields share the same data**. If you change the author of a post, that post will no longer show up in the original author’s posts.
 
 ### Self-referencing relationships
@@ -158,9 +159,9 @@ export default config({
 _Cardinality_ is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
 
 | Relationship type | One to one | One to many | Many to many |
-| ------------- | ---------- | ----------- | ----------- |
-| One-sided | ❌ | ✅ | ✅ |
-| Two-sided | ✅ | ✅ | ✅ |
+| ----------------- | ---------- | ----------- | ------------ |
+| One-sided         | ❌         | ✅          | ✅           |
+| Two-sided         | ✅         | ✅          | ✅           |
 
 Cardinality is defined through the `relationship` field’s `many` configuration option. It’s a boolean where:
 
@@ -200,6 +201,7 @@ export default config({
   }),
 });
 ```
+
 #### Many-to-many
 
 - Posts can have multiple authors
@@ -226,7 +228,7 @@ export default config({
 
 ### Two-sided cardinalities
 
-?> In two-sided relationships the `many` option on both sides must be considered. 
+?> In two-sided relationships the `many` option on both sides must be considered.
 
 #### One-to-one
 
@@ -277,6 +279,7 @@ export default config({
   }),
 });
 ```
+
 !> Note that we’ve used `many: false` in the author field and `many: true` in the posts field.
 
 #### Many-to-many

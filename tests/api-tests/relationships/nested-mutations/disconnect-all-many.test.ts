@@ -83,26 +83,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Update the item and link the relationship field
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: { disconnectAll: true }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { username: 'A thing', notes: { disconnectAll: true } },
+            query: 'id notes { id content }',
           });
 
-          expect(data).toMatchObject({ updateUser: { id: expect.any(String), notes: [] } });
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 
