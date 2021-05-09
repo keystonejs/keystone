@@ -11,7 +11,7 @@
   "dependencies": {
     "@hapi/iron": "^6.0.0",
     "@keystone-next/admin-ui": "^14.1.1",
-    "@keystone-next/auth": "^22.0.0",
+    "@keystone-next/auth": "^23.0.0",
     "@keystone-next/fields": "^8.1.0",
     "@keystone-next/keystone": "^17.1.0",
     "cookie": "^0.4.1",
