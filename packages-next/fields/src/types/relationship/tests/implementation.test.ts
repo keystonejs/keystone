@@ -86,8 +86,8 @@ function createRelationship({
   return new Relationship(path, config, {
     getListByKey,
     listKey: 'FakeList',
-    listAdapter: (new MockListAdapter() as unknown) as PrismaListAdapter,
-    fieldAdapterClass: (MockFieldAdapter as unknown) as typeof PrismaFieldAdapter,
+    listAdapter: new MockListAdapter() as unknown as PrismaListAdapter,
+    fieldAdapterClass: MockFieldAdapter as unknown as typeof PrismaFieldAdapter,
     schemaNames: ['public'],
   });
 }

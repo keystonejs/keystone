@@ -5,7 +5,7 @@ import { Implementation as Field } from '../';
 const args = {
   getListByKey: () => undefined,
   listKey: 'key',
-  listAdapter: ({ newFieldAdapter: jest.fn() } as unknown) as PrismaListAdapter,
+  listAdapter: { newFieldAdapter: jest.fn() } as unknown as PrismaListAdapter,
   schemaNames: ['public'],
   fieldAdapterClass: {} as typeof PrismaFieldAdapter,
 };
@@ -18,7 +18,7 @@ describe('new Implementation()', () => {
       {
         getListByKey: () => undefined,
         listKey: 'key',
-        listAdapter: ({ newFieldAdapter: jest.fn() } as unknown) as PrismaListAdapter,
+        listAdapter: { newFieldAdapter: jest.fn() } as unknown as PrismaListAdapter,
         schemaNames: ['public'],
         fieldAdapterClass: {} as typeof PrismaFieldAdapter,
       }

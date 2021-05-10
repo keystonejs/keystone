@@ -41,10 +41,8 @@ function getAncestorComponentBlock(editor: ReactEditor) {
   return { isInside: false } as const;
 }
 
-const alreadyNormalizedThings: WeakMap<
-  DocumentFeaturesForChildField,
-  WeakSet<Node>
-> = new WeakMap();
+const alreadyNormalizedThings: WeakMap<DocumentFeaturesForChildField, WeakSet<Node>> =
+  new WeakMap();
 
 function normalizeNodeWithinComponentProp(
   [node, path]: NodeEntry,

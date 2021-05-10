@@ -19,9 +19,7 @@ export type CreateViewFieldModes =
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
-export function useLazyMetadata(
-  query: DocumentNode
-): {
+export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => void;
   visibleLists: VisibleLists;
