@@ -65,7 +65,8 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: spacing.xlarge,
+        margin: spacing.xlarge,
+        marginBottom: 0,
       }}
     >
       <div css={{ fontSize: typography.fontSize.small }}>
@@ -127,6 +128,7 @@ export const Navigation = () => {
     authenticatedItem,
     visibleLists,
   } = useKeystone();
+  const { spacing } = useTheme();
 
   return (
     <div
@@ -139,7 +141,7 @@ export const Navigation = () => {
       {authenticatedItem.state === 'authenticated' && (
         <AuthenticatedItem item={authenticatedItem} />
       )}
-      <nav>
+      <nav css={{ marginTop: spacing.xlarge }}>
         <NavItem href="/">Dashboard</NavItem>
         {(() => {
           if (visibleLists.state === 'loading') return null;
