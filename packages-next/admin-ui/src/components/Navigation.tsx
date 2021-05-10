@@ -18,7 +18,7 @@ type NavItemProps = {
 };
 
 const NavItem = ({ href, children }: NavItemProps) => {
-  const { palette, spacing, radii, typography } = useTheme();
+  const { colors, palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
   const isSelected =
     router.pathname === href || router.pathname.split('/')[1] === href.split('/')[1];
@@ -41,8 +41,8 @@ const NavItem = ({ href, children }: NavItemProps) => {
         textDecoration: 'none',
 
         ':hover': {
-          background: palette.blue50,
-          color: palette.blue500,
+          background: colors.backgroundHover,
+          color: colors.linkHoverColor,
         },
 
         '&[aria-current=location]': {
