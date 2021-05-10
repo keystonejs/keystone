@@ -68,7 +68,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
           type: types.nonNull(list.types.output),
           args: createOneArgs,
           resolve(_rootVal, args, context) {
-            return mutations.createOne(args, listKey, list, context);
+            return mutations.createOne(args, listKey, list, context, provider);
           },
         });
         const updateOneArgs = {
@@ -83,7 +83,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
           type: list.types.output,
           args: updateOneArgs,
           resolve(_rootVal, args, context) {
-            return mutations.updateOne(args, listKey, list, context);
+            return mutations.updateOne(args, listKey, list, context, provider);
           },
         });
         const deleteOne = types.field({
@@ -125,7 +125,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
         });
 
         const updateMany = types.field({
-          type: list.types.output,
+          type: types.nonNull(types.list(types.nonNull(list.types.output))),
           args: {
             data: types.arg({
               type: types.nonNull(

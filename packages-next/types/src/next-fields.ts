@@ -270,6 +270,37 @@ export type FieldInputArgWithInputResolvers<
       ): MaybePromise<Val | undefined>;
     });
 
+export type FieldInputArgWithInputResolversWithOptionalArg<
+  Val,
+  TArg extends tsgql.Arg<tsgql.InputType, any>,
+  InputResolvers
+> =
+  | ({
+      arg: TArg;
+    } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
+      ? {
+          resolve?(
+            value: tsgql.InferValueFromArg<TArg>,
+            context: KeystoneContext,
+            inputResolversByList: Record<string, InputResolvers>
+          ): MaybePromise<Val | undefined>;
+        }
+      : {
+          resolve(
+            value: tsgql.InferValueFromArg<TArg>,
+            context: KeystoneContext,
+            inputResolversByList: Record<string, InputResolvers>
+          ): MaybePromise<Val | undefined>;
+        }))
+  | {
+      arg?: undefined;
+      resolve(
+        value: undefined,
+        context: KeystoneContext,
+        inputResolversByList: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    };
+
 export type FieldInputArgWithInputResolversWithoutUndefined<
   Val,
   TArg extends tsgql.Arg<tsgql.InputType, any>,
@@ -345,7 +376,7 @@ export type FieldTypeWithoutDBField<
       FilterArg,
       FilterInputResolvers
     >;
-    create?: FieldInputArgWithInputResolvers<
+    create?: FieldInputArgWithInputResolversWithOptionalArg<
       DBFieldToInputValue<TDBField>,
       CreateArg,
       CreateAndUpdateInputResolvers

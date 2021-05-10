@@ -27,7 +27,7 @@ import {
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
-import { getPrismaModelForList, IdType } from './utils';
+import { getPrismaModelForList, IdType, PrismaPromise } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
   ListsWithResolvedRelations,
@@ -43,7 +43,7 @@ import {
   resolveUniqueWhereInput,
 } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
-import { createOne } from './mutation-resolvers';
+import { createOneState } from './mutation-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -58,6 +58,55 @@ type ResolvedListAccessControl = {
   delete: DeleteListAccessControl<BaseGeneratedListTypes>;
 };
 
+// note PrismaPromises are not actual promises and their execution doesn't start immediately
+// so storing the "promise" here is fine, it won't start execution until it's in the $transaction
+type OperationInNestedMutation<T> = {
+  operation: PrismaPromise<T>;
+  handler: (value: T) => Promise<void> | void;
+};
+
+// why is this different to just nestedMutationState.operations.push?
+// because this will enforce that the operation resolves to the same type that the handler accepts
+// nestedMutationState.operations.push will have any for both the things
+export function addToNestedMutationState<T>(
+  operation: OperationInNestedMutation<T>,
+  nestedMutationState: NestedMutationState
+) {
+  nestedMutationState.operations.push(operation);
+}
+
+type NestedMutationState = {
+  resolvers: Record<string, CreateAndUpdateInputResolvers>;
+  operations: OperationInNestedMutation<any>[];
+};
+
+// so uhhhhh, normally this wouldn't really execute things in series
+// but because prisma's "promises" aren't really Promises and they
+// start lazily, this does execute the things in series
+async function prismaPromiseSeries<T>(promises: PrismaPromise<T>[]): Promise<T[]> {
+  let results: T[] = [];
+  for (const promise of promises) {
+    results.push(await promise);
+  }
+  return results;
+}
+
+export async function commitNestedMutation(
+  nestedMutationContext: NestedMutationState,
+  context: KeystoneContext,
+  provider: Provider
+): Promise<any[]> {
+  const runOperations = provider === 'sqlite' ? prismaPromiseSeries : context.prisma.$transaction;
+  const results = await runOperations(nestedMutationContext.operations.map(x => x.operation));
+  let rets = await Promise.all(
+    nestedMutationContext.operations.map(async ({ handler }, i) => {
+      await handler(results[i]);
+      return results[i];
+    })
+  );
+  return rets as any;
+}
+
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   singularGraphQLName: string;
@@ -66,12 +115,7 @@ export type InitialisedList = {
   access: ResolvedListAccessControl;
   inputResolvers: {
     where: (context: KeystoneContext) => FilterInputResolvers['where'];
-    createAndUpdate: (
-      context: KeystoneContext
-    ) => {
-      resolvers: Record<string, CreateAndUpdateInputResolvers>;
-      afterChange: () => Promise<void>;
-    };
+    createAndUpdate: (context: KeystoneContext) => NestedMutationState;
   };
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
@@ -557,7 +601,8 @@ export function initialiseLists(
         hooks: list.hooks || {},
         inputResolvers: {
           where: context => getWhereInputResolvers(context)[listKey].where,
-          createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
+          createAndUpdate: context =>
+            createAndUpdateInputResolvers(initialisedLists, context, provider),
         },
       },
     ])
@@ -571,26 +616,55 @@ export function initialiseLists(
 
 function createAndUpdateInputResolvers(
   lists: Record<string, InitialisedList>,
-  context: KeystoneContext
+  context: KeystoneContext,
+  provider: Provider
 ) {
-  let ret: {
-    resolvers: Record<string, CreateAndUpdateInputResolvers>;
-    afterChange: () => Promise<void>;
-  } = {
+  let ret: NestedMutationState = {
     resolvers: Object.fromEntries(
       Object.entries(lists).map(([listKey, list]) => {
+        const create = async (input: any) => {
+          const { id, nestedMutationState } = await createOneState(
+            { data: input },
+            listKey,
+            list,
+            context
+          );
+          // we can only create the item from a nested mutation in the transaction if we have the id.
+          // you might be asking, why not use prisma's nested mutations?
+
+          // we can't for to-many relations because when if we do
+          // prisma.item.create({ data: { others: { create: [{}] } } });
+          // we don't have a way to get the item that was created in the nested mutation
+          // and we need the item to call the afterChange hook
+          // if we have the id though, we can restructure it to this:
+          // prisma.$transaction([
+          //   prisma.other.create({ data: { id: otherId } }),
+          //   prisma.item.create({ data: { others: { connect: [{ id: otherId }] } } }),
+          // ]);
+          // now we have the item that was created to call afterChange with
+          // and it still happens in a transaction
+
+          // we _technically_ could use prisma's nested mutations for to-one relations since there is just one item
+          // we don't do that though because people should just use uuids(or some other id field that generates the value before getting to the db),
+          // it's not worth the complexity to make this marginally better for something that we don't recommend
+          if (id === undefined) {
+            const items = await commitNestedMutation(nestedMutationState, context, provider);
+            return items[items.length - 1].id;
+          } else {
+            ret.operations.push(...nestedMutationState.operations);
+            return id;
+          }
+        };
         return [
           listKey,
           {
-            create: async input => {
-              return (await createOne({ data: input }, listKey, list, context)).id;
-            },
+            create,
             uniqueWhere: input => resolveUniqueWhereInput(input, list.fields, context),
           },
         ];
       })
     ),
-    afterChange: async () => {},
+    operations: [],
   };
   return ret;
 }

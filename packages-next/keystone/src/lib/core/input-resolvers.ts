@@ -342,11 +342,8 @@ export async function resolveInputForCreateOrUpdate(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputConfig = field.input?.[operation];
-        if (!inputConfig) {
-          return [fieldKey, undefined] as const;
-        }
         const input = originalInput[fieldKey];
-        const resolved = inputConfig.resolve
+        const resolved = inputConfig?.resolve
           ? await inputConfig.resolve(input, context, inputResolvers)
           : input;
         return [fieldKey, resolved] as const;

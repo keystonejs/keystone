@@ -10,13 +10,19 @@ export const prismaScalarsToGraphQLScalars = {
   Json: types.JSON,
 };
 
+declare const prisma: unique symbol;
+
+// note prisma "promises" aren't really Promises, they have `then`, `catch` and `finally` but they don't start executation immediately
+// so if you don't call .then/catch/finally/use it in $transaction, the operation will never happen
+export type PrismaPromise<T> = Promise<T> & { [prisma]: true };
+
 type PrismaModel = {
   count: (arg: {
     where?: PrismaFilter;
     take?: number;
     skip?: number;
     orderBy?: Record<string, any>;
-  }) => Promise<number>;
+  }) => PrismaPromise<number>;
   findMany: (arg: {
     where?: PrismaFilter;
     take?: number;
@@ -24,30 +30,39 @@ type PrismaModel = {
     orderBy?: Record<string, any>;
     include?: Record<string, boolean>;
     select?: Record<string, any>;
-  }) => Promise<ItemRootValue[]>;
-  delete: (arg: { where: UniquePrismaFilter }) => Promise<ItemRootValue>;
-  deleteMany: (arg: { where: PrismaFilter }) => Promise<ItemRootValue>;
+  }) => PrismaPromise<ItemRootValue[]>;
+  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<ItemRootValue>;
+  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<ItemRootValue>;
   findUnique: (args: {
     where: UniquePrismaFilter;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<ItemRootValue | null>;
+  }) => PrismaPromise<ItemRootValue | null>;
   findFirst: (args: {
     where: PrismaFilter;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<ItemRootValue | null>;
+  }) => PrismaPromise<ItemRootValue | null>;
   create: (args: {
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<ItemRootValue>;
+  }) => PrismaPromise<ItemRootValue>;
   update: (args: {
     where: UniquePrismaFilter;
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<any>;
+  }) => PrismaPromise<ItemRootValue>;
+};
+
+export type UnwrapPromise<TPromise extends Promise<any>> = TPromise extends Promise<infer T>
+  ? T
+  : never;
+
+export type UnwrapPromises<T extends Promise<any>[]> = {
+  // unsure about this conditional
+  [Key in keyof T]: Key extends number ? UnwrapPromise<T[Key]> : never;
 };
 
 // please do not make this type be the value of KeystoneContext['prisma']
@@ -57,6 +72,7 @@ type PrismaModel = {
 export type PrismaClient = {
   $disconnect(): Promise<void>;
   $connect(): Promise<void>;
+  $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>;
 } & Record<string, PrismaModel>;
 
 export function getPrismaModelForList(prismaClient: PrismaClient, listKey: string) {
