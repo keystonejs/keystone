@@ -14,7 +14,8 @@
     "apollo-server-types": "^0.8.0",
     "cors": "^2.8.5",
     "graphql": "^15.5.0",
-    "graphql-type-json": "^0.3.2"
+    "graphql-type-json": "^0.3.2",
+    "graphql-upload": "^11.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/types"
 }
