@@ -73,6 +73,7 @@ export const CheckMark = ({
 export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
   children,
   isDisabled,
+  isFocused,
   innerProps,
   innerRef,
   className,
@@ -84,12 +85,17 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
       className={className}
       css={{
         alignItems: 'center',
-        color: isDisabled ? theme.colors.foregroundDim : undefined,
+        color: isDisabled
+          ? theme.colors.foregroundDim
+          : isFocused
+          ? theme.colors.linkHoverColor
+          : undefined,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
         fontWeight: 500,
         justifyContent: 'space-between',
+        background: isFocused ? theme.colors.backgroundHover : undefined,
         outline: 0,
         padding: `${theme.spacing.small}px`,
         pointerEvents: isDisabled ? 'none' : undefined,
