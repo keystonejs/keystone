@@ -53,7 +53,9 @@ export type FilterInputResolvers = {
 
 export type CreateAndUpdateInputResolvers = {
   uniqueWhere: (where: UniqueInputFilter) => Promise<UniquePrismaFilter>;
-  create: (input: Record<string, any>) => Promise<IdType>;
+  create: (
+    input: Record<string, any>
+  ) => Promise<{ kind: 'create'; data: Record<string, any> } | { kind: 'connect'; id: IdType }>;
 };
 
 export async function resolveUniqueWhereInput(
@@ -335,16 +337,16 @@ export async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined,
-  inputResolvers: Record<string, CreateAndUpdateInputResolvers>
+  existingItem: Record<string, any> | undefined
 ) {
+  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   let resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputConfig = field.input?.[operation];
         const input = originalInput[fieldKey];
         const resolved = inputConfig?.resolve
-          ? await inputConfig.resolve(input, context, inputResolvers)
+          ? await inputConfig.resolve(input, context, nestedMutationState.resolvers)
           : input;
         return [fieldKey, resolved] as const;
       })
@@ -390,6 +392,7 @@ export async function resolveInputForCreateOrUpdate(
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
+      await Promise.all(nestedMutationState.afterChanges.map(x => x()));
       await runSideEffectOnlyHook(
         list,
         'afterChange',

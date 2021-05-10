@@ -132,11 +132,25 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             defaultValue: { connect: [], create: [] },
           }),
           async resolve(value, context, inputResolvers) {
+            const connects = Promise.all(
+              value.connect.map(x => inputResolvers[listKey].uniqueWhere(x))
+            );
+            const _creates = Promise.all(value.create.map(x => inputResolvers[listKey].create(x)));
+            const [connect, creates] = await Promise.all([connects, _creates]);
+
+            const create: any[] = [];
+
+            for (const createData of creates) {
+              if (createData.kind === 'create') {
+                create.push(createData.data);
+              }
+              if (createData.kind === 'connect') {
+                connect.push({ id: createData.id });
+              }
+            }
             return {
-              connect: await Promise.all([
-                ...value.connect.map(x => inputResolvers[listKey].uniqueWhere(x)),
-                ...value.create.map(async x => ({ id: await inputResolvers[listKey].create(x) })),
-              ]),
+              connect,
+              create,
             };
           },
         },
@@ -149,19 +163,32 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             const disconnects = Promise.all(
               value.disconnect.map(x => inputResolvers[listKey].uniqueWhere(x))
             );
-            const connects = Promise.all([
-              ...value.connect.map(x => inputResolvers[listKey].uniqueWhere(x)),
-              ...value.create.map(x => inputResolvers[listKey].create(x)),
+            const connects = Promise.all(
+              value.connect.map(x => inputResolvers[listKey].uniqueWhere(x))
+            );
+            const _creates = Promise.all(value.create.map(x => inputResolvers[listKey].create(x)));
+            const [disconnect, connect, creates] = await Promise.all([
+              disconnects,
+              connects,
+              _creates,
             ]);
-            const [disconnect, connect] = await Promise.all([disconnects, connects]);
-            if (value.disconnectAll) {
-              return {
-                set: connect,
-              };
+
+            const create: any[] = [];
+
+            for (const createData of creates) {
+              if (createData.kind === 'create') {
+                create.push(createData.data);
+              }
+              if (createData.kind === 'connect') {
+                connect.push({ id: createData.id });
+              }
             }
+
             return {
+              set: value.disconnectAll ? [] : undefined,
               disconnect: disconnect as any,
               connect,
+              create,
             };
           },
         },
@@ -218,9 +245,11 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             };
           }
           if (value.create) {
-            return {
-              connect: { id: await inputResolvers[listKey].create(value.create) },
-            };
+            const create = await inputResolvers[listKey].create(value.create);
+            if (create.kind === 'connect') {
+              return { connect: { id: create.id } };
+            }
+            return { create: create.data };
           }
         },
       },
@@ -245,9 +274,11 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             };
           }
           if (value.create) {
-            return {
-              connect: { id: await inputResolvers[listKey].create(value.create) },
-            };
+            const create = await inputResolvers[listKey].create(value.create);
+            if (create.kind === 'connect') {
+              return { connect: { id: create.id } };
+            }
+            return { create: create.data };
           }
         },
       },

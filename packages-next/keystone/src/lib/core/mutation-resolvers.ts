@@ -6,8 +6,8 @@ import {
   resolveInputForCreateOrUpdate,
   resolveUniqueWhereInput,
 } from './input-resolvers';
-import { addToNestedMutationState, commitNestedMutation, InitialisedList } from './types-for-lists';
-import { getPrismaModelForList, IdType } from './utils';
+import { runPrismaOperations, InitialisedList } from './types-for-lists';
+import { getPrismaModelForList } from './utils';
 
 export async function createMany(
   { data }: { data: { data: Record<string, any> }[] },
@@ -16,30 +16,21 @@ export async function createMany(
   context: KeystoneContext,
   provider: Provider
 ) {
-  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   const rootOperations = await Promise.all(
-    data.map(async ({ data: rawData }) => {
-      await applyAccessControlForCreate(listKey, list, context, rawData);
-      const { data, afterChange } = await resolveInputForCreateOrUpdate(
-        listKey,
-        'create',
-        list,
-        context,
-        rawData,
-        undefined,
-        nestedMutationState.resolvers
-      );
-      return {
-        handler: afterChange,
-        operation: getPrismaModelForList(context.prisma, listKey).create({ data }),
-      };
+    data.map(async args => {
+      const { afterChange, data } = await createOneState(args, listKey, list, context);
+      const operation = getPrismaModelForList(context.prisma, listKey).create({ data });
+      return { afterChange, operation };
     })
   );
-  nestedMutationState.operations.push(...rootOperations);
-  const items = await commitNestedMutation(nestedMutationState, context, provider);
-  return items.slice(-rootOperations.length);
+  const items = await runPrismaOperations(
+    rootOperations.map(x => x.operation),
+    context,
+    provider
+  );
+  return items;
 }
-/** The last operation in the NestedMutationState returned is guaranteed to the main item being created */
+
 export async function createOneState(
   { data: rawData }: { data: Record<string, any> },
   listKey: string,
@@ -47,36 +38,30 @@ export async function createOneState(
   context: KeystoneContext
 ) {
   await applyAccessControlForCreate(listKey, list, context, rawData);
-  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   const { data, afterChange } = await resolveInputForCreateOrUpdate(
     listKey,
     'create',
     list,
     context,
     rawData,
-    undefined,
-    nestedMutationState.resolvers
+    undefined
   );
-  const createPrismaPromise = getPrismaModelForList(context.prisma, listKey).create({
+  return {
     data,
-  });
-  addToNestedMutationState(
-    { operation: createPrismaPromise, handler: afterChange },
-    nestedMutationState
-  );
-  return { nestedMutationState, id: data.id as undefined | IdType };
+    afterChange,
+  };
 }
 
 export async function createOne(
   args: { data: Record<string, any> },
   listKey: string,
   list: InitialisedList,
-  context: KeystoneContext,
-  provider: Provider
+  context: KeystoneContext
 ) {
-  const { nestedMutationState } = await createOneState(args, listKey, list, context);
-  const items = await commitNestedMutation(nestedMutationState, context, provider);
-  return items[items.length - 1];
+  const { afterChange, data } = await createOneState(args, listKey, list, context);
+  const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+  await afterChange(item);
+  return item;
 }
 
 export async function updateMany(
@@ -86,7 +71,6 @@ export async function updateMany(
   context: KeystoneContext,
   provider: Provider
 ) {
-  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   const rootOperations = await Promise.all(
     data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
       const item = await applyAccessControlForUpdate(
@@ -102,11 +86,10 @@ export async function updateMany(
         list,
         context,
         rawData,
-        item,
-        nestedMutationState.resolvers
+        item
       );
       return {
-        handler: afterChange,
+        afterChange,
         operation: getPrismaModelForList(context.prisma, listKey).update({
           where: { id: item.id },
           data,
@@ -114,9 +97,16 @@ export async function updateMany(
       };
     })
   );
-  nestedMutationState.operations.push(...rootOperations);
-  const items = await commitNestedMutation(nestedMutationState, context, provider);
-  return items.slice(-rootOperations.length);
+
+  const items = await runPrismaOperations(
+    rootOperations.map(x => x.operation),
+    context,
+    provider
+  );
+
+  await Promise.all(rootOperations.map((x, i) => x.afterChange(items[i])));
+
+  return items;
 }
 
 export async function updateOne(
@@ -126,32 +116,26 @@ export async function updateOne(
   }: { where: Record<string, any>; data: Record<string, any> },
   listKey: string,
   list: InitialisedList,
-  context: KeystoneContext,
-  provider: Provider
+  context: KeystoneContext
 ) {
   const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
-  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   const { afterChange, data } = await resolveInputForCreateOrUpdate(
     listKey,
     'create',
     list,
     context,
     rawData,
-    item,
-    nestedMutationState.resolvers
+    item
   );
-  addToNestedMutationState(
-    {
-      handler: afterChange,
-      operation: getPrismaModelForList(context.prisma, listKey).update({
-        where: { id: item.id },
-        data,
-      }),
-    },
-    nestedMutationState
-  );
-  const results = await commitNestedMutation(nestedMutationState, context, provider);
-  return results[results.length - 1];
+
+  const updatedItem = await getPrismaModelForList(context.prisma, listKey).update({
+    where: { id: item.id },
+    data,
+  });
+
+  await afterChange(updatedItem);
+
+  return updatedItem;
 }
 
 export async function deleteMany(

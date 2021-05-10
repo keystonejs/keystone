@@ -58,29 +58,12 @@ type ResolvedListAccessControl = {
   delete: DeleteListAccessControl<BaseGeneratedListTypes>;
 };
 
-// note PrismaPromises are not actual promises and their execution doesn't start immediately
-// so storing the "promise" here is fine, it won't start execution until it's in the $transaction
-type OperationInNestedMutation<T> = {
-  operation: PrismaPromise<T>;
-  handler: (value: T) => Promise<void> | void;
-};
-
-// why is this different to just nestedMutationState.operations.push?
-// because this will enforce that the operation resolves to the same type that the handler accepts
-// nestedMutationState.operations.push will have any for both the things
-export function addToNestedMutationState<T>(
-  operation: OperationInNestedMutation<T>,
-  nestedMutationState: NestedMutationState
-) {
-  nestedMutationState.operations.push(operation);
-}
-
 type NestedMutationState = {
   resolvers: Record<string, CreateAndUpdateInputResolvers>;
-  operations: OperationInNestedMutation<any>[];
+  afterChanges: (() => Promise<void> | void)[];
 };
 
-// so uhhhhh, normally this wouldn't really execute things in series
+// normally this wouldn't really execute things in series
 // but because prisma's "promises" aren't really Promises and they
 // start lazily, this does execute the things in series
 async function prismaPromiseSeries<T>(promises: PrismaPromise<T>[]): Promise<T[]> {
@@ -91,21 +74,14 @@ async function prismaPromiseSeries<T>(promises: PrismaPromise<T>[]): Promise<T[]
   return results;
 }
 
-export async function commitNestedMutation(
-  nestedMutationContext: NestedMutationState,
+export async function runPrismaOperations<T>(
+  operations: PrismaPromise<T>[],
   context: KeystoneContext,
   provider: Provider
-): Promise<any[]> {
+): Promise<T[]> {
   const runOperations =
     provider === 'sqlite' ? prismaPromiseSeries : (x: any[]) => context.prisma.$transaction(x);
-  const results = await runOperations(nestedMutationContext.operations.map(x => x.operation));
-  let rets = await Promise.all(
-    nestedMutationContext.operations.map(async ({ handler }, i) => {
-      await handler(results[i]);
-      return results[i];
-    })
-  );
-  return rets as any;
+  return runOperations(operations);
 }
 
 export type InitialisedList = {
@@ -658,8 +634,7 @@ export function initialiseLists(
         hooks: list.hooks || {},
         inputResolvers: {
           where: context => getWhereInputResolvers(context)[listKey].where,
-          createAndUpdate: context =>
-            createAndUpdateInputResolvers(initialisedLists, context, provider),
+          createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
         },
       },
     ])
@@ -673,19 +648,19 @@ export function initialiseLists(
 
 function createAndUpdateInputResolvers(
   lists: Record<string, InitialisedList>,
-  context: KeystoneContext,
-  provider: Provider
+  context: KeystoneContext
 ) {
   let ret: NestedMutationState = {
     resolvers: Object.fromEntries(
       Object.entries(lists).map(([listKey, list]) => {
         const create = async (input: any) => {
-          const { id, nestedMutationState } = await createOneState(
+          const { afterChange, data } = await createOneState(
             { data: input },
             listKey,
             list,
             context
           );
+          // TODO: update this comment with the addition of using nested mutations + fetching the item by id after
           // we can only create the item from a nested mutation in the transaction if we have the id.
           // you might be asking, why not use prisma's nested mutations?
 
@@ -693,23 +668,27 @@ function createAndUpdateInputResolvers(
           // prisma.item.create({ data: { others: { create: [{}] } } });
           // we don't have a way to get the item that was created in the nested mutation
           // and we need the item to call the afterChange hook
-          // if we have the id though, we can restructure it to this:
-          // prisma.$transaction([
-          //   prisma.other.create({ data: { id: otherId } }),
-          //   prisma.item.create({ data: { others: { connect: [{ id: otherId }] } } }),
-          // ]);
           // now we have the item that was created to call afterChange with
           // and it still happens in a transaction
 
           // we _technically_ could use prisma's nested mutations for to-one relations since there is just one item
           // we don't do that though because people should just use uuids(or some other id field that generates the value before getting to the db),
           // it's not worth the complexity to make this marginally better for something that we don't recommend
-          if (id === undefined) {
-            const items = await commitNestedMutation(nestedMutationState, context, provider);
-            return items[items.length - 1].id;
+          if (data.id === undefined) {
+            const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+            await afterChange(item);
+            return { kind: 'connect' as const, id: item.id };
           } else {
-            ret.operations.push(...nestedMutationState.operations);
-            return id;
+            ret.afterChanges.push(async () => {
+              const item = await getPrismaModelForList(context.prisma, listKey).findUnique({
+                where: { id: data.id },
+              });
+              if (!item) {
+                throw new Error('could not find item after creating it');
+              }
+              await afterChange(item);
+            });
+            return { kind: 'create' as const, data };
           }
         };
         return [
@@ -721,7 +700,7 @@ function createAndUpdateInputResolvers(
         ];
       })
     ),
-    operations: [],
+    afterChanges: [],
   };
   return ret;
 }
