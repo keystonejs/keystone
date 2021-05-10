@@ -1,0 +1,657 @@
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: Person
+}
+
+input TodoWhereInput {
+  AND: [TodoWhereInput]
+  OR: [TodoWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  isPrivate: Boolean
+  isPrivate_not: Boolean
+  assignedTo: PersonWhereInput
+  assignedTo_is_null: Boolean
+}
+
+input TodoWhereUniqueInput {
+  id: ID!
+}
+
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  isPrivate_ASC
+  isPrivate_DESC
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneInput
+}
+
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneInput
+}
+
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
+input RoleRelateToOneInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: RoleWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TodoRelateToManyInput {
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password_is_set: Boolean
+  role: Role
+  tasks(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Todo!]!
+  _tasksMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+}
+
+input PersonWhereInput {
+  AND: [PersonWhereInput]
+  OR: [PersonWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  role: RoleWhereInput
+  role_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  tasks_every: TodoWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  tasks_some: TodoWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  tasks_none: TodoWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID!
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+input PersonUpdateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneInput
+  tasks: TodoRelateToManyInput
+}
+
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
+}
+
+input PersonCreateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneInput
+  tasks: TodoRelateToManyInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
+}
+
+input PersonRelateToManyInput {
+  create: [PersonCreateInput]
+  connect: [PersonWhereUniqueInput]
+  disconnect: [PersonWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Role {
+  id: ID!
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Person!]!
+  _assignedToMeta(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput]
+  OR: [RoleWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  canCreateTodos: Boolean
+  canCreateTodos_not: Boolean
+  canManageAllTodos: Boolean
+  canManageAllTodos_not: Boolean
+  canSeeOtherPeople: Boolean
+  canSeeOtherPeople_not: Boolean
+  canEditOtherPeople: Boolean
+  canEditOtherPeople_not: Boolean
+  canManagePeople: Boolean
+  canManagePeople_not: Boolean
+  canManageRoles: Boolean
+  canManageRoles_not: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  assignedTo_every: PersonWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  assignedTo_some: PersonWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  assignedTo_none: PersonWhereInput
+}
+
+input RoleWhereUniqueInput {
+  id: ID!
+}
+
+enum SortRolesBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  canCreateTodos_ASC
+  canCreateTodos_DESC
+  canManageAllTodos_ASC
+  canManageAllTodos_DESC
+  canSeeOtherPeople_ASC
+  canSeeOtherPeople_DESC
+  canEditOtherPeople_ASC
+  canEditOtherPeople_DESC
+  canManagePeople_ASC
+  canManagePeople_DESC
+  canManageRoles_ASC
+  canManageRoles_DESC
+}
+
+input RoleUpdateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyInput
+}
+
+input RolesUpdateInput {
+  id: ID!
+  data: RoleUpdateInput
+}
+
+input RoleCreateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyInput
+}
+
+input RolesCreateInput {
+  data: RoleCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single Todo item.
+  """
+  createTodo(data: TodoCreateInput): Todo
+
+  """
+   Create multiple Todo items.
+  """
+  createTodos(data: [TodosCreateInput]): [Todo]
+
+  """
+   Update a single Todo item by ID.
+  """
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo
+
+  """
+   Update multiple Todo items by ID.
+  """
+  updateTodos(data: [TodosUpdateInput]): [Todo]
+
+  """
+   Delete a single Todo item by ID.
+  """
+  deleteTodo(id: ID!): Todo
+
+  """
+   Delete multiple Todo items by ID.
+  """
+  deleteTodos(ids: [ID!]): [Todo]
+
+  """
+   Create a single Person item.
+  """
+  createPerson(data: PersonCreateInput): Person
+
+  """
+   Create multiple Person items.
+  """
+  createPeople(data: [PeopleCreateInput]): [Person]
+
+  """
+   Update a single Person item by ID.
+  """
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
+
+  """
+   Update multiple Person items by ID.
+  """
+  updatePeople(data: [PeopleUpdateInput]): [Person]
+
+  """
+   Delete a single Person item by ID.
+  """
+  deletePerson(id: ID!): Person
+
+  """
+   Delete multiple Person items by ID.
+  """
+  deletePeople(ids: [ID!]): [Person]
+
+  """
+   Create a single Role item.
+  """
+  createRole(data: RoleCreateInput): Role
+
+  """
+   Create multiple Role items.
+  """
+  createRoles(data: [RolesCreateInput]): [Role]
+
+  """
+   Update a single Role item by ID.
+  """
+  updateRole(id: ID!, data: RoleUpdateInput): Role
+
+  """
+   Update multiple Role items by ID.
+  """
+  updateRoles(data: [RolesUpdateInput]): [Role]
+
+  """
+   Delete a single Role item by ID.
+  """
+  deleteRole(id: ID!): Role
+
+  """
+   Delete multiple Role items by ID.
+  """
+  deleteRoles(ids: [ID!]): [Role]
+  authenticatePersonWithPassword(
+    email: String!
+    password: String!
+  ): PersonAuthenticationWithPasswordResult!
+  createInitialPerson(
+    data: CreateInitialPersonInput!
+  ): PersonAuthenticationWithPasswordSuccess!
+  endSession: Boolean!
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+union AuthenticatedItem = Person
+
+union PersonAuthenticationWithPasswordResult =
+    PersonAuthenticationWithPasswordSuccess
+  | PersonAuthenticationWithPasswordFailure
+
+type PersonAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: Person!
+}
+
+type PersonAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialPersonInput {
+  name: String
+  email: String
+  password: String
+}
+
+type Query {
+  """
+   Search for all Todo items which match the where clause.
+  """
+  allTodos(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Todo]
+
+  """
+   Search for the Todo item with the matching ID.
+  """
+  Todo(where: TodoWhereUniqueInput!): Todo
+
+  """
+   Perform a meta-query on all Todo items which match the where clause.
+  """
+  _allTodosMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all Person items which match the where clause.
+  """
+  allPeople(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Person]
+
+  """
+   Search for the Person item with the matching ID.
+  """
+  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Perform a meta-query on all Person items which match the where clause.
+  """
+  _allPeopleMeta(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all Role items which match the where clause.
+  """
+  allRoles(
+    where: RoleWhereInput
+    search: String
+    sortBy: [SortRolesBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Role]
+
+  """
+   Search for the Role item with the matching ID.
+  """
+  Role(where: RoleWhereUniqueInput!): Role
+
+  """
+   Perform a meta-query on all Role items which match the where clause.
+  """
+  _allRolesMeta(
+    where: RoleWhereInput
+    search: String
+    sortBy: [SortRolesBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  authenticatedItem: AuthenticatedItem
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

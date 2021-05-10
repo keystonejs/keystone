@@ -1,0 +1,460 @@
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  assignedTo: User
+  finishBy: String
+  createdAt: String
+  updatedAt: String
+}
+
+input TodoWhereInput {
+  AND: [TodoWhereInput]
+  OR: [TodoWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  assignedTo: UserWhereInput
+  assignedTo_is_null: Boolean
+  finishBy: String
+  finishBy_not: String
+  finishBy_lt: String
+  finishBy_lte: String
+  finishBy_gt: String
+  finishBy_gte: String
+  finishBy_in: [String]
+  finishBy_not_in: [String]
+  createdAt: String
+  createdAt_not: String
+  createdAt_lt: String
+  createdAt_lte: String
+  createdAt_gt: String
+  createdAt_gte: String
+  createdAt_in: [String]
+  createdAt_not_in: [String]
+  updatedAt: String
+  updatedAt_not: String
+  updatedAt_lt: String
+  updatedAt_lte: String
+  updatedAt_gt: String
+  updatedAt_gte: String
+  updatedAt_in: [String]
+  updatedAt_not_in: [String]
+}
+
+input TodoWhereUniqueInput {
+  id: ID!
+}
+
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
+input TodoRelateToManyInput {
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type User {
+  id: ID!
+  name: String
+  email: String
+  password_is_set: Boolean
+  tasks(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Todo!]!
+  _tasksMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  createdAt: String
+  updatedAt: String
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput]
+  OR: [UserWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  tasks_every: TodoWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  tasks_some: TodoWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  tasks_none: TodoWhereInput
+  createdAt: String
+  createdAt_not: String
+  createdAt_lt: String
+  createdAt_lte: String
+  createdAt_gt: String
+  createdAt_gte: String
+  createdAt_in: [String]
+  createdAt_not_in: [String]
+  updatedAt: String
+  updatedAt_not: String
+  updatedAt_lt: String
+  updatedAt_lte: String
+  updatedAt_gt: String
+  updatedAt_gte: String
+  updatedAt_in: [String]
+  updatedAt_not_in: [String]
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single Todo item.
+  """
+  createTodo(data: TodoCreateInput): Todo
+
+  """
+   Create multiple Todo items.
+  """
+  createTodos(data: [TodosCreateInput]): [Todo]
+
+  """
+   Update a single Todo item by ID.
+  """
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo
+
+  """
+   Update multiple Todo items by ID.
+  """
+  updateTodos(data: [TodosUpdateInput]): [Todo]
+
+  """
+   Delete a single Todo item by ID.
+  """
+  deleteTodo(id: ID!): Todo
+
+  """
+   Delete multiple Todo items by ID.
+  """
+  deleteTodos(ids: [ID!]): [Todo]
+
+  """
+   Create a single User item.
+  """
+  createUser(data: UserCreateInput): User
+
+  """
+   Create multiple User items.
+  """
+  createUsers(data: [UsersCreateInput]): [User]
+
+  """
+   Update a single User item by ID.
+  """
+  updateUser(id: ID!, data: UserUpdateInput): User
+
+  """
+   Update multiple User items by ID.
+  """
+  updateUsers(data: [UsersUpdateInput]): [User]
+
+  """
+   Delete a single User item by ID.
+  """
+  deleteUser(id: ID!): User
+
+  """
+   Delete multiple User items by ID.
+  """
+  deleteUsers(ids: [ID!]): [User]
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+type Query {
+  """
+   Search for all Todo items which match the where clause.
+  """
+  allTodos(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Todo]
+
+  """
+   Search for the Todo item with the matching ID.
+  """
+  Todo(where: TodoWhereUniqueInput!): Todo
+
+  """
+   Perform a meta-query on all Todo items which match the where clause.
+  """
+  _allTodosMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [User]
+
+  """
+   Search for the User item with the matching ID.
+  """
+  User(where: UserWhereUniqueInput!): User
+
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}
