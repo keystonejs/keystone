@@ -176,10 +176,8 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
 
   const [mode, setMode] = useState<'init' | 'welcome'>('init');
 
-  const [
-    createFirstItem,
-    { loading, error, data },
-  ] = useMutation(gql`mutation($data: CreateInitial${listKey}Input!) {
+  const [createFirstItem, { loading, error, data }] =
+    useMutation(gql`mutation($data: CreateInitial${listKey}Input!) {
     authenticate: createInitial${listKey}(data: $data) {
       ... on ${listKey}AuthenticationWithPasswordSuccess {
         item {

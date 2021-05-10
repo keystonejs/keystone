@@ -44,9 +44,8 @@ function InternalKeystoneProvider({
   lazyMetadataQuery,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
-  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } = useLazyMetadata(
-    lazyMetadataQuery
-  );
+  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
+    useLazyMetadata(lazyMetadataQuery);
   const reinitContext = () => {
     adminMeta?.refetch?.();
     refetch();

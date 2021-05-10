@@ -103,8 +103,7 @@ export const initialContent = [
             type: 'paragraph',
             children: [
               {
-                text:
-                  'We’re really excited to show you what we’ve built, and what you can build with it!',
+                text: 'We’re really excited to show you what we’ve built, and what you can build with it!',
               },
             ],
           },
@@ -166,8 +165,7 @@ export const initialContent = [
                 bold: true,
               },
               {
-                text:
-                  ', but you can build your own by just defining their prop types (like you do your Keystone schema) and providing a React Component to render the preview.',
+                text: ', but you can build your own by just defining their prop types (like you do your Keystone schema) and providing a React Component to render the preview.',
               },
             ],
           },
@@ -175,8 +173,7 @@ export const initialContent = [
             type: 'paragraph',
             children: [
               {
-                text:
-                  'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other items in your database with the ',
+                text: 'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other items in your database with the ',
               },
               {
                 text: 'Relationship',
@@ -206,8 +203,7 @@ export const initialContent = [
             type: 'paragraph',
             children: [
               {
-                text:
-                  'They can also have props that are edited with an inline form, for more complex use cases (including conditional fields)',
+                text: 'They can also have props that are edited with an inline form, for more complex use cases (including conditional fields)',
               },
             ],
           },
@@ -222,8 +218,7 @@ export const initialContent = [
                 bold: true,
               },
               {
-                text:
-                  " component and you'll see how it works. Remember, you can build your own, so your content authors can insert components from your website's Design System, and your front-end still gets structured data to render!",
+                text: " component and you'll see how it works. Remember, you can build your own, so your content authors can insert components from your website's Design System, and your front-end still gets structured data to render!",
               },
             ],
           },
@@ -235,8 +230,7 @@ export const initialContent = [
     type: 'paragraph',
     children: [
       {
-        text:
-          'This is the end of the editable document. Expand the block below to see how the data is stored ↓',
+        text: 'This is the end of the editable document. Expand the block below to see how the data is stored ↓',
         bold: true,
       },
     ],

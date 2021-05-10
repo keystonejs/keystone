@@ -3,17 +3,16 @@ import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-n
 import { CloudinaryAdapter } from './cloudinary';
 import { CloudinaryImage, PrismaCloudinaryImageInterface } from './Implementation';
 
-type CloudinaryImageFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
-  cloudinary: {
-    cloudName: string;
-    apiKey: string;
-    apiSecret: string;
-    folder?: string;
+type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    isRequired?: boolean;
+    cloudinary: {
+      cloudName: string;
+      apiKey: string;
+      apiSecret: string;
+      folder?: string;
+    };
   };
-};
 
 export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTypes>({
   cloudinary,

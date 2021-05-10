@@ -9,8 +9,7 @@ import { palette as basePalette } from './colors';
 const typography = {
   fontFamily: {
     monospace: 'Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
-    body:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+    body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading:
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
   },
