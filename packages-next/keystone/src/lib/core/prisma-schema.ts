@@ -329,8 +329,8 @@ function printField(
     if (field.foreignIdField === 'none') {
       return `${fieldPath} ${field.list}? @relation("${field.relationName}")`;
     }
-    const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}")`;
     const relationIdFieldPath = `${fieldPath}Id`;
+    const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}", fields: [${relationIdFieldPath}], references: [id])`;
     const foreignIdField = lists[field.list].fields.id;
     assertFieldIsValidIdField(field.list, foreignIdField);
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName);

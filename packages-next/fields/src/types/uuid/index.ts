@@ -5,6 +5,7 @@ import {
   sortDirectionEnum,
   types,
 } from '@keystone-next/types';
+import { v4 as genUUID } from 'uuid';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
@@ -32,6 +33,12 @@ export const uuid = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   })({
     ...config,
     input: {
+      create: {
+        arg: undefined,
+        resolve() {
+          return genUUID();
+        },
+      },
       uniqueWhere: { arg: types.arg({ type: types.ID }) },
       orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
     },

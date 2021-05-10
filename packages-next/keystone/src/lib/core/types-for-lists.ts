@@ -96,7 +96,8 @@ export async function commitNestedMutation(
   context: KeystoneContext,
   provider: Provider
 ): Promise<any[]> {
-  const runOperations = provider === 'sqlite' ? prismaPromiseSeries : context.prisma.$transaction;
+  const runOperations =
+    provider === 'sqlite' ? prismaPromiseSeries : (x: any[]) => context.prisma.$transaction(x);
   const results = await runOperations(nestedMutationContext.operations.map(x => x.operation));
   let rets = await Promise.all(
     nestedMutationContext.operations.map(async ({ handler }, i) => {
@@ -308,7 +309,7 @@ function assertIdFieldGraphQLTypesCorrect(
     );
   }
   // we may want to loosen these constraints in the future
-  if (idField.input.create !== undefined) {
+  if (idField.input.create?.arg !== undefined) {
     throw new Error(
       `The idField on a list must not define a create GraphQL input but the idField for ${listKey} does define one`
     );
@@ -521,6 +522,52 @@ export function initialiseLists(
       },
     });
 
+    const relateToManyForCreateFields = {
+      create: types.arg({
+        type: types.nonNull(types.list(types.nonNull(create))),
+        defaultValue: [],
+      }),
+      connect: types.arg({
+        type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
+        defaultValue: [],
+      }),
+    };
+
+    const relateToManyForCreate = types.inputObject({
+      name: `${listKey}RelateToManyForCreateInput`,
+      fields: relateToManyForCreateFields,
+    });
+
+    const relateToManyForUpdate = types.inputObject({
+      name: `${listKey}RelateToManyForUpdateInput`,
+      fields: {
+        ...relateToManyForCreateFields,
+        disconnect: types.arg({
+          type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
+          defaultValue: [],
+        }),
+        disconnectAll: types.arg({ type: types.nonNull(types.Boolean), defaultValue: false }),
+      },
+    });
+
+    const relateToOneForCreateFields = {
+      create: types.arg({ type: create }),
+      connect: types.arg({ type: uniqueWhere }),
+    };
+
+    const relateToOneForCreate = types.inputObject({
+      name: `${listKey}RelateToManyForCreateInput`,
+      fields: relateToOneForCreateFields,
+    });
+
+    // this is a seperate type because:
+    // - in the future, this should contain delete
+    // - setting relateToOneForCreate to null is not allowed, setting relateToOneForUpdate disconnects
+    const relateToOneForUpdate = types.inputObject({
+      name: `${listKey}RelateToManyForUpdateInput`,
+      fields: relateToOneForCreateFields,
+    });
+
     listInfos[listKey] = {
       types: {
         output,
@@ -530,6 +577,16 @@ export function initialiseLists(
         orderBy,
         update,
         manyRelationWhere,
+        relateTo: {
+          many: {
+            create: relateToManyForCreate,
+            update: relateToManyForUpdate,
+          },
+          one: {
+            create: relateToOneForCreate,
+            update: relateToOneForUpdate,
+          },
+        },
       },
     };
   }

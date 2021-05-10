@@ -60,7 +60,9 @@ export type FieldData = {
 
 export type FieldTypeFunc<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
+    | tsgql.Arg<tsgql.InputType, any>
+    | undefined,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
@@ -68,7 +70,9 @@ export type FieldTypeFunc<
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
+    | tsgql.Arg<tsgql.InputType, any>
+    | undefined,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
@@ -272,34 +276,33 @@ export type FieldInputArgWithInputResolvers<
 
 export type FieldInputArgWithInputResolversWithOptionalArg<
   Val,
-  TArg extends tsgql.Arg<tsgql.InputType, any>,
+  TArg extends tsgql.Arg<tsgql.InputType, any> | undefined,
   InputResolvers
-> =
-  | ({
-      arg: TArg;
-    } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-      ? {
-          resolve?(
-            value: tsgql.InferValueFromArg<TArg>,
-            context: KeystoneContext,
-            inputResolversByList: Record<string, InputResolvers>
-          ): MaybePromise<Val | undefined>;
-        }
-      : {
-          resolve(
-            value: tsgql.InferValueFromArg<TArg>,
-            context: KeystoneContext,
-            inputResolversByList: Record<string, InputResolvers>
-          ): MaybePromise<Val | undefined>;
-        }))
-  | {
-      arg?: undefined;
+> = {
+  arg: TArg;
+} & (TArg extends tsgql.Arg<tsgql.InputType, any>
+  ? Val | undefined extends tsgql.InferValueFromArg<TArg>
+    ? {
+        resolve?(
+          value: tsgql.InferValueFromArg<TArg>,
+          context: KeystoneContext,
+          inputResolversByList: Record<string, InputResolvers>
+        ): MaybePromise<Val | undefined>;
+      }
+    : {
+        resolve(
+          value: tsgql.InferValueFromArg<TArg>,
+          context: KeystoneContext,
+          inputResolversByList: Record<string, InputResolvers>
+        ): MaybePromise<Val | undefined>;
+      }
+  : {
       resolve(
         value: undefined,
         context: KeystoneContext,
         inputResolversByList: Record<string, InputResolvers>
       ): MaybePromise<Val | undefined>;
-    };
+    });
 
 export type FieldInputArgWithInputResolversWithoutUndefined<
   Val,
@@ -360,7 +363,9 @@ type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends Scalaris
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
+    | tsgql.Arg<tsgql.InputType, any>
+    | undefined,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
@@ -400,7 +405,7 @@ export type FieldTypeWithoutDBField<
 
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
-    CreateArg extends tsgql.Arg<tsgql.InputType, any>,
+    CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined,
     UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
     FilterArg extends tsgql.Arg<tsgql.InputType, any>,
     UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
@@ -415,6 +420,16 @@ type AnyInputObj = tsgql.InputObjectType<
   Record<string, tsgql.Arg<tsgql.InputType, tsgql.InferValueFromInputType<tsgql.InputType>>>
 >;
 
+type NonNullListArgWithDefault<Type extends tsgql.TypesExcludingNonNull> = tsgql.Arg<
+  tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<Type>>>,
+  any[]
+>;
+
+type RelateToOneInput = tsgql.InputObjectType<{
+  create: tsgql.Arg<TypesForList['create'], any>;
+  connect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
+}>;
+
 export type TypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
@@ -427,6 +442,24 @@ export type TypesForList = {
     some: tsgql.Arg<AnyInputObj>;
     none: tsgql.Arg<AnyInputObj>;
   }>;
+  relateTo: {
+    many: {
+      create: tsgql.InputObjectType<{
+        create: NonNullListArgWithDefault<TypesForList['create']>;
+        connect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
+      }>;
+      update: tsgql.InputObjectType<{
+        create: NonNullListArgWithDefault<TypesForList['create']>;
+        connect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
+        disconnect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
+        disconnectAll: tsgql.Arg<tsgql.NonNullType<typeof types.Boolean>, boolean>;
+      }>;
+    };
+    one: {
+      create: RelateToOneInput;
+      update: RelateToOneInput;
+    };
+  };
 };
 
 export type FindManyArgs = {

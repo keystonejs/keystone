@@ -37,8 +37,8 @@ export function createAdminMeta(
       // unless it happened to be the labelField
       initialColumns = [
         labelField,
-        ...Object.keys(listConfig.fields)
-          .filter(fieldKey => listConfig.fields[fieldKey].config.access?.read !== false)
+        ...Object.keys(list.fields)
+          .filter(fieldKey => list.fields[fieldKey].access.read !== false)
           .filter(fieldKey => fieldKey !== labelField)
           .filter(fieldKey => fieldKey !== 'id'),
       ].slice(0, 3);

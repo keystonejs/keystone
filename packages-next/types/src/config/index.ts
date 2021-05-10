@@ -6,7 +6,6 @@ import type { Config } from 'apollo-server-express';
 import type { ImageMode, FileMode, KeystoneContext } from '..';
 
 import { CreateContext } from '../core';
-import type { BaseKeystone } from '../base';
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
 import type {

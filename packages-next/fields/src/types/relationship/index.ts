@@ -101,12 +101,13 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
       };
     },
   };
+  const listTypes = meta.lists[listKey].types;
   if (many) {
     return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
       ...commonConfig,
       input: {
         where: {
-          arg: types.arg({ type: meta.lists[listKey].types.manyRelationWhere }),
+          arg: types.arg({ type: listTypes.manyRelationWhere }),
           async resolve(value, context, inputResolvers) {
             if (value === null) {
               throw new Error('A many relation filter cannot be set to null');
@@ -125,10 +126,49 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             );
           },
         },
+        create: {
+          arg: types.arg({
+            type: types.nonNull(listTypes.relateTo.many.create),
+            defaultValue: { connect: [], create: [] },
+          }),
+          async resolve(value, context, inputResolvers) {
+            return {
+              connect: await Promise.all([
+                ...value.connect.map(x => inputResolvers[listKey].uniqueWhere(x)),
+                ...value.create.map(async x => ({ id: await inputResolvers[listKey].create(x) })),
+              ]),
+            };
+          },
+        },
+        update: {
+          arg: types.arg({
+            type: types.nonNull(listTypes.relateTo.many.update),
+            defaultValue: { connect: [], create: [], disconnect: [], disconnectAll: false },
+          }),
+          async resolve(value, context, inputResolvers) {
+            const disconnects = Promise.all(
+              value.disconnect.map(x => inputResolvers[listKey].uniqueWhere(x))
+            );
+            const connects = Promise.all([
+              ...value.connect.map(x => inputResolvers[listKey].uniqueWhere(x)),
+              ...value.create.map(x => inputResolvers[listKey].create(x)),
+            ]);
+            const [disconnect, connect] = await Promise.all([disconnects, connects]);
+            if (value.disconnectAll) {
+              return {
+                set: connect,
+              };
+            }
+            return {
+              disconnect: disconnect as any,
+              connect,
+            };
+          },
+        },
       },
       output: types.field({
-        args: getFindManyArgs(meta.lists[listKey].types),
-        type: types.nonNull(types.list(types.nonNull(meta.lists[listKey].types.output))),
+        args: getFindManyArgs(listTypes),
+        type: types.nonNull(types.list(types.nonNull(listTypes.output))),
         resolve({ value }, args) {
           return value.findMany(args);
         },
@@ -136,7 +176,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
       extraOutputFields: {
         [`_${meta.fieldKey}Meta`]: types.field({
           type: QueryMeta,
-          args: getFindManyArgs(meta.lists[listKey].types),
+          args: getFindManyArgs(listTypes),
           resolve({ value }, args) {
             return {
               getCount: () => value.count(args),
@@ -150,14 +190,70 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     ...commonConfig,
     input: {
       where: {
-        arg: types.arg({ type: meta.lists[listKey].types.where }),
+        arg: types.arg({ type: listTypes.where }),
         resolve(value, context, inputResolvers) {
           return inputResolvers[listKey].where(value!);
         },
       },
+      create: {
+        arg: types.arg({ type: listTypes.relateTo.one.create }),
+        async resolve(value, context, inputResolvers) {
+          if (value === undefined) {
+            return undefined;
+          }
+          if (value === null) {
+            throw new Error(
+              `${listTypes.relateTo.one.create.graphQLType.name} cannot be set to null`
+            );
+          }
+          const numOfKeys = Object.keys(value).length;
+          if (numOfKeys !== 1) {
+            throw new Error(
+              `If ${listTypes.relateTo.one.create.graphQLType.name} is passed, only one key can be passed but ${numOfKeys} must be passed`
+            );
+          }
+          if (value.connect) {
+            return {
+              connect: await inputResolvers[listKey].uniqueWhere(value.connect),
+            };
+          }
+          if (value.create) {
+            return {
+              connect: { id: await inputResolvers[listKey].create(value.create) },
+            };
+          }
+        },
+      },
+      update: {
+        arg: types.arg({ type: listTypes.relateTo.one.update }),
+        async resolve(value, context, inputResolvers) {
+          if (value === undefined) {
+            return undefined;
+          }
+          if (value === null) {
+            return { disconnect: true };
+          }
+          const numOfKeys = Object.keys(value).length;
+          if (numOfKeys !== 1) {
+            throw new Error(
+              `If ${listTypes.relateTo.one.update.graphQLType.name} is passed, only one key can be passed but ${numOfKeys} must be passed`
+            );
+          }
+          if (value.connect) {
+            return {
+              connect: await inputResolvers[listKey].uniqueWhere(value.connect),
+            };
+          }
+          if (value.create) {
+            return {
+              connect: { id: await inputResolvers[listKey].create(value.create) },
+            };
+          }
+        },
+      },
     },
     output: types.field({
-      type: meta.lists[listKey].types.output,
+      type: listTypes.output,
       resolve({ value }) {
         return value();
       },
