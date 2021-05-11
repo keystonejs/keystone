@@ -209,7 +209,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               returnFields,
               pageSize,
               first,
-              orderBy: [{ age: 'desc' }],
+              orderBy: [{ age: 'asc' }],
             });
           expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9).map(d => d.data));
           expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5).map(d => d.data));
