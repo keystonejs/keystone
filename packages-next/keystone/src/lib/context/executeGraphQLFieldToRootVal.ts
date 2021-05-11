@@ -55,7 +55,9 @@ function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
     type: getTypeNodeForType(arg.type),
     variable: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
     defaultValue:
-      arg.defaultValue === undefined ? undefined : astFromValue(arg.defaultValue, arg.type),
+      arg.defaultValue === undefined
+        ? undefined
+        : astFromValue(arg.defaultValue, arg.type) ?? undefined,
   }));
 
   const argumentNodes: ArgumentNode[] = field.args.map(arg => ({
