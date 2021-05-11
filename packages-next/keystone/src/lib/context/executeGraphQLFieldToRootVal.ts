@@ -23,6 +23,7 @@ import {
   ArgumentNode,
   GraphQLFieldConfig,
   GraphQLOutputType,
+  astFromValue,
 } from 'graphql';
 
 function getNamedOrListTypeNodeForType(
@@ -53,6 +54,8 @@ function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
     kind: 'VariableDefinition',
     type: getTypeNodeForType(arg.type),
     variable: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
+    defaultValue:
+      arg.defaultValue === undefined ? undefined : astFromValue(arg.defaultValue, arg.type),
   }));
 
   const argumentNodes: ArgumentNode[] = field.args.map(arg => ({
