@@ -48,6 +48,7 @@
       "components/index.ts",
       "system/index.ts",
       "templates/index.ts",
+      "pages/index.ts",
       "pages/*/index.tsx",
       "apollo.tsx",
       "context.tsx",
