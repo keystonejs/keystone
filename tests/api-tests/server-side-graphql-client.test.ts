@@ -97,7 +97,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const items = (await updateItems({
             context,
             listKey,
-            items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
+            items: seedItems.map((item, i) => ({
+              where: { id: item.id },
+              data: { name: `update-${i}` },
+            })),
             returnFields,
           })) as { name: string; age: number }[];
           expect(items.sort((a, b) => (a.age > b.age ? 1 : -1))).toEqual(
@@ -180,16 +183,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })
       );
       test(
-        'sortBy: Should get all sorted items',
+        'orderBy: Should get all sorted items',
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
           await seedDb({ context });
 
-          const getItemsBySortOrder = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, sortBy: [sortBy] });
+          const getItemsBySortOrder = (orderBy: Record<string, any>) =>
+            getItems({ context, listKey, returnFields, orderBy: [orderBy] });
 
-          const allItemsAscAge = await getItemsBySortOrder('age_ASC');
-          const allItemsDescAge = await getItemsBySortOrder('age_DESC');
+          const allItemsAscAge = await getItemsBySortOrder({ age: 'asc' });
+          const allItemsDescAge = await getItemsBySortOrder({ age: 'desc' });
           expect(allItemsAscAge[0]).toEqual(testData.map(x => x.data)[0]);
           expect(allItemsDescAge[0]).toEqual(testData.map(x => x.data).slice(-1)[0]);
         })
@@ -206,7 +209,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               returnFields,
               pageSize,
               first,
-              sortBy: ['age_ASC'],
+              orderBy: [{ age: 'asc' }],
             });
           expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9).map(d => d.data));
           expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5).map(d => d.data));
@@ -235,13 +238,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await seedDb({ context });
           const first = 4;
-          const getSortItems = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, skip: 3, first, sortBy: [sortBy] });
-          const itemsDESC = await getSortItems('age_DESC');
+          const getSortItems = (orderBy: Record<string, any>) =>
+            getItems({ context, listKey, returnFields, skip: 3, first, orderBy: [orderBy] });
+          const itemsDESC = await getSortItems({ age: 'desc' });
           expect(itemsDESC.length).toEqual(first);
           expect(itemsDESC[0]).toEqual({ name: 'test46', age: 460 });
 
-          const itemsASC = await getSortItems('age_ASC');
+          const itemsASC = await getSortItems({ age: 'asc' });
           expect(itemsASC.length).toEqual(4);
           expect(itemsASC[0]).toEqual({ name: 'test03', age: 30 });
         })

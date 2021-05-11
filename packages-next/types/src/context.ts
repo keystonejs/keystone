@@ -46,7 +46,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGe
       updateMany(
         args: {
           readonly data: readonly {
-            readonly id: string;
+            where: { readonly id: string };
             readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
           }[];
         } & ResolveFields
@@ -97,7 +97,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
     }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     updateMany(args: {
       readonly data: readonly {
-        readonly id: string;
+        where: { readonly id: string };
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
       }[];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
