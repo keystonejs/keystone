@@ -133,16 +133,15 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        outputPath: 'pages/signin.js',
         src: signinTemplate({ gqlNames, identityField, secretField }),
+        outputPath: 'pages/signin.js',
       },
     ];
     if (initFirstItem) {
       filesToWrite.push({
         mode: 'write',
-        outputPath: 'pages/init.js',
-        // wonder what this template expects from config...
         src: initTemplate({ listKey, initFirstItem }),
+        outputPath: 'pages/init.js',
       });
     }
     return filesToWrite;

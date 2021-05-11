@@ -24,11 +24,11 @@ export const writeAdminFiles = (
     outputPath =>
       ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
   ),
-  { mode: 'write', outputPath: 'pages/no-access.js', src: noAccessTemplate(config.session) },
+  { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
   {
     mode: 'write',
-    outputPath: 'pages/_app.js',
     src: appTemplate(lists, graphQLSchema, { configFileExists, projectAdminPath }),
+    outputPath: 'pages/_app.js',
   },
   { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
   ...adminMeta.lists.map(

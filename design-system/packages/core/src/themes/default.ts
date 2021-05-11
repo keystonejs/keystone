@@ -262,6 +262,7 @@ const colors = {
   background: 'white',
   backgroundMuted: palette.neutral100,
   backgroundDim: palette.neutral200,
+  backgroundHover: palette.blue50,
   border: palette.neutral300,
   borderCritical: palette.red400,
   borderFocus: palette.blue400,

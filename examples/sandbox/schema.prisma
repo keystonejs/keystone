@@ -1,0 +1,32 @@
+datasource sqlite {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model Todo {
+  id           Int       @id @default(autoincrement())
+  label        String?
+  isComplete   Boolean?
+  finishBy     DateTime?
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  assignedTo   User?     @relation("TodoassignedTo", fields: [assignedToId], references: [id])
+  assignedToId Int?      @map("assignedTo")
+
+  @@index([assignedToId])
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String?
+  email     String?
+  password  String?
+  createdAt DateTime?
+  updatedAt DateTime?
+  tasks     Todo[]    @relation("TodoassignedTo")
+}

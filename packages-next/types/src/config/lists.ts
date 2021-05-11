@@ -113,29 +113,6 @@ export type ListAdminUIConfig<
    */
   hideDelete?: MaybeSessionFunction<boolean>;
   /**
-   * Configuration specific to the list view in the Admin UI
-   */
-  listView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'read'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
-    /**
-     * The columns(which refer to fields) that should be shown to users of the Admin UI.
-     * Users of the Admin UI can select different columns to show in the UI.
-     * @default the first three fields in the list
-     */
-    initialColumns?: (keyof Fields)[];
-    // was previously top-level defaultSort
-    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
-    // was previously defaultPageSize
-    pageSize?: number; // default number of items to display per page on the list screen
-    // note: we are removing maximumPageSize
-  };
-
-  /**
    * Configuration specific to the create view in the Admin UI
    */
   createView?: {
@@ -158,6 +135,29 @@ export type ListAdminUIConfig<
      * @default 'edit'
      */
     defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
+  };
+
+  /**
+   * Configuration specific to the list view in the Admin UI
+   */
+  listView?: {
+    /**
+     * The default field mode for fields on the create view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'read'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
+    /**
+     * The columns(which refer to fields) that should be shown to users of the Admin UI.
+     * Users of the Admin UI can select different columns to show in the UI.
+     * @default the first three fields in the list
+     */
+    initialColumns?: (keyof Fields)[];
+    // was previously top-level defaultSort
+    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
+    // was previously defaultPageSize
+    pageSize?: number; // default number of items to display per page on the list screen
+    // note: we are removing maximumPageSize
   };
 };
 

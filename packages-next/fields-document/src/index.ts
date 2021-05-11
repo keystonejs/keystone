@@ -74,15 +74,16 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
-    relationships?: RelationshipsConfig;
-    componentBlocks?: Record<string, ComponentBlock>;
-    formatting?: true | FormattingConfig;
-    links?: true;
-    dividers?: true;
-    layouts?: readonly (readonly [number, ...number[]])[];
-  };
+export type DocumentFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = CommonFieldConfig<TGeneratedListTypes> & {
+  relationships?: RelationshipsConfig;
+  componentBlocks?: Record<string, ComponentBlock>;
+  formatting?: true | FormattingConfig;
+  links?: true;
+  dividers?: true;
+  layouts?: readonly (readonly [number, ...number[]])[];
+};
 
 const views = path.join(
   path.dirname(require.resolve('@keystone-next/fields-document/package.json')),
@@ -182,81 +183,79 @@ function jsonFieldTypePolyfilledForSQLite<
   return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Json' })(config);
 }
 
-export const document =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    componentBlocks = {},
+export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  componentBlocks = {},
+  dividers,
+  formatting,
+  layouts,
+  relationships: configRelationships,
+  links,
+  ...config
+}: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => meta => {
+  const documentFeatures = normaliseDocumentFeatures({
     dividers,
     formatting,
     layouts,
-    relationships: configRelationships,
     links,
-    ...config
-  }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  meta => {
-    const documentFeatures = normaliseDocumentFeatures({
-      dividers,
-      formatting,
-      layouts,
-      links,
-    });
-    const relationships = normaliseRelationships(configRelationships);
+  });
+  const relationships = normaliseRelationships(configRelationships);
 
-    const inputResolver = (data: JSONValue | null | undefined): any => {
-      if (data === null || data === undefined) {
-        return data;
-      }
-      return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
-    };
+  const inputResolver = (data: JSONValue | null | undefined): any => {
+    if (data === null || data === undefined) {
+      return data;
+    }
+    return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
+  };
 
-    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
-      ...config,
-      input: {
-        create: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
-        update: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
-      },
-      output: types.field({
-        type: types.object<{ document: JSONValue }>()({
-          name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
-          fields: {
-            document: types.field({
-              args: {
-                hydrateRelationships: types.arg({
-                  type: types.nonNull(types.Boolean),
-                  defaultValue: false,
-                }),
-              },
-              type: types.nonNull(types.JSON),
-              resolve({ document }, { hydrateRelationships }, context) {
-                return hydrateRelationships
-                  ? addRelationshipData(
-                      document as any,
-                      context.graphql,
-                      relationships,
-                      componentBlocks,
-                      context.gqlNames as any
-                    )
-                  : (document as any);
-              },
-            }),
-          },
-        }),
-        resolve({ value }) {
-          if (value === null) {
-            return null;
-          }
-          return { document: value };
+  return jsonFieldTypePolyfilledForSQLite(meta.provider, {
+    ...config,
+    input: {
+      create: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
+      update: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
+    },
+    output: types.field({
+      type: types.object<{ document: JSONValue }>()({
+        name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
+        fields: {
+          document: types.field({
+            args: {
+              hydrateRelationships: types.arg({
+                type: types.nonNull(types.Boolean),
+                defaultValue: false,
+              }),
+            },
+            type: types.nonNull(types.JSON),
+            resolve({ document }, { hydrateRelationships }, context) {
+              return hydrateRelationships
+                ? addRelationshipData(
+                    document as any,
+                    context.graphql,
+                    relationships,
+                    componentBlocks,
+                    context.gqlNames as any
+                  )
+                : (document as any);
+            },
+          }),
         },
       }),
-      views,
-      getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
-        return {
-          relationships,
-          documentFeatures,
-          componentBlocksPassedOnServer: Object.keys(componentBlocks),
-        };
+      resolve({ value }) {
+        if (value === null) {
+          return null;
+        }
+        return { document: value };
       },
-    });
-  };
+    }),
+    views,
+    getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+      return {
+        relationships,
+        documentFeatures,
+        componentBlocksPassedOnServer: Object.keys(componentBlocks),
+      };
+    },
+  });
+};
 
 function normaliseRelationships(
   configRelationships: DocumentFieldConfig<BaseGeneratedListTypes>['relationships']
