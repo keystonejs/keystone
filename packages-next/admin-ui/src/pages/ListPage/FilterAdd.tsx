@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';
+import { ComponentProps, Fragment, FormEvent, useMemo, useRef, useState, useEffect } from 'react';
 import { FieldMeta, JSONValue } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
@@ -59,6 +59,14 @@ export function FilterAdd({ listKey }: { listKey: string }) {
       },
     ],
   });
+
+  // const dialogConsumerRef = useRef(null);
+
+  // useEffect(() => {
+  //   if (isOpen && dialogConsumerRef?.current) {
+  //     dialogConsumerRef?.focus();
+  //   }
+  // }, [isOpen, dialogConsumerRef]);
 
   return (
     <Fragment>
@@ -181,7 +189,6 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
       {state.kind === 'selecting-field' && (
         <Options
           components={fieldSelectComponents}
-          autoFocus
           onChange={newVal => {
             const fieldPath: string = (newVal as any).value;
             const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0];
