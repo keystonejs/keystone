@@ -56,7 +56,7 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
   }
 
   if (data.ref) {
-    if (data.ref) {
+    if (data.upload) {
       throw new Error('Only one of ref and upload can be passed to FileFieldInput');
     }
     return context.files!.getDataFromRef(data.ref);
