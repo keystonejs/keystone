@@ -9,8 +9,7 @@ export type BaseGeneratedListTypes = {
       readonly search?: string | null;
       readonly first?: number | null;
       readonly skip?: number | null;
-      readonly orderBy?: string;
-      readonly sortBy?: ReadonlyArray<string> | null;
+      readonly orderBy?: ReadonlyArray<Record<string, any>> | null;
     };
   };
 };
