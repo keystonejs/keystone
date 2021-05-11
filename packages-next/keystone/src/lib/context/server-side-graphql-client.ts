@@ -76,7 +76,7 @@ const createItems = async ({
 }) => {
   const { createManyMutationName, createManyInputName } = context.gqlNames(listKey);
 
-  const query = `mutation ($items: [${createManyInputName}]){
+  const query = `mutation ($items: [${createManyInputName}!]!){
     ${createManyMutationName}(data: $items) { ${returnFields} }
   }`;
 
@@ -110,7 +110,7 @@ const getItem = async ({
 const getItems = async ({
   listKey,
   where = {},
-  sortBy,
+  orderBy,
   first,
   skip,
   pageSize = 500,
@@ -119,7 +119,7 @@ const getItems = async ({
 }: {
   listKey: string;
   where?: Record<string, any> | null;
-  sortBy?: readonly string[] | null;
+  orderBy?: readonly Record<string, 'asc' | 'desc'>[] | null;
   first?: number | null;
   skip?: number | null;
   pageSize?: number;
@@ -129,8 +129,8 @@ const getItems = async ({
   const { listQueryName, whereInputName, listSortName } = context.gqlNames(listKey);
 
   let query;
-  if (sortBy) {
-    query = `query ($first: Int!, $skip: Int!, $sortBy: [${listSortName}!], $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, sortBy: $sortBy, where: $where) { ${returnFields} }  }`;
+  if (orderBy) {
+    query = `query ($first: Int!, $skip: Int!, $orderBy: [${listSortName}!], $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, orderBy: $orderBy, where: $where) { ${returnFields} }  }`;
   } else {
     query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
   }
@@ -148,7 +148,7 @@ const getItems = async ({
     }
     const response = await context.graphql.run({
       query,
-      variables: { first: _first, skip: _skip, sortBy, where },
+      variables: { first: _first, skip: _skip, orderBy, where },
     });
 
     latestResult = response[Object.keys(response || {})[0]];
@@ -177,8 +177,8 @@ const updateItem = async ({
 }): Promise<Record<string, any>> => {
   const { updateMutationName, updateInputName } = context.gqlNames(listKey);
 
-  const query = `mutation ($id: ID!, $data: ${updateInputName}){
-    ${updateMutationName}(id: $id, data: $data) { ${returnFields} }
+  const query = `mutation ($id: ID!, $data: ${updateInputName}!){
+    ${updateMutationName}(where: { id: $id }, data: $data) { ${returnFields} }
   }`;
 
   const result = await context.graphql.run({ query, variables: { id: item.id, data: item.data } });
@@ -194,14 +194,14 @@ const updateItems = async ({
   context,
 }: {
   listKey: string;
-  items: readonly { readonly id: string; readonly data: Record<string, any> }[];
+  items: readonly { where: { readonly id: string }; readonly data: Record<string, any> }[];
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
 }) => {
   const { updateManyMutationName, updateManyInputName } = context.gqlNames(listKey);
 
-  const query = `mutation ($items: [${updateManyInputName}]){
+  const query = `mutation ($items: [${updateManyInputName}!]!){
     ${updateManyMutationName}(data: $items) { ${returnFields} }
   }`;
   return _runChunkedMutation({
@@ -249,7 +249,7 @@ const deleteItems = async ({
 }) => {
   const { deleteManyMutationName } = context.gqlNames(listKey);
 
-  const query = `mutation ($items: [ID!]){
+  const query = `mutation ($items: [ID!]!){
     ${deleteManyMutationName}(ids: $items) {
       ${returnFields}
     }
