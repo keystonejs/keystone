@@ -114,7 +114,6 @@ let f = fixturez(__dirname);
 export const symlinkKeystoneDeps = Object.fromEntries(
   [
     '@keystone-next/keystone',
-    '@keystone-next/admin-ui',
     '@keystone-next/auth',
     '@keystone-next/fields',
     '@prisma/engines',

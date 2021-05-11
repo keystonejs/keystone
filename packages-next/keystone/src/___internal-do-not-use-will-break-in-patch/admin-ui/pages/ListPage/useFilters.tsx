@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { JSONValue, ListMeta } from '@keystone-next/types';
-import { useRouter } from '../../router';
+import { useRouter } from '../../../../admin-ui/router';
 
 export type Filter = { field: string; type: string; value: JSONValue };
 

@@ -1,6 +1,6 @@
 import { ListMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
-import { useRouter } from '../../router';
+import { useRouter } from '../../../../admin-ui/router';
 
 export function useSelectedFields(
   list: ListMeta,

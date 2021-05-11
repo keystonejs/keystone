@@ -6,7 +6,7 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 import { Fragment } from 'react';
-import { useRouter } from '../../router';
+import { useRouter } from '../../../../admin-ui/router';
 import { fieldSelectionOptionsComponents } from './FieldSelection';
 import { useSort } from './useSort';
 

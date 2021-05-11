@@ -1,2 +1,5 @@
-export * from 'next/image';
-export { default } from 'next/image';
+throw new Error(
+    'The @keystone-next/admin-ui package has been deprecated. Please import from @keystone-next/keystone/admin-ui instead.'
+  );
+
+  export {}

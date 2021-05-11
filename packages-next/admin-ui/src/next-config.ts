@@ -1,22 +1,5 @@
-import Path from 'path';
-// @ts-ignore
-import withPreconstruct from '@preconstruct/next';
+throw new Error(
+    'The @keystone-next/admin-ui package has been deprecated. Please import from @keystone-next/keystone/admin-ui instead.'
+  );
 
-export const config = withPreconstruct({
-  webpack(config: any) {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      react: Path.dirname(require.resolve('react/package.json')),
-      'react-dom': Path.dirname(require.resolve('react-dom/package.json')),
-      '@keystone-next/admin-ui': Path.dirname(
-        require.resolve('@keystone-next/admin-ui/package.json')
-      ),
-    };
-    config.externals = [
-      ...config.externals,
-      /@keystone-next\/keystone/,
-      /prisma[\/\\]generated-client/,
-    ];
-    return config;
-  },
-});
+  export {}

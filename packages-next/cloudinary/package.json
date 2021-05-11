@@ -7,7 +7,6 @@
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@keystone-next/adapter-prisma-legacy": "^6.1.0",
-    "@keystone-next/admin-ui": "^14.1.3",
     "@keystone-next/fields": "^8.2.0",
     "@keystone-next/types": "^17.1.0",
     "@keystone-ui/button": "^4.0.0",
