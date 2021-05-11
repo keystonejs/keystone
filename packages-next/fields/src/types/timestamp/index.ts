@@ -17,7 +17,7 @@ export type TimestampFieldConfig<
 export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>({
   index,
   ...config
-}: TimestampFieldConfig<TGeneratedListTypes>): FieldTypeFunc => () => {
+}: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => () => {
   const inputResolver = (value: string | null | undefined) => {
     if (value === null || value === undefined) {
       return value;
