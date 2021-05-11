@@ -1,5 +1,14 @@
 # @keystone-ui/options
 
+## 3.0.1
+
+### Patch Changes
+
+- [#5642](https://github.com/keystonejs/keystone/pull/5642) [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945) Thanks [@malitov](https://github.com/malitov)! - Added hover state to the `OptionPrimitive` in Admin UI and updated css colors
+
+- Updated dependencies [[`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945)]:
+  - @keystone-ui/core@2.0.3
+
 ## 3.0.0
 
 ### Major Changes
