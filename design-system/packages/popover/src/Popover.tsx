@@ -52,7 +52,6 @@ export const useControlledPopover = (
   useEffect(() => {
     if (update && isOpen) {
       update();
-      popoverElement?.focus();
     }
   }, [isOpen, update]);
 
