@@ -254,22 +254,26 @@ export type UpdateFieldInputArg<
   FieldInputResolver<
     tsgql.InferValueFromArg<TArg>,
     DBFieldToInputValue<TDBField>,
-    TDBField extends RelationDBField<infer Mode>
-      ? (
-          input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
-        ) => Promise<any>
-      : undefined
+    any
+    // i think this is broken because variance?
+    // TDBField extends RelationDBField<infer Mode>
+    //   ? (
+    //       input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+    //     ) => Promise<any>
+    //   : undefined
   >
 >;
 
 type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResolver<
   Input,
   DBFieldToInputValue<TDBField>,
-  TDBField extends RelationDBField<infer Mode>
-    ? (
-        input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
-      ) => Promise<any>
-    : undefined
+  any
+  // i think this is broken because variance?
+  // TDBField extends RelationDBField<infer Mode>
+  //   ? (
+  //       input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+  //     ) => Promise<any>
+  //   : undefined
 >;
 
 export type CreateFieldInputArg<
@@ -298,14 +302,16 @@ export type WhereFieldInputArg<
   FieldInputResolver<
     Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
     DBFieldFilters<TDBField>,
-    TDBField extends RelationDBField<infer Mode>
-      ? (
-          input: {
-            many: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['manyRelationWhere']>>;
-            one: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['where']>>;
-          }[Mode]
-        ) => Promise<any>
-      : undefined
+    any
+    // i think this is broken because variance?
+    // TDBField extends RelationDBField<infer Mode>
+    //   ? (
+    //       input: {
+    //         many: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['manyRelationWhere']>>;
+    //         one: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['where']>>;
+    //       }[Mode]
+    //     ) => Promise<any>
+    //   : undefined
   >
 >;
 
