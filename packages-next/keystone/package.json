@@ -73,7 +73,7 @@
     "object-hash": "^2.1.1",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "prisma": "2.22.0",
     "prompts": "^2.4.1",
     "react": "^17.0.2",

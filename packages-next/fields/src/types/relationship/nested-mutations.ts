@@ -135,10 +135,7 @@ export async function resolveNestedMany({
   } else if (input.disconnect) {
     // We want to avoid DB lookups where possible, so we split the input into
     // two halves; one with ids, and the other without ids
-    const {
-      withId,
-      withoutId,
-    }: { withId: { id: any }[]; withoutId: { id: any }[] } = groupBy(
+    const { withId, withoutId }: { withId: { id: any }[]; withoutId: { id: any }[] } = groupBy(
       input.disconnect,
       ({ id }: { id: any }) => (id ? 'withId' : 'withoutId')
     );

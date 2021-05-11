@@ -164,77 +164,73 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
     const mode_field = `${this.path}_mode`;
     const id_field = `${this.path}_id`;
 
-    addPreSaveHook(
-      (item: Record<P, any>): Record<string, any> => {
-        if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
-          return item;
-        }
-        if (item[field_path as P] === null) {
-          // If the property exists on the field but is null or falsey
-          // all split fields are null
-          // delete the original field item
-          // return the item
-          const newItem = {
-            [filesize_field]: null,
-            [extension_field]: null,
-            [width_field]: null,
-            [height_field]: null,
-            [id_field]: null,
-            [mode_field]: null,
-            ...item,
-          };
-          delete newItem[field_path];
-          return newItem;
-        } else {
-          const { mode, filesize, extension, width, height, id } = item[field_path];
-
-          const newItem = {
-            [filesize_field]: filesize,
-            [extension_field]: extension,
-            [width_field]: width,
-            [height_field]: height,
-            [id_field]: id,
-            [mode_field]: mode,
-            ...item,
-          };
-
-          delete newItem[field_path];
-
-          return newItem;
-        }
-      }
-    );
-    addPostReadHook(
-      (item: Record<string, any>): Record<P, any> => {
-        if (
-          !item[filesize_field] ||
-          !item[extension_field] ||
-          !item[width_field] ||
-          !item[height_field] ||
-          !item[id_field] ||
-          !item[mode_field]
-        ) {
-          item[field_path] = null;
-          return item;
-        }
-        item[field_path] = {
-          filesize: item[filesize_field],
-          extension: item[extension_field],
-          width: item[width_field],
-          height: item[height_field],
-          id: item[id_field],
-          mode: item[mode_field],
-        };
-
-        delete item[filesize_field];
-        delete item[extension_field];
-        delete item[width_field];
-        delete item[height_field];
-        delete item[id_field];
-        delete item[mode_field];
-
+    addPreSaveHook((item: Record<P, any>): Record<string, any> => {
+      if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
         return item;
       }
-    );
+      if (item[field_path as P] === null) {
+        // If the property exists on the field but is null or falsey
+        // all split fields are null
+        // delete the original field item
+        // return the item
+        const newItem = {
+          [filesize_field]: null,
+          [extension_field]: null,
+          [width_field]: null,
+          [height_field]: null,
+          [id_field]: null,
+          [mode_field]: null,
+          ...item,
+        };
+        delete newItem[field_path];
+        return newItem;
+      } else {
+        const { mode, filesize, extension, width, height, id } = item[field_path];
+
+        const newItem = {
+          [filesize_field]: filesize,
+          [extension_field]: extension,
+          [width_field]: width,
+          [height_field]: height,
+          [id_field]: id,
+          [mode_field]: mode,
+          ...item,
+        };
+
+        delete newItem[field_path];
+
+        return newItem;
+      }
+    });
+    addPostReadHook((item: Record<string, any>): Record<P, any> => {
+      if (
+        !item[filesize_field] ||
+        !item[extension_field] ||
+        !item[width_field] ||
+        !item[height_field] ||
+        !item[id_field] ||
+        !item[mode_field]
+      ) {
+        item[field_path] = null;
+        return item;
+      }
+      item[field_path] = {
+        filesize: item[filesize_field],
+        extension: item[extension_field],
+        width: item[width_field],
+        height: item[height_field],
+        id: item[id_field],
+        mode: item[mode_field],
+      };
+
+      delete item[filesize_field];
+      delete item[extension_field];
+      delete item[width_field];
+      delete item[height_field];
+      delete item[id_field];
+      delete item[mode_field];
+
+      return item;
+    });
   }
 }

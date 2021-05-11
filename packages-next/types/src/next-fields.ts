@@ -318,11 +318,10 @@ export type FieldInputArgWithInputResolversWithoutUndefined<
 
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
 
-type ResolveFunc<
-  Func extends (firstArg: any, ...args: any[]) => any
-> = Parameters<Func>[0] extends UnwrapMaybePromise<ReturnType<ReturnType<Func>>>
-  ? { resolve?: Func }
-  : { resolve: Func };
+type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
+  Parameters<Func>[0] extends UnwrapMaybePromise<ReturnType<ReturnType<Func>>>
+    ? { resolve?: Func }
+    : { resolve: Func };
 
 type FieldInputResolverWithoutInputResolvers<Input, Output> = (
   value: Input,

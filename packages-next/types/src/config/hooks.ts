@@ -42,9 +42,8 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
   [Key in keyof T]: AddFieldPathToObj<T[Key]>;
 };
 
-export type FieldHooks<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
+export type FieldHooks<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
 
 type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   | {

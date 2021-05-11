@@ -39,9 +39,10 @@ export function useItemState({
     const dataGetter = makeDataGetter(data, error?.graphQLErrors);
     const relationshipGetter = dataGetter.get('item').get('relationship');
     const isMany = Array.isArray(relationshipGetter.data);
-    const itemsArrFromData: DataGetter<{ id: string; [key: string]: any }>[] = (isMany
-      ? relationshipGetter.data.map((_: any, i: number) => relationshipGetter.get(i))
-      : [relationshipGetter]
+    const itemsArrFromData: DataGetter<{ id: string; [key: string]: any }>[] = (
+      isMany
+        ? relationshipGetter.data.map((_: any, i: number) => relationshipGetter.get(i))
+        : [relationshipGetter]
     ).filter((x: DataGetter<any>) => x.data?.id != null);
     return { relationshipGetter, itemsArrFromData };
   }, [data, error]);

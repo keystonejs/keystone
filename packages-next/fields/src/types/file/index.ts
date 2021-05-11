@@ -11,9 +11,8 @@ import { getFileRef } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 
-export type FileFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = CommonFieldConfig<TGeneratedListTypes>;
+export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  CommonFieldConfig<TGeneratedListTypes>;
 
 const FileFieldInput = types.inputObject({
   name: 'FileFieldInput',
@@ -69,32 +68,34 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
   return context.files!.getDataFromStream(upload.createReadStream(), upload.filename);
 }
 
-export const file = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: FileFieldConfig<TGeneratedListTypes> = {}
-): FieldTypeFunc => () => {
-  return fieldType({
-    kind: 'multi',
-    fields: {
-      mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-      filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-      filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-    },
-  })({
-    ...config,
-    input: {
-      create: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
-      update: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
-    },
-    // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
-    output: types.field({
-      type: LocalFileFieldOutput,
-      resolve({ value: { filesize, filename, mode } }) {
-        if (filesize === null || filename === null || mode !== 'local') {
-          return null;
-        }
-        return { mode: 'local', filename, filesize };
+export const file =
+  <TGeneratedListTypes extends BaseGeneratedListTypes>(
+    config: FileFieldConfig<TGeneratedListTypes> = {}
+  ): FieldTypeFunc =>
+  () => {
+    return fieldType({
+      kind: 'multi',
+      fields: {
+        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
       },
-    }),
-    views: resolveView('file/views'),
-  });
-};
+    })({
+      ...config,
+      input: {
+        create: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
+        update: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
+      },
+      // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
+      output: types.field({
+        type: LocalFileFieldOutput,
+        resolve({ value: { filesize, filename, mode } }) {
+          if (filesize === null || filename === null || mode !== 'local') {
+            return null;
+          }
+          return { mode: 'local', filename, filesize };
+        },
+      }),
+      views: resolveView('file/views'),
+    });
+  };

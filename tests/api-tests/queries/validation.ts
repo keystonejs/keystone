@@ -11,18 +11,17 @@ type Definition = {
   totalNumFields?: number | null;
 };
 
-export const definitionLimit = (maxDefinitions: number) => (
-  validationContext: ValidationContext
-) => {
-  const doc = validationContext.getDocument();
-  if (doc.definitions.length > maxDefinitions) {
-    validationContext.reportError(
-      // @ts-ignore
-      new Error(`Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`)
-    );
-  }
-  return validationContext;
-};
+export const definitionLimit =
+  (maxDefinitions: number) => (validationContext: ValidationContext) => {
+    const doc = validationContext.getDocument();
+    if (doc.definitions.length > maxDefinitions) {
+      validationContext.reportError(
+        // @ts-ignore
+        new Error(`Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`)
+      );
+    }
+    return validationContext;
+  };
 
 // @ts-ignore
 const nodeName = (node: ASTNode) => (node.name && node.name.value) || 'query';
