@@ -330,7 +330,7 @@ export type FieldTypeWithoutDBField<
   OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   input?: {
-    uniqueWhere?: UniqueWhereFieldInputArg<TDBField, UniqueFilterArg>;
+    uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
     where?: WhereFieldInputArg<DBFieldFilters<TDBField>, FilterArg, FilterInputResolvers>;
     create?: CreateFieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
     update?: UpdateFieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
