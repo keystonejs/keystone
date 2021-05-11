@@ -108,22 +108,8 @@ export const relationship =
         input: {
           where: {
             arg: types.arg({ type: listTypes.manyRelationWhere }),
-            async resolve(value, context, inputResolvers) {
-              if (value === null) {
-                throw new Error('A many relation filter cannot be set to null');
-              }
-              return Object.fromEntries(
-                await Promise.all(
-                  Object.entries(value).map(async ([key, val]) => {
-                    if (val === null) {
-                      throw new Error(
-                        `The key ${key} in a many relation filter cannot be set to null`
-                      );
-                    }
-                    return [key, await inputResolvers[listKey].where(val!)];
-                  })
-                )
-              );
+            async resolve(value, context, resolve) {
+              return resolve(value);
             },
           },
           create: {
@@ -131,29 +117,8 @@ export const relationship =
               type: types.nonNull(listTypes.relateTo.many.create),
               defaultValue: { connect: [], create: [] },
             }),
-            async resolve(value, context, inputResolvers) {
-              const connects = Promise.all(
-                value.connect.map(x => inputResolvers[listKey].uniqueWhere(x))
-              );
-              const _creates = Promise.all(
-                value.create.map(x => inputResolvers[listKey].create(x))
-              );
-              const [connect, creates] = await Promise.all([connects, _creates]);
-
-              const create: any[] = [];
-
-              for (const createData of creates) {
-                if (createData.kind === 'create') {
-                  create.push(createData.data);
-                }
-                if (createData.kind === 'connect') {
-                  connect.push({ id: createData.id });
-                }
-              }
-              return {
-                connect,
-                create,
-              };
+            async resolve(value, context, resolve) {
+              return resolve(value);
             },
           },
           update: {
@@ -161,39 +126,8 @@ export const relationship =
               type: types.nonNull(listTypes.relateTo.many.update),
               defaultValue: { connect: [], create: [], disconnect: [], disconnectAll: false },
             }),
-            async resolve(value, context, inputResolvers) {
-              const disconnects = Promise.all(
-                value.disconnect.map(x => inputResolvers[listKey].uniqueWhere(x))
-              );
-              const connects = Promise.all(
-                value.connect.map(x => inputResolvers[listKey].uniqueWhere(x))
-              );
-              const _creates = Promise.all(
-                value.create.map(x => inputResolvers[listKey].create(x))
-              );
-              const [disconnect, connect, creates] = await Promise.all([
-                disconnects,
-                connects,
-                _creates,
-              ]);
-
-              const create: any[] = [];
-
-              for (const createData of creates) {
-                if (createData.kind === 'create') {
-                  create.push(createData.data);
-                }
-                if (createData.kind === 'connect') {
-                  connect.push({ id: createData.id });
-                }
-              }
-
-              return {
-                set: value.disconnectAll ? [] : undefined,
-                disconnect: disconnect as any,
-                connect,
-                create,
-              };
+            async resolve(value, context, resolve) {
+              return resolve(value);
             },
           },
         },
@@ -222,68 +156,20 @@ export const relationship =
       input: {
         where: {
           arg: types.arg({ type: listTypes.where }),
-          resolve(value, context, inputResolvers) {
-            return inputResolvers[listKey].where(value!);
+          resolve(value, context, resolve) {
+            return resolve(value);
           },
         },
         create: {
           arg: types.arg({ type: listTypes.relateTo.one.create }),
-          async resolve(value, context, inputResolvers) {
-            if (value === undefined) {
-              return undefined;
-            }
-            if (value === null) {
-              throw new Error(
-                `${listTypes.relateTo.one.create.graphQLType.name} cannot be set to null`
-              );
-            }
-            const numOfKeys = Object.keys(value).length;
-            if (numOfKeys !== 1) {
-              throw new Error(
-                `If ${listTypes.relateTo.one.create.graphQLType.name} is passed, only one key can be passed but ${numOfKeys} must be passed`
-              );
-            }
-            if (value.connect) {
-              return {
-                connect: await inputResolvers[listKey].uniqueWhere(value.connect),
-              };
-            }
-            if (value.create) {
-              const create = await inputResolvers[listKey].create(value.create);
-              if (create.kind === 'connect') {
-                return { connect: { id: create.id } };
-              }
-              return { create: create.data };
-            }
+          async resolve(value, context, resolve) {
+            return resolve(value);
           },
         },
         update: {
           arg: types.arg({ type: listTypes.relateTo.one.update }),
-          async resolve(value, context, inputResolvers) {
-            if (value === undefined) {
-              return undefined;
-            }
-            if (value === null) {
-              return { disconnect: true };
-            }
-            const numOfKeys = Object.keys(value).length;
-            if (numOfKeys !== 1) {
-              throw new Error(
-                `If ${listTypes.relateTo.one.update.graphQLType.name} is passed, only one key can be passed but ${numOfKeys} must be passed`
-              );
-            }
-            if (value.connect) {
-              return {
-                connect: await inputResolvers[listKey].uniqueWhere(value.connect),
-              };
-            }
-            if (value.create) {
-              const create = await inputResolvers[listKey].create(value.create);
-              if (create.kind === 'connect') {
-                return { connect: { id: create.id } };
-              }
-              return { create: create.data };
-            }
+          async resolve(value, context, resolve) {
+            return resolve(value);
           },
         },
       },

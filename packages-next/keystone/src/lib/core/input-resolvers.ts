@@ -10,6 +10,12 @@ import {
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList, IdType } from './utils';
+import {
+  resolveRelateToManyForCreateInput,
+  resolveRelateToManyForUpdateInput,
+  resolveRelateToOneForCreateInput,
+  resolveRelateToOneForUpdateInput,
+} from './nested-mutation-input-resolvers';
 
 // this is wrong, what is being enforcing with this should be enforced by using generics
 export type InputFilter = Record<string, any> & {
@@ -113,7 +119,36 @@ async function resolveWhereInput(
         const where = field.input!.where!;
         const dbField = field.dbField;
         const { AND, OR, NOT, ...rest } = where.resolve
-          ? await where.resolve(value, context, inputResolvers)
+          ? await where.resolve(
+              value,
+              context,
+              (() => {
+                if (field.dbField.kind !== 'relation') {
+                  return undefined as any;
+                }
+                const whereResolver = inputResolvers[field.dbField.list].where;
+                if (field.dbField.mode === 'many') {
+                  return async () => {
+                    if (value === null) {
+                      throw new Error('A many relation filter cannot be set to null');
+                    }
+                    return Object.fromEntries(
+                      await Promise.all(
+                        Object.entries(value).map(async ([key, val]) => {
+                          if (val === null) {
+                            throw new Error(
+                              `The key ${key} in a many relation filter cannot be set to null`
+                            );
+                          }
+                          return [key, await whereResolver(val as any)];
+                        })
+                      )
+                    );
+                  };
+                }
+                return whereResolver;
+              })()
+            )
           : value;
         return {
           AND: AND?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
@@ -346,7 +381,26 @@ export async function resolveInputForCreateOrUpdate(
         const inputConfig = field.input?.[operation];
         const input = originalInput[fieldKey];
         const resolved = inputConfig?.resolve
-          ? await inputConfig.resolve(input, context, nestedMutationState.resolvers)
+          ? await inputConfig.resolve(
+              input,
+              context,
+              (() => {
+                if (field.dbField.kind !== 'relation') {
+                  return undefined as any;
+                }
+                const inputResolvers = nestedMutationState.resolvers[listKey];
+                if (operation === 'create') {
+                  if (field.dbField.mode === 'many') {
+                    return resolveRelateToManyForCreateInput(inputResolvers);
+                  }
+                  return resolveRelateToOneForCreateInput(inputResolvers);
+                }
+                if (field.dbField.mode === 'many') {
+                  return resolveRelateToManyForUpdateInput(inputResolvers);
+                }
+                return resolveRelateToOneForUpdateInput(inputResolvers);
+              })()
+            )
           : input;
         return [fieldKey, resolved] as const;
       })

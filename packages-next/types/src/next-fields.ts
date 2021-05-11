@@ -1,10 +1,6 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
-import {
-  FilterInputResolvers,
-  CreateAndUpdateInputResolvers,
-} from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import type { FileUpload } from 'graphql-upload';
 // this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
@@ -128,7 +124,7 @@ export type ScalarDBField<
    * The native database type that the field should use. See https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types for what the possible native types should be
    * The native type should not include @datasourcename. so to specify the uuid type, the correct value for nativeType would be `Uuid`
    */
-  // TODO: type this nicely rather than just accepting a string(it can't just be a set of string literals though)
+  // TODO: type this well rather than just accepting a string(it can't just be a set of string literals though)
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
@@ -170,29 +166,30 @@ export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
 
 export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
 
-// TODO: this probably isn't totally right for create
+// TODO: this isn't right for create
+// for create though, db level defaults need to be taken into account for when to not allow undefined
 type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
   infer Mode
 >
   ? {
-      optional: ScalarPrismaTypes[Scalar] | null;
-      required: ScalarPrismaTypes[Scalar];
-      many: ScalarPrismaTypes[Scalar][];
+      optional: ScalarPrismaTypes[Scalar] | null | undefined;
+      required: ScalarPrismaTypes[Scalar] | undefined;
+      many: ScalarPrismaTypes[Scalar][] | undefined;
     }[Mode]
   : TDBField extends RelationDBField<'many' | 'one'>
-  ? { connect?: {}; disconnect?: boolean }
+  ? { connect?: {}; disconnect?: boolean } | undefined
   : TDBField extends EnumDBField<infer Value, infer Mode>
   ? {
-      optional: Value | null;
-      required: Value;
-      many: Value[];
+      optional: Value | null | undefined;
+      required: Value | undefined;
+      many: Value[] | undefined;
     }[Mode]
   : TDBField extends NoDBField
   ? undefined
   : TDBField extends MultiDBField<infer Fields>
-  ? // note: this is very intentionally not optional and instead | undefined to force people to explicitly show what they are not setting
-    { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> | undefined }
+  ? // note: this is very intentionally not optional and DBFieldToInputValue will add | undefined to force people to explicitly show what they are not setting
+    { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
   : never;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -242,50 +239,75 @@ export type OrderByFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, an
   (value: tsgql.InferValueFromArg<TArg>, context: KeystoneContext) => MaybePromise<Val | undefined>
 >;
 
-type FieldInputResolver<Input, Output, InputResolvers> = (
+type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   value: Input,
   context: KeystoneContext,
-  inputResolversByList: Record<string, InputResolvers>
+  relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>;
 
-export type UpdateFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
+export type UpdateFieldInputArg<
+  TDBField extends DBField,
+  TArg extends tsgql.Arg<tsgql.InputType, any>
+> = {
   arg: TArg;
 } & ResolveFunc<
-  FieldInputResolver<tsgql.InferValueFromArg<TArg>, Val | undefined, CreateAndUpdateInputResolvers>
+  FieldInputResolver<
+    tsgql.InferValueFromArg<TArg>,
+    DBFieldToInputValue<TDBField>,
+    TDBField extends RelationDBField<infer Mode>
+      ? (
+          input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+        ) => Promise<any>
+      : undefined
+  >
 >;
 
-export type CreateFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any> | undefined> = {
+type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResolver<
+  Input,
+  DBFieldToInputValue<TDBField>,
+  TDBField extends RelationDBField<infer Mode>
+    ? (
+        input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+      ) => Promise<any>
+    : undefined
+>;
+
+export type CreateFieldInputArg<
+  TDBField extends DBField,
+  TArg extends tsgql.Arg<tsgql.InputType, any> | undefined
+> = {
   arg: TArg;
 } & (TArg extends tsgql.Arg<tsgql.InputType, any>
-  ? Val | undefined extends tsgql.InferValueFromArg<TArg>
+  ? DBFieldToInputValue<TDBField> extends tsgql.InferValueFromArg<TArg>
     ? {
-        resolve?: FieldInputResolver<
-          tsgql.InferValueFromArg<TArg>,
-          Val | undefined,
-          CreateAndUpdateInputResolvers
-        >;
+        resolve?: CreateFieldInputResolver<tsgql.InferValueFromArg<TArg>, TDBField>;
       }
     : {
-        resolve: FieldInputResolver<
-          tsgql.InferValueFromArg<TArg>,
-          Val | undefined,
-          CreateAndUpdateInputResolvers
-        >;
+        resolve: CreateFieldInputResolver<tsgql.InferValueFromArg<TArg>, TDBField>;
       }
   : {
-      resolve: FieldInputResolver<undefined, Val | undefined, CreateAndUpdateInputResolvers>;
+      resolve: CreateFieldInputResolver<undefined, TDBField>;
     });
 
-export type WhereFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>, InputResolvers> =
-  {
-    arg: TArg;
-  } & ResolveFunc<
-    FieldInputResolver<
-      Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
-      Val | undefined,
-      InputResolvers
-    >
-  >;
+export type WhereFieldInputArg<
+  TDBField extends DBField,
+  TArg extends tsgql.Arg<tsgql.InputType, any>
+> = {
+  arg: TArg;
+} & ResolveFunc<
+  FieldInputResolver<
+    Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
+    DBFieldFilters<TDBField>,
+    TDBField extends RelationDBField<infer Mode>
+      ? (
+          input: {
+            many: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['manyRelationWhere']>>;
+            one: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['where']>>;
+          }[Mode]
+        ) => Promise<any>
+      : undefined
+  >
+>;
 
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
 
@@ -331,9 +353,9 @@ export type FieldTypeWithoutDBField<
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-    where?: WhereFieldInputArg<DBFieldFilters<TDBField>, FilterArg, FilterInputResolvers>;
-    create?: CreateFieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
-    update?: UpdateFieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+    where?: WhereFieldInputArg<TDBField, FilterArg>;
+    create?: CreateFieldInputArg<TDBField, CreateArg>;
+    update?: UpdateFieldInputArg<TDBField, UpdateArg>;
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
   };
   output: FieldTypeOutputField<TDBField>;
