@@ -4,7 +4,6 @@ import {
   fieldType,
   types,
   AdminMetaRootVal,
-  getFindManyArgs,
   QueryMeta,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -199,7 +198,7 @@ export const relationship =
           },
         },
         output: types.field({
-          args: getFindManyArgs(listTypes),
+          args: listTypes.findManyArgs,
           type: types.nonNull(types.list(types.nonNull(listTypes.output))),
           resolve({ value }, args) {
             return value.findMany(args);
@@ -208,7 +207,7 @@ export const relationship =
         extraOutputFields: {
           [`_${meta.fieldKey}Meta`]: types.field({
             type: QueryMeta,
-            args: getFindManyArgs(listTypes),
+            args: listTypes.findManyArgs,
             resolve({ value }, args) {
               return {
                 getCount: () => value.count(args),

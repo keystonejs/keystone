@@ -385,6 +385,7 @@ export type TypesForList = {
     some: tsgql.Arg<AnyInputObj>;
     none: tsgql.Arg<AnyInputObj>;
   }>;
+  findManyArgs: FindManyArgs;
   relateTo: {
     many: {
       create: tsgql.InputObjectType<{
@@ -416,23 +417,3 @@ export type FindManyArgs = {
 };
 
 export type FindManyArgsValue = tsgql.InferValueFromArgs<FindManyArgs>;
-
-export function getFindManyArgs(typesForList: TypesForList): FindManyArgs {
-  return {
-    where: types.arg({
-      type: types.nonNull(typesForList.where),
-      defaultValue: {},
-    }),
-    orderBy: types.arg({
-      type: types.nonNull(types.list(types.nonNull(typesForList.orderBy))),
-      defaultValue: [],
-    }),
-    first: types.arg({
-      type: types.Int,
-    }),
-    skip: types.arg({
-      type: types.nonNull(types.Int),
-      defaultValue: 0,
-    }),
-  };
-}

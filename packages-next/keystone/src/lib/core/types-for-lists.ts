@@ -22,6 +22,7 @@ import {
   ListHooks,
   KeystoneConfig,
   Provider,
+  FindManyArgs,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
@@ -489,6 +490,25 @@ export function initialiseLists(
       },
     });
 
+    const findManyArgs: FindManyArgs = {
+      where: types.arg({
+        type: types.nonNull(where),
+        defaultValue: {},
+      }),
+      orderBy: types.arg({
+        type: types.nonNull(types.list(types.nonNull(orderBy))),
+        defaultValue: [],
+      }),
+      // TODO: non-nullable when max results is specified in the list with the default of max results
+      first: types.arg({
+        type: types.Int,
+      }),
+      skip: types.arg({
+        type: types.nonNull(types.Int),
+        defaultValue: 0,
+      }),
+    };
+
     const manyRelationWhere = types.inputObject({
       name: names.manyRelationFilter,
       fields: {
@@ -553,6 +573,7 @@ export function initialiseLists(
         orderBy,
         update,
         manyRelationWhere,
+        findManyArgs,
         relateTo: {
           many: {
             create: relateToManyForCreate,

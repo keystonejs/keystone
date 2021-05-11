@@ -1,6 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getGqlNames, Provider, QueryMeta, types } from '@keystone-next/types';
-import { getFindManyArgs } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
@@ -26,17 +25,16 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
               return queries.findOne(args, listKey, list, context);
             },
           });
-          const findManyArgs = getFindManyArgs(list.types);
           const findMany = types.field({
             type: types.nonNull(types.list(types.nonNull(list.types.output))),
-            args: findManyArgs,
+            args: list.types.findManyArgs,
             async resolve(_rootVal, args, context) {
               return queries.findMany(args, listKey, list, context);
             },
           });
           const metaQuery = types.field({
             type: QueryMeta,
-            args: findManyArgs,
+            args: list.types.findManyArgs,
             async resolve(_rootVal, args, context) {
               return {
                 getCount: () => queries.count(args, listKey, list, context),
@@ -68,7 +66,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
           type: types.nonNull(list.types.output),
           args: createOneArgs,
           resolve(_rootVal, args, context) {
-            return mutations.createOne(args, listKey, list, context, provider);
+            return mutations.createOne(args, listKey, list, context);
           },
         });
         const updateOneArgs = {
@@ -83,7 +81,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
           type: list.types.output,
           args: updateOneArgs,
           resolve(_rootVal, args, context) {
-            return mutations.updateOne(args, listKey, list, context, provider);
+            return mutations.updateOne(args, listKey, list, context);
           },
         });
         const deleteOne = types.field({
