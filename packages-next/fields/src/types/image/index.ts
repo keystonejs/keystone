@@ -12,8 +12,9 @@ import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
-export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes>;
+export type ImageFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = CommonFieldConfig<TGeneratedListTypes>;
 
 const ImageExtensionEnum = types.enum({
   name: 'ImageExtension',
@@ -80,45 +81,47 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
   return extensionsSet.has(extension);
 }
 
-export const image =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    ...config
-  }: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  () => {
-    return fieldType({
-      kind: 'multi',
-      fields: {
-        filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-        width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-        id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+export const image = <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  ...config
+}: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc => () => {
+  if (config.index === 'unique') {
+    throw Error("{ index: 'unique' } is not a supported option for field type image");
+  }
+
+  return fieldType({
+    kind: 'multi',
+    fields: {
+      filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
+      extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+      width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
+      height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
+      mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+      id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+    },
+  })({
+    ...config,
+    input: {
+      create: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
+      update: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
+    },
+    // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
+    output: types.field({
+      type: LocalImageFieldOutput,
+      resolve({ value: { extension, filesize, height, id, mode, width } }) {
+        if (
+          extension === null ||
+          !isValidImageExtension(extension) ||
+          filesize === null ||
+          height === null ||
+          width === null ||
+          id === null ||
+          mode !== 'local'
+        ) {
+          return null;
+        }
+        return { mode: 'local', extension, filesize, height, width, id };
       },
-    })({
-      ...config,
-      input: {
-        create: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
-        update: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
-      },
-      // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
-      output: types.field({
-        type: LocalImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, mode, width } }) {
-          if (
-            extension === null ||
-            !isValidImageExtension(extension) ||
-            filesize === null ||
-            height === null ||
-            width === null ||
-            id === null ||
-            mode !== 'local'
-          ) {
-            return null;
-          }
-          return { mode: 'local', extension, filesize, height, width, id };
-        },
-      }),
-      views: resolveView('image/views'),
-    });
-  };
+    }),
+    views: resolveView('image/views'),
+  });
+};
