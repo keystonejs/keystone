@@ -39,7 +39,7 @@ model PhoneNumber {
 }
 
 model Post {
-  author   User?   @relation("Post_author", fields: [userId], references: [id])
+  author   User?   @relation("Post_author", fields: [authorId], references: [id])
   authorId Int?    @map("author")
   id       Int     @id @default(autoincrement())
   title    String?
@@ -47,5 +47,4 @@ model Post {
   content  String?
 
   @@index([authorId])
-  userId Int?
 }

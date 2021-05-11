@@ -100,33 +100,44 @@ export type InitialisedList = {
   adminUILabels: { label: string; singular: string; plural: string; path: string };
 };
 
+function assert(condition: boolean): asserts condition {
+  if (!condition) {
+    throw new Error('failed assert');
+  }
+}
+
 function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
-  localListKey: string,
   foreignList: InitialisedList,
   context: KeystoneContext
 ) {
-  const getBaseFilter = async () => {
+  const oppositeDbField = foreignList.fields[dbField.field].dbField;
+  assert(oppositeDbField.kind === 'relation');
+  const getAccess = async () => {
     const access = await validateNonCreateListAccessControl({
       access: foreignList.access.read,
       args: {
         context,
-        listKey: localListKey,
+        listKey: dbField.list,
         operation: 'read',
         session: context.session,
       },
     });
-    if (access === false) {
-      return false;
-    }
-    const where = { [dbField.field]: { id } };
-    if (access === true) {
-      return where;
-    }
-    return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
+    return access;
   };
+  const where = { [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id } };
   if (dbField.mode === 'many') {
+    const getBaseFilter = async () => {
+      const access = await getAccess();
+      if (access === false) {
+        return false;
+      }
+      if (access === true) {
+        return where;
+      }
+      return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
+    };
     return {
       findMany: async ({ where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue) => {
         const [baseFilter, orderBy, specificFilter] = await Promise.all([
@@ -160,13 +171,15 @@ function getRelationVal(
   }
 
   return async () => {
-    const filter = await getBaseFilter();
-    if (filter === false) {
-      return false;
+    const access = await getAccess();
+    if (access === false) {
+      return null;
     }
-
     return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-      where: filter,
+      where:
+        access === true
+          ? where
+          : { AND: [where, await foreignList.inputResolvers.where(context)(getAccess)] },
     });
   };
 }
@@ -189,7 +202,7 @@ function getValueForDBField(
     );
   }
   if (dbField.kind === 'relation') {
-    return getRelationVal(dbField, id, listKey, lists[dbField.list], context);
+    return getRelationVal(dbField, id, lists[dbField.list], context);
   }
   return rootVal[fieldPath] as any;
 }
