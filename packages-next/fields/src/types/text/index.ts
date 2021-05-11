@@ -32,9 +32,7 @@ export const text =
         update: { arg: types.arg({ type: types.String }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({
-        type: types.String,
-      }),
+      output: types.field({ type: types.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
         return { displayMode: config.ui?.displayMode ?? 'input' };

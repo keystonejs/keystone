@@ -61,8 +61,11 @@ export type FieldTypeFunc<
     | undefined,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
-> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>;
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+> = (
+  data: FieldData
+) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
@@ -71,10 +74,11 @@ export type NextFieldType<
     | undefined,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -236,7 +240,10 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
 export type OrderByFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
 } & ResolveFunc<
-  (value: tsgql.InferValueFromArg<TArg>, context: KeystoneContext) => MaybePromise<Val | undefined>
+  (
+    value: Exclude<tsgql.InferValueFromArg<TArg>, null | undefined>,
+    context: KeystoneContext
+  ) => MaybePromise<Val>
 >;
 
 type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
@@ -318,7 +325,7 @@ export type WhereFieldInputArg<
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
 
 type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
-  Parameters<Func>[0] extends UnwrapMaybePromise<ReturnType<ReturnType<Func>>>
+  Parameters<Func>[0] extends UnwrapMaybePromise<ReturnType<Func>>
     ? { resolve?: Func }
     : { resolve: Func };
 
@@ -342,7 +349,7 @@ type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
 export type OrderDirection = 'asc' | 'desc';
 
 type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
-  ? OrderDirection
+  ? OrderDirection | undefined
   : TDBField extends MultiDBField<infer Fields>
   ? { [Key in keyof Fields]: DBFieldToOrderByValue<Fields[Key]> }
   : undefined;
@@ -379,10 +386,18 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined,
     UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
     FilterArg extends tsgql.Arg<tsgql.InputType, any>,
-    UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
+    UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>,
+    OrderByArg extends tsgql.Arg<tsgql.InputType, any>
   >(
-    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
+    stuff: FieldTypeWithoutDBField<
+      TDBField,
+      CreateArg,
+      UpdateArg,
+      FilterArg,
+      UniqueFilterArg,
+      OrderByArg
+    >
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg> {
     return { ...stuff, dbField };
   };
 }

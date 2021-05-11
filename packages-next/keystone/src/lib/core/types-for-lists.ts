@@ -41,6 +41,7 @@ import {
   CreateAndUpdateInputResolvers,
   FilterInputResolvers,
   getFilterInputResolvers,
+  resolveOrderBy,
   resolveUniqueWhereInput,
 } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
@@ -106,7 +107,7 @@ function getRelationVal(
   foreignList: InitialisedList,
   context: KeystoneContext
 ) {
-  const getFilter = async () => {
+  const getBaseFilter = async () => {
     const access = await validateNonCreateListAccessControl({
       access: foreignList.access.read,
       args: {
@@ -127,37 +128,39 @@ function getRelationVal(
   };
   if (dbField.mode === 'many') {
     return {
-      findMany: async ({ first, skip, orderBy }: FindManyArgsValue) => {
-        const filter = await getFilter();
-        if (filter === false) {
+      findMany: async ({ where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue) => {
+        const [baseFilter, orderBy, specificFilter] = await Promise.all([
+          getBaseFilter(),
+          resolveOrderBy(rawOrderBy, foreignList, context),
+          foreignList.inputResolvers.where(context)(where),
+        ]);
+        if (baseFilter === false) {
           return [];
         }
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
-          where: filter,
-          // TODO: needs to have input resolvers
+          where: { AND: [baseFilter, specificFilter] },
           orderBy,
           take: first ?? undefined,
           skip,
         });
       },
-      count: async ({ first, skip, orderBy }: FindManyArgsValue) => {
-        const filter = await getFilter();
-        if (filter === false) {
+      count: async ({ where }: { where: Record<string, any> }) => {
+        const [baseFilter, specificFilter] = await Promise.all([
+          getBaseFilter(),
+          foreignList.inputResolvers.where(context)(where),
+        ]);
+        if (baseFilter === false) {
           return 0;
         }
         return getPrismaModelForList(context.prisma, dbField.list).count({
-          where: filter,
-          // TODO: needs to have input resolvers
-          orderBy,
-          take: first ?? undefined,
-          skip,
+          where: { AND: [baseFilter, specificFilter] },
         });
       },
     };
   }
 
   return async () => {
-    const filter = await getFilter();
+    const filter = await getBaseFilter();
     if (filter === false) {
       return false;
     }

@@ -1,4 +1,9 @@
-import { ItemRootValue, KeystoneContext, NextFieldType } from '@keystone-next/types';
+import {
+  ItemRootValue,
+  KeystoneContext,
+  NextFieldType,
+  OrderDirection,
+} from '@keystone-next/types';
 import { validateCreateListAccessControl, validateFieldAccessControl } from './access-control';
 import { validateNonCreateListAccessControl } from './access-control';
 import { mapUniqueWhereToWhere } from './query-resolvers';
@@ -586,4 +591,34 @@ async function checkFieldAccessControlForCreate(
   if (results.some(canAccess => !canAccess)) {
     throwAccessDenied('mutation');
   }
+}
+
+export async function resolveOrderBy(
+  orderBy: readonly Record<string, any>[],
+  list: InitialisedList,
+  context: KeystoneContext
+): Promise<readonly Record<string, OrderDirection>[]> {
+  return Promise.all(
+    orderBy.map(async orderByGroup => {
+      return Object.fromEntries(
+        await Promise.all(
+          Object.entries(orderByGroup).flatMap(async ([fieldKey, value]) => {
+            if (value === null) {
+              throw new Error('null cannot be passed as an order direction');
+            }
+            const field = list.fields[fieldKey];
+            const resolveOrderBy = field.input!.orderBy!.resolve;
+            const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
+            if (field.dbField.kind === 'multi') {
+              return Object.entries(resolvedValue).map(([subField, value]) => [
+                getDBFieldPathForFieldOnMultiField(fieldKey, subField),
+                value,
+              ]);
+            }
+            return [[fieldKey, resolvedValue]] as const;
+          })
+        )
+      );
+    })
+  );
 }

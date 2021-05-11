@@ -21,13 +21,15 @@ type PrismaModel = {
     where?: PrismaFilter;
     take?: number;
     skip?: number;
-    orderBy?: Record<string, any>;
+    // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
+    orderBy?: readonly Record<string, 'asc' | 'desc'>[];
   }) => PrismaPromise<number>;
   findMany: (arg: {
     where?: PrismaFilter;
     take?: number;
     skip?: number;
-    orderBy?: Record<string, any>;
+    // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
+    orderBy?: readonly Record<string, 'asc' | 'desc'>[];
     include?: Record<string, boolean>;
     select?: Record<string, any>;
   }) => PrismaPromise<ItemRootValue[]>;

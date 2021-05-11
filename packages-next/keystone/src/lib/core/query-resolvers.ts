@@ -5,6 +5,7 @@ import {
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
+  resolveOrderBy,
 } from './input-resolvers';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
@@ -104,12 +105,16 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, first, skip, orderBy }: FindManyArgsValue,
+  { where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue,
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const resolvedWhere = await findManyFilter(listKey, list, context, where || {});
+  const [resolvedWhere, orderBy] = await Promise.all([
+    findManyFilter(listKey, list, context, where || {}),
+    resolveOrderBy(rawOrderBy, list, context),
+  ]);
+
   if (resolvedWhere === false) {
     return [];
   }
@@ -123,7 +128,7 @@ export async function findMany(
 }
 
 export async function count(
-  { where, first, skip, orderBy }: FindManyArgsValue,
+  { where }: { where: Record<string, any> },
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
@@ -132,12 +137,7 @@ export async function count(
   if (resolvedWhere === false) {
     return 0;
   }
-  // TODO: check take skip things
   return getPrismaModelForList(context.prisma, listKey).count({
     where: resolvedWhere,
-    // TODO: needs to have input resolvers
-    orderBy,
-    take: first ?? undefined,
-    skip,
   });
 }
