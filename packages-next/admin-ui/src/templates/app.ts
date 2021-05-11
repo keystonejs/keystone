@@ -73,7 +73,8 @@ function getLazyMetadataQuery(
   graphqlSchema: GraphQLSchema,
   adminMeta: StaticAdminMetaQuery['keystone']['adminMeta']
 ) {
-  const selections = (parse(`fragment x on y {
+  const selections = (
+    parse(`fragment x on y {
     keystone {
       adminMeta {
         lists {
@@ -88,7 +89,8 @@ function getLazyMetadataQuery(
         }
       }
     }
-  }`).definitions[0] as FragmentDefinitionNode).selectionSet.selections as SelectionNode[];
+  }`).definitions[0] as FragmentDefinitionNode
+  ).selectionSet.selections as SelectionNode[];
 
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {

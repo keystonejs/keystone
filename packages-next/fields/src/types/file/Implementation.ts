@@ -155,58 +155,54 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
     const mode_field = `${this.path}_mode`;
     const name_field = `${this.path}_filename`;
 
-    addPreSaveHook(
-      (item: Record<P, any>): Record<string, any> => {
-        if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
-          return item;
-        }
-        if (item[field_path as P] === null) {
-          // If the property exists on the field but is null or falsey
-          // all split fields are null
-          // delete the original field item
-          // return the item
-          const newItem = {
-            [filesize_field]: null,
-            [name_field]: null,
-            [mode_field]: null,
-            ...item,
-          };
-          delete newItem[field_path];
-          return newItem;
-        } else {
-          const { mode, filesize, filename } = item[field_path];
-
-          const newItem = {
-            [filesize_field]: filesize,
-            [name_field]: filename,
-            [mode_field]: mode,
-            ...item,
-          };
-
-          delete newItem[field_path];
-
-          return newItem;
-        }
-      }
-    );
-    addPostReadHook(
-      (item: Record<string, any>): Record<P, any> => {
-        if (!item[filesize_field] || !item[name_field] || !item[mode_field]) {
-          item[field_path] = null;
-          return item;
-        }
-        item[field_path] = {
-          filesize: item[filesize_field],
-          filename: item[name_field],
-          mode: item[mode_field],
-        };
-
-        delete item[filesize_field];
-        delete item[name_field];
-        delete item[mode_field];
-
+    addPreSaveHook((item: Record<P, any>): Record<string, any> => {
+      if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
         return item;
       }
-    );
+      if (item[field_path as P] === null) {
+        // If the property exists on the field but is null or falsey
+        // all split fields are null
+        // delete the original field item
+        // return the item
+        const newItem = {
+          [filesize_field]: null,
+          [name_field]: null,
+          [mode_field]: null,
+          ...item,
+        };
+        delete newItem[field_path];
+        return newItem;
+      } else {
+        const { mode, filesize, filename } = item[field_path];
+
+        const newItem = {
+          [filesize_field]: filesize,
+          [name_field]: filename,
+          [mode_field]: mode,
+          ...item,
+        };
+
+        delete newItem[field_path];
+
+        return newItem;
+      }
+    });
+    addPostReadHook((item: Record<string, any>): Record<P, any> => {
+      if (!item[filesize_field] || !item[name_field] || !item[mode_field]) {
+        item[field_path] = null;
+        return item;
+      }
+      item[field_path] = {
+        filesize: item[filesize_field],
+        filename: item[name_field],
+        mode: item[mode_field],
+      };
+
+      delete item[filesize_field];
+      delete item[name_field];
+      delete item[mode_field];
+
+      return item;
+    });
   }
 }

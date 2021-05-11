@@ -94,27 +94,28 @@ export const createToolbarState = (
   componentBlocks: Record<string, ComponentBlock>,
   editorDocumentFeatures: DocumentFeatures
 ): ToolbarState => {
-  const locationDocumentFeatures: DocumentFeaturesForChildField = getAncestorComponentChildFieldDocumentFeatures(
-    editor,
-    editorDocumentFeatures,
-    componentBlocks
-  ) || {
-    kind: 'block',
-    inlineMarks: 'inherit',
-    documentFeatures: {
-      dividers: true,
-      formatting: {
-        alignment: { center: true, end: true },
-        blockTypes: { blockquote: true, code: true },
-        headingLevels: [1, 2, 3, 4, 5, 6],
-        listTypes: { ordered: true, unordered: true },
+  const locationDocumentFeatures: DocumentFeaturesForChildField =
+    getAncestorComponentChildFieldDocumentFeatures(
+      editor,
+      editorDocumentFeatures,
+      componentBlocks
+    ) || {
+      kind: 'block',
+      inlineMarks: 'inherit',
+      documentFeatures: {
+        dividers: true,
+        formatting: {
+          alignment: { center: true, end: true },
+          blockTypes: { blockquote: true, code: true },
+          headingLevels: [1, 2, 3, 4, 5, 6],
+          listTypes: { ordered: true, unordered: true },
+        },
+        layouts: editorDocumentFeatures.layouts,
+        links: true,
+        relationships: true,
       },
-      layouts: editorDocumentFeatures.layouts,
-      links: true,
-      relationships: true,
-    },
-    softBreaks: true,
-  };
+      softBreaks: true,
+    };
 
   let [maybeCodeBlockEntry] = Editor.nodes(editor, {
     match: node => node.type !== 'code' && Editor.isBlock(editor, node),

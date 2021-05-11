@@ -3,15 +3,14 @@ import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 import { Decimal, PrismaDecimalInterface } from './Implementation';
 
-export type DecimalFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
-  isUnique?: boolean;
-  precision?: number;
-  scale?: number;
-  defaultValue?: FieldDefaultValue<string>;
-};
+export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    isRequired?: boolean;
+    isUnique?: boolean;
+    precision?: number;
+    scale?: number;
+    defaultValue?: FieldDefaultValue<string>;
+  };
 
 export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: DecimalFieldConfig<TGeneratedListTypes> = {}

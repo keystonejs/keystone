@@ -59,16 +59,15 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  relationships?: RelationshipsConfig;
-  componentBlocks?: Record<string, ComponentBlock>;
-  formatting?: true | FormattingConfig;
-  links?: true;
-  dividers?: true;
-  layouts?: readonly (readonly [number, ...number[]])[];
-};
+export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    relationships?: RelationshipsConfig;
+    componentBlocks?: Record<string, ComponentBlock>;
+    formatting?: true | FormattingConfig;
+    links?: true;
+    dividers?: true;
+    layouts?: readonly (readonly [number, ...number[]])[];
+  };
 
 const views = path.join(
   path.dirname(require.resolve('@keystone-next/fields-document/package.json')),

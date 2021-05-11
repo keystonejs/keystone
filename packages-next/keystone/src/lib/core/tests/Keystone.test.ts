@@ -66,7 +66,7 @@ test('Check require', () => {
 describe('Keystone.createList()', () => {
   test('basic', () => {
     const config = {
-      adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+      adapter: new MockAdapter() as unknown as PrismaAdapter,
       onConnect: async () => {},
       queryLimits: {},
     };
@@ -94,7 +94,7 @@ describe('Keystone.createList()', () => {
 
   test('Reserved words', () => {
     const config = {
-      adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+      adapter: new MockAdapter() as unknown as PrismaAdapter,
       onConnect: async () => {},
       queryLimits: {},
     };

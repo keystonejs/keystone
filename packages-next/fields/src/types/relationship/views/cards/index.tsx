@@ -85,7 +85,11 @@ export function Cards({
     selectedFields += `\n${foreignList.labelField}`;
   }
 
-  const { items, setItems, state: itemsState } = useItemState({
+  const {
+    items,
+    setItems,
+    state: itemsState,
+  } = useItemState({
     selectedFields,
     localList,
     id,

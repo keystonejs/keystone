@@ -140,14 +140,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 test(
                   'Not Equals',
                   withKeystone(({ context }) =>
-                    match(context, { [`${fieldName}_not`]: storedValues[3][fieldName] }, [
-                      0,
-                      1,
-                      2,
-                      4,
-                      5,
-                      6,
-                    ])
+                    match(
+                      context,
+                      { [`${fieldName}_not`]: storedValues[3][fieldName] },
+                      [0, 1, 2, 4, 5, 6]
+                    )
                   )
                 );
               }
@@ -162,12 +159,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 test(
                   `Not Equals - Case Insensitive`,
                   withKeystone(({ context }) =>
-                    match(context, { [`${fieldName}_not_i`]: storedValues[3][fieldName] }, [
-                      0,
-                      1,
-                      5,
-                      6,
-                    ])
+                    match(
+                      context,
+                      { [`${fieldName}_not_i`]: storedValues[3][fieldName] },
+                      [0, 1, 5, 6]
+                    )
                   )
                 );
               }
