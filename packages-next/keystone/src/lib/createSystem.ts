@@ -21,6 +21,21 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
 
   const keystone = createKeystone(config, provider, prismaClient);
 
+  // Convert the Keystone lists into just what's needed by the createContext function
+  // This will in soon evolve into the code in the next-fields effort.
+  const lists = Object.fromEntries(
+    Object.entries(keystone.lists).map(([listKey, list]) => {
+      return [
+        listKey,
+        {
+          listKey,
+          itemQueryName: list.gqlNames.itemQueryName,
+          listQueryName: list.gqlNames.listQueryName.slice(3),
+        },
+      ];
+    })
+  );
+
   const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
 
   const internalSchema = createGraphQLSchema(config, keystone, 'internal');
@@ -29,8 +44,9 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
     keystone,
     graphQLSchema,
     internalSchema,
-    imagesConfig: config.images,
-    filesConfig: config.files,
+    config,
+    prismaClient,
+    lists,
   });
 
   return { keystone, graphQLSchema, createContext };
