@@ -2,7 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 import { v4 as genUUID } from 'uuid';
@@ -41,7 +41,7 @@ export const uuid =
           },
         },
         uniqueWhere: { arg: types.arg({ type: types.ID }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({ type: types.ID }),
       views: resolveView('text/views'),

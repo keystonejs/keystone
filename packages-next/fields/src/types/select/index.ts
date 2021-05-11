@@ -2,7 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 // @ts-ignore
@@ -55,7 +55,7 @@ export const select =
         input: {
           create: { arg: types.arg({ type: types.Int }) },
           update: { arg: types.arg({ type: types.Int }) },
-          orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+          orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
         },
         output: types.field({ type: types.Int }),
       });
@@ -82,7 +82,7 @@ export const select =
         input: {
           create: { arg: types.arg({ type: graphQLType }) },
           update: { arg: types.arg({ type: graphQLType }) },
-          orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+          orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
         },
         output: types.field({
           type: graphQLType,
@@ -94,7 +94,7 @@ export const select =
       input: {
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
         type: types.String,

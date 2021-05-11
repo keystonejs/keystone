@@ -3,7 +3,7 @@ import {
   FieldDefaultValue,
   fieldType,
   types,
-  sortDirectionEnum,
+  orderDirectionEnum,
   FieldTypeFunc,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -30,7 +30,7 @@ export const text =
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.String }) } : undefined,
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
         type: types.String,

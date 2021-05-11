@@ -3,7 +3,7 @@ import {
   fieldType,
   types,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -29,7 +29,7 @@ export const timestamp =
       input: {
         create: { arg: types.arg({ type: types.String }), resolve: inputResolver },
         update: { arg: types.arg({ type: types.String }), resolve: inputResolver },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
         type: types.String,

@@ -134,7 +134,7 @@ export type ScalarDBField<
   index?: 'unique' | 'index';
 };
 
-export const sortDirectionEnum = types.enum({
+export const orderDirectionEnum = types.enum({
   name: 'OrderDirection',
   values: types.enumValues(['asc', 'desc']),
 });

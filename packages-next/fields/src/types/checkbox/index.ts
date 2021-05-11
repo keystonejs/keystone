@@ -3,7 +3,7 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -25,7 +25,7 @@ export const checkbox =
       input: {
         create: { arg: types.arg({ type: types.Boolean }) },
         update: { arg: types.arg({ type: types.Boolean }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
         type: types.Boolean,

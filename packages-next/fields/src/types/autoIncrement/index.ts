@@ -2,7 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -36,7 +36,7 @@ export const autoIncrement =
             return Number(value);
           },
         },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
         type: types.ID,

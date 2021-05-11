@@ -3,7 +3,7 @@ import {
   FieldTypeFunc,
   fieldType,
   types,
-  sortDirectionEnum,
+  orderDirectionEnum,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -30,7 +30,7 @@ export const float =
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Float }) } : undefined,
         create: { arg: types.arg({ type: types.Float }) },
         update: { arg: types.arg({ type: types.Float }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({ type: types.Int }),
       views: resolveView('float/views'),

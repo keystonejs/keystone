@@ -2,7 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
-  sortDirectionEnum,
+  orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -28,7 +28,7 @@ export const integer =
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Int }) } : undefined,
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
-        orderBy: { arg: types.arg({ type: sortDirectionEnum }) },
+        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({ type: types.Int }),
       views: resolveView('integer/views'),
