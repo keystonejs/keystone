@@ -189,8 +189,6 @@ function collectUnreferencedConcreteInterfaceImplementations(
   lists: Record<string, InitialisedList>
 ) {
   const unreferencedConcreteInterfaceImplementations: GraphQLObjectType[] = [];
-  // TODO: check if graphql-js removes types that can't be referenced by the schema?
-  // if so, remove the access checks
   for (const list of Object.values(lists)) {
     if (list.access.read === false) continue;
     for (const field of Object.values(list.fields)) {
