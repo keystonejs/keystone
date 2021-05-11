@@ -236,21 +236,11 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never;
 
-export type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
+export type OrderByFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
-} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? {
-      resolve?(
-        value: tsgql.InferValueFromArg<TArg>,
-        context: KeystoneContext
-      ): MaybePromise<Val | undefined>;
-    }
-  : {
-      resolve(
-        value: tsgql.InferValueFromArg<TArg>,
-        context: KeystoneContext
-      ): MaybePromise<Val | undefined>;
-    });
+} & ResolveFunc<
+  (value: tsgql.InferValueFromArg<TArg>, context: KeystoneContext) => MaybePromise<Val | undefined>
+>;
 
 type FieldInputResolver<Input, Output, InputResolvers> = (
   value: Input,
@@ -258,25 +248,13 @@ type FieldInputResolver<Input, Output, InputResolvers> = (
   inputResolversByList: Record<string, InputResolvers>
 ) => MaybePromise<Output>;
 
-export type FieldInputArgWithInputResolvers<
-  Val,
-  TArg extends tsgql.Arg<tsgql.InputType, any>,
-  InputResolvers
-> = {
+export type UpdateFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
-} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? {
-      resolve?: FieldInputResolver<tsgql.InferValueFromArg<TArg>, Val | undefined, InputResolvers>;
-    }
-  : {
-      resolve: FieldInputResolver<tsgql.InferValueFromArg<TArg>, Val | undefined, InputResolvers>;
-    });
+} & ResolveFunc<
+  FieldInputResolver<tsgql.InferValueFromArg<TArg>, Val | undefined, CreateAndUpdateInputResolvers>
+>;
 
-export type FieldInputArgWithInputResolversWithOptionalArg<
-  Val,
-  TArg extends tsgql.Arg<tsgql.InputType, any> | undefined,
-  InputResolvers
-> = {
+export type CreateFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any> | undefined> = {
   arg: TArg;
 } & (TArg extends tsgql.Arg<tsgql.InputType, any>
   ? Val | undefined extends tsgql.InferValueFromArg<TArg>
@@ -284,37 +262,30 @@ export type FieldInputArgWithInputResolversWithOptionalArg<
         resolve?: FieldInputResolver<
           tsgql.InferValueFromArg<TArg>,
           Val | undefined,
-          InputResolvers
+          CreateAndUpdateInputResolvers
         >;
       }
     : {
-        resolve: FieldInputResolver<tsgql.InferValueFromArg<TArg>, Val | undefined, InputResolvers>;
+        resolve: FieldInputResolver<
+          tsgql.InferValueFromArg<TArg>,
+          Val | undefined,
+          CreateAndUpdateInputResolvers
+        >;
       }
   : {
-      resolve: FieldInputResolver<undefined, Val | undefined, InputResolvers>;
+      resolve: FieldInputResolver<undefined, Val | undefined, CreateAndUpdateInputResolvers>;
     });
 
-export type FieldInputArgWithInputResolversWithoutUndefined<
-  Val,
-  TArg extends tsgql.Arg<tsgql.InputType, any>,
-  InputResolvers
-> = {
-  arg: TArg;
-} & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? {
-      resolve?: FieldInputResolver<
-        Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
-        Val | undefined,
-        InputResolvers
-      >;
-    }
-  : {
-      resolve: FieldInputResolver<
-        Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
-        Val | undefined,
-        InputResolvers
-      >;
-    });
+export type WhereFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>, InputResolvers> =
+  {
+    arg: TArg;
+  } & ResolveFunc<
+    FieldInputResolver<
+      Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
+      Val | undefined,
+      InputResolvers
+    >
+  >;
 
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
 
@@ -323,26 +294,14 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
     ? { resolve?: Func }
     : { resolve: Func };
 
-type FieldInputResolverWithoutInputResolvers<Input, Output> = (
-  value: Input,
-  context: KeystoneContext
-) => MaybePromise<Output>;
-
 export type UniqueWhereFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
-} & (Val extends Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>
-  ? {
-      resolve?: FieldInputResolverWithoutInputResolvers<
-        Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
-        Val
-      >;
-    }
-  : {
-      resolve: FieldInputResolverWithoutInputResolvers<
-        Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
-        Val
-      >;
-    });
+} & ResolveFunc<
+  (
+    value: Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
+    context: KeystoneContext
+  ) => MaybePromise<Val>
+>;
 
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
@@ -372,22 +331,10 @@ export type FieldTypeWithoutDBField<
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<TDBField, UniqueFilterArg>;
-    where?: FieldInputArgWithInputResolversWithoutUndefined<
-      DBFieldFilters<TDBField>,
-      FilterArg,
-      FilterInputResolvers
-    >;
-    create?: FieldInputArgWithInputResolversWithOptionalArg<
-      DBFieldToInputValue<TDBField>,
-      CreateArg,
-      CreateAndUpdateInputResolvers
-    >;
-    update?: FieldInputArgWithInputResolvers<
-      DBFieldToInputValue<TDBField>,
-      UpdateArg,
-      CreateAndUpdateInputResolvers
-    >;
-    orderBy?: FieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
+    where?: WhereFieldInputArg<DBFieldFilters<TDBField>, FilterArg, FilterInputResolvers>;
+    create?: CreateFieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
+    update?: UpdateFieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+    orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
   };
   output: FieldTypeOutputField<TDBField>;
   views: string;

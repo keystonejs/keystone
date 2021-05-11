@@ -12,9 +12,11 @@ import {
   JSONValue,
   ItemRootValue,
   KeystoneContext,
-  FieldInputArg,
+  UpdateFieldInputArg,
+  CreateFieldInputArg,
 } from '@keystone-next/types';
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
+import { CreateAndUpdateInputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -124,16 +126,44 @@ function mapOutputFieldToSQLite(
   });
 }
 
-function mapInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
-  arg: FieldInputArg<JSONValue | null | undefined, Arg> | undefined
-): FieldInputArg<string | null | undefined, Arg> | undefined {
+function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
+  arg: UpdateFieldInputArg<JSONValue | null | undefined, Arg> | undefined
+): UpdateFieldInputArg<string | null | undefined, Arg> | undefined {
   if (arg === undefined) {
     return undefined;
   }
   return {
     arg: arg.arg,
-    async resolve(input: tsgql.InferValueFromArg<Arg>, context: KeystoneContext) {
-      const resolvedInput = arg.resolve === undefined ? input : await arg.resolve(input, context);
+    async resolve(
+      input: tsgql.InferValueFromArg<Arg>,
+      context: KeystoneContext,
+      inputResolvers: Record<string, CreateAndUpdateInputResolvers>
+    ) {
+      const resolvedInput =
+        arg.resolve === undefined ? input : await arg.resolve(input, context, inputResolvers);
+      if (resolvedInput === undefined || resolvedInput === null) {
+        return resolvedInput;
+      }
+      return JSON.stringify(resolvedInput);
+    },
+  } as any;
+}
+
+function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
+  arg: CreateFieldInputArg<JSONValue | null | undefined, Arg> | undefined
+): CreateFieldInputArg<string | null | undefined, Arg> | undefined {
+  if (arg === undefined) {
+    return undefined;
+  }
+  return {
+    arg: arg.arg,
+    async resolve(
+      input: tsgql.InferValueFromArg<Arg>,
+      context: KeystoneContext,
+      inputResolvers: Record<string, CreateAndUpdateInputResolvers>
+    ) {
+      const resolvedInput =
+        arg.resolve === undefined ? input : await arg.resolve(input, context, inputResolvers);
       if (resolvedInput === undefined || resolvedInput === null) {
         return resolvedInput;
       }
@@ -155,20 +185,20 @@ function jsonFieldTypePolyfilledForSQLite<
     UpdateArg,
     FilterArg,
     UniqueFilterArg
-  >
-) {
-  if (config.input?.uniqueWhere || config.input?.where || config.input?.orderBy) {
-    throw new Error(
-      'jsonFieldTypePolyfilledForSQLite does not support fields that implement uniqueWhere, where or sortBy'
-    );
+  > & {
+    input?: {
+      uniqueWhere?: undefined;
+      where?: undefined;
+      orderBy?: undefined;
+    };
   }
-
+) {
   if (provider === 'sqlite') {
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String' })({
       ...config,
       input: {
-        create: mapInputArgToSQLite(config.input?.create),
-        update: mapInputArgToSQLite(config.input?.update),
+        create: mapCreateInputArgToSQLite(config.input?.create),
+        update: mapUpdateInputArgToSQLite(config.input?.update),
       },
       output: mapOutputFieldToSQLite(config.output),
       extraOutputFields: Object.fromEntries(
