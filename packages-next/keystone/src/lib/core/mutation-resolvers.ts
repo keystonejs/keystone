@@ -121,7 +121,7 @@ export async function updateOne(
   const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
   const { afterChange, data } = await resolveInputForCreateOrUpdate(
     listKey,
-    'create',
+    'update',
     list,
     context,
     rawData,
