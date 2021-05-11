@@ -50,7 +50,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                           fields: {
                             name: text(),
                             testField: mod.typeFunction({
-                              isUnique: true,
+                              index: 'unique',
                               ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                             }),
                           },
@@ -156,7 +156,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                         fields: {
                           name: text(),
                           testField: mod.typeFunction({
-                            isUnique: true,
+                            index: 'unique',
                             ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                           }),
                         },
@@ -167,7 +167,9 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                   }),
                 });
               } catch (error) {
-                expect(error.message).toMatch('isUnique is not a supported option for field type');
+                expect(error.message).toMatch(
+                  "{ index: 'unique' } is not a supported option for field type"
+                );
                 erroredOut = true;
               } finally {
                 after({ disconnect: async () => {} } as BaseKeystone);
