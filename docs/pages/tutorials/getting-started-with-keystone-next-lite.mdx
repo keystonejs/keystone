@@ -1,0 +1,334 @@
+import { Markdown } from '../../components/Page';
+import { ComingSoon } from '../../components/ComingSoon';
+
+# How to replace MDX with structured content in your NextJS frontend app
+
+# How to power a read-only blog
+
+If you want a better way of managing content than MDX, and don’t need to provide write access to other editors, this is the guide for you.
+
+---
+
+Keystone’s powerful features around fields, auth, and user permissions make it a great fit for teams of all sizes.
+
+We recently added SQLite to our list of supported databases. 🎉
+
+In addition to everything else you’d expect, you can now use Keystone to run a local instance of Admin UI from the same place you keep your frontend, and commit all your content to Git. This approach gets you a secure read-only API in production, and the option to deploy your project to Vercel in minutes. Let’s get started…
+
+## Setup a NextJS app
+
+?> [RONALD] Perhaps offer a jump link for people who want to bypass all the NextJS setup? 
+
+### Dependencies 
+
+Start out by adding NextJS and its dependencies in an empty project directory:
+
+```bash
+yarn add next react react-dom
+```
+
+Keystone Next is built in TypeScript. Add Typescript and Prettier as `--dev` dependencies to make Keystone implementation easier later on:
+
+```bash
+yarn add --dev typescript @types/react prettier
+```
+
+### Scripts
+
+Update the `package.json` file to include the following [NextJS CLI `scripts`](https://nextjs.org/docs/api-reference/cli) and `prettier` configuration options:
+
+```json
+
+// package.json
+
+{
+  "dependencies": {
+    "next": "^10.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build"
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "proseWrap": "preserve",
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
+}
+```
+
+### Version control
+
+Add the following to your `.gitignore` to avoid committing changes to .`.keystone` and `.next` build directories and more:
+
+```bash
+
+# .gitignore
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+
+# Next.js build output
+.next
+
+# Keystone.js build output
+.keystone
+```
+
+### Add your first page  
+
+1. Create a `/pages` directory at the root of your project containing an `index.tsx` with with the following:
+
+```tsx
+// pages/index.tsx
+
+export default function Home() {
+  return <h1>Hello World! 👋🏻 </h1>;
+}
+```
+
+!> In Next.js, a [page](https://nextjs.org/docs/basic-features/pages) is a React Component exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `/pages` directory. Each page is associated with a route based on its file name.
+
+### Startup your local server
+
+Run `yarn dev` at the root of your project. NextJS will give you a local server at [`http://localhost:3000`](http://localhost:3000). You should see the contents of your `index.tsx` file in the browser 🎉 
+
+![A browser showing the Home page of the new app](/assets/tutorials/next-lite/localhost-home-1.png)
+
+Running `yarn dev` for the first time creates new items in your project folder:
+
+```text
+├── .next // new - the next app
+├── node_modules
+├── pages
+│   └── index.tsx
+├── .gitignore
+├── next-env.d.ts // new
+├── package.json
+├── tsconfig.json // new
+├── yarn-error.log
+└── yarn.lock
+```
+
+### Add a blog post
+
+Now that we have a local server up and running, let‘s extend our content with a `post` type using static files to start out. (We’ll soon be powering posts with content from Keystone.)
+
+Add an _app.tsx file inside `/pages` to let `<link>` tags resolve:
+
+?> [RONALD] somebody pls make this make sense ^. this is the default app code per NextJS, but links don't work without it which is surprising to my layman's eyes. 
+
+```tsx
+// pages/_app.tsx
+
+function App({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+
+export default App;
+
+```
+
+Add a `/post` subdirectory and include the following in `[slug].tsx`:
+
+```tsx
+
+// pages/post/[slug].tsx
+
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <div>
+      <div>
+        <Link href="/">
+          <a>&larr; back home</a>
+        </Link>
+      </div>
+      <h1>My first post!</h1>
+      <p></p>
+    </div>
+  );
+}
+```
+
+And update the contents of `/pages/index.tsx` with the following:
+
+```tsx
+
+// pages/index.tsx
+
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Hello World! 👋🏻 </h1>
+      <h2>My posts:</h2>
+      <ul>
+        <li>
+          <Link href="/post/my-first-post">
+            <a>My first post</a>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  );
+}
+```
+
+Running `yarn dev` again should give you an updated home page with a links between it and your first post:
+
+![A browser showing link navigation from the Home page to a single post](/assets/tutorials/next-lite/localhost-home-to-post.gif)
+
+## Add Keystone to your project
+
+Let’s integrate Keystone with NextJS to blend file-based content with dynamic posts that you can edit in Keystone‘s Admin UI.
+
+### Install dependencies
+
+Add the following Keystone dependencies to the project:
+
+```bash
+yarn add @keystone-next/keystone @keystone-next/admin-ui @keystone-next/fields
+
+```
+
+### Add Keystone to NextJS config
+
+Add a `next.config.js` file to the project root:
+
+```tsx
+
+// next.config.js
+
+const { withKeystone } = require('@keystone-next/keystone/next');
+
+module.exports = withKeystone();
+```
+
+Keystone operates completely independently of the NextJS frontend, but the `withKeystone` lets NextKJS encapsulate Keystone in the script runtime.
+
+### Add Keystone config
+
+Add a `keystone.ts` file to the project root. This is where we’ll setup the `Post` [list](/apis/schema) type for blog entries that can be edited in Keystone’s Admin UI:
+
+```tsx
+// keystone.ts
+
+import { config, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+// Creates a `Post` list-type 
+const Post = list({
+  fields: {
+    title: text({ isRequired: true }),
+    slug: text(),
+    content: text(),
+  },
+});
+
+export default config({
+  db: { adapter: 'prisma_sqlite', url: 'file:./app.db' },
+  experimental: {
+    generateNextGraphqlAPI: true,
+    generateNodeAPI: true,
+  },
+  lists: { Post },
+});
+```
+
+?> In Keystone `lists` are collections (or tables) in a document database.
+
+### Update package scripts
+
+Update the `scripts` object in `package.json` to include Keystone‘s `postinstall`:
+
+```json
+  "scripts": {
+    "postinstall": "keystone-next postinstall", // new
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build"
+  },
+```
+
+Running `yarn dev` again does the following:
+
+- Builds a GraphQL schema based on the configuration of `keystone.ts`.
+- Builds a [Prisma.io](https://www.prisma.io/) schema (which Keystone uses to create tables in the database).
+- Serves Keystone’s Admin UI at [`http://localhost:8000`](http://localhost:8000) (in addition to the NextJS frontend at port 3000).
+- Adds a `postinstall` script that ensures when we install dependencies everything is OK.
+
+![Local server instances of the NExtJS frontend, and Keystone Admin UI](/assets/tutorials/next-lite/localhost-next-keystone.gif)
+
+?> Your Prisma and GraphQL schemas are not up to date!
+
+
+	1. this first command does a few things
+	
+----
+
+5. Add `keystone.ts`
+	1. Exports a keystone `config` and `lists` ()
+	2. We're fiundamentally sitting on top of a tool called Prisma
+6. 
+7. Abstract the schema into a separate folder
+8. Add a speaker list to schema
+9. Relate the two
+10. ----
+11. Get everything talking together 
+12. Add the document field
+	1. CMSes and React 
+13. Add the graphQL API into your NextJS app
+14. Vercel deploy
+	1. get a live graphQL APi querying the DB hosted on Vercel
+
+- advantage of using Keystone and Next in the same repo:
+- Keystone generates a client side GQL API, but also a serverside JS api
+	- 31:00
+- The diff required to build a DB into a frontend react app is 
+- A fully relational postgres DB behind the scenes is much more powerful than the document store approach by other companies like contentful
+
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
