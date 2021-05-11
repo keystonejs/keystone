@@ -32,6 +32,6 @@ export const float =
         update: { arg: types.arg({ type: types.Float }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.Int }),
+      output: types.field({ type: types.Float }),
       views: resolveView('float/views'),
     });

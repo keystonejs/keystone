@@ -112,7 +112,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         `,
           variables: { item: { avatar: prepareFile('badfile.txt') } },
         });
-        expect(data).toEqual({ createTest: null });
+        expect(data).toEqual(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual('File type not found');
       })
@@ -178,7 +178,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         `,
           variables: { item: { avatar: { ref: 'Invalid ref!' } } },
         });
-        expect(data).toEqual({ createTest: null });
+        expect(data).toEqual(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual('Invalid image reference');
       })
@@ -198,7 +198,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         `,
           variables: { item: { avatar: { ref: null } } },
         });
-        expect(data).toEqual({ createTest: null });
+        expect(data).toEqual(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
           'Either ref or upload must be passed to ImageFieldInput'
@@ -228,7 +228,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             item: { avatar: { ref: initialItem.avatar.ref, ...prepareFile('keystone.jpg') } },
           },
         });
-        expect(data).toEqual({ createTest: null });
+        expect(data).toEqual(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
           'Only one of ref and upload can be passed to ImageFieldInput'
@@ -252,7 +252,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             item: { avatar: { ref: 'Invalid', ...prepareFile('keystone.jpg') } },
           },
         });
-        expect(data).toEqual({ createTest: null });
+        expect(data).toEqual(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
           'Only one of ref and upload can be passed to ImageFieldInput'
