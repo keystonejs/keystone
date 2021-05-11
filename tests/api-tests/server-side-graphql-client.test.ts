@@ -188,7 +188,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Seed the db
           await seedDb({ context });
 
-          const getItemsBySortOrder = (orderBy: Record<string, 'asc' | 'desc'>) =>
+          const getItemsBySortOrder = (orderBy: Record<string, any>) =>
             getItems({ context, listKey, returnFields, orderBy: [orderBy] });
 
           const allItemsAscAge = await getItemsBySortOrder({ age: 'asc' });
@@ -238,7 +238,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await seedDb({ context });
           const first = 4;
-          const getSortItems = (orderBy: Record<string, 'asc' | 'desc'>) =>
+          const getSortItems = (orderBy: Record<string, any>) =>
             getItems({ context, listKey, returnFields, skip: 3, first, orderBy: [orderBy] });
           const itemsDESC = await getSortItems({ age: 'desc' });
           expect(itemsDESC.length).toEqual(first);

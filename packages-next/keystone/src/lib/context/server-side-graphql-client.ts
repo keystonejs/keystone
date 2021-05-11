@@ -119,7 +119,7 @@ const getItems = async ({
 }: {
   listKey: string;
   where?: Record<string, any> | null;
-  orderBy?: readonly Record<string, 'asc' | 'desc'>[] | null;
+  orderBy?: readonly Record<string, any>[] | null;
   first?: number | null;
   skip?: number | null;
   pageSize?: number;
