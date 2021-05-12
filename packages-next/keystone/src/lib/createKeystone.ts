@@ -1,8 +1,12 @@
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone, Provider } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, DatabaseProvider } from '@keystone-next/types';
 import { Keystone } from './core/Keystone/index';
 
-export function createKeystone(config: KeystoneConfig, provider: Provider, prismaClient?: any) {
+export function createKeystone(
+  config: KeystoneConfig,
+  provider: DatabaseProvider,
+  prismaClient?: any
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using

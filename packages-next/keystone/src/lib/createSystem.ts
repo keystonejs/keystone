@@ -1,10 +1,10 @@
-import type { KeystoneConfig, Provider } from '@keystone-next/types';
+import type { KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { createKeystone } from './createKeystone';
 
-export function getDBProvider(db: KeystoneConfig['db']): Provider {
+export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
     return 'postgresql';
   } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
