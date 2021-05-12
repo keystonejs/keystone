@@ -1,4 +1,6 @@
+import type { CacheHint } from 'apollo-cache-control';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
+import type { CacheHintArgs } from '../base';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { FieldType, BaseFields } from './fields';
@@ -109,29 +111,6 @@ export type ListAdminUIConfig<
    */
   hideDelete?: MaybeSessionFunction<boolean>;
   /**
-   * Configuration specific to the list view in the Admin UI
-   */
-  listView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'read'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
-    /**
-     * The columns(which refer to fields) that should be shown to users of the Admin UI.
-     * Users of the Admin UI can select different columns to show in the UI.
-     * @default the first three fields in the list
-     */
-    initialColumns?: (keyof Fields)[];
-    // was previously top-level defaultSort
-    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
-    // was previously defaultPageSize
-    pageSize?: number; // default number of items to display per page on the list screen
-    // note: we are removing maximumPageSize
-  };
-
-  /**
    * Configuration specific to the create view in the Admin UI
    */
   createView?: {
@@ -155,6 +134,29 @@ export type ListAdminUIConfig<
      */
     defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
   };
+
+  /**
+   * Configuration specific to the list view in the Admin UI
+   */
+  listView?: {
+    /**
+     * The default field mode for fields on the create view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'read'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
+    /**
+     * The columns(which refer to fields) that should be shown to users of the Admin UI.
+     * Users of the Admin UI can select different columns to show in the UI.
+     * @default the first three fields in the list
+     */
+    initialColumns?: (keyof Fields)[];
+    // was previously top-level defaultSort
+    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
+    // was previously defaultPageSize
+    pageSize?: number; // default number of items to display per page on the list screen
+    // note: we are removing maximumPageSize
+  };
 };
 
 export type MaybeSessionFunction<T extends string | boolean> =
@@ -169,8 +171,6 @@ export type MaybeItemFunction<T> =
     }) => MaybePromise<T>);
 
 export type ListGraphQLConfig = {
-  // was previously top-level cacheHint
-  // cacheHint?: CacheHint;
   /**
    * The description added to the GraphQL schema
    * @default listConfig.description
@@ -184,6 +184,7 @@ export type ListGraphQLConfig = {
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
 };
 
 export type ListDBConfig = {
@@ -193,5 +194,3 @@ export type ListDBConfig = {
    */
   searchField?: string;
 };
-
-// export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };

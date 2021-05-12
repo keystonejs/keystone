@@ -55,12 +55,13 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   // an Admin UI, we still need to run the `build()` function so that this config
   // file is correctly compiled.
   const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
+  const p = serializePathForImport(
+    Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
+  );
   const files: AdminFileToWrite[] = [
     {
       mode: 'write',
-      src: `export { default as config } from ${serializePathForImport(
-        Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
-      )}
+      src: `export { default as config } from ${p};
             export default function (req, res) { return res.status(500) }`,
       outputPath: Path.join('pages', 'api', '__keystone_api_build.js'),
     },

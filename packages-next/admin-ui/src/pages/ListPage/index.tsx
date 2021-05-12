@@ -56,7 +56,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   },
   { listKey: string }
 > = gql`
-  query($listKey: String!) {
+  query ($listKey: String!) {
     keystone {
       adminMeta {
         list(key: $listKey) {
@@ -161,7 +161,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
-  let { data: newData, error: newError, refetch, loading } = useQuery(
+  let {
+    data: newData,
+    error: newError,
+    refetch,
+    loading,
+  } = useQuery(
     useMemo(() => {
       let selectedGqlFields = [...selectedFields]
         .map(fieldPath => {
@@ -516,8 +521,8 @@ function ListTable({
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
-  const shouldShowLinkIcon = !list.fields[selectedFields.keys().next().value].views.Cell
-    .supportsLinkTo;
+  const shouldShowLinkIcon =
+    !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo;
 
   return (
     <Box paddingBottom="xlarge">

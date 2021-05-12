@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-express';
+import { GraphQLResolveInfo } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { text, relationship } from '@keystone-next/fields';
 import { BaseListConfig, KeystoneContext } from '@keystone-next/types';
@@ -9,7 +10,7 @@ import { AccessDeniedError } from '../ListTypes/graphqlErrors';
 const Relationship = relationship({ ref: '' }).type;
 const Text = text().type;
 
-const context = ({
+const context = {
   getListAccessControlForUser: () => true,
   getFieldAccessControlForUser: (
     access: any,
@@ -19,7 +20,7 @@ const context = ({
     existingItem: any
   ) => !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
-} as unknown) as KeystoneContext;
+} as unknown as KeystoneContext;
 
 // Convert a gql field into a normalised format for comparison.
 // Needs to be wrapped in a mock type for gql to correctly parse it.
@@ -27,7 +28,7 @@ const normalise = (s: string) => print(gql(`type t { ${s} }`));
 
 const getListByKey = (listKey: string) => {
   if (listKey === 'Other') {
-    return ({
+    return {
       // @ts-ignore
       gqlNames: {
         outputTypeName: 'Other',
@@ -41,7 +42,7 @@ const getListByKey = (listKey: string) => {
           read: true,
         },
       },
-    } as unknown) as List;
+    } as unknown as List;
   }
 };
 
@@ -167,7 +168,7 @@ class MockAdapter {
 
 const listExtras = () => ({
   getListByKey,
-  adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+  adapter: new MockAdapter() as unknown as PrismaAdapter,
   schemaNames: ['public'],
 });
 
@@ -185,7 +186,7 @@ const config = {
 const setup = (extraConfig?: Record<string, any>) => {
   const list = new List(
     'Test',
-    ({ ...config, ...extraConfig } as unknown) as BaseListConfig,
+    { ...config, ...extraConfig } as unknown as BaseListConfig,
     listExtras()
   );
   list.initFields();
@@ -201,7 +202,7 @@ describe('new List()', () => {
   });
 
   test('new List() - Plural throws error', () => {
-    expect(() => new List('Tests', (config as unknown) as BaseListConfig, listExtras())).toThrow(
+    expect(() => new List('Tests', config as unknown as BaseListConfig, listExtras())).toThrow(
       Error
     );
   });
@@ -542,8 +543,10 @@ test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
   const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
-  await expect(newResolver({}, {}, context)).resolves.toEqual('result');
-  await expect(newResolver({ makeFalse: true }, {}, context)).rejects.toThrow(AccessDeniedError);
+  await expect(newResolver({}, {}, context, {} as GraphQLResolveInfo)).resolves.toEqual('result');
+  await expect(
+    newResolver({ makeFalse: true }, {}, context, {} as GraphQLResolveInfo)
+  ).rejects.toThrow(AccessDeniedError);
 });
 
 test('gqlFieldResolvers', () => {

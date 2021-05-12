@@ -4,14 +4,13 @@ import type { FieldConfig } from '../../interfaces';
 // @ts-ignore
 import { Password, PrismaPasswordInterface } from './Implementation';
 
-type PasswordFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  minLength?: number;
-  isRequired?: boolean;
-  isIndexed?: boolean;
-  bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
-};
+type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    minLength?: number;
+    isRequired?: boolean;
+    isIndexed?: boolean;
+    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
+  };
 
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: PasswordFieldConfig<TGeneratedListTypes> = {}

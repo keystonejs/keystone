@@ -43,17 +43,16 @@ type CountDisplayConfig = {
   };
 };
 
-export type RelationshipFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  many?: boolean;
-  ref: string;
-  ui?: {
-    hideCreate?: boolean;
-  };
-  defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isUnique?: boolean;
-} & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
+export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    many?: boolean;
+    ref: string;
+    ui?: {
+      hideCreate?: boolean;
+    };
+    defaultValue?: FieldDefaultValue<Record<string, unknown>>;
+    isUnique?: boolean;
+  } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>

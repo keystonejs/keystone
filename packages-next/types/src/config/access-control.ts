@@ -93,21 +93,19 @@ type BaseFieldAccessArgs = {
   fieldKey: string;
 };
 
-type FieldCreateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
-> = CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
+type FieldCreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
 
 type FieldReadAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = ReadAccessArgs &
   BaseFieldAccessArgs & {
     item: GeneratedListTypes['backing'];
   };
 
-type FieldUpdateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
-> = UpdateAccessArgs<GeneratedListTypes> &
-  BaseFieldAccessArgs & {
-    item: GeneratedListTypes['backing'];
-  };
+type FieldUpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  UpdateAccessArgs<GeneratedListTypes> &
+    BaseFieldAccessArgs & {
+      item: GeneratedListTypes['backing'];
+    };
 
 export type FieldAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | {

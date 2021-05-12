@@ -1,4 +1,5 @@
 import pluralize from 'pluralize';
+import type { CacheHint } from 'apollo-cache-control';
 import {
   mapKeys,
   omit,
@@ -24,6 +25,7 @@ import {
   GraphQLResolver,
   KeystoneContext,
   ListHooks,
+  CacheHintArgs,
 } from '@keystone-next/types';
 import { Implementation } from '@keystone-next/fields';
 import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
@@ -63,7 +65,7 @@ export class List implements BaseKeystoneList {
   getListByKey: (key: string) => BaseKeystoneList | undefined;
   fieldsInitialised: boolean;
   queryLimits: { maxResults: number };
-  cacheHint: any;
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
   constructor(
     key: string,
     {
@@ -377,10 +379,12 @@ export class List implements BaseKeystoneList {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = ((await this._itemsQuery(
-        { first: 1, where: { ...access, id } },
-        { context, info }
-      )) as Record<string, any>[])[0];
+      item = (
+        (await this._itemsQuery(
+          { first: 1, where: { ...access, id } },
+          { context, info }
+        )) as Record<string, any>[]
+      )[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're

@@ -76,8 +76,6 @@ enum SortPostsBy {
   content_DESC
   publishDate_ASC
   publishDate_DESC
-  author_ASC
-  author_DESC
 }
 
 input PostUpdateInput {
@@ -188,8 +186,6 @@ enum SortAuthorsBy {
   name_DESC
   email_ASC
   email_DESC
-  posts_ASC
-  posts_DESC
 }
 
 input AuthorUpdateInput {

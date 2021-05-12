@@ -119,9 +119,10 @@ export const controller = (
     );
   }
   const clientSideComponentBlocksSet = new Set(Object.keys(componentBlocks));
-  const componentBlocksOnlyBeingPassedOnTheServer = config.fieldMeta.componentBlocksPassedOnServer.filter(
-    x => !clientSideComponentBlocksSet.has(x)
-  );
+  const componentBlocksOnlyBeingPassedOnTheServer =
+    config.fieldMeta.componentBlocksPassedOnServer.filter(
+      x => !clientSideComponentBlocksSet.has(x)
+    );
   if (componentBlocksOnlyBeingPassedOnTheServer.length) {
     throw new Error(
       `(${config.listKey}:${
