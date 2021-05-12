@@ -19,6 +19,30 @@ Each of the examples below demonstrates a particular feature of Keystone.
 You can use these projects to learn about, and experiment with specific features.
 
  * [`withAuth`](./with-auth): Adding password based authentication to your Keystone application.
+ * Data Seeding: Coming soon
+ * GitHub SSO: Coming soon
+ * Roles: Coming soon
+ * Logging: Coming soon
+ * Custom Fields: Coming soon
+ * Custom Views: Coming soon
+ * REST APIs: Coming soon
+ * Validation: Coming soon
+ * Images: Coming soon
+ * Files: Coming soon
+ * Hooks: Coming soon
+ * Access Control: Coming soon
+ * Document Field: Coming soon
+ * Relationships: Coming soon
+ * Schema Extension: Coming soon
+ * Virtual Fields: Coming soon
+ * Default Values: Coming soon
+ * Select Fields: Coming soon
+ * Tracking Meta: Coming soon
+ * Next.js App: Coming soon
+ * Null Handling: Coming soon
+ * ID Fields: Coming soon
+ * Fields: Coming soon
+
 
 ## Solution Examples
 
