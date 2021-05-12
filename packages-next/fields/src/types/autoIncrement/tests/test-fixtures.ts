@@ -73,7 +73,11 @@ export const filterTests = (withKeystone: (arg: any) => any, matrixValue: Matrix
   const _f = matrixValue === 'ID' ? (x: any) => x.toString() : (x: any) => x;
   const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>
     expect(
-      await context.lists.Test.findMany({ where, sortBy: ['name_ASC'], query: 'name orderNumber' })
+      await context.lists.Test.findMany({
+        where,
+        orderBy: [{ name: 'asc' }],
+        query: 'name orderNumber',
+      })
     ).toEqual(expected.map(i => _storedValues[i]));
 
   test(

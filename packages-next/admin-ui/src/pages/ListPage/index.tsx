@@ -174,12 +174,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
+      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $orderBy: [${
         list.gqlNames.listSortName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,first: $first, skip: $skip, orderBy: $sortBy) {
+        }(where: $where,first: $first, skip: $skip, orderBy: $orderBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
@@ -199,7 +199,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         where: filters.where,
         first: pageSize,
         skip: (currentPage - 1) * pageSize,
-        sortBy: sort ? [`${sort.field}_${sort.direction}`] : undefined,
+        orderBy: sort ? [{ [sort.field]: sort.direction }] : undefined,
       },
     }
   );

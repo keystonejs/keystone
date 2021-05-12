@@ -16,7 +16,7 @@ For each list in your system the following API is available at `context.db.lists
 ```
 {
   findOne({ where: { id } }),
-  findMany({ where, first, skip, sortBy }),
+  findMany({ where, first, skip, orderBy }),
   count({ where, first, skip }),
   createOne({ data }),
   createMany({ data }),
@@ -47,7 +47,7 @@ const users = await context.db.lists.User.findMany({
   where: { name_starts_with: 'A' },
   first: 10,
   skip: 20,
-  sortBy: ['name_ASC'],
+  orderBy: [{ name: 'asc'],
 });
 ```
 

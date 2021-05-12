@@ -174,7 +174,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // SOME
             const _users = await context.lists.User.findMany({
               where: { feed_some: { title_contains: 'J' } },
-              query: 'id feed(sortBy: [title_ASC]) { title }',
+              query: 'id feed(orderBy: [{ title: "asc" }]) { title }',
             });
 
             expect(_users).toHaveLength(2);
@@ -257,7 +257,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // SOME
             const _users = await context.lists.User.findMany({
               where: { feed_some: { title_contains: 'J' } },
-              query: 'id name feed(sortBy: [title_ASC]) { id title }',
+              query: 'id name feed(orderBy: [{ title: "asc" }]) { id title }',
             });
 
             expect(_users).toMatchObject([
