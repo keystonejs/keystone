@@ -26,6 +26,7 @@
     "@babel/runtime": "^7.14.0",
     "@graphql-tools/merge": "^6.2.14",
     "@graphql-tools/schema": "^7.1.5",
+    "@graphql-tools/utils": "7.9.0",
     "@hapi/iron": "^6.0.0",
     "@keystone-next/access-control-legacy": "^10.0.1",
     "@keystone-next/adapter-prisma-legacy": "^6.1.0",
