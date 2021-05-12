@@ -426,7 +426,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               await (async () => {
                 const data = await context.graphql.run({
                   query:
-                    '{ allCompanies(orderBy: [{ name: "asc" }],) { id name location { id name } } }',
+                    '{ allCompanies(orderBy: [{ name: asc }],) { id name location { id name } } }',
                 });
 
                 const expected = [
@@ -454,7 +454,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the locations look how we expect
               await (async () => {
                 const data = await context.graphql.run({
-                  query: '{ allLocations(orderBy: [{ name: "asc" }],: name_ASC) { id name } }',
+                  query: '{ allLocations(orderBy: [{ name: asc }],: name_ASC) { id name } }',
                 });
                 expect(data.allLocations[0].name).toEqual('A');
                 expect(data.allLocations[1].name).toEqual('B');

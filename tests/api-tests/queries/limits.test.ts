@@ -65,7 +65,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           query {
             allUsers(
               where: { name_contains: "J" },
-              orderBy: [{ name: "asc" }],
+              orderBy: [{ name: asc }],
             ) {
               name
             }
@@ -201,7 +201,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 OR: [{ title: 'One author' }, { title: 'Two authors' }],
               },
               orderBy: [{ title: 'asc' }],
-              query: 'title author(orderBy: [{ name: "ASC" }]) { name }',
+              query: 'title author(orderBy: [{ name: asc }]) { name }',
             });
             expect(posts).toEqual([
               { title: 'One author', author: [{ name: 'Jess' }] },

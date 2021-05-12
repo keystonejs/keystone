@@ -220,7 +220,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           query: `
           query {
             allTests(
-              orderBy: [{ name: "asc" }],
+              orderBy: [{ name: asc }],
               search: "",
             ) {
               name

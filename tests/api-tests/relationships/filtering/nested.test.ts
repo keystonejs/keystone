@@ -84,7 +84,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           const users = await context.lists.User.findMany({
-            query: 'id posts(first: 1, orderBy: [{ content: "asc" }]) { id }',
+            query: 'id posts(first: 1, orderBy: [{ content: asc }]) { id }',
           });
           expect(users).toContainEqual({ id: user.id, posts: [ids[0]] });
           expect(users).toContainEqual({ id: user2.id, posts: [ids[0]] });

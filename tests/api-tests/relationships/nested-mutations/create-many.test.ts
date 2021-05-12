@@ -74,7 +74,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create an item that does the nested create
           const user = await context.lists.User.createOne({
             data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
-            query: 'id notes(orderBy: [{ content: "asc" }]) { id content }',
+            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
           });
 
           expect(user).toMatchObject({
@@ -90,7 +90,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(orderBy: [{ content: "asc" }]) { id content }',
+            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
           })) as T;
 
           expect(user1).toMatchObject({
@@ -151,7 +151,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(orderBy: [{ content: "asc" }]) { id content }',
+            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
           })) as T;
 
           expect(_user).toMatchObject({

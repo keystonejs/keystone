@@ -51,12 +51,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           type T = { id: IdType; notes: { id: IdType; title: string }[] };
           const alice = (await context.lists.User.createOne({
             data: { username: 'Alice', notes: { connect: [{ id: noteA.id }, { id: noteB.id }] } },
-            query: 'id notes(orderBy: [{ title: "asc" }]) { id title }',
+            query: 'id notes(orderBy: [{ title: asc }]) { id title }',
           })) as T;
 
           const bob = (await context.lists.User.createOne({
             data: { username: 'Bob', notes: { connect: [{ id: noteC.id }, { id: noteD.id }] } },
-            query: 'id notes(orderBy: [{ title: "asc" }]) { id title }',
+            query: 'id notes(orderBy: [{ title: asc }]) { id title }',
           })) as T;
 
           // Make sure everyone has the correct notes
@@ -71,7 +71,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const user = (await context.lists.User.updateOne({
               id: bob.id,
               data: { notes: { connect: [{ id: noteB.id }] } },
-              query: 'id notes(orderBy: [{ title: "asc" }]) { id title }',
+              query: 'id notes(orderBy: [{ title: asc }]) { id title }',
             })) as T;
 
             expect(user).toEqual({ id: bob.id, notes: expect.any(Array) });
@@ -100,7 +100,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 query {
                   User(where: { id: "${alice.id}"}) {
                     id
-                    notes(orderBy: [{ title: "asc" }]) { id title }
+                    notes(orderBy: [{ title: asc }]) { id title }
                   }
                 }`,
             })) as T;
