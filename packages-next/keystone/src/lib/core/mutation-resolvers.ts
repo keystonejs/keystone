@@ -1,4 +1,4 @@
-import { KeystoneContext, Provider } from '@keystone-next/types';
+import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
 import {
   applyAccessControlForCreate,
   applyAccessControlForUpdate,
@@ -14,7 +14,7 @@ export async function createMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  provider: Provider
+  provider: DatabaseProvider
 ) {
   const rootOperations = await Promise.all(
     data.map(async args => {
@@ -69,7 +69,7 @@ export async function updateMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  provider: Provider
+  provider: DatabaseProvider
 ) {
   const rootOperations = await Promise.all(
     data.map(async ({ data: rawData, where: rawUniqueWhere }) => {

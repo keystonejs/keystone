@@ -2,4 +2,4 @@
 '@keystone-next/admin-ui': patch
 ---
 
-Added minor fixes to filters dialog.
+Patch update to @keystone-ui/popover.

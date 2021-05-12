@@ -5,7 +5,7 @@ import type { KeystoneContext, SessionContext } from './context';
 /* TODO: Review these types */
 type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
 
-export type Provider = 'sqlite' | 'postgresql';
+export type DatabaseProvider = 'sqlite' | 'postgresql';
 
 export type FieldDefaultValue<T> =
   | T

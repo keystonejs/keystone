@@ -1,11 +1,11 @@
-import { FieldData, getGqlNames, KeystoneConfig, Provider } from '@keystone-next/types';
+import { FieldData, getGqlNames, KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { createAdminMeta } from './createAdminMeta';
 
-export function getDBProvider(db: KeystoneConfig['db']): Provider {
+export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
     return 'postgresql';
   } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
@@ -17,7 +17,7 @@ export function getDBProvider(db: KeystoneConfig['db']): Provider {
   }
 }
 
-function getInternalGraphQLSchema(config: KeystoneConfig, provider: Provider) {
+function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
   const transformedConfig: KeystoneConfig = {
     ...config,
     lists: Object.fromEntries(

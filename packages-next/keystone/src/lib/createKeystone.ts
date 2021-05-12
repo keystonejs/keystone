@@ -1,31 +1,18 @@
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, DatabaseProvider } from '@keystone-next/types';
 import { Keystone } from './core/Keystone/index';
 
-export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
+export function createKeystone(
+  config: KeystoneConfig,
+  provider: DatabaseProvider,
+  prismaClient?: any
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
   // it in their existing custom servers or original CLI systems.
   const { db, graphql, lists } = config;
-  let adapter: PrismaAdapter;
-  if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
-    adapter = new PrismaAdapter({
-      prismaClient,
-      ...db,
-      provider: 'postgresql',
-    });
-  } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
-    adapter = new PrismaAdapter({
-      prismaClient,
-      ...db,
-      provider: 'sqlite',
-    });
-  } else {
-    throw new Error(
-      'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
-    );
-  }
+  const adapter = new PrismaAdapter({ prismaClient, ...db, provider });
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   const keystone: BaseKeystone = new Keystone({
     adapter,

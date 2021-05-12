@@ -4,7 +4,7 @@ import {
   CommonFieldConfig,
   FieldTypeFunc,
   fieldType,
-  Provider,
+  DatabaseProvider,
   ScalarDBField,
   FieldTypeWithoutDBField,
   tsgql,
@@ -178,7 +178,7 @@ function jsonFieldTypePolyfilledForSQLite<
   FilterArg extends tsgql.Arg<tsgql.InputType, any>,
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
 >(
-  provider: Provider,
+  provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<
     ScalarDBField<'Json', 'optional'>,
     CreateArg,

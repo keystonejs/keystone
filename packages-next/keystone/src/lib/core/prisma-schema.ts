@@ -5,7 +5,7 @@ import {
   ScalarishDBField,
   ScalarDBField,
   ScalarDBFieldDefault,
-  Provider,
+  DatabaseProvider,
 } from '@keystone-next/types';
 
 // TODO: probably validate that list keys and fields are valid prisma identifiers
@@ -415,7 +415,7 @@ function assertFieldIsValidIdField(
 
 export function printPrismaSchema(
   lists: ListsWithResolvedRelations,
-  provider: Provider,
+  provider: DatabaseProvider,
   clientDir: string
 ) {
   let prismaSchema = `datasource ${provider} {

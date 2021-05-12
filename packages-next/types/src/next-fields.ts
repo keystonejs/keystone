@@ -7,7 +7,7 @@ import type { FileUpload } from 'graphql-upload';
 import GraphQLUpload from 'graphql-upload/public/GraphQLUpload';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
-import { Provider } from './core';
+import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
@@ -49,7 +49,7 @@ export type ListInfo = { types: TypesForList };
 
 export type FieldData = {
   lists: Record<string, ListInfo>;
-  provider: Provider;
+  provider: DatabaseProvider;
   listKey: string;
   fieldKey: string;
 };

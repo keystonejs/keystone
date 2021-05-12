@@ -1,11 +1,14 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getGqlNames, Provider, QueryMeta, types } from '@keystone-next/types';
+import { getGqlNames, DatabaseProvider, QueryMeta, types } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
 import * as queries from './query-resolvers';
 
-export function getGraphQLSchema(lists: Record<string, InitialisedList>, provider: Provider) {
+export function getGraphQLSchema(
+  lists: Record<string, InitialisedList>,
+  provider: DatabaseProvider
+) {
   let query = types.object()({
     name: 'Query',
     fields: () =>

@@ -21,7 +21,7 @@ import {
   ListInfo,
   ListHooks,
   KeystoneConfig,
-  Provider,
+  DatabaseProvider,
   FindManyArgs,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
@@ -79,7 +79,7 @@ async function prismaPromiseSeries<T>(promises: PrismaPromise<T>[]): Promise<T[]
 export async function runPrismaOperations<T>(
   operations: PrismaPromise<T>[],
   context: KeystoneContext,
-  provider: Provider
+  provider: DatabaseProvider
 ): Promise<T[]> {
   const runOperations =
     provider === 'sqlite' ? prismaPromiseSeries : (x: any[]) => context.prisma.$transaction(x);
@@ -387,7 +387,7 @@ function getNamesFromList(
 
 export function initialiseLists(
   lists: KeystoneConfig['lists'],
-  provider: Provider
+  provider: DatabaseProvider
 ): {
   lists: Record<string, InitialisedList>;
   listsWithResolvedRelations: ListsWithResolvedRelations;
