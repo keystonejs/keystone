@@ -31,7 +31,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
             id
             label
             total
-            items(sortBy: [name_ASC]) { name description price quantity photo { id } }
+            items(orderBy: [{ name: asc }]) { name description price quantity photo { id } }
             user { id }
             charge
           } }`;

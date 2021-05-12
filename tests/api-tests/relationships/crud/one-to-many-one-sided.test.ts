@@ -425,7 +425,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const data = await context.graphql.run({
-                  query: '{ allCompanies(sortBy: name_ASC) { id name location { id name } } }',
+                  query:
+                    '{ allCompanies(orderBy: [{ name: asc }],) { id name location { id name } } }',
                 });
 
                 const expected = [
@@ -453,7 +454,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the locations look how we expect
               await (async () => {
                 const data = await context.graphql.run({
-                  query: '{ allLocations(sortBy: name_ASC) { id name } }',
+                  query: '{ allLocations(orderBy: [{ name: asc }],: name_ASC) { id name } }',
                 });
                 expect(data.allLocations[0].name).toEqual('A');
                 expect(data.allLocations[1].name).toEqual('B');
@@ -479,7 +480,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the companies look how we expect
               const companies = await context.lists.Company.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: [{ name: 'asc' }],
                 query: 'id name location { id name }',
               });
               expect(companies[0].name).toEqual('A');
@@ -511,7 +512,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the locations look how we expect
               const _locations = await context.lists.Location.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: [{ name: 'asc' }],
                 query: 'id name',
               });
               const expected = ['A', 'B', 'C', 'D'].filter(x => x !== name);

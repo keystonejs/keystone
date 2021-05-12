@@ -188,7 +188,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     }
                   ) {
                     id
-                    teachers(sortBy: id_ASC) {
+                    teachers(orderBy: [{ id: asc }]) {
                       id
                     }
                   }
