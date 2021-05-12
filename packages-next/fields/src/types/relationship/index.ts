@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Relationship } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Relationship, PrismaRelationshipInterface } from './Implementation';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -36,23 +35,34 @@ type CardsDisplayConfig = {
   };
 };
 
-export type RelationshipFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  many?: boolean;
-  ref: string;
+type CountDisplayConfig = {
+  many: true;
   ui?: {
-    hideCreate?: boolean;
+    // Sets the relationship to display as a count
+    displayMode: 'count';
   };
-  defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isIndexed?: boolean;
-  isUnique?: boolean;
-} & (SelectDisplayConfig | CardsDisplayConfig);
+};
+
+export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    many?: boolean;
+    ref: string;
+    ui?: {
+      hideCreate?: boolean;
+    };
+    defaultValue?: FieldDefaultValue<Record<string, unknown>>;
+    isUnique?: boolean;
+  } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Relationship,
+  type: {
+    type: 'Relationship',
+    isRelationship: true, // Used internally for this special case
+    implementation: Relationship,
+    adapter: PrismaRelationshipInterface,
+  },
   config,
   views: resolveView('relationship/views'),
   getAdminMeta: (
@@ -80,6 +90,8 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             inlineEdit: config.ui.inlineEdit ?? null,
             inlineConnect: config.ui.inlineConnect ?? false,
           }
+        : config.ui?.displayMode === 'count'
+        ? { displayMode: 'count' }
         : {
             displayMode: 'select',
             refLabelField: adminMetaRoot.listsByKey[refListKey].labelField,

@@ -1,4 +1,3 @@
-import { createAdminMeta } from './createAdminMeta';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -10,6 +9,7 @@ import {
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
+import { createAdminMeta } from './createAdminMeta';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
@@ -130,10 +130,9 @@ export function getAdminMetaSchema({
                     'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
                   );
                 }
-                const item = await context.sudo().lists[rootVal.listKey].findOne({
-                  where: { id: rootVal.itemId },
-                  resolveFields: false,
-                });
+                const item = await context
+                  .sudo()
+                  .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =
                   listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??

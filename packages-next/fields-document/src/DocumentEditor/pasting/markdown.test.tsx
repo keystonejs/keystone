@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsx jsx */
 import { makeEditor, jsx } from '../tests/utils';
-import { MyDataTransfer } from './test-utils';
+import { MyDataTransfer } from './data-transfer';
 
 const deserializeMarkdown = (markdown: string) => {
   let editor = makeEditor(

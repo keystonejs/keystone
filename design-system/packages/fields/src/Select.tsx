@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props, OptionsType } from 'react-select';
+import ReactSelect, { Props, OptionsType, mergeStyles } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
@@ -118,6 +118,7 @@ export function Select({
   value,
   width: widthKey = 'large',
   portalMenu,
+  styles,
   ...props
 }: BaseSelectProps & {
   value: Option | null;
@@ -125,13 +126,14 @@ export function Select({
   onChange(value: Option | null): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
-  const styles = useStyles({ tokens });
+  const defaultStyles = useStyles({ tokens });
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
 
   return (
     <ReactSelect
       value={value}
       // css={{ width: tokens.width }}
-      styles={styles}
+      styles={composedStyles}
       onChange={value => {
         if (!value) {
           onChange(null);
@@ -151,6 +153,7 @@ export function MultiSelect({
   value,
   width: widthKey = 'large',
   portalMenu,
+  styles,
   ...props
 }: BaseSelectProps & {
   value: OptionsType<Option>;
@@ -158,12 +161,13 @@ export function MultiSelect({
   onChange(value: OptionsType<Option>): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
-  const styles = useStyles({ tokens, multi: true });
+  const defaultStyles = useStyles({ tokens, multi: true });
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
 
   return (
     <ReactSelect
       // css={{ width: tokens.width }}
-      styles={styles}
+      styles={composedStyles}
       value={value}
       onChange={value => {
         if (!value) {

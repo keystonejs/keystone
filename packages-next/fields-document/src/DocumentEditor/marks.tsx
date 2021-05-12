@@ -169,11 +169,12 @@ export function withMarks<T extends HistoryEditor>(
               ) {
                 continue;
               }
-              const ancestorComponentChildFieldDocumentFeatures = getAncestorComponentChildFieldDocumentFeatures(
-                editor,
-                editorDocumentFeatures,
-                componentBlocks
-              );
+              const ancestorComponentChildFieldDocumentFeatures =
+                getAncestorComponentChildFieldDocumentFeatures(
+                  editor,
+                  editorDocumentFeatures,
+                  componentBlocks
+                );
               if (
                 ancestorComponentChildFieldDocumentFeatures &&
                 ancestorComponentChildFieldDocumentFeatures.inlineMarks !== 'inherit' &&

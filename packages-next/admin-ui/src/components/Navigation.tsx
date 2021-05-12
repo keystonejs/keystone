@@ -8,9 +8,9 @@ import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 
-import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../context';
 import { Link } from '../router';
+import { SignoutButton } from './SignoutButton';
 
 type NavItemProps = {
   href: string;
@@ -18,7 +18,7 @@ type NavItemProps = {
 };
 
 const NavItem = ({ href, children }: NavItemProps) => {
-  const { palette, spacing, radii, typography } = useTheme();
+  const { colors, palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
   const isSelected =
     router.pathname === href || router.pathname.split('/')[1] === href.split('/')[1];
@@ -41,8 +41,8 @@ const NavItem = ({ href, children }: NavItemProps) => {
         textDecoration: 'none',
 
         ':hover': {
-          background: palette.blue50,
-          color: palette.blue500,
+          background: colors.backgroundHover,
+          color: colors.linkHoverColor,
         },
 
         '&[aria-current=location]': {
@@ -65,7 +65,8 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: spacing.xlarge,
+        margin: spacing.xlarge,
+        marginBottom: 0,
       }}
     >
       <div css={{ fontSize: typography.fontSize.small }}>
@@ -92,7 +93,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
           <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
             GitHub Repository
           </PopoverLink>
-          <PopoverLink target="_blank" href="https://www.keystonejs.com/documentation">
+          <PopoverLink target="_blank" href="https://next.keystonejs.com">
             Keystone Documentation
           </PopoverLink>
           <SignoutButton />
@@ -127,6 +128,7 @@ export const Navigation = () => {
     authenticatedItem,
     visibleLists,
   } = useKeystone();
+  const { spacing } = useTheme();
 
   return (
     <div
@@ -139,7 +141,7 @@ export const Navigation = () => {
       {authenticatedItem.state === 'authenticated' && (
         <AuthenticatedItem item={authenticatedItem} />
       )}
-      <nav>
+      <nav css={{ marginTop: spacing.xlarge }}>
         <NavItem href="/">Dashboard</NavItem>
         {(() => {
           if (visibleLists.state === 'loading') return null;

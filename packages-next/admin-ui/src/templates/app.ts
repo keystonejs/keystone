@@ -1,3 +1,4 @@
+import Path from 'path';
 import type { KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
@@ -11,7 +12,6 @@ import {
   SelectionNode,
 } from 'graphql';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import Path from 'path';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
@@ -73,7 +73,8 @@ function getLazyMetadataQuery(
   graphqlSchema: GraphQLSchema,
   adminMeta: StaticAdminMetaQuery['keystone']['adminMeta']
 ) {
-  const selections = (parse(`fragment x on y {
+  const selections = (
+    parse(`fragment x on y {
     keystone {
       adminMeta {
         lists {
@@ -88,7 +89,8 @@ function getLazyMetadataQuery(
         }
       }
     }
-  }`).definitions[0] as FragmentDefinitionNode).selectionSet.selections as SelectionNode[];
+  }`).definitions[0] as FragmentDefinitionNode
+  ).selectionSet.selections as SelectionNode[];
 
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {

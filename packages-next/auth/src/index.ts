@@ -133,16 +133,15 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        outputPath: 'pages/signin.js',
         src: signinTemplate({ gqlNames, identityField, secretField }),
+        outputPath: 'pages/signin.js',
       },
     ];
     if (initFirstItem) {
       filesToWrite.push({
         mode: 'write',
-        outputPath: 'pages/init.js',
-        // wonder what this template expects from config...
         src: initTemplate({ listKey, initFirstItem }),
+        outputPath: 'pages/init.js',
       });
     }
     return filesToWrite;
@@ -252,11 +251,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
     let ui = keystoneConfig.ui;
-    if (keystoneConfig.ui) {
+    if (!keystoneConfig.ui?.isDisabled) {
       ui = {
         ...keystoneConfig.ui,
-        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicPages],
-        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), getAdditionalFiles],
+        publicPages: [...(keystoneConfig.ui?.publicPages || []), ...publicPages],
+        getAdditionalFiles: [...(keystoneConfig.ui?.getAdditionalFiles || []), getAdditionalFiles],
         pageMiddleware: async args =>
           (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
         enableSessionItem: true,

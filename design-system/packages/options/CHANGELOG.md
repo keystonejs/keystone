@@ -1,5 +1,36 @@
 # @keystone-ui/options
 
+## 3.0.1
+
+### Patch Changes
+
+- [#5642](https://github.com/keystonejs/keystone/pull/5642) [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945) Thanks [@malitov](https://github.com/malitov)! - Added hover state to the `OptionPrimitive` in Admin UI and updated css colors
+
+- Updated dependencies [[`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945)]:
+  - @keystone-ui/core@2.0.3
+
+## 3.0.0
+
+### Major Changes
+
+- [#5397](https://github.com/keystonejs/keystone/pull/5397) [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b) Thanks [@bladey](https://github.com/bladey)! - Updated Node engine version to 12.x due to 10.x reaching EOL on 2021-04-30.
+
+### Patch Changes
+
+- Updated dependencies [[`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b)]:
+  - @keystone-ui/fields@3.0.0
+  - @keystone-ui/icons@3.0.0
+
+## 2.0.2
+
+### Patch Changes
+
+- [#4717](https://github.com/keystonejs/keystone/pull/4717) [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency react-select to v4
+
+- Updated dependencies [[`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-ui/fields@2.0.2
+  - @keystone-ui/core@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes

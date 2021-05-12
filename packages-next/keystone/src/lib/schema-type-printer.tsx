@@ -133,6 +133,7 @@ export function printGeneratedTypes(
 
     const { gqlNames } = list;
     let listTypeInfoName = `${listKey}ListTypeInfo`;
+    const listQuery = queryNodeFieldsByName[gqlNames.listQueryName];
     printedTypes += `
 export type ${listTypeInfoName} = {
   key: ${JSON.stringify(listKey)};
@@ -146,7 +147,11 @@ export type ${listTypeInfoName} = {
     update: ${gqlNames.updateInputName};
   };
   args: {
-    listQuery: ${printArgs(queryNodeFieldsByName[gqlNames.listQueryName].arguments!)}
+    listQuery: ${
+      listQuery
+        ? printArgs(listQuery.arguments!)
+        : 'import("@keystone-next/types").BaseGeneratedListTypes["args"]["listQuery"]'
+    }
   };
 };
 

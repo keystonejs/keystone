@@ -1,0 +1,41 @@
+{
+  "name": "@keystone-next/app-basic",
+  "version": "3.0.3",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.14.0",
+    "@graphql-tools/merge": "^6.2.13",
+    "@keystone-next/admin-ui": "^14.1.2",
+    "@keystone-next/auth": "^23.0.1",
+    "@keystone-next/document-renderer": "^2.0.3",
+    "@keystone-next/fields": "^8.2.0",
+    "@keystone-next/fields-document": "^5.0.2",
+    "@keystone-next/keystone": "^17.1.1",
+    "@keystone-next/types": "^17.0.1",
+    "@keystone-ui/core": "^2.0.3",
+    "@keystone-ui/fields": "^3.0.0",
+    "@keystone-ui/icons": "^3.0.0",
+    "@keystone-ui/tooltip": "^3.0.0",
+    "@preconstruct/next": "^3.0.0",
+    "@types/react": "^17.0.4",
+    "apollo-server-micro": "^2.24.0",
+    "graphql": "^15.5.0",
+    "graphql-tag": "^2.12.4",
+    "next": "^10.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "engines": {
+    "node": ">=v12.13.1"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/basic"
+}

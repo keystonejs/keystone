@@ -93,34 +93,28 @@ type BaseFieldAccessArgs = {
   fieldKey: string;
 };
 
-type FieldCreateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
-> = CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
+type FieldCreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
 
 type FieldReadAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = ReadAccessArgs &
   BaseFieldAccessArgs & {
     item: GeneratedListTypes['backing'];
   };
 
-type FieldUpdateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
-> = UpdateAccessArgs<GeneratedListTypes> &
-  BaseFieldAccessArgs & {
-    item: GeneratedListTypes['backing'];
-  };
-
-type FieldDeleteAccessArgs = DeleteAccessArgs & BaseFieldAccessArgs;
+type FieldUpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  UpdateAccessArgs<GeneratedListTypes> &
+    BaseFieldAccessArgs & {
+      item: GeneratedListTypes['backing'];
+    };
 
 export type FieldAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | {
       create?: IndividualFieldAccessControl<FieldCreateAccessArgs<GeneratedListTypes>>;
       read?: IndividualFieldAccessControl<FieldReadAccessArgs<GeneratedListTypes>>;
       update?: IndividualFieldAccessControl<FieldUpdateAccessArgs<GeneratedListTypes>>;
-      delete?: IndividualFieldAccessControl<FieldDeleteAccessArgs>;
     }
   | IndividualFieldAccessControl<
       | FieldCreateAccessArgs<GeneratedListTypes>
       | FieldReadAccessArgs<GeneratedListTypes>
       | FieldUpdateAccessArgs<GeneratedListTypes>
-      | FieldDeleteAccessArgs
     >;

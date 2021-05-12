@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
-import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 import { DeepNullable, makeDataGetter } from '@keystone-next/admin-ui-utils';
+import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 
 export type AuthenticatedItem =
   | { state: 'unauthenticated' }
@@ -19,9 +19,7 @@ export type CreateViewFieldModes =
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
-export function useLazyMetadata(
-  query: DocumentNode
-): {
+export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => void;
   visibleLists: VisibleLists;

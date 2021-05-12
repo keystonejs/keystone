@@ -1,5 +1,17 @@
 # @keystone-ui/core
 
+## 2.0.3
+
+### Patch Changes
+
+- [#5642](https://github.com/keystonejs/keystone/pull/5642) [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945) Thanks [@malitov](https://github.com/malitov)! - Added hover state to the `OptionPrimitive` in Admin UI and updated css colors
+
+## 2.0.2
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
 ## 2.0.1
 
 ### Patch Changes

@@ -1,13 +1,13 @@
 /** @jest-environment jsdom */
 /** @jsx jsx */
-import { component, fields } from '../../component-blocks';
-import { insertComponentBlock } from '.';
-import { jsx, makeEditor } from '../tests/utils';
-import { Relationships } from '../relationship';
-import { createPreviewProps } from './preview-props';
 import { Transforms, Element, Editor } from 'slate';
 import React from 'react';
+import { jsx, makeEditor } from '../tests/utils';
+import { Relationships } from '../relationship';
+import { component, fields } from '../../component-blocks';
+import { createPreviewProps } from './preview-props';
 import { ExtractPropFromComponentPropFieldForPreview } from './api';
+import { insertComponentBlock } from '.';
 
 const objectProp = fields.object({
   prop: fields.text({ label: 'Prop' }),

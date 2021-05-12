@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { createEditor, Editor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { render } from '@testing-library/react';
-import { MyDataTransfer } from './test-utils';
 import { makeEditor } from '../tests/utils';
+import { MyDataTransfer } from './data-transfer';
 
 function OtherEditor({ editor }: { editor: ReactEditor }) {
   // note that the entire point here is to have a different document structure to Keystone's

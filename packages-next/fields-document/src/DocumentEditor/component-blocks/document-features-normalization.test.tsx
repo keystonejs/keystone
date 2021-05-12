@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsx jsx */
+import { Node } from 'slate';
 import { component, fields } from '../../component-blocks';
 import { makeEditor, jsx } from '../tests/utils';
-import { ChildField } from './api';
-import { Node } from 'slate';
 import { Children } from '../tests/jsx/namespace';
+import { ChildField } from './api';
 
 const cases: Record<
   string,

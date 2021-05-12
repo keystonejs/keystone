@@ -1,5 +1,47 @@
 # @keystonejs/utils
 
+## 10.0.0
+
+### Major Changes
+
+- [#5582](https://github.com/keystonejs/keystone/pull/5582) [`49dd46843`](https://github.com/keystonejs/keystone/commit/49dd468435a96c537f5649aa2fd9e21103da40e1) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Updated parseImageRef and getRef to accept a different signature for the image ref.
+
+### Minor Changes
+
+- [#5529](https://github.com/keystonejs/keystone/pull/5529) [`b7aeb232d`](https://github.com/keystonejs/keystone/commit/b7aeb232db43b32cae0bca3fcb74479d6834c587) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added `getFileRef` and `parseFileRef` to exported utilities.
+
+### Patch Changes
+
+- Updated dependencies [[`7e81b52b0`](https://github.com/keystonejs/keystone/commit/7e81b52b0f2240f0c590eb8f6733360cab9fe93a), [`fddeacf79`](https://github.com/keystonejs/keystone/commit/fddeacf79d25fea15be57d1a4ec16815bcdc4ab5), [`fdebf79cc`](https://github.com/keystonejs/keystone/commit/fdebf79cc3520ffb65979ddac7d61791f4f37324), [`9fd7cc62a`](https://github.com/keystonejs/keystone/commit/9fd7cc62a889f8a0f8933040bb16fcc36af7795e)]:
+  - @keystone-next/types@17.0.1
+
+## 9.0.0
+
+### Major Changes
+
+- [#5397](https://github.com/keystonejs/keystone/pull/5397) [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b) Thanks [@bladey](https://github.com/bladey)! - Updated Node engine version to 12.x due to 10.x reaching EOL on 2021-04-30.
+
+### Minor Changes
+
+- [#5403](https://github.com/keystonejs/keystone/pull/5403) [`d0adec53f`](https://github.com/keystonejs/keystone/commit/d0adec53ff20c2246dfe955b449b7c6e1afe96fb) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added a humanize fn which is string transformation logic ported over from @keystone-next/keystone.
+
+### Patch Changes
+
+- [#5409](https://github.com/keystonejs/keystone/pull/5409) [`b0db0a7a8`](https://github.com/keystonejs/keystone/commit/b0db0a7a8d3aa46a8034022c456ea5100b129dc0) Thanks [@timleslie](https://github.com/timleslie)! - Updated argument types of `intersection` to be `readonly`.
+
+* [#5472](https://github.com/keystonejs/keystone/pull/5472) [`5f2673704`](https://github.com/keystonejs/keystone/commit/5f2673704e997710a088c45e9d95d22e1195b2da) Thanks [@timleslie](https://github.com/timleslie)! - Improved types of `arrayToObject`.
+
+- [#5419](https://github.com/keystonejs/keystone/pull/5419) [`ea708559f`](https://github.com/keystonejs/keystone/commit/ea708559fbd19914fe7eb52f519937e5fe50a143) Thanks [@timleslie](https://github.com/timleslie)! - Updated types for `mapKeyNames` and `flatten` to be more correct.
+
+- Updated dependencies [[`9e060fe83`](https://github.com/keystonejs/keystone/commit/9e060fe83459269bc5d257f31a23c164d2283624), [`7498fcabb`](https://github.com/keystonejs/keystone/commit/7498fcabba3ef6b411dd3bf67a20821702442ebc), [`11f5bb631`](https://github.com/keystonejs/keystone/commit/11f5bb6316b90ec603aa034db1b9259c911204ed), [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b), [`1d85d7ff4`](https://github.com/keystonejs/keystone/commit/1d85d7ff4e8d7795d6e0f82484cf7108d11925db), [`0e74d8123`](https://github.com/keystonejs/keystone/commit/0e74d81238d5d00cc3eb968c95c02f25cb3a5a78), [`be60812f2`](https://github.com/keystonejs/keystone/commit/be60812f29d7768ce65a5f5e8c40597d4742c5d7)]:
+  - @keystone-next/types@17.0.0
+
+## 8.0.0
+
+### Major Changes
+
+- [#5197](https://github.com/keystonejs/keystone/pull/5197) [`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused functions `captureSuspensePromises` and `countArrays`.
+
 ## 7.0.0
 
 ### Major Changes

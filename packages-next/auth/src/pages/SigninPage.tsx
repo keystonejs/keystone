@@ -7,10 +7,10 @@ import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
 
-import { SigninContainer } from '../components/SigninContainer';
 import { useMutation, gql } from '@keystone-next/admin-ui/apollo';
 import { useRawKeystone, useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
+import { SigninContainer } from '../components/SigninContainer';
 
 type SigninPageProps = {
   identityField: string;
@@ -35,7 +35,7 @@ export const SigninPage = ({
         ... on ${successTypename} {
           item {
             id
-          }  
+          }
         }
         ... on ${failureTypename} {
           message
@@ -142,9 +142,10 @@ export const SigninPage = ({
             >
               Sign In
             </Button>
-            <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
+            {/* Disabled until we come up with a complete password reset workflow */}
+            {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
               Forgot your password?
-            </Button>
+            </Button> */}
           </Stack>
         )}
       </Stack>

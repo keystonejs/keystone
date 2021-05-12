@@ -1,21 +1,21 @@
 import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
+import weakMemoize from '@emotion/weak-memoize';
 import { ChildField, ComponentBlock } from '../../component-blocks';
 import { assert, moveChildren } from '../utils';
-import {
-  DocumentFeaturesForChildField,
-  findChildPropPaths,
-  getDocumentFeaturesForChildField,
-} from './utils';
 import { DocumentFeatures } from '../../views';
 import {
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization';
-import weakMemoize from '@emotion/weak-memoize';
 import { Relationships } from '../relationship';
+import {
+  DocumentFeaturesForChildField,
+  findChildPropPaths,
+  getDocumentFeaturesForChildField,
+} from './utils';
 
 function getAncestorComponentBlock(editor: ReactEditor) {
   if (editor.selection) {
@@ -41,10 +41,8 @@ function getAncestorComponentBlock(editor: ReactEditor) {
   return { isInside: false } as const;
 }
 
-const alreadyNormalizedThings: WeakMap<
-  DocumentFeaturesForChildField,
-  WeakSet<Node>
-> = new WeakMap();
+const alreadyNormalizedThings: WeakMap<DocumentFeaturesForChildField, WeakSet<Node>> =
+  new WeakMap();
 
 function normalizeNodeWithinComponentProp(
   [node, path]: NodeEntry,

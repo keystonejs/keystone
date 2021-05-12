@@ -1,5 +1,5 @@
-import type { KeystoneListsAPI } from '@keystone-next/types';
 import { randomBytes } from 'crypto';
+import type { KeystoneDbAPI } from '@keystone-next/types';
 import { AuthTokenRequestErrorCode } from '../types';
 import { findMatchingIdentity } from './findMatchingIdentity';
 
@@ -16,12 +16,12 @@ export async function createAuthToken(
   identityField: string,
   protectIdentities: boolean,
   identity: string,
-  itemAPI: KeystoneListsAPI<any>[string]
+  dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
   | { success: false; code?: AuthTokenRequestErrorCode }
   | { success: true; itemId: string | number; token: string }
 > {
-  const match = await findMatchingIdentity(identityField, identity, itemAPI);
+  const match = await findMatchingIdentity(identityField, identity, dbItemAPI);
   // Identity failures with helpful errors (unless it would violate our protectIdentities config)
   if (match.success) {
     return { success: true, itemId: match.item.id, token: generateToken(20) };

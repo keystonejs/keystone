@@ -18,7 +18,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
     {onChange ? (
       <TextInput
         autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value.replace(/[^\d\.]/, ''))}
+        onChange={event => onChange(event.target.value.replace(/[^\d\.-]/, ''))}
         value={value}
       />
     ) : (
@@ -58,7 +58,7 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
         return (
           <TextInput
             onChange={event => {
-              props.onChange(event.target.value.replace(/[^\d\.,\s]/g, ''));
+              props.onChange(event.target.value.replace(/[^\d\.,\s-]/g, ''));
             }}
             value={props.value}
             autoFocus={props.autoFocus}

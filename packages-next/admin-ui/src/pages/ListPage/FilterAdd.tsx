@@ -147,6 +147,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
       <div css={{ position: 'relative' }}>
         {state.kind !== 'selecting-field' && (
           <button
+            type="button"
             onClick={() => {
               setState({
                 kind: 'selecting-field',

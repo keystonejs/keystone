@@ -1,13 +1,17 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import type { GraphQLResolveInfo } from 'graphql';
 import type { GqlNames, MaybePromise } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
 
 /* TODO: Review these types */
 type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
+
+export type DatabaseProvider = 'sqlite' | 'postgresql';
+
 export type FieldDefaultValue<T> =
   | T
   | null
-  | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
+  | ((args: FieldDefaultValueArgs<T>) => MaybePromise<T | null | undefined>);
 
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
@@ -23,14 +27,17 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
+export type GraphQLResolver = (
+  root: any,
+  args: any,
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
+) => any;
 
 export type GraphQLSchemaExtension = {
   typeDefs: string;
   resolvers: Record<string, Record<string, GraphQLResolver>>;
 };
-
-const preventInvalidUnderscorePrefix = (str: string) => str.replace(/^__/, '_');
 
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
 export function getGqlNames({
@@ -47,7 +54,6 @@ export function getGqlNames({
     itemQueryName: _itemQueryName,
     listQueryName: `all${_listQueryName}`,
     listQueryMetaName: `_all${_listQueryName}Meta`,
-    listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
     listSortName: `Sort${_listQueryName}By`,
     deleteMutationName: `delete${_itemQueryName}`,
     updateMutationName: `update${_itemQueryName}`,
@@ -65,5 +71,3 @@ export function getGqlNames({
     relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
   };
 }
-
-export type MigrationMode = 'none' | 'createOnly' | 'dev' | 'prototype';

@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
-import { jsx, Global } from '../emotion';
 import { Fragment, ReactNode } from 'react';
+import { jsx, Global } from '../emotion';
 
 import { normalize } from '../normalize';
 import { useTheme } from '../theme';

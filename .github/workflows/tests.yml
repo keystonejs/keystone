@@ -50,11 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - docs-next
-          - tests/test-projects/basic
-          - tests/test-projects/login
-          - tests/test-projects/access-control
-          - tests/test-projects/client-validation
+          - docs
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -112,13 +108,11 @@ jobs:
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
-    env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
     strategy:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['mongoose', 'knex', 'prisma_postgresql']
+        adapter: ['postgresql', 'sqlite']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -153,16 +147,13 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
-          UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
-          UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   non-api-tests:
     name: Package Unit Tests
@@ -209,25 +200,16 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
     needs: should_run_tests
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
     env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
+      DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
         test: ['auth.test.ts', 'basic.test.ts', 'roles.test.ts', 'todo.test.ts']

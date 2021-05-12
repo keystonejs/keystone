@@ -68,6 +68,7 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         )}
       </Link>
       <CreateButton
+        title={`Create ${list.singular}`}
         disabled={isCreateModalOpen}
         onClick={() => {
           setIsCreateModalOpen(true);

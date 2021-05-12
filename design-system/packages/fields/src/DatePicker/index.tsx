@@ -5,10 +5,10 @@ import FocusLock from 'react-focus-lock';
 import { jsx } from '@keystone-ui/core';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
-import { Calendar } from './Calendar';
-import { InputButton } from './components/InputButton';
 import { formatDMY, formatDateType } from '../utils/dateFormatters';
 import { DateType } from '../types';
+import { Calendar } from './Calendar';
+import { InputButton } from './components/InputButton';
 
 export type DateInputValue = string | undefined;
 

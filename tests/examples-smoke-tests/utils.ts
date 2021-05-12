@@ -1,11 +1,11 @@
 import path from 'path';
-import execa from 'execa';
 import { promisify } from 'util';
+import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, './.keystone/prisma/generated-client'));
+  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
   let prisma = new PrismaClient();
 
@@ -46,7 +46,7 @@ export const exampleProjectTests = (
   exampleName: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectDir = path.join(__dirname, '..', '..', 'examples-next', exampleName);
+  const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
@@ -54,7 +54,7 @@ export const exampleProjectTests = (
       await cleanupKeystoneProcess();
     });
 
-    async function startKeystone(command: 'start' | 'prototype') {
+    async function startKeystone(command: 'start' | 'dev') {
       let keystoneProcess = execa('yarn', ['keystone-next', command], {
         cwd: projectDir,
         env: process.env,
@@ -84,7 +84,7 @@ export const exampleProjectTests = (
 
     if (mode === 'dev') {
       test('start keystone in dev', async () => {
-        await startKeystone('prototype');
+        await startKeystone('dev');
       });
     }
 

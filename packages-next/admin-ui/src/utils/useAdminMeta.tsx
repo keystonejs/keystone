@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLazyQuery } from '../apollo';
 import hashString from '@emotion/hash';
 import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { useLazyQuery } from '../apollo';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
@@ -93,7 +93,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             );
           }
         });
-        const views = fieldViews[field.viewsIndex];
+        const views = { ...fieldViews[field.viewsIndex] };
         const customViews: Record<string, any> = {};
         if (field.customViewsIndex !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =

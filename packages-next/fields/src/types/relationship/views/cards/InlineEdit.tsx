@@ -16,8 +16,8 @@ import { Button } from '@keystone-ui/button';
 import { jsx, Stack } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { useCallback, useState } from 'react';
-import { useFieldsObj } from './useItemState';
 import { Tooltip } from '@keystone-ui/tooltip';
+import { useFieldsObj } from './useItemState';
 
 export function InlineEdit({
   fields,

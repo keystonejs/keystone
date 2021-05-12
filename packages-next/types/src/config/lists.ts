@@ -1,8 +1,9 @@
+import type { CacheHint } from 'apollo-cache-control';
+import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
+import type { CacheHintArgs } from '../base';
 import type { ListHooks } from './hooks';
-import type { ListAccessControl, FieldAccessControl } from './access-control';
-
-import { AdminMetaRootVal } from '../admin-meta';
-import type { BaseGeneratedListTypes, MaybePromise, JSONValue } from '../utils';
+import type { ListAccessControl } from './access-control';
+import type { FieldType, BaseFields } from './fields';
 
 export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
 
@@ -36,14 +37,14 @@ export type ListConfig<
    */
   hooks?: ListHooks<TGeneratedListTypes>;
 
+  graphql?: ListGraphQLConfig;
+
+  db?: ListDBConfig;
+
   /**
    * Defaults the Admin UI and GraphQL descriptions
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
-
-  graphql?: ListGraphQLConfig;
-
-  db?: ListDBConfig;
 
   // Not currently supported
   // plugins?: any[]; // array of plugins that can modify the list config
@@ -110,29 +111,6 @@ export type ListAdminUIConfig<
    */
   hideDelete?: MaybeSessionFunction<boolean>;
   /**
-   * Configuration specific to the list view in the Admin UI
-   */
-  listView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'read'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
-    /**
-     * The columns(which refer to fields) that should be shown to users of the Admin UI.
-     * Users of the Admin UI can select different columns to show in the UI.
-     * @default the first three fields in the list
-     */
-    initialColumns?: (keyof Fields)[];
-    // was previously top-level defaultSort
-    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
-    // was previously defaultPageSize
-    pageSize?: number; // default number of items to display per page on the list screen
-    // note: we are removing maximumPageSize
-  };
-
-  /**
    * Configuration specific to the create view in the Admin UI
    */
   createView?: {
@@ -156,44 +134,28 @@ export type ListAdminUIConfig<
      */
     defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
   };
-};
 
-export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  [key: string]: FieldType<TGeneratedListTypes>;
-};
-
-export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
-   * The real keystone type for the field
+   * Configuration specific to the list view in the Admin UI
    */
-  type: any;
-  /**
-   * The config for the field
-   */
-  config: FieldConfig<TGeneratedListTypes>;
-  /**
-   * The resolved path to the views for the field type
-   */
-  views: string;
-  getAdminMeta?: (listKey: string, path: string, adminMeta: AdminMetaRootVal) => JSONValue;
-};
-
-export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  access?: FieldAccessControl<TGeneratedListTypes>;
-  hooks?: ListHooks<TGeneratedListTypes>; // really? ListHooks?
-  label?: string;
-  ui?: {
-    views?: string;
-    description?: string;
-    createView?: {
-      fieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
-    };
-    listView?: {
-      fieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
-    };
-    itemView?: {
-      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
-    };
+  listView?: {
+    /**
+     * The default field mode for fields on the create view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'read'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
+    /**
+     * The columns(which refer to fields) that should be shown to users of the Admin UI.
+     * Users of the Admin UI can select different columns to show in the UI.
+     * @default the first three fields in the list
+     */
+    initialColumns?: (keyof Fields)[];
+    // was previously top-level defaultSort
+    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
+    // was previously defaultPageSize
+    pageSize?: number; // default number of items to display per page on the list screen
+    // note: we are removing maximumPageSize
   };
 };
 
@@ -209,8 +171,6 @@ export type MaybeItemFunction<T> =
     }) => MaybePromise<T>);
 
 export type ListGraphQLConfig = {
-  // was previously top-level cacheHint
-  // cacheHint?: CacheHint;
   /**
    * The description added to the GraphQL schema
    * @default listConfig.description
@@ -224,6 +184,7 @@ export type ListGraphQLConfig = {
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
 };
 
 export type ListDBConfig = {
@@ -233,5 +194,3 @@ export type ListDBConfig = {
    */
   searchField?: string;
 };
-
-// export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };

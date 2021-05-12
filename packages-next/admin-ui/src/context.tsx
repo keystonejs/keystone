@@ -1,12 +1,12 @@
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
-import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-next/types';
 import { Center } from '@keystone-ui/core';
 import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
-import { useAdminMeta } from './utils/useAdminMeta';
 import { createUploadLink } from 'apollo-upload-client';
+import { useAdminMeta } from './utils/useAdminMeta';
+import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import {
   AuthenticatedItem,
   VisibleLists,
@@ -44,9 +44,8 @@ function InternalKeystoneProvider({
   lazyMetadataQuery,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
-  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } = useLazyMetadata(
-    lazyMetadataQuery
-  );
+  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
+    useLazyMetadata(lazyMetadataQuery);
   const reinitContext = () => {
     adminMeta?.refetch?.();
     refetch();
