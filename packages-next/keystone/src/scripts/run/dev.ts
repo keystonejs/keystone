@@ -95,7 +95,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   });
   const server = app.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Dev Server Ready on http://localhost:${port}`);
+    const appUrl = process.env.APP_URL || `http://localhost:${port}`;
+    console.log(`⭐️ Dev Server Ready on ${appUrl}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
     initKeystone()

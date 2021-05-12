@@ -121,5 +121,9 @@ temp/
 
 .api-test-prisma-clients
 
+# Example files
+/examples/*/schema.graphql
+/examples/*/schema.prisma
+
 # SQLite databases
 *.db

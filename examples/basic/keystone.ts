@@ -1,4 +1,5 @@
 import { config } from '@keystone-next/keystone/schema';
+import 'dotenv/config';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
@@ -24,10 +25,15 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    db: {
-      provider: 'sqlite',
-      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    },
+    db: process.env.DATABASE_URL?.startsWith('postgres')
+      ? {
+          provider: 'postgresql',
+          url: process.env.DATABASE_URL,
+        }
+      : {
+          provider: 'sqlite',
+          url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+        },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',
