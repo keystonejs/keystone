@@ -9,7 +9,7 @@ import { AccessDeniedError } from '../ListTypes/graphqlErrors';
 const Relationship = relationship({ ref: '' }).type;
 const Text = text().type;
 
-const context = ({
+const context = {
   getListAccessControlForUser: () => true,
   getFieldAccessControlForUser: (
     access: any,
@@ -19,7 +19,7 @@ const context = ({
     existingItem: any
   ) => !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
-} as unknown) as KeystoneContext;
+} as unknown as KeystoneContext;
 
 // Convert a gql field into a normalised format for comparison.
 // Needs to be wrapped in a mock type for gql to correctly parse it.
@@ -27,7 +27,7 @@ const normalise = (s: string) => print(gql(`type t { ${s} }`));
 
 const getListByKey = (listKey: string) => {
   if (listKey === 'Other') {
-    return ({
+    return {
       // @ts-ignore
       gqlNames: {
         outputTypeName: 'Other',
@@ -41,7 +41,7 @@ const getListByKey = (listKey: string) => {
           read: true,
         },
       },
-    } as unknown) as List;
+    } as unknown as List;
   }
 };
 
@@ -167,7 +167,7 @@ class MockAdapter {
 
 const listExtras = () => ({
   getListByKey,
-  adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+  adapter: new MockAdapter() as unknown as PrismaAdapter,
   schemaNames: ['public'],
 });
 
@@ -185,7 +185,7 @@ const config = {
 const setup = (extraConfig?: Record<string, any>) => {
   const list = new List(
     'Test',
-    ({ ...config, ...extraConfig } as unknown) as BaseListConfig,
+    { ...config, ...extraConfig } as unknown as BaseListConfig,
     listExtras()
   );
   list.initFields();
@@ -201,7 +201,7 @@ describe('new List()', () => {
   });
 
   test('new List() - Plural throws error', () => {
-    expect(() => new List('Tests', (config as unknown) as BaseListConfig, listExtras())).toThrow(
+    expect(() => new List('Tests', config as unknown as BaseListConfig, listExtras())).toThrow(
       Error
     );
   });

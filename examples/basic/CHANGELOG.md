@@ -1,5 +1,19 @@
 # @keystone-next/app-basic
 
+## 3.0.3
+
+### Patch Changes
+
+- [#5622](https://github.com/keystonejs/keystone/pull/5622) [`bb8920843`](https://github.com/keystonejs/keystone/commit/bb8920843a1e0d803b8238bd17e9d65802698685) Thanks [@timleslie](https://github.com/timleslie)! - Disabled sorting for relationship fields.
+
+- Updated dependencies [[`3aea3b12f`](https://github.com/keystonejs/keystone/commit/3aea3b12fd0047e54671ead796fca15b625ade66), [`11814ce98`](https://github.com/keystonejs/keystone/commit/11814ce9865bc14ffdf5ca2a09b7221001539857), [`b0a72a112`](https://github.com/keystonejs/keystone/commit/b0a72a112dae7857defc8b745e674d55a29be766), [`79a0844b9`](https://github.com/keystonejs/keystone/commit/79a0844b9d5125891e3eaad4dc3999b232cefaa2), [`11814ce98`](https://github.com/keystonejs/keystone/commit/11814ce9865bc14ffdf5ca2a09b7221001539857), [`7e24b9c2a`](https://github.com/keystonejs/keystone/commit/7e24b9c2ab9313753932a27c45d238a2e9a61e9f), [`2b3efc8a8`](https://github.com/keystonejs/keystone/commit/2b3efc8a883e1e5832ed5111a6e0e4d3ee59f162), [`85dfdfb1e`](https://github.com/keystonejs/keystone/commit/85dfdfb1ea236bb1515ac6df43f974b30d0bf89a), [`fc9c3d55d`](https://github.com/keystonejs/keystone/commit/fc9c3d55d5a2e6a87bcb9e9ed50a19a503290457), [`400d88257`](https://github.com/keystonejs/keystone/commit/400d88257a3383595cf76c9399848b356dd51a11), [`483932276`](https://github.com/keystonejs/keystone/commit/483932276f15f0f6fcda3cfa6e1ece886d35550e), [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945), [`53225b0ef`](https://github.com/keystonejs/keystone/commit/53225b0efcf33810c1c91a0a4ec3e2369733ab0a), [`868d89f29`](https://github.com/keystonejs/keystone/commit/868d89f29156740b6ea0482e97108bfa58feda73), [`79d092afc`](https://github.com/keystonejs/keystone/commit/79d092afca565abe780e84d917299ecb749752f1), [`bb8920843`](https://github.com/keystonejs/keystone/commit/bb8920843a1e0d803b8238bd17e9d65802698685)]:
+  - @keystone-next/admin-ui@14.1.2
+  - @keystone-next/fields@8.2.0
+  - @keystone-next/fields-document@5.0.2
+  - @keystone-next/keystone@17.1.1
+  - @keystone-next/auth@23.0.1
+  - @keystone-ui/core@2.0.3
+
 ## 3.0.2
 
 ### Patch Changes

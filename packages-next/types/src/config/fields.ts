@@ -38,7 +38,7 @@ export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   ui?: {
     views?: string;
     createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden'> };
-    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
     itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
+    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
   };
 };

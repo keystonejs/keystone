@@ -1,5 +1,23 @@
 # @keystone-next/fields
 
+## 8.2.0
+
+### Minor Changes
+
+- [#5630](https://github.com/keystonejs/keystone/pull/5630) [`79a0844b9`](https://github.com/keystonejs/keystone/commit/79a0844b9d5125891e3eaad4dc3999b232cefaa2) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `ui.displayMode: 'count'` to `many` relationship fields
+
+### Patch Changes
+
+- [#5629](https://github.com/keystonejs/keystone/pull/5629) [`11814ce98`](https://github.com/keystonejs/keystone/commit/11814ce9865bc14ffdf5ca2a09b7221001539857) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Updated docs link to next.keystonejs.com.
+
+* [#5639](https://github.com/keystonejs/keystone/pull/5639) [`400d88257`](https://github.com/keystonejs/keystone/commit/400d88257a3383595cf76c9399848b356dd51a11) Thanks [@timleslie](https://github.com/timleslie)! - Fixed Admin UI issues when using `select` fields with `dataType: 'integer'`.
+
+- [#5622](https://github.com/keystonejs/keystone/pull/5622) [`bb8920843`](https://github.com/keystonejs/keystone/commit/bb8920843a1e0d803b8238bd17e9d65802698685) Thanks [@timleslie](https://github.com/timleslie)! - Disabled sorting for relationship fields.
+
+- Updated dependencies [[`3aea3b12f`](https://github.com/keystonejs/keystone/commit/3aea3b12fd0047e54671ead796fca15b625ade66), [`11814ce98`](https://github.com/keystonejs/keystone/commit/11814ce9865bc14ffdf5ca2a09b7221001539857), [`b0a72a112`](https://github.com/keystonejs/keystone/commit/b0a72a112dae7857defc8b745e674d55a29be766), [`2b3efc8a8`](https://github.com/keystonejs/keystone/commit/2b3efc8a883e1e5832ed5111a6e0e4d3ee59f162), [`fc9c3d55d`](https://github.com/keystonejs/keystone/commit/fc9c3d55d5a2e6a87bcb9e9ed50a19a503290457), [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945), [`53225b0ef`](https://github.com/keystonejs/keystone/commit/53225b0efcf33810c1c91a0a4ec3e2369733ab0a), [`79d092afc`](https://github.com/keystonejs/keystone/commit/79d092afca565abe780e84d917299ecb749752f1)]:
+  - @keystone-next/admin-ui@14.1.2
+  - @keystone-ui/core@2.0.3
+
 ## 8.1.0
 
 ### Minor Changes

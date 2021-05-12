@@ -3,17 +3,16 @@ import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 import { Text, PrismaTextInterface } from './Implementation';
 
-export type TextFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  defaultValue?: FieldDefaultValue<string>;
-  isRequired?: boolean;
-  isIndexed?: boolean;
-  isUnique?: boolean;
-  ui?: {
-    displayMode?: 'input' | 'textarea';
+export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    defaultValue?: FieldDefaultValue<string>;
+    isRequired?: boolean;
+    isIndexed?: boolean;
+    isUnique?: boolean;
+    ui?: {
+      displayMode?: 'input' | 'textarea';
+    };
   };
-};
 
 export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TextFieldConfig<TGeneratedListTypes> = {}

@@ -377,10 +377,12 @@ export class List implements BaseKeystoneList {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = ((await this._itemsQuery(
-        { first: 1, where: { ...access, id } },
-        { context, info }
-      )) as Record<string, any>[])[0];
+      item = (
+        (await this._itemsQuery(
+          { first: 1, where: { ...access, id } },
+          { context, info }
+        )) as Record<string, any>[]
+      )[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're

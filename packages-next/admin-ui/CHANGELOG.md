@@ -1,5 +1,30 @@
 # @keystone-next/admin-ui
 
+## 14.1.2
+
+### Patch Changes
+
+- [#5666](https://github.com/keystonejs/keystone/pull/5666) [`3aea3b12f`](https://github.com/keystonejs/keystone/commit/3aea3b12fd0047e54671ead796fca15b625ade66) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Prettified the logo in the admin-ui.
+
+* [#5629](https://github.com/keystonejs/keystone/pull/5629) [`11814ce98`](https://github.com/keystonejs/keystone/commit/11814ce9865bc14ffdf5ca2a09b7221001539857) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Updated docs link to point to next.keystonejs.com.
+
+- [#5623](https://github.com/keystonejs/keystone/pull/5623) [`b0a72a112`](https://github.com/keystonejs/keystone/commit/b0a72a112dae7857defc8b745e674d55a29be766) Thanks [@timleslie](https://github.com/timleslie)! - Improved the default value for `ui.initialColumns` to show the first three fields, rather than just the label field.
+
+* [#5633](https://github.com/keystonejs/keystone/pull/5633) [`2b3efc8a8`](https://github.com/keystonejs/keystone/commit/2b3efc8a883e1e5832ed5111a6e0e4d3ee59f162) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added minor fixes to filters dialog.
+
+- [#5655](https://github.com/keystonejs/keystone/pull/5655) [`fc9c3d55d`](https://github.com/keystonejs/keystone/commit/fc9c3d55d5a2e6a87bcb9e9ed50a19a503290457) Thanks [@JedWatson](https://github.com/JedWatson)! - Fixed navigation margin when session isn't configured
+
+* [#5642](https://github.com/keystonejs/keystone/pull/5642) [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945) Thanks [@malitov](https://github.com/malitov)! - Added hover state to the `OptionPrimitive` in Admin UI and updated css colors
+
+- [#5631](https://github.com/keystonejs/keystone/pull/5631) [`53225b0ef`](https://github.com/keystonejs/keystone/commit/53225b0efcf33810c1c91a0a4ec3e2369733ab0a) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed cache querying logic and added explicit query clearing flow to admin-ui.
+
+* [#5638](https://github.com/keystonejs/keystone/pull/5638) [`79d092afc`](https://github.com/keystonejs/keystone/commit/79d092afca565abe780e84d917299ecb749752f1) Thanks [@timleslie](https://github.com/timleslie)! - Added a `title` value to the create new item button on the dashboard.
+
+* Updated dependencies [[`85dfdfb1e`](https://github.com/keystonejs/keystone/commit/85dfdfb1ea236bb1515ac6df43f974b30d0bf89a), [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945)]:
+  - @keystone-next/keystone@17.1.1
+  - @keystone-ui/core@2.0.3
+  - @keystone-ui/options@3.0.1
+
 ## 14.1.1
 
 ### Patch Changes
