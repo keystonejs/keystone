@@ -65,6 +65,9 @@ export function Navigation() {
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
+        <NavItem href="/tutorials/getting-started-with-keystone-next-lite">
+          Keystone Next Lite
+        </NavItem>
       </Section>
       <Section label="Guides">
         <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
