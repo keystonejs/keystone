@@ -61,7 +61,11 @@ export class PrismaJsonInterface<P extends string> extends PrismaFieldAdapter<P>
 
   getPrismaSchema() {
     const { listAdapter } = this;
-    return [this._schemaField({ type: listAdapter.parentAdapter.provider === 'sqlite' ? 'String' : 'Json' })];
+    return [
+      this._schemaField({
+        type: listAdapter.parentAdapter.provider === 'sqlite' ? 'String' : 'Json',
+      }),
+    ];
   }
 
   getQueryConditions(dbPath: string) {
