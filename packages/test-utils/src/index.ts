@@ -70,16 +70,11 @@ async function setupFromConfig({
     return requirePrismaClient(cwd);
   })();
 
-  const { keystone, createContext, graphQLSchema } = createSystem(config, prismaClient);
+  const { connect, disconnect, createContext, graphQLSchema } = createSystem(config, prismaClient);
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
-  return {
-    connect: () => keystone.connect(),
-    disconnect: () => keystone.disconnect(),
-    context: createContext().sudo(),
-    app,
-  };
+  return { connect, disconnect, context: createContext().sudo(), app };
 }
 
 function networkedGraphqlRequest({

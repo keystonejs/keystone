@@ -49,5 +49,11 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
     gqlNamesByList,
   });
 
-  return { keystone, graphQLSchema, createContext };
+  return {
+    connect: () => keystone.connect({ context: createContext().sudo() }),
+    disconnect: () => keystone.disconnect(),
+    keystone,
+    graphQLSchema,
+    createContext,
+  };
 }

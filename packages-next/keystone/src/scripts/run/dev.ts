@@ -56,11 +56,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     }
     const prismaClient = requirePrismaClient(cwd);
 
-    const { keystone, graphQLSchema, createContext } = createSystem(config, prismaClient);
-
+    const system = createSystem(config, prismaClient);
+    const { connect, keystone, graphQLSchema, createContext } = system;
     console.log('✨ Connecting to the database');
-    await keystone.connect({ context: createContext().sudo() });
-    disconnect = () => keystone.disconnect();
+    await connect();
+    disconnect = system.disconnect;
     if (config.ui?.isDisabled) {
       console.log('✨ Skipping Admin UI code generation');
     } else {

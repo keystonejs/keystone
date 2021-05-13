@@ -17,10 +17,10 @@ export const start = async (cwd: string) => {
     throw new ExitError(1);
   }
   const config = initConfig(require(apiFile).config);
-  const { keystone, graphQLSchema, createContext } = createSystem(config, requirePrismaClient(cwd));
+  const { connect, graphQLSchema, createContext } = createSystem(config, requirePrismaClient(cwd));
 
   console.log('✨ Connecting to the database');
-  await keystone.connect({ context: createContext().sudo() });
+  await connect();
 
   console.log('✨ Creating server');
   const server = await createExpressServer(

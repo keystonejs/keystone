@@ -4,13 +4,13 @@ import { initConfig, createSystem, createApolloServerMicro } from '@keystone-nex
 import { PrismaClient } from '.prisma/client';
 
 const initializedKeystoneConfig = initConfig(keystoneConfig);
-const { graphQLSchema, keystone, createContext } = createSystem(initializedKeystoneConfig, 'none', PrismaClient);
+const { graphQLSchema, connect, createContext } = createSystem(initializedKeystoneConfig, 'none', PrismaClient);
 const apolloServer = createApolloServerMicro({
   graphQLSchema,
   createContext,
   sessionStrategy: initializedKeystoneConfig.session ? initializedKeystoneConfig.session() : undefined,
   apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
-  connectionPromise: keystone.connect(),
+  connectionPromise: connect(),
 });
 
 export const config = {

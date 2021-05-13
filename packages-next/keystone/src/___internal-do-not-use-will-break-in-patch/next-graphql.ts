@@ -5,7 +5,7 @@ import { createApolloServerMicro } from '../lib/server/createApolloServer';
 
 export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any) {
   const initializedKeystoneConfig = initConfig(keystoneConfig);
-  const { graphQLSchema, keystone, createContext } = createSystem(
+  const { graphQLSchema, connect, createContext } = createSystem(
     initializedKeystoneConfig,
     prismaClient
   );
@@ -15,7 +15,7 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
     createContext,
     sessionStrategy: initializedKeystoneConfig.session,
     apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
-    connectionPromise: keystone.connect(),
+    connectionPromise: connect(),
   });
 
   return apolloServer.createHandler({ path: '/api/graphql' });
