@@ -42,7 +42,7 @@ export type GraphQLSchemaExtension = {
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
 export function getGqlNames({
   listKey,
-  itemQueryName: _itemQueryName = listKey,
+  itemQueryName: _itemQueryName,
   listQueryName: _listQueryName,
 }: {
   listKey: string;
