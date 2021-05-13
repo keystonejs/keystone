@@ -105,19 +105,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createEvent(data: {
-                  title: "A thing",
-                  group: { connect: { id: "${createGroup.id}" } }
-                }) {
-                  id
-                }
-              }`,
+          const event = await context.lists.Event.createOne({
+            data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
           });
 
-          expect(data).toMatchObject({ createEvent: { id: expect.any(String) } });
+          expect(event).toMatchObject({ id: expect.any(String) });
         })
       );
 
@@ -130,34 +122,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item to update
-          const { createEvent } = await context.graphql.run({
-            query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
-          });
+          const event = await context.lists.Event.createOne({ data: { title: 'A thing' } });
 
           // Update the item and link the relationship field
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateEvent(
-                  id: "${createEvent.id}"
-                  data: {
-                    title: "A thing",
-                    group: { connect: { id: "${createGroup.id}" } }
-                  }
-                ) {
-                  id
-                  group {
-                    id
-                    name
-                  }
-                }
-              }`,
+          const _event = await context.lists.Event.updateOne({
+            id: event.id,
+            data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+            query: 'id group { id name }',
           });
-          expect(data).toMatchObject({
-            updateEvent: {
-              id: expect.any(String),
-              group: { id: expect.any(String), name: groupName },
-            },
+
+          expect(_event).toMatchObject({
+            id: expect.any(String),
+            group: { id: expect.any(String), name: groupName },
           });
         })
       );
@@ -241,24 +217,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const data = await context.exitSudo().graphql.run({
-                  query: `
-                    mutation {
-                      createEventTo${group.name}(data: {
-                        title: "A thing",
-                        group: { connect: { id: "${id}" } }
-                      }) {
-                        id
-                        group {
-                          id
-                        }
-                      }
-                    }`,
+                const data = await context.exitSudo().lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing', group: { connect: { id } } },
+                  query: 'id group { id }',
                 });
 
-                expect(data).toMatchObject({
-                  [`createEventTo${group.name}`]: { id: expect.any(String), group: { id } },
-                });
+                expect(data).toMatchObject({ id: expect.any(String), group: { id } });
               })
             );
             test(
@@ -279,35 +243,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const data = await context.exitSudo().graphql.run({
-                  query: `
-                    mutation {
-                      updateEventTo${group.name}(
-                        id: "${eventModel.id}"
-                        data: {
-                          title: "A thing",
-                          group: { connect: { id: "${groupModel.id}" } }
-                        }
-                      ) {
-                        id
-                        group {
-                          id
-                          name
-                        }
-                      }
-                    }`,
+                const data = await context.exitSudo().lists[`EventTo${group.name}`].updateOne({
+                  id: eventModel.id,
+                  data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
+                  query: 'id group { id name }',
                 });
 
                 expect(data).toMatchObject({
-                  [`updateEventTo${group.name}`]: {
-                    id: expect.any(String),
-                    group: { id: expect.any(String), name: groupName },
-                  },
+                  id: expect.any(String),
+                  group: { id: expect.any(String), name: groupName },
                 });
 
                 // See that it actually stored the group ID on the Event record
                 const event = await context.lists[`EventTo${group.name}`].findOne({
-                  where: { id: data[`updateEventTo${group.name}`].id },
+                  where: { id: data.id },
                   query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
