@@ -272,7 +272,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { connect: { id: "${location.id}" } } }
                   ) { id location { id } } }
             `,
@@ -298,7 +298,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { create: { name: "${locationName}" } } }
                   ) { id location { id name } }
                 }
@@ -348,7 +348,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { disconnectAll: true } }
                   ) { id location { id name } }
                 }
@@ -374,7 +374,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: null }
                   ) { id location { id name } }
                 }

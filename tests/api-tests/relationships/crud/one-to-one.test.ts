@@ -143,8 +143,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
             const data = await context.graphql.run({
               query: `{
-                  allLocations(where: { company: { name: "${company.name}"} }) { id }
-                  allCompanies(where: { location: { name: "${location.name}"} }) { id }
+                  allLocations(where: { company: { name: { equals: "${company.name}"} } }) { id }
+                  allCompanies(where: { location: { name: { equals: "${location.name}"} } }) { id }
                 }`,
             });
             expect(data.allLocations.length).toEqual(1);
@@ -159,10 +159,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createLocationAndCompany(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: { name: company.name } },
+              where: { company: { name: { equals: company.name } } },
             });
             const companies = await context.lists.Company.findMany({
-              where: { location: { name: location.name } },
+              where: { location: { name: { equals: location.name } } },
             });
             expect(locations.length).toEqual(1);
             expect(locations[0].id).toEqual(location.id);
@@ -248,10 +248,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createCompanyAndLocation(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: { name: company.name } },
+              where: { company: { name: { equals: company.name } } },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: { name: location.name } },
+              where: { location: { name: { equals: location.name } } },
             });
             expect(companiesCount).toEqual(1);
             expect(locationsCount).toEqual(1);
@@ -263,10 +263,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createLocationAndCompany(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: { name: company.name } },
+              where: { company: { name: { equals: company.name } } },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: { name: location.name } },
+              where: { location: { name: { equals: location.name } } },
             });
             expect(companiesCount).toEqual(1);
             expect(locationsCount).toEqual(1);
@@ -667,7 +667,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { connect: { id: "${location.id}" } } }
                   ) { id location { id } } }
             `,
@@ -699,7 +699,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: { connect: { id: "${company.id}" } } }
                   ) { id company { id } } }`,
             });
@@ -724,7 +724,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { create: { name: "${locationName}" } } }
                   ) { id location { id name } }
                 }
@@ -753,7 +753,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: { create: { name: "${companyName}" } } }
                   ) { id company { id name } }
                 }
@@ -804,7 +804,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 query: `
                   mutation {
                     updateCompany(
-                      id: "${company.id}",
+                      where: { id: "${company.id}" },
                       data: { location: { create: { name: "${locationName}" } } }
                     ) { id location { id name } }
                   }
@@ -839,7 +839,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: { create: { name: "${companyName}" } } }
                   ) { id company { id name } }
                 }
@@ -863,7 +863,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 query: `
                   mutation {
                     updateLocation(
-                      id: "${location.id}",
+                      where: { id: "${location.id}" },
                       data: { company: { create: { name: "${companyName}" } } }
                     ) { id company { id name } }
                   }
@@ -899,7 +899,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: { disconnect: { id: "${location.id}" } } }
                   ) { id location { id name } }
                 }
@@ -926,7 +926,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: { disconnect: { id: "${company.id}" } } }
                   ) { id company { id name } }
                 }`,
@@ -973,7 +973,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: { disconnectAll: true } }
                   ) { id company { id name } }
                 }`,
@@ -999,7 +999,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { location: null }
                   ) { id location { id name } }
                 }`,
@@ -1023,7 +1023,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateLocation(
-                    id: "${location.id}",
+                    where: { id: "${location.id}" },
                     data: { company: null }
                   ) { id company { id name } }
                 }`,
