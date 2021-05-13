@@ -59,7 +59,8 @@ export function createAdminMeta(
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
-      itemQueryName: list.singularGraphQLName,
+      // TODO: probably remove this from the GraphQL schema and here
+      itemQueryName: key,
       listQueryName: list.pluralGraphQLName,
     };
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);

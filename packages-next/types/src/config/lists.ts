@@ -181,9 +181,7 @@ export type ListGraphQLConfig = {
    */
   description?: string;
   // was previously top-level itemQueryName
-  itemQueryName?: string; // the name of the graphql query for getting a single item
-  // was previously top-level itemQueryName
-  listQueryName?: string; // the name of the graphql query for getting multiple items
+  pluralName?: string; // the name of the graphql query for getting multiple items
   // was previously top-level queryLimits
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)

@@ -88,7 +88,6 @@ export async function runPrismaOperations<T>(
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
-  singularGraphQLName: string;
   pluralGraphQLName: string;
   types: TypesForList;
   access: ResolvedListAccessControl;
@@ -376,11 +375,9 @@ function getNamesFromList(
     path: path || labelToPath(_plural),
   };
 
-  const _itemQueryName = graphql?.itemQueryName || labelToClass(_singular);
-  const _listQueryName = graphql?.itemQueryName || labelToClass(_plural);
+  const pluralGraphQLName = graphql?.pluralName || labelToClass(_plural);
   return {
-    singularGraphQLName: _itemQueryName,
-    pluralGraphQLName: _listQueryName,
+    pluralGraphQLName,
     adminUILabels,
   };
 }

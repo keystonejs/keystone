@@ -31,7 +31,7 @@ export function createKeystone(
       access,
       queryLimits: graphql?.queryLimits,
       schemaDoc: graphql?.description ?? description,
-      listQueryName: graphql?.listQueryName,
+      listQueryName: graphql?.pluralName,
       itemQueryName: graphql?.itemQueryName,
       hooks,
       adapterConfig: db,

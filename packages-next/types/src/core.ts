@@ -36,34 +36,31 @@ export type GraphQLSchemaExtension = {
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
 export function getGqlNames({
   listKey,
-  singularGraphQLName: _itemQueryName = listKey,
-  pluralGraphQLName: _listQueryName,
+  pluralGraphQLName,
 }: {
   listKey: string;
-  // TODO: remove
-  singularGraphQLName?: string;
   pluralGraphQLName: string;
 }): GqlNames {
   return {
     outputTypeName: listKey,
-    itemQueryName: _itemQueryName,
-    listQueryName: `all${_listQueryName}`,
-    listQueryMetaName: `_all${_listQueryName}Meta`,
-    listSortName: `Sort${_listQueryName}By`,
-    deleteMutationName: `delete${_itemQueryName}`,
-    updateMutationName: `update${_itemQueryName}`,
-    createMutationName: `create${_itemQueryName}`,
-    deleteManyMutationName: `delete${_listQueryName}`,
-    updateManyMutationName: `update${_listQueryName}`,
-    createManyMutationName: `create${_listQueryName}`,
-    whereInputName: `${_itemQueryName}WhereInput`,
-    whereUniqueInputName: `${_itemQueryName}WhereUniqueInput`,
-    updateInputName: `${_itemQueryName}UpdateInput`,
-    createInputName: `${_itemQueryName}CreateInput`,
-    updateManyInputName: `${_listQueryName}UpdateInput`,
-    createManyInputName: `${_listQueryName}CreateInput`,
-    relateToManyInputName: `${_itemQueryName}RelateToManyInput`,
-    relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
-    manyRelationFilter: `${_listQueryName}RelationFilter`,
+    itemQueryName: listKey,
+    listQueryName: `all${pluralGraphQLName}`,
+    listQueryMetaName: `_all${pluralGraphQLName}Meta`,
+    listSortName: `Sort${pluralGraphQLName}By`,
+    deleteMutationName: `delete${listKey}`,
+    updateMutationName: `update${listKey}`,
+    createMutationName: `create${listKey}`,
+    deleteManyMutationName: `delete${pluralGraphQLName}`,
+    updateManyMutationName: `update${pluralGraphQLName}`,
+    createManyMutationName: `create${pluralGraphQLName}`,
+    whereInputName: `${listKey}WhereInput`,
+    whereUniqueInputName: `${listKey}WhereUniqueInput`,
+    updateInputName: `${listKey}UpdateInput`,
+    createInputName: `${listKey}CreateInput`,
+    updateManyInputName: `${pluralGraphQLName}UpdateInput`,
+    createManyInputName: `${pluralGraphQLName}CreateInput`,
+    relateToManyInputName: `${listKey}RelateToManyInput`,
+    relateToOneInputName: `${listKey}RelateToOneInput`,
+    manyRelationFilter: `${pluralGraphQLName}RelationFilter`,
   };
 }
