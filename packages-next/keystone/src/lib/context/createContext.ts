@@ -7,7 +7,6 @@ import {
   BaseKeystone,
   KeystoneConfig,
   getGqlNames,
-  GqlNames,
 } from '@keystone-next/types';
 
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
@@ -28,7 +27,7 @@ export function makeCreateContext({
   keystone: BaseKeystone;
   config: KeystoneConfig;
   prismaClient: any;
-  lists: Record<string, Parameters<typeof getGqlNames>>[0];
+  lists: Record<string, Parameters<typeof getGqlNames>[0]>;
 }) {
   const images = createImagesContext(config.images);
   const files = createFilesContext(config.files);
