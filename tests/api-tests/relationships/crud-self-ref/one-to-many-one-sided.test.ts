@@ -120,7 +120,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['E', 0],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friend: { name_contains: name } },
+                  where: { friend: { name: { contains: name } } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -191,7 +191,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test(
+        test.skip(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             const user = await context.lists.User.createOne({
@@ -289,7 +289,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test(
+        test.skip(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location
