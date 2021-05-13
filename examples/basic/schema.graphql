@@ -243,7 +243,12 @@ input PostWhereUniqueInput {
 }
 
 type Mutation {
-  createUser(data: UserCreateInput! = {}): User!
+  createUser(
+    data: UserCreateInput! = {
+      phoneNumbers: { create: [], connect: [] }
+      posts: { create: [], connect: [] }
+    }
+  ): User!
   createUsers(data: [UsersCreateInput!]! = []): [User!]!
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
   updateUsers(data: [UsersUpdateInput!]!): [User!]!
@@ -264,6 +269,14 @@ type Mutation {
   updatePosts(data: [PostsUpdateInput!]!): [Post!]!
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]!): [Post!]!
+  endSession: Boolean!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
 }
 
 input UserCreateInput {
@@ -446,6 +459,7 @@ type Query {
     skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
 }
 
 type KeystoneMeta {
@@ -526,4 +540,34 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
 }

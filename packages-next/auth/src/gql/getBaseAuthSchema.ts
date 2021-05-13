@@ -1,6 +1,6 @@
 import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/types';
 
-import { AuthGqlNames } from '../types';
+import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 import { getPasswordAuthError } from '../lib/getErrorMessage';
@@ -11,12 +11,14 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretField,
   protectIdentities,
   gqlNames,
+  secretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
+  secretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `
@@ -57,10 +59,9 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const result = await validateSecret(
-            list,
+            secretFieldImpl,
             identityField,
             args[identityField],
             secretField,
@@ -73,26 +74,27 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             const message = getPasswordAuthError({
               identityField,
               secretField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              // FIXME
+              itemSingular: listKey,
+              // FIXME
+              itemPlural: listKey,
               code: result.code,
             });
             return { code: result.code, message };
           }
 
           // Update system state
-          const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
+          const sessionToken = await context.startSession({
+            listKey,
+            itemId: result.item.id.toString(),
+          });
           return { sessionToken, item: result.item };
         },
       },
       Query: {
         async authenticatedItem(root, args, { session, db }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            try {
-              return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
-            } catch (e) {
-              return null;
-            }
+            return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
         },

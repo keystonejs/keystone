@@ -89,7 +89,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
     ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
     findOne(args: {
       readonly where: { readonly id: string };
-    }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
     count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
     updateOne(args: {
       readonly id: string;

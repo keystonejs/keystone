@@ -94,22 +94,16 @@ export function withItemData(
           return;
         }
 
-        // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
-        // throw; I think this needs to be reviewed, but for now this prevents a system crash when
-        // the session item is invalid
-        try {
-          // If no field selection is specified, just load the id. We still load the item,
-          // because doing so validates that it exists in the database
-          const item = await sudoContext.lists[session.listKey].findOne({
-            where: { id: session.itemId },
-            query: fieldSelections[session.listKey] || 'id',
-          });
-          return { ...session, data: item };
-        } catch (e) {
-          // TODO: This swallows all errors, we need a way to differentiate between "not found" and
-          // actual exceptions that should be thrown
+        // If no field selection is specified, just load the id. We still load the item,
+        // because doing so validates that it exists in the database
+        const item = await sudoContext.lists[session.listKey].findOne({
+          where: { id: session.itemId },
+          query: fieldSelections[session.listKey] || 'id',
+        });
+        if (item === null) {
           return;
         }
+        return { ...session, data: item };
       },
     };
   };

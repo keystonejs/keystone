@@ -1,6 +1,6 @@
 import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
-import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
+import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
@@ -12,12 +12,14 @@ export function getMagicAuthLinkSchema<I extends string>({
   protectIdentities,
   gqlNames,
   magicAuthLink,
+  secretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
+  secretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `
@@ -56,7 +58,7 @@ export function getMagicAuthLinkSchema<I extends string>({
     resolvers: {
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
-          const list = context.keystone.lists[listKey];
+          // const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
@@ -73,8 +75,9 @@ export function getMagicAuthLinkSchema<I extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              itemSingular: listKey,
+              // FIXME
+              itemPlural: listKey,
               code: result.code,
             });
             return { code: result.code, message };
@@ -106,12 +109,13 @@ export function getMagicAuthLinkSchema<I extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const list = context.keystone.lists[listKey];
+          // const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
+            listKey,
+            secretFieldImpl,
             tokenType,
-            list,
             identityField,
             args[identityField],
             protectIdentities,
@@ -123,8 +127,9 @@ export function getMagicAuthLinkSchema<I extends string>({
           if (!result.success) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              itemSingular: listKey,
+              // TODO: need to get this from _somewhere_
+              itemPlural: listKey,
               code: result.code,
             });
 
@@ -137,7 +142,10 @@ export function getMagicAuthLinkSchema<I extends string>({
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
           });
 
-          const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
+          const sessionToken = await context.startSession({
+            listKey,
+            itemId: result.item.id.toString(),
+          });
           return { token: sessionToken, item: result.item };
         },
       },
