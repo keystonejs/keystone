@@ -13,7 +13,7 @@ import {
   requirePrismaClient,
   generateNodeModulesArtifacts,
 } from '@keystone-next/keystone/artifacts';
-import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
 export type ProviderName = 'postgresql' | 'sqlite';
@@ -74,7 +74,12 @@ async function setupFromConfig({
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
-  return { keystone, context: createContext().sudo(), app };
+  return {
+    connect: () => keystone.connect(),
+    disconnect: () => keystone.disconnect(),
+    context: createContext().sudo(),
+    app,
+  };
 }
 
 function networkedGraphqlRequest({
@@ -107,7 +112,12 @@ function networkedGraphqlRequest({
     }));
 }
 
-type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };
+type Setup = {
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  context: KeystoneContext;
+  app: express.Application;
+};
 
 function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise<void> | void) {
   return function (
@@ -127,13 +137,13 @@ function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise
         return;
       }
       const setup = await setupKeystoneFn(provider);
-      const { keystone } = setup;
-      await keystone.connect();
+      const { connect, disconnect } = setup;
+      await connect();
 
       try {
         await testFn(setup);
       } finally {
-        await keystone.disconnect();
+        await disconnect();
         await tearDownFunction();
       }
     };
@@ -141,20 +151,16 @@ function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise
 }
 
 function _before(provider: ProviderName) {
-  return async function (
-    setupKeystone: (
-      provider: ProviderName
-    ) => Promise<{ keystone: BaseKeystone; app: any; context: any }>
-  ) {
-    const { keystone, context, app } = await setupKeystone(provider);
-    await keystone.connect();
-    return { keystone, context, app };
+  return async function (setupKeystone: (provider: ProviderName) => Promise<Setup>) {
+    const setup = await setupKeystone(provider);
+    await setup.connect();
+    return setup;
   };
 }
 
 function _after(tearDownFunction: () => Promise<void> | void) {
-  return async function (keystone: BaseKeystone) {
-    await keystone.disconnect();
+  return async function (disconnect: () => Promise<void>) {
+    await disconnect();
     await tearDownFunction();
   };
 }
