@@ -601,23 +601,25 @@ export async function resolveOrderBy(
   return Promise.all(
     orderBy.map(async orderByGroup => {
       return Object.fromEntries(
-        await Promise.all(
-          Object.entries(orderByGroup).flatMap(async ([fieldKey, value]) => {
-            if (value === null) {
-              throw new Error('null cannot be passed as an order direction');
-            }
-            const field = list.fields[fieldKey];
-            const resolveOrderBy = field.input!.orderBy!.resolve;
-            const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
-            if (field.dbField.kind === 'multi') {
-              return Object.entries(resolvedValue).map(([subField, value]) => [
-                getDBFieldPathForFieldOnMultiField(fieldKey, subField),
-                value,
-              ]);
-            }
-            return [[fieldKey, resolvedValue]] as const;
-          })
-        )
+        (
+          await Promise.all(
+            Object.entries(orderByGroup).map(async ([fieldKey, value]) => {
+              if (value === null) {
+                throw new Error('null cannot be passed as an order direction');
+              }
+              const field = list.fields[fieldKey];
+              const resolveOrderBy = field.input!.orderBy!.resolve;
+              const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
+              if (field.dbField.kind === 'multi') {
+                return Object.entries(resolvedValue).map(
+                  ([subField, value]) =>
+                    [getDBFieldPathForFieldOnMultiField(fieldKey, subField), value] as const
+                );
+              }
+              return [[fieldKey, resolvedValue]] as const;
+            })
+          )
+        ).flat()
       );
     })
   );
