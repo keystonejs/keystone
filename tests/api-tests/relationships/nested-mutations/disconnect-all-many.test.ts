@@ -133,17 +133,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
               data: { username: 'A thing', notes: { disconnectAll: true } },
             });
 
-            const data = await context.graphql.run({
-              query: `
-                query getUserNodes($userId: ID!){
-                  UserToNotesNoRead(where: { id: $userId }) {
-                    id
-                    notes { id }
-                  }
-                }`,
-              variables: { userId: createUser.id },
+            const data = await context.lists.UserToNotesNoRead.findOne({
+              where: { id: createUser.id },
+              query: 'id notes { id }',
             });
-            expect(data.UserToNotesNoRead.notes).toHaveLength(0);
+            expect(data.notes).toHaveLength(0);
           })
         );
       });

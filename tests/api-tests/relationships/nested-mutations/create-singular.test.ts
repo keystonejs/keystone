@@ -278,28 +278,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   expect(error.path![0]).toEqual(`createEventTo${group.name}`);
                 }
                 // Confirm it didn't insert either of the records anyway
-                const data1 = await context.graphql.run({
-                  query: `
-                    query {
-                      all${group.name}s(where: { name: "${groupName}" }) {
-                        id
-                        name
-                      }
-                    }`,
+                const data1 = await context.lists[group.name].findMany({
+                  where: { name: groupName },
+                  query: 'id name',
                 });
-                expect(data1[`all${group.name}s`]).toMatchObject([]);
+                expect(data1).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
-                const data2 = await context.graphql.run({
-                  query: `
-                    query {
-                      allEventTo${group.name}s(where: { title: "${eventName}" }) {
-                        id
-                        title
-                      }
-                    }`,
+                const data2 = await context.lists[`EventTo${group.name}`].findMany({
+                  where: { title: eventName },
+                  query: 'id title',
                 });
-                expect(data2[`allEventTo${group.name}s`]).toMatchObject([]);
+                expect(data2).toMatchObject([]);
               })
             );
 

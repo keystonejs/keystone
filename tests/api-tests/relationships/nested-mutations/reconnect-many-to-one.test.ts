@@ -80,32 +80,22 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // B should see Bob as its author
           await (async () => {
-            const data = await context.graphql.run({
-              query: `
-                query {
-                  Note(where: { id: "${noteB.id}"}) {
-                    id
-                    author { id username }
-                  }
-                }`,
+            const note = await context.lists.Note.findOne({
+              where: { id: noteB.id },
+              query: 'id author { id username }',
             });
-            expect(data.Note).toEqual({ id: noteB.id, author: { id: bob.id, username: 'Bob' } });
+            expect(note).toEqual({ id: noteB.id, author: { id: bob.id, username: 'Bob' } });
           })();
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            type T = { User: { id: IdType; notes: { id: IdType; title: string }[] } };
-            const data = (await context.graphql.run({
-              query: `
-                query {
-                  User(where: { id: "${alice.id}"}) {
-                    id
-                    notes(sortBy: title_ASC) { id title }
-                  }
-                }`,
+            type T = { id: IdType; notes: { id: IdType; title: string }[] };
+            const user = (await context.lists.User.findOne({
+              where: { id: alice.id },
+              query: 'id notes(sortBy: [title_ASC]) { id title }',
             })) as T;
-            expect(data.User).toEqual({ id: alice.id, notes: expect.any(Array) });
-            expect(data.User.notes.map(({ title }) => title)).toEqual(['A']);
+            expect(user).toEqual({ id: alice.id, notes: expect.any(Array) });
+            expect(user.notes.map(({ title }) => title)).toEqual(['A']);
           })();
         })
       );
