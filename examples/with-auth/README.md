@@ -21,12 +21,12 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 This project demonstrates how to add authentication to a Keystone system.
 We're going to use the [`@keystone-next/auth`](https://next.keystonejs.com/apis/auth) package, along with Keystone's [session management API](https://next.keystonejs.com/apis/session), to add the following features to the base system:
 
- * Configure which fields to use for signin
- * Set up stateless session handling to keep track of the signed in user
- * Add a signin screen to the Admin UI
- * Add a signout button to the Admin UI
- * Allow the signed in user to access their own details in the Admin UI
- * Add a helper page to the Admin UI to allow you to create your first user when starting from an empty database
+- Configure which fields to use for signin
+- Set up stateless session handling to keep track of the signed in user
+- Add a signin screen to the Admin UI
+- Add a signout button to the Admin UI
+- Allow the signed in user to access their own details in the Admin UI
+- Add a helper page to the Admin UI to allow you to create your first user when starting from an empty database
 
 ### Added fields
 
