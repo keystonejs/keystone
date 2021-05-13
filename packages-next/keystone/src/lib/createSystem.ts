@@ -1,4 +1,4 @@
-import type { KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
+import { KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
@@ -23,15 +23,15 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
 
   // Convert the Keystone lists into just what's needed by the createContext function
   // This will in soon evolve into the code in the next-fields effort.
-  const lists = Object.fromEntries(
+  const gqlNamesByList = Object.fromEntries(
     Object.entries(keystone.lists).map(([listKey, list]) => {
       return [
         listKey,
-        {
+        getGqlNames({
           listKey,
           itemQueryName: list.gqlNames.itemQueryName,
           listQueryName: list.gqlNames.listQueryName.slice(3),
-        },
+        }),
       ];
     })
   );
@@ -46,7 +46,7 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
     internalSchema,
     config,
     prismaClient,
-    lists,
+    gqlNamesByList,
   });
 
   return { keystone, graphQLSchema, createContext };

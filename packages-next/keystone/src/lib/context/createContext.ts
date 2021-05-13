@@ -6,7 +6,7 @@ import {
   KeystoneGraphQLAPI,
   BaseKeystone,
   KeystoneConfig,
-  getGqlNames,
+  GqlNames,
 } from '@keystone-next/types';
 
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
@@ -20,14 +20,14 @@ export function makeCreateContext({
   keystone,
   config,
   prismaClient,
-  lists,
+  gqlNamesByList,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
   config: KeystoneConfig;
   prismaClient: any;
-  lists: Record<string, Parameters<typeof getGqlNames>[0]>;
+  gqlNamesByList: Record<string, GqlNames>;
 }) {
   const images = createImagesContext(config.images);
   const files = createFilesContext(config.files);
@@ -40,13 +40,13 @@ export function makeCreateContext({
   // doing is more obvious(even though in reality it's much smaller than the alternative)
 
   const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, list] of Object.entries(lists)) {
-    publicDbApiFactories[listKey] = getDbAPIFactory(getGqlNames(list), graphQLSchema);
+  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
+    publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
   }
 
   const internalDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, list] of Object.entries(lists)) {
-    internalDbApiFactories[listKey] = getDbAPIFactory(getGqlNames(list), internalSchema);
+  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
+    internalDbApiFactories[listKey] = getDbAPIFactory(gqlNames, internalSchema);
   }
 
   const createContext = ({
@@ -100,12 +100,12 @@ export function makeCreateContext({
       ...sessionContext,
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
-      gqlNames: (listKey: string) => getGqlNames(lists[listKey]),
+      gqlNames: (listKey: string) => gqlNamesByList[listKey],
       images,
       files,
     };
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
-    for (const listKey of Object.keys(lists)) {
+    for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
       itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
     }
