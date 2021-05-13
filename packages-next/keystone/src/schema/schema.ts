@@ -21,7 +21,7 @@ export function config(config: KeystoneConfig) {
 
 export function list<Fields extends BaseFields<BaseGeneratedListTypes>>(
   config: ListConfig<BaseGeneratedListTypes, Fields>
-) {
+): ListConfig<any, any> {
   return config;
 }
 
