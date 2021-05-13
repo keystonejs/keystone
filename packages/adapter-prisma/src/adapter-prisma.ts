@@ -345,6 +345,7 @@ class PrismaListAdapter {
   }
 
   _formatFieldValue(value: any, path: string) {
+    // TODO: Discuss moving this function to class of each field type
     let format = this._getFieldStorageFormat(path);
     if (value === null) return null;
     switch (format) {
@@ -368,6 +369,7 @@ class PrismaListAdapter {
   }
 
   _getFieldStorageFormat(path: string, returnExtra: boolean = false) {
+    // TODO: Discuss moving this function to class of each field type
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (this.fieldAdaptersByPath[path].isRelationship) {
       let refListAdapter = this.getListAdapterByKey(
