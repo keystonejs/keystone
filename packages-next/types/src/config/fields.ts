@@ -6,6 +6,7 @@ import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   [key: string]: FieldTypeFunc;
 };

@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
-    "graphql-upload": "^11.0.0"
+    "graphql-upload": "^11.0.0",
+    "decimal.js": "^10.2.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/types"
 }

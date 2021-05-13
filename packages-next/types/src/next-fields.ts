@@ -5,14 +5,44 @@ import type { FileUpload } from 'graphql-upload';
 // this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
 import GraphQLUpload from 'graphql-upload/public/GraphQLUpload';
+import Decimal from 'decimal.js';
+import { GraphQLScalarType } from 'graphql';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
+// we could allow numbers in parseValue/parseLiteral but that feels like a footgun
+const DecimalScalar = new GraphQLScalarType({
+  name: 'Decimal',
+  description: 'An arbitrary-precision Decimal type. The serialized form is a string.',
+
+  serialize(value: Decimal) {
+    return value.toString();
+  },
+
+  parseValue(value) {
+    if (value instanceof Decimal) {
+      return value;
+    }
+    if (typeof value === 'string') {
+    }
+    return new Decimal(value);
+  },
+
+  parseLiteral(ast) {
+    if (ast.kind !== 'StringValue') {
+      throw new TypeError(`The Decimal only accepts strings as input`);
+    }
+
+    return new Decimal(ast.value);
+  },
+});
+
 export const types = {
   JSON: tsgql.types.scalar<JSONValue>(GraphQLJSON),
   Upload: tsgql.types.scalar<Promise<FileUpload>>(GraphQLUpload),
+  Decimal: tsgql.types.scalar<Decimal>(DecimalScalar),
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
@@ -88,6 +118,7 @@ type ScalarPrismaTypes = {
   DateTime: Date;
   BigInt: bigint;
   Json: JSONValue;
+  Decimal: Decimal;
 };
 
 type NumberLiteralDefault = { kind: 'literal'; value: number };
@@ -114,6 +145,7 @@ export type ScalarDBFieldDefault<
           Int: AutoIncrementDefault | NumberLiteralDefault;
           BigInt: AutoIncrementDefault | BigIntLiteralDefault;
           DateTime: NowDefault | StringLiteralDefault;
+          Decimal: StringLiteralDefault;
         }[Scalar]
       | DBGeneratedDefault;
 

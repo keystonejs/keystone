@@ -664,6 +664,122 @@ const NestedBigIntFilter: NestedBigIntFilterType = types.inputObject({
   }),
 });
 
+type DecimalNullableFilterType = tsgql.InputObjectType<{
+  // can be null
+  equals: tsgql.Arg<typeof types.Decimal>;
+  // can be null
+  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  // can be null
+  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  lt: tsgql.Arg<typeof types.Decimal>;
+  lte: tsgql.Arg<typeof types.Decimal>;
+  gt: tsgql.Arg<typeof types.Decimal>;
+  gte: tsgql.Arg<typeof types.Decimal>;
+  // can be null
+  not: tsgql.Arg<typeof NestedDecimalNullableFilter>;
+}>;
+
+const DecimalNullableFilter: DecimalNullableFilterType = types.inputObject({
+  name: 'DecimalNullableFilter',
+  fields: () => ({
+    // can be null
+    equals: types.arg({ type: types.Decimal }),
+    // can be null
+    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    // can be null
+    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    lt: types.arg({ type: types.Decimal }),
+    lte: types.arg({ type: types.Decimal }),
+    gt: types.arg({ type: types.Decimal }),
+    gte: types.arg({ type: types.Decimal }),
+    // can be null
+    not: types.arg({ type: NestedDecimalNullableFilter }),
+  }),
+});
+
+type NestedDecimalNullableFilterType = tsgql.InputObjectType<{
+  // can be null
+  equals: tsgql.Arg<typeof types.Decimal>;
+  // can be null
+  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  // can be null
+  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  lt: tsgql.Arg<typeof types.Decimal>;
+  lte: tsgql.Arg<typeof types.Decimal>;
+  gt: tsgql.Arg<typeof types.Decimal>;
+  gte: tsgql.Arg<typeof types.Decimal>;
+  // can be null
+  not: tsgql.Arg<typeof NestedDecimalNullableFilter>;
+}>;
+
+const NestedDecimalNullableFilter: NestedDecimalNullableFilterType = types.inputObject({
+  name: 'NestedDecimalNullableFilter',
+  fields: () => ({
+    // can be null
+    equals: types.arg({ type: types.Decimal }),
+    // can be null
+    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    // can be null
+    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    lt: types.arg({ type: types.Decimal }),
+    lte: types.arg({ type: types.Decimal }),
+    gt: types.arg({ type: types.Decimal }),
+    gte: types.arg({ type: types.Decimal }),
+    // can be null
+    not: types.arg({ type: NestedDecimalNullableFilter }),
+  }),
+});
+
+type DecimalFilterType = tsgql.InputObjectType<{
+  equals: tsgql.Arg<typeof types.Decimal>;
+  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  lt: tsgql.Arg<typeof types.Decimal>;
+  lte: tsgql.Arg<typeof types.Decimal>;
+  gt: tsgql.Arg<typeof types.Decimal>;
+  gte: tsgql.Arg<typeof types.Decimal>;
+  not: tsgql.Arg<typeof NestedDecimalFilter>;
+}>;
+
+const DecimalFilter: DecimalFilterType = types.inputObject({
+  name: 'DecimalFilter',
+  fields: () => ({
+    equals: types.arg({ type: types.Decimal }),
+    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    lt: types.arg({ type: types.Decimal }),
+    lte: types.arg({ type: types.Decimal }),
+    gt: types.arg({ type: types.Decimal }),
+    gte: types.arg({ type: types.Decimal }),
+    not: types.arg({ type: NestedDecimalFilter }),
+  }),
+});
+
+type NestedDecimalFilterType = tsgql.InputObjectType<{
+  equals: tsgql.Arg<typeof types.Decimal>;
+  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  lt: tsgql.Arg<typeof types.Decimal>;
+  lte: tsgql.Arg<typeof types.Decimal>;
+  gt: tsgql.Arg<typeof types.Decimal>;
+  gte: tsgql.Arg<typeof types.Decimal>;
+  not: tsgql.Arg<typeof NestedDecimalFilter>;
+}>;
+
+const NestedDecimalFilter: NestedDecimalFilterType = types.inputObject({
+  name: 'NestedDecimalFilter',
+  fields: () => ({
+    equals: types.arg({ type: types.Decimal }),
+    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    lt: types.arg({ type: types.Decimal }),
+    lte: types.arg({ type: types.Decimal }),
+    gt: types.arg({ type: types.Decimal }),
+    gte: types.arg({ type: types.Decimal }),
+    not: types.arg({ type: NestedDecimalFilter }),
+  }),
+});
+
 export const String = {
   optional: StringNullableFilter,
   required: StringFilter,
@@ -692,6 +808,11 @@ export const DateTime = {
 export const BigInt = {
   optional: BigIntNullableFilter,
   required: BigIntFilter,
+};
+
+export const Decimal = {
+  optional: DecimalNullableFilter,
+  required: DecimalFilter,
 };
 
 export { enumFilters as enum } from '../enum-filter';

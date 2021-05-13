@@ -18,6 +18,7 @@ const scalarTypes = [
   'DateTime',
   'BigInt',
   'Json',
+  'Decimal',
   // we're gonna ignore Bytes because how do you want to filter by bytes and what GraphQL scalar do we use?
   // 'Bytes',
   // 'SomeEnum',
@@ -281,4 +282,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Json: 'types.JSON',
   DateTime: 'types.String',
   BigInt: 'types.String',
+  Decimal: 'types.Decimal',
 };
