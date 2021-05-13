@@ -23,6 +23,13 @@ const PasswordState = types.object<{ isSet: boolean }>()({
   },
 });
 
+const PasswordFilter = types.inputObject({
+  name: 'PasswordFieldFilter',
+  fields: {
+    isSet: types.arg({ type: types.nonNull(types.Boolean) }),
+  },
+});
+
 export const password =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     bcrypt = bcryptjs,
@@ -59,6 +66,25 @@ export const password =
     })({
       ...config,
       input: {
+        where: {
+          arg: types.arg({ type: PasswordFilter }),
+          resolve(val) {
+            if (val === null) {
+              throw new Error('PasswordFieldFilter cannot be set to null');
+            }
+
+            if (val.isSet) {
+              return {
+                not: {
+                  equals: null,
+                },
+              };
+            }
+            return {
+              equals: null,
+            };
+          },
+        },
         create: {
           arg: types.arg({ type: types.String }),
           resolve: inputResolver,

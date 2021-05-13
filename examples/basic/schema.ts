@@ -28,7 +28,8 @@ type AccessArgs = {
   item?: any;
 };
 export const access = {
-  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
+  isAdmin: ({ session }: AccessArgs) => true,
+  // !!session?.data?.isAdmin
 };
 
 const randomNumber = () => Math.round(Math.random() * 10);
@@ -44,7 +45,7 @@ export const lists = createSchema({
       /** The user's first and last name. */
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, index: 'unique' }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
