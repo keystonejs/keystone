@@ -16,7 +16,6 @@ import {
   CreateFieldInputArg,
 } from '@keystone-next/types';
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
-import { CreateAndUpdateInputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -127,8 +126,8 @@ function mapOutputFieldToSQLite(
 }
 
 function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
-  arg: UpdateFieldInputArg<JSONValue | null | undefined, Arg> | undefined
-): UpdateFieldInputArg<string | null | undefined, Arg> | undefined {
+  arg: UpdateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
+): UpdateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
     return undefined;
   }
@@ -137,10 +136,12 @@ function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
     async resolve(
       input: tsgql.InferValueFromArg<Arg>,
       context: KeystoneContext,
-      inputResolvers: Record<string, CreateAndUpdateInputResolvers>
+      relationshipInputResolver: any
     ) {
       const resolvedInput =
-        arg.resolve === undefined ? input : await arg.resolve(input, context, inputResolvers);
+        arg.resolve === undefined
+          ? input
+          : await arg.resolve(input, context, relationshipInputResolver);
       if (resolvedInput === undefined || resolvedInput === null) {
         return resolvedInput;
       }
@@ -150,8 +151,8 @@ function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
 }
 
 function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
-  arg: CreateFieldInputArg<JSONValue | null | undefined, Arg> | undefined
-): CreateFieldInputArg<string | null | undefined, Arg> | undefined {
+  arg: CreateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
+): CreateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
     return undefined;
   }
@@ -160,10 +161,12 @@ function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
     async resolve(
       input: tsgql.InferValueFromArg<Arg>,
       context: KeystoneContext,
-      inputResolvers: Record<string, CreateAndUpdateInputResolvers>
+      relationshipInputResolver: any
     ) {
       const resolvedInput =
-        arg.resolve === undefined ? input : await arg.resolve(input, context, inputResolvers);
+        arg.resolve === undefined
+          ? input
+          : await arg.resolve(input, context, relationshipInputResolver);
       if (resolvedInput === undefined || resolvedInput === null) {
         return resolvedInput;
       }
