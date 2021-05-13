@@ -7,7 +7,6 @@ export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
 export const fieldName = 'password';
-export const readFieldName = 'password';
 export const subfieldName = 'isSet';
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
@@ -27,13 +26,13 @@ export const initItems = () => {
 };
 
 export const storedValues = () => [
-  { name: 'person1', password_is_set: true },
-  { name: 'person2', password_is_set: false },
-  { name: 'person3', password_is_set: true },
-  { name: 'person4', password_is_set: true },
-  { name: 'person5', password_is_set: true },
-  { name: 'person6', password_is_set: false },
-  { name: 'person7', password_is_set: false },
+  { name: 'person1', password: { isSet: true } },
+  { name: 'person2', password: { isSet: false } },
+  { name: 'person3', password: { isSet: true } },
+  { name: 'person4', password: { isSet: true } },
+  { name: 'person5', password: { isSet: true } },
+  { name: 'person6', password: { isSet: false } },
+  { name: 'person7', password: { isSet: false } },
 ];
 
-export const supportedFilters = () => ['is_set'];
+export const supportedFilters = () => ['isSet'];

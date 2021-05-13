@@ -342,18 +342,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(provider).includes('is_set')) {
+              if (mod.supportedFilters(provider).includes('isSet')) {
                 test(
                   'Is Set - true',
                   withKeystone(({ context }) =>
-                    match(context, { [`${fieldName}_is_set`]: true }, [0, 2, 3, 4])
+                    match(context, { [fieldName]: { isSet: true } }, [0, 2, 3, 4])
                   )
                 );
 
                 test(
                   'Is Set - false',
                   withKeystone(({ context }) =>
-                    match(context, { [`${fieldName}_is_set`]: false }, [1, 5, 6])
+                    match(context, { [fieldName]: { isSet: false } }, [1, 5, 6])
                   )
                 );
               }
