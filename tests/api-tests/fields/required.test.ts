@@ -1,22 +1,32 @@
 import globby from 'globby';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
       .filter(
         ({ skipRequiredTest, unSupportedAdapterList = [] }) =>
-          !skipRequiredTest && !unSupportedAdapterList.includes(adapterName)
+          !skipRequiredTest && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           describe(`${mod.name} - ${matrixValue} - isRequired`, () => {
+            beforeEach(() => {
+              if (mod.beforeEach) {
+                mod.beforeEach();
+              }
+            });
+            afterEach(async () => {
+              if (mod.afterEach) {
+                await mod.afterEach();
+              }
+            });
             beforeAll(() => {
               if (mod.beforeAll) {
                 mod.beforeAll();
@@ -30,27 +40,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
               runner(
                 () =>
-                  setupServer({
-                    adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
-                        fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
-                            isRequired: true,
-                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                  setupFromConfig({
+                    provider,
+                    config: testConfig({
+                      lists: createSchema({
+                        Test: list({
+                          fields: {
+                            name: text(),
+                            testField: mod.typeFunction({
+                              isRequired: true,
+                              ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                            }),
                           },
-                        },
-                      });
-                    },
+                        }),
+                      }),
+                      images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                      files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                    }),
                   }),
                 testFn
               );
             test(
               'Create an object without the required field',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data, errors } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry" } ) { id }
@@ -66,24 +79,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'Update an object with the required field having a null value',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data ) { id }
-                  }`,
-                  variables: {
-                    data: {
-                      name: 'test entry',
-                      testField: mod.exampleValue(matrixValue),
-                    },
+              keystoneTestWrapper(async ({ context }) => {
+                const data0 = await context.lists.Test.createOne({
+                  data: {
+                    name: 'test entry',
+                    testField: mod.exampleValue(matrixValue),
                   },
                 });
-                expect(errors0).toBe(undefined);
-                const { data, errors } = await keystone.executeGraphQL({
+                const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
-                    updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry", testField: null } ) { id }
+                    updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
                   }`,
                 });
                 expect(data.updateTest).toBe(null);
@@ -96,28 +102,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'Update an object without the required field',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data ) { id }
-                  }`,
-                  variables: {
-                    data: {
-                      name: 'test entry',
-                      testField: mod.exampleValue(matrixValue),
-                    },
+              keystoneTestWrapper(async ({ context }) => {
+                const data0 = await context.lists.Test.createOne({
+                  data: {
+                    name: 'test entry',
+                    testField: mod.exampleValue(matrixValue),
                   },
                 });
-                expect(errors0).toBe(undefined);
-                const { data, errors } = await keystone.executeGraphQL({
-                  query: `
-                  mutation {
-                    updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry" } ) { id }
-                  }`,
+                const data = await context.lists.Test.updateOne({
+                  id: data0.id,
+                  data: { name: 'updated test entry' },
+                  query: 'id name',
                 });
-                expect(data.updateTest).not.toBe(null);
-                expect(errors).toBe(undefined);
+                expect(data).not.toBe(null);
+                expect(data.name).toEqual('updated test entry');
               })
             );
           });

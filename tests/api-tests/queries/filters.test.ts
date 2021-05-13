@@ -1,15 +1,15 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -20,67 +20,52 @@ function setupKeystone(adapterName: AdapterName) {
             multi____dash: text(),
           },
         }),
-        SecondaryList: list({
-          fields: {
-            someUser: relationship({ ref: 'User' }),
-          },
-        }),
+        SecondaryList: list({ fields: { someUser: relationship({ ref: 'User' }) } }),
       }),
     }),
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
-    describe('filtering on list name', () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
+    describe('filtering on field name', () => {
       test(
-        'filter works when there is no dash in list name',
+        'filter works when there is no dash in field name',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { noDash: "aValue" }) { id } }`,
-          });
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers', []);
+          const users = await context.lists.User.findMany({ where: { noDash: 'aValue' } });
+          expect(users).toEqual([]);
         })
       );
       test(
-        'filter works when there is one dash in list name',
+        'filter works when there is one dash in field name',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { single_dash: "aValue" }) { id } }`,
-          });
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers', []);
+          const users = await context.lists.User.findMany({ where: { single_dash: 'aValue' } });
+          expect(users).toEqual([]);
         })
       );
       test(
-        'filter works when there are multiple dashes in list name',
+        'filter works when there are multiple dashes in field name',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { many_many_many_dashes: "aValue" }) { id } }`,
+          const users = await context.lists.User.findMany({
+            where: { many_many_many_dashes: 'aValue' },
           });
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers', []);
+          expect(users).toEqual([]);
         })
       );
       test(
-        'filter works when there are multiple dashes in a row in a list name',
+        'filter works when there are multiple dashes in a row in a field name',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { multi____dash: "aValue" }) { id } }`,
-          });
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers', []);
+          const users = await context.lists.User.findMany({ where: { multi____dash: 'aValue' } });
+          expect(users).toEqual([]);
         })
       );
       test(
-        'filter works when there is one dash in list name as part of a relationship',
+        'filter works when there is one dash in field name as part of a relationship',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
-            query: `{ allSecondaryLists(where: { someUser_is_null: true }) { id } }`,
+          const secondaries = await context.lists.SecondaryList.findMany({
+            where: { someUser_is_null: false },
           });
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allSecondaryLists', []);
+          expect(secondaries).toEqual([]);
         })
       );
     });

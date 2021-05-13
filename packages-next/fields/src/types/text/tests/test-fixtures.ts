@@ -1,15 +1,14 @@
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
-import { AdapterName } from '@keystone-next/test-utils-legacy';
+import { ProviderName } from '@keystone-next/test-utils-legacy';
+import { text } from '..';
 
 export const name = 'Text';
-export const type = Text;
+export const typeFunction = text;
 export const exampleValue = () => 'foo';
 export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: { type: Text }, testField: { type } });
+export const getTestFields = () => ({ name: text(), testField: text() });
 
 export const initItems = () => {
   return [
@@ -33,12 +32,12 @@ export const storedValues = () => [
   { name: 'g', testField: null },
 ];
 
-export const supportedFilters = (adapterName: AdapterName) => [
+export const supportedFilters = (provider: ProviderName) => [
   'null_equality',
   'equality',
-  adapterName !== 'prisma_sqlite' && 'equality_case_insensitive',
+  provider !== 'sqlite' && 'equality_case_insensitive',
   'in_empty_null',
   'in_value',
-  adapterName !== 'prisma_sqlite' && 'string',
-  adapterName !== 'prisma_sqlite' && 'string_case_insensitive',
+  provider !== 'sqlite' && 'string',
+  provider !== 'sqlite' && 'string_case_insensitive',
 ];

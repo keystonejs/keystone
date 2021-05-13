@@ -1,6 +1,6 @@
 import path from 'path';
 import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
-import { DocumentFieldType } from './base-field-type';
+import { DocumentImplementation, PrismaDocumentInterface } from './Implementation';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -59,16 +59,15 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  relationships?: RelationshipsConfig;
-  componentBlocks?: Record<string, ComponentBlock>;
-  formatting?: true | FormattingConfig;
-  links?: true;
-  dividers?: true;
-  layouts?: readonly (readonly [number, ...number[]])[];
-};
+export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    relationships?: RelationshipsConfig;
+    componentBlocks?: Record<string, ComponentBlock>;
+    formatting?: true | FormattingConfig;
+    links?: true;
+    dividers?: true;
+    layouts?: readonly (readonly [number, ...number[]])[];
+  };
 
 const views = path.join(
   path.dirname(require.resolve('@keystone-next/fields-document/package.json')),
@@ -166,9 +165,15 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   };
   const componentBlocks = config.componentBlocks || {};
   return {
-    type: DocumentFieldType,
+    type: {
+      type: 'Document',
+      implementation: DocumentImplementation,
+      adapter: PrismaDocumentInterface,
+    },
     config: {
       ...config,
+      componentBlocks,
+      relationships,
       ___validateAndNormalize: (data: unknown) =>
         validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships),
     } as any,

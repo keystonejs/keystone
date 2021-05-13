@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`postinstall writes the correct node_modules files 1`] = `
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+type Scalars = {
+  readonly ID: string;
+  readonly Boolean: boolean;
+  readonly String: string;
+  readonly Int: number;
+  readonly Float: number;
+  readonly JSON: import('@keystone-next/types').JSONValue;
+};
+
+export type TodoWhereInput = {
+  readonly AND?: ReadonlyArray<TodoWhereInput | null> | null;
+  readonly OR?: ReadonlyArray<TodoWhereInput | null> | null;
+  readonly id?: Scalars['ID'] | null;
+  readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
+  readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
+  readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
+  readonly title?: Scalars['String'] | null;
+  readonly title_not?: Scalars['String'] | null;
+  readonly title_contains?: Scalars['String'] | null;
+  readonly title_not_contains?: Scalars['String'] | null;
+  readonly title_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly title_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+};
+
+export type TodoWhereUniqueInput = {
+  readonly id: Scalars['ID'];
+};
+
+export type SortTodosBy = 'id_ASC' | 'id_DESC' | 'title_ASC' | 'title_DESC';
+
+export type TodoUpdateInput = {
+  readonly title?: Scalars['String'] | null;
+};
+
+export type TodosUpdateInput = {
+  readonly id: Scalars['ID'];
+  readonly data?: TodoUpdateInput | null;
+};
+
+export type TodoCreateInput = {
+  readonly title?: Scalars['String'] | null;
+};
+
+export type TodosCreateInput = {
+  readonly data?: TodoCreateInput | null;
+};
+
+export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
+
+export type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
+
+export type KeystoneAdminUIFieldMetaItemViewFieldMode =
+  | 'edit'
+  | 'read'
+  | 'hidden';
+
+export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
+
+export type TodoListTypeInfo = {
+  key: 'Todo';
+  fields: 'id' | 'title';
+  backing: {
+    readonly id: string;
+    readonly title?: string | null;
+  };
+  inputs: {
+    where: TodoWhereInput;
+    create: TodoCreateInput;
+    update: TodoUpdateInput;
+  };
+  args: {
+    listQuery: {
+      readonly where?: TodoWhereInput | null;
+      readonly sortBy?: ReadonlyArray<SortTodosBy> | null;
+      readonly first?: Scalars['Int'] | null;
+      readonly skip?: Scalars['Int'] | null;
+    };
+  };
+};
+
+export type TodoListFn = (
+  listConfig: import('@keystone-next/keystone/schema').ListConfig<
+    TodoListTypeInfo,
+    TodoListTypeInfo['fields']
+  >
+) => import('@keystone-next/keystone/schema').ListConfig<
+  TodoListTypeInfo,
+  TodoListTypeInfo['fields']
+>;
+
+export type KeystoneListsTypeInfo = {
+  readonly Todo: TodoListTypeInfo;
+};
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+`;

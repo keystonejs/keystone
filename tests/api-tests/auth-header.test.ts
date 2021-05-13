@@ -7,11 +7,9 @@ import {
   multiAdapterRunners,
   setupFromConfig,
   networkedGraphqlRequest,
-  AdapterName,
+  ProviderName,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 const initialData = {
@@ -38,9 +36,9 @@ const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.s
 
 const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: auth.withAuth(
       testConfig({
         lists: createSchema({
@@ -95,15 +93,15 @@ function login(app: express.Application, email: string, password: string) {
   );
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('Auth testing', () => {
       test(
         'Gives access denied when not logged in',
         runner(setupKeystone, async ({ context, app }) => {
           // seed the db
-          for (const [listKey, items] of Object.entries(initialData)) {
-            await createItems({ context, listKey, items });
+          for (const [listKey, data] of Object.entries(initialData)) {
+            await context.lists[listKey].createMany({ data });
           }
           const { data, errors } = await networkedGraphqlRequest({
             app,
@@ -119,8 +117,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test.skip(
           'Allows access with bearer token',
           runner(setupKeystone, async ({ context, app }) => {
-            for (const [listKey, items] of Object.entries(initialData)) {
-              await createItems({ context, listKey, items });
+            for (const [listKey, data] of Object.entries(initialData)) {
+              await context.lists[listKey].createMany({ data });
             }
             const { sessionToken } = await login(
               app,
@@ -146,8 +144,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with cookie',
           runner(setupKeystone, async ({ context, app }) => {
-            for (const [listKey, items] of Object.entries(initialData)) {
-              await createItems({ context, listKey, items });
+            for (const [listKey, data] of Object.entries(initialData)) {
+              await context.lists[listKey].createMany({ data });
             }
             const { sessionToken } = await login(
               app,

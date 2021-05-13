@@ -1,53 +1,60 @@
 import path from 'path';
 import globby from 'globby';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import memoizeOne from 'memoize-one';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { KeystoneContext } from '@keystone-next/types';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.ts'));
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`${adapterName} adapter`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`${provider} provider`, () => {
     testModules
       .map(require)
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+          !skipCrudTest && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
-          // we want to memoize the server creation since it's the same fields
-          // for all the tests and setting up a keystone instance for prisma
-          // can be a bit slow
-          const _getServer = () => {
-            const createLists = (keystone: any) => {
-              // Create a list with all the fields required for testing
-              keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-            };
-            return setupServer({ adapterName, createLists });
-          };
-
-          // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
-          const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
+          const getServer = () =>
+            setupFromConfig({
+              provider,
+              config: testConfig({
+                lists: createSchema({
+                  [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+                }),
+                images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+              }),
+            });
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
-            runner(getServer, async ({ keystone, ...rest }) => {
+            runner(getServer, async ({ context, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-              for (const item of mod.initItems(matrixValue)) {
-                await createItem({ keystone, listKey, item });
+              for (const data of mod.initItems(matrixValue)) {
+                await context.lists[listKey].createOne({ data });
               }
-              return testFn({ keystone, listKey, adapterName, ...rest });
+              return testFn({ context, listKey, provider, ...rest });
             });
 
           if (mod.filterTests) {
             describe(`${mod.name} - ${matrixValue} - Custom Filtering`, () => {
+              beforeEach(() => {
+                if (mod.beforeEach) {
+                  mod.beforeEach();
+                }
+              });
+              afterEach(async () => {
+                if (mod.afterEach) {
+                  await mod.afterEach();
+                }
+              });
               beforeAll(() => {
                 if (mod.beforeAll) {
                   mod.beforeAll();
@@ -64,6 +71,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           if (!mod.skipCommonFilterTest) {
             describe(`${mod.name} - ${matrixValue} - Common Filtering`, () => {
+              beforeEach(() => {
+                if (mod.beforeEach) {
+                  mod.beforeEach();
+                }
+              });
+              afterEach(async () => {
+                if (mod.afterEach) {
+                  await mod.afterEach();
+                }
+              });
               beforeAll(() => {
                 if (mod.beforeAll) {
                   mod.beforeAll();
@@ -76,226 +93,220 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               });
               const { readFieldName, fieldName, subfieldName, storedValues: _storedValues } = mod;
               const storedValues = _storedValues(matrixValue);
-              const returnFields = readFieldName
+              const query = readFieldName
                 ? `name ${readFieldName}`
                 : subfieldName
                 ? `name ${fieldName} { ${subfieldName} }`
                 : `name ${fieldName}`;
 
               const match = async (
-                keystone: any,
+                context: KeystoneContext,
                 where: Record<string, any> | undefined,
                 expected: any[],
-                sortBy = 'name_ASC'
+                sortBy = ['name_ASC']
               ) =>
-                expect(await getItems({ keystone, listKey, where, returnFields, sortBy })).toEqual(
+                expect(await context.lists[listKey].findMany({ where, sortBy, query })).toEqual(
                   expected.map(i => storedValues[i])
                 );
 
               test(
                 `No Filter`,
-                withKeystone(({ keystone }) => match(keystone, undefined, [0, 1, 2, 3, 4, 5, 6]))
+                withKeystone(({ context }) => match(context, undefined, [0, 1, 2, 3, 4, 5, 6]))
               );
 
               test(
                 `Empty Filter`,
-                withKeystone(({ keystone }) => match(keystone, {}, [0, 1, 2, 3, 4, 5, 6]))
+                withKeystone(({ context }) => match(context, {}, [0, 1, 2, 3, 4, 5, 6]))
               );
-              if (mod.supportedFilters(adapterName).includes('null_equality')) {
+              if (mod.supportedFilters(provider).includes('null_equality')) {
                 test(
                   'Equals null',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}`]: null }, [5, 6])
-                  )
+                  withKeystone(({ context }) => match(context, { [`${fieldName}`]: null }, [5, 6]))
                 );
                 test(
                   'Not Equals null',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not`]: null }, [0, 1, 2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not`]: null }, [0, 1, 2, 3, 4])
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('equality')) {
+              if (mod.supportedFilters(provider).includes('equality')) {
                 test(
                   'Equals',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}`]: storedValues[3][fieldName] }, [3])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}`]: storedValues[3][fieldName] }, [3])
                   )
                 );
                 test(
                   'Not Equals',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not`]: storedValues[3][fieldName] }, [
-                      0,
-                      1,
-                      2,
-                      4,
-                      5,
-                      6,
-                    ])
+                  withKeystone(({ context }) =>
+                    match(
+                      context,
+                      { [`${fieldName}_not`]: storedValues[3][fieldName] },
+                      [0, 1, 2, 4, 5, 6]
+                    )
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('equality_case_insensitive')) {
+              if (mod.supportedFilters(provider).includes('equality_case_insensitive')) {
                 test(
                   `Equals - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_i`]: storedValues[3][fieldName] }, [2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_i`]: storedValues[3][fieldName] }, [2, 3, 4])
                   )
                 );
 
                 test(
                   `Not Equals - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_i`]: storedValues[3][fieldName] }, [
-                      0,
-                      1,
-                      5,
-                      6,
-                    ])
+                  withKeystone(({ context }) =>
+                    match(
+                      context,
+                      { [`${fieldName}_not_i`]: storedValues[3][fieldName] },
+                      [0, 1, 5, 6]
+                    )
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('string')) {
+              if (mod.supportedFilters(provider).includes('string')) {
                 test(
                   `Contains`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_contains`]: 'oo' }, [3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_contains`]: 'oo' }, [3, 4])
                   )
                 );
                 test(
                   `Not Contains`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_contains`]: 'oo' }, [0, 1, 2, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_contains`]: 'oo' }, [0, 1, 2, 5, 6])
                   )
                 );
                 test(
                   `Starts With`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_starts_with`]: 'foo' }, [3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_starts_with`]: 'foo' }, [3, 4])
                   )
                 );
                 test(
                   `Not Starts With`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_starts_with`]: 'foo' }, [0, 1, 2, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_starts_with`]: 'foo' }, [0, 1, 2, 5, 6])
                   )
                 );
                 test(
                   `Ends With`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_ends_with`]: 'BAR' }, [2, 3])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_ends_with`]: 'BAR' }, [2, 3])
                   )
                 );
                 test(
                   `Not Ends With`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_ends_with`]: 'BAR' }, [0, 1, 4, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_ends_with`]: 'BAR' }, [0, 1, 4, 5, 6])
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('string_case_insensitive')) {
+              if (mod.supportedFilters(provider).includes('string_case_insensitive')) {
                 test(
                   `Contains - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_contains_i`]: 'oo' }, [2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_contains_i`]: 'oo' }, [2, 3, 4])
                   )
                 );
 
                 test(
                   `Not Contains - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_contains_i`]: 'oo' }, [0, 1, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_contains_i`]: 'oo' }, [0, 1, 5, 6])
                   )
                 );
 
                 test(
                   `Starts With - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_starts_with_i`]: 'foo' }, [2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_starts_with_i`]: 'foo' }, [2, 3, 4])
                   )
                 );
 
                 test(
                   `Not Starts With - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_starts_with_i`]: 'foo' }, [0, 1, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_starts_with_i`]: 'foo' }, [0, 1, 5, 6])
                   )
                 );
 
                 test(
                   `Ends With - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_ends_with_i`]: 'BAR' }, [2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_ends_with_i`]: 'BAR' }, [2, 3, 4])
                   )
                 );
 
                 test(
                   `Not Ends With - Case Insensitive`,
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_ends_with_i`]: 'BAR' }, [0, 1, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_ends_with_i`]: 'BAR' }, [0, 1, 5, 6])
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('ordering')) {
+              if (mod.supportedFilters(provider).includes('ordering')) {
                 test(
                   'Less than',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_lt`]: storedValues[2][fieldName] }, [0, 1])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_lt`]: storedValues[2][fieldName] }, [0, 1])
                   )
                 );
                 test(
                   'Less than or equal',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_lte`]: storedValues[2][fieldName] }, [0, 1, 2])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_lte`]: storedValues[2][fieldName] }, [0, 1, 2])
                   )
                 );
                 test(
                   'Greater than',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_gt`]: storedValues[2][fieldName] }, [3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_gt`]: storedValues[2][fieldName] }, [3, 4])
                   )
                 );
                 test(
                   'Greater than or equal',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_gte`]: storedValues[2][fieldName] }, [2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_gte`]: storedValues[2][fieldName] }, [2, 3, 4])
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('in_empty_null')) {
+              if (mod.supportedFilters(provider).includes('in_empty_null')) {
                 test(
                   'In - Empty List',
-                  withKeystone(({ keystone }) => match(keystone, { [`${fieldName}_in`]: [] }, []))
+                  withKeystone(({ context }) => match(context, { [`${fieldName}_in`]: [] }, []))
                 );
 
                 test(
                   'Not In - Empty List',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_in`]: [] }, [0, 1, 2, 3, 4, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_in`]: [] }, [0, 1, 2, 3, 4, 5, 6])
                   )
                 );
 
                 test(
                   'In - null',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_in`]: [null] }, [5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_in`]: [null] }, [5, 6])
                   )
                 );
 
                 test(
                   'Not In - null',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_not_in`]: [null] }, [0, 1, 2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_not_in`]: [null] }, [0, 1, 2, 3, 4])
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('in_equal')) {
+              if (mod.supportedFilters(provider).includes('in_equal')) {
                 test(
                   'In - values',
-                  withKeystone(({ keystone }) =>
+                  withKeystone(({ context }) =>
                     match(
-                      keystone,
+                      context,
                       {
                         [`${fieldName}_in`]: [
                           storedValues[0][fieldName],
@@ -310,9 +321,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 test(
                   'Not In - values',
-                  withKeystone(({ keystone }) =>
+                  withKeystone(({ context }) =>
                     match(
-                      keystone,
+                      context,
                       {
                         [`${fieldName}_not_in`]: [
                           storedValues[0][fieldName],
@@ -325,18 +336,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('is_set')) {
+              if (mod.supportedFilters(provider).includes('is_set')) {
                 test(
                   'Is Set - true',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_is_set`]: true }, [0, 2, 3, 4])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_is_set`]: true }, [0, 2, 3, 4])
                   )
                 );
 
                 test(
                   'Is Set - false',
-                  withKeystone(({ keystone }) =>
-                    match(keystone, { [`${fieldName}_is_set`]: false }, [1, 5, 6])
+                  withKeystone(({ context }) =>
+                    match(context, { [`${fieldName}_is_set`]: false }, [1, 5, 6])
                   )
                 );
               }

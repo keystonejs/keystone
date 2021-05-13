@@ -3,23 +3,18 @@
   "description": "KeystoneJS Prisma Database Adapter",
   "main": "dist/adapter-prisma-legacy.cjs.js",
   "module": "dist/adapter-prisma-legacy.esm.js",
-  "version": "4.0.0",
+  "version": "6.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v12.13.1"
   },
   "dependencies": {
-    "@keystone-next/fields-auto-increment-legacy": "^8.2.0",
-    "@keystone-next/keystone-legacy": "^21.0.0",
-    "@keystone-next/utils-legacy": "^7.0.0",
-    "@prisma/client": "2.19.0",
-    "@prisma/migrate": "2.19.0",
-    "@prisma/sdk": "2.19.0",
-    "@sindresorhus/slugify": "^1.1.0",
-    "@types/prompts": "^2.0.9",
-    "chalk": "^4.1.0",
-    "prompts": "^2.4.0"
+    "@babel/runtime": "^7.14.0",
+    "@keystone-next/fields": "^8.1.0",
+    "@keystone-next/types": "^17.0.1",
+    "@keystone-next/utils-legacy": "^10.0.0",
+    "p-waterfall": "^2.1.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-prisma"
 }

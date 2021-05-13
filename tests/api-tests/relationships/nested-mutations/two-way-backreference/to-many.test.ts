@@ -1,10 +1,8 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -13,9 +11,9 @@ type IdType = any;
 
 const toStr = (items: any[]) => items.map(item => item.toString());
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Student: list({
@@ -35,23 +33,15 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-const getTeacher = async (context: KeystoneContext, teacherId: IdType) => {
-  const { data, errors } = await context.executeGraphQL({
-    query: `
-      query getTeacher($teacherId: ID!){
-        Teacher(where: { id: $teacherId }) {
-          id
-          students { id }
-        }
-      }`,
-    variables: { teacherId },
+const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
+  context.lists.Teacher.findOne({
+    where: { id: teacherId },
+    query: 'id students { id }',
   });
-  expect(errors).toBe(undefined);
-  return data.Teacher;
-};
 
 const getStudent = async (context: KeystoneContext, studentId: IdType) => {
-  const { data } = await context.executeGraphQL({
+  type T = { data: { Student: { id: IdType; teachers: { id: IdType }[] } } };
+  const { data } = (await context.graphql.raw({
     query: `
       query getStudent($studentId: ID!){
         Student(where: { id: $studentId }) {
@@ -60,7 +50,7 @@ const getStudent = async (context: KeystoneContext, studentId: IdType) => {
         }
       }`,
     variables: { studentId },
-  });
+  })) as T;
   return data.Student;
 };
 
@@ -70,20 +60,20 @@ const compareIds = (list: { id: IdType }[], ids: IdType[]) =>
     ids.map(({ id }) => id.toString()).sort()
   );
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('update many to many relationship back reference', () => {
       describe('nested connect', () => {
         test(
           'during create mutation',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
+            let teacher1 = await context.lists.Teacher.createOne({ data: {} });
             await new Promise(resolve => process.nextTick(resolve));
-            let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
+            let teacher2 = await context.lists.Teacher.createOne({ data: {} });
 
             // canaryStudent is used as a canary to make sure nothing crosses over
-            let canaryStudent = await createItem({ context, listKey: 'Student', item: {} });
+            let canaryStudent = await context.lists.Student.createOne({ data: {} });
 
             teacher1 = await getTeacher(context, teacher1.id);
             teacher2 = await getTeacher(context, teacher2.id);
@@ -95,7 +85,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createStudent(
@@ -110,8 +100,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-
-            expect(errors).toBe(undefined);
 
             let newStudent = data.createStudent;
 
@@ -132,12 +120,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during update mutation',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-            let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-            let student1 = await createItem({ context, listKey: 'Student', item: {} });
+            let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+            let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+            let student1 = await context.lists.Student.createOne({ data: {} });
             // Student2 is used as a canary to make sure things don't accidentally
             // cross over
-            let student2 = await createItem({ context, listKey: 'Student', item: {} });
+            let student2 = await context.lists.Student.createOne({ data: {} });
 
             teacher1 = await getTeacher(context, teacher1.id);
             teacher2 = await getTeacher(context, teacher2.id);
@@ -151,7 +139,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const { errors } = await context.executeGraphQL({
+            await context.graphql.run({
               query: `
                 mutation {
                   updateStudent(
@@ -167,8 +155,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-
-            expect(errors).toBe(undefined);
 
             // Check the link has been broken
             teacher1 = await getTeacher(context, teacher1.id);
@@ -193,7 +179,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createStudent(
@@ -208,8 +194,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-
-            expect(errors).toBe(undefined);
 
             let newStudent = data.createStudent;
             let newTeachers = data.createStudent.teachers;
@@ -228,12 +212,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'during update mutation',
           runner(setupKeystone, async ({ context }) => {
-            let student = await createItem({ context, listKey: 'Student', item: {} });
+            let student = await context.lists.Student.createOne({ data: {} });
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateStudent(
@@ -249,8 +233,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-
-            expect(errors).toBe(undefined);
 
             let newTeachers = data.updateStudent.teachers;
 
@@ -270,23 +252,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnect during update mutation',
         runner(setupKeystone, async ({ context }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let student1 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+          let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+          let student1 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
-          let student2 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let student2 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -310,7 +286,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          const { errors } = await context.executeGraphQL({
+          await context.graphql.run({
             query: `
               mutation {
                 updateStudent(
@@ -326,8 +302,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-
-          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await getTeacher(context, teacher1.id);
@@ -347,23 +321,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested disconnectAll during update mutation',
         runner(setupKeystone, async ({ context }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let student1 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+          let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+          let student1 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
-          let student2 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let student2 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -387,7 +355,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          const { errors } = await context.executeGraphQL({
+          await context.graphql.run({
             query: `
               mutation {
                 updateStudent(
@@ -403,8 +371,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-
-          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await getTeacher(context, teacher1.id);
@@ -425,23 +391,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       'delete mutation updates back references in to-many relationship',
       runner(setupKeystone, async ({ context }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-        let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-        let student1 = await createItem({
-          context,
-          listKey: 'Student',
-          item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+        let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+        let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+        let student1 = await context.lists.Student.createOne({
+          data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
-        let student2 = await createItem({
-          context,
-          listKey: 'Student',
-          item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+        let student2 = await context.lists.Student.createOne({
+          data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
 
-        await updateItems({
-          context,
-          listKey: 'Teacher',
-          items: [
+        await context.lists.Teacher.updateMany({
+          data: [
             {
               id: teacher1.id,
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -465,7 +425,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         compareIds(teacher2.students, [student1, student2]);
 
         // Run the query to delete the student
-        const { errors } = await context.executeGraphQL({
+        await context.graphql.run({
           query: `
             mutation {
               deleteStudent(id: "${student1.id}") {
@@ -473,7 +433,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             }`,
         });
-        expect(errors).toBe(undefined);
 
         teacher1 = await getTeacher(context, teacher1.id);
         teacher2 = await getTeacher(context, teacher2.id);

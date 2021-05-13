@@ -2,40 +2,33 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "9.2.0",
+  "version": "10.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v12.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/adapter-knex-legacy": "*",
-    "@keystone-next/adapter-mongoose-legacy": "*",
-    "@keystone-next/app-graphql-legacy": "*",
     "@keystone-next/auth": "*",
     "@keystone-next/fields": "*",
     "@keystone-next/keystone": "*",
-    "@keystone-next/keystone-legacy": "*",
-    "@keystone-next/server-side-graphql-client-legacy": "*",
-    "@keystone-next/session-legacy": "*",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.3",
-    "memoize-one": "^5.1.1",
+    "graphql": "^15.5.0",
+    "memoize-one": "^5.2.1",
     "superagent": "^6.1.0",
     "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/auth-password-legacy": "^6.0.3",
-    "@keystone-next/fields-legacy": "^23.1.0",
-    "@keystone-next/test-utils-legacy": "^14.0.0",
-    "@keystone-next/types": "^15.0.0",
-    "@keystone-next/utils-legacy": "^7.0.0",
-    "apollo-cache-control": "^0.11.6",
+    "@keystone-next/test-utils-legacy": "^17.0.3",
+    "@keystone-next/types": "^17.0.1",
+    "@keystone-next/utils-legacy": "^10.0.0",
+    "apollo-cache-control": "^0.13.0",
     "express": "^4.17.1"
   }
 }

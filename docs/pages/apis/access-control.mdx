@@ -1,0 +1,334 @@
+import { Markdown } from '../../components/Page';
+
+# Access Control API
+
+The `access` property of the [list configuration](./schema) and [field configuration](./fields) objects configures who can read, create, update, and delete items in your Keystone system.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: {
+        fieldName: text({ access: { /* ... */ }, }),
+      },
+      access: { /* ... */ },
+    }),
+  }),
+});
+```
+
+This document covers the complete access control API.
+For a guide on how to use this API to apply common patterns please see the [access control guide](../guides/access-control).
+
+## List Access Control
+
+Keystone allows you to set up access control on a per-list basis.
+The default access control is to allow all operations for all users.
+Access control is applied to the generated CRUD (**c**reate, **r**ead, **u**pdate, **d**elete) queries and mutations in the [GraphQL API](./graphql).
+Access control is applied before any [hooks](./hooks) are executed.
+
+You can specify access control using either **concise** or **verbose** syntax.
+Verbose syntax provides a separate access control rule for each operation type; `create`, `read`, `update`, and `delete`.
+Concise syntax provides a single access control rule which is used for all operation types.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      // Concise access control definition
+      access: true,
+      // Verbose access control definition
+      access: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
+    }),
+  }),
+});
+```
+
+When using verbose syntax, any operation which is not specified will default to `true`.
+
+The examples below will all use the concise syntax, however the various access control rules can all be applied using verbose syntax.
+
+There are three different ways you can specify access-control rules: **static**, **declarative**, and **imperative**.
+
+### Static (list)
+
+Static access control rules are simple boolean values.
+A value of `true` indicates that all users can perform the operation.
+A value of `false` indicates that no users can perform the operation.
+
+A static value of `false` implies that the operation can never be executed.
+As such, Keystone will exclude the related operations and types from the GraphQL API.
+For example, if you set `{ create: false }` then the mutations `createItem` and `createItems` will be removed from the GraphQL API.
+If you want to keep the operations in the GraphQL API while preventing all access, you can use the [imperative](#imperative-list) access control rule `() => false`.
+The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      // Static access control definition
+      access: true,
+    }),
+  }),
+});
+```
+
+### Declarative (list)
+
+Declarative access control rules are GraphQL `where` statements which are used as additional filters when looking up items as part of read, update, or delete operations.
+The access control rule can be any valid clause which could be applied as a `where` filter to the list in the [GraphQL API](./graphql).
+
+For read operations, the access control rule is merged with any other filters in the query, and only those items which match the merged filter are returned.
+
+For update and delete operations, the access control rule is merged with the `id` value to form a filter.
+For singular operations, e.g. `updateItem` or `createItem`, if the merged filter does not return an item then the mutation will return an `Access Denied` error.
+For multi-item operations, e.g. `updateItems` or `createItems`, if the merged filter excludes items then these will simply be ignored by the operation, giving the same behaviour as if the ID was missing.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { checkbox } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: { isLocked: checkbox() },
+      // Declarative access control definition
+      access: { isLocked: false },
+    }),
+  }),
+});
+```
+
+Declarative access control cannot be used for the `create` operation, as there is no filter being applied when creating an item.
+If you use declarative access control with the `create` operation, or with concise syntax, it is equivalent to the static access control definition `true` for create operations.
+
+Declarative access control rules are rarely used directly.
+A more common pattern is to return a declarative access control rule from an [imperative](#imperative-list) rule.
+
+### Imperative (list)
+
+Imperative access control rules are functions which return either a boolean value or a [declarative](#declarative-list) value (i.e. a GraphQL `where` clause).
+Imperative access control functions can be either synchronous or async.
+The function is passed a set of arguments which depends on the operation being performed.
+For multi-valued operations the function is only called once, and must evaluate the entire operation as a whole.
+
+If the function returns:
+
+- `false` then an `Access Denied` error will be returned.
+- `true` then the operation will be allowed.
+- **a declarative value** then this will be applied to the operation as described [above](#declarative-list).
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      // Imperative access control definition
+      access: args => true,
+    }),
+  }),
+});
+```
+
+#### Imperative Function Arguments
+
+Imperative access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
+
+| Argument        | Description                                                                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`       | The key of the list being operated on.                                                                                                                                                     |
+| `operation`     | The CRUD operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`).                                                                                                         |
+| `session`       | The current session object. See the [Sessions API](./session) for details.                                                                                                                 |
+| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` and `delete` operations this value is `undefined`.                                  |
+| `gqlName`       | The name of the query or mutation being called.                                                                                                                                            |
+| `itemId`        | The `id` of the item being updated/deleted in singular `update` and `delete` operations. The `id` of the item being searched for in a single item query. `undefined` for other operations. |
+| `itemIds`       | The `ids` of the items being updated/deleted in multiple `update` and `delete` operations. `undefined` for other operations.                                                               |
+| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                            |
+
+> **Important**: When writing imperative access control functions it is essential to consider both singular and multi-value operations.
+> If you check the `itemId` in the singular case, then you also need to check the `itemIds` in the multi-value case.
+> Similarly, `originalInput` will be different in the singular and multi-valued cases.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      // Imperative access control definition
+      access: ({
+        listKey,
+        operation,
+        session,
+        originalInput,
+        gqlName,
+        itemId,
+        itemIds,
+        context,
+      }) => {
+        return true;
+      },
+    }),
+  }),
+});
+```
+
+## Field Access Control
+
+Keystone also allows you to set up access control on a per-field basis.
+The default access control is to follow the access control rules for the parent list.
+Access control is applied to the generated CRU (**c**reate, **r**ead, **u**pdate, but not delete) queries and mutations in the [GraphQL API](./graphql).
+Field access control is applied after list access control has been applied.
+
+You can specify access control using either **concise** or **verbose** syntax.
+Verbose syntax provides a separate access control rule for each operation type; `create`, `read`, and `update`.
+Concise syntax provides a single access control rule which is used for all operation types.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: {
+        fieldName: text({
+          access: {
+            // Concise access control definition
+            access: true,
+            // Verbose access control definition
+            access: {
+              create: true,
+              read: true,
+              update: true,
+            },
+          },
+        }),
+      },
+    }),
+  }),
+});
+```
+
+When using verbose syntax, any operation which is not specified will default to `true`.
+
+The examples below will all use the concise syntax, however the various access control rules can all be applied using verbose syntax.
+
+There are two different ways you can specify field access-control rules: **static** and **imperative**.
+
+### Static (field)
+
+Static access control rules are simple boolean values.
+A value of `true` indicates that all users can perform the operation.
+A value of `false` indicates that no users can perform the operation.
+
+A static value of `false` implies that the operation can never be executed.
+As such, Keystone will exclude the field from the related operations and types in the GraphQL API.
+For example, if you set `{ update: false }` then the field would not appear in the `ItemUpdateInput` and `ItemsUpdateInputs` types of the GraphQL API.
+If you want to keep the fields in the GraphQL API while preventing all access, you can use the [imperative](#imperative-list) access control rule `() => false`.
+The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: {
+        fieldName: text({
+          // Static access control definition
+          access: true,
+        }),
+      },
+    }),
+  }),
+});
+```
+
+### Imperative (field)
+
+Imperative access control rules are functions which return a boolean value.
+Imperative access control functions can be either synchronous or async.
+The function is passed a set of arguments which depends on the operation being performed.
+For multi-valued operations the function is called once per item, and must evaluate each item being operated on individually.
+
+If the function returns `false` then an `Access Denied` error will be returned.
+If the function returns `true` then the operation will be allowed.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: {
+        fieldName: text({
+          // Imperative access control definition
+          access: args => true,
+        }),
+      },
+    }),
+  }),
+});
+```
+
+#### Imperative Function Arguments
+
+Imperative access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
+
+| Argument        | Description                                                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`       | The key of the list being operated on.                                                                                                                             |
+| `fieldKey`      | The key of the field being operated on.                                                                                                                            |
+| `operation`     | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                                                                              |
+| `session`       | The current session object. See the [Sessions API](./session) for details.                                                                                         |
+| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` operations this value is `undefined`.                       |
+| `gqlName`       | The name of the query or mutation being called.                                                                                                                    |
+| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                    |
+| `item`          | The item being updated, deleted, or read. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      fields: {
+        fieldName: text({
+          // Imperative access control definition
+          access: ({
+            listKey,
+            fieldKey,
+            operation,
+            session,
+            originalInput,
+            gqlName,
+            context,
+            item,
+          }) => {
+            return true;
+          },
+        }),
+      },
+    }),
+  }),
+});
+```
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

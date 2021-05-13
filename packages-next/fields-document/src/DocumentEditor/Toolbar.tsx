@@ -1,6 +1,14 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes, useMemo } from 'react';
+import {
+  Fragment,
+  ReactNode,
+  forwardRef,
+  useState,
+  HTMLAttributes,
+  useMemo,
+  useContext,
+} from 'react';
 import { Editor, Transforms } from 'slate';
 import { applyRefs } from 'apply-ref';
 
@@ -25,12 +33,12 @@ import {
   ToolbarSeparator,
 } from './primitives';
 import { linkButton } from './link';
-import { BlockComponentsButtons } from './component-blocks';
+import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks';
 import { clearFormatting, Mark, modifierKeyText } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
-import { RelationshipButton } from './relationship';
+import { DocumentFieldRelationshipsContext, RelationshipButton } from './relationship';
 import { codeButton } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
@@ -44,6 +52,9 @@ export function Toolbar({
   viewState?: { expanded: boolean; toggle: () => void };
 }) {
   const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
+  const relationship = useContext(DocumentFieldRelationshipsContext);
+  const blockComponent = useContext(ComponentBlockContext);
+  const hasBlockItems = Object.entries(relationship).length || Object.keys(blockComponent).length;
 
   return (
     <ToolbarContainer>
@@ -105,7 +116,7 @@ export function Toolbar({
       {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
       {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
       {documentFeatures.formatting.blockTypes.code && codeButton}
-      <InsertBlockMenu />
+      {!!hasBlockItems && <InsertBlockMenu />}
 
       <ToolbarSeparator />
       {useMemo(

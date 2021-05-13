@@ -25,12 +25,6 @@ export function list<Fields extends BaseFields<BaseGeneratedListTypes>>(
   return config;
 }
 
-export function singleton<Fields extends BaseFields<BaseGeneratedListTypes>>(
-  config: ListConfig<BaseGeneratedListTypes, Fields>
-) {
-  return config;
-}
-
 export function gql(strings: TemplateStringsArray) {
   return strings[0];
 }

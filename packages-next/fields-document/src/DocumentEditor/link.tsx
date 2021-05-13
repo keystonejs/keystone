@@ -239,11 +239,12 @@ export function withLink<T extends HistoryEditor>(
       });
       const match = markdownLinkPattern.exec(startOfBlockToEndOfShortcutString);
       if (!match) return;
-      const ancestorComponentChildFieldDocumentFeatures = getAncestorComponentChildFieldDocumentFeatures(
-        editor,
-        editorDocumentFeatures,
-        componentBlocks
-      );
+      const ancestorComponentChildFieldDocumentFeatures =
+        getAncestorComponentChildFieldDocumentFeatures(
+          editor,
+          editorDocumentFeatures,
+          componentBlocks
+        );
       if (ancestorComponentChildFieldDocumentFeatures?.documentFeatures.links === false) {
         return;
       }

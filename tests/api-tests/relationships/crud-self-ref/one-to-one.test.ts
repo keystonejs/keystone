@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
@@ -10,11 +10,8 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = {
-    data: { createUsers: { id: IdType }[] };
-    errors: unknown;
-  };
-  const { data, errors }: T = await context.executeGraphQL({
+  type T = { createUsers: { id: IdType }[] };
+  const data = (await context.graphql.run({
     query: `
       mutation {
         createUsers(data: [
@@ -23,42 +20,26 @@ const createInitialData = async (context: KeystoneContext) => {
           { data: { name: "${sampleOne(alphanumGenerator)}" } }
         ]) { id }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   return { users: data.createUsers };
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
-  type T = {
+  const user = await context.lists.User.createOne({
     data: {
-      createUser: {
-        id: IdType;
-        name: string;
-        friend: { id: IdType; name: string; friendOf: { id: IdType } };
-      };
-    };
-    errors: unknown;
-  };
-  const {
-    data: { createUser },
-    errors,
-  }: T = await context.executeGraphQL({
-    query: `
-      mutation {
-        createUser(data: {
-          name: "${sampleOne(alphanumGenerator)}"
-          friend: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-        }) { id name friend { id name friendOf { id } } }
-      }`,
+      name: sampleOne(alphanumGenerator),
+      friend: { create: { name: sampleOne(alphanumGenerator) } },
+    },
+    query: 'id name friend { id name friendOf { id } }',
   });
-  expect(errors).toBe(undefined);
-  const { User, Friend } = await getUserAndFriend(context, createUser.id, createUser.friend.id);
+
+  const { User, Friend } = await getUserAndFriend(context, user.id, user.friend.id);
 
   // Sanity check the links are setup correctly
   expect(User.friend.id.toString()).toBe(Friend.id.toString());
   expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-  return { user: createUser, friend: createUser.friend };
+  return { user, friend: user.friend };
 };
 
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
@@ -68,19 +49,20 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
       Friend: { id: IdType; friendOf: { id: IdType } };
     };
   };
-  const { data }: T = await context.executeGraphQL({
+
+  const { data } = (await context.graphql.raw({
     query: `
       {
         User(where: { id: "${userId}"} ) { id friend { id } }
         Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
       }`,
-  });
+  })) as T;
   return data;
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -94,176 +76,123 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user, friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friend: { name: "${friend.name}"} }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-              expect(data.allUsers[0].id).toEqual(user.id);
-            })
-          );
+        test(
+          'Where - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user, friend } = await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({
+              where: { friend: { name: friend.name } },
+            });
+            expect(users.length).toEqual(1);
+            expect(users[0].id).toEqual(user.id);
+          })
+        );
 
-          test(
-            'Where - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user, friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friendOf: { name: "${user.name}"} }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-              expect(data.allUsers[0].id).toEqual(friend.id);
-            })
-          );
-          test(
-            'Where friend: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friend_is_null: true }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(4);
-            })
-          );
-          test(
-            'Where friendOf: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friendOf_is_null: true }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(4);
-            })
-          );
-          test(
-            'Where friend: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friend_is_null: false }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-            })
-          );
-          test(
-            'Where friendOf: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  allUsers(where: { friendOf_is_null: false }) { id }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-            })
-          );
-        }
+        test(
+          'Where - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user, friend } = await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({
+              where: { friendOf: { name: user.name } },
+            });
+            expect(users.length).toEqual(1);
+            expect(users[0].id).toEqual(friend.id);
+          })
+        );
+        test(
+          'Where friend: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+            expect(users.length).toEqual(4);
+          })
+        );
+        test(
+          'Where friendOf: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+            expect(users.length).toEqual(4);
+          })
+        );
+        test(
+          'Where friend: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
+            expect(users.length).toEqual(1);
+          })
+        );
+        test(
+          'Where friendOf: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+            expect(users.length).toEqual(1);
+          })
+        );
 
         test(
           'Count',
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                {
-                  _allUsersMeta { count }
-                }
-            `,
-            });
-            expect(errors).toBe(undefined);
-            expect(data._allUsersMeta.count).toEqual(3);
+            const count = await context.lists.User.count();
+            expect(count).toEqual(3);
           })
         );
 
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where with count - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  _allUsersMeta(where: { friend: { name: "${friend.name}"} }) { count }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(1);
-            })
-          );
+        test(
+          'Where with count - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { friend } = await createUserAndFriend(context);
+            const count = await context.lists.User.count({
+              where: { friend: { name: friend.name } },
+            });
+            expect(count).toEqual(1);
+          })
+        );
 
-          test(
-            'Where with count - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  _allUsersMeta(where: { friendOf: { name: "${user.name}"} }) { count }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(1);
-            })
-          );
-          test(
-            'Where null with count - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  _allUsersMeta(where: { friend_is_null: true }) { count }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(4);
-            })
-          );
+        test(
+          'Where with count - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user } = await createUserAndFriend(context);
+            const count = await context.lists.User.count({
+              where: { friendOf: { name: user.name } },
+            });
+            expect(count).toEqual(1);
+          })
+        );
+        test(
+          'Where null with count - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const count = await context.lists.User.count({ where: { friend_is_null: true } });
+            expect(count).toEqual(4);
+          })
+        );
 
-          test(
-            'Where null with count - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
-                  _allUsersMeta(where: { friendOf_is_null: true }) { count }
-                }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(4);
-            })
-          );
-        }
+        test(
+          'Where null with count - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+            expect(count).toEqual(4);
+          })
+        );
       });
 
       describe('Create', () => {
@@ -272,19 +201,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ context }) => {
             const { users } = await createInitialData(context);
             const user = users[0];
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friend: { connect: { id: "${user.id}" } }
-                  }) { id friend { id } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: { friend: { connect: { id: user.id } } },
+              query: 'id friend { id friendOf { id } }',
             });
-            expect(errors).toBe(undefined);
-            expect(data.createUser.friend.id.toString()).toEqual(user.id);
 
-            const { User, Friend } = await getUserAndFriend(context, data.createUser.id, user.id);
+            expect(_user.friend.id.toString()).toEqual(user.id);
+
+            const { User, Friend } = await getUserAndFriend(context, _user.id, user.id);
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
@@ -295,22 +219,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'With create',
           runner(setupKeystone, async ({ context }) => {
             const friendName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friend: { create: { name: "${friendName}" } }
-                  }) { id friend { id } }
-                }
-            `,
+            const user = await context.lists.User.createOne({
+              data: { friend: { create: { name: friendName } } },
+              query: 'id friend { id friendOf { id } }',
             });
-            expect(errors).toBe(undefined);
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friend.id
-            );
+            const { User, Friend } = await getUserAndFriend(context, user.id, user.friend.id);
 
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
@@ -325,42 +239,26 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const user = users[0];
             const friendName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friend: { create: { name: "${friendName}" friendOf: { connect: { id: "${user.id}" } } } }
-                  }) { id friend { id friendOf { id } } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: {
+                friend: { create: { name: friendName, friendOf: { connect: { id: user.id } } } },
+              },
+              query: 'id friend { id friendOf { id } }',
             });
-            expect(errors).toBe(undefined);
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friend.id
-            );
+            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-            const {
-              data: { allUsers },
-              errors: errors2,
-            } = await context.executeGraphQL({
-              query: `{ allUsers { id friend { id friendOf { id }} } }`,
-            });
-            expect(errors2).toBe(undefined);
+            const _users = (await context.lists.User.findMany({
+              query: 'id friend { id friendOf { id } }',
+            })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[];
             // The nested company should not have a location
-            const _allUsers: {
-              id: IdType;
-              friend: { id: IdType; friendOf: { id: IdType } };
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
+            expect(_users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
               User.id
             );
-            _allUsers
+            _users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friend).toBe(null);
@@ -374,42 +272,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const friendName = sampleOne(alphanumGenerator);
             const friendOfName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friend: { create: { name: "${friendName}" friendOf: { create: { name: "${friendOfName}" } } } }
-                  }) { id friend { id friendOf { id } } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: {
+                friend: {
+                  create: { name: friendName, friendOf: { create: { name: friendOfName } } },
+                },
+              },
+              query: 'id friend { id friendOf { id } }',
             });
-            expect(errors).toBe(undefined);
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friend.id
-            );
+            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
             // The nested company should not have a location
-            const {
-              data: { allUsers },
-              errors: errors2,
-            } = await context.executeGraphQL({
-              query: `{ allUsers { id friend { id friendOf { id }} } }`,
-            });
-            expect(errors2).toBe(undefined);
-            const _allUsers: {
+            const users = (await context.lists.User.findMany({
+              query: 'id friend { id friendOf { id }}',
+            })) as {
               id: IdType;
               friend: { id: IdType; friendOf: { id: IdType } };
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
-              User.id
-            );
-            _allUsers
+            }[];
+            expect(users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id);
+            users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friend).toBe(null);
@@ -420,19 +305,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friend: null
-                  }) { id friend { id } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: { friend: null },
+              query: 'id friend { id  }',
             });
-            expect(errors).toBe(undefined);
 
             // Friend should be empty
-            expect(data.createUser.friend).toBe(null);
+            expect(_user.friend).toBe(null);
           })
         );
       });
@@ -449,16 +328,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(user.friend).not.toBe(expect.anything());
             expect(friend.friendOf).not.toBe(expect.anything());
 
-            const { errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { connect: { id: "${friend.id}" } } }
-                  ) { id friend { id } } }
-            `,
+            await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { connect: { id: friend.id } } },
+              query: 'id friend { id }',
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(context, user.id, friend.id);
             // Everything should now be connected
@@ -473,23 +347,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await createInitialData(context);
             let user = users[0];
             const friendName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { create: { name: "${friendName}" } } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { create: { name: friendName } } },
+              query: 'id friend { id name }',
             });
-            expect(errors).toBe(undefined);
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              user.id,
-              data.updateUser.friend.id
-            );
+            const { User, Friend } = await getUserAndFriend(context, user.id, _user.friend.id);
 
             // Everything should now be connected
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
@@ -504,19 +368,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { disconnect: { id: "${friend.id}" } } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { disconnect: { id: friend.id } } },
+              query: 'id friend { id name }',
             });
-            expect(errors).toBe(undefined);
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).toBe(null);
+
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).toBe(null);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
@@ -532,19 +391,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: { disconnectAll: true } }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: { disconnectAll: true } },
+              query: 'id friend { id name }',
             });
-            expect(errors).toBe(undefined);
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).toBe(null);
+
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).toBe(null);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
@@ -560,22 +414,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query with a null operation
-            const { data, errors } = await context.executeGraphQL({
-              query: `
-                mutation {
-                  updateUser(
-                    id: "${user.id}",
-                    data: { friend: null }
-                  ) { id friend { id name } }
-                }
-            `,
+            const _user = await context.lists.User.updateOne({
+              id: user.id,
+              data: { friend: null },
+              query: 'id friend { id name }',
             });
-            expect(errors).toBe(undefined);
 
             // Check that the friend is still there
-            expect(data.updateUser.id).toEqual(user.id);
-            expect(data.updateUser.friend).not.toBe(null);
-            expect(data.updateUser.friend.id).toEqual(friend.id);
+            expect(_user.id).toEqual(user.id);
+            expect(_user.friend).not.toBe(null);
+            expect(_user.friend.id).toEqual(friend.id);
           })
         );
       });
@@ -588,10 +436,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `mutation { deleteUser(id: "${user.id}") { id } } `,
             });
-            expect(errors).toBe(undefined);
             expect(data.deleteUser.id).toBe(user.id);
 
             // Check the link has been broken

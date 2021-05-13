@@ -2,21 +2,19 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         UserToPostLimitedRead: list({
@@ -40,8 +38,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
@@ -50,10 +48,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return createItem({
-                context,
-                listKey: 'PostLimitedRead',
-                item: { content: postContent, name },
+              return context.lists.PostLimitedRead.createOne({
+                data: { content: postContent, name },
               });
             })
           );
@@ -61,37 +57,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await createItem({
-            context,
-            listKey: 'UserToPostLimitedRead',
-            item: {
+          const user = await context.lists.UserToPostLimitedRead.createOne({
+            data: {
               username,
               posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
             },
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.exitSudo().executeGraphQL({
-            query: `
-              query {
-                UserToPostLimitedRead(where: { id: "${user.id}" }) {
-                  id
-                  username
-                  posts {
-                    id
-                  }
-                }
-              }
-            `,
+          const item = await context.exitSudo().lists.UserToPostLimitedRead.findOne({
+            where: { id: user.id },
+            query: 'id username posts { id }',
           });
 
-          expect(errors).toBe(undefined);
-          expect(data).toMatchObject({
-            UserToPostLimitedRead: {
-              id: expect.any(String),
-              username,
-              posts: [{ id: postIds[1] }],
-            },
+          expect(item).toMatchObject({
+            id: expect.any(String),
+            username,
+            posts: [{ id: postIds[1] }],
           });
         })
       );
@@ -103,10 +85,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return createItem({
-                context,
-                listKey: 'PostLimitedRead',
-                item: { content: postContent, name },
+              return context.lists.PostLimitedRead.createOne({
+                data: { content: postContent, name },
               });
             })
           );
@@ -114,40 +94,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await createItem({
-            context,
-            listKey: 'UserToPostLimitedRead',
-            item: {
+          const user = await context.lists.UserToPostLimitedRead.createOne({
+            data: {
               username,
               posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
             },
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.exitSudo().executeGraphQL({
-            query: `
-              query {
-                UserToPostLimitedRead(where: { id: "${user.id}" }) {
-                  id
-                  username
-                  # Knowingly filter to an ID I don't have read access to
-                  # To see if the filter is correctly "AND"d with the access control
-                  posts(where: { id_in: ["${postIds[2]}"] }) {
-                    id
-                  }
-                }
-              }
-            `,
+          const item = await context.exitSudo().lists.UserToPostLimitedRead.findOne({
+            where: { id: user.id },
+            // Knowingly filter to an ID I don't have read access to
+            // to see if the filter is correctly "AND"d with the access control
+            query: `id username posts(where: { id_in: ["${postIds[2]}"] }) { id }`,
           });
 
-          expect(errors).toBe(undefined);
-          expect(data).toMatchObject({
-            UserToPostLimitedRead: {
-              id: expect.any(String),
-              username,
-              posts: [],
-            },
-          });
+          expect(item).toMatchObject({ id: expect.any(String), username, posts: [] });
         })
       );
     });

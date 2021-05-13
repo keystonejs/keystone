@@ -2,11 +2,11 @@
   "name": "@keystone-next/benchmarks-legacy",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
-  "version": "5.2.3",
+  "version": "6.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v12.13.1"
   },
   "scripts": {
     "go": "node fixtures/index.js"
@@ -14,16 +14,9 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/benchmarks",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@keystone-next/adapter-knex-legacy": "^13.2.2",
-    "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
-    "@keystone-next/app-graphql-legacy": "^7.0.0",
-    "@keystone-next/fields": "^5.3.0",
-    "@keystone-next/fields-legacy": "^23.2.0",
-    "@keystone-next/keystone": "^14.0.0",
-    "@keystone-next/keystone-legacy": "^21.0.0",
-    "@keystone-next/server-side-graphql-client-legacy": "^2.0.1",
-    "@keystone-next/session-legacy": "^8.2.1",
-    "@keystone-next/test-utils-legacy": "^14.0.1",
+    "@keystone-next/fields": "^8.0.0",
+    "@keystone-next/keystone": "^17.0.0",
+    "@keystone-next/test-utils-legacy": "^17.0.1",
     "cookie-signature": "^1.1.0",
     "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"

@@ -1,22 +1,24 @@
-// @ts-ignore
-import { Float } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Float, PrismaFloatInterface } from './Implementation';
 
-export type FloatFieldConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
-  isIndexed?: boolean;
-  isUnique?: boolean;
-  defaultValue?: FieldDefaultValue<number>;
-};
+export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  FieldConfig<TGeneratedListTypes> & {
+    isRequired?: boolean;
+    isUnique?: boolean;
+    isIndexed?: boolean;
+    defaultValue?: FieldDefaultValue<number>;
+  };
 
 export const float = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: FloatFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: Float,
+  type: {
+    type: 'Float',
+    implementation: Float,
+    adapter: PrismaFloatInterface,
+  },
   config,
   views: resolveView('float/views'),
 });

@@ -2,17 +2,15 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Group: list({
@@ -111,8 +109,8 @@ function setupKeystone(adapterName: AdapterName) {
     }),
   });
 }
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('no access control', () => {
       test(
         'create nested from within create mutation',
@@ -120,7 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item that does the nested create
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createEvent(data: {
@@ -136,7 +134,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             createEvent: {
               id: expect.any(String),
@@ -144,10 +141,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
 
-          const {
-            data: { Group },
-            errors: errors2,
-          } = await context.executeGraphQL({
+          const { Group } = await context.graphql.run({
             query: `
               query {
                 Group(where: { id: "${data.createEvent.group.id}" }) {
@@ -156,7 +150,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(Group).toMatchObject({ id: data.createEvent.group.id, name: groupName });
         })
       );
@@ -167,14 +160,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to update
-          const createEvent = await createItem({
-            context,
-            listKey: 'Event',
-            item: { title: 'A thing' },
-          });
+          const createEvent = await context.lists.Event.createOne({ data: { title: 'A thing' } });
 
           // Update an item that does the nested create
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -193,7 +182,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
@@ -201,10 +189,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
 
-          const {
-            data: { Group },
-            errors: errors2,
-          } = await context.executeGraphQL({
+          const { Group } = await context.graphql.run({
             query: `
               query {
                 Group(where: { id: "${data.updateEvent.group.id}" }) {
@@ -213,7 +198,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(Group).toMatchObject({ id: data.updateEvent.group.id, name: groupName });
         })
       );
@@ -236,7 +220,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item that does the nested create
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const data = await context.exitSudo().graphql.run({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -248,21 +232,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }`,
                 });
 
-                expect(errors).toBe(undefined);
                 expect(data).toMatchObject({
                   [`createEventTo${group.name}`]: { id: expect.any(String) },
                 });
 
                 // See that it actually stored the group ID on the Event record
-                const event = await getItem({
-                  listKey: `EventTo${group.name}`,
-                  itemId: data[`createEventTo${group.name}`].id,
-                  returnFields: 'id group { id name }',
-                  context,
+                const event = await context.lists[`EventTo${group.name}`].findOne({
+                  where: { id: data[`createEventTo${group.name}`].id },
+                  query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
 
@@ -272,14 +253,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing' },
                 });
 
                 // Update an item that does the nested create
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const data = await context.exitSudo().graphql.run({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -294,21 +273,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     }`,
                 });
 
-                expect(errors).toBe(undefined);
                 expect(data).toMatchObject({
                   [`updateEventTo${group.name}`]: { id: expect.any(String) },
                 });
 
                 // See that it actually stored the group ID on the Event record
-                const event = await getItem({
-                  listKey: `EventTo${group.name}`,
-                  itemId: data[`updateEventTo${group.name}`].id,
-                  returnFields: 'id group { id name }',
-                  context,
+                const event = await context.lists[`EventTo${group.name}`].findOne({
+                  where: { id: data[`updateEventTo${group.name}`].id },
+                  query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
           } else {
@@ -320,7 +296,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(alphaNumGenerator);
 
                 // Create an item that does the nested create
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const { data, errors } = await context.exitSudo().graphql.raw({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -330,29 +306,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         id
                       }
                     }`,
-                  expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
                 if (group.name === 'GroupNoCreateHard') {
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
                   expect(data).toBe(undefined);
                   expect(errors).toHaveLength(1);
-                  expect(errors[0].message).toEqual(
+                  expect(errors![0].message).toEqual(
                     `Field "create" is not defined by type "${group.name}RelateToOneInput".`
                   );
                 } else {
                   // Assert it throws an access denied error
-                  expect(data[`createEventTo${group.name}`]).toBe(null);
+                  expect(data).not.toBe(null);
+                  expect(data![`createEventTo${group.name}`]).toBe(null);
                   expect(errors).toHaveLength(1);
-                  const error = errors[0];
+                  const error = errors![0];
                   expect(error.message).toEqual(
                     `Unable to create a EventTo${group.name}.group<${group.name}>`
                   );
                   expect(error.path).toHaveLength(1);
-                  expect(error.path[0]).toEqual(`createEventTo${group.name}`);
+                  expect(error.path![0]).toEqual(`createEventTo${group.name}`);
                 }
                 // Confirm it didn't insert either of the records anyway
-                const result = await context.executeGraphQL({
+                const data1 = await context.graphql.run({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {
@@ -361,11 +337,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }`,
                 });
-                expect(result.errors).toBe(undefined);
-                expect(result.data[`all${group.name}s`]).toMatchObject([]);
+                expect(data1[`all${group.name}s`]).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
-                const result2 = await context.executeGraphQL({
+                const data2 = await context.graphql.run({
                   query: `
                     query {
                       allEventTo${group.name}s(where: { title: "${eventName}" }) {
@@ -374,8 +349,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }`,
                 });
-                expect(result2.errors).toBe(undefined);
-                expect(result2.data[`allEventTo${group.name}s`]).toMatchObject([]);
+                expect(data2[`allEventTo${group.name}s`]).toMatchObject([]);
               })
             );
 
@@ -385,14 +359,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing' },
                 });
 
                 // Update an item that does the nested create
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const { data, errors } = await context.exitSudo().graphql.raw({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -405,7 +377,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         id
                       }
                     }`,
-                  expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
                 // Assert it throws an access denied error
@@ -413,22 +384,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
                   expect(data).toBe(undefined);
                   expect(errors).toHaveLength(1);
-                  expect(errors[0].message).toEqual(
+                  expect(errors![0].message).toEqual(
                     `Field "create" is not defined by type "${group.name}RelateToOneInput".`
                   );
                 } else {
-                  expect(data[`updateEventTo${group.name}`]).toBe(null);
+                  expect(data).not.toBe(null);
+                  expect(data![`updateEventTo${group.name}`]).toBe(null);
                   expect(errors).toHaveLength(1);
-                  const error = errors[0];
+                  const error = errors![0];
                   expect(error.message).toEqual(
                     `Unable to create a EventTo${group.name}.group<${group.name}>`
                   );
                   expect(error.path).toHaveLength(1);
-                  expect(error.path[0]).toEqual(`updateEventTo${group.name}`);
+                  expect(error.path![0]).toEqual(`updateEventTo${group.name}`);
                 }
 
                 // Confirm it didn't insert the record anyway
-                const result = await context.executeGraphQL({
+                const data2 = await context.graphql.run({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {
@@ -437,8 +409,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }`,
                 });
-                expect(result.errors).toBe(undefined);
-                expect(result.data[`all${group.name}s`]).toMatchObject([]);
+                expect(data2[`all${group.name}s`]).toMatchObject([]);
               })
             );
           }

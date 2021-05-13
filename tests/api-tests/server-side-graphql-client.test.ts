@@ -1,11 +1,12 @@
 import { text, integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import {
   createItems,
   createItem,
@@ -15,9 +16,7 @@ import {
   getItems,
   updateItem,
   updateItems,
-  // @ts-ignore
-} from '@keystone-next/server-side-graphql-client-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+} from '@keystone-next/keystone/src/lib/context/server-side-graphql-client';
 
 const testData = Array(50)
   .fill(0)
@@ -28,20 +27,20 @@ const returnFields = 'name age';
 
 type IdType = any;
 
-const seedDb = ({ context }: { context: KeystoneContext }): { id: IdType }[] =>
-  createItems({ context, listKey, items: testData });
+const seedDb = ({ context }: { context: KeystoneContext }): Promise<{ id: IdType }[]> =>
+  createItems({ context, listKey, items: testData }) as Promise<{ id: IdType }[]>;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({ Test: list({ fields: { name: text(), age: integer() } }) }),
     }),
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('create', () => {
       test(
         'createItem: Should create and get single item',
@@ -62,7 +61,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           await createItems({ context, listKey, items: testData });
           // Get all the items back from db
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
@@ -93,14 +94,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const seedItems = await seedDb({ context });
           // Update multiple items
-          const items = await updateItems({
+          const items = (await updateItems({
             context,
             listKey,
             items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
             returnFields,
-          });
-
-          expect(items).toEqual(seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i })));
+          })) as { name: string; age: number }[];
+          expect(items.sort((a, b) => (a.age > b.age ? 1 : -1))).toEqual(
+            seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i }))
+          );
         })
       );
     });
@@ -114,7 +116,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await deleteItem({ context, listKey, returnFields, itemId: items[0].id });
 
           // Retrieve items
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(d => d.data).filter(x => x.name !== 'test00')
@@ -127,12 +131,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const items = await seedDb({ context });
           // Delete multiple items
-          const deletedItems: { age: number }[] = await deleteItems({
+          const deletedItems = (await deleteItems({
             context,
             listKey,
             returnFields,
             items: items.map(item => item.id),
-          });
+          })) as { age: number }[];
 
           expect(deletedItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(d => d.data)
@@ -151,7 +155,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
           await seedDb({ context });
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
@@ -180,7 +186,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await seedDb({ context });
 
           const getItemsBySortOrder = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, sortBy });
+            getItems({ context, listKey, returnFields, sortBy: [sortBy] });
 
           const allItemsAscAge = await getItemsBySortOrder('age_ASC');
           const allItemsDescAge = await getItemsBySortOrder('age_DESC');
@@ -200,7 +206,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               returnFields,
               pageSize,
               first,
-              sortBy: 'age_ASC',
+              sortBy: ['age_ASC'],
             });
           expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9).map(d => d.data));
           expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5).map(d => d.data));
@@ -230,7 +236,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await seedDb({ context });
           const first = 4;
           const getSortItems = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, skip: 3, first, sortBy });
+            getItems({ context, listKey, returnFields, skip: 3, first, sortBy: [sortBy] });
           const itemsDESC = await getSortItems('age_DESC');
           expect(itemsDESC.length).toEqual(first);
           expect(itemsDESC[0]).toEqual({ name: 'test46', age: 460 });

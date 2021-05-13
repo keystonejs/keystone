@@ -1,10 +1,9 @@
 import { IncomingMessage } from 'http';
-import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
 
-import type { KeystoneContext } from '..';
+import type { ImageMode, FileMode, KeystoneContext } from '..';
 
 import { CreateContext } from '../core';
 import type { BaseKeystone } from '../base';
@@ -13,13 +12,11 @@ import type { MaybePromise } from '../utils';
 import type {
   ListSchemaConfig,
   ListConfig,
-  BaseFields,
-  FieldType,
-  FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
+import type { BaseFields, FieldType, FieldConfig } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
@@ -31,12 +28,16 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  files?: FilesConfig;
+  images?: ImagesConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
     enableNextJsGraphqlApiEndpoint?: boolean;
-    /** Enable Prisma+SQLite support */
-    prismaSqlite?: boolean;
+    /** Creates a file at `node_modules/.keystone/api` with a `lists` export */
+    generateNodeAPI?: boolean;
+    /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
+    generateNextGraphqlAPI?: boolean;
   };
 };
 
@@ -55,29 +56,37 @@ export type {
 
 // config.db
 
-export type DatabaseCommon = {
+export type DatabaseConfig = {
   url: string;
   onConnect?: (args: KeystoneContext) => Promise<void>;
-};
-
-export type DatabaseConfig = DatabaseCommon &
-  (
-    | {
-        adapter: 'prisma_postgresql';
-        useMigrations?: boolean;
-        enableLogging?: boolean;
-        getPrismaPath?: (arg: { prismaSchema: any }) => string;
-        getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-      }
-    | {
-        adapter: 'prisma_sqlite';
-        useMigrations?: boolean;
-        enableLogging?: boolean;
-        getPrismaPath?: (arg: { prismaSchema: any }) => string;
-      }
-    | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
-    | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
-  );
+  useMigrations?: boolean;
+  enableLogging?: boolean;
+} & (
+  | (
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+          adapter: 'prisma_postgresql';
+          provider?: undefined;
+        }
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+          adapter?: undefined;
+          provider: 'postgresql';
+        }
+    )
+  | (
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+          adapter: 'prisma_sqlite';
+          provider?: undefined;
+        }
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+          adapter?: undefined;
+          provider: 'sqlite';
+        }
+    )
+);
 
 // config.ui
 
@@ -113,6 +122,8 @@ export type ServerConfig = {
   cors?: CorsOptions | true;
   /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
   port?: number;
+  /** Maximum upload file size allowed (in bytes) */
+  maxFileSize?: number;
 };
 
 // config.graphql
@@ -134,6 +145,43 @@ export type GraphQLConfig = {
 // config.extendGraphqlSchema
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
+
+// config.files
+
+export type FilesConfig = {
+  upload: FileMode;
+  transformFilename?: (str: string) => string;
+  local?: {
+    /**
+     * The path local files are uploaded to.
+     * @default 'public/files'
+     */
+    storagePath?: string;
+    /**
+     * The base of the URL local files will be served from, outside of keystone.
+     * @default '/files'
+     */
+    baseUrl?: string;
+  };
+};
+
+// config.images
+
+export type ImagesConfig = {
+  upload: ImageMode;
+  local?: {
+    /**
+     * The path local images are uploaded to.
+     * @default 'public/images'
+     */
+    storagePath?: string;
+    /**
+     * The base of the URL local images will be served from, outside of keystone.
+     * @default '/images'
+     */
+    baseUrl?: string;
+  };
+};
 
 // Exports from sibling packages
 

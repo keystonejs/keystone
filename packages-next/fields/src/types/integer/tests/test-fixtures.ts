@@ -1,14 +1,14 @@
-// @ts-ignore
-import { Text, Integer } from '@keystone-next/fields-legacy';
+import { integer } from '..';
+import { text } from '../../text';
 
 export const name = 'Integer';
-export const type = Integer;
+export const typeFunction = integer;
 export const exampleValue = () => 37;
 export const exampleValue2 = () => 38;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: { type: Text }, testField: { type } });
+export const getTestFields = () => ({ name: text(), testField: integer() });
 
 export const initItems = () => {
   return [

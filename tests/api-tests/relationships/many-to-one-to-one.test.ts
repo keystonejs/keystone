@@ -1,22 +1,16 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 type IdType = any;
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = {
-    data: { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
-    errors: unknown;
-  };
-  const { data, errors }: T = await context.executeGraphQL({
+  const data = (await context.graphql.run({
     query: `
       mutation {
         createCompanies(data: [
@@ -31,19 +25,14 @@ const createInitialData = async (context: KeystoneContext) => {
           { data: { name: "${sampleOne(alphanumGenerator)}" } }
         ]) { id }
       }`,
-  });
-  expect(errors).toBe(undefined);
-  const owners = await createItems({
-    context,
-    listKey: 'Owner',
-    items: data.createCompanies.map(({ id }) => ({
+  })) as { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
+  const owners = await context.lists.Owner.createMany({
+    data: data.createCompanies.map(({ id }) => ({
       data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
     })),
   });
-  const custodians = await createItems({
-    context,
-    listKey: 'Custodian',
-    items: data.createLocations.map(({ id }) => ({
+  const custodians = await context.lists.Custodian.createMany({
+    data: data.createLocations.map(({ id }) => ({
       data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
     })),
   });
@@ -51,19 +40,15 @@ const createInitialData = async (context: KeystoneContext) => {
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
-  const [cu1, cu2] = await createItems({
-    context,
-    listKey: 'Custodian',
-    items: [
+  const [cu1, cu2] = await context.lists.Custodian.createMany({
+    data: [
       { data: { name: sampleOne(alphanumGenerator) } },
       { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
 
-  return createItem({
-    context,
-    listKey: 'Owner',
-    item: {
+  return context.lists.Owner.createOne({
+    data: {
       name: sampleOne(alphanumGenerator),
       companies: {
         create: [
@@ -97,13 +82,13 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
         ],
       },
     },
-    returnFields: 'id name companies { id name location { id name custodians { id name } } }',
+    query: 'id name companies { id name location { id name custodians { id name } } }',
   });
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Owner: list({
@@ -136,8 +121,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
         test(
@@ -146,12 +131,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allOwners(where: { companies_some: { location: { custodians_some: { name: "${name1}" } } } }) { id companies { location { custodians { name } } } }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allOwners.length).toEqual(1);
             expect(data.allOwners[0].id).toEqual(owner.id);
           })
@@ -162,12 +146,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allCustodians(where: { locations_some: { company: { owners_some: { name: "${name1}" } } } }) { id locations { company { owners { name } } } }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allCustodians.length).toEqual(2);
           })
         );
@@ -177,12 +160,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allOwners(where: { companies_some: { location: { custodians_some: { locations_some: { company: { owners_some: { name: "${name1}" } } } } } } }) { id companies { location { custodians { name } } } }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allOwners.length).toEqual(1);
             expect(data.allOwners[0].id).toEqual(owner.id);
           })
@@ -194,12 +176,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
 
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allCustodians(where: { locations_some: { company: { owners_some: { companies_some: { location: { custodians_some: { name: "${name1}" } } } } } } }) { id locations { company { owners { name } } } }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allCustodians.length).toEqual(2);
           })
         );

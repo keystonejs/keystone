@@ -1,19 +1,17 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -37,126 +35,59 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('relationship filtering', () => {
       test(
         'nested to-single relationships can be filtered within AND clause',
         runner(setupKeystone, async ({ context }) => {
-          const company = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
+          const company = await context.lists.Company.createOne({ data: { name: 'Thinkmill' } });
+          const otherCompany = await context.lists.Company.createOne({ data: { name: 'Cete' } });
+
+          const user = await context.lists.User.createOne({
+            data: { company: { connect: { id: company.id } } },
           });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Cete' },
+          await context.lists.User.createOne({
+            data: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: company.id } } },
-          });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: otherCompany.id } } },
+          const users = await context.lists.User.findMany({
+            where: {
+              AND: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'll' } }],
+            },
+            query: 'id company { id name }',
           });
 
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-        query {
-          allUsers(where: {
-            AND: [
-              { company: { name_contains: "in" } },
-              { company: { name_contains: "ll" } }
-            ]
-          }) {
-            id
-            company {
-              id
-              name
-            }
-          }
-        }
-      `,
-          });
-
-          expect(errors).toBe(undefined);
-          expect(data.allUsers).toHaveLength(1);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                company: {
-                  id: company.id,
-                  name: 'Thinkmill',
-                },
-              },
-            ],
-          });
+          expect(users).toHaveLength(1);
+          expect(users).toMatchObject([
+            { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
+          ]);
         })
       );
 
       test(
         'nested to-single relationships can be filtered within OR clause',
         runner(setupKeystone, async ({ context }) => {
-          const company = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
+          const company = await context.lists.Company.createOne({ data: { name: 'Thinkmill' } });
+          const otherCompany = await context.lists.Company.createOne({ data: { name: 'Cete' } });
+
+          const user = await context.lists.User.createOne({
+            data: { company: { connect: { id: company.id } } },
           });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Cete' },
+          await context.lists.User.createOne({
+            data: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: company.id } } },
+          const users = await context.lists.User.findMany({
+            where: {
+              OR: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'xx' } }],
+            },
+            query: 'id company { id name }',
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: otherCompany.id } } },
-          });
-
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-          query {
-            allUsers(where: {
-              OR: [
-                { company: { name_contains: "in" } },
-                { company: { name_contains: "xx" } }
-              ]
-            }) {
-              id
-              company {
-                id
-                name
-              }
-            }
-          }
-        `,
-          });
-
-          expect(errors).toBe(undefined);
-          expect(data.allUsers).toHaveLength(1);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                company: {
-                  id: company.id,
-                  name: 'Thinkmill',
-                },
-              },
-            ],
-          });
+          expect(users).toHaveLength(1);
+          expect(users).toMatchObject([
+            { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
+          ]);
         })
       );
 
@@ -165,54 +96,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
-          );
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'hi world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id);
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { posts: { connect: ids.map(id => ({ id })) } },
+          const user = await context.lists.User.createOne({
+            data: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ context, listKey: 'User', item: {} });
+          await context.lists.User.createOne({ data: {} });
 
-          type T = {
-            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-            errors: unknown;
-          };
-          const { data, errors }: T = await context.executeGraphQL({
-            query: `
-        query {
-          allUsers(where: {
-            AND: [
-              { posts_some: { content_contains: "hi" } },
-              { posts_some: { content_contains: "lo" } }
-            ]
-          }) {
-            id
-            posts {
-              id
-              content
-            }
-          }
-        }
-      `,
-          });
-
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toHaveLength(1);
-          expect(data.allUsers[0].id).toEqual(user.id);
-          expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
+          const users = (await context.lists.User.findMany({
+            where: {
+              AND: [
+                { posts_some: { content_contains: 'hi' } },
+                { posts_some: { content_contains: 'lo' } },
+              ],
+            },
+            query: 'id posts { id content }',
+          })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
+          expect(users).toHaveLength(1);
+          expect(users[0].id).toEqual(user.id);
+          expect(users[0].posts).toHaveLength(3);
+          expect(users[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
@@ -221,123 +128,81 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
-          );
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'hi world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id);
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { posts: { connect: ids.map(id => ({ id })) } },
+          const user = await context.lists.User.createOne({
+            data: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ context, listKey: 'User', item: {} });
+          await context.lists.User.createOne({ data: {} });
 
-          type T = {
-            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-            errors: unknown;
-          };
-          const { data, errors }: T = await context.executeGraphQL({
-            query: `
-          query {
-            allUsers(where: {
+          const users = (await context.lists.User.findMany({
+            where: {
               OR: [
-                { posts_some: { content_contains: "o w" } },
-                { posts_some: { content_contains: "? O" } }
-              ]
-            }) {
-              id
-              posts {
-                id
-                content
-              }
-            }
-          }
-        `,
-          });
-
-          expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toHaveLength(1);
-          expect(data.allUsers[0].id).toEqual(user.id);
-          expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
+                { posts_some: { content_contains: 'o w' } },
+                { posts_some: { content_contains: '? O' } },
+              ],
+            },
+            query: 'id posts { id content }',
+          })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
+          expect(users).toHaveLength(1);
+          expect(users[0].id).toEqual(user.id);
+          expect(users[0].posts).toHaveLength(3);
+          expect(users[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
       test(
         'many-to-many filtering composes with one-to-many filtering',
         runner(setupKeystone, async ({ context }) => {
-          const adsCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'AdsAdsAds' },
-            returnFields: 'id name',
+          const adsCompany = await context.lists.Company.createOne({
+            data: { name: 'AdsAdsAds' },
+            query: 'id name',
           });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
-            returnFields: 'id name',
+          const otherCompany = await context.lists.Company.createOne({
+            data: { name: 'Thinkmill' },
+            query: 'id name',
           });
 
           // Content can have multiple authors
-          const spam1 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
-          const spam2 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
-          const content = await createItem({
-            context,
-            listKey: 'Post',
-            item: { content: 'cute cat pics' },
+          const spam1 = await context.lists.Post.createOne({ data: { content: 'spam' } });
+          const spam2 = await context.lists.Post.createOne({ data: { content: 'spam' } });
+          const content = await context.lists.Post.createOne({
+            data: { content: 'cute cat pics' },
           });
 
-          const spammyUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const spammyUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: spam1.id }, { id: spam2.id }] },
             },
           });
-          const mixedUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const mixedUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: spam1.id }, { id: content.id }] },
             },
           });
-          const nonSpammyUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const nonSpammyUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: content.id }] },
             },
           });
-          const quietUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: adsCompany.id } } },
+          const quietUser = await context.lists.User.createOne({
+            data: { company: { connect: { id: adsCompany.id } } },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          await context.lists.User.createOne({
+            data: {
               company: { connect: { id: otherCompany.id } },
               posts: { connect: [{ id: content.id }] },
             },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          await context.lists.User.createOne({
+            data: {
               company: { connect: { id: otherCompany.id } },
               posts: { connect: [{ id: spam1.id }] },
             },
@@ -346,118 +211,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
           type T = {
-            data: {
-              allUsers: {
-                id: IdType;
-                company: { id: IdType; name: string };
-                posts: { content: string }[];
-              }[];
-            };
-            errors: unknown;
-          };
-          const result1: T = await context.executeGraphQL({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_every: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
-          });
-
-          expect(result1.errors).toBe(undefined);
-          expect(result1.data.allUsers).toHaveLength(2);
-          expect(result1.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result1.data.allUsers.map(u => u.id).sort()).toEqual(
-            [spammyUser.id, quietUser.id].sort()
-          );
-          expect(result1.data.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+            id: IdType;
+            company: { id: IdType; name: string };
+            posts: { content: string }[];
+          }[];
+          const users = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_every: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
+          })) as T;
+          expect(users).toHaveLength(2);
+          expect(users.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users.map(u => u.id).sort()).toEqual([spammyUser.id, quietUser.id].sort());
+          expect(users.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([true, true]);
 
           // adsCompany users with no spam
-          const result2: T = await context.executeGraphQL({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_none: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
-          });
+          const users2 = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_none: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
+          })) as T;
 
-          expect(result2.errors).toBe(undefined);
-          expect(result2.data.allUsers).toHaveLength(2);
-          expect(result2.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result2.data.allUsers.map(u => u.id).sort()).toEqual(
-            [nonSpammyUser.id, quietUser.id].sort()
-          );
-          expect(result2.data.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+          expect(users2).toHaveLength(2);
+          expect(users2.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users2.map(u => u.id).sort()).toEqual([nonSpammyUser.id, quietUser.id].sort());
+          expect(users2.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([true, true]);
 
           // adsCompany users with some spam
-          const result3: T = await context.executeGraphQL({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_some: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
-          });
+          const users3 = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_some: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
+          })) as T;
 
-          expect(result3.errors).toBe(undefined);
-          expect(result3.data.allUsers).toHaveLength(2);
-          expect(result3.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result3.data.allUsers.map(u => u.id).sort()).toEqual(
-            [mixedUser.id, spammyUser.id].sort()
-          );
-          expect(result3.data.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+          expect(users3).toHaveLength(2);
+          expect(users3.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users3.map(u => u.id).sort()).toEqual([mixedUser.id, spammyUser.id].sort());
+          expect(users3.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([true, true]);
         })
       );
     });

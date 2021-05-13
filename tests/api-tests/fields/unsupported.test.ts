@@ -1,23 +1,35 @@
 import path from 'path';
 import globby from 'globby';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { BaseKeystone } from '@keystone-next/types';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.ts'));
 
-multiAdapterRunners().map(({ adapterName, after }) => {
+multiAdapterRunners().map(({ provider, after }) => {
   const unsupportedModules = testModules
     .map(require)
-    .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(adapterName));
+    .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(provider));
   if (unsupportedModules.length > 0) {
-    describe(`${adapterName} adapter`, () => {
+    describe(`${provider} provider`, () => {
       unsupportedModules.forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
           describe(`${mod.name} - Unsupported field type`, () => {
+            beforeEach(() => {
+              if (mod.beforeEach) {
+                mod.beforeEach();
+              }
+            });
+            afterEach(async () => {
+              if (mod.afterEach) {
+                await mod.afterEach();
+              }
+            });
             beforeAll(() => {
               if (mod.beforeAll) {
                 mod.beforeAll();
@@ -28,17 +40,22 @@ multiAdapterRunners().map(({ adapterName, after }) => {
                 await mod.afterAll();
               }
               // We expect setup to fail, so disconnect can be a noop
-              await after({ disconnect: () => {} });
+              await after({ disconnect: async () => {} } as BaseKeystone);
             });
 
-            test('Delete', async () => {
-              const createLists = (keystone: any) => {
-                // Create a list with all the fields required for testing
-                keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-              };
-              await expect(async () => setupServer({ adapterName, createLists })).rejects.toThrow(
-                Error
-              );
+            test('Throws', async () => {
+              await expect(async () =>
+                setupFromConfig({
+                  provider,
+                  config: testConfig({
+                    lists: createSchema({
+                      [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+                    }),
+                    images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                    files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                  }),
+                })
+              ).rejects.toThrow(Error);
             });
           });
         });

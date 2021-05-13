@@ -1,43 +1,71 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
-import { initConfig } from '../../lib/initConfig';
-import { requireSource } from '../../lib/requireSource';
-import { createExpressServer } from '../../lib/createExpressServer';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
-import { CONFIG_PATH } from '../utils';
-import type { StaticPaths } from '..';
+import { initConfig } from '../../lib/config/initConfig';
+import { requireSource } from '../../lib/config/requireSource';
+import { createExpressServer } from '../../lib/server/createExpressServer';
+import {
+  generateCommittedArtifacts,
+  generateNodeModulesArtifacts,
+  getSchemaPaths,
+  requirePrismaClient,
+} from '../../artifacts';
+import { getAdminPath, getConfigPath } from '../utils';
 
-// TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
-  'src',
   'static',
   'dev-loading.html'
 );
 
-export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
-  console.log('🤞 Starting Keystone');
+export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
+  console.log('✨ Starting Keystone');
 
-  const server = express();
+  const app = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
-  const config = initConfig(requireSource(CONFIG_PATH).default);
-  const initKeystone = async () => {
-    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'dev');
+  let disconnect: null | (() => Promise<void>) = null;
 
-    console.log('✨ Generating graphQL schema');
-    await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+
+  const initKeystone = async () => {
+    {
+      const { keystone, graphQLSchema } = createSystem(config);
+
+      console.log('✨ Generating GraphQL and Prisma schemas');
+      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+
+      if (config.db.useMigrations) {
+        await devMigrations(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
+      } else {
+        await pushPrismaSchemaToDatabase(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
+      }
+    }
+    const prismaClient = requirePrismaClient(cwd);
+
+    const { keystone, graphQLSchema, createContext } = createSystem(config, prismaClient);
 
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });
-
+    disconnect = () => keystone.disconnect();
     if (config.ui?.isDisabled) {
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+      await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
     }
 
     console.log('✨ Creating server');
@@ -46,28 +74,72 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
       graphQLSchema,
       createContext,
       true,
-      projectAdminPath
+      getAdminPath(cwd)
     );
-    console.log(`👋 Admin UI and graphQL API ready`);
+    console.log(`👋 Admin UI and GraphQL API ready`);
   };
 
-  server.use('/__keystone_dev_status', (req, res) => {
+  app.use('/__keystone_dev_status', (req, res) => {
     res.json({ ready: expressServer ? true : false });
   });
-  server.use((req, res, next) => {
+  app.use((req, res, next) => {
     if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
   const port = config.server?.port || process.env.PORT || 3000;
-  server.listen(port, (err?: any) => {
+  let initKeystonePromiseResolve: () => void | undefined;
+  let initKeystonePromiseReject: (err: any) => void | undefined;
+  let initKeystonePromise = new Promise<void>((resolve, reject) => {
+    initKeystonePromiseResolve = resolve;
+    initKeystonePromiseReject = reject;
+  });
+  const server = app.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Dev Server Ready on http://localhost:${port}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
-    initKeystone().catch(err => {
-      console.error(`🚨 There was an error initialising Keystone`);
-      console.error(err);
-      process.exit(1);
-    });
+    initKeystone()
+      .then(() => {
+        initKeystonePromiseResolve();
+      })
+      .catch(err => {
+        server.close(async closeErr => {
+          if (closeErr) {
+            console.log('There was an error while closing the server');
+            console.log(closeErr);
+          }
+          try {
+            await disconnect?.();
+          } catch (err) {
+            console.log('There was an error while disconnecting from the database');
+            console.log(err);
+          }
+
+          initKeystonePromiseReject(err);
+        });
+      });
   });
+
+  await initKeystonePromise;
+
+  return () =>
+    new Promise<void>((resolve, reject) => {
+      server.close(async err => {
+        try {
+          await disconnect?.();
+        } catch (disconnectionError) {
+          if (!err) {
+            err = disconnectionError;
+          } else {
+            console.log('There was an error while disconnecting from the database');
+            console.log(disconnectionError);
+          }
+        }
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
 };

@@ -1,8 +1,8 @@
-// @ts-ignore
-import { Text, Password } from '@keystone-next/fields-legacy';
+import { password } from '..';
+import { text } from '../../text';
 
 export const name = 'Password';
-export const type = Password;
+export const typeFunction = password;
 export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
@@ -11,7 +11,7 @@ export const readFieldName = 'password_is_set';
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
-export const getTestFields = () => ({ name: { type: Text }, password: { type, minLength: 4 } });
+export const getTestFields = () => ({ name: text(), password: password({ minLength: 4 }) });
 
 export const initItems = () => {
   return [

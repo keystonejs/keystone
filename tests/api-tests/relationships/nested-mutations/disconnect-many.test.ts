@@ -2,19 +2,17 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Note: list({
@@ -61,8 +59,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('no access control', () => {
       test(
         'removes matched items from list',
@@ -71,54 +69,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
           // Create two items with content that can be matched
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const createUser = await context.lists.User.createOne({
+            data: {
               username: 'A thing',
               notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
             },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    username: "A thing",
-                    notes: { disconnect: [{ id: "${createNote2.id}" }] }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
+            query: 'id notes { id content }',
           });
 
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [{ id: createNote.id, content: noteContent }],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: createNote.id, content: noteContent }],
           });
-          expect(errors).toBe(undefined);
         })
       );
 
@@ -128,24 +102,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-              mutation {
-                createUser(data: {
-                  notes: {
-                    disconnect: [{ id: "${FAKE_ID}" }]
-                  }
-                }) {
-                  id
-                  notes {
-                    id
-                  }
-                }
-              }`,
+          const user = await context.lists.User.createOne({
+            data: { notes: { disconnect: [{ id: FAKE_ID }] } },
+            query: 'id notes { id content }',
           });
-          expect(errors).toBe(undefined);
-          expect(data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
-          expect(data.createUser).not.toHaveProperty('errors');
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
     });
@@ -157,30 +118,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item to link against
-          const createUser = await createItem({ context, listKey: 'User', item: {} });
+          const createUser = await context.lists.User.createOne({ data: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}",
-                  data: {
-                    notes: {
-                      disconnect: [{ id: "${FAKE_ID}" }]
-                    }
-                  }
-                ) {
-                  id
-                  notes {
-                  id
-                }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { notes: { disconnect: [{ id: FAKE_ID }] } },
+            query: 'id notes { id }',
           });
-          expect(errors).toBe(undefined);
-          expect(data.updateUser).toMatchObject({ id: expect.any(String), notes: [] });
-          expect(data.updateUser).not.toHaveProperty('errors');
+
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(user).not.toHaveProperty('errors');
         })
       );
 
@@ -192,53 +140,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const createUser = await context.lists.User.createOne({
+            data: {
               username: 'A thing',
               notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
             },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
-            query: `
-              mutation {
-                updateUser(
-                  id: "${createUser.id}"
-                  data: {
-                    notes: { disconnect: [{ id: "${createNote.id}" }, { id: "${FAKE_ID}" }] }
-                  }
-                ) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.updateOne({
+            id: createUser.id,
+            data: { notes: { disconnect: [{ id: createNote.id }, { id: FAKE_ID }] } },
+            query: 'id notes { id content }',
           });
 
-          expect(data).toMatchObject({
-            updateUser: {
-              id: expect.any(String),
-              notes: [{ id: expect.any(String), content: noteContent2 }],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: expect.any(String), content: noteContent2 }],
           });
-          expect(errors).toBe(undefined);
         })
       );
     });
@@ -251,24 +176,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNote = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoRead',
-              item: {
+            const createUser = await context.lists.UserToNotesNoRead.createOne({
+              data: {
                 username: 'A thing',
                 notes: { connect: [{ id: createNote.id }] },
               },
             });
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().executeGraphQL({
+            await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -283,9 +204,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }`,
             });
 
-            expect(errors).toBe(undefined);
-
-            const result = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 query getUserNodes($userId: ID!){
                   UserToNotesNoRead(where: { id: $userId }) {
@@ -294,10 +213,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
               variables: { userId: createUser.id },
-              context, // : context.createContext().sudo(),
             });
-            expect(result.errors).toBe(undefined);
-            expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
+            expect(data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );
       });

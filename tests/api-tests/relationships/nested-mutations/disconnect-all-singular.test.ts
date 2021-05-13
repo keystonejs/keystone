@@ -2,19 +2,17 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Group: list({
@@ -47,26 +45,20 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('no access control', () => {
       test(
         'removes item from list',
         runner(setupKeystone, async ({ context }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
-          const createGroup = await createItem({
-            context,
-            listKey: 'Group',
-            item: { name: groupName },
-          });
+          const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item to update
-          const createEvent = await createItem({
-            context,
-            listKey: 'Event',
-            item: { title: 'A thing', group: { connect: { id: createGroup.id } } },
-            returnFields: 'id group { id }',
+          const createEvent = await context.lists.Event.createOne({
+            data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+            query: 'id group { id }',
           });
 
           // Avoid false-positives by checking the database directly
@@ -74,7 +66,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -92,14 +84,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(data).toMatchObject({ updateEvent: { id: expect.any(String), group: null } });
-          expect(errors).toBe(undefined);
 
           // Avoid false-positives by checking the database directly
-          const eventData = await getItem({
-            context,
-            listKey: 'Event',
-            itemId: createEvent.id,
-            returnFields: 'id group { id }',
+          const eventData = await context.lists.Event.findOne({
+            where: { id: createEvent.id },
+            query: 'id group { id }',
           });
 
           expect(eventData).toHaveProperty('group', null);
@@ -110,7 +99,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createEvent(data: {
@@ -125,7 +114,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors).toBe(undefined);
           expect(data.createEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.createEvent).not.toHaveProperty('errors');
         })
@@ -135,10 +123,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if no item to disconnect during update',
         runner(setupKeystone, async ({ context }) => {
           // Create an item to link against
-          const createEvent = await createItem({ context, listKey: 'Event', item: {} });
+          const createEvent = await context.lists.Event.createOne({ data: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -156,7 +144,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.updateEvent).not.toHaveProperty('errors');
         })
@@ -171,18 +158,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createGroup = await createItem({
-              context,
-              listKey: 'GroupNoRead',
-              item: { name: groupName },
+            const createGroup = await context.lists.GroupNoRead.createOne({
+              data: { name: groupName },
             });
 
             // Create an item to update
-            const createEvent = await createItem({
-              context,
-              listKey: 'EventToGroupNoRead',
-              item: { group: { connect: { id: createGroup.id } } },
-              returnFields: 'id group { id }',
+            const createEvent = await context.lists.EventToGroupNoRead.createOne({
+              data: { group: { connect: { id: createGroup.id } } },
+              query: 'id group { id }',
             });
 
             // Avoid false-positives by checking the database directly
@@ -190,7 +173,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().executeGraphQL({
+            await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   updateEventToGroupNoRead(
@@ -204,18 +187,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }`,
             });
 
-            expect(errors).toBe(undefined);
-
             // Avoid false-positives by checking the database directly
-            const eventData = await getItem({
-              context,
-              listKey: 'EventToGroupNoRead',
-              itemId: createEvent.id,
-              returnFields: 'id group { id }',
+            const eventData = await context.lists.EventToGroupNoRead.findOne({
+              where: { id: createEvent.id },
+              query: 'id group { id }',
             });
 
             expect(eventData).toHaveProperty('group');
-            expect(eventData.group).toBe(null);
+            expect(eventData!.group).toBe(null);
           })
         );
       });
