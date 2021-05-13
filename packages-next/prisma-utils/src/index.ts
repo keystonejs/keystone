@@ -2,6 +2,7 @@ import { deepStrictEqual } from 'assert';
 import fs from 'fs-extra';
 import { DMMF } from '@prisma/generator-helper';
 import { getDMMF } from '@prisma/sdk';
+import { format, resolveConfig } from 'prettier';
 
 const providers = ['postgresql', 'sqlite'] as const;
 
@@ -17,20 +18,18 @@ const scalarTypes = [
   'DateTime',
   'BigInt',
   'Json',
-  // we're gonna ignore Bytes because how do you want to filter by bytes?
+  // we're gonna ignore Bytes because how do you want to filter by bytes and what GraphQL scalar do we use?
   // 'Bytes',
-  'SomeEnum',
+  // 'SomeEnum',
 ] as const;
 
-const enumDecl = `enum SomeEnum {
-  a
-  b
-}`;
+// const enumDecl = `enum SomeEnum {
+//   a
+//   b
+// }`;
 
 const getScalarTypesForProvider = (provider: Provider): readonly typeof scalarTypes[number][] =>
-  provider === 'sqlite'
-    ? scalarTypes.filter(x => x !== 'Json' && x !== 'SomeEnum' && x !== 'Bytes')
-    : scalarTypes;
+  provider === 'sqlite' ? scalarTypes.filter(x => x !== 'Json') : scalarTypes;
 
 const getSchemaForProvider = (provider: Provider) => {
   const scalarTypesForProvider = getScalarTypesForProvider(provider);
@@ -38,8 +37,6 @@ const getSchemaForProvider = (provider: Provider) => {
   url = env("DATABASE_URL")
   provider = "${provider}"
 }
-
-${provider === 'postgresql' ? enumDecl : ''}
 
 generator client {
   provider = "prisma-client-js"
@@ -68,9 +65,10 @@ ${
 };
 
 (async () => {
+  const prettierConfig = await resolveConfig(`${__dirname}/index.ts`);
+  assert(prettierConfig !== null);
   for (const provider of providers) {
     const schema = getSchemaForProvider(provider);
-    console.log(schema);
     const dmmf = await getDMMF({ datamodel: schema });
 
     await fs.outputFile(
@@ -83,7 +81,9 @@ ${
         scalar = 'Bool';
       }
       if (scalar === 'SomeEnum') {
-        scalar = 'EnumSomeEnum';
+        // the filter types have to be generic over the enum so it's just easier to write it out manually
+        // but we still want this here to snapshot what the filters look like for a given prisma version & provider combination
+        return [];
       }
       let types = [`${scalar}NullableFilter`, `${scalar}Filter`];
       if (provider === 'postgresql') {
@@ -112,10 +112,11 @@ ${
         2
       )
     );
+    const filepath = `${__dirname}/../../types/src/filters/providers/${provider}.ts`;
     await fs.outputFile(
-      `${__dirname}/generated/${provider}.ts`,
-      `import {types} from '@keystone-next/types'
-      
+      filepath,
+      format(
+        `import {types,tsgql} from '../../next-fields'
 ${
   provider !== 'sqlite'
     ? `const QueryMode = types.enum({
@@ -125,7 +126,23 @@ ${
     : ''
 }
 
-      ${[...referencedTypes].map(typeName => printInputTypeForTSGQL(typeName, types)).join('\n\n')}`
+${[...referencedTypes].map(typeName => printInputTypeForTSGQL(typeName, types)).join('\n\n')}
+
+${getScalarTypesForProvider(provider)
+  .map(scalar => {
+    const scalarInFilterName = scalar === 'Boolean' ? 'Bool' : scalar;
+    return `export const ${scalar} = {
+  optional: ${scalarInFilterName}NullableFilter,
+  required: ${scalarInFilterName}Filter,
+  ${provider === 'postgresql' ? `many: ${scalarInFilterName}NullableListFilter` : ''}
+}`;
+  })
+  .join('\n\n')}
+
+export {enumFilters as enum } from '../enum-filter'
+        `,
+        { ...prettierConfig, filepath }
+      )
     );
   }
 })();
@@ -168,70 +185,91 @@ function collectReferencedTypes(
   }
 }
 
+/**
+ * Note a field can be both nullable and a list.
+ *
+ * Translated into typescript, that means `Array<T> | null`,
+ * not `Array<T | null>` or `Array<T | null> | null`
+ */
+type TransformedInputTypeField = {
+  type: string;
+  isNullable: boolean;
+  isList: boolean;
+};
+
+function pickInputTypeForField(field: DMMF.SchemaArg): TransformedInputTypeField {
+  assert(!field.isRequired, 'unexpected required field');
+  // null is already represented with field.isNullable
+  const inputTypesWithoutNull = field.inputTypes.filter(type => {
+    if (type.type === 'Null') {
+      assert(!type.isList, 'unexpected null list');
+      assert(field.isNullable, 'unexpected isNullable false when null type in input types');
+      return false;
+    }
+    return true;
+  });
+
+  assert(
+    inputTypesWithoutNull.length + Number(field.isNullable) === field.inputTypes.length,
+    'unexpected isNullable false when null type in input types'
+  );
+  const inputType = (() => {
+    if (inputTypesWithoutNull.length === 1) {
+      return inputTypesWithoutNull[0];
+    }
+    assert(
+      inputTypesWithoutNull.length === 2,
+      'unexpected more than two input types excluding null'
+    );
+    const inputType = inputTypesWithoutNull.find(x => x.location == 'inputObjectTypes');
+    assert(
+      !!inputType,
+      'could not find input object type when more than one input type excluding null'
+    );
+    return inputType;
+  })();
+  assert(typeof inputType.type === 'string');
+  return {
+    isList: inputType.isList,
+    isNullable: field.isNullable,
+    type: scalarsToGqlScalars[inputType.type] ?? inputType.type,
+  };
+}
+
 function printInputTypeForTSGQL(
   inputTypeName: string,
   inputTypesByName: Record<string, DMMF.InputType>
 ) {
   const inputType = inputTypesByName[inputTypeName];
   assert(inputType !== undefined, `could not find input type ${inputTypeName}`);
-  if (inputTypeName.endsWith('NullableListFilter')) {
-    assert(inputType.constraints.maxNumFields === 1);
-    assert(inputType.constraints.minNumFields === 1);
-  } else {
-    assert(inputType.constraints.maxNumFields === null);
-    assert(inputType.constraints.minNumFields === null);
-  }
-  return `export const ${inputTypeName} = types.inputObject({
+  const expectedMaxMinNumFields = inputTypeName.endsWith('NullableListFilter') ? 1 : null;
+  assert(inputType.constraints.maxNumFields === expectedMaxMinNumFields);
+  assert(inputType.constraints.minNumFields === expectedMaxMinNumFields);
+  const nameOfInputObjectTypeType = `${inputTypeName}Type`;
+  const fields = inputType.fields.map(x => [x.name, pickInputTypeForField(x)] as const);
+  return `type ${nameOfInputObjectTypeType} = tsgql.InputObjectType<{
+    ${fields
+      .map(([name, field]) => {
+        return `${field.isNullable ? '// can be null\n' : ''}${name}: tsgql.Arg<${
+          field.isList
+            ? `tsgql.ListType<tsgql.NonNullType<typeof ${field.type}>>`
+            : `typeof ${field.type}`
+        }>`;
+      })
+      .join(',\n')}
+  }>
+  
+  const ${inputTypeName}: ${nameOfInputObjectTypeType} = types.inputObject({
     name: '${inputTypeName}',
-    fields: {
-      ${inputType.fields
-        .map(field => {
-          assert(!field.isRequired, 'unexpected required field');
-          // null is already represented with field.isNullable
-          const inputTypesWithoutNull = field.inputTypes.filter(type => {
-            if (type.type === 'Null') {
-              assert(!type.isList, 'unexpected null list');
-              assert(field.isNullable, 'unexpected isNullable false when null type in input types');
-              return false;
-            }
-            return true;
-          });
-
-          assert(
-            inputTypesWithoutNull.length + Number(field.isNullable) === field.inputTypes.length,
-            'unexpected isNullable false when null type in input types'
-          );
-          assert(
-            inputTypesWithoutNull.length <= 2,
-            'unexpected more than two input types excluding null'
-          );
-          const complexTypes = inputTypesWithoutNull.filter(x => x.location === 'inputObjectTypes');
-          assert(complexTypes.length <= 1, 'unexpected more than one rich input type');
-          const scalarTypes = inputTypesWithoutNull.filter(
-            x => x.location === 'scalar' || x.location === 'enumTypes'
-          );
-          assert(scalarTypes.length <= 1, 'unexpected more than one scalar input type');
-
-          let typeName: string | undefined = undefined;
-          let isList = false;
-          if (complexTypes.length) {
-            assert(typeof complexTypes[0].type === 'string');
-            typeName = complexTypes[0].type;
-            isList = complexTypes[0].isList;
-          }
-          if (scalarTypes.length === 1) {
-            assert(typeof scalarTypes[0].type === 'string');
-            typeName = scalarsToGqlScalars[scalarTypes[0].type] || scalarTypes[0].type;
-            isList = scalarTypes[0].isList;
-          }
-          assert(typeName !== undefined, 'could not get type name');
-
-          return `${field.isNullable ? '// can be null\n' : ''}${field.name}: types.arg({ type: ${
-            isList ? `types.list(types.nonNull(${typeName}))` : typeName
+    fields: () => ({
+      ${fields
+        .map(([name, field]) => {
+          return `${field.isNullable ? '// can be null\n' : ''}${name}: types.arg({ type: ${
+            field.isList ? `types.list(types.nonNull(${field.type}))` : field.type
           } })`;
         })
         .join(',\n')}
-    }
+    })
   })`;
 }
 

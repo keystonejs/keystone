@@ -48,7 +48,8 @@
     "lodash.groupby": "^4.6.0",
     "mkdirp": "^1.0.4",
     "p-settle": "^4.1.1",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "uuid": "^8.3.2"
   },
   "engines": {
     "node": ">=v12.13.1"

@@ -1,6 +1,9 @@
 import { tsgql, TypesForList } from '@keystone-next/types';
 import { CreateAndUpdateInputResolvers } from './input-resolvers';
 
+// TODO: access control for the items you are connecting/disconnecting
+// the previous version of this used read access control for that
+
 export function resolveRelateToManyForCreateInput(inputResolvers: CreateAndUpdateInputResolvers) {
   return async (
     value: tsgql.InferValueFromArg<
