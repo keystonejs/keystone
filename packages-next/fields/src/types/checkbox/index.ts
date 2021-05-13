@@ -3,6 +3,7 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
+  filters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -19,14 +20,15 @@ export const checkbox =
   <TGeneratedListTypes extends BaseGeneratedListTypes>(
     config: CheckboxFieldConfig<TGeneratedListTypes> = {}
   ): FieldTypeFunc =>
-  () => {
-    if (config.index === 'unique') {
+  meta => {
+    if ((config as any).index === 'unique') {
       throw Error("{ index: 'unique' } is not a supported option for field type checkbox");
     }
 
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
       ...config,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].Boolean.optional }) },
         create: { arg: types.arg({ type: types.Boolean }) },
         update: { arg: types.arg({ type: types.Boolean }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

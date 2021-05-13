@@ -2,6 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
+  filters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -34,6 +35,9 @@ export const uuid =
     })({
       ...config,
       input: {
+        // should this be the id type instead of string?
+        // also, Prisma doesn't model the filters that a particular native type supports so this is wrong
+        where: { arg: types.arg({ type: filters[meta.provider].String.required }) },
         create: {
           arg: undefined,
           resolve() {

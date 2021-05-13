@@ -2,6 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
+  filters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -53,6 +54,7 @@ export const select =
       return fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional', index })({
         ...commonConfig,
         input: {
+          where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
           create: { arg: types.arg({ type: types.Int }) },
           update: { arg: types.arg({ type: types.Int }) },
           orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
@@ -80,6 +82,14 @@ export const select =
       )({
         ...commonConfig,
         input: {
+          where: {
+            arg: types.arg({
+              type:
+                meta.provider === 'sqlite'
+                  ? filters.sqlite.String.optional
+                  : filters.postgresql.enum(graphQLType).optional,
+            }),
+          },
           create: { arg: types.arg({ type: graphQLType }) },
           update: { arg: types.arg({ type: graphQLType }) },
           orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
@@ -92,6 +102,7 @@ export const select =
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
       ...commonConfig,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].String.optional }) },
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

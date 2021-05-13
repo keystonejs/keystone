@@ -85,7 +85,7 @@ export const image =
     ...config
   }: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
-    if (config.index === 'unique') {
+    if ((config as any).index === 'unique') {
       throw Error("{ index: 'unique' } is not a supported option for field type image");
     }
 

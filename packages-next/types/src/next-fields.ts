@@ -200,11 +200,13 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldFilters<TDBField extends DBField> = {
-  AND?: DBFieldFiltersInner<TDBField>;
-  OR?: DBFieldFiltersInner<TDBField>;
-  NOT?: DBFieldFiltersInner<TDBField>;
-} & DBFieldFiltersInner<TDBField>;
+type DBFieldFilters<TDBField extends DBField> =
+  | ({
+      AND?: DBFieldFiltersInner<TDBField>;
+      OR?: DBFieldFiltersInner<TDBField>;
+      NOT?: DBFieldFiltersInner<TDBField>;
+    } & DBFieldFiltersInner<TDBField>)
+  | null;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldUniqueFilter<TDBField extends DBField> = any;
 

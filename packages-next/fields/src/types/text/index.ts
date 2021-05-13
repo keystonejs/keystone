@@ -5,6 +5,7 @@ import {
   types,
   orderDirectionEnum,
   FieldTypeFunc,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -23,10 +24,11 @@ export const text =
     index,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  () =>
+  meta =>
     fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String', index })({
       ...config,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].String.optional }) },
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.String }) } : undefined,
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },

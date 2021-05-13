@@ -4,6 +4,7 @@ import {
   types,
   FieldTypeFunc,
   orderDirectionEnum,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -18,7 +19,7 @@ export const timestamp =
     index,
     ...config
   }: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  () => {
+  meta => {
     const inputResolver = (value: string | null | undefined) => {
       if (value === null || value === undefined) {
         return value;
@@ -28,6 +29,7 @@ export const timestamp =
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'DateTime', index })({
       ...config,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].DateTime.optional }) },
         create: { arg: types.arg({ type: types.String }), resolve: inputResolver },
         update: { arg: types.arg({ type: types.String }), resolve: inputResolver },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

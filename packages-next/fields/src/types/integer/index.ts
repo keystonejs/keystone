@@ -2,6 +2,7 @@ import {
   BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
+  filters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -16,10 +17,11 @@ export const integer =
     index,
     ...config
   }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  () =>
+  meta =>
     fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Int', index })({
       ...config,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Int }) } : undefined,
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },

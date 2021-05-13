@@ -4,6 +4,7 @@ import {
   fieldType,
   types,
   orderDirectionEnum,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -18,7 +19,7 @@ export const float =
     index,
     ...config
   }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  () =>
+  meta =>
     fieldType({
       kind: 'scalar',
       mode: 'optional',
@@ -27,6 +28,7 @@ export const float =
     })({
       ...config,
       input: {
+        where: { arg: types.arg({ type: filters[meta.provider].Float.optional }) },
         uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Float }) } : undefined,
         create: { arg: types.arg({ type: types.Float }) },
         update: { arg: types.arg({ type: types.Float }) },
