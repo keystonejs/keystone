@@ -371,7 +371,7 @@ class PrismaListAdapter {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (this.fieldAdaptersByPath[path].isRelationship) {
       let refListAdapter = this.getListAdapterByKey(
-        this.fieldAdaptersByPath[path].refListKey ?? 'xx'
+        this.fieldAdaptersByPath[path].refListKey ?? ''
       );
       if (refListAdapter) {
         prismaSchema = refListAdapter.fieldAdaptersByPath['id'].getPrismaSchema();
