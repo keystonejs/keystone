@@ -1,12 +1,11 @@
 import type { IncomingMessage } from 'http';
 import { graphql, GraphQLSchema, print } from 'graphql';
-import type {
+import {
   SessionContext,
   KeystoneContext,
   KeystoneGraphQLAPI,
-  ImagesConfig,
   GqlNames,
-  FilesConfig,
+  KeystoneConfig,
 } from '@keystone-next/types';
 
 import { PrismaClient } from '../core/utils';
@@ -17,22 +16,18 @@ import { createFilesContext } from './createFilesContext';
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
-  imagesConfig,
-  filesConfig,
   prismaClient,
   gqlNamesByList,
-  maxTotalResults,
+  config,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
-  imagesConfig: ImagesConfig | undefined;
-  filesConfig: FilesConfig | undefined;
+  config: KeystoneConfig;
   prismaClient: PrismaClient;
-  maxTotalResults: number;
   gqlNamesByList: Record<string, GqlNames>;
 }) {
-  const images = createImagesContext(imagesConfig);
-  const files = createFilesContext(filesConfig);
+  const images = createImagesContext(config.images);
+  const files = createFilesContext(config.files);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
@@ -40,6 +35,7 @@ export function makeCreateContext({
   // like parsing the generated GraphQL document, and validating it against the schema on _every_ call
   // is that really that bad? no not really. this has just been more optimised because the cost of what it's
   // doing is more obvious(even though in reality it's much smaller than the alternative)
+
   const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
   for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
     publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
@@ -85,7 +81,7 @@ export function makeCreateContext({
       totalResults: 0,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      maxTotalResults,
+      maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
       sudo: () =>
         createContext({ sessionContext, skipAccessControl: true, req, schemaName: 'internal' }),
       exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),

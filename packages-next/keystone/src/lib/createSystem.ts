@@ -1,4 +1,4 @@
-import { FieldData, getGqlNames, KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
+import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
@@ -63,13 +63,11 @@ export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
   const createContext = makeCreateContext({
     graphQLSchema,
     internalSchema: internalGraphQLSchema,
-    imagesConfig: config.images,
-    maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
+    config,
     prismaClient,
     gqlNamesByList: Object.fromEntries(
       Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames({ listKey, ...list })])
     ),
-    filesConfig: config.files,
   });
 
   return {

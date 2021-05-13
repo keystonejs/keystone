@@ -66,24 +66,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
           // Update the item and link the relationship field
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateEvent(
-                  id: "${createEvent.id}"
-                  data: {
-                    group: { disconnectAll: true }
-                  }
-                ) {
-                  id
-                  group {
-                    id
-                  }
-                }
-              }`,
+          const event = await context.lists.Event.updateOne({
+            id: createEvent.id,
+            data: { group: { disconnectAll: true } },
+            query: 'id group { id }',
           });
 
-          expect(data).toMatchObject({ updateEvent: { id: expect.any(String), group: null } });
+          expect(event).toMatchObject({ id: expect.any(String), group: null });
 
           // Avoid false-positives by checking the database directly
           const eventData = await context.lists.Event.findOne({
@@ -99,23 +88,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createEvent(data: {
-                  group: {
-                    disconnectAll: true
-                  }
-                }) {
-                  id
-                  group {
-                    id
-                  }
-                }
-              }`,
+          const event = await context.lists.Event.createOne({
+            data: { group: { disconnectAll: true } },
+            query: 'id group { id }',
           });
-          expect(data.createEvent).toMatchObject({ id: expect.any(String), group: null });
-          expect(data.createEvent).not.toHaveProperty('errors');
+
+          expect(event).toMatchObject({ id: expect.any(String), group: null });
         })
       );
 
@@ -126,26 +104,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createEvent = await context.lists.Event.createOne({ data: {} });
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateEvent(
-                  id: "${createEvent.id}",
-                  data: {
-                    group: {
-                      disconnectAll: true
-                    }
-                  }
-                ) {
-                  id
-                  group {
-                    id
-                  }
-                }
-              }`,
+          const event = await context.lists.Event.updateOne({
+            id: createEvent.id,
+            data: { group: { disconnectAll: true } },
+            query: 'id group { id }',
           });
-          expect(data.updateEvent).toMatchObject({ id: expect.any(String), group: null });
-          expect(data.updateEvent).not.toHaveProperty('errors');
+
+          expect(event).toMatchObject({ id: expect.any(String), group: null });
         })
       );
     });
@@ -173,18 +138,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            await context.exitSudo().graphql.run({
-              query: `
-                mutation {
-                  updateEventToGroupNoRead(
-                    id: "${createEvent.id}"
-                    data: {
-                      group: { disconnectAll: true }
-                    }
-                  ) {
-                    id
-                  }
-                }`,
+            await context.exitSudo().lists.EventToGroupNoRead.updateOne({
+              id: createEvent.id,
+              data: { group: { disconnectAll: true } },
             });
 
             // Avoid false-positives by checking the database directly
