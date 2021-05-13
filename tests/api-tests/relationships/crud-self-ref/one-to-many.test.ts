@@ -61,7 +61,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
   const data = await context.graphql.run({
-    query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
+    query: `mutation create($users: [UsersCreateInput!]!) { createUsers(data: $users) { id name } }`,
     variables: {
       users: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
     },
