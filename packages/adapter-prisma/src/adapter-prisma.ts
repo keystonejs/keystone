@@ -344,9 +344,9 @@ class PrismaListAdapter {
     return Object.keys(include).length > 0 ? include : undefined;
   }
 
-  _formatFieldValue(value, path) {
+  _formatFieldValue(value: any, path: string) {
     let format = this._getFieldStorageFormat(path);
-    if (value == null) return null;
+    if (value === null) return null;
     switch (format) {
       case 'Boolean':
         return Boolean(value);
@@ -367,19 +367,22 @@ class PrismaListAdapter {
     }
   }
 
-  _getFieldStorageFormat(path, returnExtra = false) {
+  _getFieldStorageFormat(path: string, returnExtra: boolean = false) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (this.fieldAdaptersByPath[path].isRelationship) {
-      prismaSchema = this.getListAdapterByKey(
-        this.fieldAdaptersByPath[path].refListKey
-      ).fieldAdaptersByPath['id'].getPrismaSchema();
+      let refListAdapter = this.getListAdapterByKey(
+        this.fieldAdaptersByPath[path].refListKey ?? 'xx'
+      );
+      if (refListAdapter) {
+        prismaSchema = refListAdapter.fieldAdaptersByPath['id'].getPrismaSchema();
+      }
     }
     if (prismaSchema.length > 1) {
       // TODO: Make proper hangle of fields with multiple schema items
       return '_MultipleFields';
     }
     let prismaSchemaLine = prismaSchema[0];
-    let prismaSchemaParts = prismaSchemaLine.match(/^\s*(\w+)\s+(\w+)(\?)?\s+(.+)\s*$/);
+    let prismaSchemaParts = prismaSchemaLine.match(/^\s*(\w+)\s+(\w+)(\?)?\s+(.+)\s*$/) || '';
     // let columnName = prismaSchemaParts[1];
     let columnType = prismaSchemaParts[2];
     // let columnIsRequired = prismaSchemaParts[3] == '?';
