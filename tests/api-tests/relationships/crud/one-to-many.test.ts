@@ -74,7 +74,7 @@ const getCompanyAndLocation = async (
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C, D];
   const data = await context.graphql.run({
-    query: `mutation create($locations: [LocationsCreateInput]) { createLocations(data: $locations) { id name } }`,
+    query: `mutation create($locations: [LocationsCreateInput!]!) { createLocations(data: $locations) { id name } }`,
     variables: {
       locations: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
     },
@@ -89,7 +89,7 @@ const createReadData = async (context: KeystoneContext) => {
     }).map(async ([name, locationIdxs]) => {
       const ids = locationIdxs.map((i: number) => ({ id: createLocations[i].id }));
       await context.graphql.run({
-        query: `mutation create($locations: [LocationWhereUniqueInput], $name: String) { createCompany(data: {
+        query: `mutation create($locations: [LocationWhereUniqueInput!]!, $name: String) { createCompany(data: {
           name: $name
     locations: { connect: $locations }
   }) { id locations { name }}}`,
@@ -136,7 +136,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const locations = await context.lists.Location.findMany({
-                  where: { company: { name_contains: name } },
+                  where: { company: { name: { contains: name } } },
                 });
                 expect(locations.length).toEqual(count);
               })
@@ -148,7 +148,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
             const locations = await context.lists.Location.findMany({
-              where: { company_is_null: true },
+              where: { company: { equals: null } },
             });
             expect(locations.length).toEqual(1);
           })
@@ -158,7 +158,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
             const data = await context.graphql.run({
-              query: `{ allLocations(where: { company_is_null: false }) { id }}`,
+              query: `{ allLocations(where: { company: { not: { equals: null } } }) { id }}`,
             });
             expect(data.allLocations.length).toEqual(6);
           })
@@ -175,7 +175,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const companies = await context.lists.Company.findMany({
-                  where: { locations_some: { name } },
+                  where: { locations: { some: { name: { equals: name } } } },
                 });
                 expect(companies.length).toEqual(count);
               })
@@ -194,7 +194,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 4],
               ].map(async ([name, count]) => {
                 const data = await context.graphql.run({
-                  query: `{ allCompanies(where: { locations_none: { name: "${name}"}}) { id }}`,
+                  query: `{ allCompanies(where: { locations: { none: { name: { equals: "${name}"}}}}) { id }}`,
                 });
                 expect(data.allCompanies.length).toEqual(count);
               })
@@ -213,7 +213,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 1],
               ].map(async ([name, count]) => {
                 const data = await context.graphql.run({
-                  query: `{ allCompanies(where: { locations_every: { name: "${name}"}}) { id }}`,
+                  query: `{ allCompanies(where: { locations: { every: { name: { equals: "${name}"}}}}) { id }}`,
                 });
                 expect(data.allCompanies.length).toEqual(count);
               })
@@ -426,7 +426,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { locations: { connect: [{ id: "${location.id}" }] } }
                   ) { id locations { id } } }
             `,
@@ -455,7 +455,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" } ,
                     data: { locations: { create: [{ name: "${locationName}" }] } }
                   ) { id locations { id name } }
                 }
@@ -487,7 +487,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { locations: { disconnect: [{ id: "${location.id}" }] } }
                   ) { id locations { id name } }
                 }
@@ -514,7 +514,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { locations: { disconnectAll: true } }
                   ) { id locations { id name } }
                 }
@@ -541,7 +541,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { locations: null }
                   ) { id locations { id name } }
                 }

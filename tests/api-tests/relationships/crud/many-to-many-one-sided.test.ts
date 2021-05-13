@@ -115,7 +115,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const companies = await context.lists.Company.findMany({
-                  where: { locations_some: { name } },
+                  where: { locations: { some: { name: { equals: name } } } },
                 });
                 expect(companies.length).toEqual(count);
               })
@@ -340,7 +340,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateCompany(
-                    id: "${company.id}",
+                    where: { id: "${company.id}" },
                     data: { locations: { create: [{ name: "${locationName}" }] } }
                   ) { id locations { id name } }
                 }
