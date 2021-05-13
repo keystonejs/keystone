@@ -88,6 +88,7 @@ export async function runPrismaOperations<T>(
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
+  fieldsIncludingOppositesToOneSidedRelations: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
   types: TypesForList;
   access: ResolvedListAccessControl;
@@ -111,7 +112,7 @@ function getRelationVal(
   foreignList: InitialisedList,
   context: KeystoneContext
 ) {
-  const oppositeDbField = foreignList.fields[dbField.field].dbField;
+  const oppositeDbField = foreignList.fieldsIncludingOppositesToOneSidedRelations[dbField.field];
   assert(oppositeDbField.kind === 'relation');
   const getAccess = async () => {
     const access = await validateNonCreateListAccessControl({
@@ -670,6 +671,7 @@ export function initialiseLists(
           where: context => getWhereInputResolvers(context)[listKey].where,
           createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
         },
+        fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
       },
     ])
   );
