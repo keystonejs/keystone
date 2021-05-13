@@ -393,7 +393,7 @@ export async function resolveInputForCreateOrUpdate(
                 if (field.dbField.kind !== 'relation') {
                   return undefined as any;
                 }
-                const inputResolvers = nestedMutationState.resolvers[listKey];
+                const inputResolvers = nestedMutationState.resolvers[field.dbField.list];
                 if (operation === 'create') {
                   if (field.dbField.mode === 'many') {
                     return resolveRelateToManyForCreateInput(inputResolvers);
