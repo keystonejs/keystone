@@ -86,7 +86,7 @@ async function findOneFilter(
   const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
   return access === true
     ? wherePrismaFilter
-    : [wherePrismaFilter, await list.inputResolvers.where(context)(access)];
+    : { AND: [wherePrismaFilter, await list.inputResolvers.where(context)(access)] };
 }
 
 export async function findOne(

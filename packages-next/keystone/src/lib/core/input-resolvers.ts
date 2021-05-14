@@ -34,6 +34,8 @@ export type PrismaFilter = Record<string, any> & {
   AND?: PrismaFilter[];
   OR?: PrismaFilter[];
   NOT?: PrismaFilter[];
+  // just so that if you pass an array to something expecting a PrismaFilter, you get an error
+  length?: undefined;
 };
 
 export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input filter' };
