@@ -235,26 +235,26 @@ type Mutation {
       posts: { create: [], connect: [] }
     }
   ): User!
-  createUsers(data: [UsersCreateInput!]! = []): [User!]!
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User!]!
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
   updateUsers(data: [UsersUpdateInput!]!): [User!]!
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]!): [User!]!
+  deleteUser(where: UserWhereUniqueInput!): User!
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
   createPhoneNumber(data: PhoneNumberCreateInput! = {}): PhoneNumber!
-  createPhoneNumbers(data: [PhoneNumbersCreateInput!]! = []): [PhoneNumber!]!
+  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber!]!
   updatePhoneNumber(
     where: PhoneNumberWhereUniqueInput!
     data: PhoneNumberUpdateInput!
-  ): PhoneNumber
+  ): PhoneNumber!
   updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber!]!
-  deletePhoneNumber(id: ID!): PhoneNumber
-  deletePhoneNumbers(ids: [ID!]!): [PhoneNumber!]!
+  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber!
+  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber!]!
   createPost(data: PostCreateInput! = {}): Post!
-  createPosts(data: [PostsCreateInput!]! = []): [Post!]!
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]!
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post!
   updatePosts(data: [PostsUpdateInput!]!): [Post!]!
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]!): [Post!]!
+  deletePost(where: PostWhereUniqueInput!): Post!
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]!
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -323,10 +323,6 @@ input PostCreateInput {
   author: UserRelateToManyForCreateInput
 }
 
-input UsersCreateInput {
-  data: UserCreateInput!
-}
-
 input UserUpdateInput {
   name: String
   email: String
@@ -368,10 +364,6 @@ input UsersUpdateInput {
   data: UserUpdateInput!
 }
 
-input PhoneNumbersCreateInput {
-  data: PhoneNumberCreateInput!
-}
-
 input PhoneNumberUpdateInput {
   user: UserRelateToManyForUpdateInput
   type: String
@@ -386,10 +378,6 @@ input UserRelateToManyForUpdateInput {
 input PhoneNumbersUpdateInput {
   where: PhoneNumberWhereUniqueInput!
   data: PhoneNumberUpdateInput!
-}
-
-input PostsCreateInput {
-  data: PostCreateInput!
 }
 
 input PostUpdateInput {

@@ -226,44 +226,47 @@ async function validationHook(
   }
 }
 
-async function getAccessControlledItemByUniqueWhereForMutation(
+async function getAccessControlledItemForDelete(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   access: boolean | InputFilter,
-  id: IdType
+  inputFilter: UniqueInputFilter
 ): Promise<ItemRootValue> {
   if (access === false) {
-    throwAccessDenied('mutation');
+    throw accessDeniedError('mutation');
   }
   const prismaModel = getPrismaModelForList(context.prisma, listKey);
-  let where: PrismaFilter = { id };
+  let where: PrismaFilter = mapUniqueWhereToWhere(
+    list,
+    await resolveUniqueWhereInput(inputFilter, list.fields, context)
+  );
   if (typeof access === 'object') {
     where = { AND: [where, await list.inputResolvers.where(context)(access)] };
   }
   const item = await prismaModel.findFirst({ where });
   if (item === null) {
-    throwAccessDenied('mutation');
+    throw accessDeniedError('mutation');
   }
-  return item as any;
+  return item;
 }
 
 export async function processDelete(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  itemId: IdType
+  filter: UniqueInputFilter
 ) {
   const access = await validateNonCreateListAccessControl({
     access: list.access.delete,
-    args: { context, listKey, operation: 'delete', session: context.session, itemId },
+    args: { context, listKey, operation: 'delete', session: context.session },
   });
-  const existingItem = await getAccessControlledItemByUniqueWhereForMutation(
+  const existingItem = await getAccessControlledItemForDelete(
     listKey,
     list,
     context,
     access,
-    itemId
+    filter
   );
 
   const hookArgs = { operation: 'delete' as const, listKey, context, existingItem };

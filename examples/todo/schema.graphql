@@ -23,25 +23,108 @@ type Person {
     first: Int
     skip: Int! = 0
   ): [Task!]!
-  _tasksMeta(
-    where: TaskWhereInput! = {}
-    orderBy: [SortTasksBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  tasksCount(where: TaskWhereInput! = {}): Int!
 }
 
 input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
+  id: StringFilter
+  label: StringNullableFilter
+  priority: TaskPriorityTypeNullableFilter
+  isComplete: BoolNullableFilter
   assignedTo: PersonWhereInput
+  finishBy: DateTimeNullableFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input TaskPriorityTypeNullableFilter {
+  equals: TaskPriorityType
+  in: [TaskPriorityType!]
+  notIn: [TaskPriorityType!]
+  not: TaskPriorityTypeNullableFilter
+}
+
+input BoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
+
+input NestedBoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
 }
 
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
+  id: StringFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
   tasks: TasksRelationFilter
 }
 
@@ -49,6 +132,28 @@ input TasksRelationFilter {
   every: TaskWhereInput
   some: TaskWhereInput
   none: TaskWhereInput
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedDateTimeNullableFilter
+}
+
+input NestedDateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedDateTimeNullableFilter
 }
 
 input SortTasksBy {
@@ -62,10 +167,6 @@ input SortTasksBy {
 enum OrderDirection {
   asc
   desc
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input TaskWhereUniqueInput {
@@ -179,12 +280,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Task!]!
-  _allTasksMeta(
-    where: TaskWhereInput! = {}
-    orderBy: [SortTasksBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  allTasksCount(where: TaskWhereInput! = {}): Int!
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
@@ -192,12 +288,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Person!]!
-  _allPeopleMeta(
-    where: PersonWhereInput! = {}
-    orderBy: [SortPeopleBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  allPeopleCount(where: PersonWhereInput! = {}): Int!
   keystone: KeystoneMeta!
 }
 

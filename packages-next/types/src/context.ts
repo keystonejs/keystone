@@ -48,7 +48,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGe
       updateMany(
         args: {
           readonly data: readonly {
-            where: { readonly id: string };
+            readonly where: { readonly id: string };
             readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
           }[];
         } & ResolveFields
@@ -93,7 +93,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
       readonly where: { readonly id: string };
     }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
     count(args?: {
-      where?: KeystoneListsTypeInfo[Key]['args']['listQuery']['where'];
+      readonly where?: KeystoneListsTypeInfo[Key]['args']['listQuery']['where'];
     }): Promise<number>;
     updateOne(args: {
       readonly id: string;
@@ -101,7 +101,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
     }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     updateMany(args: {
       readonly data: readonly {
-        where: { readonly id: string };
+        readonly where: { readonly id: string };
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
       }[];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
@@ -111,9 +111,11 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
     createMany(args: {
       readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
-    deleteOne(args: { readonly id: string }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
+    deleteOne(args: {
+      readonly where: { readonly id: string };
+    }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     deleteMany(args: {
-      readonly ids: readonly string[];
+      readonly where: readonly { readonly id: string }[];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
   };
 };

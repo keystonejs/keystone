@@ -81,17 +81,17 @@ export function getGraphQLSchema(
           }),
         };
         const updateOne = types.field({
-          type: list.types.output,
+          type: types.nonNull(list.types.output),
           args: updateOneArgs,
           resolve(_rootVal, args, context) {
             return mutations.updateOne(args, listKey, list, context);
           },
         });
         const deleteOne = types.field({
-          type: list.types.output,
+          type: types.nonNull(list.types.output),
           args: {
-            id: types.arg({
-              type: types.nonNull(types.ID),
+            where: types.arg({
+              type: types.nonNull(list.types.uniqueWhere),
             }),
           },
           resolve(rootVal, args, context) {
@@ -103,21 +103,7 @@ export function getGraphQLSchema(
           type: types.nonNull(types.list(types.nonNull(list.types.output))),
           args: {
             data: types.arg({
-              type: types.nonNull(
-                types.list(
-                  types.nonNull(
-                    types.inputObject({
-                      name: names.createManyInputName,
-                      fields: {
-                        data: types.arg({
-                          type: types.nonNull(list.types.create),
-                        }),
-                      },
-                    })
-                  )
-                )
-              ),
-              defaultValue: [],
+              type: types.nonNull(types.list(types.nonNull(list.types.create))),
             }),
           },
           resolve(_rootVal, args, context) {
@@ -148,8 +134,8 @@ export function getGraphQLSchema(
         const deleteMany = types.field({
           type: types.nonNull(types.list(types.nonNull(list.types.output))),
           args: {
-            ids: types.arg({
-              type: types.nonNull(types.list(types.nonNull(types.ID))),
+            where: types.arg({
+              type: types.nonNull(types.list(types.nonNull(list.types.uniqueWhere))),
             }),
           },
           resolve(rootVal, args, context) {

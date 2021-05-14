@@ -434,8 +434,8 @@ function DeleteManyButton({
     useMemo(
       () =>
         gql`
-  mutation($ids: [ID!]!) {
-    ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
+  mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
+    ${list.gqlNames.deleteManyMutationName}(where: $where) {
       id
     }
   }
@@ -466,7 +466,7 @@ function DeleteManyButton({
             label: 'Delete',
             action: async () => {
               await deleteItems({
-                variables: { ids: [...selectedItems] },
+                variables: { where: [...selectedItems].map(id => ({ id })) },
               }).catch(err => {
                 toasts.addToast({
                   title: 'Failed to delete items',

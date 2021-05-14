@@ -4,21 +4,21 @@ import {
   applyAccessControlForUpdate,
   processDelete,
   resolveInputForCreateOrUpdate,
-  resolveUniqueWhereInput,
+  UniqueInputFilter,
 } from './input-resolvers';
 import { runPrismaOperations, InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
 
 export async function createMany(
-  { data }: { data: { data: Record<string, any> }[] },
+  { data }: { data: Record<string, any>[] },
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const rootOperations = await Promise.all(
-    data.map(async args => {
-      const { afterChange, data } = await createOneState(args, listKey, list, context);
+    data.map(async rawData => {
+      const { afterChange, data } = await createOneState({ data: rawData }, listKey, list, context);
       const operation = getPrismaModelForList(context.prisma, listKey).create({ data });
       return { afterChange, operation };
     })
@@ -139,17 +139,16 @@ export async function updateOne(
 }
 
 export async function deleteMany(
-  { ids }: { ids: string[] },
+  { where }: { where: UniqueInputFilter[] },
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const result = await Promise.all(
-    ids.map(async id => {
-      const { id: parsedId } = await resolveUniqueWhereInput({ id }, list.fields, context);
-      const { afterDelete, existingItem } = await processDelete(listKey, list, context, parsedId);
+    where.map(async where => {
+      const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
       return {
-        parsedId,
+        id: existingItem.id,
         after: async () => {
           await afterDelete();
           return existingItem;
@@ -158,21 +157,20 @@ export async function deleteMany(
     })
   );
   await getPrismaModelForList(context.prisma, listKey).deleteMany({
-    where: { id: { in: result.map(x => x.parsedId) } },
+    where: { id: { in: result.map(x => x.id) } },
   });
   return Promise.all(result.map(({ after }) => after()));
 }
 
 export async function deleteOne(
-  { id }: { id: string },
+  { where }: { where: UniqueInputFilter },
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { id: parsedId } = await resolveUniqueWhereInput({ id }, list.fields, context);
-  const { afterDelete } = await processDelete(listKey, list, context, parsedId);
+  const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
   const item = await getPrismaModelForList(context.prisma, listKey).delete({
-    where: { id: parsedId },
+    where: { id: existingItem.id },
   });
   await afterDelete();
   return item;
