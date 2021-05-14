@@ -281,7 +281,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const data1 = await context.graphql.run({
                   query: `
                     query {
-                      all${group.name}s(where: { name: "${groupName}" }) {
+                      all${group.name}s(where: { name: { equals: "${groupName}" } }) {
                         id
                         name
                       }
@@ -353,7 +353,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const data2 = await context.graphql.run({
                   query: `
                     query {
-                      all${group.name}s(where: { name: "${groupName}" }) {
+                      all${group.name}s(where: { name: { equals: "${groupName}" } }) {
                         id
                         name
                       }

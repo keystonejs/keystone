@@ -51,7 +51,7 @@ function setupKeystone(provider: ProviderName) {
           User: list({
             fields: {
               name: text(),
-              email: text(),
+              email: text({ index: 'unique' }),
               password: password(),
             },
             access: {
