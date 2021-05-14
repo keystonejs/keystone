@@ -313,7 +313,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
+              query: `mutation { deleteUser(where: { id: "${user.id}" }) { id } } `,
             });
             expect(data.deleteUser.id).toBe(user.id);
 
@@ -333,7 +333,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Delete company {name}
               const id = users.find(company => company.name === name)?.id;
               const data = await context.graphql.run({
-                query: `mutation { deleteUser(id: "${id}") { id } }`,
+                query: `mutation { deleteUser(where: { id: "${id}" }) { id } }`,
               });
               expect(data.deleteUser.id).toBe(id);
 
@@ -392,7 +392,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Delete friend {name}
               const id = users.find(user => user.name === name)?.id;
               const data = await context.graphql.run({
-                query: `mutation { deleteUser(id: "${id}") { id } }`,
+                query: `mutation { deleteUser(where: { id: "${id}" }) { id } }`,
               });
               expect(data.deleteUser.id).toBe(id);
 

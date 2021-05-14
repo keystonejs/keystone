@@ -386,7 +386,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
               test(`multi denied: ${JSON.stringify(access)}`, async () => {
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-                const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
+                const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID}" }]) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, multiDeleteMutationName);
               });

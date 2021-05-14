@@ -115,7 +115,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friendOf: { name_contains: name } },
+                  where: { friendOf: { name: { contains: name } } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -456,7 +456,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
+              query: `mutation { deleteUser(where: { id: "${user.id}" }) { id } } `,
             });
             expect(data.deleteUser.id).toBe(user.id);
 

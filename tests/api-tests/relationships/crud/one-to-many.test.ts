@@ -148,7 +148,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: { equals: null } },
+              where: { company: null },
             });
             expect(locations.length).toEqual(1);
           })
@@ -557,7 +557,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
+              query: `mutation { deleteCompany(where: { id: "${company.id}" }) { id } } `,
             });
             expect(data.deleteCompany.id).toBe(company.id);
 

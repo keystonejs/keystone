@@ -281,7 +281,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             query: `
               mutation {
                 updateUser(
-                  id: "${createUser.id}",
+                  where: { id: "${createUser.id}" },
                   data: {
                     notes: {
                       connect: [{ id: "${FAKE_ID}" }]
@@ -354,7 +354,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { connect: [{ id: "${createNote.id}" }] }

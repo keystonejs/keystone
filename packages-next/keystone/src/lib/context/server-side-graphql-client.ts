@@ -69,7 +69,7 @@ const createItems = async ({
   context,
 }: {
   listKey: string;
-  items: readonly { readonly data: Record<string, any> }[];
+  items: readonly Record<string, any>[];
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
@@ -227,7 +227,7 @@ const deleteItem = async ({
   const { deleteMutationName } = context.gqlNames(listKey);
 
   const query = `mutation ($id: ID!){
-    ${deleteMutationName}(id: $id) { ${returnFields} }
+    ${deleteMutationName}(where: { id: $id }) { ${returnFields} }
   }`;
 
   const result = await context.graphql.run({ query, variables: { id: itemId } });
@@ -247,17 +247,16 @@ const deleteItems = async ({
   items: readonly string[];
   context: KeystoneContext;
 }) => {
-  const { deleteManyMutationName } = context.gqlNames(listKey);
-
-  const query = `mutation ($items: [ID!]!){
-    ${deleteManyMutationName}(ids: $items) {
+  const { deleteManyMutationName, whereUniqueInputName } = context.gqlNames(listKey);
+  const query = `mutation ($items: [${whereUniqueInputName}!]!){
+    ${deleteManyMutationName}(where: $items) {
       ${returnFields}
     }
   }`;
 
   return _runChunkedMutation({
     query,
-    items,
+    items: items.map(id => ({ id })),
     pageSize,
     gqlName: deleteManyMutationName,
     context,

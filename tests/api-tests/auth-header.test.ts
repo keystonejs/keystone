@@ -110,8 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
             const { sessionToken } = await login(
               app,
-              initialData.User[0].data.email,
-              initialData.User[0].data.password
+              initialData.User[0].email,
+              initialData.User[0].password
             );
 
             expect(sessionToken).toBeTruthy();
@@ -137,8 +137,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
             const { sessionToken } = await login(
               app,
-              initialData.User[0].data.email,
-              initialData.User[0].data.password
+              initialData.User[0].email,
+              initialData.User[0].password
             );
 
             expect(sessionToken).toBeTruthy();

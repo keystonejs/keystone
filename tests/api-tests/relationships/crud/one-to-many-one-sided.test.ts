@@ -154,7 +154,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['E', 0],
               ].map(async ([name, count]) => {
                 const data = await context.graphql.run({
-                  query: `{ allCompanies(where: { location: { name_contains: "${name}"}}) { id }}`,
+                  query: `{ allCompanies(where: { location: { name: { contains: "${name}" }}}) { id }}`,
                 });
                 expect(data.allCompanies.length).toEqual(count);
               })
@@ -398,7 +398,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
+              query: `mutation { deleteCompany(where: { id: "${company.id}" }) { id } } `,
             });
             expect(data.deleteCompany.id).toBe(company.id);
 
@@ -418,7 +418,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Delete company {name}
               const id = companies.find(company => company.name === name)?.id;
               const data = await context.graphql.run({
-                query: `mutation { deleteCompany(id: "${id}") { id } }`,
+                query: `mutation { deleteCompany(where: { id: "${id}" }) { id } }`,
               });
               expect(data.deleteCompany.id).toBe(id);
 
@@ -454,7 +454,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the locations look how we expect
               await (async () => {
                 const data = await context.graphql.run({
-                  query: '{ allLocations(orderBy: [{ name: asc }],: name_ASC) { id name } }',
+                  query: '{ allLocations(orderBy: [{ name: asc }]) { id name } }',
                 });
                 expect(data.allLocations[0].name).toEqual('A');
                 expect(data.allLocations[1].name).toEqual('B');
