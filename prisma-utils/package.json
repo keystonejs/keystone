@@ -9,5 +9,5 @@
     "fs-extra": "^10.0.0",
     "prettier": "^2.3.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/prisma-utils"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/prisma-utils"
 }

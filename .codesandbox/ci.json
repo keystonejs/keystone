@@ -1,5 +1,5 @@
 {
-  "packages": ["packages/*", "packages-next/*", "!packages-next/prisma-utils"],
+  "packages": ["packages/*", "packages-next/*"],
   "sandboxes": ["/examples/sandbox"],
   "node": "14"
 }

@@ -113,11 +113,12 @@ ${
         2
       )
     );
-    const filepath = `${__dirname}/../../types/src/filters/providers/${provider}.ts`;
+    const filepath = `${__dirname}/../../packages-next/types/src/filters/providers/${provider}.ts`;
     await fs.outputFile(
       filepath,
       format(
         `import {types,tsgql} from '../../next-fields'
+
 ${
   provider !== 'sqlite'
     ? `const QueryMode = types.enum({

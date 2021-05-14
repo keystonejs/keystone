@@ -1,4 +1,5 @@
 import { types, tsgql } from '../../next-fields';
+
 const QueryMode = types.enum({
   name: 'QueryMode',
   values: types.enumValues(['default', 'insensitive']),
