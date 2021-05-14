@@ -123,7 +123,7 @@ async function resolveWhereInput(
         // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
         const where = field.input!.where!;
         const dbField = field.dbField;
-        const { AND, OR, NOT, ...rest } = where.resolve
+        const ret = where.resolve
           ? await where.resolve(
               value,
               context,
@@ -155,6 +155,13 @@ async function resolveWhereInput(
               })()
             )
           : value;
+        if (ret === null) {
+          if (field.dbField.kind === 'multi') {
+            throw new Error('multi db fields cannot return null from where input resolvers');
+          }
+          return { [fieldKey]: null };
+        }
+        const { AND, OR, NOT, ...rest } = ret;
         return {
           AND: AND?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
           OR: OR?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),

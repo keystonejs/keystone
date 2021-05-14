@@ -302,12 +302,12 @@ input PhoneNumberRelateToManyForCreateInput {
 }
 
 input PhoneNumberCreateInput {
-  user: UserRelateToManyForCreateInput
+  user: UserRelateToOneForCreateInput
   type: String
   value: String
 }
 
-input UserRelateToManyForCreateInput {
+input UserRelateToOneForCreateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
 }
@@ -321,7 +321,7 @@ input PostCreateInput {
   title: String
   status: String
   content: JSON
-  author: UserRelateToManyForCreateInput
+  author: UserRelateToOneForCreateInput
 }
 
 input UserUpdateInput {
@@ -366,12 +366,12 @@ input UsersUpdateInput {
 }
 
 input PhoneNumberUpdateInput {
-  user: UserRelateToManyForUpdateInput
+  user: UserRelateToOneForUpdateInput
   type: String
   value: String
 }
 
-input UserRelateToManyForUpdateInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
 }
@@ -385,7 +385,7 @@ input PostUpdateInput {
   title: String
   status: String
   content: JSON
-  author: UserRelateToManyForUpdateInput
+  author: UserRelateToOneForUpdateInput
 }
 
 input PostsUpdateInput {

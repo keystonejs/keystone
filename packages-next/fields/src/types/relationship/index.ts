@@ -156,6 +156,9 @@ export const relationship =
         where: {
           arg: types.arg({ type: listTypes.where }),
           resolve(value, context, resolve) {
+            if (value === null) {
+              return null;
+            }
             return resolve(value);
           },
         },
