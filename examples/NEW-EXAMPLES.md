@@ -8,7 +8,7 @@ If you're looking for instructions on how to use the examples, please consult th
 
 There are three types of example project:
 
-- Base Projects: We have two of these, a blog and a task manager. We don't need any more of thse
+- Base Projects: We have two of these, a blog and a task manager. We don't need any more of these
 - Feature Examples: Each example project should be based on one of the base projects and should be a minimal example of how to use a specific feature.
   They should only include what is needed to show off their specific feature, and should not become "kitchen sink" examples.
 - Solution Examples: Each solution example is a complete project which demonstrates a complete solution, such as the e-commerce project.
