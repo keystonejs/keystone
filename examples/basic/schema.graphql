@@ -13,24 +13,14 @@ type User {
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]!
-  _phoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    orderBy: [SortPhoneNumbersBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
   posts(
     where: PostWhereInput! = {}
     orderBy: [SortPostsBy!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
-  _postsMeta(
-    where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int!
   randomNumber: Float!
 }
 
@@ -189,10 +179,6 @@ input SortPhoneNumbersBy {
 enum OrderDirection {
   asc
   desc
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 type Post {
@@ -426,12 +412,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]!
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    orderBy: [SortUsersBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  allUsersCount(where: UserWhereInput! = {}): Int!
   PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   allPhoneNumbers(
     where: PhoneNumberWhereInput! = {}
@@ -439,12 +420,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]!
-  _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    orderBy: [SortPhoneNumbersBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  allPhoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
@@ -452,12 +428,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]!
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  allPostsCount(where: PostWhereInput! = {}): Int!
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -144,7 +144,7 @@ export const HomePage = () => {
         }
       }
       ${Object.entries(lists)
-        .map(([listKey, list]) => `${listKey}: ${list.gqlNames.listQueryMetaName} { count }`)
+        .map(([listKey, list]) => `${listKey}: ${list.gqlNames.listQueryCountName}`)
         .join('\n')}
     }`,
     [lists]
@@ -187,7 +187,7 @@ export const HomePage = () => {
                     data
                       ? result.errors
                         ? { type: 'error', message: result.errors[0].message }
-                        : { type: 'success', count: data[key].count }
+                        : { type: 'success', count: data[key] }
                       : { type: 'loading' }
                   }
                   key={key}

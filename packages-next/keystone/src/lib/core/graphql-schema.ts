@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getGqlNames, DatabaseProvider, QueryMeta, types } from '@keystone-next/types';
+import { getGqlNames, DatabaseProvider, types } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
@@ -35,19 +35,19 @@ export function getGraphQLSchema(
               return queries.findMany(args, listKey, list, context);
             },
           });
-          const metaQuery = types.field({
-            type: QueryMeta,
-            args: list.types.findManyArgs,
+          const countQuery = types.field({
+            type: types.nonNull(types.Int),
+            args: {
+              where: types.arg({ type: types.nonNull(list.types.where), defaultValue: {} }),
+            },
             async resolve(_rootVal, args, context) {
-              return {
-                getCount: () => queries.count(args, listKey, list, context),
-              };
+              return queries.count(args, listKey, list, context);
             },
           });
           return [
             [names.itemQueryName, findOne],
             [names.listQueryName, findMany],
-            [names.listQueryMetaName, metaQuery],
+            [names.listQueryCountName, countQuery],
           ];
         })
       ),

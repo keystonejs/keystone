@@ -51,7 +51,7 @@ export function getGqlNames({
     outputTypeName: listKey,
     itemQueryName: listKey,
     listQueryName: `all${pluralGraphQLName}`,
-    listQueryMetaName: `_all${pluralGraphQLName}Meta`,
+    listQueryCountName: `all${pluralGraphQLName}Count`,
     listSortName: `Sort${pluralGraphQLName}By`,
     deleteMutationName: `delete${listKey}`,
     updateMutationName: `update${listKey}`,

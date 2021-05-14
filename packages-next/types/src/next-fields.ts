@@ -46,18 +46,6 @@ export const types = {
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
-export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
-  name: '_QueryMeta',
-  fields: {
-    count: types.field({
-      type: types.Int,
-      resolve({ getCount }) {
-        return getCount();
-      },
-    }),
-  },
-});
-
 export { tsgql };
 
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
@@ -256,7 +244,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
       one: () => Promise<ItemRootValue>;
       many: {
         findMany(args: FindManyArgsValue): Promise<ItemRootValue[]>;
-        count(args: FindManyArgsValue): Promise<number>;
+        count(args: { where: FindManyArgsValue['where'] }): Promise<number>;
       };
     }[Mode]
   : TDBField extends EnumDBField<infer Value, infer Mode>

@@ -139,13 +139,13 @@ export const relationship =
           },
         }),
         extraOutputFields: {
-          [`_${meta.fieldKey}Meta`]: types.field({
-            type: QueryMeta,
-            args: listTypes.findManyArgs,
+          [`${meta.fieldKey}Count`]: types.field({
+            type: types.nonNull(types.Int),
+            args: {
+              where: types.arg({ type: types.nonNull(listTypes.where), defaultValue: {} }),
+            },
             resolve({ value }, args) {
-              return {
-                getCount: () => value.count(args),
-              };
+              return value.count(args);
             },
           }),
         },

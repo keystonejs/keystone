@@ -58,7 +58,7 @@ export const RelationshipSelect = ({
   const [search, setSearch] = useState('');
 
   const QUERY: TypedDocumentNode<
-    { items: { [idField]: string; [labelField]: string | null }[]; meta: { count: number } },
+    { items: { [idField]: string; [labelField]: string | null }[]; count: number },
     { first: number; skip: number }
   > = gql`
     query RelationshipSelect($first: Int!, $skip: Int!) {
@@ -68,9 +68,7 @@ export const RelationshipSelect = ({
         ${extraSelection}
       }
 
-      meta: ${list.gqlNames.listQueryMetaName} {
-        count
-      }
+      count: ${list.gqlNames.listQueryCountName}
     }
   `;
 
@@ -79,7 +77,7 @@ export const RelationshipSelect = ({
     variables: { first: initialItemsToLoad, skip: 0 },
   });
 
-  const count = data?.meta.count || 0;
+  const count = data?.count || 0;
 
   const relationshipSelectComponents: Partial<typeof selectComponents> = useMemo(
     () => ({
@@ -109,7 +107,7 @@ export const RelationshipSelect = ({
               updateQuery: (prev, { fetchMoreResult }) => {
                 if (!fetchMoreResult) return prev;
                 return {
-                  meta: prev.meta,
+                  count: prev.count,
                   items: [...prev.items, ...fetchMoreResult.items],
                 };
               },
