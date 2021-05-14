@@ -334,7 +334,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
+              query: `mutation { deleteUser(where: { id: "${user.id}" }) { id } } `,
             });
             expect(data.deleteUser.id).toBe(user.id);
 

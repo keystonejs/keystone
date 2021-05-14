@@ -53,7 +53,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           const users = (await context.lists.User.findMany({
-            query: `id posts (where: { content_contains: "hi" }){ id content }`,
+            query: `id posts (where: { content: { contains: "hi" } }){ id content }`,
           })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
           expect(users).toHaveLength(2);
           users[0].posts = users[0].posts.map(({ id }) => id).sort();
@@ -111,7 +111,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const users = await context.lists.User.findMany({
             query:
-              'id posts(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] }){ id }',
+              'id posts(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] }){ id }',
           });
 
           expect(users).toContainEqual({ id: user.id, posts: [ids[2]] });
@@ -139,7 +139,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const users = await context.lists.User.findMany({
             query:
-              'id posts(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] }){ id content }',
+              'id posts(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] }){ id content }',
           });
           expect(users).toContainEqual({
             id: user.id,
@@ -158,7 +158,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await context.lists.User.createOne({ data: {} });
 
           const users = await context.lists.User.findMany({
-            where: { posts_some: { content_contains: 'foo' } },
+            where: { posts: { some: { content: { contains: 'foo' } } } },
             query: 'posts { id }',
           });
           expect(users).toHaveLength(0);
@@ -185,10 +185,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const users = await context.lists.User.findMany({ query: 'id _postsMeta { count }' });
+          const users = await context.lists.User.findMany({ query: 'id postsCount' });
           expect(users).toHaveLength(2);
-          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 3 } });
-          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
+          expect(users).toContainEqual({ id: user.id, postsCount: 3 });
+          expect(users).toContainEqual({ id: user2.id, postsCount: 1 });
         })
       );
 
@@ -211,11 +211,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           const users = await context.lists.User.findMany({
-            query: 'id _postsMeta(where: { content_contains: "hi" }){ count }',
+            query: 'id postsCount(where: { content: { contains: "hi" } })',
           });
           expect(users).toHaveLength(2);
-          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
-          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toContainEqual({ id: user.id, postsCount: 2 });
+          expect(users).toContainEqual({ id: user2.id, postsCount: 0 });
         })
       );
 
@@ -237,12 +237,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const users = await context.lists.User.findMany({
-            query: 'id _postsMeta(first: 1) { count }',
-          });
+          const users = await context.lists.User.findMany({ query: 'id postsCount(first: 1)' });
           expect(users).toHaveLength(2);
-          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
-          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 1 } });
+          expect(users).toContainEqual({ id: user.id, postsCount: 1 });
+          expect(users).toContainEqual({ id: user2.id, postsCount: 1 });
         })
       );
 
@@ -265,12 +263,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           const users = await context.lists.User.findMany({
-            query: `id _postsMeta(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] }) { count }`,
+            query: `id postsCount(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] })`,
           });
 
           expect(users).toHaveLength(2);
-          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
-          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toContainEqual({ id: user.id, postsCount: 1 });
+          expect(users).toContainEqual({ id: user2.id, postsCount: 0 });
         })
       );
 
@@ -294,11 +292,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const users = await context.lists.User.findMany({
             query:
-              'id _postsMeta(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] }){ count }',
+              'id postsCount(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] })',
           });
           expect(users).toHaveLength(2);
-          expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
-          expect(users).toContainEqual({ id: user2.id, _postsMeta: { count: 0 } });
+          expect(users).toContainEqual({ id: user.id, postsCount: 2 });
+          expect(users).toContainEqual({ id: user2.id, postsCount: 0 });
         })
       );
     });

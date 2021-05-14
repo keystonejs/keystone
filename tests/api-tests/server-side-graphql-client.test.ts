@@ -20,7 +20,7 @@ import {
 
 const testData = Array(50)
   .fill(0)
-  .map((_, i) => ({ data: { name: `test${String(i).padStart(2, '0')}`, age: 10 * i } }));
+  .map((_, i) => ({ name: `test${String(i).padStart(2, '0')}`, age: 10 * i }));
 
 const listKey = 'Test';
 const returnFields = 'name age';
@@ -46,13 +46,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'createItem: Should create and get single item',
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
-          const item = await createItem({ context, listKey, item: testData[0].data });
+          const item = await createItem({ context, listKey, item: testData[0] });
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
           const singleItem = await getItem({ context, listKey, returnFields, itemId: item.id });
 
-          expect(singleItem).toEqual(testData[0].data);
+          expect(singleItem).toEqual(testData[0]);
         })
       );
       test(
@@ -65,9 +65,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             age: number;
           }[];
 
-          expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
-            testData.map(x => x.data)
-          );
+          expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(testData);
         })
       );
     });
@@ -124,7 +122,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
-            testData.map(d => d.data).filter(x => x.name !== 'test00')
+            testData.filter(x => x.name !== 'test00')
           );
         })
       );
@@ -141,9 +139,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             items: items.map(item => item.id),
           })) as { age: number }[];
 
-          expect(deletedItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
-            testData.map(d => d.data)
-          );
+          expect(deletedItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(testData);
 
           // Get all the items back from db
           const allItems = await getItems({ context, listKey, returnFields });
@@ -162,9 +158,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             age: number;
           }[];
 
-          expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
-            testData.map(x => x.data)
-          );
+          expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(testData);
         })
       );
       test(
@@ -193,8 +187,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const allItemsAscAge = await getItemsBySortOrder({ age: 'asc' });
           const allItemsDescAge = await getItemsBySortOrder({ age: 'desc' });
-          expect(allItemsAscAge[0]).toEqual(testData.map(x => x.data)[0]);
-          expect(allItemsDescAge[0]).toEqual(testData.map(x => x.data).slice(-1)[0]);
+          expect(allItemsAscAge[0]).toEqual(testData[0]);
+          expect(allItemsDescAge[0]).toEqual(testData.slice(-1)[0]);
         })
       );
       test(
@@ -211,11 +205,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
               first,
               orderBy: [{ age: 'asc' }],
             });
-          expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9).map(d => d.data));
-          expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5).map(d => d.data));
-          expect(await getFirstItems(5, 5)).toEqual(testData.slice(0, 5).map(d => d.data));
-          expect(await getFirstItems()).toEqual(testData.map(d => d.data));
-          expect(await getFirstItems(undefined, 5)).toEqual(testData.map(d => d.data));
+          expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9));
+          expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5));
+          expect(await getFirstItems(5, 5)).toEqual(testData.slice(0, 5));
+          expect(await getFirstItems()).toEqual(testData);
+          expect(await getFirstItems(undefined, 5)).toEqual(testData);
 
           const firstTwoItems = await getFirstItems(2);
           expect(firstTwoItems).toEqual([
@@ -255,13 +249,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Should make keystone optional when context is present',
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
-          const item = await createItem({ context, listKey: 'Test', item: testData[0].data });
+          const item = await createItem({ context, listKey: 'Test', item: testData[0] });
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
           const singleItem = await getItem({ context, listKey, returnFields, itemId: item.id });
 
-          expect(singleItem).toEqual(testData[0].data);
+          expect(singleItem).toEqual(testData[0]);
         })
       );
     });

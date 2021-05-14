@@ -64,7 +64,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allUsers(
-              where: { name_contains: "J" },
+              where: { name: { contains: "J" } },
               orderBy: [{ name: asc }],
             ) {
               name

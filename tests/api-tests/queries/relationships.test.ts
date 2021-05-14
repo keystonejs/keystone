@@ -56,7 +56,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Create an item that does the linking
             const allPosts = await context.lists.Post.findMany({
-              where: { author: { name_contains: 'J' } },
+              where: { author: { name: { contains: 'J' } } },
               query: 'id title',
             });
             expect(allPosts).toHaveLength(3);
@@ -83,7 +83,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Create an item that does the linking
             const _posts = await context.lists.Post.findMany({
-              where: { author: { name_contains: 'J' } },
+              where: { author: { name: { contains: 'J' } } },
               query: 'id title author { id name }',
             });
             expect(_posts).toMatchObject([{ id: posts[0].id, title: posts[0].title }]);
@@ -127,7 +127,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // EVERY
             const _users = await context.lists.User.findMany({
-              where: { feed_every: { title_contains: 'J' } },
+              where: { feed_every: { title: { contains: 'J' } } },
               query: 'id name feed { id title }',
             });
 
@@ -144,7 +144,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // SOME
             const _users = await context.lists.User.findMany({
-              where: { feed_some: { title_contains: 'J' } },
+              where: { feed_some: { title: { contains: 'J' } } },
               query: 'id feed(orderBy: [{ title: asc }]) { title }',
             });
 
@@ -167,7 +167,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // NONE
             const _users = await context.lists.User.findMany({
-              where: { feed_none: { title_contains: 'J' } },
+              where: { feed: { none: { title: { contains: 'J' } } } },
               query: 'id name feed { id title }',
             });
 
@@ -208,7 +208,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // EVERY
             const _users = await context.lists.User.findMany({
-              where: { feed_every: { title_contains: 'J' } },
+              where: { feed_every: { title: { contains: 'J' } } },
               query: 'id feed { id title }',
             });
 
@@ -227,7 +227,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // SOME
             const _users = await context.lists.User.findMany({
-              where: { feed_some: { title_contains: 'J' } },
+              where: { feed_some: { title: { contains: 'J' } } },
               query: 'id name feed(orderBy: [{ title: asc }]) { id title }',
             });
 
@@ -247,7 +247,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // NONE
             const _users = await context.lists.User.findMany({
-              where: { feed_none: { title_contains: 'J' } },
+              where: { feed: { none: { title: { contains: 'J' } } } },
               query: 'id feed { title }',
             });
 
@@ -281,7 +281,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // EVERY
             const _users = await context.lists.User.findMany({
-              where: { feed_every: { title_contains: 'J' } },
+              where: { feed: { every: { title: { contains: 'J' } } } },
               query: 'id feed { id title }',
             });
 
@@ -319,7 +319,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // NONE
             const _users = await context.lists.User.findMany({
-              where: { feed_none: { title_contains: 'J' } },
+              where: { feed: { none: { title: { contains: 'J' } } } },
               query: 'id feed { title }',
             });
 
