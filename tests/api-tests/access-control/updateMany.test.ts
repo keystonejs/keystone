@@ -32,10 +32,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
         // Create some items, half of which have `isUpdatable: true`
         const users = (await context.lists.User.createMany({
           data: [
-            { data: { name: 'Jess', isUpdatable: true } },
-            { data: { name: 'Johanna', isUpdatable: false } },
-            { data: { name: 'Sam', isUpdatable: true } },
-            { data: { name: 'Theo', isUpdatable: false } },
+            { name: 'Jess', isUpdatable: true },
+            { name: 'Johanna', isUpdatable: false },
+            { name: 'Sam', isUpdatable: true },
+            { name: 'Theo', isUpdatable: false },
           ],
         })) as { id: any }[];
         // Attempt to update all four items

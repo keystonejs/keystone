@@ -571,7 +571,7 @@ export function initialiseLists(
     };
 
     const relateToOneForCreate = types.inputObject({
-      name: `${listKey}RelateToManyForCreateInput`,
+      name: `${listKey}RelateToOneForCreateInput`,
       fields: relateToOneForCreateFields,
     });
 
@@ -579,7 +579,7 @@ export function initialiseLists(
     // - in the future, this should contain delete
     // - setting relateToOneForCreate to null is not allowed, setting relateToOneForUpdate disconnects
     const relateToOneForUpdate = types.inputObject({
-      name: `${listKey}RelateToManyForUpdateInput`,
+      name: `${listKey}RelateToOneForUpdateInput`,
       fields: relateToOneForCreateFields,
     });
 

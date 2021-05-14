@@ -39,16 +39,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -70,16 +70,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -96,16 +96,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -124,16 +124,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -172,16 +172,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -197,16 +197,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -224,16 +224,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -251,16 +251,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
@@ -279,22 +279,22 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = await context.lists.Post.createMany({
             data: [
-              { data: { content: 'Hello world' } },
-              { data: { content: 'hi world' } },
-              { data: { content: 'Hello? Or hi?' } },
+              { content: 'Hello world' },
+              { content: 'hi world' },
+              { content: 'Hello? Or hi?' },
             ],
           });
 
           const [user, user2] = await context.lists.User.createMany({
             data: [
-              { data: { posts: { connect: ids } } },
-              { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
+              { posts: { connect: ids } },
+              { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
             ],
           });
 
           const users = await context.lists.User.findMany({
             query:
-              'id _postsMeta(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] }){ count }',
+              'id _postsMeta(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] }){ count }',
           });
           expect(users).toHaveLength(2);
           expect(users).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });

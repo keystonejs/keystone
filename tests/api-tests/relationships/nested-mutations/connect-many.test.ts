@@ -110,8 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create an item that does the linking
           const users = await context.lists.User.createMany({
             data: [
-              { data: { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } } },
-              { data: { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } } },
+              { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
+              { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
             ],
           });
 
@@ -223,11 +223,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = await context.lists.User.updateMany({
             data: [
               {
-                id: createUser.id,
+                where: { id: createUser.id },
                 data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
               },
               {
-                id: createUser2.id,
+                where: { id: createUser2.id },
                 data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
               },
             ],

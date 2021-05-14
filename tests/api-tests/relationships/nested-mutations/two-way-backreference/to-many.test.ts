@@ -217,11 +217,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await context.lists.Teacher.updateMany({
             data: [
               {
-                id: teacher1.id,
+                where: { id: teacher1.id },
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
               {
-                id: teacher2.id,
+                where: { id: teacher2.id },
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
             ],
@@ -275,11 +275,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await context.lists.Teacher.updateMany({
             data: [
               {
-                id: teacher1.id,
+                where: { id: teacher1.id },
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
               {
-                id: teacher2.id,
+                where: { id: teacher2.id },
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
             ],
@@ -334,11 +334,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
         await context.lists.Teacher.updateMany({
           data: [
             {
-              id: teacher1.id,
+              where: { id: teacher1.id },
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
             },
             {
-              id: teacher2.id,
+              where: { id: teacher2.id },
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
             },
           ],

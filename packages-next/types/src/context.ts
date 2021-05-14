@@ -57,11 +57,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGe
         args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
       ): Promise<Record<string, any>>;
       createMany(
-        args: {
-          readonly data: readonly {
-            readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-          }[];
-        } & ResolveFields
+        args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'][] } & ResolveFields
       ): Promise<Record<string, any>[]>;
       deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
       deleteMany(

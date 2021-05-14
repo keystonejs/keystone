@@ -74,9 +74,9 @@ const createItems = async ({
   returnFields?: string;
   context: KeystoneContext;
 }) => {
-  const { createManyMutationName, createManyInputName } = context.gqlNames(listKey);
+  const { createManyMutationName, createInputName } = context.gqlNames(listKey);
 
-  const query = `mutation ($items: [${createManyInputName}!]!){
+  const query = `mutation ($items: [${createInputName}!]!){
     ${createManyMutationName}(data: $items) { ${returnFields} }
   }`;
 
