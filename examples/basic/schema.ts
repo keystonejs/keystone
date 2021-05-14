@@ -187,38 +187,38 @@ export const lists = createSchema({
   }),
 });
 
-// export const extendGraphqlSchema = graphQLSchemaExtension({
-//   typeDefs: gql`
-//     type Query {
-//       randomNumber: RandomNumber
-//     }
-//     type RandomNumber {
-//       number: Int
-//       generatedAt: Int
-//     }
-//     type Mutation {
-//       createRandomPosts: [Post!]!
-//     }
-//   `,
-//   resolvers: {
-//     RandomNumber: {
-//       number(rootVal: { number: number }) {
-//         return rootVal.number * 1000;
-//       },
-//     },
-//     Mutation: {
-//       createRandomPosts(root, args, context) {
-//         // TODO: add a way to verify access control here, e.g
-//         // await context.verifyAccessControl(userIsAdmin);
-//         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-//         return context.lists.Post.createMany({ data });
-//       },
-//     },
-//     Query: {
-//       randomNumber: () => ({
-//         number: randomNumber(),
-//         generatedAt: Date.now(),
-//       }),
-//     },
-//   },
-// });
+export const extendGraphqlSchema = graphQLSchemaExtension({
+  typeDefs: gql`
+    type Query {
+      randomNumber: RandomNumber
+    }
+    type RandomNumber {
+      number: Int
+      generatedAt: Int
+    }
+    type Mutation {
+      createRandomPosts: [Post!]!
+    }
+  `,
+  resolvers: {
+    RandomNumber: {
+      number(rootVal: { number: number }) {
+        return rootVal.number * 1000;
+      },
+    },
+    Mutation: {
+      createRandomPosts(root, args, context) {
+        // TODO: add a way to verify access control here, e.g
+        // await context.verifyAccessControl(userIsAdmin);
+        const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
+        return context.lists.Post.createMany({ data });
+      },
+    },
+    Query: {
+      randomNumber: () => ({
+        number: randomNumber(),
+        generatedAt: Date.now(),
+      }),
+    },
+  },
+});

@@ -263,6 +263,7 @@ type Mutation {
   createInitialUser(
     data: CreateInitialUserInput!
   ): UserAuthenticationWithPasswordSuccess!
+  createRandomPosts: [Post!]!
 }
 
 input UserCreateInput {
@@ -419,6 +420,7 @@ type Query {
   allPostsCount(where: PostWhereInput! = {}): Int!
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  randomNumber: RandomNumber
 }
 
 type KeystoneMeta {
@@ -529,4 +531,9 @@ input CreateInitialUserInput {
   name: String
   email: String
   password: String
+}
+
+type RandomNumber {
+  number: Int
+  generatedAt: Int
 }

@@ -100,10 +100,10 @@ export function itemAPIForList(
       }
     },
     async count({ where = {} } = {}) {
-      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
-      const query = `query ($where: ${whereInputName}) { ${listQueryMetaName}(where: $where)  }`;
+      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($where: ${whereInputName}) { ${listQueryCountName}(where: $where)  }`;
       const response = await context.graphql.run({ query, variables: { where } });
-      return response[listQueryMetaName].count;
+      return response[listQueryCountName];
     },
     createOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);

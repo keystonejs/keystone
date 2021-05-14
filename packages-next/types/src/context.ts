@@ -1,7 +1,7 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import type { BaseGeneratedListTypes } from './utils';
+import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
   req?: IncomingMessage;
@@ -19,7 +19,7 @@ export type KeystoneContext = {
   maxTotalResults: number;
   schemaName: 'public' | 'internal';
   /** @deprecated */
-  gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
+  gqlNames: (listKey: string) => GqlNames;
 } & Partial<SessionContext<any>>;
 
 // List item API
