@@ -14,20 +14,8 @@ import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 const initialData = {
   User: [
-    {
-      data: {
-        name: 'Boris Bozic',
-        email: 'boris@keystone.com',
-        password: 'correctbattery',
-      },
-    },
-    {
-      data: {
-        name: 'Jed Watson',
-        email: 'jed@keystone.com',
-        password: 'horsestaple',
-      },
-    },
+    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
   ],
 };
 

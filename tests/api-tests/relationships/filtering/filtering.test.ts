@@ -110,8 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = (await context.lists.User.findMany({
             where: {
               AND: [
-                { posts_some: { content_contains: 'hi' } },
-                { posts_some: { content_contains: 'lo' } },
+                { posts_some: { content: { contains: 'hi' } } },
+                { posts_some: { content: { contains: 'lo' } } },
               ],
             },
             query: 'id posts { id content }',
@@ -142,8 +142,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = (await context.lists.User.findMany({
             where: {
               OR: [
-                { posts_some: { content_contains: 'o w' } },
-                { posts_some: { content_contains: '? O' } },
+                { posts_some: { content: { contains: 'o w' } } },
+                { posts_some: { content: { contains: '? O' } } },
               ],
             },
             query: 'id posts { id content }',

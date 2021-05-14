@@ -68,7 +68,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
         items[listKey] = (await context.lists[listKey].createMany({
-          data: _items.map(x => ({ data: x })),
+          data: _items,
           query: 'id name',
         })) as { id: IdType; name: string }[];
       }

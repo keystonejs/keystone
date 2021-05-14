@@ -12,16 +12,16 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   return { locations, companies };
@@ -64,7 +64,7 @@ const getCompanyAndLocation = async (
 
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
-  const data = ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } }));
+  const data = ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ name }));
   const locations = await context.lists.Location.createMany({ data, query: 'id name' });
   await Promise.all(
     [
@@ -432,7 +432,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Run the query to disconnect the location from company
             const data = await context.graphql.run({
-              query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
+              query: `mutation { deleteCompany(where: { id: "${company.id}" }) { id } } `,
             });
             expect(data.deleteCompany.id).toBe(company.id);
 
