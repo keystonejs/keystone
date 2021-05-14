@@ -239,23 +239,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const { locations } = await createInitialData(context);
             const location = locations[0];
-            type T = { createCompany: { id: IdType; locations: { id: IdType }[] } };
-            const data = (await context.graphql.run({
-              query: `
-                mutation {
-                  createCompany(data: {
-                    locations: { connect: [{ id: "${location.id}" }] }
-                  }) { id locations { id } }
-                }
-            `,
+            type T = { id: IdType; locations: { id: IdType }[] };
+            const company = (await context.lists.Company.createOne({
+              data: { locations: { connect: [{ id: location.id }] } },
+              query: 'id locations { id }',
             })) as T;
-            expect(data.createCompany.locations.map(({ id }) => id.toString())).toEqual([
-              location.id,
-            ]);
+            expect(company.locations.map(({ id }) => id.toString())).toEqual([location.id]);
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
-              data.createCompany.id,
+              company.id,
               location.id
             );
             // Everything should now be connected
@@ -336,21 +329,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { companies } = await createInitialData(context);
             let company = companies[0];
             const locationName = sampleOne(alphanumGenerator);
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateCompany(
-                    where: { id: "${company.id}" },
-                    data: { locations: { create: [{ name: "${locationName}" }] } }
-                  ) { id locations { id name } }
-                }
-            `,
+            const _company = await context.lists.Company.updateOne({
+              id: company.id,
+              data: { locations: { create: [{ name: locationName }] } },
+              query: 'id locations { id name }',
             });
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
               company.id,
-              data.updateCompany.locations[0].id
+              _company.locations[0].id
             );
 
             // Everything should now be connected
@@ -431,10 +419,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `mutation { deleteCompany(where: { id: "${company.id}" }) { id } } `,
-            });
-            expect(data.deleteCompany.id).toBe(company.id);
+            const _company = await context.lists.Company.deleteOne({ id: company.id });
+            expect(_company?.id).toBe(company.id);
 
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
