@@ -1,5 +1,5 @@
 type User {
-  id: ID
+  id: ID!
   name: String
   email: String
   avatar: LocalImageFieldOutput
@@ -53,7 +53,7 @@ type PasswordState {
 }
 
 type PhoneNumber {
-  id: ID
+  id: ID!
   label: String
   user: User
   type: String
@@ -182,7 +182,7 @@ enum OrderDirection {
 }
 
 type Post {
-  id: ID
+  id: ID!
   title: String
   status: String
   content: Post_content_DocumentField

@@ -47,7 +47,7 @@ export const uuid =
         uniqueWhere: { arg: types.arg({ type: types.ID }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.ID }),
+      output: types.field({ type: types.nonNull(types.ID) }),
       views: resolveView('text/views'),
       getAdminMeta() {
         return { displayMode: 'input' };

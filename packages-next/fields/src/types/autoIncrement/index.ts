@@ -41,7 +41,7 @@ export const autoIncrement =
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({
-        type: types.ID,
+        type: types.nonNull(types.ID),
         // TODO: should @ts-gql/schema understand the coercion that graphql-js can do here?
         resolve({ value }) {
           return value.toString();

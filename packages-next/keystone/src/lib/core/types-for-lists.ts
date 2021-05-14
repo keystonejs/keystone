@@ -317,6 +317,11 @@ function assertIdFieldGraphQLTypesCorrect(
       `The idField on a list must not have access.read be set to false but ${listKey} does`
     );
   }
+  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== types.ID) {
+    throw new Error(
+      `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${listKey} defines the type ${idField.output.type.graphQLType.toString()}`
+    );
+  }
 }
 
 type ResolvedFieldAccessControl = {
