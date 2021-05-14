@@ -207,7 +207,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             app,
             query: `
               query {
-                allUsers(where: { name: "nope" })  {
+                allUsers(where: { name: { equals: "nope" } })  {
                   name
                 }
               }
@@ -303,7 +303,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             query: `
               query {
                 allPosts {
-                  author(where: { name: "nope" }) {
+                  author(where: { name: { equals: "nope" } }) {
                     name
                   }
                 }

@@ -40,7 +40,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })) as { id: any }[];
         // Attempt to update all four items
         const _users = await context.exitSudo().lists.User.updateMany({
-          data: users.map(({ id }) => ({ id, data: { name: 'new name' } })),
+          data: users.map(({ id }) => ({ where: { id }, data: { name: 'new name' } })),
           query: 'id name isUpdatable',
         });
         // We don't expect an error, but only two of the items should get updated and returned

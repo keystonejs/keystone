@@ -176,7 +176,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             context,
             listKey,
             returnFields,
-            where: { name: 'test15' },
+            where: { name: { equals: 'test15' } },
           });
 
           expect(allItems).toEqual([{ name: 'test15', age: 150 }]);
