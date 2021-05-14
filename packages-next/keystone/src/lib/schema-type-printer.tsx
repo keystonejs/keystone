@@ -71,11 +71,7 @@ function printInputTypesFromSchema(
   return { printedTypes: typeString + '\n', ast, printTypeNode };
 }
 
-export function printGeneratedTypes(
-  printedSchema: string,
-  keystone: BaseKeystone,
-  graphQLSchema: GraphQLSchema
-) {
+export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQLSchema) {
   return '';
   let scalars = {
     ID: 'string',

@@ -33,11 +33,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
   const initKeystone = async () => {
     {
-      const { keystone, graphQLSchema } = createSystem(config);
+      const { graphQLSchema } = createSystem(config);
 
       console.log('✨ Generating GraphQL and Prisma schemas');
       const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
-      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
       if (config.db.useMigrations) {
         await devMigrations(

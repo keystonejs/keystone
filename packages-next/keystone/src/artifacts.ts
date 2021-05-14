@@ -1,7 +1,7 @@
 import path from 'path';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import { format } from 'prettier';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
@@ -172,7 +172,6 @@ export default config;
 
 export async function generateNodeModulesArtifacts(
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone,
   config: KeystoneConfig,
   cwd: string
 ) {
@@ -182,7 +181,7 @@ export async function generateNodeModulesArtifacts(
     generatePrismaClient(cwd),
     fs.outputFile(
       path.join(dotKeystoneDir, 'types.d.ts'),
-      printGeneratedTypes(printedSchema, keystone, graphQLSchema)
+      printGeneratedTypes(printedSchema, graphQLSchema)
     ),
     fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
     ...(config.experimental?.generateNodeAPI
