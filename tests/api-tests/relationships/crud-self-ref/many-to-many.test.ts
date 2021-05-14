@@ -10,18 +10,15 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = { createUsers: { id: IdType }[] };
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createUsers(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as T;
-  return { users: data.createUsers };
+  const users = await context.lists.User.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  });
+
+  return { users };
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
@@ -58,13 +55,11 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
-  const data = await context.graphql.run({
-    query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
-    variables: {
-      users: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
-    },
+  const createUsers = await context.lists.User.createMany({
+    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
+    query: 'id name',
   });
-  const { createUsers } = data;
+
   await Promise.all(
     [
       [0, 1, 2, 3, 4, 5], //  -> [A, A, B, B, C, C]
@@ -422,10 +417,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
-            });
-            expect(data.deleteUser.id).toBe(user.id);
+            const _user = await context.lists.User.deleteOne({ id: user.id });
+            expect(_user?.id).toBe(user.id);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
