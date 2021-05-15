@@ -88,15 +88,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Sanity check that the items are actually created
-          const { allNotes } = await context.graphql.run({
-            query: `
-              query {
-                allNotes(where: { id_in: [${user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
-                  id
-                  content
-                }
-              }`,
+          const allNotes = await context.lists.Note.findMany({
+            where: { id_in: user.notes.map(({ id }) => id) },
+            query: 'id content',
           });
+
           expect(allNotes).toHaveLength(user.notes.length);
         })
       );
@@ -133,15 +129,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Sanity check that the items are actually created
-          const { allNotes } = await context.graphql.run({
-            query: `
-              query {
-                allNotes(where: { id_in: [${user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
-                  id
-                  content
-                }
-              }`,
+          const allNotes = await context.lists.Note.findMany({
+            where: { id_in: user.notes.map(({ id }) => id) },
+            query: 'id content',
           });
+
           expect(allNotes).toHaveLength(user.notes.length);
         })
       );

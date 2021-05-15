@@ -30,12 +30,12 @@ type IdType = any;
 
 multiAdapterRunners().map(({ before, after, provider }) =>
   describe(`Provider: ${provider}`, () => {
-    let keystone: any,
+    let disconnect: any,
       items: Record<string, { id: IdType; name: string }[]>,
       context: KeystoneContext;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
-      keystone = _before.keystone;
+      disconnect = _before.disconnect;
       context = _before.context;
 
       // ensure every list has at least some data
@@ -58,7 +58,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
       }
     });
     afterAll(async () => {
-      await after(keystone);
+      await after(disconnect);
     });
 
     describe('create', () => {

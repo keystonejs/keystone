@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@graphql-tools/merge": "^6.2.13",
+    "@graphql-tools/merge": "^6.2.14",
     "@keystone-next/admin-ui": "^14.1.2",
     "@keystone-next/auth": "^23.0.1",
     "@keystone-next/document-renderer": "^2.0.3",
@@ -23,7 +23,7 @@
     "@keystone-ui/icons": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.4",
+    "@types/react": "^17.0.5",
     "apollo-server-micro": "^2.24.0",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.12.4",
