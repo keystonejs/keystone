@@ -189,7 +189,8 @@ export function storedSessions({
     return {
       async get({ req, createContext }) {
         let data = await get({ req, createContext }) as any;
-        let sessionId = data?.sessionId
+        const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+        const sessionId = data?.sessionId;
         if (typeof sessionId === 'string') {
           if (!isConnected) {
             await store.connect?.();
@@ -209,7 +210,8 @@ export function storedSessions({
       },
       async end({ req, res, createContext }) {
         let data = await get({ req, createContext }) as any;
-        let sessionId = data?.sessionId
+        const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+        const sessionId = data?.sessionId;
         if (typeof sessionId === 'string') {
           if (!isConnected) {
             await store.connect?.();
