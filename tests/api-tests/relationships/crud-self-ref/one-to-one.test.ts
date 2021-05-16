@@ -10,18 +10,15 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = { createUsers: { id: IdType }[] };
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createUsers(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as T;
-  return { users: data.createUsers };
+  const users = await context.lists.User.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  });
+
+  return { users };
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
@@ -436,10 +433,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
-            });
-            expect(data.deleteUser.id).toBe(user.id);
+            const _user = await context.lists.User.deleteOne({ id: user.id });
+            expect(_user?.id).toBe(user.id);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);

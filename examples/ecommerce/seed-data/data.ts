@@ -30,8 +30,7 @@ export const products = [
         type: 'upload',
         etag: 'e1fdf84d5126b6ca2e1c8ef9532be5a5',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1576791335/sick-fits-keystone/5dfbed262849d7961377c2c0.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1576791335/sick-fits-keystone/5dfbed262849d7961377c2c0.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1576791335/sick-fits-keystone/5dfbed262849d7961377c2c0.jpg',
         original_filename: 'file',
@@ -69,8 +68,7 @@ export const products = [
         type: 'upload',
         etag: 'aebe8e9cc98ee4ad71682f19af85745b',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579815920/sick-fits-keystone/5e2a13f0689b2835ae71d1a5.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579815920/sick-fits-keystone/5e2a13f0689b2835ae71d1a5.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579815920/sick-fits-keystone/5e2a13f0689b2835ae71d1a5.jpg',
         original_filename: 'file',
@@ -108,8 +106,7 @@ export const products = [
         type: 'upload',
         etag: 'b6fbc18b196c68e2b87f51539b849e70',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579815935/sick-fits-keystone/5e2a13ff689b2835ae71d1a7.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579815935/sick-fits-keystone/5e2a13ff689b2835ae71d1a7.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579815935/sick-fits-keystone/5e2a13ff689b2835ae71d1a7.jpg',
         original_filename: 'file',
@@ -147,8 +144,7 @@ export const products = [
         type: 'upload',
         etag: 'ce0f36da93c60c5d4406657225206f70',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579815957/sick-fits-keystone/5e2a1413689b2835ae71d1a9.png',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579815957/sick-fits-keystone/5e2a1413689b2835ae71d1a9.png',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579815957/sick-fits-keystone/5e2a1413689b2835ae71d1a9.png',
         original_filename: 'file',
@@ -186,8 +182,7 @@ export const products = [
         type: 'upload',
         etag: '5550566c7fab113ba32d85ed08f54faa',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579815980/sick-fits-keystone/5e2a142c689b2835ae71d1ab.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579815980/sick-fits-keystone/5e2a142c689b2835ae71d1ab.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579815980/sick-fits-keystone/5e2a142c689b2835ae71d1ab.jpg',
         original_filename: 'file',
@@ -225,8 +220,7 @@ export const products = [
         type: 'upload',
         etag: '3655bfd83998492b8421782db868c9df',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579815999/sick-fits-keystone/5e2a143f689b2835ae71d1ad.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579815999/sick-fits-keystone/5e2a143f689b2835ae71d1ad.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579815999/sick-fits-keystone/5e2a143f689b2835ae71d1ad.jpg',
         original_filename: 'file',
@@ -264,8 +258,7 @@ export const products = [
         type: 'upload',
         etag: '3d68591332785ae5273ed43b1aa91712',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816030/sick-fits-keystone/5e2a145d689b2835ae71d1af.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816030/sick-fits-keystone/5e2a145d689b2835ae71d1af.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816030/sick-fits-keystone/5e2a145d689b2835ae71d1af.jpg',
         original_filename: 'file',
@@ -303,8 +296,7 @@ export const products = [
         type: 'upload',
         etag: 'd89ab8ecc366bc63464a3eeef6ef3010',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816060/sick-fits-keystone/5e2a147b689b2835ae71d1b1.png',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816060/sick-fits-keystone/5e2a147b689b2835ae71d1b1.png',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816060/sick-fits-keystone/5e2a147b689b2835ae71d1b1.png',
         original_filename: 'file',
@@ -342,8 +334,7 @@ export const products = [
         type: 'upload',
         etag: '8aed0984d37a3d12faa832860b29d24b',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816093/sick-fits-keystone/5e2a149b689b2835ae71d1b3.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816093/sick-fits-keystone/5e2a149b689b2835ae71d1b3.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816093/sick-fits-keystone/5e2a149b689b2835ae71d1b3.jpg',
         original_filename: 'file',
@@ -381,8 +372,7 @@ export const products = [
         type: 'upload',
         etag: '3a4b97ef88c550dcd6c2d399d1bc698e',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816114/sick-fits-keystone/5e2a14b1689b2835ae71d1b5.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816114/sick-fits-keystone/5e2a14b1689b2835ae71d1b5.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816114/sick-fits-keystone/5e2a14b1689b2835ae71d1b5.jpg',
         original_filename: 'file',
@@ -420,8 +410,7 @@ export const products = [
         type: 'upload',
         etag: 'f9c8725f815a6873cbdc47ba3f869049',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816128/sick-fits-keystone/5e2a14bf689b2835ae71d1b7.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816128/sick-fits-keystone/5e2a14bf689b2835ae71d1b7.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816128/sick-fits-keystone/5e2a14bf689b2835ae71d1b7.jpg',
         original_filename: 'file',
@@ -459,8 +448,7 @@ export const products = [
         type: 'upload',
         etag: '44cf57f8218f135b82cfa5df0da92a49',
         placeholder: false,
-        url:
-          'http://res.cloudinary.com/wesbos/image/upload/v1579816141/sick-fits-keystone/5e2a14cc689b2835ae71d1b9.jpg',
+        url: 'http://res.cloudinary.com/wesbos/image/upload/v1579816141/sick-fits-keystone/5e2a14cc689b2835ae71d1b9.jpg',
         secure_url:
           'https://res.cloudinary.com/wesbos/image/upload/v1579816141/sick-fits-keystone/5e2a14cc689b2835ae71d1b9.jpg',
         original_filename: 'file',

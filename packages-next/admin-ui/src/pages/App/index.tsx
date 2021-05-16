@@ -13,14 +13,16 @@ type AppConfig = {
   lazyMetadataQuery: DocumentNode;
 };
 
-export const getApp = (props: AppConfig) => ({ Component, pageProps }: AppProps) => {
-  return (
-    <Core>
-      <KeystoneProvider {...props}>
-        <ErrorBoundary>
-          <Component {...pageProps} />
-        </ErrorBoundary>
-      </KeystoneProvider>
-    </Core>
-  );
-};
+export const getApp =
+  (props: AppConfig) =>
+  ({ Component, pageProps }: AppProps) => {
+    return (
+      <Core>
+        <KeystoneProvider {...props}>
+          <ErrorBoundary>
+            <Component {...pageProps} />
+          </ErrorBoundary>
+        </KeystoneProvider>
+      </Core>
+    );
+  };

@@ -1,9 +1,12 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import type { GraphQLResolveInfo } from 'graphql';
 import type { GqlNames, MaybePromise } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
 
 /* TODO: Review these types */
 type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
+
+export type DatabaseProvider = 'sqlite' | 'postgresql';
 
 export type FieldDefaultValue<T> =
   | T
@@ -24,7 +27,12 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type GraphQLResolver = (root: any, args: any, context: KeystoneContext, info?: any) => any;
+export type GraphQLResolver = (
+  root: any,
+  args: any,
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
+) => any;
 
 export type GraphQLSchemaExtension = {
   typeDefs: string;

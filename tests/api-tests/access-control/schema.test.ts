@@ -45,7 +45,7 @@ const imperativeList = getImperativeListName({
 
 multiAdapterRunners().map(({ before, after, provider }) =>
   describe(`Provider: ${provider}`, () => {
-    let keystone: any,
+    let disconnect: any,
       queries: string[],
       mutations: string[],
       types: string[],
@@ -56,7 +56,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
       context: KeystoneContext;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
-      keystone = _before.keystone;
+      disconnect = _before.disconnect;
       context = _before.context;
 
       const data = await context.exitSudo().graphql.run({ query: introspectionQuery });
@@ -81,7 +81,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
       );
     });
     afterAll(async () => {
-      await after(keystone);
+      await after(disconnect);
     });
 
     describe('static', () => {
