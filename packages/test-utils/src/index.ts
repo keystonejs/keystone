@@ -48,7 +48,7 @@ async function setupFromConfig({
   });
 
   const prismaClient = await (async () => {
-    const { keystone, graphQLSchema } = createSystem(config);
+    const { graphQLSchema } = createSystem(config);
     const artifacts = await getCommittedArtifacts(graphQLSchema, config);
     const hash = hashPrismaSchema(artifacts.prisma);
     if (provider === 'postgresql') {
@@ -59,7 +59,7 @@ async function setupFromConfig({
       alreadyGeneratedProjects.add(hash);
       fs.mkdirSync(cwd, { recursive: true });
       await writeCommittedArtifacts(artifacts, cwd);
-      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
     }
     await pushPrismaSchemaToDatabase(
       config.db.url,
