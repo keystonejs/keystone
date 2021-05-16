@@ -1,6 +1,6 @@
-datasource postgresql {
+datasource sqlite {
   url      = env("DATABASE_URL")
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 generator client {
@@ -9,12 +9,12 @@ generator client {
 }
 
 model Task {
-  id           String            @id @default(dbgenerated("gen_random_uuid()")) @postgresql.Uuid
+  id           Int       @id @default(autoincrement())
   label        String?
-  priority     TaskPriorityType?
+  priority     String?
   isComplete   Boolean?
-  assignedTo   Person?           @relation("Task_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId String?           @map("assignedTo") @postgresql.Uuid
+  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId Int?      @map("assignedTo")
   finishBy     DateTime?
 
   @@index([assignedToId])
@@ -22,13 +22,6 @@ model Task {
 
 model Person {
   tasks Task[]  @relation("Task_assignedTo")
-  id    String  @id @default(dbgenerated("gen_random_uuid()")) @postgresql.Uuid
+  id    Int     @id @default(autoincrement())
   name  String?
-  email String? @unique
-}
-
-enum TaskPriorityType {
-  low
-  medium
-  high
 }
