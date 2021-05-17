@@ -7,6 +7,9 @@
     "start": "keystone-next start",
     "build": "keystone-next build"
   },
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@keystone-next/auth": "^24.0.0",
