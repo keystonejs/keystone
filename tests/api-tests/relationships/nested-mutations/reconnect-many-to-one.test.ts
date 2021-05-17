@@ -87,7 +87,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             type T = { id: IdType; notes: { id: IdType; title: string }[] };
             const user = (await context.lists.User.findOne({
               where: { id: alice.id },
-              query: 'id notes(sortBy: [{ title: asc }]) { id title }',
+              query: 'id notes(orderBy: [{ title: asc }]) { id title }',
             })) as T;
             expect(user).toEqual({ id: alice.id, notes: expect.any(Array) });
             expect(user.notes.map(({ title }) => title)).toEqual(['A']);

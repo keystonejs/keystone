@@ -150,7 +150,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friends_some: { name } },
+                  where: { friends: { some: { name: { equals: name } } } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -169,7 +169,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 4 + 7],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friends_none: { name } },
+                  where: { friends: { none: { name: { equals: name } } } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -188,7 +188,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 1 + 7],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friends_every: { name } },
+                  where: { friends: { every: { name: { equals: name } } } },
                 });
                 expect(users.length).toEqual(count);
               })
