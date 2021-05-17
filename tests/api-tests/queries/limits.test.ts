@@ -94,17 +94,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Count is still correct
             data = await context.graphql.run({
-              query: `
-          query {
-            meta: _allUsersMeta {
-              count
-            }
-          }
-      `,
+              query: `query { meta: allUsersCount }`,
             });
 
             expect(data).toHaveProperty('meta');
-            expect(data.meta.count).toBe(users.length);
+            expect(data.meta).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
             data = await context.graphql.run({
@@ -183,7 +177,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             context.totalResults = 0;
             // A basic query that should work
             let posts = await context.lists.Post.findMany({
-              where: { title: 'One author' },
+              where: { title: { equals: 'One author' } },
               query: 'title author { name }',
             });
 
@@ -194,7 +188,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Each subquery is within the limit (even though the total isn't)
             posts = await context.lists.Post.findMany({
               where: {
-                OR: [{ title: 'One author' }, { title: 'Two authors' }],
+                OR: [{ title: { equals: 'One author' } }, { title: { equals: 'Two authors' } }],
               },
               orderBy: [{ title: 'asc' }],
               query: 'title author(orderBy: [{ name: asc }]) { name }',
@@ -212,7 +206,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allPosts(
-              where: { title: "Three authors" },
+              where: { title: { equals: "Three authors" } },
             ) {
               title
               author {
@@ -229,7 +223,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Reset the count for each query
             context.totalResults = 0;
             posts = await context.lists.Post.findMany({
-              where: { title: 'Three authors' },
+              where: { title: { equals: 'Three authors' } },
               query: 'title',
             });
 
@@ -259,7 +253,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ({ errors } = await context.graphql.raw({
               query: `
           query {
-            allPosts(where: { title: "Two authors" }) {
+            allPosts(where: { title: { equals: "Two authors" } }) {
               title
               author {
                 posts {
