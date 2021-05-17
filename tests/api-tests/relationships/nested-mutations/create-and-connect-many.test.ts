@@ -89,7 +89,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const allNotes = await context.lists.Note.findMany({
-            where: { id_in: user.notes.map(({ id }) => id) },
+            where: { id: { in: user.notes.map(({ id }) => id) } },
             query: 'id content',
           });
 
@@ -130,7 +130,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const allNotes = await context.lists.Note.findMany({
-            where: { id_in: user.notes.map(({ id }) => id) },
+            where: { id: { in: user.notes.map(({ id }) => id) } },
             query: 'id content',
           });
 
@@ -220,7 +220,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: {

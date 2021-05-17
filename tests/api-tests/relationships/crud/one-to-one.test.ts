@@ -814,7 +814,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: { disconnect: { id: location.id } } },
+              data: { location: null },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -836,7 +836,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _location = await context.lists.Location.updateOne({
               id: location.id,
-              data: { company: { disconnect: { id: company.id } } },
+              data: { company: null },
               query: 'id company { id name }',
             });
 
@@ -858,7 +858,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: { disconnectAll: true } },
+              data: { location: null },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -880,7 +880,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _location = await context.lists.Location.updateOne({
               id: location.id,
-              data: { company: { disconnectAll: true } },
+              data: { company: null },
               query: 'id company { id name }',
             });
             expect(_location.id).toEqual(location.id);

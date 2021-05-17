@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
 
@@ -367,7 +367,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _user = await context.lists.User.updateOne({
               id: user.id,
-              data: { friend: { disconnect: { id: friend.id } } },
+              data: { friend: null },
               query: 'id friend { id name }',
             });
 
@@ -390,7 +390,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _user = await context.lists.User.updateOne({
               id: user.id,
-              data: { friend: { disconnectAll: true } },
+              data: { friend: null },
               query: 'id friend { id name }',
             });
 
