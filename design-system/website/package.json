@@ -22,7 +22,7 @@
     "@keystone-ui/tooltip": "^3.0.0",
     "@preconstruct/next": "^3.0.0",
     "@types/react": "^17.0.5",
-    "@types/react-dom": "^17.0.4",
+    "@types/react-dom": "^17.0.5",
     "@types/tinycolor2": "^1.4.2",
     "@types/webpack": "^4.41.28",
     "next": "^10.2.0",
