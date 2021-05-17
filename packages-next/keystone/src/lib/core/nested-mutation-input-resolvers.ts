@@ -74,11 +74,8 @@ export function resolveRelateToOneForCreateInput(inputResolvers: CreateAndUpdate
       tsgql.Arg<tsgql.NonNullType<TypesForList['relateTo']['one']['create']>>
     >
   ) => {
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       return undefined;
-    }
-    if (value === null) {
-      throw new Error(`A relate to one for create input cannot be set to null`);
     }
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
