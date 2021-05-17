@@ -26,7 +26,7 @@
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.2.0",
     "@preconstruct/next": "^3.0.0",
-    "@primer/octicons-react": "^13.0.0",
+    "@primer/octicons-react": "^14.1.0",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",

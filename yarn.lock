@@ -1985,10 +1985,10 @@
   resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-3.0.0.tgz#71781cbaecd011f43e456a149817094a43e4755f"
   integrity sha512-G90cyJX9w4Zr3Bt/j2fURgDhsJb5+agqf4YUgrvDe3Dyvbbssy9a6d0tzLH0ehfa2Osxw/EEhQb+W4X+v/x06A==
 
-"@primer/octicons-react@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-13.0.0.tgz#a7f2288fd9cf9cabc1e75553a0dd9f00d74b68c1"
-  integrity sha512-j5XppNRCvgaMZLPsVvvmp6GSh7P5pq6PUbsfLNBWi2Kz3KYDeoGDWbPr5MjoxFOGUn6Hjnt6qjHPRxahd11vLQ==
+"@primer/octicons-react@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-14.1.0.tgz#5ef36c6096d2f6d486ed7254fcef927a3bd6ef52"
+  integrity sha512-gf7knl1HjyyCWt+eogE6D/aZHDcIXrQpkXgLYw8Tskdai6lEjbJl7BDDgra42P2ZwqDcBCQcdF25Ktu30y6ilA==
 
 "@prisma/client@2.22.1":
   version "2.22.1"
