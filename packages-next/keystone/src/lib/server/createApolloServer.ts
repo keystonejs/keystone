@@ -65,14 +65,25 @@ const _createApolloServerConfig = ({
   // Playground config
   const pp = apolloConfig?.playground;
   let playground: Config['playground'];
+
+  console.log('pp', pp);
+  console.log('playground', playground);
+  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+
   const settings = { 'request.credentials': 'same-origin' };
   if (typeof pp === 'boolean' && !pp) {
     playground = undefined;
-  } else if (typeof pp === 'undefined' || typeof pp === 'boolean') {
+  } else if (typeof pp === 'boolean') {
     playground = { settings };
-  } else {
+  } else if (pp) {
     playground = { ...pp, settings: { ...settings, ...pp.settings } };
+  } else if (process.env.NODE_ENV === 'production') {
+    playground = undefined;
+  } else {
+    playground = { settings };
   }
+
+  console.log(playground);
 
   return {
     uploads: false,

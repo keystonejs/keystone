@@ -1,0 +1,215 @@
+"""
+ A keystone list
+"""
+type Note {
+  id: ID!
+  label: String
+}
+
+input NoteWhereInput {
+  AND: [NoteWhereInput]
+  OR: [NoteWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+}
+
+input NoteWhereUniqueInput {
+  id: ID!
+}
+
+enum SortNotesBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+}
+
+input NoteUpdateInput {
+  label: String
+}
+
+input NotesUpdateInput {
+  id: ID!
+  data: NoteUpdateInput
+}
+
+input NoteCreateInput {
+  label: String
+}
+
+input NotesCreateInput {
+  data: NoteCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single Note item.
+  """
+  createNote(data: NoteCreateInput): Note
+
+  """
+   Create multiple Note items.
+  """
+  createNotes(data: [NotesCreateInput]): [Note]
+
+  """
+   Update a single Note item by ID.
+  """
+  updateNote(id: ID!, data: NoteUpdateInput): Note
+
+  """
+   Update multiple Note items by ID.
+  """
+  updateNotes(data: [NotesUpdateInput]): [Note]
+
+  """
+   Delete a single Note item by ID.
+  """
+  deleteNote(id: ID!): Note
+
+  """
+   Delete multiple Note items by ID.
+  """
+  deleteNotes(ids: [ID!]): [Note]
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+type Query {
+  """
+   Search for all Note items which match the where clause.
+  """
+  allNotes(
+    where: NoteWhereInput
+    search: String
+    sortBy: [SortNotesBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Note]
+
+  """
+   Search for the Note item with the matching ID.
+  """
+  Note(where: NoteWhereUniqueInput!): Note
+
+  """
+   Perform a meta-query on all Note items which match the where clause.
+  """
+  _allNotesMeta(
+    where: NoteWhereInput
+    search: String
+    sortBy: [SortNotesBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}
