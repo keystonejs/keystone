@@ -303,7 +303,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
             .forEach(access => {
               test(`denies: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
-                const query = `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`;
+                const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID}" }, data: { name: "bar" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, updateMutationName);
               });
@@ -327,9 +327,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${updateMutationName}(id: "${
+                const query = `mutation { ${updateMutationName}(where: { id: "${
                   item.id
-                }", data: { ${fieldName}: "bar" }) { id ${access.read ? fieldName : ''} } }`;
+                }" }, data: { ${fieldName}: "bar" }) { id ${access.read ? fieldName : ''} } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 // If update is not allowed on a field then there will be a query validation error
                 expect(errors).toHaveLength(1);
@@ -357,9 +357,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`;
+                const query = `mutation { ${updateMutationName}(where: { id: "${item.id}" }, data: { ${fieldName}: "bar" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data?.[updateMutationName]).toEqual(null);
+                expect(data).toEqual(null);
                 expect(errors).not.toBe(undefined);
                 expect(errors).toHaveLength(1);
                 expect(errors![0].name).toEqual('GraphQLError');
@@ -379,7 +379,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
             .forEach(access => {
               test(`single denied: ${JSON.stringify(access)}`, async () => {
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`;
+                const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, deleteMutationName);
               });

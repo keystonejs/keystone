@@ -427,7 +427,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               test(`single denies: ${JSON.stringify(access)}`, async () => {
                 const { id: invalidId } = await create({ name: 'hi' });
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const query = `mutation { ${deleteMutationName}(id: "${invalidId}") { id } }`;
+                const query = `mutation { ${deleteMutationName}(where: { id: "${invalidId}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 if (mode === 'imperative') {
                   expect(errors).toBe(undefined);
@@ -440,7 +440,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
               test(`single denies missing: ${JSON.stringify(access)}`, async () => {
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
+                const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, deleteMutationName);
               });
