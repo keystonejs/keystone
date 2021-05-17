@@ -38,10 +38,10 @@ const createUserAndFriend = async (context: KeystoneContext) => {
 const createComplexData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: 'A', friend: { create: { name: 'A1' } } } },
-      { data: { name: 'B', friend: { create: { name: 'D1' } } } },
-      { data: { name: 'C', friend: { create: { name: 'B1' } } } },
-      { data: { name: 'E' } },
+      { name: 'A', friend: { create: { name: 'A1' } } },
+      { name: 'B', friend: { create: { name: 'D1' } } },
+      { name: 'C', friend: { create: { name: 'B1' } } },
+      { name: 'E' },
     ],
     query: 'id name friend { id name }',
   });
@@ -54,10 +54,7 @@ const createComplexData = async (context: KeystoneContext) => {
   expect(users[3].name).toEqual('E');
   expect(users[3].friend).toBe(null);
   const _users = await context.lists.User.createMany({
-    data: [
-      { data: { name: 'D', friend: { connect: { id: users[2].friend.id } } } },
-      { data: { name: 'C1' } },
-    ],
+    data: [{ name: 'D', friend: { connect: { id: users[2].friend.id } } }, { name: 'C1' }],
     query: 'id name friend { id name }',
   });
   expect(_users[0].name).toEqual('D');
