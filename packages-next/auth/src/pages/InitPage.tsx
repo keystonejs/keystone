@@ -211,7 +211,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   return mode === 'init' ? (
     <SigninContainer>
       <H1>Welcome to KeystoneJS</H1>
-      <p>Get Started by creating the first user:</p>
+      <p>Create your first user to get started:</p>
       <form
         onSubmit={event => {
           event.preventDefault();
