@@ -57,7 +57,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "eslint-plugin-cypress": "^2.11.3",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.23.2",
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
