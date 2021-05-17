@@ -14,7 +14,6 @@ There are three types of example project:
 - Solution Examples: Each solution example is a complete project which demonstrates a complete solution, such as the e-commerce project.
   These projects bring together a collection of features in a cohesive way.
 
-
 ### Feature Example steps
 
 1. Decide which base project to use. This is up to you, and will depend on what feature you're trying to demonstrate and where it makes most contextual sense to add it.

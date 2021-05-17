@@ -206,7 +206,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   },
                 },
               },
-              query: 'id locations { company { owners { name } } } ',
+              query: 'id locations { company { owners { name } } }',
             });
             expect(custodians.length).toEqual(2);
           })
