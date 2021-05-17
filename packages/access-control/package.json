@@ -7,7 +7,7 @@
   "main": "dist/access-control-legacy.cjs.js",
   "module": "dist/access-control-legacy.esm.js",
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v12.22.1"
   },
   "dependencies": {
     "@keystone-next/utils-legacy": "^10.0.0"

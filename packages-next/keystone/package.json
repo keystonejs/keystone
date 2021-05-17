@@ -92,7 +92,7 @@
     "strip-ansi": "^6.0.0"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v12.22.1"
   },
   "preconstruct": {
     "entrypoints": [
