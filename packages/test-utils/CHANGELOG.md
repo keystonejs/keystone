@@ -1,5 +1,16 @@
 # @keystonejs/test-utils
 
+## 18.0.0
+
+### Major Changes
+
+- [#5694](https://github.com/keystonejs/keystone/pull/5694) [`b1baeaba1`](https://github.com/keystonejs/keystone/commit/b1baeaba11f52a968fc547c408c3ff670ef91646) Thanks [@timleslie](https://github.com/timleslie)! - The `Setup` type, returned by `setupFromConfig` and passed into test functions in `multiAdapterRunners` now has `connect` and `disconnect` functions, rather than a `keystone` object.
+
+### Patch Changes
+
+- Updated dependencies [[`737b3e6e5`](https://github.com/keystonejs/keystone/commit/737b3e6e53d0948de8f1419709ece5648ff4529a), [`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2), [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021), [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb)]:
+  - @keystone-next/keystone@17.2.0
+
 ## 17.0.3
 
 ### Patch Changes
