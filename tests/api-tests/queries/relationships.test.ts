@@ -303,7 +303,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // SOME
             const _users = await context.lists.User.findMany({
-              where: { feed: { some: { author: { id: users[0].id } } } },
+              where: { feed: { some: { author: { id: { equals: Number(users[0].id) } } } } },
               query: 'id name feed { id title }',
             });
             expect(_users).toEqual([]);

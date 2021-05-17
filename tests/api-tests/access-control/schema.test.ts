@@ -105,11 +105,11 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           if (access.read) {
             expect(queries).toContain(`${name}`);
             expect(queries).toContain(`all${name}s`);
-            expect(queries).toContain(`_all${name}sMeta`);
+            expect(queries).toContain(`all${name}sCount`);
           } else {
             expect(queries).not.toContain(`${name}`);
             expect(queries).not.toContain(`all${name}s`);
-            expect(queries).not.toContain(`_all${name}sMeta`);
+            expect(queries).toContain(`all${name}sCount`);
           }
 
           if (access.create) {
@@ -205,7 +205,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
           expect(queries).toContain(`${name}`);
           expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`_all${name}sMeta`);
+          expect(queries).toContain(`all${name}sCount`);
 
           expect(mutations).toContain(`create${name}`);
           expect(mutations).toContain(`update${name}`);
@@ -226,7 +226,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
           expect(queries).toContain(`${name}`);
           expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`_all${name}sMeta`);
+          expect(queries).toContain(`all${name}sCount`);
 
           if (access.create) {
             expect(mutations).toContain(`create${name}`);
