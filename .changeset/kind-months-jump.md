@@ -2,4 +2,4 @@
 '@keystone-next/auth': patch
 ---
 
-Change the first user signup copy to active voice
+The signup copy to create first user now uses active voice.
