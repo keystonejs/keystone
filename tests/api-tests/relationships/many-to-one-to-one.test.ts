@@ -130,13 +130,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
-            const data = await context.graphql.run({
-              query: `{
-                  allOwners(where: { companies_some: { location: { custodians_some: { name: "${name1}" } } } }) { id companies { location { custodians { name } } } }
-                }`,
+            const owners = await context.lists.Owner.findMany({
+              where: { companies_some: { location: { custodians_some: { name: name1 } } } },
+              query: 'id companies { location { custodians { name } } }',
             });
-            expect(data.allOwners.length).toEqual(1);
-            expect(data.allOwners[0].id).toEqual(owner.id);
+            expect(owners.length).toEqual(1);
+            expect(owners[0].id).toEqual(owner.id);
           })
         );
         test(
@@ -145,12 +144,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const data = await context.graphql.run({
-              query: `{
-                  allCustodians(where: { locations_some: { company: { owners_some: { name: "${name1}" } } } }) { id locations { company { owners { name } } } }
-                }`,
+            const custodians = await context.lists.Custodian.findMany({
+              where: { locations_some: { company: { owners_some: { name: name1 } } } },
+              query: 'id locations { company { owners { name } } }',
             });
-            expect(data.allCustodians.length).toEqual(2);
+            expect(custodians.length).toEqual(2);
           })
         );
         test(
@@ -159,13 +157,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const data = await context.graphql.run({
-              query: `{
-                  allOwners(where: { companies_some: { location: { custodians_some: { locations_some: { company: { owners_some: { name: "${name1}" } } } } } } }) { id companies { location { custodians { name } } } }
-                }`,
+            const owners = await context.lists.Owner.findMany({
+              where: {
+                companies_some: {
+                  location: {
+                    custodians_some: {
+                      locations_some: { company: { owners_some: { name: name1 } } },
+                    },
+                  },
+                },
+              },
+              query: 'id companies { location { custodians { name } } }',
             });
-            expect(data.allOwners.length).toEqual(1);
-            expect(data.allOwners[0].id).toEqual(owner.id);
+            expect(owners.length).toEqual(1);
+            expect(owners[0].id).toEqual(owner.id);
           })
         );
         test(
@@ -175,12 +180,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
 
-            const data = await context.graphql.run({
-              query: `{
-                  allCustodians(where: { locations_some: { company: { owners_some: { companies_some: { location: { custodians_some: { name: "${name1}" } } } } } } }) { id locations { company { owners { name } } } }
-                }`,
+            const custodians = await context.lists.Custodian.findMany({
+              where: {
+                locations_some: {
+                  company: {
+                    owners_some: {
+                      companies_some: { location: { custodians_some: { name: name1 } } },
+                    },
+                  },
+                },
+              },
+              query: 'id locations { company { owners { name } } }',
             });
-            expect(data.allCustodians.length).toEqual(2);
+            expect(custodians.length).toEqual(2);
           })
         );
       });
