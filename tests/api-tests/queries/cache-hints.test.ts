@@ -148,13 +148,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Meta query
           ({ data, errors, res } = await networkedGraphqlRequest({
             app,
-            query: `
-              query {
-                userCount: _allUsersMeta {
-                  count
-                }
-              }
-            `,
+            query: `query { userCount: allUsersCount }`,
           }));
 
           expect(errors).toBe(undefined);
