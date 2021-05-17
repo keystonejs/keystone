@@ -1,5 +1,13 @@
 # @keystonejs/api-tests
 
+## 10.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`b1baeaba1`](https://github.com/keystonejs/keystone/commit/b1baeaba11f52a968fc547c408c3ff670ef91646), [`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2), [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021), [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb)]:
+  - @keystone-next/test-utils-legacy@18.0.0
+  - @keystone-next/types@17.1.0
+
 ## 10.1.0
 
 ### Minor Changes

@@ -1,5 +1,23 @@
 # @keystone-next/keystone
 
+## 17.2.0
+
+### Minor Changes
+
+- [#5143](https://github.com/keystonejs/keystone/pull/5143) [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb) Thanks [@timleslie](https://github.com/timleslie)! - Added `graphql.cacheHint` configuration for lists and fields.
+
+### Patch Changes
+
+- [#5727](https://github.com/keystonejs/keystone/pull/5727) [`737b3e6e5`](https://github.com/keystonejs/keystone/commit/737b3e6e53d0948de8f1419709ece5648ff4529a) Thanks [@cameronbraid](https://github.com/cameronbraid)! - Fixed a bug in `storedSessions` not correctly identifying the current `sessionId`.
+
+* [#5686](https://github.com/keystonejs/keystone/pull/5686) [`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2) Thanks [@timleslie](https://github.com/timleslie)! - Reduced the explicit dependence on the internal Keystone object when creating context objects.
+
+- [#5673](https://github.com/keystonejs/keystone/pull/5673) [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021) Thanks [@timleslie](https://github.com/timleslie)! - Refactored code to parse `config.db`. No functional changes.
+
+- Updated dependencies [[`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2), [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021), [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb), [`669f0d8ac`](https://github.com/keystonejs/keystone/commit/669f0d8acfce5d6b7eaaa972ab354597c53c2568)]:
+  - @keystone-next/types@17.1.0
+  - @keystone-next/admin-ui@14.1.3
+
 ## 17.1.1
 
 ### Patch Changes
