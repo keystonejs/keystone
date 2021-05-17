@@ -64,7 +64,7 @@
     "fs-extra": "^10.0.0",
     "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
-    "graphql-upload": "^11.0.0",
+    "graphql-upload": "^12.0.0",
     "image-size": "^1.0.0",
     "image-type": "^4.1.0",
     "meow": "^9.0.0",
