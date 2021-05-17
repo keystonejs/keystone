@@ -17,7 +17,7 @@
     "react-transition-group": "^4.4.1"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v14.17.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/modals"
 }

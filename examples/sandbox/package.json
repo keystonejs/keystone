@@ -14,7 +14,7 @@
     "@keystone-next/keystone": "^17.2.0"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v14.17.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples/sandbox"
 }
