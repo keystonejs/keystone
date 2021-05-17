@@ -71,7 +71,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Update the item and link the relationship field
           const event = await context.lists.Event.updateOne({
             id: createEvent.id,
-            data: { group: { disconnect: { id: createGroup.id } } },
+            data: { group: null },
             query: 'id group { id }',
           });
 
@@ -90,11 +90,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
-          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
-
           // Create an item that does the linking
           const event = await context.lists.Event.createOne({
-            data: { group: { disconnect: { id: FAKE_ID } } },
+            data: { group: null },
             query: 'id group { id }',
           });
 
@@ -102,7 +100,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })
       );
 
-      test(
+      test.skip(
         'silently succeeds if no item to disconnect during update',
         runner(setupKeystone, async ({ context }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
@@ -122,7 +120,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })
       );
 
-      test(
+      test.skip(
         'silently succeeds if item to disconnect does not match during update',
         runner(setupKeystone, async ({ context }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
@@ -172,7 +170,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Update the item and link the relationship field
             await context.exitSudo().lists.EventToGroupNoRead.updateOne({
               id: createEvent.id,
-              data: { group: { disconnect: { id: createGroup.id } } },
+              data: { group: null },
             });
 
             // Avoid false-positives by checking the database directly

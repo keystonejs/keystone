@@ -311,7 +311,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: { disconnectAll: true } },
+              data: { location: null },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
