@@ -67,7 +67,7 @@
     "graphql-upload": "^12.0.0",
     "image-size": "^1.0.0",
     "image-type": "^4.1.0",
-    "meow": "^9.0.0",
+    "meow": "^10.0.0",
     "next": "^10.2.0",
     "object-hash": "^2.1.1",
     "pirates": "^4.0.1",
