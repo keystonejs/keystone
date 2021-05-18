@@ -2,6 +2,7 @@ import pWaterfall from 'p-waterfall';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 import { Implementation } from '@keystone-next/fields';
 import { BaseKeystoneList, Rel } from '@keystone-next/types';
+import { GqlNames } from '../../../packages-next/types/src';
 
 // Note: These type definitions are preliminary while we're working towards
 // a full TypeScript conversion.
@@ -66,8 +67,8 @@ class PrismaAdapter {
     this.url = this.config.url || process.env.DATABASE_URL || '';
   }
 
-  newListAdapter(key: string, adapterConfig: ListAdapterConfig) {
-    this.listAdapters[key] = new PrismaListAdapter(key, this, adapterConfig);
+  newListAdapter(key: string, adapterConfig: ListAdapterConfig, gqlNames: GqlNames) {
+    this.listAdapters[key] = new PrismaListAdapter(key, this, adapterConfig, gqlNames);
     return this.listAdapters[key];
   }
 
@@ -230,17 +231,24 @@ class PrismaListAdapter {
   fieldAdapters: PrismaFieldAdapter<any>[];
   fieldAdaptersByPath: Record<string, PrismaFieldAdapter<any>>;
   config: ListAdapterConfig;
+  gqlNames: GqlNames;
   preSaveHooks: any[];
   postReadHooks: any[];
   model?: PrismaModel;
   getListAdapterByKey: (key: string) => PrismaListAdapter | undefined;
 
-  constructor(key: string, parentAdapter: PrismaAdapter, config: ListAdapterConfig) {
+  constructor(
+    key: string,
+    parentAdapter: PrismaAdapter,
+    config: ListAdapterConfig,
+    gqlNames: GqlNames
+  ) {
     this.key = key;
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
     this.fieldAdaptersByPath = {};
     this.config = config;
+    this.gqlNames = gqlNames;
 
     this.preSaveHooks = [];
     this.postReadHooks = [
@@ -500,10 +508,14 @@ class PrismaListAdapter {
         ret.skip = skip;
       }
       if (orderBy !== undefined) {
-        // SELECT ... ORDER BY <orderField>
-        const [orderField, orderDirection] = orderBy.split('_');
-        const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-        ret.orderBy = [{ [sortKey]: orderDirection.toLowerCase() }];
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        if (!ret.orderBy) ret.orderBy = [];
+        orderBy.forEach((order: any) => {
+          if (Object.keys(order).length !== 1) {
+            throw new Error(`Only a single key must be passed to ${this.gqlNames.listOrderName}`);
+          }
+          ret.orderBy!.push(order);
+        });
       }
       if (sortBy !== undefined) {
         // SELECT ... ORDER BY <orderField>[, <orderField>, ...]

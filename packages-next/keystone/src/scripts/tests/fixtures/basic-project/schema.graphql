@@ -36,6 +36,16 @@ enum SortTodosBy {
   title_DESC
 }
 
+input TodoOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input TodoUpdateInput {
   title: String
 }
@@ -110,7 +120,8 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo]
@@ -127,7 +138,8 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

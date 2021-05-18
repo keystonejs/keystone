@@ -124,6 +124,7 @@ export class List implements BaseKeystoneList {
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listSortName: `Sort${_listQueryName}By`,
+      listOrderName: `${_itemQueryName}OrderByInput`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -140,7 +141,7 @@ export class List implements BaseKeystoneList {
       relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
-    this.adapter = adapter.newListAdapter(this.key, adapterConfig);
+    this.adapter = adapter.newListAdapter(this.key, adapterConfig, this.gqlNames);
     this._schemaNames = ['public'];
 
     this.access = parseListAccess({
@@ -243,8 +244,8 @@ export class List implements BaseKeystoneList {
     return [
       `where: ${this.gqlNames.whereInputName}`,
       `search: String`,
-      `sortBy: [${this.gqlNames.listSortName}!]`,
-      `orderBy: String`,
+      `sortBy: [${this.gqlNames.listSortName}!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")`,
+      `orderBy: [${this.gqlNames.listOrderName}!]! = []`,
       `first: Int`,
       `skip: Int! = 0`,
     ];
@@ -1185,6 +1186,20 @@ export class List implements BaseKeystoneList {
             ${sortOptions.join('\n')}
           }
         `);
+      }
+      const orderItems = flatten(
+        readFields.map(({ path, isOrderable }) =>
+          // Explicitly allow sorting by id
+          isOrderable || path === 'id' ? [`${path}: OrderDirection`] : []
+        )
+      );
+      if (orderItems.length) {
+        types.push(`
+          input ${this.gqlNames.listOrderName} {
+            ${orderItems.join('\n')}
+          }
+        `);
+        types.push(`enum OrderDirection { asc desc }`);
       }
     }
 
