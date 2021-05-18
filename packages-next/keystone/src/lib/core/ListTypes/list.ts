@@ -117,12 +117,14 @@ export class List implements BaseKeystoneList {
 
     const _itemQueryName = itemQueryName || labelToClass(_singular);
     const _listQueryName = listQueryName || labelToClass(_plural);
+    const _lowerListName = _listQueryName.slice(0, 1).toLowerCase() + _listQueryName.slice(1);
 
     this.gqlNames = {
       outputTypeName: this.key,
       itemQueryName: _itemQueryName,
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
+      listQueryCountName: `${_lowerListName}Count`,
       listSortName: `Sort${_listQueryName}By`,
       listOrderName: `${_itemQueryName}OrderByInput`,
       deleteMutationName: `delete${_itemQueryName}`,
@@ -1266,7 +1268,13 @@ export class List implements BaseKeystoneList {
         } items which match the where clause. """
         ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
-        ): _QueryMeta`
+        ): _QueryMeta @deprecated(reason: "This query will be removed in a future version. Please use ${
+          this.gqlNames.listQueryCountName
+        } instead.")`,
+
+        `
+        ${this.gqlNames.listQueryCountName}(${`where: ${this.gqlNames.whereInputName}! = {}`}): Int!
+        `
       );
     }
 
@@ -1380,6 +1388,16 @@ export class List implements BaseKeystoneList {
 
         [this.gqlNames.listQueryMetaName]: (_, args, context, info) =>
           this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName, info),
+
+        [this.gqlNames.listQueryCountName]: async (_, args, context, info) => {
+          const { getCount } = await this.listQueryMeta(
+            args,
+            context,
+            this.gqlNames.listQueryCountName,
+            info
+          );
+          return getCount();
+        },
 
         [this.gqlNames.itemQueryName]: (_, args, context, info) =>
           this.itemQuery(args, context, this.gqlNames.itemQueryName, info),

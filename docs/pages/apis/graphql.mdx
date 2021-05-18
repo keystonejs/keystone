@@ -203,12 +203,11 @@ type User {
 ```
 
 <!-- prettier-ignore -->
-### _allUsersMeta
+### usersCount
 
 ```graphql
 type Query {
-  """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
+  usersCount(where: UserWhereInput! = {}): Int!
 }
 
 input UserWhereInput {
