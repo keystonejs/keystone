@@ -292,3 +292,5 @@ jobs:
         run: yarn build
       - name: Remark
         run: yarn lint:markdown
+      - name: Example schemas
+        run: yarn lint:examples
