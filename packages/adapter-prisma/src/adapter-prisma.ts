@@ -503,15 +503,15 @@ class PrismaListAdapter {
         // SELECT ... ORDER BY <orderField>
         const [orderField, orderDirection] = orderBy.split('_');
         const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-        ret.orderBy = { [sortKey]: orderDirection.toLowerCase() };
+        ret.orderBy = [{ [sortKey]: orderDirection.toLowerCase() }];
       }
       if (sortBy !== undefined) {
         // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
-        if (!ret.orderBy) ret.orderBy = {};
+        if (!ret.orderBy) ret.orderBy = [];
         sortBy.forEach(s => {
           const [orderField, orderDirection] = s.split('_');
           const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-          ret.orderBy![sortKey] = orderDirection.toLowerCase();
+          ret.orderBy!.push({ [sortKey]: orderDirection.toLowerCase() });
         });
       }
 
