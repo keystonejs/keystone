@@ -611,28 +611,38 @@ export async function resolveOrderBy(
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
   return Promise.all(
-    orderBy.map(async orderByGroup => {
-      return Object.fromEntries(
-        (
-          await Promise.all(
-            Object.entries(orderByGroup).map(async ([fieldKey, value]) => {
-              if (value === null) {
-                throw new Error('null cannot be passed as an order direction');
-              }
-              const field = list.fields[fieldKey];
-              const resolveOrderBy = field.input!.orderBy!.resolve;
-              const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
-              if (field.dbField.kind === 'multi') {
-                return Object.entries(resolvedValue).map(
-                  ([subField, value]) =>
-                    [getDBFieldPathForFieldOnMultiField(fieldKey, subField), value] as const
-                );
-              }
-              return [[fieldKey, resolvedValue]] as const;
-            })
-          )
-        ).flat()
-      );
+    orderBy.map(async orderBySelection => {
+      const keys = Object.keys(orderBySelection);
+      if (keys.length !== 1) {
+        throw new Error(
+          `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+        );
+      }
+
+      const fieldKey = keys[0];
+
+      const value = orderBySelection[fieldKey];
+
+      if (value === null) {
+        throw new Error('null cannot be passed as an order direction');
+      }
+
+      const field = list.fields[fieldKey];
+      const resolveOrderBy = field.input!.orderBy!.resolve;
+      const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
+      if (field.dbField.kind === 'multi') {
+        const keys = Object.keys(resolvedValue);
+        if (keys.length !== 1) {
+          throw new Error(
+            `Only a single key must be returned from an orderBy input resolver for a multi db field`
+          );
+        }
+        const innerKey = keys[0];
+        return {
+          [getDBFieldPathForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
+        };
+      }
+      return { [fieldKey]: resolvedValue };
     })
   );
 }
