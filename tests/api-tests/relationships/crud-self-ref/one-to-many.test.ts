@@ -120,7 +120,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'is_null: true',
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
-            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+            const users = await context.lists.User.findMany({ where: { friendOf: null } });
             expect(users.length).toEqual(5);
           })
         );
@@ -317,7 +317,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test(
+        test.skip(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             const user = await context.lists.User.createOne({
@@ -420,7 +420,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test(
+        test.skip(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location

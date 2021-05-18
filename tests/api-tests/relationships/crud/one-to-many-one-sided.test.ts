@@ -147,7 +147,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
             const companies = await context.lists.Company.findMany({
-              where: { location_is_null: true },
+              where: { location: null },
             });
             expect(companies.length).toEqual(1);
           })
@@ -157,7 +157,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
             const companies = await context.lists.Company.findMany({
-              where: { location_is_null: false },
+              where: { location: { NOT: [null] } },
             });
             expect(companies.length).toEqual(4);
           })
@@ -323,7 +323,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test(
+        test.skip(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location

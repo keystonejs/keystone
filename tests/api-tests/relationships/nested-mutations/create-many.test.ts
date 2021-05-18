@@ -103,7 +103,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const notes = await context.lists.Note.findMany({
-            where: { id_in: user1.notes.map(({ id }) => id) },
+            where: { id: { in: user1.notes.map(({ id }) => id) } },
           });
           expect(notes).toHaveLength(user1.notes.length);
 
@@ -159,7 +159,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const notes = await context.lists.Note.findMany({
-            where: { id_in: _user.notes.map(({ id }) => id) },
+            where: { id: { in: _user.notes.map(({ id }) => id) } },
           });
           expect(notes).toHaveLength(_user.notes.length);
         })

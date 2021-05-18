@@ -83,7 +83,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { user, friend } = await createUserAndFriend(context);
             const users = await context.lists.User.findMany({
-              where: { friend: { name: friend.name } },
+              where: { friend: { name: { equals: friend.name } } },
             });
             expect(users.length).toEqual(1);
             expect(users[0].id).toEqual(user.id);
@@ -96,7 +96,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { user, friend } = await createUserAndFriend(context);
             const users = await context.lists.User.findMany({
-              where: { friendOf: { name: user.name } },
+              where: { friendOf: { name: { equals: user.name } } },
             });
             expect(users.length).toEqual(1);
             expect(users[0].id).toEqual(friend.id);
@@ -107,7 +107,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+            const users = await context.lists.User.findMany({ where: { friend: null } });
             expect(users.length).toEqual(4);
           })
         );
@@ -116,7 +116,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+            const users = await context.lists.User.findMany({ where: { friendOf: null } });
             expect(users.length).toEqual(4);
           })
         );
@@ -176,7 +176,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const count = await context.lists.User.count({ where: { friend_is_null: true } });
+            const count = await context.lists.User.count({ where: { friend: null } });
             expect(count).toEqual(4);
           })
         );
@@ -186,7 +186,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+            const count = await context.lists.User.count({ where: { friendOf: null } });
             expect(count).toEqual(4);
           })
         );
@@ -299,7 +299,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             const _user = await context.lists.User.createOne({

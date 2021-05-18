@@ -119,7 +119,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'is_null: true',
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
-            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+            const users = await context.lists.User.findMany({ where: { friend: null } });
             expect(users.length).toEqual(5);
           })
         );
