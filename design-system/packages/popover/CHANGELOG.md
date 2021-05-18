@@ -1,5 +1,11 @@
 # @keystone-ui/popover
 
+## 3.1.0
+
+### Minor Changes
+
+- [#5670](https://github.com/keystonejs/keystone/pull/5670) [`669f0d8ac`](https://github.com/keystonejs/keystone/commit/669f0d8acfce5d6b7eaaa972ab354597c53c2568) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added focustrap to the PopoverDialog component, when the PopoverDialog is open, browser focus is now trapped within it till the dialog is closed.
+
 ## 3.0.0
 
 ### Major Changes
