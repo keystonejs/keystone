@@ -24,7 +24,6 @@
 '@keystone-next/example-sandbox': major
 '@keystone-next/example-todo': major
 '@keystone-next/example-with-auth': major
-'@keystone-next/admin-ui': major
 '@keystone-next/admin-ui-utils': major
 '@keystone-next/auth': major
 '@keystone-next/cloudinary': major
