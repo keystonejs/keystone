@@ -91,32 +91,32 @@ type Mutation {
   """
    Create a single Post item.
   """
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput): Post!
 
   """
    Create multiple Post items.
   """
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPosts(data: [PostsCreateInput]): [Post!]!
 
   """
    Update a single Post item by ID.
   """
-  updatePost(id: ID!, data: PostUpdateInput): Post
+  updatePost(id: ID!, data: PostUpdateInput): Post!
 
   """
    Update multiple Post items by ID.
   """
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post!]!
 
   """
    Delete a single Post item by ID.
   """
-  deletePost(id: ID!): Post
+  deletePost(id: ID!): Post!
 
   """
    Delete multiple Post items by ID.
   """
-  deletePosts(ids: [ID!]): [Post]
+  deletePosts(ids: [ID!]): [Post!]!
 }
 
 """

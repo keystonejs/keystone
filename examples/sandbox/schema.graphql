@@ -255,62 +255,62 @@ type Mutation {
   """
    Create a single Todo item.
   """
-  createTodo(data: TodoCreateInput): Todo
+  createTodo(data: TodoCreateInput): Todo!
 
   """
    Create multiple Todo items.
   """
-  createTodos(data: [TodosCreateInput]): [Todo]
+  createTodos(data: [TodosCreateInput]): [Todo!]!
 
   """
    Update a single Todo item by ID.
   """
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo!
 
   """
    Update multiple Todo items by ID.
   """
-  updateTodos(data: [TodosUpdateInput]): [Todo]
+  updateTodos(data: [TodosUpdateInput]): [Todo!]!
 
   """
    Delete a single Todo item by ID.
   """
-  deleteTodo(id: ID!): Todo
+  deleteTodo(id: ID!): Todo!
 
   """
    Delete multiple Todo items by ID.
   """
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodos(ids: [ID!]): [Todo!]!
 
   """
    Create a single User item.
   """
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput): User!
 
   """
    Create multiple User items.
   """
-  createUsers(data: [UsersCreateInput]): [User]
+  createUsers(data: [UsersCreateInput]): [User!]!
 
   """
    Update a single User item by ID.
   """
-  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUser(id: ID!, data: UserUpdateInput): User!
 
   """
    Update multiple User items by ID.
   """
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UsersUpdateInput]): [User!]!
 
   """
    Delete a single User item by ID.
   """
-  deleteUser(id: ID!): User
+  deleteUser(id: ID!): User!
 
   """
    Delete multiple User items by ID.
   """
-  deleteUsers(ids: [ID!]): [User]
+  deleteUsers(ids: [ID!]): [User!]!
 }
 
 """

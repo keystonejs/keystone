@@ -19,9 +19,15 @@ type IdType = any;
 const expectNoAccess = <N extends string>(
   data: Record<N, null> | null | undefined,
   errors: readonly GraphQLError[] | undefined,
-  name: N
+  name: N,
+  read: boolean = false
 ) => {
-  expect(data?.[name]).toBe(null);
+  if (read) {
+    expect(data?.[name]).toBe(null);
+  } else {
+    // CUD mutations cannot return null, so the base data itself is null
+    expect(data).toBe(null);
+  }
   expect(errors).toHaveLength(1);
   const error = errors![0];
   expect(error.message).toEqual('You do not have access to this resource');
@@ -218,14 +224,14 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                   expect(data?.[listKey].id).toEqual(invalidId);
                 } else {
                   // but declarative should not
-                  expectNoAccess(data, errors, listKey);
+                  expectNoAccess(data, errors, listKey, true);
                 }
               });
 
               test(`single not existing: ${JSON.stringify(access)}`, async () => {
                 const query = `query { ${listKey}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, listKey);
+                expectNoAccess(data, errors, listKey, true);
               });
 
               test(`multiple not existing: ${JSON.stringify(access)}`, async () => {

@@ -396,92 +396,92 @@ type Mutation {
   """
    Create a single User item.
   """
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput): User!
 
   """
    Create multiple User items.
   """
-  createUsers(data: [UsersCreateInput]): [User]
+  createUsers(data: [UsersCreateInput]): [User!]!
 
   """
    Update a single User item by ID.
   """
-  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUser(id: ID!, data: UserUpdateInput): User!
 
   """
    Update multiple User items by ID.
   """
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UsersUpdateInput]): [User!]!
 
   """
    Delete a single User item by ID.
   """
-  deleteUser(id: ID!): User
+  deleteUser(id: ID!): User!
 
   """
    Delete multiple User items by ID.
   """
-  deleteUsers(ids: [ID!]): [User]
+  deleteUsers(ids: [ID!]): [User!]!
 
   """
    Create a single Post item.
   """
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput): Post!
 
   """
    Create multiple Post items.
   """
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPosts(data: [PostsCreateInput]): [Post!]!
 
   """
    Update a single Post item by ID.
   """
-  updatePost(id: ID!, data: PostUpdateInput): Post
+  updatePost(id: ID!, data: PostUpdateInput): Post!
 
   """
    Update multiple Post items by ID.
   """
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post!]!
 
   """
    Delete a single Post item by ID.
   """
-  deletePost(id: ID!): Post
+  deletePost(id: ID!): Post!
 
   """
    Delete multiple Post items by ID.
   """
-  deletePosts(ids: [ID!]): [Post]
+  deletePosts(ids: [ID!]): [Post!]!
 
   """
    Create a single Tag item.
   """
-  createTag(data: TagCreateInput): Tag
+  createTag(data: TagCreateInput): Tag!
 
   """
    Create multiple Tag items.
   """
-  createTags(data: [TagsCreateInput]): [Tag]
+  createTags(data: [TagsCreateInput]): [Tag!]!
 
   """
    Update a single Tag item by ID.
   """
-  updateTag(id: ID!, data: TagUpdateInput): Tag
+  updateTag(id: ID!, data: TagUpdateInput): Tag!
 
   """
    Update multiple Tag items by ID.
   """
-  updateTags(data: [TagsUpdateInput]): [Tag]
+  updateTags(data: [TagsUpdateInput]): [Tag!]!
 
   """
    Delete a single Tag item by ID.
   """
-  deleteTag(id: ID!): Tag
+  deleteTag(id: ID!): Tag!
 
   """
    Delete multiple Tag items by ID.
   """
-  deleteTags(ids: [ID!]): [Tag]
+  deleteTags(ids: [ID!]): [Tag!]!
   authenticateUserWithPassword(
     email: String!
     password: String!

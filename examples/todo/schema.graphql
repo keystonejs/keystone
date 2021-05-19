@@ -211,62 +211,62 @@ type Mutation {
   """
    Create a single Task item.
   """
-  createTask(data: TaskCreateInput): Task
+  createTask(data: TaskCreateInput): Task!
 
   """
    Create multiple Task items.
   """
-  createTasks(data: [TasksCreateInput]): [Task]
+  createTasks(data: [TasksCreateInput]): [Task!]!
 
   """
    Update a single Task item by ID.
   """
-  updateTask(id: ID!, data: TaskUpdateInput): Task
+  updateTask(id: ID!, data: TaskUpdateInput): Task!
 
   """
    Update multiple Task items by ID.
   """
-  updateTasks(data: [TasksUpdateInput]): [Task]
+  updateTasks(data: [TasksUpdateInput]): [Task!]!
 
   """
    Delete a single Task item by ID.
   """
-  deleteTask(id: ID!): Task
+  deleteTask(id: ID!): Task!
 
   """
    Delete multiple Task items by ID.
   """
-  deleteTasks(ids: [ID!]): [Task]
+  deleteTasks(ids: [ID!]): [Task!]!
 
   """
    Create a single Person item.
   """
-  createPerson(data: PersonCreateInput): Person
+  createPerson(data: PersonCreateInput): Person!
 
   """
    Create multiple Person items.
   """
-  createPeople(data: [PeopleCreateInput]): [Person]
+  createPeople(data: [PeopleCreateInput]): [Person!]!
 
   """
    Update a single Person item by ID.
   """
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
+  updatePerson(id: ID!, data: PersonUpdateInput): Person!
 
   """
    Update multiple Person items by ID.
   """
-  updatePeople(data: [PeopleUpdateInput]): [Person]
+  updatePeople(data: [PeopleUpdateInput]): [Person!]!
 
   """
    Delete a single Person item by ID.
   """
-  deletePerson(id: ID!): Person
+  deletePerson(id: ID!): Person!
 
   """
    Delete multiple Person items by ID.
   """
-  deletePeople(ids: [ID!]): [Person]
+  deletePeople(ids: [ID!]): [Person!]!
 }
 
 """

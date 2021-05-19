@@ -1139,14 +1139,14 @@ export class List implements BaseKeystoneList {
         """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
-        ): ${this.gqlNames.outputTypeName}
+        ): ${this.gqlNames.outputTypeName}!
       `);
 
       mutations.push(`
         """ Create multiple ${this.gqlNames.outputTypeName} items. """
         ${this.gqlNames.createManyMutationName}(
           data: [${this.gqlNames.createManyInputName}]
-        ): [${this.gqlNames.outputTypeName}]
+        ): [${this.gqlNames.outputTypeName}!]!
       `);
     }
 
@@ -1157,14 +1157,14 @@ export class List implements BaseKeystoneList {
         ${this.gqlNames.updateMutationName}(
           id: ID!
           data: ${this.gqlNames.updateInputName}
-        ): ${this.gqlNames.outputTypeName}
+        ): ${this.gqlNames.outputTypeName}!
       `);
 
       mutations.push(`
       """ Update multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.updateManyMutationName}(
           data: [${this.gqlNames.updateManyInputName}]
-        ): [${this.gqlNames.outputTypeName}]
+        ): [${this.gqlNames.outputTypeName}!]!
       `);
     }
 
@@ -1173,14 +1173,14 @@ export class List implements BaseKeystoneList {
         """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(
           id: ID!
-        ): ${this.gqlNames.outputTypeName}
+        ): ${this.gqlNames.outputTypeName}!
       `);
 
       mutations.push(`
         """ Delete multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
-        ): [${this.gqlNames.outputTypeName}]
+        ): [${this.gqlNames.outputTypeName}!]!
       `);
     }
 

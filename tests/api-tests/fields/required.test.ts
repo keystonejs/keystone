@@ -69,7 +69,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     createTest(data: { name: "test entry" } ) { id }
                   }`,
                 });
-                expect(data.createTest).toBe(null);
+                expect(data).toBe(null);
                 expect(errors).not.toBe(null);
                 expect(errors.length).toEqual(1);
                 expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
@@ -92,7 +92,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
                   }`,
                 });
-                expect(data.updateTest).toBe(null);
+                expect(data).toBe(null);
                 expect(errors).not.toBe(undefined);
                 expect(errors.length).toEqual(1);
                 expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');

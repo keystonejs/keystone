@@ -582,12 +582,12 @@ describe(`getGqlMutations()`, () => {
         .map(normalise)
     ).toEqual(
       [
-        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
-        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
-        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
-        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
-        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
-        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
+        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test!`,
+        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test!]!`,
+        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test!`,
+        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test!]!`,
+        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test!`,
+        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test!]!`,
       ].map(normalise)
     );
   });
@@ -618,8 +618,8 @@ describe(`getGqlMutations()`, () => {
         .map(normalise)
     ).toEqual(
       [
-        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
-        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
+        `""" Create a single Test item. """ createTest(data: TestCreateInput): Test!`,
+        `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test!]!`,
       ].map(normalise)
     );
   });
@@ -633,8 +633,8 @@ describe(`getGqlMutations()`, () => {
         .map(normalise)
     ).toEqual(
       [
-        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
-        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
+        `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test!`,
+        `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test!]!`,
       ].map(normalise)
     );
   });
@@ -648,8 +648,8 @@ describe(`getGqlMutations()`, () => {
         .map(normalise)
     ).toEqual(
       [
-        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
-        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
+        `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test!`,
+        `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test!]!`,
       ].map(normalise)
     );
   });

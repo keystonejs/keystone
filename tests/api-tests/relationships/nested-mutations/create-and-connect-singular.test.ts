@@ -62,7 +62,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }`,
           });
 
-          expect(data?.createEvent).toBe(null);
+          expect(data).toBe(null);
           expect(errors).toMatchObject([
             { message: 'Nested mutation operation invalid for Event.group<Group>' },
           ]);

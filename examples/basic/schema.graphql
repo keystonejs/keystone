@@ -406,92 +406,92 @@ type Mutation {
   """
    Create a single User item.
   """
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput): User!
 
   """
    Create multiple User items.
   """
-  createUsers(data: [UsersCreateInput]): [User]
+  createUsers(data: [UsersCreateInput]): [User!]!
 
   """
    Update a single User item by ID.
   """
-  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUser(id: ID!, data: UserUpdateInput): User!
 
   """
    Update multiple User items by ID.
   """
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UsersUpdateInput]): [User!]!
 
   """
    Delete a single User item by ID.
   """
-  deleteUser(id: ID!): User
+  deleteUser(id: ID!): User!
 
   """
    Delete multiple User items by ID.
   """
-  deleteUsers(ids: [ID!]): [User]
+  deleteUsers(ids: [ID!]): [User!]!
 
   """
    Create a single PhoneNumber item.
   """
-  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
+  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber!
 
   """
    Create multiple PhoneNumber items.
   """
-  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber!]!
 
   """
    Update a single PhoneNumber item by ID.
   """
-  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
+  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber!
 
   """
    Update multiple PhoneNumber items by ID.
   """
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber!]!
 
   """
    Delete a single PhoneNumber item by ID.
   """
-  deletePhoneNumber(id: ID!): PhoneNumber
+  deletePhoneNumber(id: ID!): PhoneNumber!
 
   """
    Delete multiple PhoneNumber items by ID.
   """
-  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
+  deletePhoneNumbers(ids: [ID!]): [PhoneNumber!]!
 
   """
    Create a single Post item.
   """
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput): Post!
 
   """
    Create multiple Post items.
   """
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPosts(data: [PostsCreateInput]): [Post!]!
 
   """
    Update a single Post item by ID.
   """
-  updatePost(id: ID!, data: PostUpdateInput): Post
+  updatePost(id: ID!, data: PostUpdateInput): Post!
 
   """
    Update multiple Post items by ID.
   """
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post!]!
 
   """
    Delete a single Post item by ID.
   """
-  deletePost(id: ID!): Post
+  deletePost(id: ID!): Post!
 
   """
    Delete multiple Post items by ID.
   """
-  deletePosts(ids: [ID!]): [Post]
+  deletePosts(ids: [ID!]): [Post!]!
   authenticateUserWithPassword(
     email: String!
     password: String!

@@ -16,9 +16,15 @@ import {
 const expectNoAccess = <N extends string>(
   data: Record<N, null> | null | undefined,
   errors: readonly GraphQLError[] | undefined,
-  name: N
+  name: N,
+  read: boolean = false
 ) => {
-  expect(data?.[name]).toBe(null);
+  if (read) {
+    expect(data?.[name]).toBe(null);
+  } else {
+    // CUD mutations cannot return null, so the base data itself is null
+    expect(data).toBe(null);
+  }
   expect(errors).toHaveLength(1);
   const error = errors![0];
   expect(error.message).toEqual('You do not have access to this resource');
@@ -126,7 +132,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const fieldName = getFieldName(access);
                 const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data?.[createMutationName]).toEqual(null);
+                expect(data).toEqual(null);
                 expect(errors).not.toBe(undefined);
                 expect(errors).toHaveLength(1);
                 expect(errors![0].name).toEqual('GraphQLError');
@@ -148,7 +154,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const allQueryName = `all${nameFn[mode](access)}s`;
                 const query = `query { ${allQueryName} { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, allQueryName);
+                expectNoAccess(data, errors, allQueryName, true);
               });
 
               test(`meta denied: ${JSON.stringify(access)}`, async () => {
@@ -168,7 +174,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const singleQueryName = nameFn[mode](access);
                 const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, singleQueryName);
+                expectNoAccess(data, errors, singleQueryName, true);
               });
             });
         });
@@ -359,7 +365,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const fieldName = getFieldName(access);
                 const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data?.[updateMutationName]).toEqual(null);
+                expect(data).toEqual(null);
                 expect(errors).not.toBe(undefined);
                 expect(errors).toHaveLength(1);
                 expect(errors![0].name).toEqual('GraphQLError');

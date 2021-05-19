@@ -354,92 +354,92 @@ type Mutation {
   """
    Create a single Todo item.
   """
-  createTodo(data: TodoCreateInput): Todo
+  createTodo(data: TodoCreateInput): Todo!
 
   """
    Create multiple Todo items.
   """
-  createTodos(data: [TodosCreateInput]): [Todo]
+  createTodos(data: [TodosCreateInput]): [Todo!]!
 
   """
    Update a single Todo item by ID.
   """
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo!
 
   """
    Update multiple Todo items by ID.
   """
-  updateTodos(data: [TodosUpdateInput]): [Todo]
+  updateTodos(data: [TodosUpdateInput]): [Todo!]!
 
   """
    Delete a single Todo item by ID.
   """
-  deleteTodo(id: ID!): Todo
+  deleteTodo(id: ID!): Todo!
 
   """
    Delete multiple Todo items by ID.
   """
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodos(ids: [ID!]): [Todo!]!
 
   """
    Create a single Person item.
   """
-  createPerson(data: PersonCreateInput): Person
+  createPerson(data: PersonCreateInput): Person!
 
   """
    Create multiple Person items.
   """
-  createPeople(data: [PeopleCreateInput]): [Person]
+  createPeople(data: [PeopleCreateInput]): [Person!]!
 
   """
    Update a single Person item by ID.
   """
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
+  updatePerson(id: ID!, data: PersonUpdateInput): Person!
 
   """
    Update multiple Person items by ID.
   """
-  updatePeople(data: [PeopleUpdateInput]): [Person]
+  updatePeople(data: [PeopleUpdateInput]): [Person!]!
 
   """
    Delete a single Person item by ID.
   """
-  deletePerson(id: ID!): Person
+  deletePerson(id: ID!): Person!
 
   """
    Delete multiple Person items by ID.
   """
-  deletePeople(ids: [ID!]): [Person]
+  deletePeople(ids: [ID!]): [Person!]!
 
   """
    Create a single Role item.
   """
-  createRole(data: RoleCreateInput): Role
+  createRole(data: RoleCreateInput): Role!
 
   """
    Create multiple Role items.
   """
-  createRoles(data: [RolesCreateInput]): [Role]
+  createRoles(data: [RolesCreateInput]): [Role!]!
 
   """
    Update a single Role item by ID.
   """
-  updateRole(id: ID!, data: RoleUpdateInput): Role
+  updateRole(id: ID!, data: RoleUpdateInput): Role!
 
   """
    Update multiple Role items by ID.
   """
-  updateRoles(data: [RolesUpdateInput]): [Role]
+  updateRoles(data: [RolesUpdateInput]): [Role!]!
 
   """
    Delete a single Role item by ID.
   """
-  deleteRole(id: ID!): Role
+  deleteRole(id: ID!): Role!
 
   """
    Delete multiple Role items by ID.
   """
-  deleteRoles(ids: [ID!]): [Role]
+  deleteRoles(ids: [ID!]): [Role!]!
   authenticatePersonWithPassword(
     email: String!
     password: String!
