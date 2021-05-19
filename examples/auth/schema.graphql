@@ -1,55 +1,128 @@
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
   email: String
-  password_is_set: Boolean
+  password: PasswordState!
   isAdmin: Boolean
 }
 
-input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
+type PasswordState {
+  isSet: Boolean!
 }
 
 input UserWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  isAdmin_ASC
-  isAdmin_DESC
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFieldFilter
+  isAdmin: BoolNullableFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input PasswordFieldFilter {
+  isSet: Boolean!
+}
+
+input BoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
+
+input NestedBoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
+
+input SortUsersBy {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type Mutation {
+  createUser(data: UserCreateInput! = {}): User!
+  createUsers(data: [UserCreateInput!]!): [User!]!
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
+  updateUsers(data: [UsersUpdateInput!]!): [User!]!
+  deleteUser(where: UserWhereUniqueInput!): User!
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
+  endSession: Boolean!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
 }
 
 input UserUpdateInput {
@@ -60,139 +133,21 @@ input UserUpdateInput {
 }
 
 input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
-
-type _QueryMeta {
-  count: Int
-}
-
-type Mutation {
-  """
-   Create a single User item.
-  """
-  createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
-  deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
-  deleteUsers(ids: [ID!]): [User]
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  endSession: Boolean!
-}
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int
-  ): [User]
-
-  """
-   Search for the User item with the matching ID.
-  """
   User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
-  _allUsersMeta(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
+  allUsers(
+    where: UserWhereInput! = {}
+    orderBy: [SortUsersBy!]! = []
     first: Int
-    skip: Int
-  ): _QueryMeta
-  authenticatedItem: AuthenticatedItem
+    skip: Int! = 0
+  ): [User!]!
+  allUsersCount(where: UserWhereInput! = {}): Int!
   keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
 }
 
 type KeystoneMeta {
@@ -237,6 +192,14 @@ type KeystoneAdminUIFieldMeta {
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
 }
 
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
 type KeystoneAdminUIFieldMetaCreateView {
   fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
 }
@@ -273,4 +236,34 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
 }
