@@ -1,9 +1,9 @@
 import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
 
+import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
-import { createAdminMeta } from './createAdminMeta';
 
 export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {

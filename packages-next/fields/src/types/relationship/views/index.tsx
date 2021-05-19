@@ -2,9 +2,9 @@
 
 import { Fragment, ReactNode, useState } from 'react';
 
-import { CellContainer, CreateItemDrawer } from '@keystone-next/admin-ui/components';
-import { useKeystone, useList } from '@keystone-next/admin-ui/context';
-import { Link } from '@keystone-next/admin-ui/router';
+import { CellContainer, CreateItemDrawer } from '@keystone-next/keystone/admin-ui/components';
+import { useKeystone, useList } from '@keystone-next/keystone/admin-ui/context';
+import { Link } from '@keystone-next/keystone/admin-ui/router';
 import {
   CardValueComponent,
   CellComponent,

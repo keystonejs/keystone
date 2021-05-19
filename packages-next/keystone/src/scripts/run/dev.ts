@@ -1,6 +1,6 @@
 import path from 'path';
 import express from 'express';
-import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
@@ -13,7 +13,7 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
-import { createAdminMeta } from '../../lib/createAdminMeta';
+import { createAdminMeta } from '../../admin-ui/system/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),

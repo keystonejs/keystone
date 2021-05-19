@@ -4,7 +4,7 @@ import GraphQLJSON from 'graphql-type-json';
 import type { FileUpload } from 'graphql-upload';
 // this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
-import GraphQLUpload from 'graphql-upload/public/GraphQLUpload';
+import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
 import Decimal from 'decimal.js';
 import { GraphQLScalarType } from 'graphql';
 import { BaseGeneratedListTypes } from './utils';

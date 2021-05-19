@@ -1,14 +1,14 @@
 import Path from 'path';
 import prettier from 'prettier';
 import fs from 'fs-extra';
-import { buildAdminUI, generateAdminUI } from '@keystone-next/admin-ui/system';
 import { AdminFileToWrite } from '@keystone-next/types';
+import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
-import { createAdminMeta } from '../../lib/createAdminMeta';
+import { createAdminMeta } from '../../admin-ui/system/createAdminMeta';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -55,7 +55,7 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   // of the configuration file in the .next/ directory. Even if we're not building
   // an Admin UI, we still need to run the `build()` function so that this config
   // file is correctly compiled.
-  const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
+  const pkgDir = Path.dirname(require.resolve('@keystone-next/keystone/package.json'));
   const p = serializePathForImport(
     Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
   );

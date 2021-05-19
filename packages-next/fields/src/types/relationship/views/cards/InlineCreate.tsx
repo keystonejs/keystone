@@ -1,11 +1,11 @@
 /* @jsx jsx */
 
 import { useState } from 'react';
-import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
+import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';
 import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useToasts } from '@keystone-ui/toast';
-import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import { GraphQLErrorNotice } from '@keystone-next/keystone/admin-ui/components';
 import {
   ItemData,
   makeDataGetter,

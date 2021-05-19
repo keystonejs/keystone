@@ -1,5 +1,5 @@
 import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
-import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
+import { getAdminMetaSchema } from '../admin-ui/system';
 import { sessionSchema } from '../session';
 import { InitialisedList } from './core/types-for-lists';
 import { getGraphQLSchema } from './core/graphql-schema';
