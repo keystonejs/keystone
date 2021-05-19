@@ -248,6 +248,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
           ]);
         })
       );
+
+      test(
+        'Multi filter, bad format throws error ',
+        runner(setupKeystone, async ({ context }) => {
+          await initialiseData({ context });
+
+          const { data, errors } = await context.graphql.raw({
+            query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
+          });
+          expect(data).toBe(null);
+          expect(errors).toHaveLength(1);
+          expect(errors![0].message).toEqual('Only a single key must be passed to SortUsersBy');
+        })
+      );
     });
   })
 );
