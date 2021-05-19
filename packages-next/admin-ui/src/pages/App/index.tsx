@@ -1,28 +1,5 @@
-import React from 'react';
-import { Core } from '@keystone-ui/core';
-import { AppProps } from 'next/app';
-import { DocumentNode } from 'graphql';
-import { AdminConfig, FieldViews } from '@keystone-next/types';
-import { ErrorBoundary } from '../../components';
-import { KeystoneProvider } from '../../context';
+throw new Error(
+  'The @keystone-next/admin-ui package has been merged into the @keystone-next/keystone package. Please import from @keystone-next/keystone/admin-ui instead.'
+);
 
-type AppConfig = {
-  adminConfig: AdminConfig;
-  adminMetaHash: string;
-  fieldViews: FieldViews;
-  lazyMetadataQuery: DocumentNode;
-};
-
-export const getApp =
-  (props: AppConfig) =>
-  ({ Component, pageProps }: AppProps) => {
-    return (
-      <Core>
-        <KeystoneProvider {...props}>
-          <ErrorBoundary>
-            <Component {...pageProps} />
-          </ErrorBoundary>
-        </KeystoneProvider>
-      </Core>
-    );
-  };
+export {};

@@ -1,8 +1,5 @@
-export { CellContainer } from './CellContainer';
-export { CellLink } from './CellLink';
-export { ErrorBoundary, ErrorContainer } from './Errors';
-export { Logo } from './Logo';
-export { Navigation } from './Navigation';
-export { PageContainer } from './PageContainer';
-export { CreateItemDrawer } from './CreateItemDrawer';
-export { GraphQLErrorNotice } from './GraphQLErrorNotice';
+throw new Error(
+  'The @keystone-next/admin-ui package has been merged into the @keystone-next/keystone package. Please import from @keystone-next/keystone/admin-ui instead.'
+);
+
+export {};

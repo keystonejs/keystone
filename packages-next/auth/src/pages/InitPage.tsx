@@ -6,14 +6,14 @@ import fetch from 'cross-fetch';
 import { jsx, H1, Stack, Inline } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-next/admin-ui/context';
+import { useRawKeystone } from '@keystone-next/keystone/admin-ui/context';
 import { FieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
-import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
-import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
-import { useRouter, Link } from '@keystone-next/admin-ui/router';
-import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';
+import { useReinitContext, useKeystone } from '@keystone-next/keystone/admin-ui/context';
+import { useRouter, Link } from '@keystone-next/keystone/admin-ui/router';
+import { GraphQLErrorNotice } from '@keystone-next/keystone/admin-ui/components';
 import {
   Fields,
   serializeValueToObjByFieldKey,

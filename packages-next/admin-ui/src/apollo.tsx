@@ -1,6 +1,5 @@
-/**
- * This file is exposed by the /apollo entrypoint, and helps ensure that other
- * packages import the same instance of apollo.
- */
+throw new Error(
+  'The @keystone-next/admin-ui package has been merged into the @keystone-next/keystone package. Please import from @keystone-next/keystone/admin-ui instead.'
+);
 
-export * from '@apollo/client';
+export {};

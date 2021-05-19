@@ -11,8 +11,8 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { OptionPrimitive, Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
-import { useList } from '../../context';
-import { useRouter } from '../../router';
+import { useList } from '../../../../admin-ui/context';
+import { useRouter } from '../../../../admin-ui/router';
 
 type State =
   | {

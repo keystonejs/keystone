@@ -1,7 +1,5 @@
-# @keystone-next/admin-ui
+The `@keystone-next/admin-ui` package has been merged into the `@keystone-next/keystone` package.
 
-Part of Keystone's [new interfaces project](https://www.keystonejs.com/blog/roadmap-update). This is a preview release, and not yet documented.
+You no longer need to install this package.
 
-You can find example projects and usage [on GitHub](https://github.com/keystonejs/keystone/tree/master/examples)
-
-For updates, [follow @keystonejs on Twitter](https://twitter.com/keystonejs) and check out [our Blog](https://www.keystonejs.com/blog)
+All imports from this package are now available from `@keystone-next/keystone/admin-ui` instead.

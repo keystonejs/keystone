@@ -1,6 +1,6 @@
 import path from 'path';
 import express from 'express';
-import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
