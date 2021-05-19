@@ -20,11 +20,7 @@ export const writeAdminFiles = (
 ): AdminFileToWrite[] => [
   ...['next.config.js', 'tsconfig.json'].map(
     outputPath =>
-      ({
-        mode: 'copy',
-        inputPath: Path.join(pkgDir, 'src', 'admin-ui', 'static', outputPath),
-        outputPath,
-      } as const)
+      ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
   ),
   { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
   {
