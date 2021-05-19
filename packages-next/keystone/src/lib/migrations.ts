@@ -290,11 +290,13 @@ async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
   const created = await createDatabase(dbUrl, schemaDir);
   if (created) {
     const credentials = uriToCredentials(dbUrl);
-    console.log(
-      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
-        credentials
-      )}`
-    );
+    if (!process.env.TEST_ADAPTER) {
+      console.log(
+        `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+          credentials
+        )}`
+      );
+    }
   }
   // TODO: handle createDatabase returning a failure (prisma's cli does not handle it though so not super worried)
 }
