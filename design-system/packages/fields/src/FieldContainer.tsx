@@ -5,7 +5,6 @@ import { jsx, forwardRefWithAs } from '@keystone-ui/core';
 
 type FieldContainerProps = {
   children: ReactNode;
-  className?: string;
 };
 
 export const FieldContainer = forwardRefWithAs<'div', FieldContainerProps>(
