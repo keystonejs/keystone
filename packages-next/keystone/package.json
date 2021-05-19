@@ -103,7 +103,8 @@
       "migrations.ts",
       "schema/index.ts",
       "session/index.ts",
-      "scripts/index.ts"
+      "scripts/index.ts",
+      "scripts/cli.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/keystone"
