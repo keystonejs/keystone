@@ -1,8 +1,8 @@
 /* @jsx jsx */
 
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
 
-import { jsx, H1, Stack } from '@keystone-ui/core';
+import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
@@ -101,7 +101,11 @@ export const SigninPage = ({
           </Notice>
         )}
         <Stack gap="medium">
+          <VisuallyHidden as="label" htmlFor="identity">
+            Email Address
+          </VisuallyHidden>
           <TextInput
+            id="identity"
             name="identity"
             value={state.identity}
             onChange={e => setState({ ...state, identity: e.target.value })}
@@ -109,13 +113,19 @@ export const SigninPage = ({
             ref={identityFieldRef}
           />
           {mode === 'signin' && (
-            <TextInput
-              name="password"
-              value={state.secret}
-              onChange={e => setState({ ...state, secret: e.target.value })}
-              placeholder="password"
-              type="password"
-            />
+            <Fragment>
+              <VisuallyHidden as="label" htmlFor="password">
+                Password
+              </VisuallyHidden>
+              <TextInput
+                id="password"
+                name="password"
+                value={state.secret}
+                onChange={e => setState({ ...state, secret: e.target.value })}
+                placeholder="password"
+                type="password"
+              />
+            </Fragment>
           )}
         </Stack>
 
