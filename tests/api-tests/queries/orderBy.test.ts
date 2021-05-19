@@ -25,30 +25,30 @@ function setupKeystone(provider: ProviderName) {
 }
 
 const initialiseData = async ({ context }: { context: KeystoneContext }) => {
-  // Use shuffled data to ensure that sorting is actually happening.
+  // Use shuffled data to ensure that ordering is actually happening.
   await context.lists.User.createMany({
     data: [
-      { data: { a: 1, b: 10 } },
-      { data: { a: 1, b: 30 } },
-      { data: { a: 1, b: 20 } },
-      { data: { a: 3, b: 30 } },
-      { data: { a: 3, b: 10 } },
-      { data: { a: 3, b: 20 } },
-      { data: { a: 2, b: 30 } },
-      { data: { a: 2, b: 20 } },
-      { data: { a: 2, b: 10 } },
+      { a: 1, b: 10 },
+      { a: 1, b: 30 },
+      { a: 1, b: 20 },
+      { a: 3, b: 30 },
+      { a: 3, b: 10 },
+      { a: 3, b: 20 },
+      { a: 2, b: 30 },
+      { a: 2, b: 20 },
+      { a: 2, b: 10 },
     ],
   });
 };
 
 multiAdapterRunners().map(({ runner, provider }) =>
   describe(`Provider: ${provider}`, () => {
-    describe('Sorting by a single field', () => {
+    describe('Ordering by a single field', () => {
       test(
         'Single ascending filter - a',
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
-          const users = await context.lists.User.findMany({ sortBy: ['a_ASC'], query: 'a' });
+          const users = await context.lists.User.findMany({ orderBy: [{ a: 'asc' }], query: 'a' });
           expect(users.map(({ a }) => a)).toEqual([1, 1, 1, 2, 2, 2, 3, 3, 3]);
         })
       );
@@ -56,7 +56,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Single descending filter - a',
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
-          const users = await context.lists.User.findMany({ sortBy: ['a_DESC'], query: 'a' });
+          const users = await context.lists.User.findMany({ orderBy: [{ a: 'desc' }], query: 'a' });
           expect(users.map(({ a }) => a)).toEqual([3, 3, 3, 2, 2, 2, 1, 1, 1]);
         })
       );
@@ -64,7 +64,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Single ascending filter - b',
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
-          const users = await context.lists.User.findMany({ sortBy: ['b_ASC'], query: 'b' });
+          const users = await context.lists.User.findMany({ orderBy: [{ b: 'asc' }], query: 'b' });
           expect(users.map(({ b }) => b)).toEqual([10, 10, 10, 20, 20, 20, 30, 30, 30]);
         })
       );
@@ -72,7 +72,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Single descending filter - b',
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
-          const users = await context.lists.User.findMany({ sortBy: ['b_DESC'], query: 'b' });
+          const users = await context.lists.User.findMany({ orderBy: [{ b: 'desc' }], query: 'b' });
           expect(users.map(({ b }) => b)).toEqual([30, 30, 30, 20, 20, 20, 10, 10, 10]);
         })
       );
@@ -82,7 +82,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['a_ASC', 'b_ASC'],
+            orderBy: [{ a: 'asc' }, { b: 'asc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -103,7 +103,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['b_ASC', 'a_ASC'],
+            orderBy: [{ b: 'asc' }, { a: 'asc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -125,7 +125,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['a_ASC', 'b_DESC'],
+            orderBy: [{ a: 'asc' }, { b: 'desc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -146,7 +146,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['b_ASC', 'a_DESC'],
+            orderBy: [{ b: 'asc' }, { a: 'desc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -168,7 +168,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['a_DESC', 'b_ASC'],
+            orderBy: [{ a: 'desc' }, { b: 'asc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -189,7 +189,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['b_DESC', 'a_ASC'],
+            orderBy: [{ b: 'desc' }, { a: 'asc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -211,7 +211,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['a_DESC', 'b_DESC'],
+            orderBy: [{ a: 'desc' }, { b: 'desc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
@@ -232,7 +232,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
           const users = await context.lists.User.findMany({
-            sortBy: ['b_DESC', 'a_DESC'],
+            orderBy: [{ b: 'desc' }, { a: 'desc' }],
             query: 'a b',
           });
           expect(users.map(({ a, b }) => [a, b])).toEqual([
