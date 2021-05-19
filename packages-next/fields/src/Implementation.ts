@@ -128,7 +128,7 @@ class Field<P extends string> {
     return {};
   }
 
-  getGqlAuxQueries() {
+  getGqlAuxQueries(): any[] {
     return [];
   }
   gqlAuxQueryResolvers() {
