@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/core",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "license": "MIT",
   "main": "dist/core.cjs.js",
   "module": "dist/core.esm.js",
@@ -21,6 +21,6 @@
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
-  }  ,
+  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/core"
 }

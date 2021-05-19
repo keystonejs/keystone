@@ -1,5 +1,14 @@
 # @keystone-next/admin-ui
 
+## 15.0.0
+
+### Major Changes
+
+- [#5677](https://github.com/keystonejs/keystone/pull/5677) [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated the `@keystone-next/admin-ui` package into `@keystone-next/keystone`.
+
+  If you were directly importing from `@keystone-next/admin-ui` you can now import the same items from `@keystone-next/keystone/admin-ui`.
+  If you have `@keystone-next/admin-ui` in your `package.json` you should remove it.
+
 ## 14.1.3
 
 ### Patch Changes
