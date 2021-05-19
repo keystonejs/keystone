@@ -12,21 +12,21 @@ model Todo {
   id           Int       @id @default(autoincrement())
   label        String?
   isComplete   Boolean?
+  assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId Int?      @map("assignedTo")
   finishBy     DateTime?
   createdAt    DateTime?
   updatedAt    DateTime?
-  assignedTo   User?     @relation("TodoassignedTo", fields: [assignedToId], references: [id])
-  assignedToId Int?      @map("assignedTo")
 
   @@index([assignedToId])
 }
 
 model User {
+  tasks     Todo[]    @relation("Todo_assignedTo")
   id        Int       @id @default(autoincrement())
   name      String?
   email     String?
   password  String?
   createdAt DateTime?
   updatedAt DateTime?
-  tasks     Todo[]    @relation("TodoassignedTo")
 }

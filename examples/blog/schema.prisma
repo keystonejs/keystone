@@ -14,15 +14,15 @@ model Post {
   status      String?
   content     String?
   publishDate DateTime?
-  author      Author?   @relation("Postauthor", fields: [authorId], references: [id])
+  author      Author?   @relation("Post_author", fields: [authorId], references: [id])
   authorId    Int?      @map("author")
 
   @@index([authorId])
 }
 
 model Author {
+  posts Post[]  @relation("Post_author")
   id    Int     @id @default(autoincrement())
   name  String?
-  email String? @unique
-  posts Post[]  @relation("Postauthor")
+  email String?
 }

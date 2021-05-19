@@ -13,17 +13,17 @@ model Task {
   label        String?
   priority     String?
   isComplete   Boolean?
-  finishBy     DateTime?
-  assignedTo   Person?   @relation("TaskassignedTo", fields: [assignedToId], references: [id])
+  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
   assignedToId Int?      @map("assignedTo")
+  finishBy     DateTime?
 
   @@index([assignedToId])
 }
 
 model Person {
+  tasks    Task[]  @relation("Task_assignedTo")
   id       Int     @id @default(autoincrement())
   name     String?
-  email    String? @unique
+  email    String?
   password String?
-  tasks    Task[]  @relation("TaskassignedTo")
 }
