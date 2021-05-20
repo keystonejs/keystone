@@ -122,16 +122,13 @@ export default config({
 
 Finally, make a small change to the `scripts` object in `package.json` to include Keystone‘s `postinstall`:
 
-```json
-	// within package.json
-
+```diff
   "scripts": {
-    "postinstall": "keystone-next postinstall",
++    "postinstall": "keystone-next postinstall",
     "dev": "next dev",
     "start": "next start",
     "build": "next build"
   },
-```
 
 Running `yarn dev` again will do the following:
 
