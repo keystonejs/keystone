@@ -65,8 +65,8 @@ export function Navigation() {
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
-        <NavItem href="/tutorials/getting-started-with-keystone-next-lite">
-          Keystone Next Lite
+        <NavItem href="/tutorials/embedded-mode-with-nextjs-frontend">
+          Embedding Keystone in NextJS
         </NavItem>
       </Section>
       <Section label="Guides">
@@ -74,10 +74,11 @@ export function Navigation() {
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/relationships">Relationships</NavItem>
         <NavItem href="/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
+        <NavItem href="/guides/modes">Modes</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
