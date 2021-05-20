@@ -40,6 +40,7 @@ model PhoneNumber {
 
 model Post {
   id          Int       @id @default(autoincrement())
+  code        String?
   title       String?
   status      String?
   content     String?
