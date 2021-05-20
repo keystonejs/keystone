@@ -1,0 +1,271 @@
+import { Markdown } from '../../components/Page';
+
+# How to embed Keystone in a NextJS app
+
+Keystone now supports SQLite! 🎉
+
+This makes it possible to run a local instance of Keystone from the same place you keep your frontend code and commit everything to Git. If you're happy to apply content changes in a local-only dev environment, and don't need a writeable API in production this use case may be handy for you.
+
+---
+
+[Keystone Lite](https://github.com/keystonejs/keystone/tree/master/examples/next-lite) is a streamlined [mode](/guides/modes) that you can operate Keystone with. It takes advantage of SQLite’s embedded local storage capabilities to give you a powerful CMS that you can run locally and store content in the same place you keep your frontend code.
+
+The tutorial will show you how to: 
+
+- Setup a NextJS app.
+- Embed Keystone within it, and run an Admin UI you can read and write to locally.
+- Create a simple Keystone schema with a `Post` [list](/apis/schema) that NextJS can build pages with. 
+- Setup a secure read-only GraphQL API endpoint (and playground) that you can access in production.
+- Deploy your CMS and frontend monorepo to Vercel. 🚀
+
+?> If you need access to an Keystone’s Admin UI over the internet, or want to provide access to more than one editor, use Keystone in it’s default [standalone](/guides/modes#standalone-mode) mode.
+
+## Setup a NextJS app
+
+Start out by adding a basic NextJS instance empty project directory:
+
+```bash
+yarn create next-app my-project
+cd my-project
+```
+
+### Add TypeScript
+
+Keystone Next is built in TypeScript. Adding it as a `--dev` dependency will make Keystone implementation easier later on. Let‘s get that out of the way now:
+
+```bash
+yarn add --dev typescript @types/react
+```
+Rename the `index.js` file in your `/pages` directory to `index.tsx`. We’ll query data in Keystone using TypeScript later on.
+
+```text
+.
+├── pages
+│   ├── _app.js
+│   ├── api
+│   └── index.tsx // renamed
+```
+
+### Startup your local server
+
+Run `yarn dev` at the root of your project. NextJS will generate a local server for you at [http://localhost:3000](http://localhost:3000).
+
+![A browser showing the Home page of the default NextJS app](/assets/tutorials/next-lite/localhost-home-1.png)
+
+
+## Add Keystone to your project
+
+Now that we have the NextJS starter with static files, let‘s embed Keystone into the app to blend file-based content with content you can edit using Keystone’s intuitive Admin UI.
+
+### Install dependencies
+
+Add the following Keystone dependencies to the project:
+
+```bash
+yarn add @keystone-next/keystone @keystone-next/admin-ui @keystone-next/fields
+```
+
+### Update .gitignore
+
+Add the `.keystone` directory to your `.gitignore` file. The contents of `.keystone` are dynamically generated at build time and you’ll never have to change them.
+
+```bash
+
+# in your .gitignore
+.keystone
+```
+
+### Add Keystone to NextJS config
+
+Add a `next.config.js` file to the project root with the following:
+
+```tsx
+
+// next.config.js
+
+const { withKeystone } = require('@keystone-next/keystone/next');
+
+module.exports = withKeystone();
+```
+
+This is where the magic happens – the `withKeystone` constant lets NextJS encapsulate Keystone in its script runtime, but Keystone still operates independently of the NextJS frontend.✨
+
+### Create a content List in Keystone config
+
+Now add a `keystone.ts` [configuration file](/apis/config) to the project root with a simple `Post` [list](/apis/schema) type. This will give us the ability to create and edit blog records in Keystone’s Admin UI:
+
+```tsx
+// keystone.ts
+
+import { config, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+const Post = list({
+  fields: {
+    title: text({ isRequired: true }),
+    slug: text(),
+    content: text(),
+  },
+});
+
+export default config({
+  db: { adapter: 'prisma_sqlite', url: 'file:./app.db' },
+  experimental: {
+    generateNextGraphqlAPI: true,
+    generateNodeAPI: true,
+  },
+  lists: { Post },
+});
+```
+
+### Update package scripts
+
+Finally, make a small change to the `scripts` object in `package.json` to include Keystone‘s `postinstall`:
+
+```json
+	// within package.json
+
+  "scripts": {
+    "postinstall": "keystone-next postinstall",
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build"
+  },
+```
+
+Running `yarn dev` again will do the following:
+
+- Provision a GraphQL schema based on the configuration of `keystone.ts`.
+- Build a [Prisma.io](https://www.prisma.io/) schema (which Keystone uses to create tables in the database).
+- Serve Keystone’s Admin UI at [http://localhost:8000](http://localhost:8000).
+- Serve the NextJS frontend at [http://localhost:3000](http://localhost:3000).
+- Add a `postinstall` script that ensures everything works if we install dependencies in the future.
+
+![Local server instances of the NExtJS frontend, and Keystone Admin UI](/assets/tutorials/next-lite/localhost-next-keystone.gif)
+
+Go ahead and add two post entries using your Admin UI, ensuring the Slug field `uses-hyphens-and-lowercase-chars` for permalinks.
+
+## Query Keystone content in NextJS
+
+In order to query Keystone content we need to use Next’s [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation) functions. Let’s overwrite the contents of `index.tsx` with the following to query posts from Keystone:
+
+```tsx
+// pages/index.tsx
+
+import Link from 'next/link';
+
+// get `lists` from Keystone
+import { lists } from '.keystone/api';
+
+export default function Home({posts}) {
+  return (
+    <div>
+      <main style={{margin: "3rem"}}>
+      <h1>Hello World! 👋🏻 </h1>
+      <ul>
+      {/* map over existing posts and output their title as list items */}
+        {posts.map(post => (
+          <li key={post.id}>
+              <Link href={`/post/${post.slug}`}>
+                <a>{post.title}</a>
+              </Link>
+          </li>
+        ))}
+      </ul>
+      </main>
+    </div>
+  )
+}
+
+export async function getStaticProps() {
+  const posts = await lists.Post.findMany({ query: 'id title slug' });
+  return { props: { posts } };
+}
+
+
+```
+Now add a `/post` subdirectory in `/pages` and include the code below in `[slug].tsx`. This will generate new post pagee every time you publish a new post entry in Admin UI.
+
+```tsx
+// pages/post/[slug].tsx
+
+import Link from 'next/link';
+import { lists } from '.keystone/api';
+
+export default function Home({ post }) {
+  return (
+    <div>
+      <main style={{margin: "3rem"}}>
+      <div>
+        <Link href="/">
+          <a>&larr; back home</a>
+        </Link>
+      </div>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+      </main>
+    </div>
+  );
+}
+
+export async function getStaticPaths() {
+  const posts = await lists.Post.findMany({
+    query: `slug`,
+  });
+
+  const paths = posts
+    .map(post => post.slug)
+    .filter((slug): slug is string => !!slug)
+    .map(slug => `/post/${slug}`);
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params: { slug } }) {
+  const [post] = await lists.Post.findMany({
+    where: { slug },
+    query: 'id title content',
+  });
+  return { props: { post } };
+}
+```
+
+Run `yarn dev` again.
+
+**Congratulations!** 🙌 &nbsp; You now have a NextJS frontend blending static pages from your frontend repo, and  dynamic pages powered by Keystone content that‘s editable in an intuitive Admin UI.
+
+## Optional: add the GraphQL API to the frontend
+
+To get a read-only GraphQL API and playground in production, rename `/pages/api/hello.tsx` to `graphl.tsx` with the following:
+
+```tsx
+// pages/api/graphql.tsx
+
+export { default, config } from '.keystone/next/graphql-api';
+```
+This takes the fully functional GraphQL API that Keystone is already generating and makes it available as queryable an endpoint and playground within the NextJS frontend app at: `[http://localhost:3000/api/graphql](http://localhost:3000/api/graphql)`.
+
+![A browser displaying the GraphQL playground](/assets/tutorials/next-lite/graphql-api.png)
+
+This gives you the ability to implement a search against the same content API you have running at build time, in run time 🪄 &nbsp;.
+
+## Optional: deploy to Vercel
+
+Optional: 
+
+To get your project on the internet via Vercel hosting complete the following steps:
+
+1. Commit your project to a repository in [Github](https://github.com/), [Gitlab](https://gitlab.com/), or [Bitbucket](https://bitbucket.org/).
+2. Login to [Vercel](https://vercel.com/) using an account from the services above.
+3. Create a new Vercel project and link it to your newly created repository.
+
+![A browser displaying the GraphQL playground](/assets/tutorials/next-lite/vercel-new-project.gif)
+
+## Summary
+
+Keystone’s introduction of SQLite gives you the option to run a self contained CMS from the same place you keep your frontend code. While this option restricts read-write access to people who can run the project in local development, it has advantages with ease of setup, security, and web deployment. Keystone Lite is also a great way to deploy a read-only API on the web for content you manage on your computer.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
