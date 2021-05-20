@@ -186,7 +186,7 @@ type Query {
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [User]
+  ): [User!]
 
   """
    Search for the User item with the matching ID.

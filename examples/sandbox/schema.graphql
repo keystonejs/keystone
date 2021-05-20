@@ -354,7 +354,7 @@ type Query {
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo]
+  ): [Todo!]
 
   """
    Search for the Todo item with the matching ID.
@@ -389,7 +389,7 @@ type Query {
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [User]
+  ): [User!]
 
   """
    Search for the User item with the matching ID.

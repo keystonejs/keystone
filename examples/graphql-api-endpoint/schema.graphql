@@ -568,7 +568,7 @@ type Query {
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [User]
+  ): [User!]
 
   """
    Search for the User item with the matching ID.
@@ -603,7 +603,7 @@ type Query {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post]
+  ): [Post!]
 
   """
    Search for the Post item with the matching ID.
@@ -638,7 +638,7 @@ type Query {
     orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Tag]
+  ): [Tag!]
 
   """
    Search for the Tag item with the matching ID.

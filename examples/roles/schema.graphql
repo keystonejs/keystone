@@ -530,7 +530,7 @@ type Query {
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo]
+  ): [Todo!]
 
   """
    Search for the Todo item with the matching ID.
@@ -565,7 +565,7 @@ type Query {
     orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Person]
+  ): [Person!]
 
   """
    Search for the Person item with the matching ID.
@@ -600,7 +600,7 @@ type Query {
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Role]
+  ): [Role!]
 
   """
    Search for the Role item with the matching ID.

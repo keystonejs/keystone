@@ -1254,7 +1254,7 @@ export class List implements BaseKeystoneList {
         """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
         ${this.gqlNames.listQueryName}(
           ${this.getGraphqlFilterFragment().join('\n')}
-        ): [${this.gqlNames.outputTypeName}]`,
+        ): [${this.gqlNames.outputTypeName}!]`,
 
         `
         """ Search for the ${this.gqlNames.outputTypeName} item with the matching ID. """

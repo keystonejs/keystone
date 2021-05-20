@@ -360,7 +360,7 @@ type Query {
     orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Task]
+  ): [Task!]
 
   """
    Search for the Task item with the matching ID.
@@ -395,7 +395,7 @@ type Query {
     orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Person]
+  ): [Person!]
 
   """
    Search for the Person item with the matching ID.
