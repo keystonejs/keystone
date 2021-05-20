@@ -1,0 +1,82 @@
+import { Markdown } from '../../components/Page';
+
+# Modes
+
+With the support of SQLite in Keystone 6, you can now choose to use Keystone in a “standalone” (headless) fashion, or “embed” your backend within a frontend app.
+
+We refer to these two use cases as “modes”. **Embedded mode is new**, and offers a different approach to integrating Keystone. While it offers some quick wins (for developers in particular), it also comes with restrictions that constrain it to a narrow set of uses at this point in time. 
+
+!> Modes is conceptual framework. It has no dedicated APIs, and there are no mentions of modes in the API docs.
+
+## Standalone mode
+
+Standalone mode is the default (headless) way to use Keystone. In fact **prior to version 6, standalone mode was the only way you could use Keystone**. The premise of standalone mode is:
+
+- Keystone operates completely independently of any frontend.
+- Editors read and write to your database, via Admin UI, over the internet.
+
+?> Unless explicitly stated, all Keystone functionalities work in standalone mode, and all documentation assumes working in standalone mode.
+
+Standalone mode doesn’t restrict you from co-locating your Keystone files in the same repo as your frontend. It’s just not important where your frontend(s) are.
+
+## Embedded mode
+
+Introduced in Keystone 6, _embedded_ mode is made possible by Keystone 6’s support of SQLite – which gives you the option to store your files and database content _within_ your local Keystone repo – instead of an external host. SQLite’s local storage capability makes it possible to embed Keystone within a frontend application, and build from its APIs at runtime.
+
+### Disadvantages
+
+- Because Admin UI access is restricted to a local development runtime – this mode is (currently) **not suitable when you need more than one editor**.
+- SQLite doesn’t support scalability, concurrency, and centralization as well as PostgreSQL. **If your project has scaling needs, you’re probably better off with standalone mode and external PostgreSQL hosting**.
+
+### Advantages
+
+- An easy way to prototype schema without configuring external - databases (all [example starters](https://github.com/keystonejs/keystone/tree/master/examples) use SQLite).
+- File and DB storage can be version controlled.
+- An easy way to power a NextJS frontend app. 
+- Frontend and backend can be deployed to Vercel as a monorepo.
+- With write access restricted to a local development, it’s more secure.
+
+Embedded mode is a great way to operate a personal NextJS blog or portfolio with a CMS for content editing, instead of MDX.
+
+### How to implement embedded mode
+
+?> Currently, the only way to run embedded mode is within a NextJS app.
+
+Add the following dependencies to your project:
+
+```bash
+yarn add @keystone-next/keystone @keystone-next/admin-ui @keystone-next/fields
+```
+And the `withKeystone` constant to `next.config.js`. This will let the NextJS frontend encapsulate Keystone in its script runtime.
+
+!> Even though the frontend app calls Keystone at runtime, Keystone still operates independently of the NextJS frontend.
+
+```js
+// next.config.js
+
+const { withKeystone } = require('@keystone-next/keystone/next');
+
+module.exports = withKeystone();
+```
+[Read this tutorial](/tutorials/embedded-mode-with-nextjs-frontend) for step by step instructions on embedding Keystone inside a NextJs frontend app.
+
+## Standalone VS Embedded modes
+
+|Capability|Standalone mode|Embedded mode|
+|-----------------|----------|-----------|
+|**Admin UI**|||
+|Accessible in local dev environment|✅|✅|
+|Accessible over the internet|✅|❌|
+|**APIs**||
+|Read access in production|✅|✅|
+|Write access in production|✅|❌|
+|**Database support**||
+|PostgreSQL|✅|❌|
+|SQLite|✅|✅|
+|**Hosting, version control, deployment**||
+|Version control for DB content|❌|✅|
+|Local file storage|❌|✅|
+|Separate DB hosting required|✅|❌|
+|Vercel deployable (with NextJS frontend)|❌|✅|
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
