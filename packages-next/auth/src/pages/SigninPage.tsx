@@ -102,27 +102,27 @@ export const SigninPage = ({
         )}
         <Stack gap="medium">
           <VisuallyHidden as="label" htmlFor="identity">
-            Email Address
+            {identityField}
           </VisuallyHidden>
           <TextInput
             id="identity"
             name="identity"
             value={state.identity}
             onChange={e => setState({ ...state, identity: e.target.value })}
-            placeholder="Email Address"
+            placeholder={identityField}
             ref={identityFieldRef}
           />
           {mode === 'signin' && (
             <Fragment>
               <VisuallyHidden as="label" htmlFor="password">
-                Password
+                {secretField}
               </VisuallyHidden>
               <TextInput
                 id="password"
                 name="password"
                 value={state.secret}
                 onChange={e => setState({ ...state, secret: e.target.value })}
-                placeholder="password"
+                placeholder={secretField}
                 type="password"
               />
             </Fragment>
