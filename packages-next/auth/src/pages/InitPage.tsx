@@ -123,7 +123,7 @@ const Welcome = ({ value }: { value: any }) => {
       </div>
       <form onSubmit={onSubmit}>
         <VisuallyHidden as="label" htmlFor="email-field">
-          Email
+          Email Address
         </VisuallyHidden>
         <TextInput
           id="email-field"
