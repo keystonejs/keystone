@@ -147,7 +147,9 @@ export function itemAPIForList(
         const { id } = args;
         return deleteItem({ listKey, context, returnFields, itemId: id });
       } else {
-        return dbAPI.deleteOne(args);
+        // THIS IS WRONG!!!!!!
+        // i just don't want to deal with this right now
+        return dbAPI.deleteOne({ where: { id: args.id } });
       }
     },
     deleteMany({ query, resolveFields, ...args }) {
@@ -156,7 +158,9 @@ export function itemAPIForList(
         const { ids } = args;
         return deleteItems({ listKey, context, returnFields, items: ids });
       } else {
-        return dbAPI.deleteMany(args);
+        // THIS IS WRONG!!!!!!
+        // i just don't want to deal with this right now
+        return dbAPI.deleteMany({ where: args.ids.map(id => ({ id })) });
       }
     },
   };

@@ -105,7 +105,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
       readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'];
     }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     createMany(args: {
-      readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
+      readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
     deleteOne(args: {
       readonly where: { readonly id: string };

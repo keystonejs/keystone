@@ -1,5 +1,4 @@
-import { Implementation } from '@keystone-next/fields';
-import { humanize, resolveAllKeys, arrayToObject } from '@keystone-next/utils-legacy';
+import { humanize } from '@keystone-next/utils-legacy';
 
 export const keyToLabel = (str: string) => {
   let label = humanize(str);
@@ -21,17 +20,3 @@ export const opToType = {
   update: 'mutation',
   delete: 'mutation',
 } as const;
-
-export const mapToFields = <F extends Implementation<any>>(
-  fields: F[],
-  action: (f: F) => Promise<unknown>
-) =>
-  resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
-    if (!error.errors) {
-      throw error;
-    }
-    const errorCopy = new Error(error.message || error.toString());
-    // @ts-ignore
-    errorCopy.errors = Object.values(error.errors);
-    throw errorCopy;
-  });

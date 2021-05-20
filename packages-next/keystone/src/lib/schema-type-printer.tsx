@@ -12,7 +12,6 @@ import {
   InputValueDefinitionNode,
 } from 'graphql';
 import prettier from 'prettier';
-import type { BaseKeystone } from '@keystone-next/types';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
   return `export type ${node.name.value} =\n${node
@@ -103,7 +102,7 @@ export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQ
 
   let queryNodeFieldsByName: Record<string, FieldDefinitionNode> = {};
 
-  for (const field of queryNode.fields!) {
+  for (const field of queryNode!.fields!) {
     queryNodeFieldsByName[field.name.value] = field;
   }
 
@@ -118,8 +117,8 @@ export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQ
     return types + '}';
   };
 
-  for (const listKey in keystone.lists) {
-    const list = keystone.lists[listKey];
+  for (const listKey in (undefined as any).lists) {
+    const list = (undefined as any).lists[listKey];
     let backingTypes = '{\n';
     for (const field of list.fields) {
       for (const [key, { optional, type }] of Object.entries(field.getBackingTypes()) as any) {

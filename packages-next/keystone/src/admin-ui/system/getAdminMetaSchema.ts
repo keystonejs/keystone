@@ -8,17 +8,7 @@ import {
   FieldMetaRootVal,
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
-import {
-  getNamedType,
-  GraphQLNamedType,
-  GraphQLType,
-  isInputObjectType,
-  isInterfaceType,
-  isObjectType,
-  GraphQLSchema,
-  isUnionType,
-  GraphQLObjectType,
-} from 'graphql';
+import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
@@ -287,10 +277,6 @@ export function getAdminMetaSchema({
   );
   const schemaConfig = schema.toConfig();
   const queryTypeConfig = schema.getQueryType()!.toConfig();
-  // collectReferencedTypes(
-  //   ,
-  //   new Map()
-  // );
   return new GraphQLSchema({
     ...schemaConfig,
     // TODO: fix the fact that this would be broken if types used the Query type
@@ -330,41 +316,41 @@ function runMaybeFunction<Return extends string | boolean, T>(
   return sessionFunction;
 }
 
-function collectReferencedTypes(
-  type: GraphQLType,
-  typesFound: Map<string, GraphQLNamedType>
-): void {
-  const namedType = getNamedType(type);
-  const expectedType = typesFound.get(namedType.name);
-  if (namedType.name === 'JSON') {
-    debugger;
-  }
-  if (expectedType === namedType) {
-    return;
-  }
-  if (expectedType !== undefined) {
-    debugger;
-  }
+// function collectReferencedTypes(
+//   type: GraphQLType,
+//   typesFound: Map<string, GraphQLNamedType>
+// ): void {
+//   const namedType = getNamedType(type);
+//   const expectedType = typesFound.get(namedType.name);
+//   if (namedType.name === 'JSON') {
+//     debugger;
+//   }
+//   if (expectedType === namedType) {
+//     return;
+//   }
+//   if (expectedType !== undefined) {
+//     debugger;
+//   }
 
-  typesFound.set(namedType.name, namedType);
-  if (isUnionType(namedType)) {
-    for (const memberType of namedType.getTypes()) {
-      collectReferencedTypes(memberType, typesFound);
-    }
-  } else if (isObjectType(namedType) || isInterfaceType(namedType)) {
-    for (const interfaceType of namedType.getInterfaces()) {
-      collectReferencedTypes(interfaceType, typesFound);
-    }
+//   typesFound.set(namedType.name, namedType);
+//   if (isUnionType(namedType)) {
+//     for (const memberType of namedType.getTypes()) {
+//       collectReferencedTypes(memberType, typesFound);
+//     }
+//   } else if (isObjectType(namedType) || isInterfaceType(namedType)) {
+//     for (const interfaceType of namedType.getInterfaces()) {
+//       collectReferencedTypes(interfaceType, typesFound);
+//     }
 
-    for (const field of Object.values(namedType.getFields())) {
-      collectReferencedTypes(field.type, typesFound);
-      for (const arg of field.args) {
-        collectReferencedTypes(arg.type, typesFound);
-      }
-    }
-  } else if (isInputObjectType(namedType)) {
-    for (const field of Object.values(namedType.getFields())) {
-      collectReferencedTypes(field.type, typesFound);
-    }
-  }
-}
+//     for (const field of Object.values(namedType.getFields())) {
+//       collectReferencedTypes(field.type, typesFound);
+//       for (const arg of field.args) {
+//         collectReferencedTypes(arg.type, typesFound);
+//       }
+//     }
+//   } else if (isInputObjectType(namedType)) {
+//     for (const field of Object.values(namedType.getFields())) {
+//       collectReferencedTypes(field.type, typesFound);
+//     }
+//   }
+// }

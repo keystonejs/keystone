@@ -58,8 +58,20 @@ export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
   const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
 
   const prismaClient = PrismaClient
-    ? new PrismaClient({ datasources: { [provider]: { url: config.db.url } } })
+    ? new PrismaClient({
+        log: config.db.enableLogging && ['query'],
+        datasources: { [provider]: { url: config.db.url } },
+      })
     : undefined;
+  if (prismaClient) {
+    prismaClient.$on('beforeExit', async () => {
+      // Prisma is failing to properly clean up its child processes
+      // https://github.com/keystonejs/keystone/issues/5477
+      // We explicitly send a SIGINT signal to the prisma child process on exit
+      // to ensure that the process is cleaned up appropriately.
+      prismaClient._engine.child.kill('SIGINT');
+    });
+  }
   const createContext = makeCreateContext({
     graphQLSchema,
     internalSchema: internalGraphQLSchema,
