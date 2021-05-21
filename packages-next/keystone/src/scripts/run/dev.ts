@@ -13,7 +13,6 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
-import { createAdminMeta } from '../../admin-ui/system/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
@@ -32,32 +31,31 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const initKeystone = async () => {
-    {
-      const { graphQLSchema } = createSystem(config);
+    const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
-      console.log('✨ Generating GraphQL and Prisma schemas');
-      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
-      await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
+    console.log('✨ Generating GraphQL and Prisma schemas');
+    const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
+    await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
-      if (config.db.useMigrations) {
-        await devMigrations(
-          config.db.url,
-          prismaSchema,
-          getSchemaPaths(cwd).prisma,
-          shouldDropDatabase
-        );
-      } else {
-        await pushPrismaSchemaToDatabase(
-          config.db.url,
-          prismaSchema,
-          getSchemaPaths(cwd).prisma,
-          shouldDropDatabase
-        );
-      }
+    if (config.db.useMigrations) {
+      await devMigrations(
+        config.db.url,
+        prismaSchema,
+        getSchemaPaths(cwd).prisma,
+        shouldDropDatabase
+      );
+    } else {
+      await pushPrismaSchemaToDatabase(
+        config.db.url,
+        prismaSchema,
+        getSchemaPaths(cwd).prisma,
+        shouldDropDatabase
+      );
     }
+
     const prismaClient = requirePrismaClient(cwd);
 
-    const { keystone, graphQLSchema, createContext, lists } = createSystem(config, prismaClient);
+    const keystone = getKeystone(prismaClient);
 
     console.log('✨ Connecting to the database');
     await keystone.connect();
@@ -66,20 +64,14 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(
-        config,
-        lists,
-        graphQLSchema,
-        createAdminMeta(config, lists),
-        getAdminPath(cwd)
-      );
+      await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
     }
 
     console.log('✨ Creating server');
     expressServer = await createExpressServer(
       config,
       graphQLSchema,
-      createContext,
+      keystone.createContext,
       true,
       getAdminPath(cwd)
     );

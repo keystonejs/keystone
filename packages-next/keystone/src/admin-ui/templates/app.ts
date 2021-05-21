@@ -10,14 +10,14 @@ import {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql';
-import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
+import { AdminMetaRootVal } from '@keystone-next/types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
 export const appTemplate = (
-  lists: Record<string, InitialisedList>,
+  adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
@@ -32,16 +32,7 @@ export const appTemplate = (
   const { adminMeta } = result.data!.keystone;
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
-  const _allViews = new Set<string>();
-  for (const list of Object.values(lists)) {
-    for (const field of Object.values(list.fields)) {
-      _allViews.add(field.views);
-      if (field.ui?.views) {
-        _allViews.add(field.ui.views);
-      }
-    }
-  }
-  const allViews = [..._allViews].map(views => {
+  const allViews = adminMetaRootVal.views.map(views => {
     const viewPath = Path.isAbsolute(views)
       ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
       : views;

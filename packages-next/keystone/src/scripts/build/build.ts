@@ -8,7 +8,6 @@ import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
-import { createAdminMeta } from '../../admin-ui/system/createAdminMeta';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -89,7 +88,7 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 export async function build(cwd: string) {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const { graphQLSchema, lists } = createSystem(config);
+  const { graphQLSchema, adminMeta } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, config, cwd);
 
@@ -102,13 +101,7 @@ export async function build(cwd: string) {
     console.log('✨ Skipping Admin UI code generation');
   } else {
     console.log('✨ Generating Admin UI code');
-    await generateAdminUI(
-      config,
-      lists,
-      graphQLSchema,
-      createAdminMeta(config, lists),
-      getAdminPath(cwd)
-    );
+    await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
   }
 
   console.log('✨ Generating Keystone config code');

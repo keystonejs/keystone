@@ -12,6 +12,7 @@ export function createAdminMeta(
     enableSignout: session !== undefined,
     listsByKey: {},
     lists: [],
+    views: [],
   };
 
   for (const [key, list] of Object.entries(initialisedLists)) {
@@ -67,14 +68,13 @@ export function createAdminMeta(
   }
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
-  const views: string[] = [];
   function getViewId(view: string) {
     if (stringViewsToIndex[view] !== undefined) {
       return stringViewsToIndex[view];
     }
     uniqueViewCount++;
     stringViewsToIndex[view] = uniqueViewCount;
-    views.push(view);
+    adminMetaRoot.views.push(view);
     return uniqueViewCount;
   }
   // Populate .fields array

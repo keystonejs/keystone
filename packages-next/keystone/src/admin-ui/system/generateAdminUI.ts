@@ -7,7 +7,6 @@ import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
 import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
-import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
@@ -47,7 +46,6 @@ async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) 
 
 export const generateAdminUI = async (
   config: KeystoneConfig,
-  lists: Record<string, InitialisedList>,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string
@@ -84,7 +82,6 @@ export const generateAdminUI = async (
   const configFileExists = getDoesAdminConfigExist();
   const adminFiles = writeAdminFiles(
     config,
-    lists,
     graphQLSchema,
     adminMeta,
     configFileExists,

@@ -47,7 +47,7 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
-export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
+export function createSystem(config: KeystoneConfig) {
   const provider = getDBProvider(config.db);
   const { lists } = initialiseLists(config.lists, provider);
 
@@ -57,46 +57,46 @@ export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
 
   const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
 
-  const prismaClient = PrismaClient
-    ? new PrismaClient({
+  return {
+    graphQLSchema,
+    adminMeta,
+    getKeystone: (PrismaClient: any) => {
+      const prismaClient = new PrismaClient({
         log: config.db.enableLogging && ['query'],
         datasources: { [provider]: { url: config.db.url } },
-      })
-    : undefined;
-  if (prismaClient) {
-    prismaClient.$on('beforeExit', async () => {
-      // Prisma is failing to properly clean up its child processes
-      // https://github.com/keystonejs/keystone/issues/5477
-      // We explicitly send a SIGINT signal to the prisma child process on exit
-      // to ensure that the process is cleaned up appropriately.
-      prismaClient._engine.child.kill('SIGINT');
-    });
-  }
-  const createContext = makeCreateContext({
-    graphQLSchema,
-    internalSchema: internalGraphQLSchema,
-    config,
-    prismaClient,
-    gqlNamesByList: Object.fromEntries(
-      Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames({ listKey, ...list })])
-    ),
-  });
+      });
+      prismaClient.$on('beforeExit', async () => {
+        // Prisma is failing to properly clean up its child processes
+        // https://github.com/keystonejs/keystone/issues/5477
+        // We explicitly send a SIGINT signal to the prisma child process on exit
+        // to ensure that the process is cleaned up appropriately.
+        prismaClient._engine.child.kill('SIGINT');
+      });
 
-  return {
-    keystone: {
-      async connect() {
-        await prismaClient.$connect();
-        const context = createContext({ skipAccessControl: true, schemaName: 'internal' });
-        await config.db.onConnect?.(context);
-      },
-      async disconnect() {
-        await prismaClient.$disconnect();
-      },
+      const createContext = makeCreateContext({
+        graphQLSchema,
+        internalSchema: internalGraphQLSchema,
+        config,
+        prismaClient,
+        gqlNamesByList: Object.fromEntries(
+          Object.entries(lists).map(([listKey, list]) => [
+            listKey,
+            getGqlNames({ listKey, ...list }),
+          ])
+        ),
+      });
+
+      return {
+        async connect() {
+          await prismaClient.$connect();
+          const context = createContext({ skipAccessControl: true, schemaName: 'internal' });
+          await config.db.onConnect?.(context);
+        },
+        async disconnect() {
+          await prismaClient.$disconnect();
+        },
+        createContext,
+      };
     },
-    graphQLSchema,
-    createContext,
-    // TODO: REMOVE THIS
-    // this should absolutely not under any circumstances be merged, this is much to make things easier right now to not change a bunch of other things
-    lists,
   };
 }
