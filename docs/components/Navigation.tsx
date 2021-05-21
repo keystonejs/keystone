@@ -61,15 +61,12 @@ export function Navigation() {
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
-      <Section label="Concepts">
-        <NavItem href="/concepts/modes">Modes</NavItem>
-      </Section>
       <Section label="Tutorials">
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
         <NavItem href="/tutorials/embedded-mode-with-sqlite-nextjs">
-          Embedding Keystone in NextJS
+          Embedding Keystone and SQLite in Next.js
         </NavItem>
       </Section>
       <Section label="Guides">
