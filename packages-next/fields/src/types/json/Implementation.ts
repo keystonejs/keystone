@@ -23,7 +23,6 @@ export class Json<P extends string> extends Implementation<P> {
     return {
       [this.path]: (item: Record<P, any>) => {
         let document = item[this.path];
-        console.log('gqlOutputFieldResolvers item', this.path, document);
         if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
           // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
           // https://github.com/prisma/prisma/issues/3786
@@ -40,9 +39,7 @@ export class Json<P extends string> extends Implementation<P> {
   }
 
   async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }) {
-    console.log('resolveInput() resolvedData', resolvedData);
     const data = resolvedData[this.path];
-    console.log('resolveInput() data:', data);
     if (data === null) {
       return null;
     }

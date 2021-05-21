@@ -52,14 +52,31 @@ export const controller = (
     graphqlSelection: config.path,
     defaultValue: '',
     displayMode: config.fieldMeta.displayMode,
+    validate: value => {
+      if (!value) return true;
+      try {
+        JSON.parse(value);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
     deserialize: data => {
       const value = data[config.path];
-      console.log('deserialize', value, data);
-      return typeof value === 'string' ? value : '';
+      if (!value) return '';
+      return JSON.stringify(value, null, 2);
     },
     serialize: value => {
-      console.log('serialize', value);
-      return { [config.path]: value };
+      let parsedValue;
+      if (!value) {
+        return { [config.path]: null };
+      }
+      try {
+        parsedValue = JSON.parse(value);
+      } catch (e) {
+        parsedValue = undefined;
+      }
+      return { [config.path]: parsedValue };
     },
   };
 };
