@@ -1,5 +1,5 @@
 import { KeystoneContext } from '@keystone-next/types';
-import { GraphQLError, GraphQLInputObjectType } from 'graphql';
+import { GraphQLInputObjectType } from 'graphql';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { InputFilter } from './input-resolvers';
 
