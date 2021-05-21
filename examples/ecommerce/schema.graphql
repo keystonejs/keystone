@@ -111,32 +111,38 @@ input CartItemWhereInput {
   AND: [CartItemWhereInput!]
   OR: [CartItemWhereInput!]
   NOT: [CartItemWhereInput!]
-  id: IntFilter
+  id: StringFilter
   quantity: IntNullableFilter
   product: ProductWhereInput
   user: UserWhereInput
 }
 
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
-input NestedIntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
 input IntNullableFilter {
@@ -165,7 +171,7 @@ input ProductWhereInput {
   AND: [ProductWhereInput!]
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   description: StringNullableFilter
   photo: ProductImageWhereInput
@@ -206,7 +212,7 @@ input ProductImageWhereInput {
   AND: [ProductImageWhereInput!]
   OR: [ProductImageWhereInput!]
   NOT: [ProductImageWhereInput!]
-  id: IntFilter
+  id: StringFilter
   altText: StringNullableFilter
   product: ProductWhereInput
 }
@@ -215,7 +221,7 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFieldFilter
@@ -248,7 +254,7 @@ input OrderWhereInput {
   AND: [OrderWhereInput!]
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
-  id: IntFilter
+  id: StringFilter
   total: IntNullableFilter
   items: OrderItemsRelationFilter
   user: UserWhereInput
@@ -265,7 +271,7 @@ input OrderItemWhereInput {
   AND: [OrderItemWhereInput!]
   OR: [OrderItemWhereInput!]
   NOT: [OrderItemWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   description: StringNullableFilter
   photo: ProductImageWhereInput
@@ -278,7 +284,7 @@ input RoleWhereInput {
   AND: [RoleWhereInput!]
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   canManageProducts: BoolNullableFilter
   canSeeOtherUsers: BoolNullableFilter

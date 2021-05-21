@@ -9,31 +9,31 @@ generator client {
 }
 
 model Todo {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   label        String?
   isComplete   Boolean?
   isPrivate    Boolean?
   assignedTo   Person?  @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId Int?     @map("assignedTo")
+  assignedToId String?  @map("assignedTo")
 
   @@index([assignedToId])
 }
 
 model Person {
   tasks    Todo[]  @relation("Todo_assignedTo")
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(uuid())
   name     String?
   email    String?
   password String?
   role     Role?   @relation("Person_role", fields: [roleId], references: [id])
-  roleId   Int?    @map("role")
+  roleId   String? @map("role")
 
   @@index([roleId])
 }
 
 model Role {
   assignedTo         Person[] @relation("Person_role")
-  id                 Int      @id @default(autoincrement())
+  id                 String   @id @default(uuid())
   name               String?
   canCreateTodos     Boolean?
   canManageAllTodos  Boolean?

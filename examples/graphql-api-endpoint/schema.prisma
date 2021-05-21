@@ -9,7 +9,7 @@ generator client {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @postgresql.Uuid
   name     String?
   email    String?
   password String?
@@ -18,8 +18,8 @@ model User {
 
 model Post {
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
-  authorId    Int?      @map("author")
-  id          Int       @id @default(autoincrement())
+  authorId    String?   @map("author") @postgresql.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @postgresql.Uuid
   title       String?
   status      String?
   content     Json?
@@ -31,6 +31,6 @@ model Post {
 
 model Tag {
   posts Post[]  @relation("Post_tags_Tag_posts")
-  id    Int     @id @default(autoincrement())
+  id    String  @id @default(dbgenerated("gen_random_uuid()")) @postgresql.Uuid
   name  String?
 }

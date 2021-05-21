@@ -35,7 +35,7 @@ input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
-  id: IntFilter
+  id: StringFilter
   label: StringNullableFilter
   priority: StringNullableFilter
   isComplete: BoolNullableFilter
@@ -43,26 +43,32 @@ input TaskWhereInput {
   finishBy: DateTimeNullableFilter
 }
 
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
-input NestedIntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
 input StringNullableFilter {
@@ -107,7 +113,7 @@ input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFieldFilter

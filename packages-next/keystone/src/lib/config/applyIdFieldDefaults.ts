@@ -1,5 +1,5 @@
 import type { FieldData, KeystoneConfig, NextFieldType } from '@keystone-next/types';
-import { autoIncrement } from '@keystone-next/fields';
+import { uuid } from '@keystone-next/fields';
 
 /* Validate lists config and default the id field */
 export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
@@ -13,7 +13,7 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    const setIdField = config.lists[key].idField ?? autoIncrement({});
+    const setIdField = config.lists[key].idField ?? uuid({});
     // i feel like this shouldn't live here?
     const actualIdField = (args: FieldData): NextFieldType => {
       const idField = setIdField(args);

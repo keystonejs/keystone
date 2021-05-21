@@ -47,7 +47,7 @@ input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFieldFilter
@@ -55,26 +55,32 @@ input PersonWhereInput {
   tasks: TodosRelationFilter
 }
 
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
-input NestedIntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
 input StringNullableFilter {
@@ -113,7 +119,7 @@ input RoleWhereInput {
   AND: [RoleWhereInput!]
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
-  id: IntFilter
+  id: StringFilter
   name: StringNullableFilter
   canCreateTodos: BoolNullableFilter
   canManageAllTodos: BoolNullableFilter
@@ -150,7 +156,7 @@ input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
-  id: IntFilter
+  id: StringFilter
   label: StringNullableFilter
   isComplete: BoolNullableFilter
   isPrivate: BoolNullableFilter

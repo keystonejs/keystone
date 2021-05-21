@@ -9,7 +9,7 @@ generator client {
 }
 
 model User {
-  id                  Int           @id @default(autoincrement())
+  id                  String        @id @default(uuid())
   name                String?
   email               String?       @unique
   avatar_filesize     Int?
@@ -30,8 +30,8 @@ model User {
 
 model PhoneNumber {
   user   User?   @relation("PhoneNumber_user", fields: [userId], references: [id])
-  userId Int?    @map("user")
-  id     Int     @id @default(autoincrement())
+  userId String? @map("user")
+  id     String  @id @default(uuid())
   type   String?
   value  String?
 
@@ -40,8 +40,8 @@ model PhoneNumber {
 
 model Post {
   author   User?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId Int?    @map("author")
-  id       Int     @id @default(autoincrement())
+  authorId String? @map("author")
+  id       String  @id @default(uuid())
   title    String?
   status   String?
   content  String?
