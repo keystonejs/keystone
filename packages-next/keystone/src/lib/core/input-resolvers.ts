@@ -176,7 +176,7 @@ async function resolveWhereInput(
 }
 
 // the tuple preserves the argument name
-function weakMemoize<Args extends [object], Return>(
+export function weakMemoize<Args extends [object], Return>(
   func: (...args: Args) => Return
 ): (...args: Args) => Return {
   let cache = new WeakMap<Args[0], Return>();

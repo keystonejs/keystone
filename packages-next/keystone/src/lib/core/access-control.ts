@@ -1,7 +1,14 @@
+import { KeystoneContext } from '@keystone-next/types';
+import { GraphQLError, GraphQLInputObjectType } from 'graphql';
+import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { InputFilter } from './input-resolvers';
 
 export async function validateNonCreateListAccessControl<
-  Args extends { listKey: string; operation: 'read' | 'update' | 'delete' }
+  Args extends {
+    listKey: string;
+    context: KeystoneContext;
+    operation: 'read' | 'update' | 'delete';
+  }
 >({
   access,
   args,
@@ -15,6 +22,20 @@ export async function validateNonCreateListAccessControl<
     throw new Error(
       `Must return an object or boolean from Imperative or Declarative access control function. Got ${typeof result}`
     );
+  }
+
+  if (typeof result === 'object') {
+    const internalSchema = args.context.sudo().graphql.schema;
+    const whereInputType = internalSchema.getType(
+      `${args.listKey}WhereInput`
+    ) as GraphQLInputObjectType;
+    const coercedResult = coerceAndValidateForGraphQLInput(internalSchema, whereInputType, result);
+    if (coercedResult.kind === 'error') {
+      throw new Error(
+        `An invalid filter was provided in ${args.listKey}.access.${args.operation}: ${coercedResult.error.message}`
+      );
+    }
+    return coercedResult.value;
   }
 
   return result;
