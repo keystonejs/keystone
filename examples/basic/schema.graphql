@@ -1,9 +1,50 @@
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  height: Int!
+  width: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  height: Int!
+  width: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
 type User {
   id: ID!
   name: String
   email: String
-  avatar: LocalImageFieldOutput
-  attachment: LocalFileFieldOutput
+  avatar: ImageFieldOutput
+  attachment: FileFieldOutput
   password: PasswordState!
   isAdmin: Boolean
   roles: String
@@ -22,30 +63,6 @@ type User {
   ): [Post!]!
   postsCount(where: PostWhereInput! = {}): Int!
   randomNumber: Float!
-}
-
-type LocalImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  height: Int!
-  width: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
-}
-
-type LocalFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  src: String!
 }
 
 type PasswordState {

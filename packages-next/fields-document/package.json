@@ -22,7 +22,6 @@
     "@babel/runtime": "^7.14.0",
     "@braintree/sanitize-url": "^5.0.1",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/adapter-prisma-legacy": "^7.0.0",
     "@keystone-next/admin-ui-utils": "^5.0.0",
     "@keystone-next/fields": "^9.0.0",
     "@keystone-next/keystone": "^18.0.0",

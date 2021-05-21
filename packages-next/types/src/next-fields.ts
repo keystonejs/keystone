@@ -363,7 +363,7 @@ export type UniqueWhereFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
-  tsgql.OutputTypes,
+  tsgql.OutputTypes<KeystoneContext>,
   'value',
   KeystoneContext
 >;

@@ -16,36 +16,36 @@ import {
 function mapOutputFieldToSQLite(
   field: tsgql.OutputField<
     { id: IdType; value: JSONValue; item: ItemRootValue },
-    any,
+    {},
     any,
     'value',
     KeystoneContext
   >
 ) {
   const innerResolver = field.resolve || (({ value }) => value);
-  return types.field<
-    { value: string | null; item: ItemRootValue; id: IdType },
-    any,
-    any,
-    'value',
-    KeystoneContext
-  >({
-    type: field.type,
-    args: field.args,
-    deprecationReason: field.deprecationReason,
-    description: field.description,
-    extensions: field.extensions,
-    resolve(rootVal, ...extra) {
-      if (rootVal.value === null) {
-        return innerResolver(rootVal, ...extra);
-      }
-      let value: JSONValue = null;
-      try {
-        value = JSON.parse(rootVal.value);
-      } catch (err) {}
-      return innerResolver({ id: rootVal.id, item: rootVal.item, value }, ...extra);
-    },
-  });
+  return types.fields<{
+    id: IdType;
+    value: string | null;
+    item: ItemRootValue;
+  }>()({
+    value: types.field({
+      type: field.type,
+      args: field.args,
+      deprecationReason: field.deprecationReason,
+      description: field.description,
+      extensions: field.extensions as any,
+      resolve(rootVal, ...extra) {
+        if (rootVal.value === null) {
+          return innerResolver(rootVal, ...extra);
+        }
+        let value: JSONValue = null;
+        try {
+          value = JSON.parse(rootVal.value);
+        } catch (err) {}
+        return innerResolver({ id: rootVal.id, item: rootVal.item, value }, ...extra);
+      },
+    }),
+  }).value;
 }
 
 function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(

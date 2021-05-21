@@ -6,7 +6,6 @@
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@keystone-next/adapter-prisma-legacy": "^7.0.0",
     "@keystone-next/fields": "^9.0.0",
     "@keystone-next/types": "^18.0.0",
     "@keystone-ui/button": "^5.0.0",

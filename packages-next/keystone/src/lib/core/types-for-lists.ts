@@ -216,13 +216,13 @@ function outputTypeField(
   fieldPath: string,
   lists: Record<string, InitialisedList>
 ) {
-  return types.field<ItemRootValue, any, any, string, KeystoneContext>({
+  return types.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    async resolve(rootVal, args, context, info) {
+    async resolve(rootVal: ItemRootValue, args, context, info) {
       const id = (rootVal as any).id as IdType;
 
       // Check access

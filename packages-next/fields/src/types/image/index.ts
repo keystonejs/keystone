@@ -25,9 +25,38 @@ const ImageFieldInput = types.inputObject({
   fields: { upload: types.arg({ type: types.Upload }), ref: types.arg({ type: types.String }) },
 });
 
-// TODO: use an interface after making it work in @ts-gql/schema
+const imageOutputFields = types.fields<ImageData>()({
+  id: types.field({ type: types.nonNull(types.ID) }),
+  filesize: types.field({ type: types.nonNull(types.Int) }),
+  height: types.field({ type: types.nonNull(types.Int) }),
+  width: types.field({ type: types.nonNull(types.Int) }),
+  extension: types.field({ type: types.nonNull(ImageExtensionEnum) }),
+  ref: types.field({
+    type: types.nonNull(types.String),
+    resolve(data) {
+      return getImageRef(data.mode, data.id, data.extension);
+    },
+  }),
+  src: types.field({
+    type: types.nonNull(types.String),
+    resolve(data, args, context) {
+      if (!context.images) {
+        throw new Error('Image context is undefined');
+      }
+      return context.images.getSrc(data.mode, data.id, data.extension);
+    },
+  }),
+});
+
+const ImageFieldOutput = types.interface<ImageData>()({
+  name: 'ImageFieldOutput',
+  fields: imageOutputFields,
+  resolveType: () => 'LocalImageFieldOutput',
+});
+
 const LocalImageFieldOutput = types.object<ImageData>()({
   name: 'LocalImageFieldOutput',
+  interfaces: [ImageFieldOutput],
   fields: {
     id: types.field({ type: types.nonNull(types.ID) }),
     filesize: types.field({ type: types.nonNull(types.Int) }),
@@ -105,9 +134,8 @@ export const image =
         create: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
         update: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
       },
-      // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
       output: types.field({
-        type: LocalImageFieldOutput,
+        type: ImageFieldOutput,
         resolve({ value: { extension, filesize, height, id, mode, width } }) {
           if (
             extension === null ||
@@ -123,6 +151,7 @@ export const image =
           return { mode: 'local', extension, filesize, height, width, id };
         },
       }),
+      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],
       views: resolveView('image/views'),
     });
   };

@@ -2489,10 +2489,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@ts-gql/schema@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.5.1.tgz#c662ffffa1b5bf2534e2fe43dc3900b3c555ec26"
-  integrity sha512-lNOiFVotfxoaaILN9IeZzL+jlMDcrF82gMdvoBzAw8jPwRvmbwNVrwx2OtJ3NI8oHqpPvFQtLTFygCrDDk5EuA==
+"@ts-gql/schema@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.7.0.tgz#c74c53219e295896ae78daffb96325c68eb354fa"
+  integrity sha512-ykxdMmt8OZ+WSDz1zK1JXv5iQQNuAdRtq40Y3O9jQ8hCEAD45ZIYQttIE6Fnc9Xod0tyT2Z2L5H6mc3W3Zddqw==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
@@ -10191,11 +10191,6 @@ p-map@^4.0.0:
   dependencies:
     aggregate-error "^3.0.0"
 
-p-reduce@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/p-reduce/-/p-reduce-2.1.0.tgz#09408da49507c6c274faa31f28df334bc712b64a"
-  integrity sha512-2USApvnsutq8uoxZBGbbWM0JIYLiEMJ9RlaN7fAzVNb9OZN0SHjjTTfIcb667XynS5Y1VhwDJVDa72TnPzAYWw==
-
 p-reflect@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/p-reflect/-/p-reflect-2.1.0.tgz#5d67c7b3c577c4e780b9451fc9129675bd99fe67"
@@ -10226,13 +10221,6 @@ p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-p-waterfall@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/p-waterfall/-/p-waterfall-2.1.1.tgz#63153a774f472ccdc4eb281cdb2967fcf158b2ee"
-  integrity sha512-RRTnDb2TBG/epPRI2yYXsimO0v3BXC8Yd3ogr1545IaqKK17VGhbWVeGGN+XfCm/08OK8635nH31c8bATkHuSw==
-  dependencies:
-    p-reduce "^2.0.0"
 
 package-json@^6.5.0:
   version "6.5.0"

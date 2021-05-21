@@ -24,30 +24,38 @@ type ImageFieldInputType =
   | null
   | { upload?: Promise<FileUpload> | null; ref?: string | null };
 
-// TODO: use an interface after making it work in @ts-gql/schema
+const fileFields = types.fields<FileData>()({
+  filename: types.field({ type: types.nonNull(types.String) }),
+  filesize: types.field({ type: types.nonNull(types.Int) }),
+  ref: types.field({
+    type: types.nonNull(types.String),
+    resolve(data) {
+      return getFileRef(data.mode, data.filename);
+    },
+  }),
+  src: types.field({
+    type: types.nonNull(types.String),
+    resolve(data, args, context) {
+      if (!context.files) {
+        throw new Error(
+          'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://next.keystonejs.com/apis/config#files for details'
+        );
+      }
+      return context.files.getSrc(data.mode, data.filename);
+    },
+  }),
+});
+
+const FileFieldOutput = types.interface<FileData>()({
+  name: 'FileFieldOutput',
+  fields: fileFields,
+  resolveType: () => 'LocalFileFieldOutput',
+});
+
 const LocalFileFieldOutput = types.object<FileData>()({
   name: 'LocalFileFieldOutput',
-  fields: {
-    filename: types.field({ type: types.nonNull(types.String) }),
-    filesize: types.field({ type: types.nonNull(types.Int) }),
-    ref: types.field({
-      type: types.nonNull(types.String),
-      resolve(data) {
-        return getFileRef(data.mode, data.filename);
-      },
-    }),
-    src: types.field({
-      type: types.nonNull(types.String),
-      resolve(data, args, context) {
-        if (!context.files) {
-          throw new Error(
-            'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://next.keystonejs.com/apis/config#files for details'
-          );
-        }
-        return context.files.getSrc(data.mode, data.filename);
-      },
-    }),
-  },
+  interfaces: [FileFieldOutput],
+  fields: fileFields,
 });
 
 async function inputResolver(data: ImageFieldInputType, context: KeystoneContext) {
@@ -90,9 +98,8 @@ export const file =
         create: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
         update: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
       },
-      // TODO: THIS MUST BE CHANGED BACK TO THE INTERFACE BEFORE MERGING
       output: types.field({
-        type: LocalFileFieldOutput,
+        type: FileFieldOutput,
         resolve({ value: { filesize, filename, mode } }) {
           if (filesize === null || filename === null || mode !== 'local') {
             return null;
@@ -100,6 +107,7 @@ export const file =
           return { mode: 'local', filename, filesize };
         },
       }),
+      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
       views: resolveView('file/views'),
     });
   };
