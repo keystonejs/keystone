@@ -220,28 +220,26 @@ input TagWhereUniqueInput {
 type Mutation {
   createUser(
     data: UserCreateInput! = { posts: { create: [], connect: [] } }
-  ): User!
-  createUsers(data: [UserCreateInput!]!): [User!]!
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
-  updateUsers(data: [UsersUpdateInput!]!): [User!]!
-  deleteUser(where: UserWhereUniqueInput!): User!
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
+  ): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
   createPost(
     data: PostCreateInput! = { tags: { create: [], connect: [] } }
-  ): Post!
-  createPosts(data: [PostCreateInput!]!): [Post!]!
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post!
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]!
-  deletePost(where: PostWhereUniqueInput!): Post!
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]!
-  createTag(
-    data: TagCreateInput! = { posts: { create: [], connect: [] } }
-  ): Tag!
-  createTags(data: [TagCreateInput!]!): [Tag!]!
-  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag!
-  updateTags(data: [TagsUpdateInput!]!): [Tag!]!
-  deleteTag(where: TagWhereUniqueInput!): Tag!
-  deleteTags(where: [TagWhereUniqueInput!]!): [Tag!]!
+  ): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+  createTag(data: TagCreateInput! = { posts: { create: [], connect: [] } }): Tag
+  createTags(data: [TagCreateInput!]!): [Tag!]
+  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
+  updateTags(data: [TagsUpdateInput!]!): [Tag!]
+  deleteTag(where: TagWhereUniqueInput!): Tag
+  deleteTags(where: [TagWhereUniqueInput!]!): [Tag!]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -365,24 +363,24 @@ type Query {
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [User!]!
-  allUsersCount(where: UserWhereInput! = {}): Int!
+  ): [User!]
+  allUsersCount(where: UserWhereInput! = {}): Int
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [SortPostsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  allPostsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
+  allPostsCount(where: PostWhereInput! = {}): Int
   Tag(where: TagWhereUniqueInput!): Tag
   allTags(
     where: TagWhereInput! = {}
     orderBy: [SortTagsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Tag!]!
-  allTagsCount(where: TagWhereInput! = {}): Int!
+  ): [Tag!]
+  allTagsCount(where: TagWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

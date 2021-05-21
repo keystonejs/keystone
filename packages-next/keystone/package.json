@@ -52,7 +52,7 @@
     "@prisma/migrate": "2.22.1",
     "@prisma/sdk": "2.22.1",
     "@sindresorhus/slugify": "^1.1.2",
-    "@ts-gql/schema": "^0.7.0",
+    "@ts-gql/schema": "^0.7.1",
     "@types/apollo-upload-client": "14.1.0",
     "@types/babel__core": "^7.1.14",
     "@types/cookie": "^0.4.0",

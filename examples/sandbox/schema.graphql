@@ -177,18 +177,18 @@ input SortUsersBy {
 }
 
 type Mutation {
-  createTodo(data: TodoCreateInput! = {}): Todo!
-  createTodos(data: [TodoCreateInput!]!): [Todo!]!
-  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo!
-  updateTodos(data: [TodosUpdateInput!]!): [Todo!]!
-  deleteTodo(where: TodoWhereUniqueInput!): Todo!
-  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]!
-  createUser(data: UserCreateInput! = {}): User!
-  createUsers(data: [UserCreateInput!]!): [User!]!
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
-  updateUsers(data: [UsersUpdateInput!]!): [User!]!
-  deleteUser(where: UserWhereUniqueInput!): User!
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
+  createTodo(data: TodoCreateInput! = {}): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo!]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]
+  createUser(data: UserCreateInput! = {}): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
 }
 
 input TodoCreateInput {
@@ -263,16 +263,16 @@ type Query {
     orderBy: [SortTodosBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo!]!
-  allTodosCount(where: TodoWhereInput! = {}): Int!
+  ): [Todo!]
+  allTodosCount(where: TodoWhereInput! = {}): Int
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [User!]!
-  allUsersCount(where: UserWhereInput! = {}): Int!
+  ): [User!]
+  allUsersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

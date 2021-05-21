@@ -199,31 +199,28 @@ input SortRolesBy {
 }
 
 type Mutation {
-  createTodo(data: TodoCreateInput! = {}): Todo!
-  createTodos(data: [TodoCreateInput!]!): [Todo!]!
-  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo!
-  updateTodos(data: [TodosUpdateInput!]!): [Todo!]!
-  deleteTodo(where: TodoWhereUniqueInput!): Todo!
-  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]!
+  createTodo(data: TodoCreateInput! = {}): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo!]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]
   createPerson(
     data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
-  ): Person!
-  createPeople(data: [PersonCreateInput!]!): [Person!]!
-  updatePerson(
-    where: PersonWhereUniqueInput!
-    data: PersonUpdateInput!
-  ): Person!
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]!
-  deletePerson(where: PersonWhereUniqueInput!): Person!
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]!
+  ): Person
+  createPeople(data: [PersonCreateInput!]!): [Person!]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
   createRole(
     data: RoleCreateInput! = { assignedTo: { create: [], connect: [] } }
-  ): Role!
-  createRoles(data: [RoleCreateInput!]!): [Role!]!
-  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role!
-  updateRoles(data: [RolesUpdateInput!]!): [Role!]!
-  deleteRole(where: RoleWhereUniqueInput!): Role!
-  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role!]!
+  ): Role
+  createRoles(data: [RoleCreateInput!]!): [Role!]
+  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
+  updateRoles(data: [RolesUpdateInput!]!): [Role!]
+  deleteRole(where: RoleWhereUniqueInput!): Role
+  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role!]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
@@ -362,24 +359,24 @@ type Query {
     orderBy: [SortTodosBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo!]!
-  allTodosCount(where: TodoWhereInput! = {}): Int!
+  ): [Todo!]
+  allTodosCount(where: TodoWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [SortPeopleBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Person!]!
-  allPeopleCount(where: PersonWhereInput! = {}): Int!
+  ): [Person!]
+  allPeopleCount(where: PersonWhereInput! = {}): Int
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
     orderBy: [SortRolesBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Role!]!
-  allRolesCount(where: RoleWhereInput! = {}): Int!
+  ): [Role!]
+  allRolesCount(where: RoleWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

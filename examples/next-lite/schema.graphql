@@ -82,12 +82,12 @@ enum OrderDirection {
 }
 
 type Mutation {
-  createPost(data: PostCreateInput! = {}): Post!
-  createPosts(data: [PostCreateInput!]!): [Post!]!
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post!
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]!
-  deletePost(where: PostWhereUniqueInput!): Post!
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]!
+  createPost(data: PostCreateInput! = {}): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
 }
 
 input PostCreateInput {
@@ -114,8 +114,8 @@ type Query {
     orderBy: [SortPostsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  allPostsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
+  allPostsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

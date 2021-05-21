@@ -153,21 +153,18 @@ input SortAuthorsBy {
 }
 
 type Mutation {
-  createPost(data: PostCreateInput! = {}): Post!
-  createPosts(data: [PostCreateInput!]!): [Post!]!
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post!
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]!
-  deletePost(where: PostWhereUniqueInput!): Post!
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]!
-  createAuthor(data: AuthorCreateInput! = {}): Author!
-  createAuthors(data: [AuthorCreateInput!]!): [Author!]!
-  updateAuthor(
-    where: AuthorWhereUniqueInput!
-    data: AuthorUpdateInput!
-  ): Author!
-  updateAuthors(data: [AuthorsUpdateInput!]!): [Author!]!
-  deleteAuthor(where: AuthorWhereUniqueInput!): Author!
-  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author!]!
+  createPost(data: PostCreateInput! = {}): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+  createAuthor(data: AuthorCreateInput! = {}): Author
+  createAuthors(data: [AuthorCreateInput!]!): [Author!]
+  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
+  updateAuthors(data: [AuthorsUpdateInput!]!): [Author!]
+  deleteAuthor(where: AuthorWhereUniqueInput!): Author
+  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author!]
 }
 
 input PostCreateInput {
@@ -242,16 +239,16 @@ type Query {
     orderBy: [SortPostsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  allPostsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
+  allPostsCount(where: PostWhereInput! = {}): Int
   Author(where: AuthorWhereUniqueInput!): Author
   allAuthors(
     where: AuthorWhereInput! = {}
     orderBy: [SortAuthorsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Author!]!
-  allAuthorsCount(where: AuthorWhereInput! = {}): Int!
+  ): [Author!]
+  allAuthorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

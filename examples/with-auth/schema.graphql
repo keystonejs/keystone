@@ -174,23 +174,20 @@ input SortPeopleBy {
 }
 
 type Mutation {
-  createTask(data: TaskCreateInput! = {}): Task!
-  createTasks(data: [TaskCreateInput!]!): [Task!]!
-  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task!
-  updateTasks(data: [TasksUpdateInput!]!): [Task!]!
-  deleteTask(where: TaskWhereUniqueInput!): Task!
-  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task!]!
+  createTask(data: TaskCreateInput! = {}): Task
+  createTasks(data: [TaskCreateInput!]!): [Task!]
+  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  updateTasks(data: [TasksUpdateInput!]!): [Task!]
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task!]
   createPerson(
     data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
-  ): Person!
-  createPeople(data: [PersonCreateInput!]!): [Person!]!
-  updatePerson(
-    where: PersonWhereUniqueInput!
-    data: PersonUpdateInput!
-  ): Person!
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]!
-  deletePerson(where: PersonWhereUniqueInput!): Person!
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]!
+  ): Person
+  createPeople(data: [PersonCreateInput!]!): [Person!]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
@@ -275,16 +272,16 @@ type Query {
     orderBy: [SortTasksBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Task!]!
-  allTasksCount(where: TaskWhereInput! = {}): Int!
+  ): [Task!]
+  allTasksCount(where: TaskWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [SortPeopleBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Person!]!
-  allPeopleCount(where: PersonWhereInput! = {}): Int!
+  ): [Person!]
+  allPeopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

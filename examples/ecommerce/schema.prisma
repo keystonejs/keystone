@@ -11,65 +11,64 @@ generator client {
 model User {
   id                      Int        @id @default(autoincrement())
   name                    String?
-  email                   String?    @unique
+  email                   String?
   password                String?
+  cart                    CartItem[] @relation("CartItem_user")
+  orders                  Order[]    @relation("Order_user")
+  role                    Role?      @relation("User_role", fields: [roleId], references: [id])
+  roleId                  Int?       @map("role")
+  products                Product[]  @relation("Product_user")
   passwordResetToken      String?
   passwordResetIssuedAt   DateTime?
   passwordResetRedeemedAt DateTime?
-  cart                    CartItem[] @relation("CartItemuser")
-  orders                  Order[]    @relation("Orderuser")
-  role                    Role?      @relation("Userrole", fields: [roleId], references: [id])
-  roleId                  Int?       @map("role")
-  products                Product[]  @relation("Productuser")
 
   @@index([roleId])
 }
 
 model Product {
+  user                  User?         @relation("Product_user", fields: [userId], references: [id])
+  userId                Int?          @map("user")
   id                    Int           @id @default(autoincrement())
   name                  String?
   description           String?
+  photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
+  photoId               Int?          @unique @map("photo")
   status                String?
   price                 Int?
-  photo                 ProductImage? @relation("Productphoto", fields: [photoId], references: [id])
-  photoId               Int?          @map("photo")
-  user                  User?         @relation("Productuser", fields: [userId], references: [id])
-  userId                Int?          @map("user")
-  from_CartItem_product CartItem[]    @relation("CartItemproduct")
+  from_CartItem_product CartItem[]    @relation("CartItem_product")
 
-  @@index([photoId])
   @@index([userId])
 }
 
 model ProductImage {
+  product              Product?    @relation("Product_photo")
   id                   Int         @id @default(autoincrement())
   image                String?
   altText              String?
-  product              Product?    @relation("Productphoto")
-  from_OrderItem_photo OrderItem[] @relation("OrderItemphoto")
+  from_OrderItem_photo OrderItem[] @relation("OrderItem_photo")
 }
 
 model CartItem {
+  user      User?    @relation("CartItem_user", fields: [userId], references: [id])
+  userId    Int?     @map("user")
   id        Int      @id @default(autoincrement())
   quantity  Int?
-  product   Product? @relation("CartItemproduct", fields: [productId], references: [id])
+  product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId Int?     @map("product")
-  user      User?    @relation("CartItemuser", fields: [userId], references: [id])
-  userId    Int?     @map("user")
 
-  @@index([productId])
   @@index([userId])
+  @@index([productId])
 }
 
 model OrderItem {
   id          Int           @id @default(autoincrement())
   name        String?
   description String?
+  photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
+  photoId     Int?          @map("photo")
   price       Int?
   quantity    Int?
-  photo       ProductImage? @relation("OrderItemphoto", fields: [photoId], references: [id])
-  photoId     Int?          @map("photo")
-  order       Order?        @relation("OrderItemorder", fields: [orderId], references: [id])
+  order       Order?        @relation("OrderItem_order", fields: [orderId], references: [id])
   orderId     Int?          @map("order")
 
   @@index([photoId])
@@ -77,17 +76,18 @@ model OrderItem {
 }
 
 model Order {
+  user   User?       @relation("Order_user", fields: [userId], references: [id])
+  userId Int?        @map("user")
+  items  OrderItem[] @relation("OrderItem_order")
   id     Int         @id @default(autoincrement())
   total  Int?
   charge String?
-  items  OrderItem[] @relation("OrderItemorder")
-  user   User?       @relation("Orderuser", fields: [userId], references: [id])
-  userId Int?        @map("user")
 
   @@index([userId])
 }
 
 model Role {
+  assignedTo        User[]   @relation("User_role")
   id                Int      @id @default(autoincrement())
   name              String?
   canManageProducts Boolean?
@@ -96,5 +96,4 @@ model Role {
   canManageRoles    Boolean?
   canManageCart     Boolean?
   canManageOrders   Boolean?
-  assignedTo        User[]   @relation("Userrole")
 }

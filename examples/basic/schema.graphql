@@ -251,27 +251,27 @@ type Mutation {
       phoneNumbers: { create: [], connect: [] }
       posts: { create: [], connect: [] }
     }
-  ): User!
-  createUsers(data: [UserCreateInput!]!): [User!]!
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
-  updateUsers(data: [UsersUpdateInput!]!): [User!]!
-  deleteUser(where: UserWhereUniqueInput!): User!
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
-  createPhoneNumber(data: PhoneNumberCreateInput! = {}): PhoneNumber!
-  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber!]!
+  ): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
+  createPhoneNumber(data: PhoneNumberCreateInput! = {}): PhoneNumber
+  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber!]
   updatePhoneNumber(
     where: PhoneNumberWhereUniqueInput!
     data: PhoneNumberUpdateInput!
-  ): PhoneNumber!
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber!]!
-  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber!
-  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber!]!
-  createPost(data: PostCreateInput! = {}): Post!
-  createPosts(data: [PostCreateInput!]!): [Post!]!
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post!
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]!
-  deletePost(where: PostWhereUniqueInput!): Post!
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]!
+  ): PhoneNumber
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber!]
+  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber!]
+  createPost(data: PostCreateInput! = {}): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -417,24 +417,24 @@ type Query {
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [User!]!
-  allUsersCount(where: UserWhereInput! = {}): Int!
+  ): [User!]
+  allUsersCount(where: UserWhereInput! = {}): Int
   PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   allPhoneNumbers(
     where: PhoneNumberWhereInput! = {}
     orderBy: [SortPhoneNumbersBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [PhoneNumber!]!
-  allPhoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  ): [PhoneNumber!]
+  allPhoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [SortPostsBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  allPostsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
+  allPostsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber

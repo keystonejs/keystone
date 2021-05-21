@@ -102,12 +102,12 @@ enum OrderDirection {
 }
 
 type Mutation {
-  createUser(data: UserCreateInput! = {}): User!
-  createUsers(data: [UserCreateInput!]!): [User!]!
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User!
-  updateUsers(data: [UsersUpdateInput!]!): [User!]!
-  deleteUser(where: UserWhereUniqueInput!): User!
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]!
+  createUser(data: UserCreateInput! = {}): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -144,8 +144,8 @@ type Query {
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-  ): [User!]!
-  allUsersCount(where: UserWhereInput! = {}): Int!
+  ): [User!]
+  allUsersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
