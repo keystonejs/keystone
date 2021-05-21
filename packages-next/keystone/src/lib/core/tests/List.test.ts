@@ -946,12 +946,14 @@ test('createMutation', async () => {
 
 test('createManyMutation', async () => {
   const list = setup();
-  const result = await list.createManyMutation(
-    [
-      { data: { name: 'test1', email: 'test1@example.com' } },
-      { data: { name: 'test2', email: 'test2@example.com' } },
-    ],
-    context
+  const result = await Promise.all(
+    await list.createManyMutation(
+      [
+        { data: { name: 'test1', email: 'test1@example.com' } },
+        { data: { name: 'test2', email: 'test2@example.com' } },
+      ],
+      context
+    )
   );
   expect(result).toEqual([
     { name: 'test1', email: 'test1@example.com', index: 3 },
@@ -971,12 +973,14 @@ test('updateMutation', async () => {
 
 test('updateManyMutation', async () => {
   const list = setup();
-  const result = await list.updateManyMutation(
-    [
-      { id: 1, data: { name: 'update1', email: 'update1@example.com' } },
-      { id: 2, data: { email: 'update2@example.com' } },
-    ],
-    context
+  const result = await Promise.all(
+    await list.updateManyMutation(
+      [
+        { id: 1, data: { name: 'update1', email: 'update1@example.com' } },
+        { id: 2, data: { email: 'update2@example.com' } },
+      ],
+      context
+    )
   );
   expect(result).toEqual([
     { name: 'update1', email: 'update1@example.com', id: 1 },
@@ -992,7 +996,7 @@ test('deleteMutation', async () => {
 
 test('deleteManyMutation', async () => {
   const list = setup();
-  const result = await list.deleteManyMutation([1, 2], context);
+  const result = await Promise.all(await list.deleteManyMutation([1, 2], context));
   expect(result).toEqual([
     { name: 'b', email: 'b@example.com', id: 1 },
     { name: 'c', email: 'c@example.com', id: 2 },
