@@ -12,11 +12,11 @@ This makes it possible to run a local instance of Keystone from the same place y
 
 The tutorial will show you how to:
 
-- Setup a Next.js app.
-- Embed Keystone inside it, and run an Admin UI you can read and write to locally.
-- Create a simple Keystone schema with a `Post` [list](/apis/schema) that Next.js can build pages with.
-- Setup a secure read-only GraphQL API endpoint (and playground) that you can access in production.
-- Deploy your CMS and frontend monorepo to Vercel. 🚀
+- Setup a Next.js app
+- Embed Keystone inside it, and run an Admin UI you can read and write to locally
+- Create a simple Keystone schema with a `Post` [list](/apis/schema) that Next.js can build pages with
+- Setup a secure read-only GraphQL API endpoint (and playground) that you can access in production
+- Deploy your CMS and frontend monorepo to Vercel 🚀
 
 ?> If you need access to Keystone’s Admin UI over the internet, or want to provide access to more than one editor – use Keystone in [standalone](/concepts/modes#standalone-mode) mode.
 
@@ -134,11 +134,12 @@ Finally, make a small change to the `scripts` object in `package.json` to includ
 
 Running `yarn dev` again will do the following:
 
-- Provision a GraphQL schema based on the configuration of `keystone.ts`.
-- Build a [Prisma.io](https://www.prisma.io/) schema (which Keystone uses to create tables in the database).
-- Serve Keystone’s Admin UI at [http://localhost:8000](http://localhost:8000).
-- Serve the Next.js frontend at [http://localhost:3000](http://localhost:3000).
-- Add a `postinstall` script that ensures everything works if we install other dependencies later on.
+- Provision a GraphQL schema based on the configuration of `keystone.ts`
+- Build a [Prisma.io](https://www.prisma.io/) schema (which Keystone uses to manage the database)
+- Create the database and run a migration to set up your schema
+- Serve Keystone’s Admin UI at [http://localhost:8000](http://localhost:8000)
+- Serve the Next.js frontend at [http://localhost:3000](http://localhost:3000)
+- Add a `postinstall` script that ensures everything works if we install other dependencies later on
 
 Go ahead and add two post entries using your Admin UI, ensuring you only use `hyphens-and-lowercase-chars` in the slug field for permalinks.
 
@@ -153,21 +154,22 @@ In order to query Keystone content we need to use the [`getStaticProps`](https:/
 
 import Link from 'next/link';
 
-// get `lists` from Keystone
+// Import the generated Lists API from Keystone
 import { lists } from '.keystone/api';
 
-export default function Home({posts}) {
+// Home receives a `posts` prop from `getStaticProps` below
+export default function Home({ posts }) {
   return (
     <div>
       <main style={{margin: "3rem"}}>
       <h1>Hello World! 👋🏻 </h1>
       <ul>
-      {/* map over existing posts and output their title as list items */}
+        {/* Render each post with a link to the content page */}
         {posts.map(post => (
           <li key={post.id}>
-              <Link href={`/post/${post.slug}`}>
-                <a>{post.title}</a>
-              </Link>
+            <Link href={`/post/${post.slug}`}>
+              <a>{post.title}</a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -176,6 +178,8 @@ export default function Home({posts}) {
   )
 }
 
+// Here we use the Lists API to load all the posts we want to display
+// The return of this function is provided to the `Home` component
 export async function getStaticProps() {
   const posts = await lists.Post.findMany({ query: 'id title slug' });
   return { props: { posts } };
@@ -250,7 +254,7 @@ To get a read-only GraphQL API and playground in production, rename `/pages/api/
 export { default, config } from '.keystone/next/graphql-api';
 ```
 
-This takes the fully functional GraphQL API that Keystone is already generating and makes it available as an endpoint and playground within the Next.js frontend app at: [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
+This takes the fully functional GraphQL API that Keystone is already generating and makes it available as an endpoint and playground within the Next.js frontend app at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
 
 ![A browser displaying the GraphQL playground](/assets/tutorials/embedded-nextjs/graphql-api.png)
 
