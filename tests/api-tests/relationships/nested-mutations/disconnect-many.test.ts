@@ -189,32 +189,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Update the item and link the relationship field
-            await context.exitSudo().graphql.run({
-              query: `
-                mutation {
-                  updateUserToNotesNoRead(
-                    id: "${createUser.id}"
-                    data: {
-                      username: "A thing",
-                      notes: { disconnect: [{ id: "${createNote.id}" }] }
-                    }
-                  ) {
-                    id
-                  }
-                }`,
+            await context.exitSudo().lists.UserToNotesNoRead.updateOne({
+              id: createUser.id,
+              data: { username: 'A thing', notes: { disconnect: [{ id: createNote.id }] } },
             });
 
-            const data = await context.graphql.run({
-              query: `
-                query getUserNodes($userId: ID!){
-                  UserToNotesNoRead(where: { id: $userId }) {
-                    id
-                    notes { id }
-                  }
-                }`,
-              variables: { userId: createUser.id },
+            const data = await context.lists.UserToNotesNoRead.findOne({
+              where: { id: createUser.id },
+              query: 'id notes { id }',
             });
-            expect(data.UserToNotesNoRead.notes).toHaveLength(0);
+
+            expect(data.notes).toHaveLength(0);
           })
         );
       });

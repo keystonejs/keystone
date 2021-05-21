@@ -1,5 +1,23 @@
 # @keystone-next/website
 
+## 3.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+### Patch Changes
+
+- Updated dependencies [[`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d), [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab)]:
+  - @keystone-ui/button@5.0.0
+  - @keystone-ui/core@3.0.0
+  - @keystone-ui/fields@4.0.0
+  - @keystone-ui/icons@4.0.0
+  - @keystone-ui/notice@4.0.0
+  - @keystone-ui/toast@4.0.0
+  - @keystone-ui/tooltip@4.0.0
+  - @keystone-next/fields-document@6.0.0
+
 ## 2.0.2
 
 ### Patch Changes

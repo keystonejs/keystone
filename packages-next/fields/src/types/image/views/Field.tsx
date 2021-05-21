@@ -13,7 +13,7 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
-import NextImage from '@keystone-next/admin-ui/image';
+import NextImage from '@keystone-next/keystone/admin-ui/image';
 
 import { ImageValue } from './index';
 

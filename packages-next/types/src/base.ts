@@ -2,6 +2,7 @@ import { PrismaAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-
 import { Implementation } from '@keystone-next/fields';
 import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
 import { DocumentNode } from 'graphql';
+import type { CacheHint } from 'apollo-cache-control';
 import type { KeystoneContext } from './context';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
@@ -13,6 +14,8 @@ export type Rel = {
   columnName?: string;
   columnNames?: Record<string, { near: string; far: string }>;
 };
+
+export type CacheHintArgs = { results: any; operationName: string; meta: boolean };
 
 export type BaseListConfig = {
   fields: Record<string, any>;
@@ -28,7 +31,7 @@ export type BaseListConfig = {
   path?: string;
   hooks?: Record<string, any>;
   adapterConfig?: { searchField?: string };
-  cacheHint?: any;
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
 };
 
 // TODO: This is only a partial typing of the core Keystone class.

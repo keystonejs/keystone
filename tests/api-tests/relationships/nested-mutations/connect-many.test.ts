@@ -108,21 +108,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createUsers(data: [
-                  { data: { username: "A thing 1", notes: { connect: [{ id: "${createNote.id}" }] } } },
-                  { data: { username: "A thing 2", notes: { connect: [{ id: "${createNote2.id}" }] } } }
-                ]) {
-                  id
-                }
-              }`,
+          const users = await context.lists.User.createMany({
+            data: [
+              { data: { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } } },
+              { data: { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } } },
+            ],
           });
 
-          expect(data).toMatchObject({
-            createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
-          });
+          expect(users).toMatchObject([{ id: expect.any(String) }, { id: expect.any(String) }]);
         })
       );
 
@@ -227,27 +220,24 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
           const createUser2 = await context.lists.User.createOne({ data: { username: 'user2' } });
 
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                updateUsers(data: [
-                { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote.id}" }] } } },
-                { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote2.id}" }] } } },
-              ]) {
-                id
-                notes {
-                  id
-                  content
-                }
-              }
-            }`,
-          });
-          expect(data).toMatchObject({
-            updateUsers: [
-              { id: expect.any(String), notes: [{ id: createNote.id, content: noteContent }] },
-              { id: expect.any(String), notes: [{ id: createNote2.id, content: noteContent2 }] },
+          const users = await context.lists.User.updateMany({
+            data: [
+              {
+                id: createUser.id,
+                data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
+              },
+              {
+                id: createUser2.id,
+                data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
+              },
             ],
+            query: 'id notes { id content }',
           });
+
+          expect(users).toMatchObject([
+            { id: expect.any(String), notes: [{ id: createNote.id, content: noteContent }] },
+            { id: expect.any(String), notes: [{ id: createNote2.id, content: noteContent2 }] },
+          ]);
         })
       );
     });
@@ -398,19 +388,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Create an item that does the linking
-            const data = await context.exitSudo().graphql.run({
-              query: `
-                mutation {
-                  createUserToNotesNoCreate(data: {
-                    username: "A thing",
-                    notes: { connect: [{ id: "${createNoteNoCreate.id}" }] }
-                  }) {
-                    id
-                  }
-                }`,
+            const data = await context.exitSudo().lists.UserToNotesNoCreate.createOne({
+              data: { username: 'A thing', notes: { connect: [{ id: createNoteNoCreate.id }] } },
             });
 
-            expect(data.createUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
+            expect(data).toMatchObject({ id: expect.any(String) });
           })
         );
 
@@ -430,24 +412,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Update the item and link the relationship field
-            const data = await context.exitSudo().graphql.run({
-              query: `
-                mutation {
-                  updateUserToNotesNoCreate(
-                    id: "${createUser.id}"
-                    data: {
-                      username: "A thing",
-                      notes: {
-                        connect: [{id: "${createNote.id}" }]
-                      }
-                    }
-                  ) {
-                    id
-                  }
-                }`,
+            const data = await context.exitSudo().lists.UserToNotesNoCreate.updateOne({
+              id: createUser.id,
+              data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
             });
 
-            expect(data.updateUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
+            expect(data).toMatchObject({ id: expect.any(String) });
           })
         );
       });

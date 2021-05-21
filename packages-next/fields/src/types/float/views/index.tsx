@@ -2,7 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
 
 import {
   CardValueComponent,

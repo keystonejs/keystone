@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
-import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';
+import { GraphQLErrorNotice } from '@keystone-next/keystone/admin-ui/components';
 import {
   deserializeValue,
   ItemData,

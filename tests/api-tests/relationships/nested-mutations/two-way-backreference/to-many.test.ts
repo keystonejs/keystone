@@ -85,23 +85,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createStudent(
-                    data: {
-                      teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
-                    }
-                  ) {
-                    id
-                    teachers {
-                      id
-                    }
-                  }
-                }`,
+            let newStudent = await context.lists.Student.createOne({
+              data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+              query: 'id teachers { id }',
             });
-
-            let newStudent = data.createStudent;
 
             // Check the link has been broken
             teacher1 = await getTeacher(context, teacher1.id);
@@ -139,21 +126,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            await context.graphql.run({
-              query: `
-                mutation {
-                  updateStudent(
-                    id: "${student1.id}",
-                    data: {
-                      teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
-                    }
-                  ) {
-                    id
-                    teachers {
-                      id
-                    }
-                  }
-                }`,
+            await context.lists.Student.updateOne({
+              id: student1.id,
+              data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+              query: 'id teachers { id }',
             });
 
             // Check the link has been broken
@@ -179,24 +155,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createStudent(
-                    data: {
-                      teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
-                    }
-                  ) {
-                    id
-                    teachers(sortBy: id_ASC) {
-                      id
-                    }
-                  }
-                }`,
+            let newStudent = await context.lists.Student.createOne({
+              data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
+              query: 'id teachers(sortBy: [id_ASC]) { id }',
             });
 
-            let newStudent = data.createStudent;
-            let newTeachers = data.createStudent.teachers;
+            let newTeachers = newStudent.teachers;
 
             // Check the link has been broken
             const teacher1 = await getTeacher(context, newTeachers[0].id);
@@ -217,24 +181,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateStudent(
-                    id: "${student.id}"
-                    data: {
-                      teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
-                    }
-                  ) {
-                    id
-                    teachers {
-                      id
-                    }
-                  }
-                }`,
+            const _student = await context.lists.Student.updateOne({
+              id: student.id,
+              data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
+              query: 'id teachers { id }',
             });
 
-            let newTeachers = data.updateStudent.teachers;
+            let newTeachers = _student.teachers;
 
             // Check the link has been broken
             const teacher1 = await getTeacher(context, newTeachers[0].id);
@@ -286,21 +239,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          await context.graphql.run({
-            query: `
-              mutation {
-                updateStudent(
-                  id: "${student1.id}",
-                  data: {
-                    teachers: { disconnect: [{ id: "${teacher1.id}" }] }
-                  }
-                ) {
-                  id
-                  teachers {
-                    id
-                  }
-                }
-              }`,
+          await context.lists.Student.updateOne({
+            id: student1.id,
+            data: { teachers: { disconnect: [{ id: teacher1.id }] } },
+            query: 'id teachers { id }',
           });
 
           // Check the link has been broken
@@ -355,21 +297,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           compareIds(teacher2.students, [student1, student2]);
 
           // Run the query to disconnect the teacher from student
-          await context.graphql.run({
-            query: `
-              mutation {
-                updateStudent(
-                  id: "${student1.id}",
-                  data: {
-                    teachers: { disconnectAll: true }
-                  }
-                ) {
-                  id
-                  teachers {
-                    id
-                  }
-                }
-              }`,
+          await context.lists.Student.updateOne({
+            id: student1.id,
+            data: { teachers: { disconnectAll: true } },
+            query: 'id teachers { id }',
           });
 
           // Check the link has been broken
@@ -425,15 +356,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         compareIds(teacher2.students, [student1, student2]);
 
         // Run the query to delete the student
-        await context.graphql.run({
-          query: `
-            mutation {
-              deleteStudent(id: "${student1.id}") {
-                id
-              }
-            }`,
-        });
-
+        await context.lists.Student.deleteOne({ id: student1.id });
         teacher1 = await getTeacher(context, teacher1.id);
         teacher2 = await getTeacher(context, teacher2.id);
         student1 = await getStudent(context, student1.id);

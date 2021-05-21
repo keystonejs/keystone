@@ -1,4 +1,5 @@
 import pluralize from 'pluralize';
+import type { CacheHint } from 'apollo-cache-control';
 import {
   mapKeys,
   omit,
@@ -24,6 +25,7 @@ import {
   GraphQLResolver,
   KeystoneContext,
   ListHooks,
+  CacheHintArgs,
 } from '@keystone-next/types';
 import { Implementation } from '@keystone-next/fields';
 import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
@@ -63,7 +65,7 @@ export class List implements BaseKeystoneList {
   getListByKey: (key: string) => BaseKeystoneList | undefined;
   fieldsInitialised: boolean;
   queryLimits: { maxResults: number };
-  cacheHint: any;
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
   constructor(
     key: string,
     {

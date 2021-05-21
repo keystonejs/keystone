@@ -1,5 +1,62 @@
 # @keystone-next/keystone
 
+## 18.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+* [#5677](https://github.com/keystonejs/keystone/pull/5677) [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated the `@keystone-next/admin-ui` package into `@keystone-next/keystone`.
+
+  If you were directly importing from `@keystone-next/admin-ui` you can now import the same items from `@keystone-next/keystone/admin-ui`.
+  If you have `@keystone-next/admin-ui` in your `package.json` you should remove it.
+
+### Minor Changes
+
+- [#5758](https://github.com/keystonejs/keystone/pull/5758) [`8da79e71a`](https://github.com/keystonejs/keystone/commit/8da79e71abb005eb755620fb3c8f82a3a2952152) Thanks [@timleslie](https://github.com/timleslie)! - Added a `SKIP_PROMPTS` environment variable to explicitly disable prompts in the CLI.
+
+### Patch Changes
+
+- [#5759](https://github.com/keystonejs/keystone/pull/5759) [`016ccad82`](https://github.com/keystonejs/keystone/commit/016ccad82ed73898a64310506117c1cbae60a512) Thanks [@timleslie](https://github.com/timleslie)! - Suppresed migration console output when running tests.
+
+- Updated dependencies [[`d40c2a590`](https://github.com/keystonejs/keystone/commit/d40c2a5903f07e5a1e80d116ec4cea00289bbf6a), [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d), [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab)]:
+  - @keystone-next/adapter-prisma-legacy@7.0.0
+  - @keystone-ui/button@5.0.0
+  - @keystone-ui/core@3.0.0
+  - @keystone-ui/fields@4.0.0
+  - @keystone-ui/icons@4.0.0
+  - @keystone-ui/loading@4.0.0
+  - @keystone-ui/modals@4.0.0
+  - @keystone-ui/notice@4.0.0
+  - @keystone-ui/options@4.0.0
+  - @keystone-ui/pill@4.0.0
+  - @keystone-ui/popover@4.0.0
+  - @keystone-ui/toast@4.0.0
+  - @keystone-ui/tooltip@4.0.0
+  - @keystone-next/admin-ui-utils@5.0.0
+  - @keystone-next/fields@9.0.0
+  - @keystone-next/types@18.0.0
+  - @keystone-next/access-control-legacy@11.0.0
+  - @keystone-next/utils-legacy@11.0.0
+
+## 17.2.0
+
+### Minor Changes
+
+- [#5143](https://github.com/keystonejs/keystone/pull/5143) [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb) Thanks [@timleslie](https://github.com/timleslie)! - Added `graphql.cacheHint` configuration for lists and fields.
+
+### Patch Changes
+
+- [#5727](https://github.com/keystonejs/keystone/pull/5727) [`737b3e6e5`](https://github.com/keystonejs/keystone/commit/737b3e6e53d0948de8f1419709ece5648ff4529a) Thanks [@cameronbraid](https://github.com/cameronbraid)! - Fixed a bug in `storedSessions` not correctly identifying the current `sessionId`.
+
+* [#5686](https://github.com/keystonejs/keystone/pull/5686) [`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2) Thanks [@timleslie](https://github.com/timleslie)! - Reduced the explicit dependence on the internal Keystone object when creating context objects.
+
+- [#5673](https://github.com/keystonejs/keystone/pull/5673) [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021) Thanks [@timleslie](https://github.com/timleslie)! - Refactored code to parse `config.db`. No functional changes.
+
+- Updated dependencies [[`62e68c8e5`](https://github.com/keystonejs/keystone/commit/62e68c8e5b4964785a173ab05ff89cba9cc685f2), [`deb7f9504`](https://github.com/keystonejs/keystone/commit/deb7f9504573da67b0cd76d3f53dc0fcceaf1021), [`1ef9986dd`](https://github.com/keystonejs/keystone/commit/1ef9986ddc5a4a881a3fc6fae3d1420447174fdb), [`669f0d8ac`](https://github.com/keystonejs/keystone/commit/669f0d8acfce5d6b7eaaa972ab354597c53c2568)]:
+  - @keystone-next/types@17.1.0
+  - @keystone-next/admin-ui@14.1.3
+
 ## 17.1.1
 
 ### Patch Changes

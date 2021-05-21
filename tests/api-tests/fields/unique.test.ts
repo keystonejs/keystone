@@ -2,7 +2,6 @@ import globby from 'globby';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
-import { BaseKeystone } from '@keystone-next/types';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -113,21 +112,13 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
             test(
               'Configuring uniqueness on one field does not affect others',
               keystoneTestWrapper(async ({ context }) => {
-                const data = await context.graphql.run({
-                  query: `
-                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
-                    foo: createTest(data: $fooData) { id }
-                    bar: createTest(data: $barData) { id }
-                  }
-                `,
-                  variables: {
-                    fooData: { testField: mod.exampleValue(matrixValue), name: 'jess' },
-                    barData: { testField: mod.exampleValue2(matrixValue), name: 'jess' },
-                  },
+                const items = await context.lists.Test.createMany({
+                  data: [
+                    { data: { testField: mod.exampleValue(matrixValue), name: 'jess' } },
+                    { data: { testField: mod.exampleValue2(matrixValue), name: 'jess' } },
+                  ],
                 });
-
-                expect(data).toHaveProperty('foo.id');
-                expect(data).toHaveProperty('bar.id');
+                expect(items).toHaveLength(2);
               })
             );
           });
@@ -170,7 +161,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                 expect(error.message).toMatch('isUnique is not a supported option for field type');
                 erroredOut = true;
               } finally {
-                after({ disconnect: async () => {} } as BaseKeystone);
+                after(async () => {});
               }
               expect(erroredOut).toEqual(true);
             });

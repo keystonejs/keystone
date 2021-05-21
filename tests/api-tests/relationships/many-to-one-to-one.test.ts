@@ -10,33 +10,32 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 type IdType = any;
 
 const createInitialData = async (context: KeystoneContext) => {
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createCompanies(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-        createLocations(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
+  const companies = (await context.lists.Company.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  })) as { id: IdType }[];
+  const locations = (await context.lists.Location.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  })) as { id: IdType }[];
   const owners = await context.lists.Owner.createMany({
-    data: data.createCompanies.map(({ id }) => ({
+    data: companies.map(({ id }) => ({
       data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
     })),
   });
   const custodians = await context.lists.Custodian.createMany({
-    data: data.createLocations.map(({ id }) => ({
+    data: locations.map(({ id }) => ({
       data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
     })),
   });
-  return { locations: data.createLocations, companies: data.createCompanies, owners, custodians };
+  return { locations, companies, owners, custodians };
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
@@ -131,13 +130,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
-            const data = await context.graphql.run({
-              query: `{
-                  allOwners(where: { companies_some: { location: { custodians_some: { name: "${name1}" } } } }) { id companies { location { custodians { name } } } }
-                }`,
+            const owners = await context.lists.Owner.findMany({
+              where: { companies_some: { location: { custodians_some: { name: name1 } } } },
+              query: 'id companies { location { custodians { name } } }',
             });
-            expect(data.allOwners.length).toEqual(1);
-            expect(data.allOwners[0].id).toEqual(owner.id);
+            expect(owners.length).toEqual(1);
+            expect(owners[0].id).toEqual(owner.id);
           })
         );
         test(
@@ -146,12 +144,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const data = await context.graphql.run({
-              query: `{
-                  allCustodians(where: { locations_some: { company: { owners_some: { name: "${name1}" } } } }) { id locations { company { owners { name } } } }
-                }`,
+            const custodians = await context.lists.Custodian.findMany({
+              where: { locations_some: { company: { owners_some: { name: name1 } } } },
+              query: 'id locations { company { owners { name } } }',
             });
-            expect(data.allCustodians.length).toEqual(2);
+            expect(custodians.length).toEqual(2);
           })
         );
         test(
@@ -160,13 +157,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const data = await context.graphql.run({
-              query: `{
-                  allOwners(where: { companies_some: { location: { custodians_some: { locations_some: { company: { owners_some: { name: "${name1}" } } } } } } }) { id companies { location { custodians { name } } } }
-                }`,
+            const owners = await context.lists.Owner.findMany({
+              where: {
+                companies_some: {
+                  location: {
+                    custodians_some: {
+                      locations_some: { company: { owners_some: { name: name1 } } },
+                    },
+                  },
+                },
+              },
+              query: 'id companies { location { custodians { name } } }',
             });
-            expect(data.allOwners.length).toEqual(1);
-            expect(data.allOwners[0].id).toEqual(owner.id);
+            expect(owners.length).toEqual(1);
+            expect(owners[0].id).toEqual(owner.id);
           })
         );
         test(
@@ -176,12 +180,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
 
-            const data = await context.graphql.run({
-              query: `{
-                  allCustodians(where: { locations_some: { company: { owners_some: { companies_some: { location: { custodians_some: { name: "${name1}" } } } } } } }) { id locations { company { owners { name } } } }
-                }`,
+            const custodians = await context.lists.Custodian.findMany({
+              where: {
+                locations_some: {
+                  company: {
+                    owners_some: {
+                      companies_some: { location: { custodians_some: { name: name1 } } },
+                    },
+                  },
+                },
+              },
+              query: 'id locations { company { owners { name } } }',
             });
-            expect(data.allCustodians.length).toEqual(2);
+            expect(custodians.length).toEqual(2);
           })
         );
       });

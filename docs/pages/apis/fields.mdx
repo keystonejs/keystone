@@ -78,6 +78,8 @@ Options:
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
+- `graphql`: Configures certain aspects of the GraphQL API.
+  - `cacheHint` (default: `undefined`): Allows you to specific the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this this list.
 
 ```typescript
 export default config({
@@ -100,6 +102,9 @@ export default config({
               fieldMode: ({ session }) => 'read',
             },
           },
+          graphql: {
+            cacheHint: { maxAge: 60, scope: CacheScope.Private }
+          }
         }),
         /* ... */
       },

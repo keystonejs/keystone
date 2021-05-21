@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/website",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -8,23 +8,23 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@keystone-ui/button": "^4.0.0",
-    "@keystone-ui/core": "^2.0.2",
-    "@keystone-ui/fields": "^3.0.0",
-    "@keystone-ui/loading": "^3.0.0",
-    "@keystone-ui/modals": "^3.0.0",
-    "@keystone-ui/notice": "^3.0.0",
-    "@keystone-ui/options": "^3.0.0",
-    "@keystone-ui/pill": "^3.0.0",
-    "@keystone-ui/popover": "^3.0.0",
-    "@keystone-ui/segmented-control": "^3.0.0",
-    "@keystone-ui/toast": "^3.0.0",
-    "@keystone-ui/tooltip": "^3.0.0",
+    "@keystone-ui/button": "^5.0.0",
+    "@keystone-ui/core": "^3.0.0",
+    "@keystone-ui/fields": "^4.0.0",
+    "@keystone-ui/loading": "^4.0.0",
+    "@keystone-ui/modals": "^4.0.0",
+    "@keystone-ui/notice": "^4.0.0",
+    "@keystone-ui/options": "^4.0.0",
+    "@keystone-ui/pill": "^4.0.0",
+    "@keystone-ui/popover": "^4.0.0",
+    "@keystone-ui/segmented-control": "^4.0.0",
+    "@keystone-ui/toast": "^4.0.0",
+    "@keystone-ui/tooltip": "^4.0.0",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.4",
-    "@types/react-dom": "^17.0.3",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "@types/tinycolor2": "^1.4.2",
-    "@types/webpack": "^4.41.27",
+    "@types/webpack": "^4.41.28",
     "next": "^10.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -34,7 +34,7 @@
     "typescript": "^4.2.4"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": "^12.20 || >= 14.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/website"
 }

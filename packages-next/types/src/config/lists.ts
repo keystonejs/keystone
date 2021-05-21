@@ -1,4 +1,6 @@
+import type { CacheHint } from 'apollo-cache-control';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
+import type { CacheHintArgs } from '../base';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { FieldType, BaseFields } from './fields';
@@ -169,8 +171,6 @@ export type MaybeItemFunction<T> =
     }) => MaybePromise<T>);
 
 export type ListGraphQLConfig = {
-  // was previously top-level cacheHint
-  // cacheHint?: CacheHint;
   /**
    * The description added to the GraphQL schema
    * @default listConfig.description
@@ -184,6 +184,7 @@ export type ListGraphQLConfig = {
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
+  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
 };
 
 export type ListDBConfig = {
@@ -193,5 +194,3 @@ export type ListDBConfig = {
    */
   searchField?: string;
 };
-
-// export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };

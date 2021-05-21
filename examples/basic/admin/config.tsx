@@ -2,7 +2,7 @@
 
 import { AdminConfig } from '@keystone-next/types';
 
-// import { DarkTheme } from '@keystone-next/admin-ui/themes';
+// import { DarkTheme } from '@keystone-next/keystone/admin-ui/themes';
 // export const theme = DarkTheme;
 
 // const CustomLogo = () => <h1>Keystone!</h1>;
