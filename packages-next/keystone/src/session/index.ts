@@ -64,6 +64,12 @@ type StatelessSessionsOptions = {
    * @default current domain
    */
   domain?: string;
+  /**
+   * Specifies the value for the `SameSite` `Set-Cookie` attribute
+   *
+   * @default 'lax'
+   */
+  sameSite?: 'lax' | 'strict' | 'none';
 };
 
 type FieldSelections = {
@@ -122,6 +128,7 @@ export function statelessSessions<T>({
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
   domain,
+  sameSite = 'lax',
 }: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
@@ -148,7 +155,7 @@ export function statelessSessions<T>({
             httpOnly: true,
             secure,
             path,
-            sameSite: 'lax',
+            sameSite,
             domain,
           })
         );
@@ -164,7 +171,7 @@ export function statelessSessions<T>({
             httpOnly: true,
             secure,
             path,
-            sameSite: 'lax',
+            sameSite,
             domain,
           })
         );
