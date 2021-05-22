@@ -66,7 +66,7 @@ Options
   The forward slash (`/`) character is interpreted as a directory separator, and subdirectories will be matched as well: for `path: '/docs'`, `/docs`, `/docs/Web/`, and `/docs/Web/HTTP` will all match.
 - `domain` (default: current document URL): Host to which the cookie will be sent. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `domain` cookie attribute.
   **Note**: Only one domain is allowed. If a domain is specified then subdomains are always included.
-- `sameSite` (default: `'lax'`): Controls whether the cookie is sent with cross-origin requests, providing some protection against cross-site request forgery attacks. Can be one of `'strict'`, `'lax'` or `'none'`. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `sameSite` cookie attribute.
+- `sameSite` (default: `'lax'`): Controls whether the cookie is sent with cross-origin requests. Can be one of `true`, `false`, `'strict'`, `'lax'` or `'none'`. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `sameSite` cookie attribute.
   **Note**: The `secure` attribute must also be set when `sameSite` is set to `none`!
 
 ### Session stores
