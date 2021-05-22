@@ -165,7 +165,7 @@ Go ahead and add two post entries using your Admin UI, ensuring you only use `hy
 
 ## Query Keystone from Next.js
 
-In order to query Keystone content we need to use the [`getStaticProps`](https://Next.js.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [`getStaticPaths`](https://Next.js.org/docs/basic-features/data-fetching#getstaticpaths-static-generation) functions in Next.js. Let’s overwrite the contents of `index.tsx` with the following to query posts from Keystone:
+In order to query Keystone content we need to use the [`getStaticProps`](https://Next.js.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [`getStaticPaths`](https://Next.js.org/docs/basic-features/data-fetching#getstaticpaths-static-generation) functions in Next.js. Let’s overwrite the contents of `pages/index.tsx` with the following to query posts from Keystone:
 
 ```tsx
 // pages/index.tsx
@@ -264,7 +264,7 @@ Run `yarn dev` again.
 
 ## Bonus: add the GraphQL API to the frontend
 
-To get a read-only GraphQL API and playground in production, add `/pages/api/graphl.tsx`with the following:
+To get a read-only GraphQL API and playground in production, add `/pages/api/graphql.tsx`with the following:
 
 ```tsx
 // pages/api/graphql.tsx
