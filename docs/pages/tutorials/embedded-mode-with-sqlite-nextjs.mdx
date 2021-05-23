@@ -10,7 +10,7 @@ If you’re happy to write content in a local-only environment, and don't need a
 
 ---
 
-## Explaining "modes"
+## Explaining “modes”
 
 As a Headless CMS, by default Keystone works in **Standalone** mode. Where you host your Content API separately from your frontend(s). While this is great for scale, it complicates developing and deploying simple apps and websites.
 
@@ -36,22 +36,17 @@ Here's what we're going to do:
 
 ## Setup a Next.js app
 
-Start out by adding a basic Next.js instance in an empty project directory:
+Create a basic Next.js project with the `--typescript` option in an empty directory.
+
 
 ```bash
-yarn create next-app my-project
+yarn create next-app --typescript my-project
 cd my-project
 ```
 
-### Add TypeScript
+!> Keystone Next has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
 
-Keystone Next has great TypeScript support. Adding it as a `--dev` dependency will make using Keystone's APIs easier, so let‘s do that now:
-
-```bash
-yarn add --dev typescript @types/react
-```
-
-Rename `index.js` and `_app.js` in your `/pages` directory to `.tsx`. While you’re at it, delete the `/pages/api` directory, we don't need it. Adding a GraphQL API is covered later in the tutorial.
+Delete the `/pages/api` directory. We’ll add a GraphQL API later in the tutorial. Your `/pages` directory should now look like this:
 
 ```text
 .
@@ -86,7 +81,7 @@ Add the `.keystone` directory to your `.gitignore` file. The contents of `.keyst
 
 ```bash
 
-# in your .gitignore
+# In your .gitignore
 .keystone
 ```
 
