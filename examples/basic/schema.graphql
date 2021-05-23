@@ -81,7 +81,7 @@ type User {
     sortBy: [SortPhoneNumbersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [PhoneNumber!]!
   _phoneNumbersMeta(
     where: PhoneNumberWhereInput
@@ -89,7 +89,7 @@ type User {
     sortBy: [SortPhoneNumbersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   posts(
     where: PostWhereInput
@@ -97,7 +97,7 @@ type User {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
     where: PostWhereInput
@@ -105,7 +105,7 @@ type User {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   randomNumber: Float
 }
@@ -553,7 +553,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -570,7 +570,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -582,7 +582,7 @@ type Query {
     sortBy: [SortPhoneNumbersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [PhoneNumber]
 
   """
@@ -599,7 +599,7 @@ type Query {
     sortBy: [SortPhoneNumbersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -611,7 +611,7 @@ type Query {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post]
 
   """
@@ -628,7 +628,7 @@ type Query {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber

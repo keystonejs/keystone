@@ -28,10 +28,10 @@ type Query {
   User(where: UserWhereUniqueInput!): User
 
   """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int! = 0): [User]
 
   """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int! = 0): _QueryMeta
 }
 
 type Mutation {
@@ -149,7 +149,7 @@ type User {
 ```graphql
 type Query {
   """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int! = 0): [User]
 }
 
 input UserWhereInput {
@@ -202,7 +202,7 @@ type User {
 ```graphql
 type Query {
   """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int! = 0): _QueryMeta
 }
 
 input UserWhereInput {

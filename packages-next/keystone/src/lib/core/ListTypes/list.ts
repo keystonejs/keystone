@@ -246,7 +246,7 @@ export class List implements BaseKeystoneList {
       `sortBy: [${this.gqlNames.listSortName}!]`,
       `orderBy: String`,
       `first: Int`,
-      `skip: Int`,
+      `skip: Int! = 0`,
     ];
   }
 

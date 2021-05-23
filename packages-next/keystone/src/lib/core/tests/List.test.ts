@@ -500,7 +500,7 @@ test('getGraphqlFilterFragment', () => {
     'sortBy: [SortTestsBy!]',
     'orderBy: String',
     'first: Int',
-    'skip: Int',
+    'skip: Int! = 0',
   ]);
 });
 
@@ -516,7 +516,7 @@ describe(`getGqlQueries()`, () => {
           sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
-          skip: Int
+          skip: Int! = 0
         ): [Test]`,
         `""" Search for the Test item with the matching ID. """
           Test(
@@ -529,7 +529,7 @@ describe(`getGqlQueries()`, () => {
           sortBy: [SortTestsBy!]
           orderBy: String
           first: Int
-          skip: Int
+          skip: Int! = 0
         ): _QueryMeta`,
       ].map(normalise)
     );

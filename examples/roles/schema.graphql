@@ -108,7 +108,7 @@ type Person {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
     where: TodoWhereInput
@@ -116,7 +116,7 @@ type Person {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -226,7 +226,7 @@ type Role {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person!]!
   _assignedToMeta(
     where: PersonWhereInput
@@ -234,7 +234,7 @@ type Role {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -495,7 +495,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo]
 
   """
@@ -512,7 +512,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -524,7 +524,7 @@ type Query {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person]
 
   """
@@ -541,7 +541,7 @@ type Query {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -553,7 +553,7 @@ type Query {
     sortBy: [SortRolesBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Role]
 
   """
@@ -570,7 +570,7 @@ type Query {
     sortBy: [SortRolesBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

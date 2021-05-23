@@ -112,7 +112,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo]
 
   """
@@ -129,7 +129,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }
