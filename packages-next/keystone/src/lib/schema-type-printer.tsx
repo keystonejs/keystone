@@ -115,7 +115,7 @@ export function printGeneratedTypes(
     for (const arg of args) {
       if (arg.name.value === 'search' || arg.name.value === 'orderBy') continue;
       types += `  readonly ${arg.name.value}${
-        arg.type.kind === 'NonNullType' || arg.defaultValue ? '' : '?'
+        arg.type.kind === 'NonNullType' && !arg.defaultValue ? '' : '?'
       }: ${printTypeNode(arg.type)};\n`;
     }
     return types + '}';
