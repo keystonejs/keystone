@@ -152,6 +152,7 @@ input TodosRelationFilter {
   none: TodoWhereInput
 }
 
+<<<<<<< HEAD
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
@@ -161,6 +162,33 @@ input TodoWhereInput {
   isComplete: BoolNullableFilter
   isPrivate: BoolNullableFilter
   assignedTo: PersonWhereInput
+=======
+"""
+ A keystone list
+"""
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password_is_set: Boolean
+  role: Role
+  tasks(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]!
+  _tasksMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+>>>>>>> master
 }
 
 input SortPeopleBy {
@@ -270,7 +298,26 @@ input RoleCreateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
+<<<<<<< HEAD
   assignedTo: PersonRelateToManyForCreateInput! = { create: [], connect: [] }
+=======
+  assignedTo(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Person!]!
+  _assignedToMeta(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+>>>>>>> master
 }
 
 input PersonRelateToManyForCreateInput {
@@ -359,6 +406,7 @@ input RolesUpdateInput {
 }
 
 type Query {
+<<<<<<< HEAD
   Todo(where: TodoWhereUniqueInput!): Todo
   allTodos(
     where: TodoWhereInput! = {}
@@ -375,14 +423,94 @@ type Query {
     skip: Int! = 0
   ): [Person!]
   allPeopleCount(where: PersonWhereInput! = {}): Int
+=======
+  """
+   Search for all Todo items which match the where clause.
+  """
+  allTodos(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Todo]
+
+  """
+   Search for the Todo item with the matching ID.
+  """
+  Todo(where: TodoWhereUniqueInput!): Todo
+
+  """
+   Perform a meta-query on all Todo items which match the where clause.
+  """
+  _allTodosMeta(
+    where: TodoWhereInput
+    search: String
+    sortBy: [SortTodosBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+
+  """
+   Search for all Person items which match the where clause.
+  """
+  allPeople(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Person]
+
+  """
+   Search for the Person item with the matching ID.
+  """
+  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Perform a meta-query on all Person items which match the where clause.
+  """
+  _allPeopleMeta(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+
+  """
+   Search for all Role items which match the where clause.
+  """
+  allRoles(
+    where: RoleWhereInput
+    search: String
+    sortBy: [SortRolesBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Role]
+
+  """
+   Search for the Role item with the matching ID.
+  """
+>>>>>>> master
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
     orderBy: [SortRolesBy!]! = []
     first: Int
     skip: Int! = 0
+<<<<<<< HEAD
   ): [Role!]
   allRolesCount(where: RoleWhereInput! = {}): Int
+=======
+  ): _QueryMeta
+  authenticatedItem: AuthenticatedItem
+>>>>>>> master
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

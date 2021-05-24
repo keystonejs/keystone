@@ -463,20 +463,26 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 if (mode === 'imperative') {
                   expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
                 } else {
-                  expectNamedArray(data, errors, multiDeleteMutationName, []);
+                  expect(errors?.[0].message).toEqual('You do not have access to this resource');
+                  expect(errors?.[0].path).toEqual([multiDeleteMutationName, 0]);
+                  expect(errors?.[1].message).toEqual('You do not have access to this resource');
+                  expect(errors?.[1].path).toEqual([multiDeleteMutationName, 1]);
+                  expect(data?.[multiDeleteMutationName]).toEqual([null, null]);
                 }
               });
 
               test(`multi mixed allows/denies: ${JSON.stringify(access)}`, async () => {
                 const { id: validId1 } = await create({ name: 'Hello' });
-                const { id: validId2 } = await create({ name: 'hi' });
+                const { id: invalidId } = await create({ name: 'hi' });
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-                const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}"}, { id: "${validId2}" }]) { id } }`;
+                const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}"}, { id: "${invalidId}" }]) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 if (mode === 'imperative') {
-                  expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
+                  expectNamedArray(data, errors, multiDeleteMutationName, [validId1, invalidId]);
                 } else {
-                  expectNamedArray(data, errors, multiDeleteMutationName, [validId1]);
+                  expect(errors?.[0].message).toEqual('You do not have access to this resource');
+                  expect(errors?.[0].path).toEqual([multiDeleteMutationName, 1]);
+                  expect(data?.[multiDeleteMutationName]).toEqual([{ id: validId1 }, null]);
                 }
               });
 
@@ -484,7 +490,13 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID[provider]}" }, { id: "${FAKE_ID_2[provider]}" }]) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNamedArray(data, errors, multiDeleteMutationName, []);
+                expect(errors).toHaveLength(2);
+                expect(errors?.[0].message).toEqual('You do not have access to this resource');
+                expect(errors?.[0].path).toEqual([multiDeleteMutationName, 0]);
+                expect(errors?.[1].message).toEqual('You do not have access to this resource');
+                expect(errors?.[1].path).toEqual([multiDeleteMutationName, 1]);
+                expect(data?.[multiDeleteMutationName]).toHaveLength(2);
+                expect(data?.[multiDeleteMutationName]).toEqual([null, null]);
               });
             });
         });

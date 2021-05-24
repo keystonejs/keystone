@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack, Inline } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
 import { useRawKeystone } from '@keystone-next/keystone/admin-ui/context';
@@ -122,9 +122,14 @@ const Welcome = ({ value }: { value: any }) => {
         </Checkbox>
       </div>
       <form onSubmit={onSubmit}>
+        <VisuallyHidden as="label" htmlFor="email-field">
+          Email Address
+        </VisuallyHidden>
         <TextInput
+          id="email-field"
           disabled={!subscribe}
           autoFocus
+          placeholder={'Email'}
           value={email}
           onChange={e => setEmail(e.target.value)}
         />

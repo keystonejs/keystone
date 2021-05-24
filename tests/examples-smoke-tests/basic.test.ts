@@ -14,7 +14,7 @@ exampleProjectTests('basic', browserType => {
   test('sign out and sign in', async () => {
     await page.click('[aria-label="Links and signout"]');
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign out")')]);
-    await page.fill('[placeholder="Email Address"]', 'admin@keystonejs.com');
+    await page.fill('[placeholder="email"]', 'admin@keystonejs.com');
     await page.fill('[placeholder="password"]', 'password');
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign In")')]);
   });

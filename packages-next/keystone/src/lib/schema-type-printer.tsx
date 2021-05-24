@@ -48,7 +48,7 @@ function printInputTypesFromSchema(
     let str = `export type ${node.name.value} = {\n`;
     node.fields?.forEach(node => {
       str += `  readonly ${node.name.value}${
-        node.type.kind === 'NonNullType' || node.defaultValue ? '' : '?'
+        node.type.kind === 'NonNullType' && !node.defaultValue ? '' : '?'
       }: ${printTypeNode(node.type)};\n`;
     });
     str += '};';
@@ -111,7 +111,7 @@ export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQ
     for (const arg of args) {
       if (arg.name.value === 'search' || arg.name.value === 'orderBy') continue;
       types += `  readonly ${arg.name.value}${
-        arg.type.kind === 'NonNullType' || arg.defaultValue ? '' : '?'
+        arg.type.kind === 'NonNullType' && !arg.defaultValue ? '' : '?'
       }: ${printTypeNode(arg.type)};\n`;
     }
     return types + '}';

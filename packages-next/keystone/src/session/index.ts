@@ -62,6 +62,12 @@ type StatelessSessionsOptions = {
    * @default current domain
    */
   domain?: string;
+  /**
+   * Specifies the boolean or string to be the value for the {@link https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7|`SameSite` `Set-Cookie` attribute}.
+   *
+   * @default 'lax'
+   */
+  sameSite?: true | false | 'lax' | 'strict' | 'none';
 };
 
 type FieldSelections = {
@@ -114,6 +120,7 @@ export function statelessSessions<T>({
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
   domain,
+  sameSite = 'lax',
 }: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
@@ -140,7 +147,7 @@ export function statelessSessions<T>({
             httpOnly: true,
             secure,
             path,
-            sameSite: 'lax',
+            sameSite,
             domain,
           })
         );
@@ -156,7 +163,7 @@ export function statelessSessions<T>({
             httpOnly: true,
             secure,
             path,
-            sameSite: 'lax',
+            sameSite,
             domain,
           })
         );

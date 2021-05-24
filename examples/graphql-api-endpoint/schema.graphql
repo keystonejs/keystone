@@ -9,7 +9,115 @@ type User {
     first: Int
     skip: Int! = 0
   ): [Post!]!
+<<<<<<< HEAD
   postsCount(where: PostWhereInput! = {}): Int!
+=======
+  _postsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput]
+  OR: [UserWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  email_i: String
+  email_not_i: String
+  email_contains_i: String
+  email_not_contains_i: String
+  email_starts_with_i: String
+  email_not_starts_with_i: String
+  email_ends_with_i: String
+  email_not_ends_with_i: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  posts: PostRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  posts: PostRelateToManyInput
+>>>>>>> master
 }
 
 type PasswordState {
@@ -29,7 +137,18 @@ type Post {
     first: Int
     skip: Int! = 0
   ): [Tag!]!
+<<<<<<< HEAD
   tagsCount(where: TagWhereInput! = {}): Int!
+=======
+  _tagsMeta(
+    where: TagWhereInput
+    search: String
+    sortBy: [SortTagsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+>>>>>>> master
 }
 
 type Post_content_DocumentField {
@@ -174,10 +293,35 @@ input PostsRelationFilter {
   none: PostWhereInput
 }
 
+<<<<<<< HEAD
 input TagsRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
   none: TagWhereInput
+=======
+"""
+ A keystone list
+"""
+type Tag {
+  id: ID!
+  name: String
+  posts(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  _postsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+>>>>>>> master
 }
 
 input TagWhereInput {
@@ -305,18 +449,34 @@ input UserUpdateInput {
   }
 }
 
+<<<<<<< HEAD
 input PostRelateToManyForUpdateInput {
   create: [PostCreateInput!]! = []
   connect: [PostWhereUniqueInput!]! = []
   disconnect: [PostWhereUniqueInput!]! = []
   disconnectAll: Boolean! = false
 }
+=======
+type Query {
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [User]
+>>>>>>> master
 
 input UsersUpdateInput {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
 
+<<<<<<< HEAD
 input PostUpdateInput {
   title: String
   status: String
@@ -335,6 +495,31 @@ input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
 }
+=======
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+
+  """
+   Search for all Post items which match the where clause.
+  """
+  allPosts(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Post]
+>>>>>>> master
 
 input TagRelateToManyForUpdateInput {
   create: [TagCreateInput!]! = []
@@ -343,6 +528,7 @@ input TagRelateToManyForUpdateInput {
   disconnectAll: Boolean! = false
 }
 
+<<<<<<< HEAD
 input PostsUpdateInput {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -357,6 +543,31 @@ input TagUpdateInput {
     disconnectAll: false
   }
 }
+=======
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
+  _allPostsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+
+  """
+   Search for all Tag items which match the where clause.
+  """
+  allTags(
+    where: TagWhereInput
+    search: String
+    sortBy: [SortTagsBy!]
+    orderBy: String
+    first: Int
+    skip: Int! = 0
+  ): [Tag]
+>>>>>>> master
 
 input TagsUpdateInput {
   where: TagWhereUniqueInput!
@@ -370,6 +581,7 @@ type Query {
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
+<<<<<<< HEAD
   ): [User!]
   allUsersCount(where: UserWhereInput! = {}): Int
   Post(where: PostWhereUniqueInput!): Post
@@ -388,6 +600,10 @@ type Query {
     skip: Int! = 0
   ): [Tag!]
   allTagsCount(where: TagWhereInput! = {}): Int
+=======
+  ): _QueryMeta
+  authenticatedItem: AuthenticatedItem
+>>>>>>> master
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

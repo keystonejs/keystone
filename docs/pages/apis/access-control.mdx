@@ -93,8 +93,8 @@ The access control rule can be any valid clause which could be applied as a `whe
 For read operations, the access control rule is merged with any other filters in the query, and only those items which match the merged filter are returned.
 
 For update and delete operations, the access control rule is merged with the `id` value to form a filter.
-For singular operations, e.g. `updateItem` or `createItem`, if the merged filter does not return an item then the mutation will return an `Access Denied` error.
-For multi-item operations, e.g. `updateItems` or `createItems`, if the merged filter excludes items then these will simply be ignored by the operation, giving the same behaviour as if the ID was missing.
+For singular operations, e.g. `updateItem` or `deleteItem`, if the merged filter does not return an item then the mutation will return an `Access Denied` error.
+For multi-item operations, e.g. `updateItems` or `deleteItems`, if the merged filter excludes items then these will simply be ignored by the operation, giving the same behaviour as if the ID was missing.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
