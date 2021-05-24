@@ -13,7 +13,7 @@ export const lists = createSchema({
   Person: list({
     fields: {
       name: text({ isRequired: true }),
-      packages: relationship({ ref: 'Packages.ownedBy', many: true }),
+      packages: relationship({ ref: 'Package.ownedBy', many: true }),
     },
   }),
 });
