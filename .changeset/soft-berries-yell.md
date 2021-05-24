@@ -15,10 +15,10 @@
 '@keystone-next/api-tests-legacy': patch
 ---
 
-The GraphQL query `_all<Items>Meta { count }` generated for each list has been deprecated in favour of a new query `all<Items>Count`, which directy returns the count.
+The GraphQL query `_all<Items>Meta { count }` generated for each list has been deprecated in favour of a new query `<items>Count`, which directy returns the count.
 
 A `User` list would have the following query added to the API:
 
 ```graphql
-allUsersCount(where: UserWhereInput! = {}): Int!
+usersCount(where: UserWhereInput! = {}): Int!
 ```
