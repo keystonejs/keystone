@@ -75,6 +75,19 @@ enum SortTasksBy {
   finishBy_DESC
 }
 
+input TaskOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  priority: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
@@ -117,7 +130,8 @@ type Person {
     where: TaskWhereInput
     search: String
     sortBy: [SortTasksBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task!]!
@@ -125,7 +139,8 @@ type Person {
     where: TaskWhereInput
     search: String
     sortBy: [SortTasksBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -174,6 +189,11 @@ enum SortPeopleBy {
   id_DESC
   name_ASC
   name_DESC
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
 }
 
 input PersonUpdateInput {
@@ -282,7 +302,8 @@ type Query {
     where: TaskWhereInput
     search: String
     sortBy: [SortTasksBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task]
@@ -299,7 +320,8 @@ type Query {
     where: TaskWhereInput
     search: String
     sortBy: [SortTasksBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -311,7 +333,8 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person]
@@ -328,7 +351,8 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

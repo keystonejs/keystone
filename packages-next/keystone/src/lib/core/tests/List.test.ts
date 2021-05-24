@@ -230,6 +230,7 @@ describe('new List()', () => {
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
       listSortName: 'SortTestsBy',
+      listOrderName: 'TestOrderByInput',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
@@ -402,6 +403,12 @@ describe(`getGqlTypes()`, () => {
         writeOnce_ASC
         writeOnce_DESC
       }`;
+  const orderTestsBy = `input TestOrderByInput {
+       name: OrderDirection
+       email: OrderDirection
+       writeOnce: OrderDirection
+      }`;
+  const orderDirection = `enum OrderDirection { asc desc }`;
   const otherRelateToOneInput = `input OtherRelateToOneInput {
     connect: OtherWhereUniqueInput
     disconnect: OtherWhereUniqueInput
@@ -420,6 +427,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         updateInput,
         updateManyInput,
         createInput,
@@ -440,9 +449,15 @@ describe(`getGqlTypes()`, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        orderTestsBy,
+        orderDirection,
+      ].map(s => print(gql(s)))
     );
   });
   test('create: true', () => {
@@ -457,6 +472,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         createInput,
         createManyInput,
       ].map(s => print(gql(s)))
@@ -474,6 +491,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         updateInput,
         updateManyInput,
       ].map(s => print(gql(s)))
@@ -485,9 +504,15 @@ describe(`getGqlTypes()`, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        orderTestsBy,
+        orderDirection,
+      ].map(s => print(gql(s)))
     );
   });
 });
@@ -497,8 +522,8 @@ test('getGraphqlFilterFragment', () => {
   expect(list.getGraphqlFilterFragment()).toEqual([
     'where: TestWhereInput',
     'search: String',
-    'sortBy: [SortTestsBy!]',
-    'orderBy: String',
+    'sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")',
+    'orderBy: [TestOrderByInput!]! = []',
     'first: Int',
     'skip: Int! = 0',
   ]);
@@ -513,8 +538,8 @@ describe(`getGqlQueries()`, () => {
           allTests(
           where: TestWhereInput
           search: String
-          sortBy: [SortTestsBy!]
-          orderBy: String
+          sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+          orderBy: [TestOrderByInput!]! = []
           first: Int
           skip: Int! = 0
         ): [Test]`,
@@ -526,8 +551,8 @@ describe(`getGqlQueries()`, () => {
           _allTestsMeta(
           where: TestWhereInput
           search: String
-          sortBy: [SortTestsBy!]
-          orderBy: String
+          sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+          orderBy: [TestOrderByInput!]! = []
           first: Int
           skip: Int! = 0
         ): _QueryMeta`,

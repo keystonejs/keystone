@@ -78,6 +78,19 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  publishDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input PostUpdateInput {
   title: String
   status: PostStatusType
@@ -121,7 +134,8 @@ type Author {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -129,7 +143,8 @@ type Author {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -186,6 +201,12 @@ enum SortAuthorsBy {
   name_DESC
   email_ASC
   email_DESC
+}
+
+input AuthorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 input AuthorUpdateInput {
@@ -296,7 +317,8 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post]
@@ -313,7 +335,8 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -325,7 +348,8 @@ type Query {
     where: AuthorWhereInput
     search: String
     sortBy: [SortAuthorsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Author]
@@ -342,7 +366,8 @@ type Query {
     where: AuthorWhereInput
     search: String
     sortBy: [SortAuthorsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

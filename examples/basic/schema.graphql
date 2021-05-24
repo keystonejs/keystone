@@ -79,7 +79,8 @@ type User {
     where: PhoneNumberWhereInput
     search: String
     sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]!
@@ -87,7 +88,8 @@ type User {
     where: PhoneNumberWhereInput
     search: String
     sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -95,7 +97,8 @@ type User {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -103,7 +106,8 @@ type User {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -189,6 +193,19 @@ enum SortUsersBy {
   isAdmin_DESC
   roles_ASC
   roles_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+  roles: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 input UserUpdateInput {
@@ -280,6 +297,12 @@ enum SortPhoneNumbersBy {
   value_DESC
 }
 
+input PhoneNumberOrderByInput {
+  id: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+}
+
 input PhoneNumberUpdateInput {
   user: UserRelateToOneInput
   type: String
@@ -363,6 +386,13 @@ enum SortPostsBy {
   status_DESC
   publishDate_ASC
   publishDate_DESC
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
 }
 
 input PostUpdateInput {
@@ -551,7 +581,8 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User]
@@ -568,7 +599,8 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -580,7 +612,8 @@ type Query {
     where: PhoneNumberWhereInput
     search: String
     sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [PhoneNumber]
@@ -597,7 +630,8 @@ type Query {
     where: PhoneNumberWhereInput
     search: String
     sortBy: [SortPhoneNumbersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -609,7 +643,8 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post]
@@ -626,7 +661,8 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

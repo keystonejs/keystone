@@ -36,6 +36,13 @@ export type TodoWhereUniqueInput = {
 
 export type SortTodosBy = 'id_ASC' | 'id_DESC' | 'title_ASC' | 'title_DESC';
 
+export type TodoOrderByInput = {
+  readonly id?: OrderDirection | null;
+  readonly title?: OrderDirection | null;
+};
+
+export type OrderDirection = 'asc' | 'desc';
+
 export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
 };
@@ -80,6 +87,7 @@ export type TodoListTypeInfo = {
     listQuery: {
       readonly where?: TodoWhereInput | null;
       readonly sortBy?: ReadonlyArray<SortTodosBy> | null;
+      readonly orderBy?: ReadonlyArray<TodoOrderByInput>;
       readonly first?: Scalars['Int'] | null;
       readonly skip?: Scalars['Int'];
     };
