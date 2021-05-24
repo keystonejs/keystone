@@ -969,7 +969,7 @@ export class List implements BaseKeystoneList {
         itemsToUpdate.map((item, i) => {
           if (item === null || fieldAccess[i] !== null) {
             // The item either didn't exist, or was filtered out by access control
-            return new AccessDeniedError({ data: { type: 'mutation' } });
+            return Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } }));
           } else {
             const { existingItem, id, data } = item;
             return this._updateSingle(id, data, existingItem, context, mutationState);
@@ -1101,7 +1101,7 @@ export class List implements BaseKeystoneList {
         existingItems.map(existingItem => {
           if (existingItem === null) {
             // The item either didn't exist, or was filtered out by access control
-            return new AccessDeniedError({ data: { type: 'mutation' } });
+            return Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } }));
           } else {
             return this._deleteSingle(existingItem, context, mutationState);
           }
