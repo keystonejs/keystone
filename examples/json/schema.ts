@@ -7,13 +7,13 @@ export const lists = createSchema({
       label: text({ isRequired: true }),
       pkgjson: json({ isRequired: true }),
       isPrivate: checkbox(),
-      ownedBy: relationship({ ref: 'Person.tasks', many: false }),
+      ownedBy: relationship({ ref: 'Person.packages', many: false }),
     },
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
-      tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+      packages: relationship({ ref: 'Packages.ownedBy', many: true }),
     },
   }),
 });
