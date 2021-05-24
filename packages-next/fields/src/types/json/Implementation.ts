@@ -101,22 +101,4 @@ export class PrismaJsonInterface<P extends string> extends PrismaFieldAdapter<P>
   getQueryConditions() {
     return {};
   }
-
-  setupHooks({
-    addPreSaveHook,
-    addPostReadHook,
-  }: {
-    addPreSaveHook: (hook: any) => void;
-    addPostReadHook: (hook: any) => void;
-  }) {
-    addPreSaveHook((item: Record<P, any>) => {
-      console.log('addPreSaveHook', item);
-      return item;
-    });
-
-    addPostReadHook((item: Record<P, any>) => {
-      console.log('addPostReadHook', item);
-      return item;
-    });
-  }
 }
