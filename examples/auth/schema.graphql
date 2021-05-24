@@ -172,7 +172,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -189,7 +189,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

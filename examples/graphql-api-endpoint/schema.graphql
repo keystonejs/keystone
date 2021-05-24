@@ -19,7 +19,7 @@ type User {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
     where: PostWhereInput
@@ -27,7 +27,7 @@ type User {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -166,7 +166,7 @@ type Post {
     sortBy: [SortTagsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Tag!]!
   _tagsMeta(
     where: TagWhereInput
@@ -174,7 +174,7 @@ type Post {
     sortBy: [SortTagsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -292,7 +292,7 @@ type Tag {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
     where: PostWhereInput
@@ -300,7 +300,7 @@ type Tag {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -537,7 +537,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -554,7 +554,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -566,7 +566,7 @@ type Query {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post]
 
   """
@@ -583,7 +583,7 @@ type Query {
     sortBy: [SortPostsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -595,7 +595,7 @@ type Query {
     sortBy: [SortTagsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Tag]
 
   """
@@ -612,7 +612,7 @@ type Query {
     sortBy: [SortTagsBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

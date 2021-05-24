@@ -119,7 +119,7 @@ type Person {
     sortBy: [SortTasksBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Task!]!
   _tasksMeta(
     where: TaskWhereInput
@@ -127,7 +127,7 @@ type Person {
     sortBy: [SortTasksBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -284,7 +284,7 @@ type Query {
     sortBy: [SortTasksBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Task]
 
   """
@@ -301,7 +301,7 @@ type Query {
     sortBy: [SortTasksBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -313,7 +313,7 @@ type Query {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person]
 
   """
@@ -330,7 +330,7 @@ type Query {
     sortBy: [SortPeopleBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }

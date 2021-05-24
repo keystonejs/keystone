@@ -128,7 +128,7 @@ type User {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
     where: TodoWhereInput
@@ -136,7 +136,7 @@ type User {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   createdAt: String
   updatedAt: String
@@ -328,7 +328,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo]
 
   """
@@ -345,7 +345,7 @@ type Query {
     sortBy: [SortTodosBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -357,7 +357,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -374,7 +374,7 @@ type Query {
     sortBy: [SortUsersBy!]
     orderBy: String
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }
