@@ -1295,6 +1295,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int!
 
   """
    Search for all Product items which match the where clause.
@@ -1326,6 +1330,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int!
 
   """
    Search for all ProductImage items which match the where clause.
@@ -1357,6 +1365,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productImagesCount instead."
+    )
+  productImagesCount(where: ProductImageWhereInput! = {}): Int!
 
   """
    Search for all CartItem items which match the where clause.
@@ -1388,6 +1400,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartItemsCount instead."
+    )
+  cartItemsCount(where: CartItemWhereInput! = {}): Int!
 
   """
    Search for all OrderItem items which match the where clause.
@@ -1419,6 +1435,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use orderItemsCount instead."
+    )
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int!
 
   """
    Search for all Order items which match the where clause.
@@ -1450,6 +1470,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int!
 
   """
    Search for all Role items which match the where clause.
@@ -1481,6 +1505,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use rolesCount instead."
+    )
+  rolesCount(where: RoleWhereInput! = {}): Int!
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
     email: String!
