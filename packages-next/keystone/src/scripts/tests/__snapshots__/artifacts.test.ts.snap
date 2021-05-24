@@ -81,7 +81,7 @@ export type TodoListTypeInfo = {
       readonly where?: TodoWhereInput | null;
       readonly sortBy?: ReadonlyArray<SortTodosBy> | null;
       readonly first?: Scalars['Int'] | null;
-      readonly skip: Scalars['Int'];
+      readonly skip?: Scalars['Int'];
     };
   };
 };
