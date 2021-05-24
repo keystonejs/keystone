@@ -31,11 +31,3 @@ This accepts any valid JSON including:
 As this is required, both inputting `null` in the admin-ui as well as leaving the input empty are not accepted. However try removing the `isRequired` config option from the field config. In doing so, you'll notice that both inputting the string `null` as well as an empty field will result in a null database value being stored.
 
 The JSON field type stores its value in the `jsonb` format, as specified by Prisma. However if `sqlite` is specified as the database type instead, then the value is stored as a `string`.
-
-## Next steps
-
-This project is a bare bones system, and doesn't use any of Keystone's advanced features.
-We encourage you to experiment with the code here to see how Keystone works, become familiar with the Admin UI, and learn about the GraphQL Playground.
-
-Once you've got the hang of using this project, you can check out the [feature examples](../).
-These projects build on this starter project and show you how to use Keystones advanced features to take your project to the next level.
