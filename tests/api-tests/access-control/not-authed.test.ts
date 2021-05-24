@@ -388,7 +388,13 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, multiDeleteMutationName);
+
+                expect(data?.[multiDeleteMutationName]).toEqual([null]);
+                expect(errors).not.toBe(undefined);
+                expect(errors).toHaveLength(1);
+                expect(errors![0].name).toEqual('GraphQLError');
+                expect(errors![0].message).toEqual('You do not have access to this resource');
+                expect(errors![0].path).toEqual([multiDeleteMutationName, 0]);
               });
             });
         });
