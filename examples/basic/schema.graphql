@@ -333,7 +333,6 @@ type Post_content_DocumentField {
 """
 type Post {
   id: ID!
-  code: JSON
   title: String
   status: String
   content: Post_content_DocumentField
@@ -397,7 +396,6 @@ input PostOrderByInput {
 }
 
 input PostUpdateInput {
-  code: JSON
   title: String
   status: String
   content: JSON
@@ -411,7 +409,6 @@ input PostsUpdateInput {
 }
 
 input PostCreateInput {
-  code: JSON
   title: String
   status: String
   content: JSON

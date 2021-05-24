@@ -9,7 +9,6 @@ import {
   virtual,
   image,
   file,
-  json,
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
@@ -125,7 +124,6 @@ export const lists = createSchema({
   }),
   Post: list({
     fields: {
-      code: json(),
       title: text(),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
