@@ -52,6 +52,18 @@ enum SortUsersBy {
   isAdmin_DESC
 }
 
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -170,9 +182,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -187,9 +200,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

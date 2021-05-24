@@ -31,7 +31,7 @@ import { Implementation } from '@keystone-next/fields';
 import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
 import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils';
 import { HookManager } from './hooks';
-import { LimitsExceededError, throwAccessDenied } from './graphqlErrors';
+import { LimitsExceededError, throwAccessDenied, AccessDeniedError } from './graphqlErrors';
 
 type MutationState = { afterChangeStack: any[]; transaction: {} };
 
@@ -124,6 +124,7 @@ export class List implements BaseKeystoneList {
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
       listSortName: `Sort${_listQueryName}By`,
+      listOrderName: `${_itemQueryName}OrderByInput`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
       createMutationName: `create${_itemQueryName}`,
@@ -140,7 +141,7 @@ export class List implements BaseKeystoneList {
       relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
-    this.adapter = adapter.newListAdapter(this.key, adapterConfig);
+    this.adapter = adapter.newListAdapter(this.key, adapterConfig, this.gqlNames);
     this._schemaNames = ['public'];
 
     this.access = parseListAccess({
@@ -243,10 +244,10 @@ export class List implements BaseKeystoneList {
     return [
       `where: ${this.gqlNames.whereInputName}`,
       `search: String`,
-      `sortBy: [${this.gqlNames.listSortName}!]`,
-      `orderBy: String`,
+      `sortBy: [${this.gqlNames.listSortName}!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")`,
+      `orderBy: [${this.gqlNames.listOrderName}!]! = []`,
       `first: Int`,
-      `skip: Int`,
+      `skip: Int! = 0`,
     ];
   }
 
@@ -317,6 +318,48 @@ export class List implements BaseKeystoneList {
     }
   }
 
+  async _returnFieldAccess(
+    operation: 'create' | 'read' | 'update' | 'delete',
+    itemsToUpdate: {
+      existingItem: Record<string, any> | undefined;
+      id?: IdType;
+      data: Record<string, any>;
+    }[],
+    context: KeystoneContext,
+    { gqlName, ...extraInternalData }: { gqlName: string } & Record<string, any>
+  ) {
+    const _access = [];
+    for (const item of itemsToUpdate) {
+      if (item === null) {
+        _access.push(null);
+      } else {
+        const { existingItem, id, data } = item;
+        const fields = this.fields.filter(field => field.path in data);
+        const restrictedFields = [];
+        for (const field of fields) {
+          const access = await context.getFieldAccessControlForUser(
+            field.access,
+            this.key,
+            field.path,
+            data,
+            existingItem,
+            operation,
+            { gqlName, itemId: id, context, ...extraInternalData }
+          );
+          if (!access) {
+            restrictedFields.push(field.path);
+          }
+        }
+        if (restrictedFields.length) {
+          _access.push(restrictedFields);
+        } else {
+          _access.push(null);
+        }
+      }
+    }
+    return _access;
+  }
+
   async checkListAccess(
     context: KeystoneContext,
     originalInput: Record<string, any> | undefined,
@@ -337,6 +380,19 @@ export class List implements BaseKeystoneList {
       throwAccessDenied(opToType[operation], gqlName, extraInternalData);
     }
     return access;
+  }
+
+  async _returnListAccess(
+    context: KeystoneContext,
+    originalInput: Record<string, any> | undefined,
+    operation: 'create' | 'read' | 'update' | 'delete',
+    { gqlName, ...extraInternalData }: { gqlName?: string } & Record<string, any>
+  ) {
+    return context.getListAccessControlForUser(this.access, this.key, originalInput, operation, {
+      gqlName,
+      context,
+      ...extraInternalData,
+    });
   }
 
   async getAccessControlledItem(
@@ -725,13 +781,30 @@ export class List implements BaseKeystoneList {
     const operation = 'create';
     const gqlName = this.gqlNames.createManyMutationName;
 
-    await this.checkListAccess(context, data, operation, { gqlName });
+    const access = await this._returnListAccess(context, data, operation, { gqlName });
+    if (!access) {
+      // Return an access denied error for all items
+      return data.map(() => Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } })));
+    }
 
     const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d.data }));
 
-    await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
+    const fieldAccess = await this._returnFieldAccess(operation, itemsToUpdate, context, {
+      gqlName,
+    });
+    const results = await Promise.allSettled(
+      data.map((d, i) => {
+        if (fieldAccess[i] !== null) {
+          return Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } }));
+        } else {
+          return this._createSingle(d.data, context, mutationState);
+        }
+      })
+    );
 
-    return Promise.all(data.map(d => this._createSingle(d.data, context, mutationState)));
+    return results.map(result =>
+      result.status === 'fulfilled' ? Promise.resolve(result.value) : Promise.reject(result.reason)
+    );
   }
 
   async _createSingle(
@@ -846,38 +919,68 @@ export class List implements BaseKeystoneList {
     const ids = data.map(d => d.id);
     const extraData = { gqlName, itemIds: ids };
 
-    const access = await this.checkListAccess(context, data, operation, extraData);
+    const access = await this._returnListAccess(context, data, operation, extraData);
+    if (!access) {
+      // Return an access denied error for all items
+      return data.map(() => Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } })));
+    }
+
     const existingItems = (await this.getAccessControlledItems(ids, access)) as Record<
       string,
       any
     >[];
 
     // Only update those items which pass access control
-    const itemsToUpdate = zipObj({
+    const _itemsToUpdate = zipObj({
       existingItem: existingItems,
       id: existingItems.map(({ id }) => id), // itemId is taken from here in checkFieldAccess
       data: existingItems.map(({ id }) => data.find(d => d.id === id)!.data),
     }) as { existingItem: Record<string, any>; id: IdType; data: Record<string, any> }[];
 
-    // FIXME: We should do all of these in parallel and return *all* the field access violations
-    await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
+    // Put items to update back into the same order as the original IDs
+    const itemsToUpdateById = Object.fromEntries(_itemsToUpdate.map(o => [o.id, o]));
+    const itemsToUpdate = ids.map(id => itemsToUpdateById[id] || null);
 
+    const fieldAccess = await this._returnFieldAccess(operation, itemsToUpdate, context, extraData);
+    let results: PromiseSettledResult<any>[] = [];
     if (this.adapter.parentAdapter.provider === 'sqlite') {
       // We perform these operations sequentially as a workaround for a connection
       // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
-      const ret = [];
+      let i = 0;
       for (const item of itemsToUpdate) {
-        const { existingItem, id, data } = item;
-        ret.push(await this._updateSingle(id, data, existingItem, context, mutationState));
+        if (item === null || fieldAccess[i] !== null) {
+          // The item either didn't exist, or was filtered out by access control
+          results.push({
+            status: 'rejected',
+            reason: new AccessDeniedError({ data: { type: 'mutation' } }),
+          });
+        } else {
+          const { existingItem, id, data } = item;
+          try {
+            const result = await this._updateSingle(id, data, existingItem, context, mutationState);
+            results.push({ status: 'fulfilled', value: result });
+          } catch (e) {
+            results.push({ status: 'rejected', reason: e });
+          }
+        }
+        i++;
       }
-      return ret;
     } else {
-      return Promise.all(
-        itemsToUpdate.map(({ existingItem, id, data }) =>
-          this._updateSingle(id, data, existingItem, context, mutationState)
-        )
+      results = await Promise.allSettled(
+        itemsToUpdate.map((item, i) => {
+          if (item === null || fieldAccess[i] !== null) {
+            // The item either didn't exist, or was filtered out by access control
+            return Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } }));
+          } else {
+            const { existingItem, id, data } = item;
+            return this._updateSingle(id, data, existingItem, context, mutationState);
+          }
+        })
       );
     }
+    return results.map(result =>
+      result.status === 'fulfilled' ? Promise.resolve(result.value) : Promise.reject(result.reason)
+    );
   }
 
   async _updateSingle(
@@ -959,26 +1062,56 @@ export class List implements BaseKeystoneList {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
-    const access = await this.checkListAccess(context, undefined, operation, {
+    const access = await this._returnListAccess(context, undefined, operation, {
       gqlName,
       itemIds: ids,
     });
+    if (!access) {
+      // Return an access denied error for all items
+      return ids.map(() => Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } })));
+    }
 
-    const existingItems = (await this.getAccessControlledItems(ids, access)) as any[];
+    const _existingItems = (await this.getAccessControlledItems(ids, access)) as any[];
 
+    // Put items to update back into the same order as the original IDs
+    const existingItemsById = Object.fromEntries(_existingItems.map(o => [o.id, o]));
+    const existingItems = ids.map(id => existingItemsById[id] || null);
+
+    let results: PromiseSettledResult<any>[] = [];
     if (this.adapter.parentAdapter.provider === 'sqlite') {
       // We perform these operations sequentially as a workaround for a connection
       // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
-      const ret = [];
       for (const existingItem of existingItems) {
-        ret.push(await this._deleteSingle(existingItem, context, mutationState));
+        if (existingItem === null) {
+          // The item either didn't exist, or was filtered out by access control
+          results.push({
+            status: 'rejected',
+            reason: new AccessDeniedError({ data: { type: 'mutation' } }),
+          });
+        } else {
+          try {
+            const result = await this._deleteSingle(existingItem, context, mutationState);
+            results.push({ status: 'fulfilled', value: result });
+          } catch (e) {
+            results.push({ status: 'rejected', reason: e });
+          }
+        }
       }
-      return ret;
     } else {
-      return Promise.all(
-        existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+      results = await Promise.allSettled(
+        existingItems.map(existingItem => {
+          if (existingItem === null) {
+            // The item either didn't exist, or was filtered out by access control
+            return Promise.reject(new AccessDeniedError({ data: { type: 'mutation' } }));
+          } else {
+            return this._deleteSingle(existingItem, context, mutationState);
+          }
+        })
       );
     }
+    return results.map(result =>
+      result.status === 'fulfilled' ? Promise.resolve(result.value) : Promise.reject(result.reason)
+    );
   }
 
   async _deleteSingle(
@@ -1053,6 +1186,20 @@ export class List implements BaseKeystoneList {
             ${sortOptions.join('\n')}
           }
         `);
+      }
+      const orderItems = flatten(
+        readFields.map(({ path, isOrderable }) =>
+          // Explicitly allow sorting by id
+          isOrderable || path === 'id' ? [`${path}: OrderDirection`] : []
+        )
+      );
+      if (orderItems.length) {
+        types.push(`
+          input ${this.gqlNames.listOrderName} {
+            ${orderItems.join('\n')}
+          }
+        `);
+        types.push(`enum OrderDirection { asc desc }`);
       }
     }
 

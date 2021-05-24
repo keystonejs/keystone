@@ -195,6 +195,21 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })
       );
       test(
+        'orderBy: Should get all ordered items',
+        runner(setupKeystone, async ({ context }) => {
+          // Seed the db
+          await seedDb({ context });
+
+          const getItemsBySortOrder = (orderBy: Record<string, 'asc' | 'desc'>) =>
+            getItems({ context, listKey, returnFields, orderBy: [orderBy] });
+
+          const allItemsAscAge = await getItemsBySortOrder({ age: 'asc' });
+          const allItemsDescAge = await getItemsBySortOrder({ age: 'desc' });
+          expect(allItemsAscAge[0]).toEqual(testData.map(x => x.data)[0]);
+          expect(allItemsDescAge[0]).toEqual(testData.map(x => x.data).slice(-1)[0]);
+        })
+      );
+      test(
         'first: Should get first specfied number of items',
         runner(setupKeystone, async ({ context }) => {
           await seedDb({ context });

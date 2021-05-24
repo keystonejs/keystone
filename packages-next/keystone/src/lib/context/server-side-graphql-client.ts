@@ -111,6 +111,7 @@ const getItems = async ({
   listKey,
   where = {},
   sortBy,
+  orderBy,
   first,
   skip,
   pageSize = 500,
@@ -120,17 +121,20 @@ const getItems = async ({
   listKey: string;
   where?: Record<string, any> | null;
   sortBy?: readonly string[] | null;
+  orderBy?: Record<string, 'asc' | 'desc'>[];
   first?: number | null;
   skip?: number | null;
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
 }): Promise<Record<string, any>[]> => {
-  const { listQueryName, whereInputName, listSortName } = context.gqlNames(listKey);
+  const { listQueryName, whereInputName, listSortName, listOrderName } = context.gqlNames(listKey);
 
   let query;
   if (sortBy) {
     query = `query ($first: Int!, $skip: Int!, $sortBy: [${listSortName}!], $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, sortBy: $sortBy, where: $where) { ${returnFields} }  }`;
+  } else if (orderBy) {
+    query = `query ($first: Int!, $skip: Int!, $orderBy: [${listOrderName}!]! = [], $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, orderBy: $orderBy, where: $where) { ${returnFields} }  }`;
   } else {
     query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
   }
@@ -148,7 +152,7 @@ const getItems = async ({
     }
     const response = await context.graphql.run({
       query,
-      variables: { first: _first, skip: _skip, sortBy, where },
+      variables: { first: _first, skip: _skip, sortBy, orderBy, where },
     });
 
     latestResult = response[Object.keys(response || {})[0]];

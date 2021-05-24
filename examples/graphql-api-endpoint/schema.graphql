@@ -17,17 +17,19 @@ type User {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -109,6 +111,17 @@ enum SortUsersBy {
   email_DESC
 }
 
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -164,17 +177,19 @@ type Post {
     where: TagWhereInput
     search: String
     sortBy: [SortTagsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Tag!]!
   _tagsMeta(
     where: TagWhereInput
     search: String
     sortBy: [SortTagsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -253,6 +268,13 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+}
+
 input PostUpdateInput {
   title: String
   status: String
@@ -290,17 +312,19 @@ type Tag {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -359,6 +383,11 @@ enum SortTagsBy {
   id_DESC
   name_ASC
   name_DESC
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
 }
 
 input TagUpdateInput {
@@ -535,9 +564,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -552,9 +582,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -564,9 +595,10 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post]
 
   """
@@ -581,9 +613,10 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -593,9 +626,10 @@ type Query {
     where: TagWhereInput
     search: String
     sortBy: [SortTagsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Tag]
 
   """
@@ -610,9 +644,10 @@ type Query {
     where: TagWhereInput
     search: String
     sortBy: [SortTagsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

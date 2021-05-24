@@ -54,6 +54,18 @@ enum SortPostsBy {
   content_DESC
 }
 
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  content: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input PostUpdateInput {
   title: String
   slug: String
@@ -132,9 +144,10 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post]
 
   """
@@ -149,9 +162,10 @@ type Query {
     where: PostWhereInput
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }

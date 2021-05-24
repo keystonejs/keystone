@@ -84,6 +84,20 @@ enum SortTodosBy {
   updatedAt_DESC
 }
 
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input TodoUpdateInput {
   label: String
   isComplete: Boolean
@@ -126,17 +140,19 @@ type User {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   createdAt: String
   updatedAt: String
@@ -214,6 +230,14 @@ enum SortUsersBy {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
 }
 
 input UserUpdateInput {
@@ -326,9 +350,10 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo]
 
   """
@@ -343,9 +368,10 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -355,9 +381,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -372,9 +399,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }

@@ -38,50 +38,56 @@ type User {
     where: CartItemWhereInput
     search: String
     sortBy: [SortCartItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [CartItem!]!
   _cartMeta(
     where: CartItemWhereInput
     search: String
     sortBy: [SortCartItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   orders(
     where: OrderWhereInput
     search: String
     sortBy: [SortOrdersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Order!]!
   _ordersMeta(
     where: OrderWhereInput
     search: String
     sortBy: [SortOrdersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   role: Role
   products(
     where: ProductWhereInput
     search: String
     sortBy: [SortProductsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Product!]!
   _productsMeta(
     where: ProductWhereInput
     search: String
     sortBy: [SortProductsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   passwordResetToken_is_set: Boolean
   passwordResetIssuedAt: String
@@ -193,6 +199,19 @@ enum SortUsersBy {
   passwordResetIssuedAt_DESC
   passwordResetRedeemedAt_ASC
   passwordResetRedeemedAt_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  passwordResetIssuedAt: OrderDirection
+  passwordResetRedeemedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 input UserUpdateInput {
@@ -313,6 +332,14 @@ enum SortProductsBy {
   status_DESC
   price_ASC
   price_DESC
+}
+
+input ProductOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  price: OrderDirection
 }
 
 input ProductUpdateInput {
@@ -445,6 +472,11 @@ enum SortProductImagesBy {
   altText_DESC
 }
 
+input ProductImageOrderByInput {
+  id: OrderDirection
+  altText: OrderDirection
+}
+
 input ProductImageUpdateInput {
   image: Upload
   altText: String
@@ -510,6 +542,11 @@ enum SortCartItemsBy {
   id_DESC
   quantity_ASC
   quantity_DESC
+}
+
+input CartItemOrderByInput {
+  id: OrderDirection
+  quantity: OrderDirection
 }
 
 input CartItemUpdateInput {
@@ -615,6 +652,14 @@ enum SortOrderItemsBy {
   quantity_DESC
 }
 
+input OrderItemOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  quantity: OrderDirection
+}
+
 input OrderItemUpdateInput {
   name: String
   description: String
@@ -660,17 +705,19 @@ type Order {
     where: OrderItemWhereInput
     search: String
     sortBy: [SortOrderItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [OrderItem!]!
   _itemsMeta(
     where: OrderItemWhereInput
     search: String
     sortBy: [SortOrderItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   user: User
   charge: String
@@ -733,6 +780,12 @@ enum SortOrdersBy {
   charge_DESC
 }
 
+input OrderOrderByInput {
+  id: OrderDirection
+  total: OrderDirection
+  charge: OrderDirection
+}
+
 input OrderUpdateInput {
   total: Int
   items: OrderItemRelateToManyInput
@@ -779,17 +832,19 @@ type Role {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User!]!
   _assignedToMeta(
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -860,6 +915,17 @@ enum SortRolesBy {
   canManageCart_DESC
   canManageOrders_ASC
   canManageOrders_DESC
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  canManageProducts: OrderDirection
+  canSeeOtherUsers: OrderDirection
+  canManageUsers: OrderDirection
+  canManageRoles: OrderDirection
+  canManageCart: OrderDirection
+  canManageOrders: OrderDirection
 }
 
 input RoleUpdateInput {
@@ -1206,9 +1272,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [User]
 
   """
@@ -1223,9 +1290,10 @@ type Query {
     where: UserWhereInput
     search: String
     sortBy: [SortUsersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1235,9 +1303,10 @@ type Query {
     where: ProductWhereInput
     search: String
     sortBy: [SortProductsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Product]
 
   """
@@ -1252,9 +1321,10 @@ type Query {
     where: ProductWhereInput
     search: String
     sortBy: [SortProductsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1264,9 +1334,10 @@ type Query {
     where: ProductImageWhereInput
     search: String
     sortBy: [SortProductImagesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [ProductImage]
 
   """
@@ -1281,9 +1352,10 @@ type Query {
     where: ProductImageWhereInput
     search: String
     sortBy: [SortProductImagesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1293,9 +1365,10 @@ type Query {
     where: CartItemWhereInput
     search: String
     sortBy: [SortCartItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [CartItem]
 
   """
@@ -1310,9 +1383,10 @@ type Query {
     where: CartItemWhereInput
     search: String
     sortBy: [SortCartItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1322,9 +1396,10 @@ type Query {
     where: OrderItemWhereInput
     search: String
     sortBy: [SortOrderItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [OrderItem]
 
   """
@@ -1339,9 +1414,10 @@ type Query {
     where: OrderItemWhereInput
     search: String
     sortBy: [SortOrderItemsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1351,9 +1427,10 @@ type Query {
     where: OrderWhereInput
     search: String
     sortBy: [SortOrdersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Order]
 
   """
@@ -1368,9 +1445,10 @@ type Query {
     where: OrderWhereInput
     search: String
     sortBy: [SortOrdersBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -1380,9 +1458,10 @@ type Query {
     where: RoleWhereInput
     search: String
     sortBy: [SortRolesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Role]
 
   """
@@ -1397,9 +1476,10 @@ type Query {
     where: RoleWhereInput
     search: String
     sortBy: [SortRolesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(

@@ -113,7 +113,7 @@ export function printGeneratedTypes(
   let printArgs = (args: readonly InputValueDefinitionNode[]) => {
     let types = '{\n';
     for (const arg of args) {
-      if (arg.name.value === 'search' || arg.name.value === 'orderBy') continue;
+      if (arg.name.value === 'search') continue;
       types += `  readonly ${arg.name.value}${
         arg.type.kind === 'NonNullType' && !arg.defaultValue ? '' : '?'
       }: ${printTypeNode(arg.type)};\n`;

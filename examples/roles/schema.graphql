@@ -56,6 +56,18 @@ enum SortTodosBy {
   isPrivate_DESC
 }
 
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  isPrivate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input TodoUpdateInput {
   label: String
   isComplete: Boolean
@@ -106,17 +118,19 @@ type Person {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -176,6 +190,12 @@ enum SortPeopleBy {
   email_DESC
 }
 
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
 input PersonUpdateInput {
   name: String
   email: String
@@ -224,17 +244,19 @@ type Role {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person!]!
   _assignedToMeta(
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -305,6 +327,17 @@ enum SortRolesBy {
   canManagePeople_DESC
   canManageRoles_ASC
   canManageRoles_DESC
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  canCreateTodos: OrderDirection
+  canManageAllTodos: OrderDirection
+  canSeeOtherPeople: OrderDirection
+  canEditOtherPeople: OrderDirection
+  canManagePeople: OrderDirection
+  canManageRoles: OrderDirection
 }
 
 input RoleUpdateInput {
@@ -493,9 +526,10 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Todo]
 
   """
@@ -510,9 +544,10 @@ type Query {
     where: TodoWhereInput
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -522,9 +557,10 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person]
 
   """
@@ -539,9 +575,10 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -551,9 +588,10 @@ type Query {
     where: RoleWhereInput
     search: String
     sortBy: [SortRolesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Role]
 
   """
@@ -568,9 +606,10 @@ type Query {
     where: RoleWhereInput
     search: String
     sortBy: [SortRolesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
