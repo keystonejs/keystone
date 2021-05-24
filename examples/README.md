@@ -19,7 +19,7 @@ Each of the examples below demonstrates a particular feature of Keystone.
 You can use these projects to learn about, and experiment with specific features.
 
 - [`withAuth`](./with-auth): Adding password based authentication to your Keystone application.
-- [`json field`](./json): Using a json field to your Keystone application.
+- [`JSON field`](./json): Using a JSON field in your Keystone application.
 - Data Seeding: Coming soon
 - GitHub SSO: Coming soon
 - Roles: Coming soon
