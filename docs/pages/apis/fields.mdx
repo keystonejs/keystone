@@ -705,4 +705,31 @@ export default config({
 });
 ```
 
+### json
+
+An `json` field represents a json blob. This is stored as a string in `sqlite`.
+Currently the `json` field is non-orderable and non-filterable.
+
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: json({
+          isRequired: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
 export default ({ children }) => <Markdown>{children}</Markdown>;
