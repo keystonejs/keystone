@@ -8,23 +8,40 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { jsx } from '@keystone-ui/core';
+import { jsx, Stack, Text } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
-    {onChange ? (
-      <TextArea
-        autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value)}
-        value={value}
-      />
-    ) : (
-      value
-    )}
-  </FieldContainer>
-);
+export const Field = ({
+  field,
+  forceValidation,
+  value,
+  onChange,
+  autoFocus,
+}: FieldProps<typeof controller>) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>
+        {field.label}
+        {onChange ? (
+          <Stack>
+            <TextArea
+              autoFocus={autoFocus}
+              onChange={event => onChange(event.target.value)}
+              value={value}
+            />
+            {forceValidation && (
+              <Text color="red600" size="small">
+                {'Invalid JSON'}
+              </Text>
+            )}
+          </Stack>
+        ) : (
+          value
+        )}
+      </FieldLabel>
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
