@@ -549,6 +549,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int!
 
   """
    Search for all Person items which match the where clause.
@@ -580,6 +584,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int!
 
   """
    Search for all Role items which match the where clause.
@@ -611,6 +619,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use rolesCount instead."
+    )
+  rolesCount(where: RoleWhereInput! = {}): Int!
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

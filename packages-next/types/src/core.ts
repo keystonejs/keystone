@@ -49,11 +49,13 @@ export function getGqlNames({
   itemQueryName: string;
   listQueryName: string;
 }): GqlNames {
+  const _lowerListName = _listQueryName.slice(0, 1).toLowerCase() + _listQueryName.slice(1);
   return {
     outputTypeName: listKey,
     itemQueryName: _itemQueryName,
     listQueryName: `all${_listQueryName}`,
     listQueryMetaName: `_all${_listQueryName}Meta`,
+    listQueryCountName: `${_lowerListName}Count`,
     listSortName: `Sort${_listQueryName}By`,
     listOrderName: `${_itemQueryName}OrderByInput`,
     deleteMutationName: `delete${_itemQueryName}`,

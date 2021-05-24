@@ -229,6 +229,7 @@ describe('new List()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
+      listQueryCountName: 'testsCount',
       listSortName: 'SortTestsBy',
       listOrderName: 'TestOrderByInput',
       deleteMutationName: 'deleteTest',
@@ -555,7 +556,8 @@ describe(`getGqlQueries()`, () => {
           orderBy: [TestOrderByInput!]! = []
           first: Int
           skip: Int! = 0
-        ): _QueryMeta`,
+        ): _QueryMeta @deprecated(reason: \"This query will be removed in a future version. Please use testsCount instead.\")`,
+        `testsCount(where: TestWhereInput! = {}): Int!`,
       ].map(normalise)
     );
   });
