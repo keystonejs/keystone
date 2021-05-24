@@ -39,6 +39,7 @@ export const start = async (cwd: string) => {
   const port = config.server?.port || process.env.PORT || 3000;
   server.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://localhost:${port}`);
+    const appUrl = process.env.APP_URL || `http://localhost:${port}`;
+    console.log(`⭐️ Server Ready on ${appUrl}`);
   });
 };
