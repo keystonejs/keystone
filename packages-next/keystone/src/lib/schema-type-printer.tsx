@@ -49,7 +49,7 @@ function printInputTypesFromSchema(
     let str = `export type ${node.name.value} = {\n`;
     node.fields?.forEach(node => {
       str += `  readonly ${node.name.value}${
-        node.type.kind === 'NonNullType' || node.defaultValue ? '' : '?'
+        node.type.kind === 'NonNullType' && !node.defaultValue ? '' : '?'
       }: ${printTypeNode(node.type)};\n`;
     });
     str += '};';
