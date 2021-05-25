@@ -41,6 +41,8 @@ import {
   CreateAndUpdateInputResolvers,
   FilterInputResolvers,
   getFilterInputResolvers,
+  InputFilter,
+  PrismaFilter,
   resolveOrderBy,
   resolveUniqueWhereInput,
 } from './input-resolvers';
@@ -90,6 +92,7 @@ export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   fieldsIncludingOppositesToOneSidedRelations: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
+  filterImpls: Record<string, (input: InputFilter[string]) => PrismaFilter>;
   types: TypesForList;
   access: ResolvedListAccessControl;
   inputResolvers: {
@@ -450,23 +453,26 @@ export function initialiseLists(
       name: names.whereInputName,
       fields: () => {
         const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
-        return {
-          AND: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          OR: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          NOT: types.arg({
-            type: types.list(types.nonNull(where)),
-          }),
-          ...Object.fromEntries(
-            Object.entries(fields).flatMap(([key, field]) => {
-              if (!field.input?.where?.arg || field.access.read === false) return [];
-              return [[key, field.input.where.arg]] as const;
-            })
-          ),
-        };
+        return Object.assign(
+          {
+            AND: types.arg({
+              type: types.list(types.nonNull(where)),
+            }),
+            OR: types.arg({
+              type: types.list(types.nonNull(where)),
+            }),
+            // NOT: types.arg({
+            //   type: types.list(types.nonNull(where)),
+            // }),
+            // ...Object.fromEntries(
+            //   Object.entries(fields).flatMap(([key, field]) => {
+            //     if (!field.input?.where?.arg || field.access.read === false) return [];
+            //     return [[key, field.input.where.arg]] as const;
+            //   })
+            // ),
+          },
+          ...Object.values(fields).map(x => x.__legacy?.filters?.fields ?? {})
+        );
       },
     });
 
@@ -658,10 +664,6 @@ export function initialiseLists(
     assertIdFieldGraphQLTypesCorrect(listKey, fields);
   }
 
-  const getWhereInputResolvers = getFilterInputResolvers(
-    listsWithInitialisedFieldsAndResolvedDbFields
-  );
-
   const initialisedLists: Record<string, InitialisedList> = Object.fromEntries(
     Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]): [
       string,
@@ -677,9 +679,17 @@ export function initialiseLists(
           createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
         },
         fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
+        filterImpls: Object.assign(
+          {},
+          ...Object.values(list.fields).map(field => {
+            return field.__legacy?.filters?.impls ?? {};
+          })
+        ),
       },
     ])
   );
+
+  const getWhereInputResolvers = getFilterInputResolvers(initialisedLists);
 
   return {
     lists: initialisedLists,

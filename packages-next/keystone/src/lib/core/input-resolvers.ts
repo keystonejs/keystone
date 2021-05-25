@@ -117,6 +117,8 @@ async function resolveWhereInput(
         if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
           return {
             [fieldKey]: await Promise.all(
+              // this will be used soon
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               value.map((value: any) => resolveWhereInput(value, fields, context, inputResolvers))
             ),
           };
@@ -175,6 +177,26 @@ async function resolveWhereInput(
   };
 }
 
+async function resolveLegacyWhereInput(
+  inputFilter: InputFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  inputResolvers: Record<string, FilterInputResolvers>
+): Promise<PrismaFilter> {
+  return {
+    AND: Object.entries(inputFilter).map(async ([fieldKey, value]) => {
+      if (fieldKey === 'OR' || fieldKey === 'AND') {
+        return {
+          [fieldKey]: value.map((value: any) =>
+            resolveLegacyWhereInput(value, list, context, inputResolvers)
+          ),
+        };
+      }
+      return list.filterImpls[fieldKey](value);
+    }),
+  };
+}
+
 // the tuple preserves the argument name
 export function weakMemoize<Args extends [object], Return>(
   func: (...args: Args) => Return
@@ -190,15 +212,15 @@ export function weakMemoize<Args extends [object], Return>(
   };
 }
 
-export function getFilterInputResolvers(
-  lists: Record<string, { fields: FieldInfoRequiredForResolvingWhereInput }>
-) {
+export function getFilterInputResolvers(lists: Record<string, InitialisedList>) {
   return weakMemoize(function filterInputResolversInner(context: KeystoneContext) {
     const inputResolvers = Object.fromEntries(
-      Object.entries(lists).map(([listKey, { fields }]): [string, FilterInputResolvers] => {
+      Object.entries(lists).map(([listKey, list]): [string, FilterInputResolvers] => {
         return [
           listKey,
-          { where: async input => resolveWhereInput(input, fields, context, inputResolvers) },
+          {
+            where: async input => resolveLegacyWhereInput(input, list, context, inputResolvers),
+          },
         ];
       })
     );
