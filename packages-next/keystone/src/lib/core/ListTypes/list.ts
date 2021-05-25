@@ -244,7 +244,7 @@ export class List implements BaseKeystoneList {
 
   getGraphqlFilterFragment() {
     return [
-      `where: ${this.gqlNames.whereInputName}`,
+      `where: ${this.gqlNames.whereInputName}! = {}`,
       `search: String`,
       `sortBy: [${this.gqlNames.listSortName}!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")`,
       `orderBy: [${this.gqlNames.listOrderName}!]! = []`,

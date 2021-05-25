@@ -117,7 +117,7 @@ type Query {
    Search for all Todo items which match the where clause.
   """
   allTodos(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -135,7 +135,7 @@ type Query {
    Perform a meta-query on all Todo items which match the where clause.
   """
   _allTodosMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")

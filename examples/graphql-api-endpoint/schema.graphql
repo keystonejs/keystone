@@ -14,7 +14,7 @@ type User {
   email: String
   password_is_set: Boolean
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -23,7 +23,7 @@ type User {
     skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -174,7 +174,7 @@ type Post {
   publishDate: String
   author: User
   tags(
-    where: TagWhereInput
+    where: TagWhereInput! = {}
     search: String
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -183,7 +183,7 @@ type Post {
     skip: Int! = 0
   ): [Tag!]!
   _tagsMeta(
-    where: TagWhereInput
+    where: TagWhereInput! = {}
     search: String
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -309,7 +309,7 @@ type Tag {
   id: ID!
   name: String
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -318,7 +318,7 @@ type Tag {
     skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -561,7 +561,7 @@ type Query {
    Search for all User items which match the where clause.
   """
   allUsers(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -579,7 +579,7 @@ type Query {
    Perform a meta-query on all User items which match the where clause.
   """
   _allUsersMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -596,7 +596,7 @@ type Query {
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -614,7 +614,7 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -631,7 +631,7 @@ type Query {
    Search for all Tag items which match the where clause.
   """
   allTags(
-    where: TagWhereInput
+    where: TagWhereInput! = {}
     search: String
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -649,7 +649,7 @@ type Query {
    Perform a meta-query on all Tag items which match the where clause.
   """
   _allTagsMeta(
-    where: TagWhereInput
+    where: TagWhereInput! = {}
     search: String
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")

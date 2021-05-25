@@ -100,7 +100,7 @@ type Person {
   id: ID!
   name: String
   packages(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -109,7 +109,7 @@ type Person {
     skip: Int! = 0
   ): [Package!]!
   _packagesMeta(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -272,7 +272,7 @@ type Query {
    Search for all Package items which match the where clause.
   """
   allPackages(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -290,7 +290,7 @@ type Query {
    Perform a meta-query on all Package items which match the where clause.
   """
   _allPackagesMeta(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -307,7 +307,7 @@ type Query {
    Search for all Person items which match the where clause.
   """
   allPeople(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -325,7 +325,7 @@ type Query {
    Perform a meta-query on all Person items which match the where clause.
   """
   _allPeopleMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
