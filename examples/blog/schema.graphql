@@ -321,7 +321,7 @@ type Query {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post]
+  ): [Post!]
 
   """
    Search for the Post item with the matching ID.
@@ -356,7 +356,7 @@ type Query {
     orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Author]
+  ): [Author!]
 
   """
    Search for the Author item with the matching ID.

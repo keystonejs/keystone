@@ -1276,7 +1276,7 @@ type Query {
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [User]
+  ): [User!]
 
   """
    Search for the User item with the matching ID.
@@ -1311,7 +1311,7 @@ type Query {
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Product]
+  ): [Product!]
 
   """
    Search for the Product item with the matching ID.
@@ -1346,7 +1346,7 @@ type Query {
     orderBy: [ProductImageOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [ProductImage]
+  ): [ProductImage!]
 
   """
    Search for the ProductImage item with the matching ID.
@@ -1381,7 +1381,7 @@ type Query {
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [CartItem]
+  ): [CartItem!]
 
   """
    Search for the CartItem item with the matching ID.
@@ -1416,7 +1416,7 @@ type Query {
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [OrderItem]
+  ): [OrderItem!]
 
   """
    Search for the OrderItem item with the matching ID.
@@ -1451,7 +1451,7 @@ type Query {
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Order]
+  ): [Order!]
 
   """
    Search for the Order item with the matching ID.
@@ -1486,7 +1486,7 @@ type Query {
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Role]
+  ): [Role!]
 
   """
    Search for the Role item with the matching ID.
