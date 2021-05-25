@@ -1,0 +1,421 @@
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Package {
+  id: ID!
+  label: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: Person
+}
+
+input PackageWhereInput {
+  AND: [PackageWhereInput]
+  OR: [PackageWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  isPrivate: Boolean
+  isPrivate_not: Boolean
+  ownedBy: PersonWhereInput
+  ownedBy_is_null: Boolean
+}
+
+input PackageWhereUniqueInput {
+  id: ID!
+}
+
+enum SortPackagesBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isPrivate_ASC
+  isPrivate_DESC
+}
+
+input PackageOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isPrivate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PackageUpdateInput {
+  label: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneInput
+}
+
+input PackagesUpdateInput {
+  id: ID!
+  data: PackageUpdateInput
+}
+
+input PackageCreateInput {
+  label: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneInput
+}
+
+input PackagesCreateInput {
+  data: PackageCreateInput
+}
+
+input PackageRelateToManyInput {
+  create: [PackageCreateInput]
+  connect: [PackageWhereUniqueInput]
+  disconnect: [PackageWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Person {
+  id: ID!
+  name: String
+  packages(
+    where: PackageWhereInput
+    search: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Package!]!
+  _packagesMeta(
+    where: PackageWhereInput
+    search: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+input PersonWhereInput {
+  AND: [PersonWhereInput]
+  OR: [PersonWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  packages_every: PackageWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  packages_some: PackageWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  packages_none: PackageWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID!
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input PersonUpdateInput {
+  name: String
+  packages: PackageRelateToManyInput
+}
+
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
+}
+
+input PersonCreateInput {
+  name: String
+  packages: PackageRelateToManyInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single Package item.
+  """
+  createPackage(data: PackageCreateInput): Package
+
+  """
+   Create multiple Package items.
+  """
+  createPackages(data: [PackagesCreateInput]): [Package]
+
+  """
+   Update a single Package item by ID.
+  """
+  updatePackage(id: ID!, data: PackageUpdateInput): Package
+
+  """
+   Update multiple Package items by ID.
+  """
+  updatePackages(data: [PackagesUpdateInput]): [Package]
+
+  """
+   Delete a single Package item by ID.
+  """
+  deletePackage(id: ID!): Package
+
+  """
+   Delete multiple Package items by ID.
+  """
+  deletePackages(ids: [ID!]): [Package]
+
+  """
+   Create a single Person item.
+  """
+  createPerson(data: PersonCreateInput): Person
+
+  """
+   Create multiple Person items.
+  """
+  createPeople(data: [PeopleCreateInput]): [Person]
+
+  """
+   Update a single Person item by ID.
+  """
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
+
+  """
+   Update multiple Person items by ID.
+  """
+  updatePeople(data: [PeopleUpdateInput]): [Person]
+
+  """
+   Delete a single Person item by ID.
+  """
+  deletePerson(id: ID!): Person
+
+  """
+   Delete multiple Person items by ID.
+  """
+  deletePeople(ids: [ID!]): [Person]
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+type Query {
+  """
+   Search for all Package items which match the where clause.
+  """
+  allPackages(
+    where: PackageWhereInput
+    search: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Package!]
+
+  """
+   Search for the Package item with the matching ID.
+  """
+  Package(where: PackageWhereUniqueInput!): Package
+
+  """
+   Perform a meta-query on all Package items which match the where clause.
+  """
+  _allPackagesMeta(
+    where: PackageWhereInput
+    search: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use packagesCount instead."
+    )
+  packagesCount(where: PackageWhereInput! = {}): Int!
+
+  """
+   Search for all Person items which match the where clause.
+  """
+  allPeople(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+
+  """
+   Search for the Person item with the matching ID.
+  """
+  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Perform a meta-query on all Person items which match the where clause.
+  """
+  _allPeopleMeta(
+    where: PersonWhereInput
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int!
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}
