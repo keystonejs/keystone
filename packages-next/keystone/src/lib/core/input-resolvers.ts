@@ -177,14 +177,14 @@ async function resolveWhereInput(
   };
 }
 
-async function resolveLegacyWhereInput(
+function resolveLegacyWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
   context: KeystoneContext,
   inputResolvers: Record<string, FilterInputResolvers>
-): Promise<PrismaFilter> {
+): PrismaFilter {
   return {
-    AND: Object.entries(inputFilter).map(async ([fieldKey, value]) => {
+    AND: Object.entries(inputFilter).map(([fieldKey, value]) => {
       if (fieldKey === 'OR' || fieldKey === 'AND') {
         return {
           [fieldKey]: value.map((value: any) =>

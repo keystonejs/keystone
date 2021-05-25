@@ -98,16 +98,18 @@ export function withItemData(
           return;
         }
 
-        // If no field selection is specified, just load the id. We still load the item,
-        // because doing so validates that it exists in the database
-        const item = await sudoContext.lists[session.listKey].findOne({
-          where: { id: session.itemId },
-          query: fieldSelections[session.listKey] || 'id',
-        });
-        if (item === null) {
-          return;
-        }
-        return { ...session, data: item };
+        try {
+          // If no field selection is specified, just load the id. We still load the item,
+          // because doing so validates that it exists in the database
+          const item = await sudoContext.lists[session.listKey].findOne({
+            where: { id: session.itemId },
+            query: fieldSelections[session.listKey] || 'id',
+          });
+          if (item === null) {
+            return;
+          }
+          return { ...session, data: item };
+        } catch (err) {}
       },
     };
   };
