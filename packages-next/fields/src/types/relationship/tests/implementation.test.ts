@@ -375,10 +375,8 @@ describe('Type Generation', () => {
               // existence
               arguments: expect.any(Array),
               type: {
-                type: {
-                  name: {
-                    value: 'Int',
-                  },
+                name: {
+                  value: 'Int',
                 },
               },
             },
