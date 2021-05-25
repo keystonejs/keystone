@@ -88,7 +88,6 @@ export const controller = (config: Config): FieldController<string, string> => {
       try {
         parsedValue = JSON.parse(value);
       } catch (e) {
-        parsedValue = undefined;
       }
       return { [config.path]: parsedValue };
     },
