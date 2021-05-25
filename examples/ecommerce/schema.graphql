@@ -9,36 +9,14 @@ type User {
     first: Int
     skip: Int! = 0
   ): [CartItem!]!
-<<<<<<< HEAD
   cartCount(where: CartItemWhereInput! = {}): Int!
-=======
-  _cartMeta(
-    where: CartItemWhereInput
-    search: String
-    sortBy: [SortCartItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
   orders(
     where: OrderWhereInput! = {}
     orderBy: [SortOrdersBy!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]!
-<<<<<<< HEAD
   ordersCount(where: OrderWhereInput! = {}): Int!
-=======
-  _ordersMeta(
-    where: OrderWhereInput
-    search: String
-    sortBy: [SortOrdersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
   role: Role
   products(
     where: ProductWhereInput! = {}
@@ -46,96 +24,8 @@ type User {
     first: Int
     skip: Int! = 0
   ): [Product!]!
-<<<<<<< HEAD
   productsCount(where: ProductWhereInput! = {}): Int!
   passwordResetToken: PasswordState!
-=======
-  _productsMeta(
-    where: ProductWhereInput
-    search: String
-    sortBy: [SortProductsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  passwordResetToken_is_set: Boolean
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  cart_every: CartItemWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  cart_some: CartItemWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  cart_none: CartItemWhereInput
-
-  """
-   condition must be true for all nodes
-  """
-  orders_every: OrderWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  orders_some: OrderWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  orders_none: OrderWhereInput
-  role: RoleWhereInput
-  role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  products_every: ProductWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  products_some: ProductWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  products_none: ProductWhereInput
-  passwordResetToken_is_set: Boolean
->>>>>>> master
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
@@ -544,37 +434,9 @@ input ProductImageWhereUniqueInput {
   id: ID
 }
 
-<<<<<<< HEAD
 input SortProductImagesBy {
   id: OrderDirection
   altText: OrderDirection
-=======
-"""
- A keystone list
-"""
-type Order {
-  id: ID!
-  label: String
-  total: Int
-  items(
-    where: OrderItemWhereInput
-    search: String
-    sortBy: [SortOrderItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [OrderItem!]!
-  _itemsMeta(
-    where: OrderItemWhereInput
-    search: String
-    sortBy: [SortOrderItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  user: User
-  charge: String
->>>>>>> master
 }
 
 input CartItemWhereUniqueInput {
@@ -711,40 +573,9 @@ input CartItemCreateInput {
   user: UserRelateToOneForCreateInput
 }
 
-<<<<<<< HEAD
 input ProductRelateToOneForCreateInput {
   create: ProductCreateInput
   connect: ProductWhereUniqueInput
-=======
-"""
- A keystone list
-"""
-type Role {
-  id: ID!
-  name: String
-  canManageProducts: Boolean
-  canSeeOtherUsers: Boolean
-  canManageUsers: Boolean
-  canManageRoles: Boolean
-  canManageCart: Boolean
-  canManageOrders: Boolean
-  assignedTo(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [User!]!
-  _assignedToMeta(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 }
 
 input ProductCreateInput {
@@ -893,7 +724,6 @@ input UsersUpdateInput {
   data: UserUpdateInput!
 }
 
-<<<<<<< HEAD
 input ProductUpdateInput {
   name: String
   description: String
@@ -902,27 +732,12 @@ input ProductUpdateInput {
   price: Int
   user: UserRelateToOneForUpdateInput
 }
-=======
-type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [User]
->>>>>>> master
 
 input ProductImageRelateToOneForUpdateInput {
   create: ProductImageCreateInput
   connect: ProductImageWhereUniqueInput
 }
 
-<<<<<<< HEAD
 input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
@@ -932,31 +747,6 @@ input ProductsUpdateInput {
   where: ProductWhereUniqueInput!
   data: ProductUpdateInput!
 }
-=======
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
-  _allUsersMeta(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all Product items which match the where clause.
-  """
-  allProducts(
-    where: ProductWhereInput
-    search: String
-    sortBy: [SortProductsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Product]
->>>>>>> master
 
 input ProductImageUpdateInput {
   image: Upload
@@ -964,7 +754,6 @@ input ProductImageUpdateInput {
   product: ProductRelateToOneForUpdateInput
 }
 
-<<<<<<< HEAD
 input ProductRelateToOneForUpdateInput {
   create: ProductCreateInput
   connect: ProductWhereUniqueInput
@@ -974,31 +763,6 @@ input ProductImagesUpdateInput {
   where: ProductImageWhereUniqueInput!
   data: ProductImageUpdateInput!
 }
-=======
-  """
-   Perform a meta-query on all Product items which match the where clause.
-  """
-  _allProductsMeta(
-    where: ProductWhereInput
-    search: String
-    sortBy: [SortProductsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all ProductImage items which match the where clause.
-  """
-  allProductImages(
-    where: ProductImageWhereInput
-    search: String
-    sortBy: [SortProductImagesBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [ProductImage]
->>>>>>> master
 
 input CartItemUpdateInput {
   quantity: Int
@@ -1006,7 +770,6 @@ input CartItemUpdateInput {
   user: UserRelateToOneForUpdateInput
 }
 
-<<<<<<< HEAD
 input CartItemsUpdateInput {
   where: CartItemWhereUniqueInput!
   data: CartItemUpdateInput!
@@ -1020,38 +783,12 @@ input OrderItemUpdateInput {
   quantity: Int
   order: OrderRelateToOneForUpdateInput
 }
-=======
-  """
-   Perform a meta-query on all ProductImage items which match the where clause.
-  """
-  _allProductImagesMeta(
-    where: ProductImageWhereInput
-    search: String
-    sortBy: [SortProductImagesBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all CartItem items which match the where clause.
-  """
-  allCartItems(
-    where: CartItemWhereInput
-    search: String
-    sortBy: [SortCartItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [CartItem]
->>>>>>> master
 
 input OrderRelateToOneForUpdateInput {
   create: OrderCreateInput
   connect: OrderWhereUniqueInput
 }
 
-<<<<<<< HEAD
 input OrderItemsUpdateInput {
   where: OrderItemWhereUniqueInput!
   data: OrderItemUpdateInput!
@@ -1068,31 +805,6 @@ input OrderUpdateInput {
   user: UserRelateToOneForUpdateInput
   charge: String
 }
-=======
-  """
-   Perform a meta-query on all CartItem items which match the where clause.
-  """
-  _allCartItemsMeta(
-    where: CartItemWhereInput
-    search: String
-    sortBy: [SortCartItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all OrderItem items which match the where clause.
-  """
-  allOrderItems(
-    where: OrderItemWhereInput
-    search: String
-    sortBy: [SortOrderItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [OrderItem]
->>>>>>> master
 
 input OrderItemRelateToManyForUpdateInput {
   create: [OrderItemCreateInput!]! = []
@@ -1101,7 +813,6 @@ input OrderItemRelateToManyForUpdateInput {
   disconnectAll: Boolean! = false
 }
 
-<<<<<<< HEAD
 input OrdersUpdateInput {
   where: OrderWhereUniqueInput!
   data: OrderUpdateInput!
@@ -1122,31 +833,6 @@ input RoleUpdateInput {
     disconnectAll: false
   }
 }
-=======
-  """
-   Perform a meta-query on all OrderItem items which match the where clause.
-  """
-  _allOrderItemsMeta(
-    where: OrderItemWhereInput
-    search: String
-    sortBy: [SortOrderItemsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all Order items which match the where clause.
-  """
-  allOrders(
-    where: OrderWhereInput
-    search: String
-    sortBy: [SortOrdersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Order]
->>>>>>> master
 
 input UserRelateToManyForUpdateInput {
   create: [UserCreateInput!]! = []
@@ -1155,24 +841,10 @@ input UserRelateToManyForUpdateInput {
   disconnectAll: Boolean! = false
 }
 
-<<<<<<< HEAD
 input RolesUpdateInput {
   where: RoleWhereUniqueInput!
   data: RoleUpdateInput!
 }
-=======
-  """
-   Perform a meta-query on all Order items which match the where clause.
-  """
-  _allOrdersMeta(
-    where: OrderWhereInput
-    search: String
-    sortBy: [SortOrdersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 
 type Query {
   User(where: UserWhereUniqueInput!): User
@@ -1181,9 +853,8 @@ type Query {
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [User!]
-  allUsersCount(where: UserWhereInput! = {}): Int
+  usersCount(where: UserWhereInput! = {}): Int
   Product(where: ProductWhereUniqueInput!): Product
   allProducts(
     where: ProductWhereInput! = {}
@@ -1191,7 +862,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Product!]
-  allProductsCount(where: ProductWhereInput! = {}): Int
+  productsCount(where: ProductWhereInput! = {}): Int
   ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
   allProductImages(
     where: ProductImageWhereInput! = {}
@@ -1199,7 +870,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
-  allProductImagesCount(where: ProductImageWhereInput! = {}): Int
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
   CartItem(where: CartItemWhereUniqueInput!): CartItem
   allCartItems(
     where: CartItemWhereInput! = {}
@@ -1207,7 +878,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [CartItem!]
-  allCartItemsCount(where: CartItemWhereInput! = {}): Int
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
   OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
   allOrderItems(
     where: OrderItemWhereInput! = {}
@@ -1215,7 +886,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
-  allOrderItemsCount(where: OrderItemWhereInput! = {}): Int
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int
   Order(where: OrderWhereUniqueInput!): Order
   allOrders(
     where: OrderWhereInput! = {}
@@ -1223,27 +894,16 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Order!]
-  allOrdersCount(where: OrderWhereInput! = {}): Int
-=======
-  ): [Role]
-
-  """
-   Search for the Role item with the matching ID.
-  """
->>>>>>> master
+  ordersCount(where: OrderWhereInput! = {}): Int
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
     orderBy: [SortRolesBy!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Role!]
-  allRolesCount(where: RoleWhereInput! = {}): Int
+  rolesCount(where: RoleWhereInput! = {}): Int
   keystone: KeystoneMeta!
-=======
-  ): _QueryMeta
->>>>>>> master
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
     email: String!

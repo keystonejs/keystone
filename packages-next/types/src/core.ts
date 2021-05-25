@@ -47,11 +47,14 @@ export function getGqlNames({
   listKey: string;
   pluralGraphQLName: string;
 }): GqlNames {
+  const _lowerListName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1);
   return {
     outputTypeName: listKey,
     itemQueryName: listKey,
     listQueryName: `all${pluralGraphQLName}`,
-    listQueryCountName: `all${pluralGraphQLName}Count`,
+    listQueryCountName: `${_lowerListName}Count`,
+    listOrderName: `${listKey}OrderByInput`,
+    listQueryMetaName: `_all${pluralGraphQLName}Meta`,
     listSortName: `Sort${pluralGraphQLName}By`,
     deleteMutationName: `delete${listKey}`,
     updateMutationName: `update${listKey}`,

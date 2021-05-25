@@ -152,7 +152,6 @@ input NestedDateTimeNullableFilter {
   not: NestedDateTimeNullableFilter
 }
 
-<<<<<<< HEAD
 input SortTodosBy {
   id: OrderDirection
   label: OrderDirection
@@ -160,34 +159,6 @@ input SortTodosBy {
   finishBy: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
-=======
-"""
- A keystone list
-"""
-type User {
-  id: ID!
-  name: String
-  email: String
-  password_is_set: Boolean
-  tasks(
-    where: TodoWhereInput
-    search: String
-    sortBy: [SortTodosBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]!
-  _tasksMeta(
-    where: TodoWhereInput
-    search: String
-    sortBy: [SortTodosBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  createdAt: String
-  updatedAt: String
->>>>>>> master
 }
 
 enum OrderDirection {
@@ -267,7 +238,6 @@ input TodosUpdateInput {
   data: TodoUpdateInput!
 }
 
-<<<<<<< HEAD
 input UserUpdateInput {
   name: String
   email: String
@@ -279,20 +249,6 @@ input UserUpdateInput {
     disconnectAll: false
   }
 }
-=======
-type Query {
-  """
-   Search for all Todo items which match the where clause.
-  """
-  allTodos(
-    where: TodoWhereInput
-    search: String
-    sortBy: [SortTodosBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Todo]
->>>>>>> master
 
 input TodoRelateToManyForUpdateInput {
   create: [TodoCreateInput!]! = []
@@ -301,24 +257,10 @@ input TodoRelateToManyForUpdateInput {
   disconnectAll: Boolean! = false
 }
 
-<<<<<<< HEAD
 input UsersUpdateInput {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
-=======
-  """
-   Perform a meta-query on all Todo items which match the where clause.
-  """
-  _allTodosMeta(
-    where: TodoWhereInput
-    search: String
-    sortBy: [SortTodosBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 
 type Query {
   Todo(where: TodoWhereUniqueInput!): Todo
@@ -327,28 +269,16 @@ type Query {
     orderBy: [SortTodosBy!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Todo!]
-  allTodosCount(where: TodoWhereInput! = {}): Int
-=======
-  ): [User]
-
-  """
-   Search for the User item with the matching ID.
-  """
->>>>>>> master
+  todosCount(where: TodoWhereInput! = {}): Int
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [SortUsersBy!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [User!]
-  allUsersCount(where: UserWhereInput! = {}): Int
-=======
-  ): _QueryMeta
->>>>>>> master
+  usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

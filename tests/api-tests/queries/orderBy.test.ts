@@ -78,6 +78,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
       );
 
       test(
+        'Single ascending filter - non-list - a',
+        runner(setupKeystone, async ({ context }) => {
+          await initialiseData({ context });
+          const users = await context.lists.User.findMany({ orderBy: { a: 'asc' }, query: 'a' });
+          expect(users.map(({ a }) => a)).toEqual([1, 1, 1, 2, 2, 2, 3, 3, 3]);
+        })
+      );
+
+      test(
         'Multi ascending/ascending filter - a,b ',
         runner(setupKeystone, async ({ context }) => {
           await initialiseData({ context });
@@ -257,9 +266,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const { data, errors } = await context.graphql.raw({
             query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
           });
-          expect(data).toBe(null);
+          expect(data?.allUsers).toBe(null);
           expect(errors).toHaveLength(1);
-          expect(errors![0].message).toEqual('Only a single key must be passed to SortUsersBy');
+          expect(errors![0].message).toEqual(
+            'Only a single key must be passed to UserOrderByInput'
+          );
         })
       );
     });

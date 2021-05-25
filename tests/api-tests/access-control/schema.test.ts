@@ -105,11 +105,11 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           if (access.read) {
             expect(queries).toContain(`${name}`);
             expect(queries).toContain(`all${name}s`);
-            expect(queries).toContain(`all${name}sCount`);
+            expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
           } else {
             expect(queries).not.toContain(`${name}`);
             expect(queries).not.toContain(`all${name}s`);
-            expect(queries).toContain(`all${name}sCount`);
+            expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
           }
 
           if (access.create) {
@@ -205,7 +205,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
           expect(queries).toContain(`${name}`);
           expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`all${name}sCount`);
+          expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
 
           expect(mutations).toContain(`create${name}`);
           expect(mutations).toContain(`update${name}`);
@@ -226,7 +226,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
           expect(queries).toContain(`${name}`);
           expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`all${name}sCount`);
+          expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
 
           if (access.create) {
             expect(mutations).toContain(`create${name}`);

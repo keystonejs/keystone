@@ -152,14 +152,16 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               });
 
               test(`count denied: ${JSON.stringify(access)}`, async () => {
-                const countName = `all${nameFn[mode](access)}sCount`;
+                const countName = `${
+                  nameFn[mode](access).slice(0, 1).toLowerCase() + nameFn[mode](access).slice(1)
+                }sCount`;
                 const query = `query { ${countName} }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data?.[countName]).toBe(null);
+                expect(data).toBe(null);
                 expect(errors).toHaveLength(1);
                 const error = errors![0];
                 expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(2);
+                expect(error.path).toHaveLength(1);
                 expect(error.path![0]).toEqual(countName);
               });
 

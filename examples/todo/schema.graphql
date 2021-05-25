@@ -148,34 +148,9 @@ input SortTasksBy {
   finishBy: OrderDirection
 }
 
-<<<<<<< HEAD
 enum OrderDirection {
   asc
   desc
-=======
-"""
- A keystone list
-"""
-type Person {
-  id: ID!
-  name: String
-  tasks(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Task!]!
-  _tasksMeta(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 }
 
 input TaskWhereUniqueInput {
@@ -270,7 +245,6 @@ input PeopleUpdateInput {
 }
 
 type Query {
-<<<<<<< HEAD
   Task(where: TaskWhereUniqueInput!): Task
   allTasks(
     where: TaskWhereInput! = {}
@@ -278,65 +252,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Task!]
-  allTasksCount(where: TaskWhereInput! = {}): Int
-=======
-  """
-   Search for all Task items which match the where clause.
-  """
-  allTasks(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Task]
-
-  """
-   Search for the Task item with the matching ID.
-  """
-  Task(where: TaskWhereUniqueInput!): Task
-
-  """
-   Perform a meta-query on all Task items which match the where clause.
-  """
-  _allTasksMeta(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all Person items which match the where clause.
-  """
-  allPeople(
-    where: PersonWhereInput
-    search: String
-    sortBy: [SortPeopleBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Person]
-
-  """
-   Search for the Person item with the matching ID.
-  """
->>>>>>> master
+  tasksCount(where: TaskWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [SortPeopleBy!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Person!]
-  allPeopleCount(where: PersonWhereInput! = {}): Int
-=======
-  ): _QueryMeta
->>>>>>> master
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

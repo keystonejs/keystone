@@ -9,7 +9,8 @@ export type BaseGeneratedListTypes = {
       readonly search?: string | null;
       readonly first?: number | null;
       readonly skip?: number | null;
-      readonly orderBy?: ReadonlyArray<Record<string, any>> | null;
+      readonly orderBy?: Record<string, 'asc' | 'desc'>[];
+      readonly sortBy?: ReadonlyArray<string> | null;
     };
   };
 };
@@ -30,8 +31,10 @@ export type GqlNames = {
   outputTypeName: string;
   itemQueryName: string;
   listQueryName: string;
+  listQueryMetaName: string;
   listQueryCountName: string;
   listSortName: string;
+  listOrderName: string;
   deleteMutationName: string;
   updateMutationName: string;
   createMutationName: string;

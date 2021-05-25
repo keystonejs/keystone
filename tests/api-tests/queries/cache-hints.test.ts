@@ -145,14 +145,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(data).toHaveProperty('allUsers');
           expect(res.headers['cache-control']).toBe('max-age=10, private');
 
-          // Meta query
+          // Count query
           ({ data, errors, res } = await networkedGraphqlRequest({
             app,
-            query: `query { userCount: allUsersCount }`,
+            query: `query { usersCount }`,
           }));
 
           expect(errors).toBe(undefined);
-          expect(data).toHaveProperty('userCount');
+          expect(data).toHaveProperty('usersCount');
           expect(res.headers['cache-control']).toBe('max-age=90, public');
 
           // User post relationship
