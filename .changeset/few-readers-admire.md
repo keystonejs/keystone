@@ -16,5 +16,5 @@ The GraphQL field `_all<path>Meta { count }` generated for `many` relationships 
 A `posts` relationship field would have the following field added to the API:
 
 ```graphql
-postsCount(where: PostWhereInput! = {}): Int!
+postsCount(where: PostWhereInput! = {}): Int
 ```
