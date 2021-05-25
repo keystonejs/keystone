@@ -115,7 +115,7 @@ type Person {
   password_is_set: Boolean
   role: Role
   tasks(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -124,7 +124,7 @@ type Person {
     skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -241,7 +241,7 @@ type Role {
   canManagePeople: Boolean
   canManageRoles: Boolean
   assignedTo(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -250,7 +250,7 @@ type Role {
     skip: Int! = 0
   ): [Person!]!
   _assignedToMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -523,7 +523,7 @@ type Query {
    Search for all Todo items which match the where clause.
   """
   allTodos(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -541,7 +541,7 @@ type Query {
    Perform a meta-query on all Todo items which match the where clause.
   """
   _allTodosMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -558,7 +558,7 @@ type Query {
    Search for all Person items which match the where clause.
   """
   allPeople(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -576,7 +576,7 @@ type Query {
    Perform a meta-query on all Person items which match the where clause.
   """
   _allPeopleMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -593,7 +593,7 @@ type Query {
    Search for all Role items which match the where clause.
   """
   allRoles(
-    where: RoleWhereInput
+    where: RoleWhereInput! = {}
     search: String
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -611,7 +611,7 @@ type Query {
    Perform a meta-query on all Role items which match the where clause.
   """
   _allRolesMeta(
-    where: RoleWhereInput
+    where: RoleWhereInput! = {}
     search: String
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")

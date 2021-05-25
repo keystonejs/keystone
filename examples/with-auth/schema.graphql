@@ -129,7 +129,7 @@ type Person {
   email: String
   password_is_set: Boolean
   tasks(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -138,7 +138,7 @@ type Person {
     skip: Int! = 0
   ): [Task!]!
   _tasksMeta(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -353,7 +353,7 @@ type Query {
    Search for all Task items which match the where clause.
   """
   allTasks(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -371,7 +371,7 @@ type Query {
    Perform a meta-query on all Task items which match the where clause.
   """
   _allTasksMeta(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -388,7 +388,7 @@ type Query {
    Search for all Person items which match the where clause.
   """
   allPeople(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -406,7 +406,7 @@ type Query {
    Perform a meta-query on all Person items which match the where clause.
   """
   _allPeopleMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")

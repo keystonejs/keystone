@@ -521,7 +521,7 @@ describe(`getGqlTypes()`, () => {
 test('getGraphqlFilterFragment', () => {
   const list = setup();
   expect(list.getGraphqlFilterFragment()).toEqual([
-    'where: TestWhereInput',
+    'where: TestWhereInput! = {}',
     'search: String',
     'sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")',
     'orderBy: [TestOrderByInput!]! = []',
@@ -537,7 +537,7 @@ describe(`getGqlQueries()`, () => {
       [
         `""" Search for all Test items which match the where clause. """
           allTests(
-          where: TestWhereInput
+          where: TestWhereInput! = {}
           search: String
           sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
           orderBy: [TestOrderByInput!]! = []
@@ -550,7 +550,7 @@ describe(`getGqlQueries()`, () => {
         ): Test`,
         `""" Perform a meta-query on all Test items which match the where clause. """
           _allTestsMeta(
-          where: TestWhereInput
+          where: TestWhereInput! = {}
           search: String
           sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
           orderBy: [TestOrderByInput!]! = []

@@ -76,7 +76,7 @@ type User {
   isAdmin: Boolean
   roles: String
   phoneNumbers(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -85,7 +85,7 @@ type User {
     skip: Int! = 0
   ): [PhoneNumber!]!
   _phoneNumbersMeta(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -94,7 +94,7 @@ type User {
     skip: Int! = 0
   ): _QueryMeta
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -103,7 +103,7 @@ type User {
     skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -578,7 +578,7 @@ type Query {
    Search for all User items which match the where clause.
   """
   allUsers(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -596,7 +596,7 @@ type Query {
    Perform a meta-query on all User items which match the where clause.
   """
   _allUsersMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -613,7 +613,7 @@ type Query {
    Search for all PhoneNumber items which match the where clause.
   """
   allPhoneNumbers(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -631,7 +631,7 @@ type Query {
    Perform a meta-query on all PhoneNumber items which match the where clause.
   """
   _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -648,7 +648,7 @@ type Query {
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -666,7 +666,7 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
