@@ -373,6 +373,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int!
 
   """
    Search for all User items which match the where clause.
@@ -404,6 +408,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int!
   keystone: KeystoneMeta!
 }
 

@@ -143,6 +143,10 @@ type Query {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int!
   keystone: KeystoneMeta!
 }
 

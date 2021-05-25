@@ -32,6 +32,7 @@ export type GqlNames = {
   itemQueryName: string;
   listQueryName: string;
   listQueryMetaName: string;
+  listQueryCountName: string;
   listSortName: string;
   listOrderName: string;
   deleteMutationName: string;

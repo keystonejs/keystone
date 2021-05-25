@@ -94,17 +94,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Count is still correct
             data = await context.graphql.run({
-              query: `
-          query {
-            meta: _allUsersMeta {
-              count
-            }
-          }
-      `,
+              query: `query { usersCount }`,
             });
 
-            expect(data).toHaveProperty('meta');
-            expect(data.meta.count).toBe(users.length);
+            expect(data).toHaveProperty('usersCount');
+            expect(data.usersCount).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
             data = await context.graphql.run({
