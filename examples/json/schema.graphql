@@ -1,9 +1,3 @@
-enum TaskPriorityType {
-  low
-  medium
-  high
-}
-
 input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
@@ -14,18 +8,17 @@ input PersonRelateToOneInput {
 """
  A keystone list
 """
-type Task {
+type Package {
   id: ID!
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: Person
-  finishBy: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: Person
 }
 
-input TaskWhereInput {
-  AND: [TaskWhereInput]
-  OR: [TaskWhereInput]
+input PackageWhereInput {
+  AND: [PackageWhereInput]
+  OR: [PackageWhereInput]
   id: ID
   id_not: ID
   id_lt: ID
@@ -40,70 +33,63 @@ input TaskWhereInput {
   label_not_contains: String
   label_in: [String]
   label_not_in: [String]
-  priority: TaskPriorityType
-  priority_not: TaskPriorityType
-  priority_in: [TaskPriorityType]
-  priority_not_in: [TaskPriorityType]
-  isComplete: Boolean
-  isComplete_not: Boolean
-  assignedTo: PersonWhereInput
-  assignedTo_is_null: Boolean
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
+  isPrivate: Boolean
+  isPrivate_not: Boolean
+  ownedBy: PersonWhereInput
+  ownedBy_is_null: Boolean
 }
 
-input TaskWhereUniqueInput {
+input PackageWhereUniqueInput {
   id: ID!
 }
 
-enum SortTasksBy {
+enum SortPackagesBy {
   id_ASC
   id_DESC
   label_ASC
   label_DESC
-  priority_ASC
-  priority_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
+  isPrivate_ASC
+  isPrivate_DESC
 }
 
-input TaskUpdateInput {
+input PackageOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isPrivate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PackageUpdateInput {
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
-  finishBy: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneInput
 }
 
-input TasksUpdateInput {
+input PackagesUpdateInput {
   id: ID!
-  data: TaskUpdateInput
+  data: PackageUpdateInput
 }
 
-input TaskCreateInput {
+input PackageCreateInput {
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
-  finishBy: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneInput
 }
 
-input TasksCreateInput {
-  data: TaskCreateInput
+input PackagesCreateInput {
+  data: PackageCreateInput
 }
 
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
+input PackageRelateToManyInput {
+  create: [PackageCreateInput]
+  connect: [PackageWhereUniqueInput]
+  disconnect: [PackageWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -113,21 +99,23 @@ input TaskRelateToManyInput {
 type Person {
   id: ID!
   name: String
-  tasks(
-    where: TaskWhereInput
+  packages(
+    where: PackageWhereInput
     search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Task!]!
-  _tasksMeta(
-    where: TaskWhereInput
+    skip: Int! = 0
+  ): [Package!]!
+  _packagesMeta(
+    where: PackageWhereInput
     search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 }
 
@@ -152,17 +140,17 @@ input PersonWhereInput {
   """
    condition must be true for all nodes
   """
-  tasks_every: TaskWhereInput
+  packages_every: PackageWhereInput
 
   """
    condition must be true for at least 1 node
   """
-  tasks_some: TaskWhereInput
+  packages_some: PackageWhereInput
 
   """
    condition must be false for all nodes
   """
-  tasks_none: TaskWhereInput
+  packages_none: PackageWhereInput
 }
 
 input PersonWhereUniqueInput {
@@ -176,9 +164,14 @@ enum SortPeopleBy {
   name_DESC
 }
 
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
 input PersonUpdateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  packages: PackageRelateToManyInput
 }
 
 input PeopleUpdateInput {
@@ -188,7 +181,7 @@ input PeopleUpdateInput {
 
 input PersonCreateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  packages: PackageRelateToManyInput
 }
 
 input PeopleCreateInput {
@@ -209,34 +202,34 @@ type _QueryMeta {
 
 type Mutation {
   """
-   Create a single Task item.
+   Create a single Package item.
   """
-  createTask(data: TaskCreateInput): Task
+  createPackage(data: PackageCreateInput): Package
 
   """
-   Create multiple Task items.
+   Create multiple Package items.
   """
-  createTasks(data: [TasksCreateInput]): [Task]
+  createPackages(data: [PackagesCreateInput]): [Package]
 
   """
-   Update a single Task item by ID.
+   Update a single Package item by ID.
   """
-  updateTask(id: ID!, data: TaskUpdateInput): Task
+  updatePackage(id: ID!, data: PackageUpdateInput): Package
 
   """
-   Update multiple Task items by ID.
+   Update multiple Package items by ID.
   """
-  updateTasks(data: [TasksUpdateInput]): [Task]
+  updatePackages(data: [PackagesUpdateInput]): [Package]
 
   """
-   Delete a single Task item by ID.
+   Delete a single Package item by ID.
   """
-  deleteTask(id: ID!): Task
+  deletePackage(id: ID!): Package
 
   """
-   Delete multiple Task items by ID.
+   Delete multiple Package items by ID.
   """
-  deleteTasks(ids: [ID!]): [Task]
+  deletePackages(ids: [ID!]): [Package]
 
   """
    Create a single Person item.
@@ -276,32 +269,34 @@ scalar Upload
 
 type Query {
   """
-   Search for all Task items which match the where clause.
+   Search for all Package items which match the where clause.
   """
-  allTasks(
-    where: TaskWhereInput
+  allPackages(
+    where: PackageWhereInput
     search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Task]
+    skip: Int! = 0
+  ): [Package]
 
   """
-   Search for the Task item with the matching ID.
+   Search for the Package item with the matching ID.
   """
-  Task(where: TaskWhereUniqueInput!): Task
+  Package(where: PackageWhereUniqueInput!): Package
 
   """
-   Perform a meta-query on all Task items which match the where clause.
+   Perform a meta-query on all Package items which match the where clause.
   """
-  _allTasksMeta(
-    where: TaskWhereInput
+  _allPackagesMeta(
+    where: PackageWhereInput
     search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PackageOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
 
   """
@@ -311,9 +306,10 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Person]
 
   """
@@ -328,9 +324,10 @@ type Query {
     where: PersonWhereInput
     search: String
     sortBy: [SortPeopleBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
   keystone: KeystoneMeta!
 }
