@@ -175,7 +175,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         .join('\n');
       return gql`
       query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $orderBy: [${
-        list.gqlNames.listSortName
+        list.gqlNames.listOrderName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
