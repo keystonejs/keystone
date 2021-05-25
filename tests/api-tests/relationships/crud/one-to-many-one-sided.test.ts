@@ -376,7 +376,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _companies = await context.lists.Company.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name location { id name }',
                 });
                 const expected = [
@@ -404,7 +404,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the locations look how we expect
               await (async () => {
                 const _locations = await context.lists.Location.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name',
                 });
                 expect(_locations[0].name).toEqual('A');
@@ -431,7 +431,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the companies look how we expect
               const companies = await context.lists.Company.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: { name: 'asc' },
                 query: 'id name location { id name }',
               });
               expect(companies[0].name).toEqual('A');
@@ -463,7 +463,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the locations look how we expect
               const _locations = await context.lists.Location.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: { name: 'asc' },
                 query: 'id name',
               });
               const expected = ['A', 'B', 'C', 'D'].filter(x => x !== name);

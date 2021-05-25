@@ -157,7 +157,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the teacher from student
             let newStudent = await context.lists.Student.createOne({
               data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
-              query: 'id teachers(sortBy: [id_ASC]) { id }',
+              query: 'id teachers(orderBy: { id: asc }) { id }',
             });
 
             let newTeachers = newStudent.teachers;

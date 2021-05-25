@@ -47,14 +47,14 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     context: KeystoneContext,
     where: Record<string, any> | undefined,
     expected: any,
-    sortBy = ['name_ASC']
+    orderBy: Record<string, 'asc' | 'desc'> = { name: 'asc' }
   ) =>
-    expect(await context.lists.Test.findMany({ where, sortBy, query: 'name lastOnline' })).toEqual(
+    expect(await context.lists.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
       expected
     );
 
   test(
-    'Sorting: sortBy: lastOnline_ASC',
+    'Ordering: orderBy: { lastOnline: asc }',
     withKeystone(({ context, provider }: { context: KeystoneContext; provider: ProviderName }) =>
       match(
         context,
@@ -78,13 +78,13 @@ export const filterTests = (withKeystone: (args: any) => any) => {
               { name: 'person6', lastOnline: null },
               { name: 'person7', lastOnline: null },
             ],
-        ['lastOnline_ASC']
+        { lastOnline: 'asc' }
       )
     )
   );
 
   test(
-    'Sorting: sortBy: lastOnline_DESC',
+    'Ordering: orderBy: { lastOnline: desc }',
     withKeystone(({ context, provider }: { context: KeystoneContext; provider: ProviderName }) =>
       match(
         context,
@@ -108,7 +108,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
               { name: 'person2', lastOnline: '1980-10-01T23:59:59.999Z' },
               { name: 'person1', lastOnline: '1979-04-12T00:08:00.000Z' },
             ],
-        ['lastOnline_DESC']
+        { lastOnline: 'desc' }
       )
     )
   );
