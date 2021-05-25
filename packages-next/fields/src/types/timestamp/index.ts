@@ -42,5 +42,14 @@ export const timestamp =
         },
       }),
       views: resolveView('timestamp/views'),
+      __legacy: {
+        filters: {
+          fields: {
+            ...this.equalityInputFields('String'),
+            ...this.orderingInputFields('String'),
+            ...this.inInputFields('String'),
+          },
+        },
+      },
     });
   };

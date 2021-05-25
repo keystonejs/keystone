@@ -1,3 +1,6 @@
+import { types } from '@ts-gql/schema';
+import { tsgql } from './next-fields';
+
 const identity = (x: any) => x;
 
 export const impls = {
@@ -74,7 +77,7 @@ export const impls = {
 
   stringConditions(fieldKey: string, f: (a: any) => any = identity) {
     return {
-      ...this.containsConditions(fieldKey, f),
+      ...impls.containsConditions(fieldKey, f),
       [`${fieldKey}_starts_with`]: (value: string) => ({ [fieldKey]: { startsWith: f(value) } }),
       [`${fieldKey}_not_starts_with`]: (value: string) => ({
         OR: [{ NOT: { [fieldKey]: { startsWith: f(value) } } }, { [fieldKey]: null }],
@@ -119,4 +122,56 @@ export const impls = {
   },
 };
 
-export const fields = {};
+export const fields = {
+  equalityInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [fieldKey]: types.arg({ type }),
+      [`${fieldKey}_not`]: types.arg({ type }),
+    };
+  },
+  equalityInputFieldsInsensitive(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [`${fieldKey}_i`]: types.arg({ type }),
+      [`${fieldKey}_not_i`]: types.arg({ type }),
+    };
+  },
+  inInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [`${fieldKey}_in`]: types.arg({ type: types.list(type) }),
+      [`${fieldKey}_not_in`]: types.arg({ type: types.list(type) }),
+    };
+  },
+  orderingInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [`${fieldKey}_lt`]: types.arg({ type }),
+      [`${fieldKey}_lte`]: types.arg({ type }),
+      [`${fieldKey}_gt`]: types.arg({ type }),
+      [`${fieldKey}_gte`]: types.arg({ type }),
+    };
+  },
+  containsInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [`${fieldKey}_contains`]: types.arg({ type }),
+      [`${fieldKey}_not_contains`]: types.arg({ type }),
+    };
+  },
+  stringInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      ...fields.containsInputFields(fieldKey, type),
+      [`${fieldKey}_starts_with`]: types.arg({ type }),
+      [`${fieldKey}_not_starts_with`]: types.arg({ type }),
+      [`${fieldKey}_ends_with`]: types.arg({ type }),
+      [`${fieldKey}_not_ends_with`]: types.arg({ type }),
+    };
+  },
+  stringInputFieldsInsensitive(fieldKey: string, type: tsgql.ScalarType<any>) {
+    return {
+      [`${fieldKey}_contains_i`]: types.arg({ type }),
+      [`${fieldKey}_not_contains_i`]: types.arg({ type }),
+      [`${fieldKey}_starts_with_i`]: types.arg({ type }),
+      [`${fieldKey}_not_starts_with_i`]: types.arg({ type }),
+      [`${fieldKey}_ends_with_i`]: types.arg({ type }),
+      [`${fieldKey}_not_ends_with_i`]: types.arg({ type }),
+    };
+  },
+};

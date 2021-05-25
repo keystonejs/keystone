@@ -401,6 +401,12 @@ export type FieldTypeWithoutDBField<
   // maybe this should be called `types` and accept any type?
   // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
   unreferencedConcreteInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
+  __legacy?: {
+    filters?: {
+      fields: Record<string, tsgql.Arg<any, any>>;
+      impls: Record<string, (value: any) => any>;
+    };
+  };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {

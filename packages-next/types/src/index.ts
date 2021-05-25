@@ -7,4 +7,5 @@ export * from './base';
 export * from './context';
 export * from './next-fields';
 export * as filters from './filters';
+export * as legacyFilters from './legacy-filters';
 export { jsonFieldTypePolyfilledForSQLite } from './json-field-type-polyfill-for-sqlite';

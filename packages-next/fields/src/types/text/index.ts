@@ -6,6 +6,7 @@ import {
   orderDirectionEnum,
   FieldTypeFunc,
   filters,
+  legacyFilters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -38,5 +39,35 @@ export const text =
       views: resolveView('text/views'),
       getAdminMeta() {
         return { displayMode: config.ui?.displayMode ?? 'input' };
+      },
+      __legacy: {
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
+            ...(meta.provider === 'sqlite'
+              ? legacyFilters.fields.containsInputFields(meta.fieldKey, types.String)
+              : {
+                  ...legacyFilters.fields.stringInputFields(meta.fieldKey, types.String),
+                  ...legacyFilters.fields.equalityInputFieldsInsensitive(
+                    meta.fieldKey,
+                    types.String
+                  ),
+                  ...legacyFilters.fields.stringInputFieldsInsensitive(meta.fieldKey, types.String),
+                }),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...(meta.provider === 'sqlite'
+              ? legacyFilters.impls.containsConditions(meta.fieldKey)
+              : {
+                  ...legacyFilters.impls.stringConditions(meta.fieldKey),
+                  ...legacyFilters.impls.equalityConditionsInsensitive(meta.fieldKey),
+                  ...legacyFilters.impls.stringConditionsInsensitive(meta.fieldKey),
+                }),
+            // These have no case-insensitive counter parts
+            ...legacyFilters.impls.inConditions(meta.fieldKey),
+          },
+        },
       },
     });
