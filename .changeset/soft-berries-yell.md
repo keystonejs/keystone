@@ -6,7 +6,7 @@
 '@keystone-next/example-blog': patch
 '@keystone-next/example-ecommerce': patch
 'keystone-next-app': patch
-'@keystone-next/example-next-lite': patch
+'@keystone-next/example-embedded-nextjs': patch
 '@keystone-next/example-roles': patch
 '@keystone-next/example-sandbox': patch
 '@keystone-next/example-todo': patch
