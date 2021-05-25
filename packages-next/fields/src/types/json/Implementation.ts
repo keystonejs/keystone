@@ -24,7 +24,7 @@ export class Json<P extends string> extends Implementation<P> {
       [this.path]: (item: Record<P, any>) => {
         let document = item[this.path];
         if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
-          // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+          // we store JSON data as a string on sqlite because Prisma doesn't support Json on sqlite
           // https://github.com/prisma/prisma/issues/3786
           try {
             document = JSON.parse(document);
