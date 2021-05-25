@@ -151,7 +151,7 @@ type Author {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 input AuthorWhereInput {
@@ -347,7 +347,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
 
   """
    Search for all Author items which match the where clause.
@@ -382,7 +382,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use authorsCount instead."
     )
-  authorsCount(where: AuthorWhereInput! = {}): Int!
+  authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

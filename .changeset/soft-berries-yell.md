@@ -20,5 +20,5 @@ The GraphQL query `_all<Items>Meta { count }` generated for each list has been d
 A `User` list would have the following query added to the API:
 
 ```graphql
-usersCount(where: UserWhereInput! = {}): Int!
+usersCount(where: UserWhereInput! = {}): Int
 ```

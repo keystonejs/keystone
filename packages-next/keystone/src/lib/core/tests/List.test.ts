@@ -557,7 +557,7 @@ describe(`getGqlQueries()`, () => {
           first: Int
           skip: Int! = 0
         ): _QueryMeta @deprecated(reason: \"This query will be removed in a future version. Please use testsCount instead.\")`,
-        `testsCount(where: TestWhereInput! = {}): Int!`,
+        `testsCount(where: TestWhereInput! = {}): Int`,
       ].map(normalise)
     );
   });

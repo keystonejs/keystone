@@ -96,7 +96,7 @@ type User {
     @deprecated(
       reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
     )
-  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     search: String
@@ -118,7 +118,7 @@ type User {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
 
@@ -615,7 +615,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 
   """
    Search for all PhoneNumber items which match the where clause.
@@ -650,7 +650,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
     )
-  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
 
   """
    Search for all Post items which match the where clause.
@@ -685,7 +685,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber
   keystone: KeystoneMeta!

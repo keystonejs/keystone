@@ -157,7 +157,7 @@ type User {
     @deprecated(
       reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
-  tasksCount(where: TodoWhereInput! = {}): Int!
+  tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
 }
@@ -380,7 +380,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use todosCount instead."
     )
-  todosCount(where: TodoWhereInput! = {}): Int!
+  todosCount(where: TodoWhereInput! = {}): Int
 
   """
    Search for all User items which match the where clause.
@@ -415,7 +415,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

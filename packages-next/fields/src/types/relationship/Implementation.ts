@@ -95,7 +95,7 @@ export class Relationship<P extends string> extends Implementation<P> {
           ? `_${this.path}Meta(${filterArgs}): _QueryMeta @deprecated(reason: "This query will be removed in a future version. Please use ${this.path}Count instead.")`
           : '',
         this.withMeta
-          ? `${this.path}Count(${`where: ${refList.gqlNames.whereInputName}! = {}`}): Int!`
+          ? `${this.path}Count(${`where: ${refList.gqlNames.whereInputName}! = {}`}): Int`
           : '',
       ];
     } else {

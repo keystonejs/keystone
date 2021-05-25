@@ -1273,7 +1273,7 @@ export class List implements BaseKeystoneList {
         } instead.")`,
 
         `
-        ${this.gqlNames.listQueryCountName}(${`where: ${this.gqlNames.whereInputName}! = {}`}): Int!
+        ${this.gqlNames.listQueryCountName}(${`where: ${this.gqlNames.whereInputName}! = {}`}): Int
         `
       );
     }

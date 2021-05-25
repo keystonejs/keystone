@@ -375,7 +375,6 @@ describe('Type Generation', () => {
               // existence
               arguments: expect.any(Array),
               type: {
-                kind: 'NonNullType',
                 type: {
                   name: {
                     value: 'Int',
