@@ -93,6 +93,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
+    )
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
   posts(
     where: PostWhereInput! = {}
     search: String
@@ -111,6 +115,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int!
   randomNumber: Float
 }
 

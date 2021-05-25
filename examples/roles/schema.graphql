@@ -132,6 +132,10 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TodoWhereInput! = {}): Int!
 }
 
 input PersonWhereInput {
@@ -258,6 +262,10 @@ type Role {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use assignedToCount instead."
+    )
+  assignedToCount(where: PersonWhereInput! = {}): Int!
 }
 
 input RoleWhereInput {
