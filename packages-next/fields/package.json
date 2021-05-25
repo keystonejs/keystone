@@ -32,7 +32,7 @@
     "@keystone-ui/tooltip": "^4.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/keystonejs__fields": "^5.1.1",
-    "@types/react": "^17.0.6",
+    "@types/react": "^17.0.7",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
