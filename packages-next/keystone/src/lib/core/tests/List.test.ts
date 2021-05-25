@@ -543,7 +543,7 @@ describe(`getGqlQueries()`, () => {
           orderBy: [TestOrderByInput!]! = []
           first: Int
           skip: Int! = 0
-        ): [Test]`,
+        ): [Test!]`,
         `""" Search for the Test item with the matching ID. """
           Test(
           where: TestWhereUniqueInput!
