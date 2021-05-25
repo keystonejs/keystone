@@ -4,6 +4,7 @@ import {
   fieldType,
   FieldTypeFunc,
   filters,
+  legacyFilters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -37,5 +38,11 @@ export const checkbox =
         type: types.Boolean,
       }),
       views: resolveView('checkbox/views'),
+      __legacy: {
+        filters: {
+          fields: legacyFilters.fields.equalityInputFields(meta.fieldKey, types.Boolean),
+          impls: legacyFilters.impls.equalityConditions(meta.fieldKey),
+        },
+      },
     });
   };

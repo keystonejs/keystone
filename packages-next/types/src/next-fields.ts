@@ -12,6 +12,8 @@ import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
+export { Decimal };
+
 // we could allow numbers in parseValue/parseLiteral but that feels like a footgun
 const DecimalScalar = new GraphQLScalarType({
   name: 'Decimal',

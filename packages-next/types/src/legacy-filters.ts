@@ -123,25 +123,28 @@ export const impls = {
 };
 
 export const fields = {
-  equalityInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+  equalityInputFields(fieldKey: string, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) {
     return {
       [fieldKey]: types.arg({ type }),
       [`${fieldKey}_not`]: types.arg({ type }),
     };
   },
-  equalityInputFieldsInsensitive(fieldKey: string, type: tsgql.ScalarType<any>) {
+  equalityInputFieldsInsensitive(
+    fieldKey: string,
+    type: tsgql.ScalarType<any> | tsgql.EnumType<any>
+  ) {
     return {
       [`${fieldKey}_i`]: types.arg({ type }),
       [`${fieldKey}_not_i`]: types.arg({ type }),
     };
   },
-  inInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+  inInputFields(fieldKey: string, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) {
     return {
       [`${fieldKey}_in`]: types.arg({ type: types.list(type) }),
       [`${fieldKey}_not_in`]: types.arg({ type: types.list(type) }),
     };
   },
-  orderingInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+  orderingInputFields(fieldKey: string, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) {
     return {
       [`${fieldKey}_lt`]: types.arg({ type }),
       [`${fieldKey}_lte`]: types.arg({ type }),
@@ -149,13 +152,13 @@ export const fields = {
       [`${fieldKey}_gte`]: types.arg({ type }),
     };
   },
-  containsInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+  containsInputFields(fieldKey: string, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) {
     return {
       [`${fieldKey}_contains`]: types.arg({ type }),
       [`${fieldKey}_not_contains`]: types.arg({ type }),
     };
   },
-  stringInputFields(fieldKey: string, type: tsgql.ScalarType<any>) {
+  stringInputFields(fieldKey: string, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) {
     return {
       ...fields.containsInputFields(fieldKey, type),
       [`${fieldKey}_starts_with`]: types.arg({ type }),
@@ -164,7 +167,10 @@ export const fields = {
       [`${fieldKey}_not_ends_with`]: types.arg({ type }),
     };
   },
-  stringInputFieldsInsensitive(fieldKey: string, type: tsgql.ScalarType<any>) {
+  stringInputFieldsInsensitive(
+    fieldKey: string,
+    type: tsgql.ScalarType<any> | tsgql.EnumType<any>
+  ) {
     return {
       [`${fieldKey}_contains_i`]: types.arg({ type }),
       [`${fieldKey}_not_contains_i`]: types.arg({ type }),

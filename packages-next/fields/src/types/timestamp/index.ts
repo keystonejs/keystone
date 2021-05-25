@@ -5,6 +5,7 @@ import {
   FieldTypeFunc,
   orderDirectionEnum,
   filters,
+  legacyFilters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -45,9 +46,14 @@ export const timestamp =
       __legacy: {
         filters: {
           fields: {
-            ...this.equalityInputFields('String'),
-            ...this.orderingInputFields('String'),
-            ...this.inInputFields('String'),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
+            ...legacyFilters.impls.inConditions(meta.fieldKey),
           },
         },
       },

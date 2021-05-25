@@ -1,9 +1,12 @@
 import {
   BaseGeneratedListTypes,
+  FieldData,
   fieldType,
   FieldTypeFunc,
   filters,
+  legacyFilters,
   orderDirectionEnum,
+  tsgql,
   types,
 } from '@keystone-next/types';
 // @ts-ignore
@@ -60,6 +63,7 @@ export const select =
           orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
         },
         output: types.field({ type: types.Int }),
+        __legacy: { filters: getFilters(meta, types.Int) },
       });
     }
     if (config.dataType === 'enum') {
@@ -97,6 +101,7 @@ export const select =
         output: types.field({
           type: graphQLType,
         }),
+        __legacy: { filters: getFilters(meta, graphQLType) },
       });
     }
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
@@ -110,5 +115,19 @@ export const select =
       output: types.field({
         type: types.String,
       }),
+      __legacy: { filters: getFilters(meta, types.String) },
     });
   };
+
+const getFilters = (meta: FieldData, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) => ({
+  fields: {
+    ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
+    ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),
+    ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
+  },
+  impls: {
+    ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+    ...legacyFilters.impls.orderingConditions(meta.fieldKey),
+    ...legacyFilters.impls.inConditions(meta.fieldKey),
+  },
+});

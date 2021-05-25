@@ -5,6 +5,8 @@ import {
   types,
   filters,
   orderDirectionEnum,
+  Decimal,
+  legacyFilters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -59,30 +61,48 @@ export const decimal =
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].Decimal.optional }) },
-        uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Decimal }) } : undefined,
-        create: { arg: types.arg({ type: types.Decimal }) },
-        update: { arg: types.arg({ type: types.Decimal }) },
+        uniqueWhere:
+          index === 'unique'
+            ? { arg: types.arg({ type: types.String }), resolve: x => new Decimal(x) }
+            : undefined,
+        create: {
+          arg: types.arg({ type: types.String }),
+          resolve(val) {
+            if (val == null) return val;
+            return new Decimal(val);
+          },
+        },
+        update: {
+          arg: types.arg({ type: types.String }),
+          resolve(val) {
+            if (val == null) return val;
+            return new Decimal(val);
+          },
+        },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.Decimal }),
+      output: types.field({
+        type: types.String,
+        resolve({ value }) {
+          return value?.toString() ?? null;
+        },
+      }),
       views: resolveView('decimal/views'),
       getAdminMeta: () => ({
         precision,
         scale,
       }),
+      __legacy: {
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.String),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
+          },
+        },
+      },
     });
   };
-
-// ({
-//   type: {
-//     type: 'Decimal',
-//     implementation: Decimal,
-//     adapter: PrismaDecimalInterface,
-//   },
-//   config,
-//   views: resolveView('decimal/views'),
-//   getAdminMeta: () => ({
-//     precision: config.precision || null,
-//     scale: config.scale || null,
-//   }),
-// });

@@ -18,6 +18,7 @@ export const uuid =
     config: UuidFieldConfig<TGeneratedListTypes> = {}
   ): FieldTypeFunc =>
   meta => {
+    throw new Error('The uuid field is not currently supported');
     if (meta.fieldKey !== 'id') {
       throw new Error(
         `The uuid field type is only supported as an idField but is used at ${meta.fieldKey}.${meta.fieldKey}`

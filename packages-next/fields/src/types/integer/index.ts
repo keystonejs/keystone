@@ -3,6 +3,7 @@ import {
   fieldType,
   FieldTypeFunc,
   filters,
+  legacyFilters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
@@ -29,4 +30,18 @@ export const integer =
       },
       output: types.field({ type: types.Int }),
       views: resolveView('integer/views'),
+      __legacy: {
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.Int),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.Int),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.Int),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
+            ...legacyFilters.impls.inConditions(meta.fieldKey),
+          },
+        },
+      },
     });
