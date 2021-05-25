@@ -58,7 +58,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig
+type Config = FieldControllerConfig;
 
 export const controller = (config: Config): FieldController<string, string> => {
   return {
@@ -87,8 +87,7 @@ export const controller = (config: Config): FieldController<string, string> => {
       }
       try {
         parsedValue = JSON.parse(value);
-      } catch (e) {
-      }
+      } catch (e) {}
       return { [config.path]: parsedValue };
     },
   };
