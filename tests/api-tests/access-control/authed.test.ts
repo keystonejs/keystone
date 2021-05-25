@@ -209,23 +209,24 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
               test(`single not allowed: ${JSON.stringify(access)}`, async () => {
                 const invalidId = items[listKey].find(({ name }) => name !== 'Hello')?.id;
-                const query = `query { ${listKey}(where: { id: "${invalidId}" }) { id } }`;
-                const { data, errors } = await context.exitSudo().graphql.raw({ query });
+                const item = await context
+                  .exitSudo()
+                  .lists[listKey].findOne({ where: { id: invalidId } });
                 if (mode === 'imperative') {
                   // Imperative should work
-                  expect(errors).toBe(undefined);
-                  expect(data?.[listKey]).not.toBe(null);
-                  expect(data?.[listKey].id).toEqual(invalidId);
+                  expect(item).not.toBe(null);
+                  expect(item.id).toEqual(invalidId);
                 } else {
-                  // but declarative should not
-                  expectNoAccess(data, errors, listKey);
+                  // Declarative should return null
+                  expect(item).toBe(null);
                 }
               });
 
               test(`single not existing: ${JSON.stringify(access)}`, async () => {
-                const query = `query { ${listKey}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
-                const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, listKey);
+                const item = await context
+                  .exitSudo()
+                  .lists[listKey].findOne({ where: { id: FAKE_ID[provider].toString() } });
+                expect(item).toBe(null);
               });
 
               test(`multiple not existing: ${JSON.stringify(access)}`, async () => {

@@ -112,8 +112,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             app,
             query: '{ allUsers { id } }',
           });
-          expect(data).toEqual({ allUsers: null });
-          expect(errors).toMatchObject([{ name: 'AccessDeniedError' }]);
+          expect(data.allUsers).toEqual([]);
+          expect(errors).toBe(undefined);
         })
       );
 

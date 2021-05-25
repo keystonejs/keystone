@@ -210,32 +210,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
     describe('with access control', () => {
       describe('read: false on related list', () => {
         test(
-          'throws when trying to read after nested create',
+          'Returns empty list when trying to read after nested create',
           runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await context.exitSudo().graphql.raw({
-              query: `
-                mutation {
-                  createUserToNotesNoRead(data: {
-                    username: "A thing",
-                    notes: { create: [{ content: "${noteContent}" }] }
-                  }) {
-                    id
-                    notes {
-                      id
-                    }
-                  }
-                }`,
+            const item = await context.exitSudo().lists.UserToNotesNoRead.createOne({
+              data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
+              query: 'id notes { id }',
             });
 
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual('You do not have access to this resource');
-            expect(error.path).toHaveLength(2);
-            expect(error.path![0]).toEqual('createUserToNotesNoRead');
-            expect(error.path![1]).toEqual('notes');
+            expect(item.notes).toEqual([]);
           })
         );
 

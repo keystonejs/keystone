@@ -144,32 +144,21 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           listAccessVariations
             .filter(({ read }) => !read)
             .forEach(access => {
-              test(`'all' denied: ${JSON.stringify(access)}`, async () => {
-                const allQueryName = `all${nameFn[mode](access)}s`;
-                const query = `query { ${allQueryName} { id } }`;
-                const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, allQueryName);
+              test(`'all' returns empty array: ${JSON.stringify(access)}`, async () => {
+                const items = await context.exitSudo().lists[nameFn[mode](access)].findMany();
+                expect(items).toEqual([]);
               });
 
-              test(`count denied: ${JSON.stringify(access)}`, async () => {
-                const countName = `${
-                  nameFn[mode](access).slice(0, 1).toLowerCase() + nameFn[mode](access).slice(1)
-                }sCount`;
-                const query = `query { ${countName} }`;
-                const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data?.[countName]).toBe(null);
-                expect(errors).toHaveLength(1);
-                const error = errors![0];
-                expect(error.message).toEqual('You do not have access to this resource');
-                expect(error.path).toHaveLength(1);
-                expect(error.path![0]).toEqual(countName);
+              test(`count returns zero: ${JSON.stringify(access)}`, async () => {
+                const count = await context.exitSudo().lists[nameFn[mode](access)].count();
+                expect(count).toEqual(0);
               });
 
-              test(`single denied: ${JSON.stringify(access)}`, async () => {
-                const singleQueryName = nameFn[mode](access);
-                const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
-                const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, singleQueryName);
+              test(`single returns null: ${JSON.stringify(access)}`, async () => {
+                const user = await context
+                  .exitSudo()
+                  .lists[nameFn[mode](access)].findOne({ where: { id: 'abc123' } });
+                expect(user).toBe(null);
               });
             });
         });

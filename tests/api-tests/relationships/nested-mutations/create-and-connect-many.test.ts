@@ -163,7 +163,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
     describe('with access control', () => {
       describe('read: false on related list', () => {
         test(
-          'throws when link AND create nested from within create mutation',
+          'does not throw when link AND create nested from within create mutation',
           runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
@@ -174,33 +174,30 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Create an item that does the linking
-            const { errors } = await context.exitSudo().graphql.raw({
-              query: `
-                mutation {
-                  createUserToNotesNoRead(data: {
-                    username: "A thing",
-                    notes: {
-                      connect: [{ id: "${createNoteNoRead.id}" }],
-                      create: [{ content: "${noteContent2}" }]
-                    }
-                  }) {
-                    id
-                  }
-                }`,
+            const item = await context.exitSudo().lists.UserToNotesNoRead.createOne({
+              data: {
+                username: 'A thing',
+                notes: {
+                  connect: [{ id: createNoteNoRead.id }],
+                  create: [{ content: noteContent2 }],
+                },
+              },
+              query: 'id username notes { id content }',
             });
+            expect(item.username).toEqual('A thing');
+            expect(item.notes).toHaveLength(0);
 
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual('createUserToNotesNoRead');
+            // Verify that they did indeed get connected
+            const _item = await context.lists.UserToNotesNoRead.findOne({
+              where: { id: item.id },
+              query: 'id notes { id content }',
+            });
+            expect(_item.notes).toHaveLength(2);
           })
         );
 
         test(
-          'throws when link & create nested from within update mutation',
+          'does not throw when link & create nested from within update mutation',
           runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
             const noteContent2 = sampleOne(alphanumGenerator);
@@ -216,31 +213,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().graphql.raw({
-              query: `
-                mutation {
-                  updateUserToNotesNoRead(
-                    id: "${createUser.id}"
-                    data: {
-                      username: "A thing",
-                      notes: {
-                        connect: [{ id: "${createNote.id}" }],
-                        create: [{ content: "${noteContent2}" }]
-                      }
-                    }
-                  ) {
-                    id
-                  }
-                }`,
+            const item = await context.exitSudo().lists.UserToNotesNoRead.updateOne({
+              id: createUser.id,
+              data: {
+                username: 'A thing',
+                notes: {
+                  connect: [{ id: createNote.id }],
+                  create: [{ content: noteContent2 }],
+                },
+              },
+              query: 'id username notes { id content }',
             });
+            expect(item.username).toEqual('A thing');
+            expect(item.notes).toHaveLength(0);
 
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual('updateUserToNotesNoRead');
+            // Verify that they did indeed get connected
+            const _item = await context.lists.UserToNotesNoRead.findOne({
+              where: { id: item.id },
+              query: 'id notes { id content }',
+            });
+            expect(_item.notes).toHaveLength(2);
           })
         );
       });

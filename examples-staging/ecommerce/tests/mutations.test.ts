@@ -148,7 +148,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
       );
     });
 
-    describe('addToCart(productId)', () => {
+    describe.only('addToCart(productId)', () => {
       const query =
         'mutation m($productId: ID!){ addToCart(productId: $productId) { id quantity product { id } user { id } } }';
       test(
@@ -192,7 +192,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
         })
       );
 
-      test(
+      test.only(
         'Adding DRAFT product should throw',
         runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
