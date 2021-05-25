@@ -7,9 +7,6 @@ export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   FieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<string>;
     isRequired?: boolean;
-    ui?: {
-      displayMode?: 'textarea';
-    };
   };
 
 export const json = <TGeneratedListTypes extends BaseGeneratedListTypes>(
@@ -22,5 +19,4 @@ export const json = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   },
   config,
   views: resolveView('json/views'),
-  getAdminMeta: () => ({ displayMode: config.ui?.displayMode ?? 'textarea' }),
 });

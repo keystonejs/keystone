@@ -60,15 +60,12 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
 
-export const controller = (
-  config: Config
-): FieldController<string, string> & { displayMode: 'input' | 'textarea' } => {
+export const controller = (config: Config): FieldController<string, string> => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
-    displayMode: config.fieldMeta.displayMode,
     validate: value => {
       if (!value) return true;
       try {
