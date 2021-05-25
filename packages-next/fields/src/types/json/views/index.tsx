@@ -91,7 +91,6 @@ export const controller = (
       try {
         parsedValue = JSON.parse(value);
       } catch (e) {
-        parsedValue = undefined;
       }
       return { [config.path]: parsedValue };
     },
