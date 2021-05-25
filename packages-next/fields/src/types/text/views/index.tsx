@@ -1,5 +1,5 @@
 /* @jsx jsx */
-
+import { Fragment } from 'react';
 import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
@@ -8,29 +8,36 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { jsx } from '@keystone-ui/core';
+import { jsx, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
-    {onChange ? (
-      field.displayMode === 'textarea' ? (
-        <TextArea
-          autoFocus={autoFocus}
-          onChange={event => onChange(event.target.value)}
-          value={value}
-        />
+    <FieldLabel htmlFor={field.label}>
+      {field.label}
+      {onChange ? (
+        field.displayMode === 'textarea' ? (
+          <TextArea
+            id={field.label}
+            autoFocus={autoFocus}
+            onChange={event => onChange(event.target.value)}
+            value={value}
+          />
+        ) : (
+          <TextInput
+            id={field.label}
+            autoFocus={autoFocus}
+            onChange={event => onChange(event.target.value)}
+            value={value}
+          />
+        )
       ) : (
-        <TextInput
-          autoFocus={autoFocus}
-          onChange={event => onChange(event.target.value)}
-          value={value}
-        />
-      )
-    ) : (
-      value
-    )}
+        <Fragment>
+          <VisuallyHidden as="span">read only value</VisuallyHidden>
+          value
+        </Fragment>
+      )}
+    </FieldLabel>
   </FieldContainer>
 );
 
