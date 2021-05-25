@@ -75,7 +75,7 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input SortPostsBy {
+input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   slug: OrderDirection
@@ -114,36 +114,14 @@ input PostsUpdateInput {
 }
 
 type Query {
-<<<<<<< HEAD:examples/next-lite/schema.graphql
-=======
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Post]
-
-  """
-   Search for the Post item with the matching ID.
-  """
->>>>>>> master:examples/embedded-nextjs/schema.graphql
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD:examples/next-lite/schema.graphql
   ): [Post!]
   allPostsCount(where: PostWhereInput! = {}): Int
-=======
-  ): _QueryMeta
->>>>>>> master:examples/embedded-nextjs/schema.graphql
   keystone: KeystoneMeta!
 }
 

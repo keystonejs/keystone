@@ -53,6 +53,7 @@ export function getGqlNames({
     listQueryName: `all${pluralGraphQLName}`,
     listQueryCountName: `all${pluralGraphQLName}Count`,
     listSortName: `Sort${pluralGraphQLName}By`,
+    listOrderName: `${listKey}OrderByInput`,
     deleteMutationName: `delete${listKey}`,
     updateMutationName: `update${listKey}`,
     createMutationName: `create${listKey}`,

@@ -95,7 +95,7 @@ input NestedBoolNullableFilter {
   not: NestedBoolNullableFilter
 }
 
-input SortUsersBy {
+input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -138,40 +138,20 @@ input UserUpdateInput {
   isAdmin: Boolean
 }
 
-<<<<<<< HEAD
 input UsersUpdateInput {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
-=======
-type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
-    where: UserWhereInput
-    search: String
-    sortBy: [SortUsersBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [User]
->>>>>>> master
 
 type Query {
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
-    orderBy: [SortUsersBy!]! = []
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [User!]
   allUsersCount(where: UserWhereInput! = {}): Int
-=======
-  ): _QueryMeta
-  authenticatedItem: AuthenticatedItem
->>>>>>> master
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

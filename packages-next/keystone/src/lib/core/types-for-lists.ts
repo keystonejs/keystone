@@ -497,7 +497,7 @@ export function initialiseLists(
     });
 
     const orderBy = types.inputObject({
-      name: names.listSortName,
+      name: names.listOrderName,
       fields: () => {
         const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
         return Object.fromEntries(

@@ -20,22 +20,11 @@ type Person {
   password: PasswordState!
   tasks(
     where: TaskWhereInput! = {}
-    orderBy: [SortTasksBy!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task!]!
-<<<<<<< HEAD
   tasksCount(where: TaskWhereInput! = {}): Int!
-=======
-  _tasksMeta(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 }
 
 type PasswordState {
@@ -163,7 +152,7 @@ input NestedDateTimeNullableFilter {
   not: NestedDateTimeNullableFilter
 }
 
-input SortTasksBy {
+input TaskOrderByInput {
   id: OrderDirection
   label: OrderDirection
   priority: OrderDirection
@@ -184,7 +173,7 @@ input PersonWhereUniqueInput {
   id: ID
 }
 
-input SortPeopleBy {
+input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -270,7 +259,6 @@ input PersonUpdateInput {
   }
 }
 
-<<<<<<< HEAD
 input TaskRelateToManyForUpdateInput {
   create: [TaskCreateInput!]! = []
   connect: [TaskWhereUniqueInput!]! = []
@@ -282,68 +270,24 @@ input PeopleUpdateInput {
   where: PersonWhereUniqueInput!
   data: PersonUpdateInput!
 }
-=======
-type Query {
-  """
-   Search for all Task items which match the where clause.
-  """
-  allTasks(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Task]
-
-  """
-   Search for the Task item with the matching ID.
-  """
-  Task(where: TaskWhereUniqueInput!): Task
-
-  """
-   Perform a meta-query on all Task items which match the where clause.
-  """
-  _allTasksMeta(
-    where: TaskWhereInput
-    search: String
-    sortBy: [SortTasksBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 
 type Query {
   Task(where: TaskWhereUniqueInput!): Task
   allTasks(
     where: TaskWhereInput! = {}
-    orderBy: [SortTasksBy!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Task!]
   allTasksCount(where: TaskWhereInput! = {}): Int
-=======
-  ): [Person]
-
-  """
-   Search for the Person item with the matching ID.
-  """
->>>>>>> master
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
-    orderBy: [SortPeopleBy!]! = []
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Person!]
   allPeopleCount(where: PersonWhereInput! = {}): Int
-=======
-  ): _QueryMeta
-  authenticatedItem: AuthenticatedItem
->>>>>>> master
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -18,7 +18,7 @@ type Author {
   email: String
   posts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -131,7 +131,7 @@ input PostsRelationFilter {
   none: PostWhereInput
 }
 
-input SortPostsBy {
+input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
@@ -144,41 +144,15 @@ enum OrderDirection {
   desc
 }
 
-<<<<<<< HEAD
 input PostWhereUniqueInput {
   id: ID
-=======
-"""
- A keystone list
-"""
-type Author {
-  id: ID!
-  name: String
-  email: String
-  posts(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Post!]!
-  _postsMeta(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
->>>>>>> master
 }
 
 input AuthorWhereUniqueInput {
   id: ID
 }
 
-input SortAuthorsBy {
+input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -265,73 +239,22 @@ input AuthorsUpdateInput {
 }
 
 type Query {
-<<<<<<< HEAD
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
   allPostsCount(where: PostWhereInput! = {}): Int
-=======
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Post]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput
-    search: String
-    sortBy: [SortPostsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-
-  """
-   Search for all Author items which match the where clause.
-  """
-  allAuthors(
-    where: AuthorWhereInput
-    search: String
-    sortBy: [SortAuthorsBy!]
-    orderBy: String
-    first: Int
-    skip: Int! = 0
-  ): [Author]
-
-  """
-   Search for the Author item with the matching ID.
-  """
->>>>>>> master
   Author(where: AuthorWhereUniqueInput!): Author
   allAuthors(
     where: AuthorWhereInput! = {}
-    orderBy: [SortAuthorsBy!]! = []
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-<<<<<<< HEAD
   ): [Author!]
   allAuthorsCount(where: AuthorWhereInput! = {}): Int
-=======
-  ): _QueryMeta
->>>>>>> master
   keystone: KeystoneMeta!
 }
 
