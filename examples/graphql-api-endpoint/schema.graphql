@@ -31,6 +31,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 input UserWhereInput {
@@ -191,6 +195,10 @@ type Post {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tagsCount instead."
+    )
+  tagsCount(where: TagWhereInput! = {}): Int
 }
 
 input PostWhereInput {
@@ -326,6 +334,10 @@ type Tag {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 input TagWhereInput {
@@ -590,7 +602,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 
   """
    Search for all Post items which match the where clause.
@@ -625,7 +637,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
 
   """
    Search for all Tag items which match the where clause.
@@ -660,7 +672,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use tagsCount instead."
     )
-  tagsCount(where: TagWhereInput! = {}): Int!
+  tagsCount(where: TagWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

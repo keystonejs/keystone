@@ -117,6 +117,10 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use packagesCount instead."
+    )
+  packagesCount(where: PackageWhereInput! = {}): Int
 }
 
 input PersonWhereInput {
@@ -301,7 +305,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use packagesCount instead."
     )
-  packagesCount(where: PackageWhereInput! = {}): Int!
+  packagesCount(where: PackageWhereInput! = {}): Int
 
   """
    Search for all Person items which match the where clause.
@@ -336,7 +340,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use peopleCount instead."
     )
-  peopleCount(where: PersonWhereInput! = {}): Int!
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

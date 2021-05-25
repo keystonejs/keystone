@@ -52,6 +52,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartCount instead."
+    )
+  cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
     search: String
@@ -70,6 +74,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   products(
     where: ProductWhereInput! = {}
@@ -89,6 +97,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken_is_set: Boolean
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
@@ -719,6 +731,10 @@ type Order {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use itemsCount instead."
+    )
+  itemsCount(where: OrderItemWhereInput! = {}): Int
   user: User
   charge: String
 }
@@ -846,6 +862,10 @@ type Role {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use assignedToCount instead."
+    )
+  assignedToCount(where: UserWhereInput! = {}): Int
 }
 
 input RoleWhereInput {
@@ -1298,7 +1318,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 
   """
    Search for all Product items which match the where clause.
@@ -1333,7 +1353,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use productsCount instead."
     )
-  productsCount(where: ProductWhereInput! = {}): Int!
+  productsCount(where: ProductWhereInput! = {}): Int
 
   """
    Search for all ProductImage items which match the where clause.
@@ -1368,7 +1388,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use productImagesCount instead."
     )
-  productImagesCount(where: ProductImageWhereInput! = {}): Int!
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
 
   """
    Search for all CartItem items which match the where clause.
@@ -1403,7 +1423,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use cartItemsCount instead."
     )
-  cartItemsCount(where: CartItemWhereInput! = {}): Int!
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
 
   """
    Search for all OrderItem items which match the where clause.
@@ -1438,7 +1458,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use orderItemsCount instead."
     )
-  orderItemsCount(where: OrderItemWhereInput! = {}): Int!
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int
 
   """
    Search for all Order items which match the where clause.
@@ -1473,7 +1493,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use ordersCount instead."
     )
-  ordersCount(where: OrderWhereInput! = {}): Int!
+  ordersCount(where: OrderWhereInput! = {}): Int
 
   """
    Search for all Role items which match the where clause.
@@ -1508,7 +1528,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use rolesCount instead."
     )
-  rolesCount(where: RoleWhereInput! = {}): Int!
+  rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
     email: String!

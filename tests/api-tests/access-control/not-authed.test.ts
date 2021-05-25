@@ -157,7 +157,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 }sCount`;
                 const query = `query { ${countName} }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expect(data).toBe(null);
+                expect(data?.[countName]).toBe(null);
                 expect(errors).toHaveLength(1);
                 const error = errors![0];
                 expect(error.message).toEqual('You do not have access to this resource');

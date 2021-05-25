@@ -170,7 +170,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
