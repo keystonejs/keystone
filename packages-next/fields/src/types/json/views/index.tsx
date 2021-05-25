@@ -58,7 +58,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
+type Config = FieldControllerConfig
 
 export const controller = (config: Config): FieldController<string, string> => {
   return {
