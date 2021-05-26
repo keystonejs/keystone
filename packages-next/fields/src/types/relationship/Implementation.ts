@@ -91,7 +91,12 @@ export class Relationship<P extends string> extends Implementation<P> {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}!]!`,
-        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
+        this.withMeta
+          ? `_${this.path}Meta(${filterArgs}): _QueryMeta @deprecated(reason: "This query will be removed in a future version. Please use ${this.path}Count instead.")`
+          : '',
+        this.withMeta
+          ? `${this.path}Count(${`where: ${refList.gqlNames.whereInputName}! = {}`}): Int`
+          : '',
       ];
     } else {
       return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
@@ -145,6 +150,20 @@ export class Relationship<P extends string> extends Implementation<P> {
               fromId: item.id,
               fromField: this.path,
             });
+          },
+          [`${this.path}Count`]: async (
+            item: any,
+            args: any,
+            context: KeystoneContext,
+            info: any
+          ) => {
+            return (
+              await refList.listQueryMeta(args, context, info.fieldName, info, {
+                fromList: this.getListByKey(this.listKey),
+                fromId: item.id,
+                fromField: this.path,
+              })
+            ).getCount();
           },
         }),
       };

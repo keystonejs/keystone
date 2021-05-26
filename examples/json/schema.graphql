@@ -100,7 +100,7 @@ type Person {
   id: ID!
   name: String
   packages(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -109,7 +109,7 @@ type Person {
     skip: Int! = 0
   ): [Package!]!
   _packagesMeta(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -117,6 +117,10 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use packagesCount instead."
+    )
+  packagesCount(where: PackageWhereInput! = {}): Int
 }
 
 input PersonWhereInput {
@@ -272,7 +276,7 @@ type Query {
    Search for all Package items which match the where clause.
   """
   allPackages(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -290,7 +294,7 @@ type Query {
    Perform a meta-query on all Package items which match the where clause.
   """
   _allPackagesMeta(
-    where: PackageWhereInput
+    where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -301,13 +305,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use packagesCount instead."
     )
-  packagesCount(where: PackageWhereInput! = {}): Int!
+  packagesCount(where: PackageWhereInput! = {}): Int
 
   """
    Search for all Person items which match the where clause.
   """
   allPeople(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -325,7 +329,7 @@ type Query {
    Perform a meta-query on all Person items which match the where clause.
   """
   _allPeopleMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -336,7 +340,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use peopleCount instead."
     )
-  peopleCount(where: PersonWhereInput! = {}): Int!
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

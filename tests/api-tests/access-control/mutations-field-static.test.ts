@@ -129,7 +129,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Valid users should exist in the database
           const users = await context.lists.User.findMany({
-            sortBy: 'name_ASC',
+            orderBy: { name: 'asc' },
             query: 'id name',
           });
           expect(users).toHaveLength(3);
@@ -184,7 +184,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // All users should still exist in the database
           const _users = await context.lists.User.findMany({
-            sortBy: 'name_ASC',
+            orderBy: { name: 'asc' },
             query: 'id name',
           });
           expect(_users.map(({ name }) => name)).toEqual([

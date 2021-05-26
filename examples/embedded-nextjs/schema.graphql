@@ -141,7 +141,7 @@ type Query {
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -159,7 +159,7 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -170,7 +170,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

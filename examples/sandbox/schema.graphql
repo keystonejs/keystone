@@ -137,7 +137,7 @@ type User {
   email: String
   password_is_set: Boolean
   tasks(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -146,7 +146,7 @@ type User {
     skip: Int! = 0
   ): [Todo!]!
   _tasksMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -154,6 +154,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
 }
@@ -347,7 +351,7 @@ type Query {
    Search for all Todo items which match the where clause.
   """
   allTodos(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -365,7 +369,7 @@ type Query {
    Perform a meta-query on all Todo items which match the where clause.
   """
   _allTodosMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -376,13 +380,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use todosCount instead."
     )
-  todosCount(where: TodoWhereInput! = {}): Int!
+  todosCount(where: TodoWhereInput! = {}): Int
 
   """
    Search for all User items which match the where clause.
   """
   allUsers(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -400,7 +404,7 @@ type Query {
    Perform a meta-query on all User items which match the where clause.
   """
   _allUsersMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -411,7 +415,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

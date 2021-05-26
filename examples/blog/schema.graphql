@@ -131,7 +131,7 @@ type Author {
   name: String
   email: String
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -140,7 +140,7 @@ type Author {
     skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -148,6 +148,10 @@ type Author {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 input AuthorWhereInput {
@@ -314,7 +318,7 @@ type Query {
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -332,7 +336,7 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -343,13 +347,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
 
   """
    Search for all Author items which match the where clause.
   """
   allAuthors(
-    where: AuthorWhereInput
+    where: AuthorWhereInput! = {}
     search: String
     sortBy: [SortAuthorsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -367,7 +371,7 @@ type Query {
    Perform a meta-query on all Author items which match the where clause.
   """
   _allAuthorsMeta(
-    where: AuthorWhereInput
+    where: AuthorWhereInput! = {}
     search: String
     sortBy: [SortAuthorsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -378,7 +382,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use authorsCount instead."
     )
-  authorsCount(where: AuthorWhereInput! = {}): Int!
+  authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

@@ -35,7 +35,7 @@ type User {
   email: String
   password_is_set: Boolean
   cart(
-    where: CartItemWhereInput
+    where: CartItemWhereInput! = {}
     search: String
     sortBy: [SortCartItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -44,7 +44,7 @@ type User {
     skip: Int! = 0
   ): [CartItem!]!
   _cartMeta(
-    where: CartItemWhereInput
+    where: CartItemWhereInput! = {}
     search: String
     sortBy: [SortCartItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -52,8 +52,12 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartCount instead."
+    )
+  cartCount(where: CartItemWhereInput! = {}): Int
   orders(
-    where: OrderWhereInput
+    where: OrderWhereInput! = {}
     search: String
     sortBy: [SortOrdersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -62,7 +66,7 @@ type User {
     skip: Int! = 0
   ): [Order!]!
   _ordersMeta(
-    where: OrderWhereInput
+    where: OrderWhereInput! = {}
     search: String
     sortBy: [SortOrdersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -70,9 +74,13 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   products(
-    where: ProductWhereInput
+    where: ProductWhereInput! = {}
     search: String
     sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -81,7 +89,7 @@ type User {
     skip: Int! = 0
   ): [Product!]!
   _productsMeta(
-    where: ProductWhereInput
+    where: ProductWhereInput! = {}
     search: String
     sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -89,6 +97,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken_is_set: Boolean
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
@@ -702,7 +714,7 @@ type Order {
   label: String
   total: Int
   items(
-    where: OrderItemWhereInput
+    where: OrderItemWhereInput! = {}
     search: String
     sortBy: [SortOrderItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -711,7 +723,7 @@ type Order {
     skip: Int! = 0
   ): [OrderItem!]!
   _itemsMeta(
-    where: OrderItemWhereInput
+    where: OrderItemWhereInput! = {}
     search: String
     sortBy: [SortOrderItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -719,6 +731,10 @@ type Order {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use itemsCount instead."
+    )
+  itemsCount(where: OrderItemWhereInput! = {}): Int
   user: User
   charge: String
 }
@@ -829,7 +845,7 @@ type Role {
   canManageCart: Boolean
   canManageOrders: Boolean
   assignedTo(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -838,7 +854,7 @@ type Role {
     skip: Int! = 0
   ): [User!]!
   _assignedToMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -846,6 +862,10 @@ type Role {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use assignedToCount instead."
+    )
+  assignedToCount(where: UserWhereInput! = {}): Int
 }
 
 input RoleWhereInput {
@@ -1269,7 +1289,7 @@ type Query {
    Search for all User items which match the where clause.
   """
   allUsers(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1287,7 +1307,7 @@ type Query {
    Perform a meta-query on all User items which match the where clause.
   """
   _allUsersMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1298,13 +1318,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 
   """
    Search for all Product items which match the where clause.
   """
   allProducts(
-    where: ProductWhereInput
+    where: ProductWhereInput! = {}
     search: String
     sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1322,7 +1342,7 @@ type Query {
    Perform a meta-query on all Product items which match the where clause.
   """
   _allProductsMeta(
-    where: ProductWhereInput
+    where: ProductWhereInput! = {}
     search: String
     sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1333,13 +1353,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use productsCount instead."
     )
-  productsCount(where: ProductWhereInput! = {}): Int!
+  productsCount(where: ProductWhereInput! = {}): Int
 
   """
    Search for all ProductImage items which match the where clause.
   """
   allProductImages(
-    where: ProductImageWhereInput
+    where: ProductImageWhereInput! = {}
     search: String
     sortBy: [SortProductImagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1357,7 +1377,7 @@ type Query {
    Perform a meta-query on all ProductImage items which match the where clause.
   """
   _allProductImagesMeta(
-    where: ProductImageWhereInput
+    where: ProductImageWhereInput! = {}
     search: String
     sortBy: [SortProductImagesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1368,13 +1388,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use productImagesCount instead."
     )
-  productImagesCount(where: ProductImageWhereInput! = {}): Int!
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
 
   """
    Search for all CartItem items which match the where clause.
   """
   allCartItems(
-    where: CartItemWhereInput
+    where: CartItemWhereInput! = {}
     search: String
     sortBy: [SortCartItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1392,7 +1412,7 @@ type Query {
    Perform a meta-query on all CartItem items which match the where clause.
   """
   _allCartItemsMeta(
-    where: CartItemWhereInput
+    where: CartItemWhereInput! = {}
     search: String
     sortBy: [SortCartItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1403,13 +1423,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use cartItemsCount instead."
     )
-  cartItemsCount(where: CartItemWhereInput! = {}): Int!
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
 
   """
    Search for all OrderItem items which match the where clause.
   """
   allOrderItems(
-    where: OrderItemWhereInput
+    where: OrderItemWhereInput! = {}
     search: String
     sortBy: [SortOrderItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1427,7 +1447,7 @@ type Query {
    Perform a meta-query on all OrderItem items which match the where clause.
   """
   _allOrderItemsMeta(
-    where: OrderItemWhereInput
+    where: OrderItemWhereInput! = {}
     search: String
     sortBy: [SortOrderItemsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1438,13 +1458,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use orderItemsCount instead."
     )
-  orderItemsCount(where: OrderItemWhereInput! = {}): Int!
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int
 
   """
    Search for all Order items which match the where clause.
   """
   allOrders(
-    where: OrderWhereInput
+    where: OrderWhereInput! = {}
     search: String
     sortBy: [SortOrdersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1462,7 +1482,7 @@ type Query {
    Perform a meta-query on all Order items which match the where clause.
   """
   _allOrdersMeta(
-    where: OrderWhereInput
+    where: OrderWhereInput! = {}
     search: String
     sortBy: [SortOrdersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1473,13 +1493,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use ordersCount instead."
     )
-  ordersCount(where: OrderWhereInput! = {}): Int!
+  ordersCount(where: OrderWhereInput! = {}): Int
 
   """
    Search for all Role items which match the where clause.
   """
   allRoles(
-    where: RoleWhereInput
+    where: RoleWhereInput! = {}
     search: String
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1497,7 +1517,7 @@ type Query {
    Perform a meta-query on all Role items which match the where clause.
   """
   _allRolesMeta(
-    where: RoleWhereInput
+    where: RoleWhereInput! = {}
     search: String
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -1508,7 +1528,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use rolesCount instead."
     )
-  rolesCount(where: RoleWhereInput! = {}): Int!
+  rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
     email: String!

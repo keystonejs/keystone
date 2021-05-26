@@ -76,7 +76,7 @@ type User {
   isAdmin: Boolean
   roles: String
   phoneNumbers(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -85,7 +85,7 @@ type User {
     skip: Int! = 0
   ): [PhoneNumber!]!
   _phoneNumbersMeta(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -93,8 +93,12 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
+    )
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -103,7 +107,7 @@ type User {
     skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -111,6 +115,10 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
 
@@ -578,7 +586,7 @@ type Query {
    Search for all User items which match the where clause.
   """
   allUsers(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -596,7 +604,7 @@ type Query {
    Perform a meta-query on all User items which match the where clause.
   """
   _allUsersMeta(
-    where: UserWhereInput
+    where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -607,13 +615,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 
   """
    Search for all PhoneNumber items which match the where clause.
   """
   allPhoneNumbers(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -631,7 +639,7 @@ type Query {
    Perform a meta-query on all PhoneNumber items which match the where clause.
   """
   _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput
+    where: PhoneNumberWhereInput! = {}
     search: String
     sortBy: [SortPhoneNumbersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -642,13 +650,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
     )
-  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
 
   """
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -666,7 +674,7 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -677,7 +685,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int!
+  postsCount(where: PostWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber
   keystone: KeystoneMeta!

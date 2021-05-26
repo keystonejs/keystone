@@ -127,7 +127,7 @@ type Person {
   id: ID!
   name: String
   tasks(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -136,7 +136,7 @@ type Person {
     skip: Int! = 0
   ): [Task!]!
   _tasksMeta(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -144,6 +144,10 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TaskWhereInput! = {}): Int
 }
 
 input PersonWhereInput {
@@ -299,7 +303,7 @@ type Query {
    Search for all Task items which match the where clause.
   """
   allTasks(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -317,7 +321,7 @@ type Query {
    Perform a meta-query on all Task items which match the where clause.
   """
   _allTasksMeta(
-    where: TaskWhereInput
+    where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -328,13 +332,13 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
-  tasksCount(where: TaskWhereInput! = {}): Int!
+  tasksCount(where: TaskWhereInput! = {}): Int
 
   """
    Search for all Person items which match the where clause.
   """
   allPeople(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -352,7 +356,7 @@ type Query {
    Perform a meta-query on all Person items which match the where clause.
   """
   _allPeopleMeta(
-    where: PersonWhereInput
+    where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
@@ -363,7 +367,7 @@ type Query {
     @deprecated(
       reason: "This query will be removed in a future version. Please use peopleCount instead."
     )
-  peopleCount(where: PersonWhereInput! = {}): Int!
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
