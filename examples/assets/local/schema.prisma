@@ -1,0 +1,34 @@
+datasource sqlite {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model Post {
+  id             Int       @id @default(autoincrement())
+  title          String?
+  status         String?
+  content        String?
+  publishDate    DateTime?
+  hero_filesize  Int?
+  hero_extension String?
+  hero_width     Int?
+  hero_height    Int?
+  hero_mode      String?
+  hero_id        String?
+  author         Author?   @relation("Postauthor", fields: [authorId], references: [id])
+  authorId       Int?      @map("author")
+
+  @@index([authorId])
+}
+
+model Author {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String? @unique
+  posts Post[]  @relation("Postauthor")
+}
