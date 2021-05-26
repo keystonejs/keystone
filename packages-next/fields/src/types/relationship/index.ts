@@ -64,7 +64,7 @@ export const relationship =
     ...config
   }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
-    const [listKey, fieldKey] = ref.split('.');
+    const [foreignListKey, foreignFieldKey] = ref.split('.');
     const commonConfig = {
       views: resolveView('relationship/views'),
       getAdminMeta: (
@@ -72,13 +72,13 @@ export const relationship =
       ): Parameters<
         typeof import('@keystone-next/fields/types/relationship/views').controller
       >[0]['fieldMeta'] => {
-        if (!meta.lists[listKey]) {
+        if (!meta.lists[foreignListKey]) {
           throw new Error(
             `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
           );
         }
         return {
-          refListKey: listKey,
+          refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,
           ...(config.ui?.displayMode === 'cards'
@@ -95,14 +95,26 @@ export const relationship =
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField: adminMetaRoot.listsByKey[listKey].labelField,
+                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
               }),
         };
       },
     };
-    const listTypes = meta.lists[listKey].types;
+    const listTypes = meta.lists[foreignListKey].types;
     if (many) {
-      return fieldType({ kind: 'relation', mode: 'many', list: listKey, field: fieldKey })({
+      const whereInputResolve =
+        (key: string) => async (value: any, resolve?: (val: any) => Promise<any>) => {
+          if (value === null) {
+            throw new Error('i wonder what happens here');
+          }
+          return { [meta.fieldKey]: { [key]: await resolve!(value) } };
+        };
+      return fieldType({
+        kind: 'relation',
+        mode: 'many',
+        list: foreignListKey,
+        field: foreignFieldKey,
+      })({
         ...commonConfig,
         input: {
           where: {
@@ -148,9 +160,28 @@ export const relationship =
             },
           }),
         },
+        __legacy: {
+          filters: {
+            fields: {
+              [`${meta.fieldKey}_every`]: types.arg({ type: listTypes.where }),
+              [`${meta.fieldKey}_some`]: types.arg({ type: listTypes.where }),
+              [`${meta.fieldKey}_none`]: types.arg({ type: listTypes.where }),
+            },
+            impls: {
+              [`${meta.fieldKey}_every`]: whereInputResolve('every'),
+              [`${meta.fieldKey}_some`]: whereInputResolve('some'),
+              [`${meta.fieldKey}_none`]: whereInputResolve('none'),
+            },
+          },
+        },
       });
     }
-    return fieldType({ kind: 'relation', mode: 'one', list: listKey, field: fieldKey })({
+    return fieldType({
+      kind: 'relation',
+      mode: 'one',
+      list: foreignListKey,
+      field: foreignFieldKey,
+    })({
       ...commonConfig,
       input: {
         where: {
@@ -181,5 +212,23 @@ export const relationship =
           return value();
         },
       }),
+      __legacy: {
+        filters: {
+          fields: {
+            [`${meta.fieldKey}_is_null`]: types.arg({ type: types.Boolean }),
+            [meta.fieldKey]: types.arg({ type: listTypes.where }),
+          },
+          impls: {
+            [`${meta.fieldKey}_is_null`]: value =>
+              value ? { [meta.fieldKey]: null } : { NOT: { [meta.fieldKey]: null } },
+            [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {
+              if (value === null) {
+                throw new Error('i wonder what happens here');
+              }
+              return { [meta.fieldKey]: await resolve!(value) };
+            },
+          },
+        },
+      },
     });
   };

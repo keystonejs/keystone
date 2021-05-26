@@ -406,7 +406,10 @@ export type FieldTypeWithoutDBField<
   __legacy?: {
     filters?: {
       fields: Record<string, tsgql.Arg<any, any>>;
-      impls: Record<string, (value: any) => any>;
+      impls: Record<
+        string,
+        (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
+      >;
     };
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;

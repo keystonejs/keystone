@@ -177,23 +177,27 @@ async function resolveWhereInput(
   };
 }
 
-function resolveLegacyWhereInput(
+async function resolveLegacyWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
   context: KeystoneContext,
   inputResolvers: Record<string, FilterInputResolvers>
-): PrismaFilter {
+): Promise<PrismaFilter> {
   return {
-    AND: Object.entries(inputFilter).map(([fieldKey, value]) => {
-      if (fieldKey === 'OR' || fieldKey === 'AND') {
-        return {
-          [fieldKey]: value.map((value: any) =>
-            resolveLegacyWhereInput(value, list, context, inputResolvers)
-          ),
-        };
-      }
-      return list.filterImpls[fieldKey](value);
-    }),
+    AND: await Promise.all(
+      Object.entries(inputFilter).map(async ([fieldKey, value]) => {
+        if (fieldKey === 'OR' || fieldKey === 'AND') {
+          return {
+            [fieldKey]: await Promise.all(
+              value.map((value: any) =>
+                resolveLegacyWhereInput(value, list, context, inputResolvers)
+              )
+            ),
+          };
+        }
+        return list.filterImpls[fieldKey](value);
+      })
+    ),
   };
 }
 

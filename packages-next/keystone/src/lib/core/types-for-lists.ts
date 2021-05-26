@@ -682,6 +682,23 @@ export function initialiseLists(
         filterImpls: Object.assign(
           {},
           ...Object.values(list.fields).map(field => {
+            if (field.dbField.kind === 'relation' && field.__legacy?.filters) {
+              const foreignListKey = field.dbField.list;
+              return Object.fromEntries(
+                Object.entries(field.__legacy.filters.impls).map(([key, resolve]) => {
+                  return [
+                    key,
+                    (val: any) =>
+                      resolve(val, foreignListWhereInput =>
+                        initialisedLists[foreignListKey].inputResolvers.where(
+                          // we're abusing the fact that the context technically isn't used rn
+                          {} as any
+                        )(foreignListWhereInput)
+                      ),
+                  ];
+                })
+              );
+            }
             return field.__legacy?.filters?.impls ?? {};
           })
         ),
