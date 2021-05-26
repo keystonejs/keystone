@@ -1,7 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import semver from 'semver';
-import { FileMode, ImageMode, ImageExtension } from '@keystone-next/types';
+import { AssetMode, ImageExtension } from '@keystone-next/types';
 
 export const noop = <T>(x: T): T => x;
 export const identity = noop;
@@ -261,16 +261,16 @@ export const humanize = (str: string) => {
 const IMAGEREGEX = /^(local):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
 
-export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
+export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;
 
-export const getFileRef = (mode: FileMode, name: string) => `${mode}:file:${name}`;
+export const getFileRef = (mode: AssetMode, name: string) => `${mode}:file:${name}`;
 export const parseFileRef = (ref: string) => {
   const match = ref.match(FILEREGEX);
   if (match) {
     const [, mode, filename] = match;
     return {
-      mode: mode as FileMode,
+      mode: mode as AssetMode,
       filename: filename as string,
     };
   }
@@ -281,15 +281,19 @@ export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 
 export const parseImageRef = (
   ref: string
-): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
+): { mode: AssetMode; id: string; extension: ImageExtension } | undefined => {
   const match = ref.match(IMAGEREGEX);
   if (match) {
     const [, mode, id, ext] = match;
     return {
-      mode: mode as ImageMode,
+      mode: mode as AssetMode,
       id,
       extension: ext as ImageExtension,
     };
   }
   return undefined;
 };
+
+export const isLocalAsset = (mode: AssetMode) => mode === 'local';
+
+export const isCloudAsset = (mode: AssetMode) => mode === 'cloud';

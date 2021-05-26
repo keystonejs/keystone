@@ -31,46 +31,47 @@ export type KeystoneContext = {
 // TODO: Work out whether we can generate useful return types based on the GraphQL Query
 // passed to List API functions (see `readonly Record<string, any>` below)
 
-export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> =
-  {
-    [Key in keyof KeystoneListsTypeInfo]: {
-      findMany(
-        args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
-      ): Promise<readonly Record<string, any>[]>;
-      findOne(
-        args: { readonly where: { readonly id: string } } & ResolveFields
-      ): Promise<Record<string, any>>;
-      count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
-      updateOne(
-        args: {
+export type KeystoneListsAPI<
+  KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
+> = {
+  [Key in keyof KeystoneListsTypeInfo]: {
+    findMany(
+      args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
+    ): Promise<readonly Record<string, any>[]>;
+    findOne(
+      args: { readonly where: { readonly id: string } } & ResolveFields
+    ): Promise<Record<string, any>>;
+    count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    updateOne(
+      args: {
+        readonly id: string;
+        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+      } & ResolveFields
+    ): Promise<Record<string, any>>;
+    updateMany(
+      args: {
+        readonly data: readonly {
           readonly id: string;
           readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-        } & ResolveFields
-      ): Promise<Record<string, any>>;
-      updateMany(
-        args: {
-          readonly data: readonly {
-            readonly id: string;
-            readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-          }[];
-        } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-      createOne(
-        args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
-      ): Promise<Record<string, any>>;
-      createMany(
-        args: {
-          readonly data: readonly {
-            readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-          }[];
-        } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-      deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
-      deleteMany(
-        args: { readonly ids: readonly string[] } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-    };
+        }[];
+      } & ResolveFields
+    ): Promise<Record<string, any>[]>;
+    createOne(
+      args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
+    ): Promise<Record<string, any>>;
+    createMany(
+      args: {
+        readonly data: readonly {
+          readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+        }[];
+      } & ResolveFields
+    ): Promise<Record<string, any>[]>;
+    deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
+    deleteMany(
+      args: { readonly ids: readonly string[] } & ResolveFields
+    ): Promise<Record<string, any>[]>;
   };
+};
 
 type ResolveFields = {
   /**
@@ -153,39 +154,40 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
+export type AssetMode = 'local' | 'cloud';
+
 // Files API
 
-export type FileMode = 'local';
-
 export type FileData = {
-  mode: FileMode;
+  mode: AssetMode;
   filename: string;
   filesize: number;
 };
 
 export type FilesContext = {
-  getSrc: (mode: FileMode, filename: string) => string;
+  getSrc: (mode: AssetMode, filename: string) => string;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };
 
 // Images API
 
-export type ImageMode = 'local';
-
 export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
 
-export type ImageData = {
-  mode: ImageMode;
-  id: string;
+export type ImageMetadata = {
   extension: ImageExtension;
   filesize: number;
   width: number;
   height: number;
 };
 
+export type ImageData = {
+  mode: AssetMode;
+  id: string;
+} & ImageMetadata;
+
 export type ImagesContext = {
-  getSrc: (mode: ImageMode, id: string, extension: ImageExtension) => string;
+  getSrc: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

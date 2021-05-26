@@ -1,16 +1,21 @@
 import path from 'path';
-import { ImagesConfig, ImagesContext } from '@keystone-next/types';
+import { KeystoneConfig, ImagesContext, ImageMetadata } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-
-import { parseImageRef } from '@keystone-next/utils-legacy';
+import { parseImageRef, isLocalAsset, isCloudAsset } from '@keystone-next/utils-legacy';
+import {
+  getImagesDomain,
+  buildCloudImageSrc,
+  getImageMetadataFromCloud,
+  uploadImageToCloud,
+} from '../cloud/assets';
 
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
 
-const getImageMetadataFromBuffer = async (buffer: Buffer) => {
+const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
   const filesize = buffer.length;
   const fileType = fromBuffer(buffer);
   if (!fileType) {
@@ -36,25 +41,52 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   return { width, height, filesize, extension };
 };
 
-export function createImagesContext(config?: ImagesConfig): ImagesContext | undefined {
-  if (!config) {
+export function createImagesContext(config?: KeystoneConfig): ImagesContext | undefined {
+  if (!config || !config.images) {
     return;
   }
 
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
+  const { images, cloud } = config;
+  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
+  const { apiKey = '' } = cloud || {};
 
-  fs.mkdirSync(storagePath, { recursive: true });
+  if (isLocalAsset(images.upload)) {
+    fs.mkdirSync(storagePath, { recursive: true });
+  }
+
+  if (isCloudAsset(images.upload) && !apiKey.length) {
+    throw new Error('To enable cloud assets you must have your apiKey set in your Keystone config');
+  }
 
   return {
-    getSrc: (mode, id, extension) => {
+    getSrc: async (mode, id, extension) => {
       const filename = `${id}.${extension}`;
+
+      if (isCloudAsset(mode)) {
+        const domain = await getImagesDomain(apiKey);
+
+        return buildCloudImageSrc(domain, filename);
+      }
+
       return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async ref => {
       const imageRef = parseImageRef(ref);
+
       if (!imageRef) {
         throw new Error('Invalid image reference');
       }
+
+      const { mode } = imageRef;
+
+      if (isCloudAsset(mode)) {
+        const { id, extension } = imageRef;
+        const filename = `${id}.${extension}`;
+        const metadata = await getImageMetadataFromCloud(filename, apiKey);
+
+        return { ...imageRef, ...metadata };
+      }
+
       const buffer = await fs.readFile(
         path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
       );
@@ -63,8 +95,15 @@ export function createImagesContext(config?: ImagesConfig): ImagesContext | unde
       return { ...imageRef, ...metadata };
     },
     getDataFromStream: async stream => {
-      const { upload: mode } = config;
+      const { upload: mode } = images;
       const id = uuid();
+
+      if (isCloudAsset(mode)) {
+        const metadata = await uploadImageToCloud(apiKey, stream);
+
+        return { mode, id, ...metadata };
+      }
+
       const chunks = [];
 
       for await (let chunk of stream) {
