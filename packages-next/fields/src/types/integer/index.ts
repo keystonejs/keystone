@@ -10,27 +10,38 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    index?: 'index' | 'unique';
     defaultValue?: FieldDefaultValue<number>;
     isRequired?: boolean;
+    isUnique?: boolean;
+    isIndexed?: boolean;
   };
 
 export const integer =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     isRequired,
     defaultValue,
     ...config
   }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta =>
-    fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Int', index })({
+    fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'Int',
+      index: getIndexType({ isIndexed, isUnique }),
+    })({
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
-        uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Int }) } : undefined,
+        uniqueWhere:
+          getIndexType({ isIndexed, isUnique }) === 'unique'
+            ? { arg: types.arg({ type: types.Int }) }
+            : undefined,
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

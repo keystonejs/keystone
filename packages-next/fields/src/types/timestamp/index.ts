@@ -10,17 +10,20 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    index?: 'index' | 'unique';
+    isIndexed?: boolean;
+    isUnique?: boolean;
     isRequired?: boolean;
     defaultValue?: FieldDefaultValue<string>;
   };
 
 export const timestamp =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -32,7 +35,12 @@ export const timestamp =
       }
       return new Date(value);
     };
-    return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'DateTime', index })({
+    return fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'DateTime',
+      index: getIndexType({ isUnique, isIndexed }),
+    })({
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].DateTime.optional }) },

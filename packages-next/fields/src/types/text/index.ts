@@ -10,11 +10,13 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<string>;
-    index?: 'index' | 'unique';
+    isIndexed?: boolean;
+    isUnique?: boolean;
     ui?: {
       displayMode?: 'input' | 'textarea';
     };
@@ -23,17 +25,26 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     isRequired,
     defaultValue,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta =>
-    fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String', index })({
+    fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'String',
+      index: getIndexType({ isIndexed, isUnique }),
+    })({
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].String.optional }) },
-        uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.String }) } : undefined,
+        uniqueWhere:
+          getIndexType({ isIndexed, isUnique }) === 'unique'
+            ? { arg: types.arg({ type: types.String }) }
+            : undefined,
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

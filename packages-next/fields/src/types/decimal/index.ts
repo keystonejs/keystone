@@ -11,19 +11,22 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     isRequired?: boolean;
     precision?: number;
     scale?: number;
-    index?: 'unique' | 'index';
     defaultValue?: FieldDefaultValue<string>;
+    isIndexed?: boolean;
+    isUnique?: boolean;
   };
 
 export const decimal =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     precision = 18,
     scale = 4,
     isRequired,
@@ -53,6 +56,7 @@ export const decimal =
           `must not be larger than the field's precision (${precision})`
       );
     }
+    const index = getIndexType({ isIndexed, isUnique });
 
     return fieldType({
       kind: 'scalar',

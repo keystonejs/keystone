@@ -10,17 +10,20 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    index?: 'index' | 'unique';
     defaultValue?: FieldDefaultValue<number>;
     isRequired?: boolean;
+    isIndexed?: boolean;
+    isUnique?: boolean;
   };
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -30,12 +33,15 @@ export const float =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Float',
-      index,
+      index: getIndexType({ isIndexed, isUnique }),
     })({
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].Float.optional }) },
-        uniqueWhere: index === 'unique' ? { arg: types.arg({ type: types.Float }) } : undefined,
+        uniqueWhere:
+          getIndexType({ isIndexed, isUnique }) === 'unique'
+            ? { arg: types.arg({ type: types.Float }) }
+            : undefined,
         create: { arg: types.arg({ type: types.Float }) },
         update: { arg: types.arg({ type: types.Float }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

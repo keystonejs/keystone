@@ -14,6 +14,7 @@ import {
 import inflection from 'inflection';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
+import { getIndexType } from '../../get-index-type';
 
 export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> &
@@ -33,12 +34,14 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
         displayMode?: 'select' | 'segmented-control';
       };
       isRequired?: boolean;
-      index?: 'index' | 'unique';
+      isIndexed?: boolean;
+      isUnique?: boolean;
     };
 
 export const select =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    index,
+    isIndexed,
+    isUnique,
     ui: { displayMode = 'select', ...ui } = {},
     isRequired,
     defaultValue,
@@ -56,8 +59,15 @@ export const select =
       }),
     };
 
+    const index = getIndexType({ isIndexed, isUnique });
+
     if (config.dataType === 'integer') {
-      return fieldType({ kind: 'scalar', scalar: 'Int', mode: 'optional', index })({
+      return fieldType({
+        kind: 'scalar',
+        scalar: 'Int',
+        mode: 'optional',
+        index,
+      })({
         ...commonConfig,
         input: {
           where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
