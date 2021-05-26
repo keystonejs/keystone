@@ -425,7 +425,17 @@ export async function resolveInputForCreateOrUpdate(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputConfig = field.input?.[operation];
-        const input = originalInput[fieldKey];
+        let input = originalInput[fieldKey];
+        if (
+          operation === 'create' &&
+          input === undefined &&
+          field.__legacy?.defaultValue !== undefined
+        ) {
+          input =
+            typeof field.__legacy.defaultValue === 'function'
+              ? await field.__legacy.defaultValue({ originalInput, context })
+              : field.__legacy.defaultValue;
+        }
         const resolved = inputConfig?.resolve
           ? await inputConfig.resolve(
               input,
@@ -463,6 +473,22 @@ export async function resolveInputForCreateOrUpdate(
     existingItem
   );
 
+  await validationHook(listKey, operation, originalInput, addValidationError => {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
+      if (
+        field.__legacy?.isRequired &&
+        ((operation === 'create' && resolvedData[fieldKey] == null) ||
+          (operation === 'update' && resolvedData[fieldKey] === null))
+      ) {
+        addValidationError(
+          `Required field "${fieldKey}" is null or undefined.`,
+          { resolvedData, operation, originalInput },
+          {}
+        );
+      }
+    }
+  });
+
   const args = {
     context,
     listKey,
@@ -471,7 +497,7 @@ export async function resolveInputForCreateOrUpdate(
     resolvedData,
     existingItem,
   };
-  await validationHook(listKey, operation, undefined, async addValidationError => {
+  await validationHook(listKey, operation, originalInput, async addValidationError => {
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateInput?.({
@@ -483,7 +509,7 @@ export async function resolveInputForCreateOrUpdate(
     );
   });
 
-  await validationHook(listKey, operation, undefined, async addValidationError => {
+  await validationHook(listKey, operation, originalInput, async addValidationError => {
     await list.hooks.validateInput?.({ ...args, addValidationError });
   });
   const originalInputKeys = new Set(Object.keys(originalInput));
