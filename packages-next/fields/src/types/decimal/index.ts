@@ -7,17 +7,18 @@ import {
   orderDirectionEnum,
   Decimal,
   legacyFilters,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
 export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    // isRequired?: boolean;
+    isRequired?: boolean;
     precision?: number;
     scale?: number;
     index?: 'unique' | 'index';
-    // defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string>;
   };
 
 export const decimal =
@@ -25,6 +26,8 @@ export const decimal =
     index,
     precision = 18,
     scale = 4,
+    isRequired,
+    defaultValue,
     ...config
   }: DecimalFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -103,6 +106,8 @@ export const decimal =
             ...legacyFilters.impls.orderingConditions(meta.fieldKey),
           },
         },
+        isRequired,
+        defaultValue,
       },
     });
   };

@@ -1,6 +1,7 @@
 import {
   BaseGeneratedListTypes,
   FieldData,
+  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   filters,
@@ -20,18 +21,18 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       | {
           options: { label: string; value: string }[];
           dataType?: 'string' | 'enum';
-          // defaultValue?: FieldDefaultValue<string>;
+          defaultValue?: FieldDefaultValue<string>;
         }
       | {
           options: { label: string; value: number }[];
           dataType: 'integer';
-          // defaultValue?: FieldDefaultValue<number>;
+          defaultValue?: FieldDefaultValue<number>;
         }
     ) & {
       ui?: {
         displayMode?: 'select' | 'segmented-control';
       };
-      // isRequired?: boolean;
+      isRequired?: boolean;
       index?: 'index' | 'unique';
     };
 
@@ -39,6 +40,8 @@ export const select =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     index,
     ui: { displayMode = 'select', ...ui } = {},
+    isRequired,
+    defaultValue,
     ...config
   }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -63,7 +66,7 @@ export const select =
           orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
         },
         output: types.field({ type: types.Int }),
-        __legacy: { filters: getFilters(meta, types.Int) },
+        __legacy: { filters: getFilters(meta, types.Int), defaultValue, isRequired },
       });
     }
     if (config.dataType === 'enum') {
@@ -101,7 +104,7 @@ export const select =
         output: types.field({
           type: graphQLType,
         }),
-        __legacy: { filters: getFilters(meta, graphQLType) },
+        __legacy: { filters: getFilters(meta, graphQLType), defaultValue, isRequired },
       });
     }
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
@@ -115,7 +118,7 @@ export const select =
       output: types.field({
         type: types.String,
       }),
-      __legacy: { filters: getFilters(meta, types.String) },
+      __legacy: { filters: getFilters(meta, types.String), defaultValue, isRequired },
     });
   };
 

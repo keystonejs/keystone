@@ -1,4 +1,10 @@
-import { BaseGeneratedListTypes, fieldType, FieldTypeFunc, types } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  FieldDefaultValue,
+  fieldType,
+  FieldTypeFunc,
+  types,
+} from '@keystone-next/types';
 import bcryptjs from 'bcryptjs';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -14,6 +20,8 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
      */
     workFactor?: number;
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
+    defaultValue?: FieldDefaultValue<string>;
+    isRequired?: boolean;
   };
 
 const PasswordState = types.object<{ isSet: boolean }>()({
@@ -35,15 +43,17 @@ export const password =
     bcrypt = bcryptjs,
     minLength = 8,
     workFactor = 10,
+    isRequired,
+    defaultValue,
     ...config
   }: PasswordFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  field => {
+  meta => {
     // TODO: we should just throw not automatically fix it, yeah?
     workFactor = Math.min(Math.max(workFactor, 4), 31);
 
     if (workFactor < 6) {
       console.warn(
-        `The workFactor for ${field.listKey}.${field.fieldKey} is very low! ` +
+        `The workFactor for ${meta.listKey}.${meta.fieldKey} is very low! ` +
           `This will cause weak hashes!`
       );
     }
@@ -112,5 +122,18 @@ export const password =
           },
         },
       }),
+      __legacy: {
+        filters: {
+          fields: {
+            [`${meta.fieldKey}`]: types.arg({ type: types.Boolean }),
+          },
+          impls: {
+            [`${meta.fieldKey}_is_set`]: value =>
+              value ? { NOT: { [meta.fieldKey]: null } } : { [meta.fieldKey]: null },
+          },
+        },
+        isRequired,
+        defaultValue,
+      },
     });
   };

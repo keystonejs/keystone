@@ -9,7 +9,7 @@ import Decimal from 'decimal.js';
 import { GraphQLScalarType } from 'graphql';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
-import { DatabaseProvider } from './core';
+import { DatabaseProvider, FieldDefaultValue } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
@@ -411,6 +411,8 @@ export type FieldTypeWithoutDBField<
         (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
       >;
     };
+    isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<any>;
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 

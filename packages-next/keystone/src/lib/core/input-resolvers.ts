@@ -105,6 +105,8 @@ type FieldInfoRequiredForResolvingWhereInput = Record<
   }
 >;
 
+// this is used for the new filters
+// (so this is currently unused)
 async function resolveWhereInput(
   inputFilter: InputFilter,
   fields: FieldInfoRequiredForResolvingWhereInput,
@@ -117,7 +119,8 @@ async function resolveWhereInput(
         if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
           return {
             [fieldKey]: await Promise.all(
-              // this will be used soon
+              // this is used for the new filters
+              // (so this is currently unused)
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               value.map((value: any) => resolveWhereInput(value, fields, context, inputResolvers))
             ),

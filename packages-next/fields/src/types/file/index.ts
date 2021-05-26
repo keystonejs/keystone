@@ -12,7 +12,9 @@ import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes>;
+  CommonFieldConfig<TGeneratedListTypes> & {
+    isRequired?: boolean;
+  };
 
 const FileFieldInput = types.inputObject({
   name: 'FileFieldInput',
@@ -77,9 +79,10 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
 }
 
 export const file =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>(
-    config: FileFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+    isRequired,
+    ...config
+  }: FileFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
     if ((config as any).index === 'unique') {
       throw Error("{ index: 'unique' } is not a supported option for field type file");
@@ -109,5 +112,8 @@ export const file =
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
       views: resolveView('file/views'),
+      __legacy: {
+        isRequired,
+      },
     });
   };

@@ -4,6 +4,7 @@ import {
   fieldType,
   types,
   AdminMetaRootVal,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -55,12 +56,14 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
+    defaultValue: FieldDefaultValue<any>;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     many = false,
     ref,
+    defaultValue,
     ...config
   }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -173,6 +176,7 @@ export const relationship =
               [`${meta.fieldKey}_none`]: whereInputResolve('none'),
             },
           },
+          defaultValue,
         },
       });
     }
@@ -229,6 +233,7 @@ export const relationship =
             },
           },
         },
+        defaultValue,
       },
     });
   };

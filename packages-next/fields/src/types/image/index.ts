@@ -13,7 +13,11 @@ import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes>;
+  CommonFieldConfig<TGeneratedListTypes> & {
+    // i don't think this should be here?
+    // defaultValue?: FieldDefaultValue<any>;
+    isRequired?: boolean;
+  };
 
 const ImageExtensionEnum = types.enum({
   name: 'ImageExtension',

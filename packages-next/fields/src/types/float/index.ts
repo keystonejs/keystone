@@ -6,6 +6,7 @@ import {
   orderDirectionEnum,
   filters,
   legacyFilters,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -13,11 +14,15 @@ import type { CommonFieldConfig } from '../../interfaces';
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     index?: 'index' | 'unique';
+    defaultValue?: FieldDefaultValue<number>;
+    isRequired?: boolean;
   };
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     index,
+    isRequired,
+    defaultValue,
     ...config
   }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta =>
@@ -50,5 +55,7 @@ export const float =
             ...legacyFilters.impls.inConditions(meta.fieldKey),
           },
         },
+        isRequired,
+        defaultValue,
       },
     });

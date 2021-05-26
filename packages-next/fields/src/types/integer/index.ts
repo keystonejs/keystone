@@ -1,5 +1,6 @@
 import {
   BaseGeneratedListTypes,
+  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   filters,
@@ -11,11 +12,17 @@ import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & { index?: 'index' | 'unique' };
+  CommonFieldConfig<TGeneratedListTypes> & {
+    index?: 'index' | 'unique';
+    defaultValue?: FieldDefaultValue<number>;
+    isRequired?: boolean;
+  };
 
 export const integer =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     index,
+    isRequired,
+    defaultValue,
     ...config
   }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta =>
@@ -43,5 +50,7 @@ export const integer =
             ...legacyFilters.impls.inConditions(meta.fieldKey),
           },
         },
+        isRequired,
+        defaultValue,
       },
     });

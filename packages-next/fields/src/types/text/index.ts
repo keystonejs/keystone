@@ -18,11 +18,14 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     ui?: {
       displayMode?: 'input' | 'textarea';
     };
+    isRequired?: boolean;
   };
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     index,
+    isRequired,
+    defaultValue,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta =>
@@ -69,5 +72,7 @@ export const text =
             ...legacyFilters.impls.inConditions(meta.fieldKey),
           },
         },
+        defaultValue,
+        isRequired,
       },
     });

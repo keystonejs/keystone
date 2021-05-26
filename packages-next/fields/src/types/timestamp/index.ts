@@ -6,6 +6,7 @@ import {
   orderDirectionEnum,
   filters,
   legacyFilters,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -13,11 +14,15 @@ import type { CommonFieldConfig } from '../../interfaces';
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     index?: 'index' | 'unique';
+    isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<string>;
   };
 
 export const timestamp =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     index,
+    isRequired,
+    defaultValue,
     ...config
   }: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -56,6 +61,8 @@ export const timestamp =
             ...legacyFilters.impls.inConditions(meta.fieldKey),
           },
         },
+        isRequired,
+        defaultValue,
       },
     });
   };

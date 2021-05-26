@@ -18,9 +18,11 @@ export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
   };
 
 export const checkbox =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>(
-    config: CheckboxFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+    isRequired,
+    defaultValue,
+    ...config
+  }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     if ((config as any).index === 'unique') {
       throw Error("{ index: 'unique' } is not a supported option for field type checkbox");
@@ -43,6 +45,8 @@ export const checkbox =
           fields: legacyFilters.fields.equalityInputFields(meta.fieldKey, types.Boolean),
           impls: legacyFilters.impls.equalityConditions(meta.fieldKey),
         },
+        isRequired,
+        defaultValue,
       },
     });
   };
