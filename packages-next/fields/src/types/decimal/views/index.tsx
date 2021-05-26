@@ -3,6 +3,7 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
+import slugify from '@sindresorhus/slugify';
 
 import {
   CardValueComponent,
@@ -12,20 +13,24 @@ import {
   FieldProps,
 } from '@keystone-next/types';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
-    {onChange ? (
-      <TextInput
-        autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value.replace(/[^\d\.-]/, ''))}
-        value={value}
-      />
-    ) : (
-      value
-    )}
-  </FieldContainer>
-);
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
+  const fieldId = slugify(field.label);
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={fieldId}>{field.label}</FieldLabel>
+      {onChange ? (
+        <TextInput
+          id={fieldId}
+          autoFocus={autoFocus}
+          onChange={event => onChange(event.target.value.replace(/[^\d\.-]/, ''))}
+          value={value}
+        />
+      ) : (
+        value
+      )}
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] || '';
