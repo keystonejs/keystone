@@ -23,7 +23,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         />
       ) : (
         <TextInput
-          id={field.label}
+          id={field.path}
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}
