@@ -105,7 +105,7 @@ export const relationship =
       const whereInputResolve =
         (key: string) => async (value: any, resolve?: (val: any) => Promise<any>) => {
           if (value === null) {
-            throw new Error('i wonder what happens here');
+            throw new Error('i wonder what should happen here');
           }
           return { [meta.fieldKey]: { [key]: await resolve!(value) } };
         };
@@ -223,7 +223,7 @@ export const relationship =
               value ? { [meta.fieldKey]: null } : { NOT: { [meta.fieldKey]: null } },
             [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {
               if (value === null) {
-                throw new Error('i wonder what happens here');
+                throw new Error('i wonder what should happen here');
               }
               return { [meta.fieldKey]: await resolve!(value) };
             },
