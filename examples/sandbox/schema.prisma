@@ -9,11 +9,11 @@ generator client {
 }
 
 model Todo {
-  id           String    @id @default(uuid())
+  id           Int       @id @default(autoincrement())
   label        String?
   isComplete   Boolean?
   assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId String?   @map("assignedTo")
+  assignedToId Int?      @map("assignedTo")
   finishBy     DateTime?
   createdAt    DateTime?
   updatedAt    DateTime?
@@ -23,7 +23,7 @@ model Todo {
 
 model User {
   tasks     Todo[]    @relation("Todo_assignedTo")
-  id        String    @id @default(uuid())
+  id        Int       @id @default(autoincrement())
   name      String?
   email     String?
   password  String?

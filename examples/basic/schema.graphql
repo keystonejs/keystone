@@ -129,6 +129,7 @@ input UserWhereInput {
   email_not_contains: String
   email_in: [String]
   email_not_in: [String]
+  password_is_set: Boolean
   isAdmin: Boolean
   isAdmin_not: Boolean
   roles: String

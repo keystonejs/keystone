@@ -99,11 +99,12 @@ export function itemAPIForList(
         return dbAPI.findMany(args);
       }
     },
-    async count({ where = {} } = {}) {
-      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
-      const query = `query ($where: ${whereInputName}) { ${listQueryCountName}(where: $where)  }`;
-      const response = await context.graphql.run({ query, variables: { where } });
-      return response[listQueryCountName];
+    async count(args = {}) {
+      const { first, skip = 0, where = {} } = args;
+      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($first: Int, $skip: Int! = 0, $where: ${whereInputName}! = {}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
+      const response = await context.graphql.run({ query, variables: { first, skip, where } });
+      return response[listQueryMetaName].count;
     },
     createOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);

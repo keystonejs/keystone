@@ -5,7 +5,7 @@ type User {
   password: PasswordState!
   posts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -25,7 +25,7 @@ type Post {
   author: User
   tags(
     where: TagWhereInput! = {}
-    orderBy: [SortTagsBy!]! = []
+    orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Tag!]!
@@ -49,7 +49,7 @@ type Tag {
   name: String
   posts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -59,137 +59,143 @@ type Tag {
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
-  NOT: [PostWhereInput!]
-  id: StringFilter
-  title: StringNullableFilter
-  status: StringNullableFilter
-  publishDate: DateTimeNullableFilter
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  title_i: String
+  title_not_i: String
+  title_contains_i: String
+  title_not_contains_i: String
+  title_starts_with_i: String
+  title_not_starts_with_i: String
+  title_ends_with_i: String
+  title_not_ends_with_i: String
+  title_in: [String]
+  title_not_in: [String]
+  status: String
+  status_not: String
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_in: [String]
+  status_not_in: [String]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
+  author_is_null: Boolean
   author: UserWhereInput
-  tags: TagsRelationFilter
-}
-
-input StringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  mode: QueryMode
-  not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
-}
-
-input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  mode: QueryMode
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
-}
-
-input NestedDateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
+  tags_every: TagWhereInput
+  tags_some: TagWhereInput
+  tags_none: TagWhereInput
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
-  id: StringFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
-  password: PasswordFieldFilter
-  posts: PostsRelationFilter
-}
-
-input PasswordFieldFilter {
-  isSet: Boolean!
-}
-
-input PostsRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
-input TagsRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  email_i: String
+  email_not_i: String
+  email_contains_i: String
+  email_not_contains_i: String
+  email_starts_with_i: String
+  email_not_starts_with_i: String
+  email_ends_with_i: String
+  email_not_ends_with_i: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
 }
 
 input TagWhereInput {
   AND: [TagWhereInput!]
   OR: [TagWhereInput!]
-  NOT: [TagWhereInput!]
-  id: StringFilter
-  name: StringNullableFilter
-  posts: PostsRelationFilter
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
 }
 
-input SortPostsBy {
+input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
@@ -201,7 +207,7 @@ enum OrderDirection {
   desc
 }
 
-input SortTagsBy {
+input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
 }
@@ -210,7 +216,7 @@ input UserWhereUniqueInput {
   id: ID
 }
 
-input SortUsersBy {
+input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -367,7 +373,7 @@ type Query {
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
-    orderBy: [SortUsersBy!]! = []
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
@@ -375,7 +381,7 @@ type Query {
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
-    orderBy: [SortPostsBy!]! = []
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
@@ -383,7 +389,7 @@ type Query {
   Tag(where: TagWhereUniqueInput!): Tag
   allTags(
     where: TagWhereInput! = {}
-    orderBy: [SortTagsBy!]! = []
+    orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Tag!]

@@ -139,7 +139,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(errors![1].path).toEqual(['createUsers', 3]);
 
           // Three users should exist in the database
-          const users = await context.lists.User.findMany({ sortBy: 'name_ASC', query: 'id name' });
+          const users = await context.lists.User.findMany({
+            orderBy: { name: 'asc' },
+            query: 'id name',
+          });
           expect(users.map(({ name }) => name)).toEqual(['good 1', 'good 2', 'good 3']);
         })
       );
@@ -188,7 +191,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // All users should still exist in the database
           const _users = await context.lists.User.findMany({
-            sortBy: 'name_ASC',
+            orderBy: { name: 'asc' },
             query: 'id name',
           });
           expect(_users.map(({ name }) => name)).toEqual([
@@ -238,7 +241,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Three users should still exist in the database
           const _users = await context.lists.User.findMany({
-            sortBy: 'name_ASC',
+            orderBy: { name: 'asc' },
             query: 'id name',
           });
           expect(_users.map(({ name }) => name)).toEqual(['good 5', 'no delete 1', 'no delete 2']);

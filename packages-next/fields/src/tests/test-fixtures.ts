@@ -38,7 +38,7 @@ export const filterTests = (withKeystone: any) => {
     expected: any[]
   ) =>
     expect(
-      await context.lists.Test.findMany({ where, orderBy: [{ name: 'asc' }], query: 'id name' })
+      await context.lists.Test.findMany({ where, orderBy: { name: 'asc' }, query: 'id name' })
     ).toEqual(expected);
 
   test(

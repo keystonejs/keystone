@@ -17,85 +17,32 @@ input UserWhereUniqueInput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
-  id: StringFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
-  password: PasswordFieldFilter
-  isAdmin: BoolNullableFilter
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  isAdmin: Boolean
+  isAdmin_not: Boolean
 }
 
-input StringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input PasswordFieldFilter {
-  isSet: Boolean!
-}
-
-input BoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input SortUsersBy {
+input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -147,7 +94,7 @@ type Query {
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
-    orderBy: [SortUsersBy!]! = []
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]

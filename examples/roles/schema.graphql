@@ -14,7 +14,7 @@ type Person {
   role: Role
   tasks(
     where: TodoWhereInput! = {}
-    orderBy: [SortTodosBy!]! = []
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]!
@@ -36,7 +36,7 @@ type Role {
   canManageRoles: Boolean
   assignedTo(
     where: PersonWhereInput! = {}
-    orderBy: [SortPeopleBy!]! = []
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]!
@@ -46,124 +46,94 @@ type Role {
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
-  NOT: [PersonWhereInput!]
-  id: StringFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
-  password: PasswordFieldFilter
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  role_is_null: Boolean
   role: RoleWhereInput
-  tasks: TodosRelationFilter
-}
-
-input StringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input PasswordFieldFilter {
-  isSet: Boolean!
+  tasks_every: TodoWhereInput
+  tasks_some: TodoWhereInput
+  tasks_none: TodoWhereInput
 }
 
 input RoleWhereInput {
   AND: [RoleWhereInput!]
   OR: [RoleWhereInput!]
-  NOT: [RoleWhereInput!]
-  id: StringFilter
-  name: StringNullableFilter
-  canCreateTodos: BoolNullableFilter
-  canManageAllTodos: BoolNullableFilter
-  canSeeOtherPeople: BoolNullableFilter
-  canEditOtherPeople: BoolNullableFilter
-  canManagePeople: BoolNullableFilter
-  canManageRoles: BoolNullableFilter
-  assignedTo: PeopleRelationFilter
-}
-
-input BoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input PeopleRelationFilter {
-  every: PersonWhereInput
-  some: PersonWhereInput
-  none: PersonWhereInput
-}
-
-input TodosRelationFilter {
-  every: TodoWhereInput
-  some: TodoWhereInput
-  none: TodoWhereInput
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  canCreateTodos: Boolean
+  canCreateTodos_not: Boolean
+  canManageAllTodos: Boolean
+  canManageAllTodos_not: Boolean
+  canSeeOtherPeople: Boolean
+  canSeeOtherPeople_not: Boolean
+  canEditOtherPeople: Boolean
+  canEditOtherPeople_not: Boolean
+  canManagePeople: Boolean
+  canManagePeople_not: Boolean
+  canManageRoles: Boolean
+  canManageRoles_not: Boolean
+  assignedTo_every: PersonWhereInput
+  assignedTo_some: PersonWhereInput
+  assignedTo_none: PersonWhereInput
 }
 
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
-  NOT: [TodoWhereInput!]
-  id: StringFilter
-  label: StringNullableFilter
-  isComplete: BoolNullableFilter
-  isPrivate: BoolNullableFilter
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  isPrivate: Boolean
+  isPrivate_not: Boolean
+  assignedTo_is_null: Boolean
   assignedTo: PersonWhereInput
 }
 
-input SortPeopleBy {
+input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
@@ -174,7 +144,7 @@ enum OrderDirection {
   desc
 }
 
-input SortTodosBy {
+input TodoOrderByInput {
   id: OrderDirection
   label: OrderDirection
   isComplete: OrderDirection
@@ -193,7 +163,7 @@ input RoleWhereUniqueInput {
   id: ID
 }
 
-input SortRolesBy {
+input RoleOrderByInput {
   id: OrderDirection
   name: OrderDirection
   canCreateTodos: OrderDirection
@@ -362,7 +332,7 @@ type Query {
   Todo(where: TodoWhereUniqueInput!): Todo
   allTodos(
     where: TodoWhereInput! = {}
-    orderBy: [SortTodosBy!]! = []
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
@@ -370,7 +340,7 @@ type Query {
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
-    orderBy: [SortPeopleBy!]! = []
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]
@@ -378,7 +348,7 @@ type Query {
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
-    orderBy: [SortRolesBy!]! = []
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]

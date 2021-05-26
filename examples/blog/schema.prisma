@@ -9,20 +9,20 @@ generator client {
 }
 
 model Post {
-  id          String    @id @default(uuid())
+  id          Int       @id @default(autoincrement())
   title       String?
   status      String?
   content     String?
   publishDate DateTime?
   author      Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId    String?   @map("author")
+  authorId    Int?      @map("author")
 
   @@index([authorId])
 }
 
 model Author {
   posts Post[]  @relation("Post_author")
-  id    String  @id @default(uuid())
+  id    Int     @id @default(autoincrement())
   name  String?
   email String?
 }

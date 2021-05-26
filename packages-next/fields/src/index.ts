@@ -5,6 +5,7 @@ export { file } from './types/file';
 export { float } from './types/float';
 export { integer } from './types/integer';
 export { image } from './types/image';
+export { json } from './types/json';
 export { password } from './types/password';
 export { relationship } from './types/relationship';
 export { select } from './types/select';

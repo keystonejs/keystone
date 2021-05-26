@@ -75,7 +75,7 @@ export const filterTests = (withKeystone: (arg: any) => any, matrixValue: Matrix
     expect(
       await context.lists.Test.findMany({
         where,
-        orderBy: [{ name: 'asc' }],
+        orderBy: { name: 'asc' },
         query: 'name orderNumber',
       })
     ).toEqual(expected.map(i => _storedValues[i]));

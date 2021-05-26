@@ -48,7 +48,7 @@
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jest/test-sequencer": "^26.6.3",
-    "@manypkg/cli": "^0.17.0",
+    "@manypkg/cli": "^0.18.0",
     "@preconstruct/cli": "2.1.0",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
     "@testing-library/jest-dom": "^5.12.0",
