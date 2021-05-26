@@ -97,7 +97,7 @@ export function withItemData(
           !session.itemId ||
           !sudoContext.lists[session.listKey]
         ) {
-          return;
+          return session;
         }
 
         // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
@@ -114,7 +114,7 @@ export function withItemData(
         } catch (e) {
           // TODO: This swallows all errors, we need a way to differentiate between "not found" and
           // actual exceptions that should be thrown
-          return;
+          return session;
         }
       },
     };
