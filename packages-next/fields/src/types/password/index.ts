@@ -125,7 +125,7 @@ export const password =
       __legacy: {
         filters: {
           fields: {
-            [`${meta.fieldKey}`]: types.arg({ type: types.Boolean }),
+            [`${meta.fieldKey}_is_set`]: types.arg({ type: types.Boolean }),
           },
           impls: {
             [`${meta.fieldKey}_is_set`]: value =>
