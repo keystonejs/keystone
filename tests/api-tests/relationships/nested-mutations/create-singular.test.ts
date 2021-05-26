@@ -269,14 +269,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
                 // Confirm it didn't insert either of the records anyway
                 const data1 = await context.lists[group.name].findMany({
-                  where: { name: { equals: groupName } },
+                  where: { name: groupName },
                   query: 'id name',
                 });
                 expect(data1).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
                 const data2 = await context.lists[`EventTo${group.name}`].findMany({
-                  where: { title: { equals: eventName } },
+                  where: { title: eventName },
                   query: 'id title',
                 });
                 expect(data2).toMatchObject([]);
@@ -298,7 +298,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   query: `
                     mutation {
                       updateEventTo${group.name}(
-                        where: { id: "${eventModel.id}" }
+                        id: "${eventModel.id}"
                         data: {
                           title: "A thing",
                           group: { create: { name: "${groupName}" } }
@@ -331,7 +331,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
                 // Confirm it didn't insert the record anyway
                 const groups = await context.lists[group.name].findMany({
-                  where: { name: { equals: groupName } },
+                  where: { name: groupName },
                   query: 'id name',
                 });
                 expect(groups).toMatchObject([]);

@@ -12,17 +12,17 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
   return { locations, companies };
@@ -122,10 +122,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createCompanyAndLocation(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: { name: { equals: company.name } } },
+              where: { company: { name: company.name } },
             });
             const companies = await context.lists.Company.findMany({
-              where: { location: { name: { equals: location.name } } },
+              where: { location: { name: location.name } },
             });
             expect(locations.length).toEqual(1);
             expect(locations[0].id).toEqual(location.id);
@@ -139,10 +139,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createLocationAndCompany(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: { name: { equals: company.name } } },
+              where: { company: { name: company.name } },
             });
             const companies = await context.lists.Company.findMany({
-              where: { location: { name: { equals: location.name } } },
+              where: { location: { name: location.name } },
             });
             expect(locations.length).toEqual(1);
             expect(locations[0].id).toEqual(location.id);
@@ -156,10 +156,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             await createCompanyAndLocation(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: null },
+              where: { company_is_null: true },
             });
             const companies = await context.lists.Company.findMany({
-              where: { location: null },
+              where: { location_is_null: true },
             });
             expect(locations.length).toEqual(4);
             expect(companies.length).toEqual(3);
@@ -171,10 +171,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             await createLocationAndCompany(context);
             const locations = await context.lists.Location.findMany({
-              where: { company: null },
+              where: { company_is_null: true },
             });
             const companies = await context.lists.Company.findMany({
-              where: { location: null },
+              where: { location_is_null: true },
             });
             expect(locations.length).toEqual(4);
             expect(companies.length).toEqual(3);
@@ -228,10 +228,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createCompanyAndLocation(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: { name: { equals: company.name } } },
+              where: { company: { name: company.name } },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: { name: { equals: location.name } } },
+              where: { location: { name: location.name } },
             });
             expect(companiesCount).toEqual(1);
             expect(locationsCount).toEqual(1);
@@ -243,10 +243,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             const { location, company } = await createLocationAndCompany(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: { name: { equals: company.name } } },
+              where: { company: { name: company.name } },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: { name: { equals: location.name } } },
+              where: { location: { name: location.name } },
             });
             expect(companiesCount).toEqual(1);
             expect(locationsCount).toEqual(1);
@@ -258,10 +258,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             await createCompanyAndLocation(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: null },
+              where: { company_is_null: true },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: null },
+              where: { location_is_null: true },
             });
             expect(companiesCount).toEqual(3);
             expect(locationsCount).toEqual(4);
@@ -273,10 +273,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             await createInitialData(context);
             await createLocationAndCompany(context);
             const locationsCount = await context.lists.Location.count({
-              where: { company: null },
+              where: { company_is_null: true },
             });
             const companiesCount = await context.lists.Company.count({
-              where: { location: null },
+              where: { location_is_null: true },
             });
             expect(companiesCount).toEqual(3);
             expect(locationsCount).toEqual(4);
@@ -814,7 +814,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: null },
+              data: { location: { disconnect: { id: location.id } } },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -836,7 +836,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _location = await context.lists.Location.updateOne({
               id: location.id,
-              data: { company: null },
+              data: { company: { disconnect: { id: company.id } } },
               query: 'id company { id name }',
             });
 
@@ -858,7 +858,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: null },
+              data: { location: { disconnectAll: true } },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -880,7 +880,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _location = await context.lists.Location.updateOne({
               id: location.id,
-              data: { company: null },
+              data: { company: { disconnectAll: true } },
               query: 'id company { id name }',
             });
             expect(_location.id).toEqual(location.id);
@@ -893,7 +893,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null A',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location
@@ -913,7 +913,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null B',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location

@@ -93,7 +93,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         })
       );
 
-      test.skip(
+      test(
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking

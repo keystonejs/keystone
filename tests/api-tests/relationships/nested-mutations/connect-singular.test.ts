@@ -176,7 +176,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             query: `
               mutation {
                 updateEvent(
-                  where: { id: "${createEvent.id}" },
+                  id: "${createEvent.id}",
                   data: {
                     group: {
                       connect: { id: "${FAKE_ID}" }
@@ -287,7 +287,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   query: `
                     mutation {
                       updateEventTo${group.name}(
-                        where: { id: "${eventModel.id}" }
+                        id: "${eventModel.id}"
                         data: {
                           title: "A thing",
                           group: { connect: { id: "${groupModel.id}" } }

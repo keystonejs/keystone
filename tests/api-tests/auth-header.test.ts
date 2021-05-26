@@ -14,8 +14,20 @@ import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 const initialData = {
   User: [
-    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
-    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
+    {
+      data: {
+        name: 'Boris Bozic',
+        email: 'boris@keystone.com',
+        password: 'correctbattery',
+      },
+    },
+    {
+      data: {
+        name: 'Jed Watson',
+        email: 'jed@keystone.com',
+        password: 'horsestaple',
+      },
+    },
   ],
 };
 
@@ -39,7 +51,7 @@ function setupKeystone(provider: ProviderName) {
           User: list({
             fields: {
               name: text(),
-              email: text({ index: 'unique' }),
+              email: text(),
               password: password(),
             },
             access: {
@@ -110,8 +122,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
             const { sessionToken } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData.User[0].data.email,
+              initialData.User[0].data.password
             );
 
             expect(sessionToken).toBeTruthy();
@@ -137,8 +149,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
             const { sessionToken } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData.User[0].data.email,
+              initialData.User[0].data.password
             );
 
             expect(sessionToken).toBeTruthy();

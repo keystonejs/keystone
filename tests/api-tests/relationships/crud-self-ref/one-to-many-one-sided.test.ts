@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
 
@@ -38,10 +38,10 @@ const createUserAndFriend = async (context: KeystoneContext) => {
 const createComplexData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { name: 'A', friend: { create: { name: 'A1' } } },
-      { name: 'B', friend: { create: { name: 'D1' } } },
-      { name: 'C', friend: { create: { name: 'B1' } } },
-      { name: 'E' },
+      { data: { name: 'A', friend: { create: { name: 'A1' } } } },
+      { data: { name: 'B', friend: { create: { name: 'D1' } } } },
+      { data: { name: 'C', friend: { create: { name: 'B1' } } } },
+      { data: { name: 'E' } },
     ],
     query: 'id name friend { id name }',
   });
@@ -54,7 +54,10 @@ const createComplexData = async (context: KeystoneContext) => {
   expect(users[3].name).toEqual('E');
   expect(users[3].friend).toBe(null);
   const _users = await context.lists.User.createMany({
-    data: [{ name: 'D', friend: { connect: { id: users[2].friend.id } } }, { name: 'C1' }],
+    data: [
+      { data: { name: 'D', friend: { connect: { id: users[2].friend.id } } } },
+      { data: { name: 'C1' } },
+    ],
     query: 'id name friend { id name }',
   });
   expect(_users[0].name).toEqual('D');
@@ -108,7 +111,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['E', 0],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friend: { name: { contains: name } } },
+                  where: { friend: { name_contains: name } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -119,7 +122,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'is_null: true',
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
-            const users = await context.lists.User.findMany({ where: { friend: null } });
+            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
             expect(users.length).toEqual(5);
           })
         );
@@ -179,7 +182,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             const user = await context.lists.User.createOne({
@@ -244,7 +247,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _user = await context.lists.User.updateOne({
               id: user.id,
-              data: { friend: null },
+              data: { friend: { disconnect: { id: friend.id } } },
               query: 'id friend { id name }',
             });
             expect(_user.id).toEqual(user.id);
@@ -265,7 +268,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _user = await context.lists.User.updateOne({
               id: user.id,
-              data: { friend: null },
+              data: { friend: { disconnectAll: true } },
               query: 'id friend { id name }',
             });
             expect(_user.id).toEqual(user.id);
@@ -277,7 +280,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location
@@ -330,7 +333,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }: { name: string }) => name.length === 1);
@@ -359,7 +362,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }: { name: string }) => name.length === 2);
@@ -387,7 +390,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }) => name.length === 1);
@@ -422,7 +425,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }) => name.length === 2);

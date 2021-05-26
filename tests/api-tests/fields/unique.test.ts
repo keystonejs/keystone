@@ -49,7 +49,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                           fields: {
                             name: text(),
                             testField: mod.typeFunction({
-                              index: 'unique',
+                              isUnique: true,
                               ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                             }),
                           },
@@ -114,8 +114,8 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
               keystoneTestWrapper(async ({ context }) => {
                 const items = await context.lists.Test.createMany({
                   data: [
-                    { testField: mod.exampleValue(matrixValue), name: 'jess' },
-                    { testField: mod.exampleValue2(matrixValue), name: 'jess' },
+                    { data: { testField: mod.exampleValue(matrixValue), name: 'jess' } },
+                    { data: { testField: mod.exampleValue2(matrixValue), name: 'jess' } },
                   ],
                 });
                 expect(items).toHaveLength(2);
@@ -147,7 +147,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                         fields: {
                           name: text(),
                           testField: mod.typeFunction({
-                            index: 'unique',
+                            isUnique: true,
                             ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                           }),
                         },
@@ -158,9 +158,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                   }),
                 });
               } catch (error) {
-                expect(error.message).toMatch(
-                  "{ index: 'unique' } is not a supported option for field type"
-                );
+                expect(error.message).toMatch('isUnique is not a supported option for field type');
                 erroredOut = true;
               } finally {
                 after(async () => {});

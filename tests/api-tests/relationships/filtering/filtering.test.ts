@@ -53,10 +53,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const users = await context.lists.User.findMany({
             where: {
-              AND: [
-                { company: { name: { contains: 'in' } } },
-                { company: { name: { contains: 'll' } } },
-              ],
+              AND: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'll' } }],
             },
             query: 'id company { id name }',
           });
@@ -83,10 +80,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           const users = await context.lists.User.findMany({
             where: {
-              OR: [
-                { company: { name: { contains: 'in' } } },
-                { company: { name: { contains: 'xx' } } },
-              ],
+              OR: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'xx' } }],
             },
             query: 'id company { id name }',
           });
@@ -116,8 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = (await context.lists.User.findMany({
             where: {
               AND: [
-                { posts: { some: { content: { contains: 'hi' } } } },
-                { posts: { some: { content: { contains: 'lo' } } } },
+                { posts_some: { content_contains: 'hi' } },
+                { posts_some: { content_contains: 'lo' } },
               ],
             },
             query: 'id posts { id content }',
@@ -148,8 +142,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = (await context.lists.User.findMany({
             where: {
               OR: [
-                { posts: { some: { content: { contains: 'o w' } } } },
-                { posts: { some: { content: { contains: '? O' } } } },
+                { posts_some: { content_contains: 'o w' } },
+                { posts_some: { content_contains: '? O' } },
               ],
             },
             query: 'id posts { id content }',
@@ -222,10 +216,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             posts: { content: string }[];
           }[];
           const users = (await context.lists.User.findMany({
-            where: {
-              company: { name: { equals: adsCompany.name } },
-              posts: { every: { content: { equals: 'spam' } } },
-            },
+            where: { company: { name: adsCompany.name }, posts_every: { content: 'spam' } },
             query: 'id company { id name } posts { content }',
           })) as T;
           expect(users).toHaveLength(2);
@@ -235,10 +226,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // adsCompany users with no spam
           const users2 = (await context.lists.User.findMany({
-            where: {
-              company: { name: { equals: adsCompany.name } },
-              posts: { none: { content: { equals: 'spam' } } },
-            },
+            where: { company: { name: adsCompany.name }, posts_none: { content: 'spam' } },
             query: 'id company { id name } posts { content }',
           })) as T;
 
@@ -249,10 +237,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // adsCompany users with some spam
           const users3 = (await context.lists.User.findMany({
-            where: {
-              company: { name: { equals: adsCompany.name } },
-              posts: { some: { content: { equals: 'spam' } } },
-            },
+            where: { company: { name: adsCompany.name }, posts_some: { content: 'spam' } },
             query: 'id company { id name } posts { content }',
           })) as T;
 

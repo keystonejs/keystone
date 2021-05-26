@@ -157,7 +157,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the teacher from student
             let newStudent = await context.lists.Student.createOne({
               data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
-              query: 'id teachers(orderBy: [{ id: asc }]) { id }',
+              query: 'id teachers(sortBy: [id_ASC]) { id }',
             });
 
             let newTeachers = newStudent.teachers;
@@ -217,11 +217,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await context.lists.Teacher.updateMany({
             data: [
               {
-                where: { id: teacher1.id },
+                id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
               {
-                where: { id: teacher2.id },
+                id: teacher2.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
             ],
@@ -275,11 +275,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await context.lists.Teacher.updateMany({
             data: [
               {
-                where: { id: teacher1.id },
+                id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
               {
-                where: { id: teacher2.id },
+                id: teacher2.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
               },
             ],
@@ -334,11 +334,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
         await context.lists.Teacher.updateMany({
           data: [
             {
-              where: { id: teacher1.id },
+              id: teacher1.id,
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
             },
             {
-              where: { id: teacher2.id },
+              id: teacher2.id,
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
             },
           ],

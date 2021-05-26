@@ -110,8 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create an item that does the linking
           const users = await context.lists.User.createMany({
             data: [
-              { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
-              { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
+              { data: { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } } },
+              { data: { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } } },
             ],
           });
 
@@ -223,11 +223,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const users = await context.lists.User.updateMany({
             data: [
               {
-                where: { id: createUser.id },
+                id: createUser.id,
                 data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
               },
               {
-                where: { id: createUser2.id },
+                id: createUser2.id,
                 data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
               },
             ],
@@ -281,7 +281,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             query: `
               mutation {
                 updateUser(
-                  where: { id: "${createUser.id}" },
+                  id: "${createUser.id}",
                   data: {
                     notes: {
                       connect: [{ id: "${FAKE_ID}" }]
@@ -354,7 +354,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    where: { id: "${createUser.id}" }
+                    id: "${createUser.id}"
                     data: {
                       username: "A thing",
                       notes: { connect: [{ id: "${createNote.id}" }] }

@@ -52,10 +52,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const users = await context.lists.User.createMany({
               data: [
-                { name: 'Jess', favNumber: 1 },
-                { name: 'Johanna', favNumber: 8 },
-                { name: 'Sam', favNumber: 5 },
-                { name: 'Theo', favNumber: 2 },
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
+                { data: { name: 'Theo', favNumber: 2 } },
               ],
             });
 
@@ -64,8 +64,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allUsers(
-              where: { name: { contains: "J" } },
-              orderBy: [{ name: asc }],
+              where: { name_contains: "J" },
+              sortBy: name_ASC,
             ) {
               name
             }
@@ -81,7 +81,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allUsers(
-              where: { name: { equals: "Nope" } }
+              where: { name: "Nope" }
             ) {
               name
             }
@@ -133,7 +133,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allUsers(
-              where: { name: { equals: "Nope" } },
+              where: { name: "Nope" },
               first: 100000
             ) {
               name
@@ -153,23 +153,27 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const users = await context.lists.User.createMany({
               data: [
-                { name: 'Jess', favNumber: 1 },
-                { name: 'Johanna', favNumber: 8 },
-                { name: 'Sam', favNumber: 5 },
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
               ],
             });
             await context.lists.Post.createMany({
               data: [
-                { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
+                { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
                 {
-                  author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
-                  title: 'Two authors',
+                  data: {
+                    author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+                    title: 'Two authors',
+                  },
                 },
                 {
-                  author: {
-                    connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
+                  data: {
+                    author: {
+                      connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
+                    },
+                    title: 'Three authors',
                   },
-                  title: 'Three authors',
                 },
               ],
             });
@@ -177,7 +181,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             context.totalResults = 0;
             // A basic query that should work
             let posts = await context.lists.Post.findMany({
-              where: { title: { equals: 'One author' } },
+              where: { title: 'One author' },
               query: 'title author { name }',
             });
 
@@ -188,10 +192,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Each subquery is within the limit (even though the total isn't)
             posts = await context.lists.Post.findMany({
               where: {
-                OR: [{ title: { equals: 'One author' } }, { title: { equals: 'Two authors' } }],
+                OR: [{ title: 'One author' }, { title: 'Two authors' }],
               },
-              orderBy: [{ title: 'asc' }],
-              query: 'title author(orderBy: [{ name: asc }]) { name }',
+              sortBy: ['title_ASC'],
+              query: 'title author(sortBy: [name_ASC]) { name }',
             });
             expect(posts).toEqual([
               { title: 'One author', author: [{ name: 'Jess' }] },
@@ -206,7 +210,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
           query {
             allPosts(
-              where: { title: { equals: "Three authors" } },
+              where: { title: "Three authors" },
             ) {
               title
               author {
@@ -223,7 +227,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Reset the count for each query
             context.totalResults = 0;
             posts = await context.lists.Post.findMany({
-              where: { title: { equals: 'Three authors' } },
+              where: { title: 'Three authors' },
               query: 'title',
             });
 
@@ -253,7 +257,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ({ errors } = await context.graphql.raw({
               query: `
           query {
-            allPosts(where: { title: { equals: "Two authors" } }) {
+            allPosts(where: { title: "Two authors" }) {
               title
               author {
                 posts {

@@ -12,16 +12,16 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
   return { locations, companies };
@@ -47,10 +47,10 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
 const createComplexData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { name: 'A', location: { create: { name: 'A' } } },
-      { name: 'B', location: { create: { name: 'D' } } },
-      { name: 'C', location: { create: { name: 'B' } } },
-      { name: 'E' },
+      { data: { name: 'A', location: { create: { name: 'A' } } } },
+      { data: { name: 'B', location: { create: { name: 'D' } } } },
+      { data: { name: 'C', location: { create: { name: 'B' } } } },
+      { data: { name: 'E' } },
     ],
     query: 'id name location { id name }',
   });
@@ -135,7 +135,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['E', 0],
               ].map(async ([name, count]) => {
                 const companies = await context.lists.Company.findMany({
-                  where: { location: { name: { contains: name } } },
+                  where: { location: { name_contains: name } },
                 });
                 expect(companies.length).toEqual(count);
               })
@@ -147,7 +147,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
             const companies = await context.lists.Company.findMany({
-              where: { location: null },
+              where: { location_is_null: true },
             });
             expect(companies.length).toEqual(1);
           })
@@ -157,7 +157,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createComplexData(context);
             const companies = await context.lists.Company.findMany({
-              where: { location: { NOT: [null] } },
+              where: { location_is_null: false },
             });
             expect(companies.length).toEqual(4);
           })
@@ -290,7 +290,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: null },
+              data: { location: { disconnect: { id: location.id } } },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -311,7 +311,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Run the query to disconnect the location from company
             const _company = await context.lists.Company.updateOne({
               id: company.id,
-              data: { location: null },
+              data: { location: { disconnectAll: true } },
               query: 'id location { id name }',
             });
             expect(_company.id).toEqual(company.id);
@@ -323,7 +323,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location
@@ -376,7 +376,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _companies = await context.lists.Company.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name location { id name }',
                 });
                 const expected = [
@@ -404,7 +404,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the locations look how we expect
               await (async () => {
                 const _locations = await context.lists.Location.findMany({
-                  orderBy: [{ name: 'asc' }],
+                  sortBy: ['name_ASC'],
                   query: 'id name',
                 });
                 expect(_locations[0].name).toEqual('A');
@@ -431,7 +431,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the companies look how we expect
               const companies = await context.lists.Company.findMany({
-                orderBy: [{ name: 'asc' }],
+                sortBy: ['name_ASC'],
                 query: 'id name location { id name }',
               });
               expect(companies[0].name).toEqual('A');
@@ -463,7 +463,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the locations look how we expect
               const _locations = await context.lists.Location.findMany({
-                orderBy: [{ name: 'asc' }],
+                sortBy: ['name_ASC'],
                 query: 'id name',
               });
               const expected = ['A', 'B', 'C', 'D'].filter(x => x !== name);

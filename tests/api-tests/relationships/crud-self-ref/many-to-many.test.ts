@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
-      { name: sampleOne(alphanumGenerator) },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
     ],
   });
 
@@ -56,7 +56,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
   const createUsers = await context.lists.User.createMany({
-    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ name })),
+    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
     query: 'id name',
   });
 
@@ -114,7 +114,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const _users = await context.lists.User.findMany({
-                  where: { friends: { some: { name: { equals: name } } } },
+                  where: { friends_some: { name } },
                 });
                 expect(_users.length).toEqual(count);
               })
@@ -133,7 +133,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 9],
               ].map(async ([name, count]) => {
                 const _users = await context.lists.User.findMany({
-                  where: { friends: { none: { name: { equals: name } } } },
+                  where: { friends_none: { name } },
                 });
                 expect(_users.length).toEqual(count);
               })
@@ -152,7 +152,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 1],
               ].map(async ([name, count]) => {
                 const users = await context.lists.User.findMany({
-                  where: { friends: { every: { name: { equals: name } } } },
+                  where: { friends_every: { name } },
                 });
                 expect(users.length).toEqual(count);
               })
@@ -284,7 +284,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             const user = await context.lists.User.createOne({
@@ -388,7 +388,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           })
         );
 
-        test.skip(
+        test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Company <-> Location

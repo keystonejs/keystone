@@ -94,7 +94,7 @@ function setupKeystone(provider: ProviderName) {
     User: list({
       fields: {
         name: text(),
-        email: text({ index: 'unique' }),
+        email: text(),
         password: password(),
         noRead: text({ access: { read: () => false } }),
         yesRead: text({ access: { read: () => true } }),
@@ -127,9 +127,9 @@ function setupKeystone(provider: ProviderName) {
       access: {
         create: access.create,
         // arbitrarily restrict the data to a single item (see data.js)
-        read: () => access.read && { name: { equals: 'Hello' } },
-        update: () => access.update && { name: { equals: 'Hello' } },
-        delete: () => access.delete && { name: { equals: 'Hello' } },
+        read: () => access.read && { name: 'Hello' },
+        update: () => access.update && { name: 'Hello' },
+        delete: () => access.delete && { name: 'Hello' },
       },
     });
   });

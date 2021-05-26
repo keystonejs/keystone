@@ -32,18 +32,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'filter works when there is no dash in field name',
         runner(setupKeystone, async ({ context }) => {
-          const users = await context.lists.User.findMany({
-            where: { noDash: { equals: 'aValue' } },
-          });
+          const users = await context.lists.User.findMany({ where: { noDash: 'aValue' } });
           expect(users).toEqual([]);
         })
       );
       test(
         'filter works when there is one dash in field name',
         runner(setupKeystone, async ({ context }) => {
-          const users = await context.lists.User.findMany({
-            where: { single_dash: { equals: 'aValue' } },
-          });
+          const users = await context.lists.User.findMany({ where: { single_dash: 'aValue' } });
           expect(users).toEqual([]);
         })
       );
@@ -51,7 +47,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'filter works when there are multiple dashes in field name',
         runner(setupKeystone, async ({ context }) => {
           const users = await context.lists.User.findMany({
-            where: { many_many_many_dashes: { equals: 'aValue' } },
+            where: { many_many_many_dashes: 'aValue' },
           });
           expect(users).toEqual([]);
         })
@@ -59,9 +55,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'filter works when there are multiple dashes in a row in a field name',
         runner(setupKeystone, async ({ context }) => {
-          const users = await context.lists.User.findMany({
-            where: { multi____dash: { equals: 'aValue' } },
-          });
+          const users = await context.lists.User.findMany({ where: { multi____dash: 'aValue' } });
           expect(users).toEqual([]);
         })
       );

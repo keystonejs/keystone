@@ -74,7 +74,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create an item that does the nested create
           const user = await context.lists.User.createOne({
             data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
-            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           });
 
           expect(user).toMatchObject({
@@ -90,7 +90,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           })) as T;
 
           expect(user1).toMatchObject({
@@ -103,7 +103,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const notes = await context.lists.Note.findMany({
-            where: { id: { in: user1.notes.map(({ id }) => id) } },
+            where: { id_in: user1.notes.map(({ id }) => id) },
           });
           expect(notes).toHaveLength(user1.notes.length);
 
@@ -145,7 +145,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(orderBy: [{ content: asc }]) { id content }',
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           })) as T;
 
           expect(_user).toMatchObject({
@@ -159,7 +159,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const notes = await context.lists.Note.findMany({
-            where: { id: { in: _user.notes.map(({ id }) => id) } },
+            where: { id_in: _user.notes.map(({ id }) => id) },
           });
           expect(notes).toHaveLength(_user.notes.length);
         })
@@ -235,7 +235,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    where: { id: "${createUser.id}" }
+                    id: "${createUser.id}"
                     data: {
                       username: "A thing",
                       notes: { create: [{ content: "${noteContent}" }] }
@@ -307,7 +307,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoCreate(
-                    where: { id: "${createUserToNotesNoCreate.id}" }
+                    id: "${createUserToNotesNoCreate.id}"
                     data: {
                       username: "A thing",
                       notes: { create: { content: "${noteContent}" } }

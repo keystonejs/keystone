@@ -1,7 +1,3 @@
-// @ts-nocheck
-// REMOVE THE ABOVE THING BEFORE MERGING
-// i just want the errors to disappear for now
-// (the errors are correct and represent things that need to be changed)
 import { integer, virtual } from '@keystone-next/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
 import {

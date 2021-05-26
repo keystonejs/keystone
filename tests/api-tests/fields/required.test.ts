@@ -89,7 +89,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
-                    updateTest(where: { id: "${data0.id}" } data: { name: "updated test entry", testField: null } ) { id }
+                    updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
                   }`,
                 });
                 expect(data.updateTest).toBe(null);

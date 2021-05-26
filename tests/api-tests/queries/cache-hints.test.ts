@@ -84,19 +84,26 @@ function setupKeystone(provider: ProviderName) {
 const addFixtures = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { name: 'Jess', favNumber: 1 },
-      { name: 'Johanna', favNumber: 8 },
-      { name: 'Sam', favNumber: 5 },
+      { data: { name: 'Jess', favNumber: 1 } },
+      { data: { name: 'Johanna', favNumber: 8 } },
+      { data: { name: 'Sam', favNumber: 5 } },
     ],
   });
 
   const posts = await context.lists.Post.createMany({
     data: [
-      { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
-      { author: { connect: [{ id: users[0].id }, { id: users[1].id }] }, title: 'Two authors' },
+      { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
       {
-        author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
-        title: 'Three authors',
+        data: {
+          author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+          title: 'Two authors',
+        },
+      },
+      {
+        data: {
+          author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
+          title: 'Three authors',
+        },
       },
     ],
   });
@@ -194,7 +201,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             app,
             query: `
               query {
-                allUsers(where: { name: { equals: "nope" } })  {
+                allUsers(where: { name: "nope" })  {
                   name
                 }
               }
@@ -290,7 +297,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             query: `
               query {
                 allPosts {
-                  author(where: { name: { equals: "nope" } }) {
+                  author(where: { name: "nope" }) {
                     name
                   }
                 }

@@ -89,7 +89,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const allNotes = await context.lists.Note.findMany({
-            where: { id: { in: user.notes.map(({ id }) => Number(id)) } },
+            where: { id_in: user.notes.map(({ id }) => id) },
             query: 'id content',
           });
 
@@ -130,7 +130,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // Sanity check that the items are actually created
           const allNotes = await context.lists.Note.findMany({
-            where: { id: { in: user.notes.map(({ id }) => Number(id)) } },
+            where: { id_in: user.notes.map(({ id }) => id) },
             query: 'id content',
           });
 
@@ -140,7 +140,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
     });
 
     describe('errors on incomplete data', () => {
-      test.skip(
+      test(
         'when neither id or create data passed',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
@@ -220,7 +220,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    where: { id: "${createUser.id}" }
+                    id: "${createUser.id}"
                     data: {
                       username: "A thing",
                       notes: {
