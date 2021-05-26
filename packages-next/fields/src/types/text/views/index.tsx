@@ -1,5 +1,4 @@
 /* @jsx jsx */
-import slugify from '@sindresorhus/slugify';
 import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
@@ -11,33 +10,30 @@ import {
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
-  const fieldId = slugify(field.label);
-  return (
-    <FieldContainer>
-      <FieldLabel htmlFor={fieldId}>{field.label}</FieldLabel>
-      {onChange ? (
-        field.displayMode === 'textarea' ? (
-          <TextArea
-            id={fieldId}
-            autoFocus={autoFocus}
-            onChange={event => onChange(event.target.value)}
-            value={value}
-          />
-        ) : (
-          <TextInput
-            id={field.label}
-            autoFocus={autoFocus}
-            onChange={event => onChange(event.target.value)}
-            value={value}
-          />
-        )
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
+  <FieldContainer>
+    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+    {onChange ? (
+      field.displayMode === 'textarea' ? (
+        <TextArea
+          id={field.path}
+          autoFocus={autoFocus}
+          onChange={event => onChange(event.target.value)}
+          value={value}
+        />
       ) : (
-        value
-      )}
-    </FieldContainer>
-  );
-};
+        <TextInput
+          id={field.label}
+          autoFocus={autoFocus}
+          onChange={event => onChange(event.target.value)}
+          value={value}
+        />
+      )
+    ) : (
+      value
+    )}
+  </FieldContainer>
+);
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
