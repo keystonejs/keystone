@@ -219,11 +219,12 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
       <Portal>
         <div
           ref={consumerRef}
+          // role="status"
           css={{
             background: colors.background,
             borderRadius: radii.medium,
             boxShadow: shadow.s300,
-            visibility: isVisible ? 'visible' : 'hidden',
+            opacity: isVisible ? 1 : 0,
             pointerEvents: isVisible ? undefined : 'none',
             zIndex: elevation.e500, // on top of drawers
             ...useArrowStyles(),
@@ -231,8 +232,12 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           {...props}
         >
           <div ref={focusTrapRef}>
-            <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-            {children}
+            {isVisible && (
+              <Fragment>
+                <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+                {children}
+              </Fragment>
+            )}
           </div>
         </div>
       </Portal>
