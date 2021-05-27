@@ -84,8 +84,8 @@ export const file =
     ...config
   }: FileFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
-    if ((config as any).index === 'unique') {
-      throw Error("{ index: 'unique' } is not a supported option for field type file");
+    if ((config as any).isUnique) {
+      throw Error('isUnique is not a supported option for field type file');
     }
 
     return fieldType({

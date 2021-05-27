@@ -6,6 +6,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
   types,
   JSONValue,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
@@ -74,6 +75,8 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
+    isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<Record<string, any>[]>;
   };
 
 const views = path.join(
@@ -89,6 +92,8 @@ export const document =
     layouts,
     relationships: configRelationships,
     links,
+    isRequired,
+    defaultValue,
     ...config
   }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -107,8 +112,8 @@ export const document =
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
     };
 
-    if ((config as any).index === 'unique') {
-      throw Error("{ index: 'unique' } is not a supported option for field type document");
+    if ((config as any).isUnique) {
+      throw Error('isUnique is not a supported option for field type document');
     }
 
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
@@ -158,6 +163,7 @@ export const document =
           componentBlocksPassedOnServer: Object.keys(componentBlocks),
         };
       },
+      __legacy: { isRequired, defaultValue },
     });
   };
 

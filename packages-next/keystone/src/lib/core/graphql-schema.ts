@@ -158,7 +158,7 @@ export function getGraphQLSchema(
               {
                 data: (data || [])
                   .filter((x): x is NonNullable<typeof x> => x !== null)
-                  .map(thing => ({ where: { id: thing.id }, data: data ?? {} })),
+                  .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
               },
               listKey,
               list,
@@ -171,11 +171,17 @@ export function getGraphQLSchema(
           type: types.list(list.types.output),
           args: {
             ids: types.arg({
-              type: types.nonNull(types.list(types.nonNull(types.ID))),
+              type: types.list(types.nonNull(types.ID)),
             }),
           },
           resolve(rootVal, { ids }, context) {
-            return mutations.deleteMany({ where: ids.map(id => ({ id })) }, listKey, list, context);
+            return mutations.deleteMany(
+              { where: (ids || []).map(id => ({ id })) },
+              listKey,
+              list,
+              context,
+              provider
+            );
           },
         });
 

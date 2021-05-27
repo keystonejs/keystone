@@ -1,4 +1,5 @@
 import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
+import pLimit from 'p-limit';
 import {
   applyAccessControlForCreate,
   applyAccessControlForUpdate,
@@ -14,11 +15,14 @@ export async function createMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  _provider: DatabaseProvider
+  provider: DatabaseProvider
 ) {
+  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async rawData => {
     const { afterChange, data } = await createOneState({ data: rawData }, listKey, list, context);
-    const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+    const item = await writeLimit(() =>
+      getPrismaModelForList(context.prisma, listKey).create({ data })
+    );
     await afterChange(item);
     return item;
   });
@@ -62,8 +66,9 @@ export async function updateMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  _provider: DatabaseProvider
+  provider: DatabaseProvider
 ) {
+  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
     const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
     const { afterChange, data } = await resolveInputForCreateOrUpdate(
@@ -74,10 +79,12 @@ export async function updateMany(
       rawData,
       item
     );
-    const updatedItem = await getPrismaModelForList(context.prisma, listKey).update({
-      where: { id: item.id },
-      data,
-    });
+    const updatedItem = await writeLimit(() =>
+      getPrismaModelForList(context.prisma, listKey).update({
+        where: { id: item.id },
+        data,
+      })
+    );
     afterChange(updatedItem);
     return updatedItem;
   });
@@ -116,13 +123,17 @@ export async function deleteMany(
   { where }: { where: UniqueInputFilter[] },
   listKey: string,
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  provider: DatabaseProvider
 ) {
+  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return where.map(async where => {
     const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
-    await getPrismaModelForList(context.prisma, listKey).delete({
-      where: { id: existingItem.id },
-    });
+    await writeLimit(() =>
+      getPrismaModelForList(context.prisma, listKey).delete({
+        where: { id: existingItem.id },
+      })
+    );
     afterDelete();
     return existingItem;
   });

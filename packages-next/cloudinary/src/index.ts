@@ -113,8 +113,8 @@ export const cloudinaryImage =
     ...config
   }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
-    if ((config as any).index === 'unique') {
-      throw Error("{ index: 'unique' } is not a supported option for field type cloudinaryImage");
+    if ((config as any).isUnique) {
+      throw Error('isUnique is not a supported option for field type cloudinaryImage');
     }
     const adapter = new CloudinaryAdapter(cloudinary);
     const resolveInput = async (
