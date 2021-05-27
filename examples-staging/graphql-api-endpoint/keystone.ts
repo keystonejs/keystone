@@ -1,4 +1,4 @@
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 
 import { config } from '@keystone-next/keystone/schema';
 import { createAuth } from '@keystone-next/auth';
@@ -23,6 +23,7 @@ const auth = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
   },
+  sessionData: { query: 'name' },
 });
 
 export default auth.withAuth(
@@ -39,12 +40,6 @@ export default auth.withAuth(
       isAccessAllowed: context => !!context.session?.data,
     },
     lists,
-    session: withItemData(
-      statelessSessions({
-        maxAge: sessionMaxAge,
-        secret: sessionSecret,
-      }),
-      { User: 'name' }
-    ),
+    session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
   })
 );

@@ -1,6 +1,6 @@
 import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { ProviderName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createAuth } from '@keystone-next/auth';
 import { objMerge } from '@keystone-next/utils-legacy';
@@ -133,14 +133,16 @@ function setupKeystone(provider: ProviderName) {
       },
     });
   });
-  const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
+  const auth = createAuth({
+    listKey: 'User',
+    identityField: 'email',
+    secretField: 'password',
+    sessionData: { query: 'id' },
+  });
   return setupFromConfig({
     provider,
     config: auth.withAuth(
-      testConfig({
-        lists,
-        session: withItemData(statelessSessions({ secret: COOKIE_SECRET }), { User: 'id' }),
-      }) as KeystoneConfig
+      testConfig({ lists, session: statelessSessions({ secret: COOKIE_SECRET }) }) as KeystoneConfig
     ),
   });
 }

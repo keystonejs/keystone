@@ -1,5 +1,5 @@
 import { config } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
@@ -17,6 +17,7 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
+  sessionData: { query: 'name isAdmin' },
 });
 
 // TODO -- Create a separate example for access control in the Admin UI
@@ -41,13 +42,7 @@ export default auth.withAuth(
     files: { upload: 'local' },
     lists,
     extendGraphqlSchema,
-    session: withItemData(
-      statelessSessions({
-        maxAge: sessionMaxAge,
-        secret: sessionSecret,
-      }),
-      { User: 'name isAdmin' }
-    ),
+    session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
     // TODO -- Create a separate example for stored/redis sessions
     // session: storedSessions({
     //   store: new Map(),

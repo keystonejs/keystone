@@ -1,5 +1,5 @@
 import { config } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { lists } from './schema';
 
@@ -40,6 +40,8 @@ const { withAuth } = createAuth({
       // isEnabled: true,
     },
   },
+  // Populate session.data based on the authed user
+  sessionData: { query: 'name isAdmin' },
   /* TODO -- complete the UI for these features and enable them
   passwordResetLink: {
     sendToken(args) {
@@ -63,7 +65,7 @@ export default withAuth(
     },
     lists,
     ui: {},
-    session: withItemData(
+    session:
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({
         // The maxAge option controls how long session cookies are valid for before they expire
@@ -71,8 +73,5 @@ export default withAuth(
         // The session secret is used to encrypt cookie data (should be an environment variable)
         secret: sessionSecret,
       }),
-      // withItemData will fetch these fields for signed-in User items to populate session.data
-      { User: 'name isAdmin' }
-    ),
   })
 );

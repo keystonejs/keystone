@@ -1,6 +1,6 @@
 import { createAuth } from '@keystone-next/auth';
 import { config, createSchema } from '@keystone-next/keystone/schema';
-import { withItemData, statelessSessions } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';
 import { OrderItem } from './schemas/OrderItem';
@@ -35,6 +35,7 @@ const { withAuth } = createAuth({
       await sendPasswordResetEmail(args.token, args.identity);
     },
   },
+  sessionData: { query: `id name email role { ${permissionsList.join(' ')} }` },
 });
 
 export default withAuth(
@@ -75,9 +76,6 @@ export default withAuth(
         // console.log(session);
         !!session?.data,
     },
-    session: withItemData(statelessSessions(sessionConfig), {
-      // GraphQL Query
-      User: `id name email role { ${permissionsList.join(' ')} }`,
-    }),
+    session: statelessSessions(sessionConfig),
   })
 );
