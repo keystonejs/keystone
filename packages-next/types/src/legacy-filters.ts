@@ -1,5 +1,4 @@
-import { types } from '@ts-gql/schema';
-import { tsgql } from './next-fields';
+import { types, tsgql } from './next-fields';
 
 const identity = (x: any) => x;
 

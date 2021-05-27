@@ -2489,10 +2489,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@ts-gql/schema@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.7.1.tgz#52cab50afa6d98c998e9bdd42ec7d87696e321c5"
-  integrity sha512-QA1abnMRwosfMhOBjxG58s3ZYmfan8cUOCCX9k5KyqnL322I467g+FM4ffyem7qhs6XB0OrNLs3IPhYlqI5AWA==
+"@ts-gql/schema@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.7.2.tgz#1284a42272993155b88b086cd33327bb3103a95a"
+  integrity sha512-vmJ6oXGiVL8ftEgN5R3i0lxzuf26eUa3CLBz/i7C2NUJo6dbBVl1K9AHRWyYDxmUHh4ZLB8MzOkaiBaVq+oZeA==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
@@ -3998,11 +3998,6 @@ babel-plugin-polyfill-regenerator@^0.2.0:
   integrity sha512-T3bYyL3Sll2EtC94v3f+fA8M28q7YPTOZdB++SRHjvYZTvtd+WorMUq3tDTD4Q7Kjk1LG0gGromslKjcO5p2TA==
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.2.1"
-
-babel-plugin-remove-graphql-queries@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-remove-graphql-queries/-/babel-plugin-remove-graphql-queries-2.7.2.tgz#101c8b26567e35c217e817e892135a9a04a5a805"
-  integrity sha512-kkIqi2+oZ7YCLbZbrhOGxPA/HuWpfvzRUxbD75SHqwxl9fZVWSLQhOUl72GEpAuEt4MeCEguKpMX100oDN3MQA==
 
 babel-plugin-syntax-jsx@6.18.0:
   version "6.18.0"

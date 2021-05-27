@@ -15,9 +15,10 @@ type User {
   password: PasswordState
   tasks(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Todo!]!
@@ -268,39 +269,49 @@ type Query {
   Todo(where: TodoWhereUniqueInput!): Todo
   allTodos(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  todosCount(where: TodoWhereInput! = {}): Int
   _allTodosMeta(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
     search: String
+    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
   _allUsersMeta(
     where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
     search: String
+    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

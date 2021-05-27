@@ -51,12 +51,13 @@ export function getGraphQLSchema(
             resolve(_rootVal, args, context) {
               return { getCount: () => queries.count(args, listKey, list, context) };
             },
+            deprecationReason: `This query will be removed in a future version. Please use ${names.listQueryCountName} instead.`,
           });
           return [
             [names.itemQueryName, findOne],
             [names.listQueryName, findMany],
-            [names.listQueryCountName, countQuery],
             [names.listQueryMetaName, metaQuery],
+            [names.listQueryCountName, countQuery],
           ];
         })
       ),

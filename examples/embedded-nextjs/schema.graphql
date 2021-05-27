@@ -97,21 +97,26 @@ type Query {
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
     search: String
+    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
   _allPostsMeta(
     where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
     search: String
+    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

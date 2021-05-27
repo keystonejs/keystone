@@ -18,9 +18,10 @@ type Author {
   email: String
   posts(
     where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
     search: String
+    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -235,39 +236,49 @@ type Query {
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
     search: String
+    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
   _allPostsMeta(
     where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
     search: String
+    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
   Author(where: AuthorWhereUniqueInput!): Author
   allAuthors(
     where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
     search: String
+    orderBy: [AuthorOrderByInput!]! = []
     sortBy: [SortAuthorsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Author!]
-  authorsCount(where: AuthorWhereInput! = {}): Int
   _allAuthorsMeta(
     where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
     search: String
+    orderBy: [AuthorOrderByInput!]! = []
     sortBy: [SortAuthorsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use authorsCount instead."
+    )
+  authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

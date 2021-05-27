@@ -529,12 +529,12 @@ export function initialiseLists(
         type: types.nonNull(where),
         defaultValue: {},
       }),
+      search: types.arg({
+        type: types.String,
+      }),
       orderBy: types.arg({
         type: types.nonNull(types.list(types.nonNull(orderBy))),
         defaultValue: [],
-      }),
-      search: types.arg({
-        type: types.String,
       }),
       sortBy: types.arg({
         type: types.list(
@@ -545,6 +545,7 @@ export function initialiseLists(
             })
           )
         ),
+        deprecationReason: 'sortBy has been deprecated in favour of orderBy',
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
       first: types.arg({

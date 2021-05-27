@@ -19,9 +19,10 @@ type Person {
   name: String
   packages(
     where: PackageWhereInput! = {}
-    orderBy: [PackageOrderByInput!]! = []
     search: String
+    orderBy: [PackageOrderByInput!]! = []
     sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Package!]!
@@ -200,39 +201,49 @@ type Query {
   Package(where: PackageWhereUniqueInput!): Package
   allPackages(
     where: PackageWhereInput! = {}
-    orderBy: [PackageOrderByInput!]! = []
     search: String
+    orderBy: [PackageOrderByInput!]! = []
     sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Package!]
-  packagesCount(where: PackageWhereInput! = {}): Int
   _allPackagesMeta(
     where: PackageWhereInput! = {}
-    orderBy: [PackageOrderByInput!]! = []
     search: String
+    orderBy: [PackageOrderByInput!]! = []
     sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use packagesCount instead."
+    )
+  packagesCount(where: PackageWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
   _allPeopleMeta(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

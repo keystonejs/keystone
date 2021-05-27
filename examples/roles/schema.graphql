@@ -14,9 +14,10 @@ type Person {
   role: Role
   tasks(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Todo!]!
@@ -38,9 +39,10 @@ type Role {
   canManageRoles: Boolean
   assignedTo(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Person!]!
@@ -379,57 +381,72 @@ type Query {
   Todo(where: TodoWhereUniqueInput!): Todo
   allTodos(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  todosCount(where: TodoWhereInput! = {}): Int
   _allTodosMeta(
     where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
     search: String
+    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
   _allPeopleMeta(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
-    orderBy: [RoleOrderByInput!]! = []
     search: String
+    orderBy: [RoleOrderByInput!]! = []
     sortBy: [SortRolesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Role!]
-  rolesCount(where: RoleWhereInput! = {}): Int
   _allRolesMeta(
     where: RoleWhereInput! = {}
-    orderBy: [RoleOrderByInput!]! = []
     search: String
+    orderBy: [RoleOrderByInput!]! = []
     sortBy: [SortRolesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use rolesCount instead."
+    )
+  rolesCount(where: RoleWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

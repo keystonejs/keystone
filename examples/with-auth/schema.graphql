@@ -20,9 +20,10 @@ type Person {
   password: PasswordState
   tasks(
     where: TaskWhereInput! = {}
-    orderBy: [TaskOrderByInput!]! = []
     search: String
+    orderBy: [TaskOrderByInput!]! = []
     sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Task!]!
@@ -250,39 +251,49 @@ type Query {
   Task(where: TaskWhereUniqueInput!): Task
   allTasks(
     where: TaskWhereInput! = {}
-    orderBy: [TaskOrderByInput!]! = []
     search: String
+    orderBy: [TaskOrderByInput!]! = []
     sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
   _allTasksMeta(
     where: TaskWhereInput! = {}
-    orderBy: [TaskOrderByInput!]! = []
     search: String
+    orderBy: [TaskOrderByInput!]! = []
     sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TaskWhereInput! = {}): Int
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
   _allPeopleMeta(
     where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
     search: String
+    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

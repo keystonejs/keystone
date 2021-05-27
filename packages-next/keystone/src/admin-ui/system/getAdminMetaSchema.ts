@@ -6,11 +6,11 @@ import {
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
+  tsgql,
 } from '@keystone-next/types';
-import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 
-const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
+const types = tsgql.bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
 export function getAdminMetaSchema({
   config,
