@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests, initFirstItemTest } from './utils';
 
-exampleProjectTests('../examples-next/roles', browserType => {
+exampleProjectTests('../examples-staging/roles', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
