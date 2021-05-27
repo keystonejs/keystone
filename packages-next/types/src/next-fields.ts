@@ -258,7 +258,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
       one: () => Promise<ItemRootValue>;
       many: {
         findMany(args: FindManyArgsValue): Promise<ItemRootValue[]>;
-        count(args: { where: FindManyArgsValue['where'] }): Promise<number>;
+        count(args: FindManyArgsValue): Promise<number>;
       };
     }[Mode]
   : TDBField extends EnumDBField<infer Value, infer Mode>

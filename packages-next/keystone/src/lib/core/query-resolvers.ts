@@ -130,12 +130,12 @@ export async function findMany(
 }
 
 export async function count(
-  { where }: { where: Record<string, any> },
+  { where, search }: { where: Record<string, any>; search?: string | null },
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const resolvedWhere = await findManyFilter(listKey, list, context, where || {}, undefined);
+  const resolvedWhere = await findManyFilter(listKey, list, context, where || {}, search);
   if (resolvedWhere === false) {
     return 0;
   }

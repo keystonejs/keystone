@@ -5,6 +5,7 @@ import {
   types,
   AdminMetaRootVal,
   FieldDefaultValue,
+  QueryMeta,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { CommonFieldConfig } from '../../interfaces';
@@ -56,7 +57,7 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
-    defaultValue?: FieldDefaultValue<any>;
+    defaultValue?: FieldDefaultValue<Record<string, any>>;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
@@ -159,7 +160,21 @@ export const relationship =
               where: types.arg({ type: types.nonNull(listTypes.where), defaultValue: {} }),
             },
             resolve({ value }, args) {
-              return value.count(args);
+              return value.count({
+                where: args.where,
+                orderBy: [],
+                sortBy: undefined,
+                first: undefined,
+                search: undefined,
+                skip: 0,
+              });
+            },
+          }),
+          [`_${meta.fieldKey}Meta`]: types.field({
+            type: QueryMeta,
+            args: listTypes.findManyArgs,
+            resolve({ value }, args) {
+              return { getCount: () => value.count(args) };
             },
           }),
         },

@@ -4,6 +4,7 @@ import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
 import * as queries from './query-resolvers';
+import { applyFirstSkipToCount } from './utils';
 
 export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
@@ -48,8 +49,15 @@ export function getGraphQLSchema(
           const metaQuery = types.field({
             type: QueryMeta,
             args: list.types.findManyArgs,
-            resolve(_rootVal, args, context) {
-              return { getCount: () => queries.count(args, listKey, list, context) };
+            resolve(_rootVal, { first, search, skip, where }, context) {
+              return {
+                getCount: async () =>
+                  applyFirstSkipToCount({
+                    count: await queries.count({ where, search }, listKey, list, context),
+                    first,
+                    skip,
+                  }),
+              };
             },
             deprecationReason: `This query will be removed in a future version. Please use ${names.listQueryCountName} instead.`,
           });
@@ -137,21 +145,21 @@ export function getGraphQLSchema(
           type: types.list(list.types.output),
           args: {
             data: types.arg({
-              type: types.nonNull(
-                types.list(
-                  types.nonNull(
-                    types.inputObject({
-                      name: names.updateManyInputName,
-                      fields: updateOneArgs,
-                    })
-                  )
-                )
+              type: types.list(
+                types.inputObject({
+                  name: names.updateManyInputName,
+                  fields: updateOneArgs,
+                })
               ),
             }),
           },
           resolve(_rootVal, { data }, context) {
             return mutations.updateMany(
-              { data: data.map(({ id, data }) => ({ where: { id }, data: data ?? {} })) },
+              {
+                data: (data || [])
+                  .filter((x): x is NonNullable<typeof x> => x !== null)
+                  .map(thing => ({ where: { id: thing.id }, data: data ?? {} })),
+              },
               listKey,
               list,
               context,

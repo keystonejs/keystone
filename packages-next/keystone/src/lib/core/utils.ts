@@ -87,3 +87,22 @@ export function getPrismaModelForList(prismaClient: PrismaClient, listKey: strin
 declare const idTypeSymbol: unique symbol;
 
 export type IdType = { ___keystoneIdType: typeof idTypeSymbol; toString(): string };
+
+export function applyFirstSkipToCount({
+  count,
+  first,
+  skip,
+}: {
+  count: number;
+  first: number | null | undefined;
+  skip: number | null | undefined;
+}) {
+  if (skip !== undefined && skip !== null) {
+    count -= skip;
+  }
+  if (first !== undefined && first !== null) {
+    count = Math.min(count, first);
+  }
+  count = Math.max(0, count); // Don't want to go negative from a skip!
+  return count;
+}

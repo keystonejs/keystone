@@ -107,6 +107,7 @@ type FieldInfoRequiredForResolvingWhereInput = Record<
 
 // this is used for the new filters
 // (so this is currently unused)
+// @ts-expect-error
 async function resolveWhereInput(
   inputFilter: InputFilter,
   fields: FieldInfoRequiredForResolvingWhereInput,
@@ -237,7 +238,7 @@ export function getFilterInputResolvers(lists: Record<string, InitialisedList>) 
 
 type ValidationError = { msg: string; data: {}; internalData: {} };
 
-type AddValidationError = (msg: string, data: {}, internalData: {}) => void;
+type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
 
 async function validationHook(
   listKey: string,
@@ -247,7 +248,7 @@ async function validationHook(
 ) {
   const errors: ValidationError[] = [];
 
-  await validationHook((msg, data, internalData) => {
+  await validationHook((msg, data = {}, internalData = {}) => {
     errors.push({ msg, data, internalData });
   });
 

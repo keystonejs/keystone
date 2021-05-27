@@ -30,7 +30,7 @@ import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
 import { GraphQLEnumType } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
-import { getPrismaModelForList, IdType, PrismaPromise } from './utils';
+import { applyFirstSkipToCount, getPrismaModelForList, IdType, PrismaPromise } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
   ListsWithResolvedRelations,
@@ -145,7 +145,14 @@ function getRelationVal(
       return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
     };
     return {
-      findMany: async ({ where, first, skip, orderBy: rawOrderBy, sortBy }: FindManyArgsValue) => {
+      findMany: async ({
+        where,
+        first,
+        skip,
+        orderBy: rawOrderBy,
+        sortBy,
+        search,
+      }: FindManyArgsValue) => {
         const [baseFilter, orderBy, specificFilter] = await Promise.all([
           getBaseFilter(),
           resolveOrderBy(rawOrderBy, sortBy, foreignList, context),
@@ -155,13 +162,13 @@ function getRelationVal(
           return [];
         }
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
-          where: { AND: [baseFilter, specificFilter] },
+          where: foreignList.applySearchField({ AND: [baseFilter, specificFilter] }, search),
           orderBy,
           take: first ?? undefined,
           skip,
         });
       },
-      count: async ({ where }: { where: Record<string, any> }) => {
+      count: async ({ where, search, first, skip }: FindManyArgsValue) => {
         const [baseFilter, specificFilter] = await Promise.all([
           getBaseFilter(),
           foreignList.inputResolvers.where(context)(where),
@@ -169,8 +176,12 @@ function getRelationVal(
         if (baseFilter === false) {
           return 0;
         }
-        return getPrismaModelForList(context.prisma, dbField.list).count({
-          where: { AND: [baseFilter, specificFilter] },
+        return applyFirstSkipToCount({
+          count: await getPrismaModelForList(context.prisma, dbField.list).count({
+            where: foreignList.applySearchField({ AND: [baseFilter, specificFilter] }, search),
+          }),
+          first,
+          skip,
         });
       },
     };

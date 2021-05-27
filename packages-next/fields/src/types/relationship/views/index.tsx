@@ -420,7 +420,7 @@ export const controller = (
             id
            }`
         : config.fieldMeta.displayMode === 'count'
-        ? `${config.path}Count`
+        ? `_${config.path}Meta {count}`
         : `${config.path} {
              id
              label: ${config.fieldMeta.refLabelField}
@@ -435,7 +435,7 @@ export const controller = (
       : { kind: 'one', value: null, initialValue: null },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'count') {
-        return { kind: 'count', count: data[`${config.path}Count`] ?? 0 };
+        return { kind: 'count', count: data[`_${config.path}Meta`]?.count ?? 0 };
       }
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
