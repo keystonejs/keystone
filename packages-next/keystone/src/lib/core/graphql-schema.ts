@@ -83,41 +83,54 @@ export function getGraphQLSchema(
           },
         });
         const updateOneArgs = {
-          where: types.arg({
-            type: types.nonNull(list.types.uniqueWhere),
+          id: types.arg({
+            type: types.nonNull(types.ID),
           }),
           data: types.arg({
-            type: types.nonNull(list.types.update),
+            type: list.types.update,
           }),
         };
         const updateOne = types.field({
           type: list.types.output,
           args: updateOneArgs,
-          resolve(_rootVal, args, context) {
-            return mutations.updateOne(args, listKey, list, context);
+          resolve(_rootVal, { data, id }, context) {
+            return mutations.updateOne({ data: data ?? {}, where: { id } }, listKey, list, context);
           },
         });
         const deleteOne = types.field({
           type: list.types.output,
           args: {
-            where: types.arg({
-              type: types.nonNull(list.types.uniqueWhere),
+            id: types.arg({
+              type: types.nonNull(types.ID),
             }),
           },
-          resolve(rootVal, args, context) {
-            return mutations.deleteOne(args, listKey, list, context);
+          resolve(rootVal, { id }, context) {
+            return mutations.deleteOne({ where: { id } }, listKey, list, context);
           },
         });
 
         const createMany = types.field({
-          type: types.list(types.nonNull(list.types.output)),
+          type: types.list(list.types.output),
           args: {
             data: types.arg({
-              type: types.nonNull(types.list(types.nonNull(list.types.create))),
+              type: types.list(
+                types.inputObject({
+                  name: names.createManyInputName,
+                  fields: {
+                    data: types.arg({ type: list.types.create }),
+                  },
+                })
+              ),
             }),
           },
           resolve(_rootVal, args, context) {
-            return mutations.createMany(args, listKey, list, context, provider);
+            return mutations.createMany(
+              { data: (args.data || []).map(input => input?.data ?? {}) },
+              listKey,
+              list,
+              context,
+              provider
+            );
           },
         });
 
@@ -137,19 +150,25 @@ export function getGraphQLSchema(
               ),
             }),
           },
-          resolve(_rootVal, args, context) {
-            return mutations.updateMany(args, listKey, list, context, provider);
+          resolve(_rootVal, { data }, context) {
+            return mutations.updateMany(
+              { data: data.map(({ id, data }) => ({ where: { id }, data: data ?? {} })) },
+              listKey,
+              list,
+              context,
+              provider
+            );
           },
         });
         const deleteMany = types.field({
           type: types.list(types.nonNull(list.types.output)),
           args: {
-            where: types.arg({
-              type: types.nonNull(types.list(types.nonNull(list.types.uniqueWhere))),
+            ids: types.arg({
+              type: types.nonNull(types.list(types.nonNull(types.ID))),
             }),
           },
-          resolve(rootVal, args, context) {
-            return mutations.deleteMany(args, listKey, list, context);
+          resolve(rootVal, { ids }, context) {
+            return mutations.deleteMany({ where: ids.map(id => ({ id })) }, listKey, list, context);
           },
         });
 
