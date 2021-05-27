@@ -56,7 +56,7 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
-    defaultValue: FieldDefaultValue<any>;
+    defaultValue?: FieldDefaultValue<any>;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =

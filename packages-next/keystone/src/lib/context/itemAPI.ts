@@ -41,7 +41,7 @@ export function getDbAPIFactory(
   const api = {
     findOne: f(queryFields[gqlNames.itemQueryName]),
     findMany: f(queryFields[gqlNames.listQueryName]),
-    count: f(queryFields[gqlNames.listQueryCountName]),
+    count: f(queryFields[gqlNames.listQueryMetaName]),
     createOne: f(mutationFields[gqlNames.createMutationName]),
     createMany: f(mutationFields[gqlNames.createManyMutationName]),
     updateOne: f(mutationFields[gqlNames.updateMutationName]),
@@ -56,6 +56,7 @@ export function getDbAPIFactory(
         (args: Record<string, any>) => impl(args, context),
       ])
     );
+    obj.count = async (args: Record<string, any>) => (await api.count(args, context)).getCount();
     return obj;
   };
 }
@@ -148,9 +149,7 @@ export function itemAPIForList(
         const { id } = args;
         return deleteItem({ listKey, context, returnFields, itemId: id });
       } else {
-        // THIS IS WRONG!!!!!!
-        // i just don't want to deal with this right now
-        return dbAPI.deleteOne({ where: { id: args.id } });
+        return dbAPI.deleteOne(args);
       }
     },
     deleteMany({ query, resolveFields, ...args }) {
@@ -159,9 +158,7 @@ export function itemAPIForList(
         const { ids } = args;
         return deleteItems({ listKey, context, returnFields, items: ids });
       } else {
-        // THIS IS WRONG!!!!!!
-        // i just don't want to deal with this right now
-        return dbAPI.deleteMany({ where: args.ids.map(id => ({ id })) });
+        return dbAPI.deleteMany(args);
       }
     },
   };
