@@ -32,8 +32,18 @@ export function getGraphQLSchema(
           const findMany = types.field({
             type: types.list(types.nonNull(list.types.output)),
             args: list.types.findManyArgs,
-            async resolve(_rootVal, args, context) {
-              return queries.findMany(args, listKey, list, context);
+            async resolve(_rootVal, args, context, info) {
+              const results = await queries.findMany(args, listKey, list, context);
+              if (info && info.cacheControl && list.cacheHint) {
+                const operationName = info.operation.name && info.operation.name.value;
+                console.log(
+                  list.cacheHint({ results, operationName: operationName!, meta: false })
+                );
+                info.cacheControl.setCacheHint(
+                  list.cacheHint({ results, operationName: operationName!, meta: false }) as any
+                );
+              }
+              return results;
             },
           });
           const countQuery = types.field({
@@ -41,22 +51,45 @@ export function getGraphQLSchema(
             args: {
               where: types.arg({ type: types.nonNull(list.types.where), defaultValue: {} }),
             },
-            async resolve(_rootVal, args, context) {
-              return queries.count(args, listKey, list, context);
+            async resolve(_rootVal, args, context, info) {
+              const count = await queries.count(args, listKey, list, context);
+              if (info && info.cacheControl && list.cacheHint) {
+                const operationName = info.operation.name && info.operation.name.value;
+                info.cacheControl.setCacheHint(
+                  list.cacheHint({
+                    results: count,
+                    operationName: operationName!,
+                    meta: true,
+                  }) as any
+                );
+              }
+              return count;
             },
           });
 
           const metaQuery = types.field({
             type: QueryMeta,
             args: list.types.findManyArgs,
-            resolve(_rootVal, { first, search, skip, where }, context) {
+            resolve(_rootVal, { first, search, skip, where }, context, info) {
               return {
-                getCount: async () =>
-                  applyFirstSkipToCount({
+                getCount: async () => {
+                  const count = applyFirstSkipToCount({
                     count: await queries.count({ where, search }, listKey, list, context),
                     first,
                     skip,
-                  }),
+                  });
+                  if (info && info.cacheControl && list.cacheHint) {
+                    const operationName = info.operation.name && info.operation.name.value;
+                    info.cacheControl.setCacheHint(
+                      list.cacheHint({
+                        results: count,
+                        operationName: operationName!,
+                        meta: true,
+                      }) as any
+                    );
+                  }
+                  return count;
+                },
               };
             },
             deprecationReason: `This query will be removed in a future version. Please use ${names.listQueryCountName} instead.`,

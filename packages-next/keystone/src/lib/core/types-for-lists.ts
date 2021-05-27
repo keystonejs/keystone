@@ -24,6 +24,7 @@ import {
   DatabaseProvider,
   FindManyArgs,
   orderDirectionEnum,
+  CacheHintArgs,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
@@ -105,6 +106,7 @@ export type InitialisedList = {
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   applySearchField: (filter: PrismaFilter, search: string | null | undefined) => PrismaFilter;
+  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
 };
 
 function assert(condition: boolean): asserts condition {
@@ -422,7 +424,7 @@ export function initialiseLists(
                   outputTypeField(
                     outputField,
                     field.dbField,
-                    field.cacheHint,
+                    field.graphql?.cacheHint,
                     field.access.read,
                     listKey,
                     fieldPath,
@@ -765,6 +767,13 @@ export function initialiseLists(
           }
           return filter;
         },
+        cacheHint: (() => {
+          const cacheHint = lists[listKey].graphql?.cacheHint;
+          if (cacheHint === undefined) {
+            return undefined;
+          }
+          return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
+        })(),
       },
     ])
   );

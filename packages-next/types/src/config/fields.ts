@@ -1,7 +1,6 @@
 import type { CacheHint } from '../next-fields';
 import { FieldTypeFunc } from '../next-fields';
 import type { BaseGeneratedListTypes } from '../utils';
-import type { CacheHintArgs } from '../base';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
@@ -21,5 +20,5 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
   };
-  graphql?: { cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint };
+  graphql?: { cacheHint?: CacheHint };
 };
