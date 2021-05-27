@@ -103,6 +103,7 @@ export type InitialisedList = {
   };
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
+  applySearchField: (filter: PrismaFilter, search: string | null | undefined) => PrismaFilter;
 };
 
 function assert(condition: boolean): asserts condition {
@@ -144,10 +145,10 @@ function getRelationVal(
       return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
     };
     return {
-      findMany: async ({ where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue) => {
+      findMany: async ({ where, first, skip, orderBy: rawOrderBy, sortBy }: FindManyArgsValue) => {
         const [baseFilter, orderBy, specificFilter] = await Promise.all([
           getBaseFilter(),
-          resolveOrderBy(rawOrderBy, foreignList, context),
+          resolveOrderBy(rawOrderBy, sortBy, foreignList, context),
           foreignList.inputResolvers.where(context)(where),
         ]);
         if (baseFilter === false) {
@@ -746,6 +747,28 @@ export function initialiseLists(
             return field.__legacy?.filters?.impls ?? {};
           })
         ),
+        applySearchField: (filter, search) => {
+          const searchFieldName = lists[listKey].db?.searchField ?? 'name';
+          const searchField = list.fields[searchFieldName];
+          if (search != null && search !== '' && searchField) {
+            if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
+              // FIXME: Think about regex
+              const mode = provider === 'sqlite' ? undefined : 'insensitive';
+              filter = {
+                AND: [filter, { [searchFieldName]: { contains: search, mode } }],
+              };
+
+              // const f = escapeRegExp;
+              // this._query.andWhere(`${baseTableAlias}.${searchFieldName}`, '~*', f(search));
+            } else {
+              // Return no results
+              filter = {
+                AND: [filter, { [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }],
+              };
+            }
+          }
+          return filter;
+        },
       },
     ])
   );

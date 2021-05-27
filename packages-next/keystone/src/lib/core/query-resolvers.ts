@@ -14,7 +14,8 @@ export async function findManyFilter(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  where: InputFilter
+  where: InputFilter,
+  search: string | null | undefined
 ): Promise<false | PrismaFilter> {
   const access = await validateNonCreateListAccessControl({
     access: list.access.read,
@@ -35,7 +36,8 @@ export async function findManyFilter(
       AND: [resolvedWhere, await whereInputResolver(access)],
     };
   }
-  return resolvedWhere;
+
+  return list.applySearchField(resolvedWhere, search);
 }
 
 // doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
@@ -105,14 +107,14 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue,
+  { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const [resolvedWhere, orderBy] = await Promise.all([
-    findManyFilter(listKey, list, context, where || {}),
-    resolveOrderBy(rawOrderBy, list, context),
+    findManyFilter(listKey, list, context, where || {}, search),
+    resolveOrderBy(rawOrderBy, sortBy, list, context),
   ]);
 
   if (resolvedWhere === false) {
@@ -133,7 +135,7 @@ export async function count(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const resolvedWhere = await findManyFilter(listKey, list, context, where || {});
+  const resolvedWhere = await findManyFilter(listKey, list, context, where || {}, undefined);
   if (resolvedWhere === false) {
     return 0;
   }
