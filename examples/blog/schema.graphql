@@ -153,18 +153,18 @@ enum SortAuthorsBy {
 }
 
 type Mutation {
-  createPost(data: PostCreateInput! = {}): Post
+  createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  updatePosts(data: [PostsUpdateInput!]!): [Post]
   deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]!): [Post!]
-  createAuthor(data: AuthorCreateInput! = {}): Author
+  deletePosts(ids: [ID!]!): [Post]
+  createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-  updateAuthors(data: [AuthorsUpdateInput!]!): [Author!]
+  updateAuthors(data: [AuthorsUpdateInput!]!): [Author]
   deleteAuthor(id: ID!): Author
-  deleteAuthors(ids: [ID!]!): [Author!]
+  deleteAuthors(ids: [ID!]!): [Author]
 }
 
 input PostCreateInput {

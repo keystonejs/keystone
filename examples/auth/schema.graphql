@@ -70,12 +70,12 @@ type _QueryMeta {
 }
 
 type Mutation {
-  createUser(data: UserCreateInput! = {}): User
+  createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  updateUsers(data: [UsersUpdateInput!]!): [User]
   deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]!): [User!]
+  deleteUsers(ids: [ID!]!): [User]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!

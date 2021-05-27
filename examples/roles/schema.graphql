@@ -224,28 +224,24 @@ enum SortRolesBy {
 }
 
 type Mutation {
-  createTodo(data: TodoCreateInput! = {}): Todo
+  createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
+  updateTodos(data: [TodosUpdateInput!]!): [Todo]
   deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]!): [Todo!]
-  createPerson(
-    data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
-  ): Person
+  deleteTodos(ids: [ID!]!): [Todo]
+  createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  updatePeople(data: [PeopleUpdateInput!]!): [Person]
   deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]!): [Person!]
-  createRole(
-    data: RoleCreateInput! = { assignedTo: { create: [], connect: [] } }
-  ): Role
+  deletePeople(ids: [ID!]!): [Person]
+  createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role!]
+  updateRoles(data: [RolesUpdateInput!]!): [Role]
   deleteRole(id: ID!): Role
-  deleteRoles(ids: [ID!]!): [Role!]
+  deleteRoles(ids: [ID!]!): [Role]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!

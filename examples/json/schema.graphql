@@ -119,18 +119,18 @@ enum SortPeopleBy {
 }
 
 type Mutation {
-  createPackage(data: PackageCreateInput! = {}): Package
+  createPackage(data: PackageCreateInput): Package
   createPackages(data: [PackagesCreateInput]): [Package]
   updatePackage(id: ID!, data: PackageUpdateInput): Package
-  updatePackages(data: [PackagesUpdateInput!]!): [Package!]
+  updatePackages(data: [PackagesUpdateInput!]!): [Package]
   deletePackage(id: ID!): Package
-  deletePackages(ids: [ID!]!): [Package!]
-  createPerson(data: PersonCreateInput! = {}): Person
+  deletePackages(ids: [ID!]!): [Package]
+  createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  updatePeople(data: [PeopleUpdateInput!]!): [Person]
   deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]!): [Person!]
+  deletePeople(ids: [ID!]!): [Person]
 }
 
 input PackageCreateInput {

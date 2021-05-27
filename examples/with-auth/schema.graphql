@@ -156,20 +156,18 @@ enum SortPeopleBy {
 }
 
 type Mutation {
-  createTask(data: TaskCreateInput! = {}): Task
+  createTask(data: TaskCreateInput): Task
   createTasks(data: [TasksCreateInput]): [Task]
   updateTask(id: ID!, data: TaskUpdateInput): Task
-  updateTasks(data: [TasksUpdateInput!]!): [Task!]
+  updateTasks(data: [TasksUpdateInput!]!): [Task]
   deleteTask(id: ID!): Task
-  deleteTasks(ids: [ID!]!): [Task!]
-  createPerson(
-    data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
-  ): Person
+  deleteTasks(ids: [ID!]!): [Task]
+  createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  updatePeople(data: [PeopleUpdateInput!]!): [Person]
   deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]!): [Person!]
+  deletePeople(ids: [ID!]!): [Person]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!

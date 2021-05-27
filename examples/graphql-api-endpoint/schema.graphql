@@ -271,28 +271,24 @@ input TagWhereUniqueInput {
 }
 
 type Mutation {
-  createUser(
-    data: UserCreateInput! = { posts: { create: [], connect: [] } }
-  ): User
+  createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  updateUsers(data: [UsersUpdateInput!]!): [User]
   deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]!): [User!]
-  createPost(
-    data: PostCreateInput! = { tags: { create: [], connect: [] } }
-  ): Post
+  deleteUsers(ids: [ID!]!): [User]
+  createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  updatePosts(data: [PostsUpdateInput!]!): [Post]
   deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]!): [Post!]
-  createTag(data: TagCreateInput! = { posts: { create: [], connect: [] } }): Tag
+  deletePosts(ids: [ID!]!): [Post]
+  createTag(data: TagCreateInput): Tag
   createTags(data: [TagsCreateInput]): [Tag]
   updateTag(id: ID!, data: TagUpdateInput): Tag
-  updateTags(data: [TagsUpdateInput!]!): [Tag!]
+  updateTags(data: [TagsUpdateInput!]!): [Tag]
   deleteTag(id: ID!): Tag
-  deleteTags(ids: [ID!]!): [Tag!]
+  deleteTags(ids: [ID!]!): [Tag]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!

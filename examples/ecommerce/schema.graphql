@@ -591,58 +591,48 @@ enum SortRolesBy {
 }
 
 type Mutation {
-  createUser(
-    data: UserCreateInput! = {
-      cart: { create: [], connect: [] }
-      orders: { create: [], connect: [] }
-      products: { create: [], connect: [] }
-    }
-  ): User
+  createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  updateUsers(data: [UsersUpdateInput!]!): [User]
   deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]!): [User!]
-  createProduct(data: ProductCreateInput! = {}): Product
+  deleteUsers(ids: [ID!]!): [User]
+  createProduct(data: ProductCreateInput): Product
   createProducts(data: [ProductsCreateInput]): [Product]
   updateProduct(id: ID!, data: ProductUpdateInput): Product
-  updateProducts(data: [ProductsUpdateInput!]!): [Product!]
+  updateProducts(data: [ProductsUpdateInput!]!): [Product]
   deleteProduct(id: ID!): Product
-  deleteProducts(ids: [ID!]!): [Product!]
-  createProductImage(data: ProductImageCreateInput! = {}): ProductImage
+  deleteProducts(ids: [ID!]!): [Product]
+  createProductImage(data: ProductImageCreateInput): ProductImage
   createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
   updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
-  updateProductImages(data: [ProductImagesUpdateInput!]!): [ProductImage!]
+  updateProductImages(data: [ProductImagesUpdateInput!]!): [ProductImage]
   deleteProductImage(id: ID!): ProductImage
-  deleteProductImages(ids: [ID!]!): [ProductImage!]
-  createCartItem(data: CartItemCreateInput! = {}): CartItem
+  deleteProductImages(ids: [ID!]!): [ProductImage]
+  createCartItem(data: CartItemCreateInput): CartItem
   createCartItems(data: [CartItemsCreateInput]): [CartItem]
   updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
-  updateCartItems(data: [CartItemsUpdateInput!]!): [CartItem!]
+  updateCartItems(data: [CartItemsUpdateInput!]!): [CartItem]
   deleteCartItem(id: ID!): CartItem
-  deleteCartItems(ids: [ID!]!): [CartItem!]
-  createOrderItem(data: OrderItemCreateInput! = {}): OrderItem
+  deleteCartItems(ids: [ID!]!): [CartItem]
+  createOrderItem(data: OrderItemCreateInput): OrderItem
   createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
   updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
-  updateOrderItems(data: [OrderItemsUpdateInput!]!): [OrderItem!]
+  updateOrderItems(data: [OrderItemsUpdateInput!]!): [OrderItem]
   deleteOrderItem(id: ID!): OrderItem
-  deleteOrderItems(ids: [ID!]!): [OrderItem!]
-  createOrder(
-    data: OrderCreateInput! = { items: { create: [], connect: [] } }
-  ): Order
+  deleteOrderItems(ids: [ID!]!): [OrderItem]
+  createOrder(data: OrderCreateInput): Order
   createOrders(data: [OrdersCreateInput]): [Order]
   updateOrder(id: ID!, data: OrderUpdateInput): Order
-  updateOrders(data: [OrdersUpdateInput!]!): [Order!]
+  updateOrders(data: [OrdersUpdateInput!]!): [Order]
   deleteOrder(id: ID!): Order
-  deleteOrders(ids: [ID!]!): [Order!]
-  createRole(
-    data: RoleCreateInput! = { assignedTo: { create: [], connect: [] } }
-  ): Role
+  deleteOrders(ids: [ID!]!): [Order]
+  createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role!]
+  updateRoles(data: [RolesUpdateInput!]!): [Role]
   deleteRole(id: ID!): Role
-  deleteRoles(ids: [ID!]!): [Role!]
+  deleteRoles(ids: [ID!]!): [Role]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!

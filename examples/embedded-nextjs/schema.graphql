@@ -68,12 +68,12 @@ type _QueryMeta {
 }
 
 type Mutation {
-  createPost(data: PostCreateInput! = {}): Post
+  createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  updatePosts(data: [PostsUpdateInput!]!): [Post]
   deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]!): [Post!]
+  deletePosts(ids: [ID!]!): [Post]
 }
 
 input PostCreateInput {

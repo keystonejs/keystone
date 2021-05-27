@@ -186,18 +186,18 @@ enum SortUsersBy {
 }
 
 type Mutation {
-  createTodo(data: TodoCreateInput! = {}): Todo
+  createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
+  updateTodos(data: [TodosUpdateInput!]!): [Todo]
   deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]!): [Todo!]
-  createUser(data: UserCreateInput! = {}): User
+  deleteTodos(ids: [ID!]!): [Todo]
+  createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  updateUsers(data: [UsersUpdateInput!]!): [User]
   deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]!): [User!]
+  deleteUsers(ids: [ID!]!): [User]
 }
 
 input TodoCreateInput {
