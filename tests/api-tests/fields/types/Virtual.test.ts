@@ -6,6 +6,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
+import { types } from '@keystone-next/types';
 
 function makeSetupKeystone(fields: BaseFields<any>) {
   return function setupKeystone(provider: ProviderName) {
@@ -29,27 +30,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`Provider: ${provider}`, () => {
     describe('Virtual field type', () => {
       test(
-        'Default - resolver returns a string',
+        'no args',
         runner(
           makeSetupKeystone({
-            foo: virtual({ resolver: () => 'Hello world!' }),
-          }),
-          async ({ context }) => {
-            const data = await context.lists.Post.createOne({
-              data: { value: 1 },
-              query: 'value foo',
-            });
-            expect(data.value).toEqual(1);
-            expect(data.foo).toEqual('Hello world!');
-          }
-        )
-      );
-
-      test(
-        'graphQLReturnType',
-        runner(
-          makeSetupKeystone({
-            foo: virtual({ graphQLReturnType: 'Int', resolver: () => 42 }),
+            foo: virtual({
+              field: types.field({
+                type: types.Int,
+                resolve() {
+                  return 42;
+                },
+              }),
+            }),
           }),
           async ({ context }) => {
             const data = await context.lists.Post.createOne({
@@ -67,12 +58,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              graphQLReturnType: 'Int',
-              args: [
-                { name: 'x', type: 'Int' },
-                { name: 'y', type: 'Int' },
-              ],
-              resolver: (item, { x = 5, y = 6 }) => x * y,
+              field: types.field({
+                type: types.Int,
+                args: {
+                  x: types.arg({ type: types.Int }),
+                  y: types.arg({ type: types.Int }),
+                },
+                resolve: (item, { x = 5, y = 6 }) => x! * y!,
+              }),
             }),
           }),
           async ({ context }) => {
@@ -91,12 +84,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              graphQLReturnType: 'Int',
-              args: [
-                { name: 'x', type: 'Int' },
-                { name: 'y', type: 'Int' },
-              ],
-              resolver: (item, { x = 5, y = 6 }) => x * y,
+              field: types.field({
+                type: types.Int,
+                args: {
+                  x: types.arg({ type: types.Int }),
+                  y: types.arg({ type: types.Int }),
+                },
+                resolve: (item, { x = 5, y = 6 }) => x! * y!,
+              }),
             }),
           }),
           async ({ context }) => {
@@ -115,9 +110,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              extendGraphQLTypes: [`type Movie { title: String, rating: Int }`],
-              graphQLReturnType: '[Movie]',
-              resolver: () => [{ title: 'CATS!', rating: 100 }],
+              field: types.field({
+                type: types.list(
+                  types.object<{ title: string; rating: number }>()({
+                    name: 'Movie',
+                    fields: {
+                      title: types.field({ type: types.String }),
+                      rating: types.field({ type: types.Int }),
+                    },
+                  })
+                ),
+                resolve() {
+                  return [{ title: 'CATS!', rating: 100 }];
+                },
+              }),
             }),
           }),
           async ({ context }) => {
