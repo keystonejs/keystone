@@ -6,7 +6,7 @@ import {
   resolveInputForCreateOrUpdate,
   UniqueInputFilter,
 } from './input-resolvers';
-import { runPrismaOperations, InitialisedList } from './types-for-lists';
+import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
 
 export async function createMany(
@@ -14,21 +14,14 @@ export async function createMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  provider: DatabaseProvider
+  _provider: DatabaseProvider
 ) {
-  const rootOperations = await Promise.all(
-    data.map(async rawData => {
-      const { afterChange, data } = await createOneState({ data: rawData }, listKey, list, context);
-      const operation = getPrismaModelForList(context.prisma, listKey).create({ data });
-      return { afterChange, operation };
-    })
-  );
-  const items = await runPrismaOperations(
-    rootOperations.map(x => x.operation),
-    context,
-    provider
-  );
-  return items;
+  return data.map(async rawData => {
+    const { afterChange, data } = await createOneState({ data: rawData }, listKey, list, context);
+    const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+    await afterChange(item);
+    return item;
+  });
 }
 
 export async function createOneState(
@@ -69,44 +62,25 @@ export async function updateMany(
   listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
-  provider: DatabaseProvider
+  _provider: DatabaseProvider
 ) {
-  const rootOperations = await Promise.all(
-    data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-      const item = await applyAccessControlForUpdate(
-        listKey,
-        list,
-        context,
-        rawUniqueWhere,
-        rawData
-      );
-      const { afterChange, data } = await resolveInputForCreateOrUpdate(
-        listKey,
-        'update',
-        list,
-        context,
-        rawData,
-        item
-      );
-      return {
-        afterChange,
-        operation: getPrismaModelForList(context.prisma, listKey).update({
-          where: { id: item.id },
-          data,
-        }),
-      };
-    })
-  );
-
-  const items = await runPrismaOperations(
-    rootOperations.map(x => x.operation),
-    context,
-    provider
-  );
-
-  await Promise.all(rootOperations.map((x, i) => x.afterChange(items[i])));
-
-  return items;
+  return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
+    const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
+    const { afterChange, data } = await resolveInputForCreateOrUpdate(
+      listKey,
+      'update',
+      list,
+      context,
+      rawData,
+      item
+    );
+    const updatedItem = await getPrismaModelForList(context.prisma, listKey).update({
+      where: { id: item.id },
+      data,
+    });
+    afterChange(updatedItem);
+    return updatedItem;
+  });
 }
 
 export async function updateOne(
@@ -144,22 +118,14 @@ export async function deleteMany(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const result = await Promise.all(
-    where.map(async where => {
-      const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
-      return {
-        id: existingItem.id,
-        after: async () => {
-          await afterDelete();
-          return existingItem;
-        },
-      };
-    })
-  );
-  await getPrismaModelForList(context.prisma, listKey).deleteMany({
-    where: { id: { in: result.map(x => x.id) } },
+  return where.map(async where => {
+    const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
+    await getPrismaModelForList(context.prisma, listKey).delete({
+      where: { id: existingItem.id },
+    });
+    afterDelete();
+    return existingItem;
   });
-  return Promise.all(result.map(({ after }) => after()));
 }
 
 export async function deleteOne(
