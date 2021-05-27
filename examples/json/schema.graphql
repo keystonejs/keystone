@@ -120,20 +120,17 @@ enum SortPeopleBy {
 
 type Mutation {
   createPackage(data: PackageCreateInput! = {}): Package
-  createPackages(data: [PackageCreateInput!]!): [Package!]
-  updatePackage(
-    where: PackageWhereUniqueInput!
-    data: PackageUpdateInput!
-  ): Package
+  createPackages(data: [PackagesCreateInput]): [Package]
+  updatePackage(id: ID!, data: PackageUpdateInput): Package
   updatePackages(data: [PackagesUpdateInput!]!): [Package!]
-  deletePackage(where: PackageWhereUniqueInput!): Package
-  deletePackages(where: [PackageWhereUniqueInput!]!): [Package!]
+  deletePackage(id: ID!): Package
+  deletePackages(ids: [ID!]!): [Package!]
   createPerson(data: PersonCreateInput! = {}): Person
-  createPeople(data: [PersonCreateInput!]!): [Person!]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  createPeople(data: [PeopleCreateInput]): [Person]
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PeopleUpdateInput!]!): [Person!]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
+  deletePerson(id: ID!): Person
+  deletePeople(ids: [ID!]!): [Person!]
 }
 
 input PackageCreateInput {
@@ -158,6 +155,10 @@ input PackageRelateToManyForCreateInput {
   connect: [PackageWhereUniqueInput!]! = []
 }
 
+input PackagesCreateInput {
+  data: PackageCreateInput
+}
+
 input PackageUpdateInput {
   label: String
   pkgjson: JSON
@@ -171,8 +172,12 @@ input PersonRelateToOneForUpdateInput {
 }
 
 input PackagesUpdateInput {
-  where: PackageWhereUniqueInput!
-  data: PackageUpdateInput!
+  id: ID!
+  data: PackageUpdateInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 input PersonUpdateInput {
@@ -193,8 +198,8 @@ input PackageRelateToManyForUpdateInput {
 }
 
 input PeopleUpdateInput {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
+  id: ID!
+  data: PersonUpdateInput
 }
 
 type Query {

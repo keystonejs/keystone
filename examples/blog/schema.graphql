@@ -154,17 +154,17 @@ enum SortAuthorsBy {
 
 type Mutation {
   createPost(data: PostCreateInput! = {}): Post
-  createPosts(data: [PostCreateInput!]!): [Post!]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  createPosts(data: [PostsCreateInput]): [Post]
+  updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostsUpdateInput!]!): [Post!]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+  deletePost(id: ID!): Post
+  deletePosts(ids: [ID!]!): [Post!]
   createAuthor(data: AuthorCreateInput! = {}): Author
-  createAuthors(data: [AuthorCreateInput!]!): [Author!]
-  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
+  createAuthors(data: [AuthorsCreateInput]): [Author]
+  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
   updateAuthors(data: [AuthorsUpdateInput!]!): [Author!]
-  deleteAuthor(where: AuthorWhereUniqueInput!): Author
-  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author!]
+  deleteAuthor(id: ID!): Author
+  deleteAuthors(ids: [ID!]!): [Author!]
 }
 
 input PostCreateInput {
@@ -191,6 +191,10 @@ input PostRelateToManyForCreateInput {
   connect: [PostWhereUniqueInput!]! = []
 }
 
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
 input PostUpdateInput {
   title: String
   status: PostStatusType
@@ -205,8 +209,12 @@ input AuthorRelateToOneForUpdateInput {
 }
 
 input PostsUpdateInput {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
+  id: ID!
+  data: PostUpdateInput
+}
+
+input AuthorsCreateInput {
+  data: AuthorCreateInput
 }
 
 input AuthorUpdateInput {
@@ -228,8 +236,8 @@ input PostRelateToManyForUpdateInput {
 }
 
 input AuthorsUpdateInput {
-  where: AuthorWhereUniqueInput!
-  data: AuthorUpdateInput!
+  id: ID!
+  data: AuthorUpdateInput
 }
 
 type Query {

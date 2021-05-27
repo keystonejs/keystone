@@ -157,19 +157,19 @@ enum SortPeopleBy {
 
 type Mutation {
   createTask(data: TaskCreateInput! = {}): Task
-  createTasks(data: [TaskCreateInput!]!): [Task!]
-  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  createTasks(data: [TasksCreateInput]): [Task]
+  updateTask(id: ID!, data: TaskUpdateInput): Task
   updateTasks(data: [TasksUpdateInput!]!): [Task!]
-  deleteTask(where: TaskWhereUniqueInput!): Task
-  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task!]
+  deleteTask(id: ID!): Task
+  deleteTasks(ids: [ID!]!): [Task!]
   createPerson(
     data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
   ): Person
-  createPeople(data: [PersonCreateInput!]!): [Person!]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  createPeople(data: [PeopleCreateInput]): [Person]
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PeopleUpdateInput!]!): [Person!]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
+  deletePerson(id: ID!): Person
+  deletePeople(ids: [ID!]!): [Person!]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
@@ -205,6 +205,10 @@ input TaskRelateToManyForCreateInput {
   connect: [TaskWhereUniqueInput!]! = []
 }
 
+input TasksCreateInput {
+  data: TaskCreateInput
+}
+
 input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
@@ -219,8 +223,12 @@ input PersonRelateToOneForUpdateInput {
 }
 
 input TasksUpdateInput {
-  where: TaskWhereUniqueInput!
-  data: TaskUpdateInput!
+  id: ID!
+  data: TaskUpdateInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 input PersonUpdateInput {
@@ -243,8 +251,8 @@ input TaskRelateToManyForUpdateInput {
 }
 
 input PeopleUpdateInput {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
+  id: ID!
+  data: PersonUpdateInput
 }
 
 type Query {

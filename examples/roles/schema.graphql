@@ -225,27 +225,27 @@ enum SortRolesBy {
 
 type Mutation {
   createTodo(data: TodoCreateInput! = {}): Todo
-  createTodos(data: [TodoCreateInput!]!): [Todo!]
-  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  createTodos(data: [TodosCreateInput]): [Todo]
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodosUpdateInput!]!): [Todo!]
-  deleteTodo(where: TodoWhereUniqueInput!): Todo
-  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]
+  deleteTodo(id: ID!): Todo
+  deleteTodos(ids: [ID!]!): [Todo!]
   createPerson(
     data: PersonCreateInput! = { tasks: { create: [], connect: [] } }
   ): Person
-  createPeople(data: [PersonCreateInput!]!): [Person!]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  createPeople(data: [PeopleCreateInput]): [Person]
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PeopleUpdateInput!]!): [Person!]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
+  deletePerson(id: ID!): Person
+  deletePeople(ids: [ID!]!): [Person!]
   createRole(
     data: RoleCreateInput! = { assignedTo: { create: [], connect: [] } }
   ): Role
-  createRoles(data: [RoleCreateInput!]!): [Role!]
-  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
+  createRoles(data: [RolesCreateInput]): [Role]
+  updateRole(id: ID!, data: RoleUpdateInput): Role
   updateRoles(data: [RolesUpdateInput!]!): [Role!]
-  deleteRole(where: RoleWhereUniqueInput!): Role
-  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role!]
+  deleteRole(id: ID!): Role
+  deleteRoles(ids: [ID!]!): [Role!]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
@@ -302,6 +302,10 @@ input TodoRelateToManyForCreateInput {
   connect: [TodoWhereUniqueInput!]! = []
 }
 
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
 input TodoUpdateInput {
   label: String
   isComplete: Boolean
@@ -315,8 +319,12 @@ input PersonRelateToOneForUpdateInput {
 }
 
 input TodosUpdateInput {
-  where: TodoWhereUniqueInput!
-  data: TodoUpdateInput!
+  id: ID!
+  data: TodoUpdateInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 input PersonUpdateInput {
@@ -345,8 +353,12 @@ input TodoRelateToManyForUpdateInput {
 }
 
 input PeopleUpdateInput {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
+  id: ID!
+  data: PersonUpdateInput
+}
+
+input RolesCreateInput {
+  data: RoleCreateInput
 }
 
 input RoleUpdateInput {
@@ -373,8 +385,8 @@ input PersonRelateToManyForUpdateInput {
 }
 
 input RolesUpdateInput {
-  where: RoleWhereUniqueInput!
-  data: RoleUpdateInput!
+  id: ID!
+  data: RoleUpdateInput
 }
 
 type Query {

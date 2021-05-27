@@ -280,26 +280,23 @@ type Mutation {
       posts: { create: [], connect: [] }
     }
   ): User
-  createUsers(data: [UserCreateInput!]!): [User!]
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  createUsers(data: [UsersCreateInput]): [User]
+  updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UsersUpdateInput!]!): [User!]
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
+  deleteUser(id: ID!): User
+  deleteUsers(ids: [ID!]!): [User!]
   createPhoneNumber(data: PhoneNumberCreateInput! = {}): PhoneNumber
-  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber!]
-  updatePhoneNumber(
-    where: PhoneNumberWhereUniqueInput!
-    data: PhoneNumberUpdateInput!
-  ): PhoneNumber
+  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
   updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber!]
-  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
-  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber!]
+  deletePhoneNumber(id: ID!): PhoneNumber
+  deletePhoneNumbers(ids: [ID!]!): [PhoneNumber!]
   createPost(data: PostCreateInput! = {}): Post
-  createPosts(data: [PostCreateInput!]!): [Post!]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  createPosts(data: [PostsCreateInput]): [Post]
+  updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostsUpdateInput!]!): [Post!]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+  deletePost(id: ID!): Post
+  deletePosts(ids: [ID!]!): [Post!]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -369,6 +366,10 @@ input PostCreateInput {
   author: UserRelateToOneForCreateInput
 }
 
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -406,8 +407,12 @@ input PostRelateToManyForUpdateInput {
 }
 
 input UsersUpdateInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateInput!
+  id: ID!
+  data: UserUpdateInput
+}
+
+input PhoneNumbersCreateInput {
+  data: PhoneNumberCreateInput
 }
 
 input PhoneNumberUpdateInput {
@@ -422,8 +427,12 @@ input UserRelateToOneForUpdateInput {
 }
 
 input PhoneNumbersUpdateInput {
-  where: PhoneNumberWhereUniqueInput!
-  data: PhoneNumberUpdateInput!
+  id: ID!
+  data: PhoneNumberUpdateInput
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 input PostUpdateInput {
@@ -434,8 +443,8 @@ input PostUpdateInput {
 }
 
 input PostsUpdateInput {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
+  id: ID!
+  data: PostUpdateInput
 }
 
 type Query {

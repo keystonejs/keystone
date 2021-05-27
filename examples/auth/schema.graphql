@@ -71,11 +71,11 @@ type _QueryMeta {
 
 type Mutation {
   createUser(data: UserCreateInput! = {}): User
-  createUsers(data: [UserCreateInput!]!): [User!]
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  createUsers(data: [UsersCreateInput]): [User]
+  updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UsersUpdateInput!]!): [User!]
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
+  deleteUser(id: ID!): User
+  deleteUsers(ids: [ID!]!): [User!]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -93,6 +93,10 @@ input UserCreateInput {
   isAdmin: Boolean
 }
 
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -101,8 +105,8 @@ input UserUpdateInput {
 }
 
 input UsersUpdateInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateInput!
+  id: ID!
+  data: UserUpdateInput
 }
 
 type Query {

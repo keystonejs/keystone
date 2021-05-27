@@ -69,17 +69,21 @@ type _QueryMeta {
 
 type Mutation {
   createPost(data: PostCreateInput! = {}): Post
-  createPosts(data: [PostCreateInput!]!): [Post!]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  createPosts(data: [PostsCreateInput]): [Post]
+  updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostsUpdateInput!]!): [Post!]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+  deletePost(id: ID!): Post
+  deletePosts(ids: [ID!]!): [Post!]
 }
 
 input PostCreateInput {
   title: String
   slug: String
   content: String
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 input PostUpdateInput {
@@ -89,8 +93,8 @@ input PostUpdateInput {
 }
 
 input PostsUpdateInput {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
+  id: ID!
+  data: PostUpdateInput
 }
 
 type Query {
