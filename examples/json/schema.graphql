@@ -27,6 +27,15 @@ type Person {
     skip: Int! = 0
   ): [Package!]!
   packagesCount(where: PackageWhereInput! = {}): Int!
+  _packagesMeta(
+    where: PackageWhereInput! = {}
+    search: String
+    orderBy: [PackageOrderByInput!]! = []
+    sortBy: [SortPackagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input PackageWhereInput {
@@ -94,12 +103,12 @@ enum SortPackagesBy {
   isPrivate_DESC
 }
 
-input PackageWhereUniqueInput {
-  id: ID!
-}
-
 type _QueryMeta {
   count: Int
+}
+
+input PackageWhereUniqueInput {
+  id: ID!
 }
 
 input PersonWhereUniqueInput {
@@ -122,13 +131,13 @@ type Mutation {
   createPackage(data: PackageCreateInput): Package
   createPackages(data: [PackagesCreateInput]): [Package]
   updatePackage(id: ID!, data: PackageUpdateInput): Package
-  updatePackages(data: [PackagesUpdateInput!]!): [Package]
+  updatePackages(data: [PackagesUpdateInput]): [Package]
   deletePackage(id: ID!): Package
   deletePackages(ids: [ID!]!): [Package]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person]
+  updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]!): [Person]
 }

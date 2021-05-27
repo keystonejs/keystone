@@ -91,9 +91,9 @@ export const file =
     return fieldType({
       kind: 'multi',
       fields: {
+        filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-        filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
       },
     })({
       ...config,

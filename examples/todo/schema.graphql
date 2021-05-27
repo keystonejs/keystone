@@ -26,6 +26,15 @@ type Person {
     skip: Int! = 0
   ): [Task!]!
   tasksCount(where: TaskWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TaskWhereInput! = {}
+    search: String
+    orderBy: [TaskOrderByInput!]! = []
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input TaskWhereInput {
@@ -115,12 +124,12 @@ enum SortTasksBy {
   finishBy_DESC
 }
 
-input TaskWhereUniqueInput {
-  id: ID!
-}
-
 type _QueryMeta {
   count: Int
+}
+
+input TaskWhereUniqueInput {
+  id: ID!
 }
 
 input PersonWhereUniqueInput {
@@ -143,13 +152,13 @@ type Mutation {
   createTask(data: TaskCreateInput): Task
   createTasks(data: [TasksCreateInput]): [Task]
   updateTask(id: ID!, data: TaskUpdateInput): Task
-  updateTasks(data: [TasksUpdateInput!]!): [Task]
+  updateTasks(data: [TasksUpdateInput]): [Task]
   deleteTask(id: ID!): Task
   deleteTasks(ids: [ID!]!): [Task]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person]
+  updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]!): [Person]
 }

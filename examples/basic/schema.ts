@@ -28,8 +28,7 @@ type AccessArgs = {
   item?: any;
 };
 export const access = {
-  isAdmin: ({ session }: AccessArgs) => true,
-  // !!session?.data?.isAdmin
+  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
 };
 
 const randomNumber = () => Math.round(Math.random() * 10);
@@ -85,7 +84,7 @@ export const lists = createSchema({
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
         field: types.field({
-          type: types.nonNull(types.Float),
+          type: types.Float,
           resolve() {
             return randomNumber();
           },
@@ -173,6 +172,7 @@ export const lists = createSchema({
         dividers: true,
         componentBlocks,
       }),
+      publishDate: timestamp(),
       author: relationship({
         ref: 'User.posts',
         ui: {

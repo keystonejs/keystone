@@ -23,6 +23,15 @@ type User {
     skip: Int! = 0
   ): [Todo!]!
   tasksCount(where: TodoWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   createdAt: String
   updatedAt: String
 }
@@ -152,12 +161,12 @@ enum SortTodosBy {
   updatedAt_DESC
 }
 
-input TodoWhereUniqueInput {
-  id: ID!
-}
-
 type _QueryMeta {
   count: Int
+}
+
+input TodoWhereUniqueInput {
+  id: ID!
 }
 
 input UserWhereUniqueInput {
@@ -189,13 +198,13 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo]
+  updateTodos(data: [TodosUpdateInput]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]!): [Todo]
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UsersUpdateInput]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]!): [User]
 }

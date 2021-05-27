@@ -13,6 +13,15 @@ type User {
     skip: Int! = 0
   ): [Post!]!
   postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 type PasswordState {
@@ -36,6 +45,15 @@ type Post {
     skip: Int! = 0
   ): [Tag!]!
   tagsCount(where: TagWhereInput! = {}): Int!
+  _tagsMeta(
+    where: TagWhereInput! = {}
+    search: String
+    orderBy: [TagOrderByInput!]! = []
+    sortBy: [SortTagsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 type Post_content_DocumentField {
@@ -63,6 +81,15 @@ type Tag {
     skip: Int! = 0
   ): [Post!]!
   postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input PostWhereInput {
@@ -227,6 +254,10 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
+type _QueryMeta {
+  count: Int
+}
+
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -258,10 +289,6 @@ enum SortUsersBy {
   email_DESC
 }
 
-type _QueryMeta {
-  count: Int
-}
-
 input PostWhereUniqueInput {
   id: ID!
 }
@@ -274,19 +301,19 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UsersUpdateInput]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]!): [User]
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]!): [Post]
   createTag(data: TagCreateInput): Tag
   createTags(data: [TagsCreateInput]): [Tag]
   updateTag(id: ID!, data: TagUpdateInput): Tag
-  updateTags(data: [TagsUpdateInput!]!): [Tag]
+  updateTags(data: [TagsUpdateInput]): [Tag]
   deleteTag(id: ID!): Tag
   deleteTags(ids: [ID!]!): [Tag]
   endSession: Boolean!

@@ -58,6 +58,15 @@ type User {
     skip: Int! = 0
   ): [PhoneNumber!]!
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  _phoneNumbersMeta(
+    where: PhoneNumberWhereInput! = {}
+    search: String
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    sortBy: [SortPhoneNumbersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   posts(
     where: PostWhereInput! = {}
     search: String
@@ -68,7 +77,16 @@ type User {
     skip: Int! = 0
   ): [Post!]!
   postsCount(where: PostWhereInput! = {}): Int!
-  randomNumber: Float!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  randomNumber: Float
 }
 
 type PasswordState {
@@ -177,6 +195,14 @@ input PostWhereInput {
   status_gte: String
   status_in: [String]
   status_not_in: [String]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
   author_is_null: Boolean
   author: UserWhereInput
 }
@@ -201,11 +227,16 @@ enum SortPhoneNumbersBy {
   value_DESC
 }
 
+type _QueryMeta {
+  count: Int
+}
+
 type Post {
   id: ID!
   title: String
   status: String
   content: Post_content_DocumentField
+  publishDate: String
   author: User
 }
 
@@ -225,6 +256,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
+  publishDate: OrderDirection
 }
 
 enum SortPostsBy {
@@ -234,6 +266,8 @@ enum SortPostsBy {
   title_DESC
   status_ASC
   status_DESC
+  publishDate_ASC
+  publishDate_DESC
 }
 
 input UserWhereUniqueInput {
@@ -261,10 +295,6 @@ enum SortUsersBy {
   roles_DESC
 }
 
-type _QueryMeta {
-  count: Int
-}
-
 input PhoneNumberWhereUniqueInput {
   id: ID!
 }
@@ -277,19 +307,19 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UsersUpdateInput]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]!): [User]
   createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
   createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
   updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber]
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
   deletePhoneNumber(id: ID!): PhoneNumber
   deletePhoneNumbers(ids: [ID!]!): [PhoneNumber]
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]!): [Post]
   endSession: Boolean!
@@ -358,6 +388,7 @@ input PostCreateInput {
   title: String
   status: String
   content: JSON
+  publishDate: String
   author: UserRelateToOneForCreateInput
 }
 
@@ -434,6 +465,7 @@ input PostUpdateInput {
   title: String
   status: String
   content: JSON
+  publishDate: String
   author: UserRelateToOneForUpdateInput
 }
 

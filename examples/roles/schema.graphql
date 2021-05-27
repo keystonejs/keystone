@@ -22,6 +22,15 @@ type Person {
     skip: Int! = 0
   ): [Todo!]!
   tasksCount(where: TodoWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 type PasswordState {
@@ -47,6 +56,15 @@ type Role {
     skip: Int! = 0
   ): [Person!]!
   assignedToCount(where: PersonWhereInput! = {}): Int!
+  _assignedToMeta(
+    where: PersonWhereInput! = {}
+    search: String
+    orderBy: [PersonOrderByInput!]! = []
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input PersonWhereInput {
@@ -159,6 +177,10 @@ enum SortPeopleBy {
   email_DESC
 }
 
+type _QueryMeta {
+  count: Int
+}
+
 input TodoOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -179,10 +201,6 @@ enum SortTodosBy {
 
 input TodoWhereUniqueInput {
   id: ID!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input PersonWhereUniqueInput {
@@ -227,19 +245,19 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo]
+  updateTodos(data: [TodosUpdateInput]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]!): [Todo]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person]
+  updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]!): [Person]
   createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role]
+  updateRoles(data: [RolesUpdateInput]): [Role]
   deleteRole(id: ID!): Role
   deleteRoles(ids: [ID!]!): [Role]
   endSession: Boolean!

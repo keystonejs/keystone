@@ -26,6 +26,15 @@ type Author {
     skip: Int! = 0
   ): [Post!]!
   postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input PostWhereInput {
@@ -125,12 +134,12 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
-input PostWhereUniqueInput {
-  id: ID!
-}
-
 type _QueryMeta {
   count: Int
+}
+
+input PostWhereUniqueInput {
+  id: ID!
 }
 
 input AuthorWhereUniqueInput {
@@ -156,13 +165,13 @@ type Mutation {
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostsUpdateInput]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]!): [Post]
   createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-  updateAuthors(data: [AuthorsUpdateInput!]!): [Author]
+  updateAuthors(data: [AuthorsUpdateInput]): [Author]
   deleteAuthor(id: ID!): Author
   deleteAuthors(ids: [ID!]!): [Author]
 }

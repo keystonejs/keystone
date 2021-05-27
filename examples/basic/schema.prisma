@@ -11,16 +11,16 @@ generator client {
 model User {
   id                  Int           @id @default(autoincrement())
   name                String?
-  email               String?
+  email               String?       @unique
   avatar_filesize     Int?
   avatar_extension    String?
   avatar_width        Int?
   avatar_height       Int?
   avatar_mode         String?
   avatar_id           String?
+  attachment_filesize Int?
   attachment_mode     String?
   attachment_filename String?
-  attachment_filesize Int?
   password            String?
   isAdmin             Boolean?
   roles               String?
@@ -39,12 +39,13 @@ model PhoneNumber {
 }
 
 model Post {
-  id       Int     @id @default(autoincrement())
-  title    String?
-  status   String?
-  content  String?
-  author   User?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId Int?    @map("author")
+  id          Int       @id @default(autoincrement())
+  title       String?
+  status      String?
+  content     String?
+  publishDate DateTime?
+  author      User?     @relation("Post_author", fields: [authorId], references: [id])
+  authorId    Int?      @map("author")
 
   @@index([authorId])
 }

@@ -13,6 +13,15 @@ type User {
     skip: Int! = 0
   ): [CartItem!]!
   cartCount(where: CartItemWhereInput! = {}): Int!
+  _cartMeta(
+    where: CartItemWhereInput! = {}
+    search: String
+    orderBy: [CartItemOrderByInput!]! = []
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   orders(
     where: OrderWhereInput! = {}
     search: String
@@ -23,6 +32,15 @@ type User {
     skip: Int! = 0
   ): [Order!]!
   ordersCount(where: OrderWhereInput! = {}): Int!
+  _ordersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    orderBy: [OrderOrderByInput!]! = []
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   role: Role
   products(
     where: ProductWhereInput! = {}
@@ -34,6 +52,15 @@ type User {
     skip: Int! = 0
   ): [Product!]!
   productsCount(where: ProductWhereInput! = {}): Int!
+  _productsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    orderBy: [ProductOrderByInput!]! = []
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   passwordResetToken: PasswordState
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
@@ -389,6 +416,10 @@ enum SortCartItemsBy {
   quantity_DESC
 }
 
+type _QueryMeta {
+  count: Int
+}
+
 type Order {
   id: ID!
   label: String
@@ -403,6 +434,15 @@ type Order {
     skip: Int! = 0
   ): [OrderItem!]!
   itemsCount(where: OrderItemWhereInput! = {}): Int!
+  _itemsMeta(
+    where: OrderItemWhereInput! = {}
+    search: String
+    orderBy: [OrderItemOrderByInput!]! = []
+    sortBy: [SortOrderItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   user: User
   charge: String
 }
@@ -472,6 +512,15 @@ type Role {
     skip: Int! = 0
   ): [User!]!
   assignedToCount(where: UserWhereInput! = {}): Int!
+  _assignedToMeta(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 input UserOrderByInput {
@@ -518,10 +567,6 @@ enum SortProductsBy {
 
 input UserWhereUniqueInput {
   id: ID!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input ProductWhereUniqueInput {
@@ -594,43 +639,43 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UsersUpdateInput]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]!): [User]
   createProduct(data: ProductCreateInput): Product
   createProducts(data: [ProductsCreateInput]): [Product]
   updateProduct(id: ID!, data: ProductUpdateInput): Product
-  updateProducts(data: [ProductsUpdateInput!]!): [Product]
+  updateProducts(data: [ProductsUpdateInput]): [Product]
   deleteProduct(id: ID!): Product
   deleteProducts(ids: [ID!]!): [Product]
   createProductImage(data: ProductImageCreateInput): ProductImage
   createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
   updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
-  updateProductImages(data: [ProductImagesUpdateInput!]!): [ProductImage]
+  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
   deleteProductImage(id: ID!): ProductImage
   deleteProductImages(ids: [ID!]!): [ProductImage]
   createCartItem(data: CartItemCreateInput): CartItem
   createCartItems(data: [CartItemsCreateInput]): [CartItem]
   updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
-  updateCartItems(data: [CartItemsUpdateInput!]!): [CartItem]
+  updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
   deleteCartItem(id: ID!): CartItem
   deleteCartItems(ids: [ID!]!): [CartItem]
   createOrderItem(data: OrderItemCreateInput): OrderItem
   createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
   updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
-  updateOrderItems(data: [OrderItemsUpdateInput!]!): [OrderItem]
+  updateOrderItems(data: [OrderItemsUpdateInput]): [OrderItem]
   deleteOrderItem(id: ID!): OrderItem
   deleteOrderItems(ids: [ID!]!): [OrderItem]
   createOrder(data: OrderCreateInput): Order
   createOrders(data: [OrdersCreateInput]): [Order]
   updateOrder(id: ID!, data: OrderUpdateInput): Order
-  updateOrders(data: [OrdersUpdateInput!]!): [Order]
+  updateOrders(data: [OrdersUpdateInput]): [Order]
   deleteOrder(id: ID!): Order
   deleteOrders(ids: [ID!]!): [Order]
   createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role]
+  updateRoles(data: [RolesUpdateInput]): [Role]
   deleteRole(id: ID!): Role
   deleteRoles(ids: [ID!]!): [Role]
   endSession: Boolean!
