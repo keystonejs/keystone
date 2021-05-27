@@ -223,7 +223,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
             background: colors.background,
             borderRadius: radii.medium,
             boxShadow: shadow.s300,
-            opacity: isVisible ? 1 : 0,
+            visibility: isVisible ? 'visible' : 'hidden',
             pointerEvents: isVisible ? undefined : 'none',
             zIndex: elevation.e500, // on top of drawers
             ...useArrowStyles(),
