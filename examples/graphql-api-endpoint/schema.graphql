@@ -1,32 +1,3 @@
-type Query {
-  User(where: UserWhereUniqueInput!): User
-  allUsers(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
-  Post(where: PostWhereUniqueInput!): Post
-  allPosts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
-  Tag(where: TagWhereUniqueInput!): Tag
-  allTags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
-}
-
 type User {
   id: ID!
   name: String
@@ -260,86 +231,6 @@ input TagWhereUniqueInput {
   id: ID
 }
 
-type KeystoneMeta {
-  adminMeta: KeystoneAdminMeta!
-}
-
-type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
-  lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
-}
-
-type KeystoneAdminUIListMeta {
-  key: String!
-  itemQueryName: String!
-  listQueryName: String!
-  hideCreate: Boolean!
-  hideDelete: Boolean!
-  path: String!
-  label: String!
-  singular: String!
-  plural: String!
-  description: String
-  initialColumns: [String!]!
-  pageSize: Int!
-  labelField: String!
-  fields: [KeystoneAdminUIFieldMeta!]!
-  initialSort: KeystoneAdminUISort
-  isHidden: Boolean!
-}
-
-type KeystoneAdminUIFieldMeta {
-  path: String!
-  label: String!
-  isOrderable: Boolean!
-  fieldMeta: JSON
-  viewsIndex: Int!
-  customViewsIndex: Int
-  createView: KeystoneAdminUIFieldMetaCreateView!
-  listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
-}
-
-type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
-}
-
-type KeystoneAdminUIFieldMetaListView {
-  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaListViewFieldMode {
-  read
-  hidden
-}
-
-type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
-}
-
-type KeystoneAdminUISort {
-  field: String!
-  direction: KeystoneAdminUISortDirection!
-}
-
-enum KeystoneAdminUISortDirection {
-  ASC
-  DESC
-}
-
 type Mutation {
   createUser(
     data: UserCreateInput! = { posts: { create: [], connect: [] } }
@@ -477,6 +368,115 @@ input TagUpdateInput {
 input TagsUpdateInput {
   where: TagWhereUniqueInput!
   data: TagUpdateInput!
+}
+
+type Query {
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  usersCount(where: UserWhereInput! = {}): Int
+  Post(where: PostWhereUniqueInput!): Post
+  allPosts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+  Tag(where: TagWhereUniqueInput!): Tag
+  allTags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
 }
 
 union AuthenticatedItem = User

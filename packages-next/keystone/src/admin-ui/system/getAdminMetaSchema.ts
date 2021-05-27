@@ -8,17 +8,20 @@ import {
   FieldMetaRootVal,
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
+import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
 export function getAdminMetaSchema({
   config,
+  schema,
   lists,
   adminMeta: adminMetaRoot,
 }: {
   adminMeta: AdminMetaRootVal;
   config: KeystoneConfig;
   lists: Record<string, InitialisedList>;
+  schema: GraphQLSchema;
 }) {
   const isAccessAllowed =
     config.session === undefined
@@ -250,7 +253,7 @@ export function getAdminMetaSchema({
   });
 
   const KeystoneMeta = types.nonNull(
-    types.object()({
+    types.object<{ adminMeta: AdminMetaRootVal }>()({
       name: 'KeystoneMeta',
       fields: {
         adminMeta: types.field({
@@ -272,14 +275,27 @@ export function getAdminMetaSchema({
       },
     })
   );
-  return {
-    keystone: types.field({
-      type: KeystoneMeta,
-      resolve() {
-        return {};
-      },
+  const schemaConfig = schema.toConfig();
+  const queryTypeConfig = schema.getQueryType()!.toConfig();
+  return new GraphQLSchema({
+    ...schemaConfig,
+    // TODO: fix the fact that this would be broken if types used the Query type
+    types: schemaConfig.types.filter(x => x.name !== 'Query'),
+    query: new GraphQLObjectType({
+      ...queryTypeConfig,
+      fields: () => ({
+        ...(typeof queryTypeConfig.fields === 'function'
+          ? queryTypeConfig.fields()
+          : queryTypeConfig.fields),
+        keystone: {
+          type: KeystoneMeta.graphQLType,
+          resolve() {
+            return {};
+          },
+        },
+      }),
     }),
-  };
+  });
 }
 
 type FieldIdentifier = { listKey: string; fieldPath: string };

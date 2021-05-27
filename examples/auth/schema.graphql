@@ -1,16 +1,3 @@
-type Query {
-  User(where: UserWhereUniqueInput!): User
-  allUsers(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
-}
-
 type User {
   id: ID!
   name: String
@@ -66,6 +53,55 @@ input UserOrderByInput {
 enum OrderDirection {
   asc
   desc
+}
+
+type Mutation {
+  createUser(data: UserCreateInput! = {}): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
+  endSession: Boolean!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UsersUpdateInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+type Query {
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  usersCount(where: UserWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
 }
 
 type KeystoneMeta {
@@ -154,42 +190,6 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-type Mutation {
-  createUser(data: UserCreateInput! = {}): User
-  createUsers(data: [UserCreateInput!]!): [User!]
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
-  endSession: Boolean!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
-}
-
-input UsersUpdateInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateInput!
 }
 
 union AuthenticatedItem = User

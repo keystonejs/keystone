@@ -1,23 +1,3 @@
-type Query {
-  Todo(where: TodoWhereUniqueInput!): Todo
-  allTodos(
-    where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]
-  todosCount(where: TodoWhereInput! = {}): Int
-  User(where: UserWhereUniqueInput!): User
-  allUsers(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
-
 type Todo {
   id: ID!
   label: String
@@ -170,6 +150,106 @@ input UserOrderByInput {
   updatedAt: OrderDirection
 }
 
+type Mutation {
+  createTodo(data: TodoCreateInput! = {}): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo!]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]
+  createUser(data: UserCreateInput! = {}): User
+  createUsers(data: [UserCreateInput!]!): [User!]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UsersUpdateInput!]!): [User!]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneForCreateInput
+  finishBy: String
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyForCreateInput! = { create: [], connect: [] }
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]! = []
+  connect: [TodoWhereUniqueInput!]! = []
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneForUpdateInput
+  finishBy: String
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+input TodosUpdateInput {
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyForUpdateInput! = {
+    create: []
+    connect: []
+    disconnect: []
+    disconnectAll: false
+  }
+}
+
+input TodoRelateToManyForUpdateInput {
+  create: [TodoCreateInput!]! = []
+  connect: [TodoWhereUniqueInput!]! = []
+  disconnect: [TodoWhereUniqueInput!]! = []
+  disconnectAll: Boolean! = false
+}
+
+input UsersUpdateInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+type Query {
+  Todo(where: TodoWhereUniqueInput!): Todo
+  allTodos(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]
+  todosCount(where: TodoWhereInput! = {}): Int
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  usersCount(where: UserWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
 }
@@ -256,84 +336,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-type Mutation {
-  createTodo(data: TodoCreateInput! = {}): Todo
-  createTodos(data: [TodoCreateInput!]!): [Todo!]
-  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo!]
-  deleteTodo(where: TodoWhereUniqueInput!): Todo
-  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo!]
-  createUser(data: UserCreateInput! = {}): User
-  createUsers(data: [UserCreateInput!]!): [User!]
-  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
-  updateUsers(data: [UsersUpdateInput!]!): [User!]
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteUsers(where: [UserWhereUniqueInput!]!): [User!]
-}
-
-input TodoCreateInput {
-  label: String
-  isComplete: Boolean
-  assignedTo: UserRelateToOneForCreateInput
-  finishBy: String
-}
-
-input UserRelateToOneForCreateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  tasks: TodoRelateToManyForCreateInput! = { create: [], connect: [] }
-}
-
-input TodoRelateToManyForCreateInput {
-  create: [TodoCreateInput!]! = []
-  connect: [TodoWhereUniqueInput!]! = []
-}
-
-input TodoUpdateInput {
-  label: String
-  isComplete: Boolean
-  assignedTo: UserRelateToOneForUpdateInput
-  finishBy: String
-}
-
-input UserRelateToOneForUpdateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-}
-
-input TodosUpdateInput {
-  where: TodoWhereUniqueInput!
-  data: TodoUpdateInput!
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  tasks: TodoRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input TodoRelateToManyForUpdateInput {
-  create: [TodoCreateInput!]! = []
-  connect: [TodoWhereUniqueInput!]! = []
-  disconnect: [TodoWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
-}
-
-input UsersUpdateInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateInput!
 }

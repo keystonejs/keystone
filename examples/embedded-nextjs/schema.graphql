@@ -1,15 +1,3 @@
-type Query {
-  Post(where: PostWhereUniqueInput!): Post
-  allPosts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
-
 type Post {
   id: ID!
   title: String
@@ -62,6 +50,44 @@ input PostOrderByInput {
 enum OrderDirection {
   asc
   desc
+}
+
+type Mutation {
+  createPost(data: PostCreateInput! = {}): Post
+  createPosts(data: [PostCreateInput!]!): [Post!]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post!]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
+}
+
+input PostCreateInput {
+  title: String
+  slug: String
+  content: String
+}
+
+input PostUpdateInput {
+  title: String
+  slug: String
+  content: String
+}
+
+input PostsUpdateInput {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
+}
+
+type Query {
+  Post(where: PostWhereUniqueInput!): Post
+  allPosts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+  keystone: KeystoneMeta!
 }
 
 type KeystoneMeta {
@@ -150,30 +176,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-type Mutation {
-  createPost(data: PostCreateInput! = {}): Post
-  createPosts(data: [PostCreateInput!]!): [Post!]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post!]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post!]
-}
-
-input PostCreateInput {
-  title: String
-  slug: String
-  content: String
-}
-
-input PostUpdateInput {
-  title: String
-  slug: String
-  content: String
-}
-
-input PostsUpdateInput {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
 }
