@@ -615,7 +615,8 @@ async function checkFieldAccessControlForUpdate(
   item: Record<string, any>
 ) {
   const results = await Promise.all(
-    Object.entries(list.fields).map(([fieldKey, field]) => {
+    Object.keys(originalInput).map(fieldKey => {
+      const field = list.fields[fieldKey];
       return validateFieldAccessControl({
         access: field.access.update,
         args: {
@@ -644,7 +645,8 @@ async function checkFieldAccessControlForCreate(
   originalInput: Record<string, any>
 ) {
   const results = await Promise.all(
-    Object.entries(list.fields).map(([fieldKey, field]) => {
+    Object.keys(originalInput).map(fieldKey => {
+      const field = list.fields[fieldKey];
       return validateFieldAccessControl({
         access: field.access.create,
         args: {
