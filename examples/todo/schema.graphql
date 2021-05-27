@@ -19,6 +19,8 @@ type Person {
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
+    search: String
+    sortBy: [SortTasksBy!]
     first: Int
     skip: Int! = 0
   ): [Task!]!
@@ -99,17 +101,41 @@ enum OrderDirection {
   desc
 }
 
+enum SortTasksBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  priority_ASC
+  priority_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+}
+
 input TaskWhereUniqueInput {
-  id: ID
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input PersonWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
 }
 
 type Mutation {
@@ -195,18 +221,38 @@ type Query {
   allTasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
+    search: String
+    sortBy: [SortTasksBy!]
     first: Int
     skip: Int! = 0
   ): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
+  _allTasksMeta(
+    where: TaskWhereInput! = {}
+    orderBy: [TaskOrderByInput!]! = []
+    search: String
+    sortBy: [SortTasksBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
     first: Int
     skip: Int! = 0
   ): [Person!]
   peopleCount(where: PersonWhereInput! = {}): Int
+  _allPeopleMeta(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
 }
 

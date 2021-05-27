@@ -20,6 +20,8 @@ type Person {
   packages(
     where: PackageWhereInput! = {}
     orderBy: [PackageOrderByInput!]! = []
+    search: String
+    sortBy: [SortPackagesBy!]
     first: Int
     skip: Int! = 0
   ): [Package!]!
@@ -82,17 +84,37 @@ enum OrderDirection {
   desc
 }
 
+enum SortPackagesBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isPrivate_ASC
+  isPrivate_DESC
+}
+
 input PackageWhereUniqueInput {
-  id: ID
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input PersonWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
 }
 
 type Mutation {
@@ -179,18 +201,38 @@ type Query {
   allPackages(
     where: PackageWhereInput! = {}
     orderBy: [PackageOrderByInput!]! = []
+    search: String
+    sortBy: [SortPackagesBy!]
     first: Int
     skip: Int! = 0
   ): [Package!]
   packagesCount(where: PackageWhereInput! = {}): Int
+  _allPackagesMeta(
+    where: PackageWhereInput! = {}
+    orderBy: [PackageOrderByInput!]! = []
+    search: String
+    sortBy: [SortPackagesBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
     first: Int
     skip: Int! = 0
   ): [Person!]
   peopleCount(where: PersonWhereInput! = {}): Int
+  _allPeopleMeta(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
 }
 

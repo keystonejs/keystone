@@ -6,7 +6,7 @@ type Post {
 }
 
 input PostWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input PostWhereInput {
@@ -52,6 +52,21 @@ enum OrderDirection {
   desc
 }
 
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  slug_ASC
+  slug_DESC
+  content_ASC
+  content_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
 type Mutation {
   createPost(data: PostCreateInput! = {}): Post
   createPosts(data: [PostCreateInput!]!): [Post!]
@@ -83,10 +98,20 @@ type Query {
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
 }
 

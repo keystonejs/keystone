@@ -2,7 +2,7 @@ type User {
   id: ID!
   name: String
   email: String
-  password: PasswordState!
+  password: PasswordState
   isAdmin: Boolean
 }
 
@@ -11,8 +11,7 @@ type PasswordState {
 }
 
 input UserWhereUniqueInput {
-  id: ID
-  email: String
+  id: ID!
 }
 
 input UserWhereInput {
@@ -53,6 +52,21 @@ input UserOrderByInput {
 enum OrderDirection {
   asc
   desc
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 type Mutation {
@@ -96,10 +110,20 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

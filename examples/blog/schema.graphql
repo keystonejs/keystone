@@ -19,6 +19,8 @@ type Author {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -109,19 +111,44 @@ enum OrderDirection {
   desc
 }
 
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  content_ASC
+  content_DESC
+  publishDate_ASC
+  publishDate_DESC
+}
+
 input PostWhereUniqueInput {
-  id: ID
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input AuthorWhereUniqueInput {
-  id: ID
-  email: String
+  id: ID!
 }
 
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
+}
+
+enum SortAuthorsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
 }
 
 type Mutation {
@@ -209,18 +236,38 @@ type Query {
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Author(where: AuthorWhereUniqueInput!): Author
   allAuthors(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
+    search: String
+    sortBy: [SortAuthorsBy!]
     first: Int
     skip: Int! = 0
   ): [Author!]
   authorsCount(where: AuthorWhereInput! = {}): Int
+  _allAuthorsMeta(
+    where: AuthorWhereInput! = {}
+    orderBy: [AuthorOrderByInput!]! = []
+    search: String
+    sortBy: [SortAuthorsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
 }
 

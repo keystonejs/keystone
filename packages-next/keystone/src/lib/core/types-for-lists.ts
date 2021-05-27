@@ -23,10 +23,12 @@ import {
   KeystoneConfig,
   DatabaseProvider,
   FindManyArgs,
+  orderDirectionEnum,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
+import { GraphQLEnumType } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
 import { getPrismaModelForList, IdType, PrismaPromise } from './utils';
 import {
@@ -436,16 +438,23 @@ export function initialiseLists(
         };
       },
     });
+    // const uniqueWhere = types.inputObject({
+    //   name: names.whereUniqueInputName,
+    //   fields: () => {
+    //     const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+    //     return Object.fromEntries(
+    //       Object.entries(fields).flatMap(([key, field]) => {
+    //         if (!field.input?.uniqueWhere || field.access.read === false) return [];
+    //         return [[key, field.input.uniqueWhere.arg]] as const;
+    //       })
+    //     );
+    //   },
+    // });
+
     const uniqueWhere = types.inputObject({
       name: names.whereUniqueInputName,
-      fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
-        return Object.fromEntries(
-          Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.uniqueWhere || field.access.read === false) return [];
-            return [[key, field.input.uniqueWhere.arg]] as const;
-          })
-        );
+      fields: {
+        id: types.arg({ type: types.nonNull(types.ID) }),
       },
     });
     // TODO: validate no fields are named AND, NOT, or OR
@@ -523,6 +532,19 @@ export function initialiseLists(
       orderBy: types.arg({
         type: types.nonNull(types.list(types.nonNull(orderBy))),
         defaultValue: [],
+      }),
+      search: types.arg({
+        type: types.String,
+      }),
+      sortBy: types.arg({
+        type: types.list(
+          types.nonNull(
+            types.enum({
+              name: names.listSortName,
+              values: types.enumValues(['bad']),
+            })
+          )
+        ),
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
       first: types.arg({
@@ -657,11 +679,32 @@ export function initialiseLists(
     })
   );
 
-  for (const [listKey, { fields }] of Object.entries(
+  for (const [listKey, { fields, pluralGraphQLName }] of Object.entries(
     listsWithInitialisedFieldsAndResolvedDbFields
   )) {
     assertNoConflictingExtraOutputFields(listKey, fields);
     assertIdFieldGraphQLTypesCorrect(listKey, fields);
+    Object.assign(
+      listInfos[listKey].types.findManyArgs.sortBy.type.graphQLType.ofType.ofType,
+      new GraphQLEnumType({
+        name: getGqlNames({ listKey, pluralGraphQLName }).listSortName,
+        values: Object.fromEntries(
+          Object.entries(fields).flatMap(([fieldKey, field]) => {
+            if (
+              field.input?.orderBy?.arg.type === orderDirectionEnum &&
+              field.input?.orderBy?.arg.defaultValue === undefined &&
+              field.input?.orderBy?.resolve === undefined
+            ) {
+              return [
+                [`${fieldKey}_ASC`, {}],
+                [`${fieldKey}_DESC`, {}],
+              ];
+            }
+            return [];
+          })
+        ),
+      })
+    );
   }
 
   const initialisedLists: Record<string, InitialisedList> = Object.fromEntries(

@@ -107,7 +107,7 @@ export const password =
       views: resolveView('password/views'),
       getAdminMeta: () => ({ minLength: minLength }),
       output: types.field({
-        type: types.nonNull(PasswordState),
+        type: PasswordState,
         resolve(val) {
           return { isSet: val.value !== null };
         },

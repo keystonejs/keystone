@@ -12,10 +12,12 @@ type User {
   id: ID!
   name: String
   email: String
-  password: PasswordState!
+  password: PasswordState
   tasks(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
     first: Int
     skip: Int! = 0
   ): [Todo!]!
@@ -134,12 +136,31 @@ enum OrderDirection {
   desc
 }
 
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
 input TodoWhereUniqueInput {
-  id: ID
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input UserWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input UserOrderByInput {
@@ -148,6 +169,19 @@ input UserOrderByInput {
   email: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type Mutation {
@@ -235,18 +269,38 @@ type Query {
   allTodos(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
     first: Int
     skip: Int! = 0
   ): [Todo!]
   todosCount(where: TodoWhereInput! = {}): Int
+  _allTodosMeta(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   User(where: UserWhereUniqueInput!): User
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
 }
 

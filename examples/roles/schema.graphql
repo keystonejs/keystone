@@ -10,11 +10,13 @@ type Person {
   id: ID!
   name: String
   email: String
-  password: PasswordState!
+  password: PasswordState
   role: Role
   tasks(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
     first: Int
     skip: Int! = 0
   ): [Todo!]!
@@ -37,6 +39,8 @@ type Role {
   assignedTo(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
     first: Int
     skip: Int! = 0
   ): [Person!]!
@@ -144,6 +148,15 @@ enum OrderDirection {
   desc
 }
 
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
 input TodoOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -151,16 +164,31 @@ input TodoOrderByInput {
   isPrivate: OrderDirection
 }
 
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  isPrivate_ASC
+  isPrivate_DESC
+}
+
 input TodoWhereUniqueInput {
-  id: ID
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input PersonWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input RoleWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input RoleOrderByInput {
@@ -172,6 +200,25 @@ input RoleOrderByInput {
   canEditOtherPeople: OrderDirection
   canManagePeople: OrderDirection
   canManageRoles: OrderDirection
+}
+
+enum SortRolesBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  canCreateTodos_ASC
+  canCreateTodos_DESC
+  canManageAllTodos_ASC
+  canManageAllTodos_DESC
+  canSeeOtherPeople_ASC
+  canSeeOtherPeople_DESC
+  canEditOtherPeople_ASC
+  canEditOtherPeople_DESC
+  canManagePeople_ASC
+  canManagePeople_DESC
+  canManageRoles_ASC
+  canManageRoles_DESC
 }
 
 type Mutation {
@@ -333,26 +380,56 @@ type Query {
   allTodos(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
     first: Int
     skip: Int! = 0
   ): [Todo!]
   todosCount(where: TodoWhereInput! = {}): Int
+  _allTodosMeta(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    search: String
+    sortBy: [SortTodosBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Person(where: PersonWhereUniqueInput!): Person
   allPeople(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
     first: Int
     skip: Int! = 0
   ): [Person!]
   peopleCount(where: PersonWhereInput! = {}): Int
+  _allPeopleMeta(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    search: String
+    sortBy: [SortPeopleBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
+    search: String
+    sortBy: [SortRolesBy!]
     first: Int
     skip: Int! = 0
   ): [Role!]
   rolesCount(where: RoleWhereInput! = {}): Int
+  _allRolesMeta(
+    where: RoleWhereInput! = {}
+    orderBy: [RoleOrderByInput!]! = []
+    search: String
+    sortBy: [SortRolesBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

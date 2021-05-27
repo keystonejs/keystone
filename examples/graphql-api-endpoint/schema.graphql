@@ -2,10 +2,12 @@ type User {
   id: ID!
   name: String
   email: String
-  password: PasswordState!
+  password: PasswordState
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -26,6 +28,8 @@ type Post {
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
+    search: String
+    sortBy: [SortTagsBy!]
     first: Int
     skip: Int! = 0
   ): [Tag!]!
@@ -50,6 +54,8 @@ type Tag {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -207,14 +213,31 @@ enum OrderDirection {
   desc
 }
 
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  publishDate_ASC
+  publishDate_DESC
+}
+
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
 }
 
+enum SortTagsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
 input UserWhereUniqueInput {
-  id: ID
-  email: String
+  id: ID!
 }
 
 input UserOrderByInput {
@@ -223,12 +246,25 @@ input UserOrderByInput {
   email: OrderDirection
 }
 
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
 input PostWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input TagWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 type Mutation {
@@ -375,26 +411,56 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Tag(where: TagWhereUniqueInput!): Tag
   allTags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
+    search: String
+    sortBy: [SortTagsBy!]
     first: Int
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  _allTagsMeta(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    search: String
+    sortBy: [SortTagsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

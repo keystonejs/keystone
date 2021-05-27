@@ -2,10 +2,12 @@ type User {
   id: ID!
   name: String
   email: String
-  password: PasswordState!
+  password: PasswordState
   cart(
     where: CartItemWhereInput! = {}
     orderBy: [CartItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortCartItemsBy!]
     first: Int
     skip: Int! = 0
   ): [CartItem!]!
@@ -13,6 +15,8 @@ type User {
   orders(
     where: OrderWhereInput! = {}
     orderBy: [OrderOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrdersBy!]
     first: Int
     skip: Int! = 0
   ): [Order!]!
@@ -21,11 +25,13 @@ type User {
   products(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
+    search: String
+    sortBy: [SortProductsBy!]
     first: Int
     skip: Int! = 0
   ): [Product!]!
   productsCount(where: ProductWhereInput! = {}): Int!
-  passwordResetToken: PasswordState!
+  passwordResetToken: PasswordState
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
@@ -373,6 +379,13 @@ enum OrderDirection {
   desc
 }
 
+enum SortCartItemsBy {
+  id_ASC
+  id_DESC
+  quantity_ASC
+  quantity_DESC
+}
+
 type Order {
   id: ID!
   label: String
@@ -380,6 +393,8 @@ type Order {
   items(
     where: OrderItemWhereInput! = {}
     orderBy: [OrderItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrderItemsBy!]
     first: Int
     skip: Int! = 0
   ): [OrderItem!]!
@@ -406,10 +421,32 @@ input OrderItemOrderByInput {
   quantity: OrderDirection
 }
 
+enum SortOrderItemsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  price_ASC
+  price_DESC
+  quantity_ASC
+  quantity_DESC
+}
+
 input OrderOrderByInput {
   id: OrderDirection
   total: OrderDirection
   charge: OrderDirection
+}
+
+enum SortOrdersBy {
+  id_ASC
+  id_DESC
+  total_ASC
+  total_DESC
+  charge_ASC
+  charge_DESC
 }
 
 type Role {
@@ -424,6 +461,8 @@ type Role {
   assignedTo(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]!
@@ -438,6 +477,19 @@ input UserOrderByInput {
   passwordResetRedeemedAt: OrderDirection
 }
 
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  passwordResetIssuedAt_ASC
+  passwordResetIssuedAt_DESC
+  passwordResetRedeemedAt_ASC
+  passwordResetRedeemedAt_DESC
+}
+
 input ProductOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -446,17 +498,33 @@ input ProductOrderByInput {
   price: OrderDirection
 }
 
+enum SortProductsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  status_ASC
+  status_DESC
+  price_ASC
+  price_DESC
+}
+
 input UserWhereUniqueInput {
-  id: ID
-  email: String
+  id: ID!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input ProductWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input ProductImageWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input ProductImageOrderByInput {
@@ -464,20 +532,27 @@ input ProductImageOrderByInput {
   altText: OrderDirection
 }
 
+enum SortProductImagesBy {
+  id_ASC
+  id_DESC
+  altText_ASC
+  altText_DESC
+}
+
 input CartItemWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input OrderItemWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input OrderWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input RoleWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input RoleOrderByInput {
@@ -489,6 +564,25 @@ input RoleOrderByInput {
   canManageRoles: OrderDirection
   canManageCart: OrderDirection
   canManageOrders: OrderDirection
+}
+
+enum SortRolesBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  canManageProducts_ASC
+  canManageProducts_DESC
+  canSeeOtherUsers_ASC
+  canSeeOtherUsers_DESC
+  canManageUsers_ASC
+  canManageUsers_DESC
+  canManageRoles_ASC
+  canManageRoles_DESC
+  canManageCart_ASC
+  canManageCart_DESC
+  canManageOrders_ASC
+  canManageOrders_DESC
 }
 
 type Mutation {
@@ -876,58 +970,128 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Product(where: ProductWhereUniqueInput!): Product
   allProducts(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
+    search: String
+    sortBy: [SortProductsBy!]
     first: Int
     skip: Int! = 0
   ): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
+  _allProductsMeta(
+    where: ProductWhereInput! = {}
+    orderBy: [ProductOrderByInput!]! = []
+    search: String
+    sortBy: [SortProductsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
   allProductImages(
     where: ProductImageWhereInput! = {}
     orderBy: [ProductImageOrderByInput!]! = []
+    search: String
+    sortBy: [SortProductImagesBy!]
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
   productImagesCount(where: ProductImageWhereInput! = {}): Int
+  _allProductImagesMeta(
+    where: ProductImageWhereInput! = {}
+    orderBy: [ProductImageOrderByInput!]! = []
+    search: String
+    sortBy: [SortProductImagesBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   CartItem(where: CartItemWhereUniqueInput!): CartItem
   allCartItems(
     where: CartItemWhereInput! = {}
     orderBy: [CartItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortCartItemsBy!]
     first: Int
     skip: Int! = 0
   ): [CartItem!]
   cartItemsCount(where: CartItemWhereInput! = {}): Int
+  _allCartItemsMeta(
+    where: CartItemWhereInput! = {}
+    orderBy: [CartItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortCartItemsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
   allOrderItems(
     where: OrderItemWhereInput! = {}
     orderBy: [OrderItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrderItemsBy!]
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
+  _allOrderItemsMeta(
+    where: OrderItemWhereInput! = {}
+    orderBy: [OrderItemOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrderItemsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Order(where: OrderWhereUniqueInput!): Order
   allOrders(
     where: OrderWhereInput! = {}
     orderBy: [OrderOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrdersBy!]
     first: Int
     skip: Int! = 0
   ): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
+  _allOrdersMeta(
+    where: OrderWhereInput! = {}
+    orderBy: [OrderOrderByInput!]! = []
+    search: String
+    sortBy: [SortOrdersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Role(where: RoleWhereUniqueInput!): Role
   allRoles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
+    search: String
+    sortBy: [SortRolesBy!]
     first: Int
     skip: Int! = 0
   ): [Role!]
   rolesCount(where: RoleWhereInput! = {}): Int
+  _allRolesMeta(
+    where: RoleWhereInput! = {}
+    orderBy: [RoleOrderByInput!]! = []
+    search: String
+    sortBy: [SortRolesBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(

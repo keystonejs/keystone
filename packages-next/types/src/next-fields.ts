@@ -48,6 +48,18 @@ export const types = {
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
+export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
+  name: '_QueryMeta',
+  fields: {
+    count: types.field({
+      type: types.Int,
+      resolve({ getCount }) {
+        return getCount();
+      },
+    }),
+  },
+});
+
 export { tsgql };
 
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
@@ -489,6 +501,10 @@ export type FindManyArgs = {
   orderBy: tsgql.Arg<
     tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
+  >;
+  search: tsgql.Arg<typeof types.String>;
+  sortBy: tsgql.Arg<
+    tsgql.ListType<tsgql.NonNullType<tsgql.EnumType<Record<string, tsgql.EnumValue<string>>>>>
   >;
   first: tsgql.Arg<typeof types.Int>;
   skip: tsgql.Arg<tsgql.NonNullType<typeof types.Int>, number>;

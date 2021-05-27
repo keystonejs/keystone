@@ -45,12 +45,14 @@ type User {
   email: String
   avatar: ImageFieldOutput
   attachment: FileFieldOutput
-  password: PasswordState!
+  password: PasswordState
   isAdmin: Boolean
   roles: String
   phoneNumbers(
     where: PhoneNumberWhereInput! = {}
     orderBy: [PhoneNumberOrderByInput!]! = []
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]!
@@ -58,6 +60,8 @@ type User {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]!
@@ -186,6 +190,15 @@ enum OrderDirection {
   desc
 }
 
+enum SortPhoneNumbersBy {
+  id_ASC
+  id_DESC
+  type_ASC
+  type_DESC
+  value_ASC
+  value_DESC
+}
+
 type Post {
   id: ID!
   title: String
@@ -212,8 +225,17 @@ input PostOrderByInput {
   status: OrderDirection
 }
 
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+}
+
 input UserWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input UserOrderByInput {
@@ -224,12 +246,29 @@ input UserOrderByInput {
   roles: OrderDirection
 }
 
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+  roles_ASC
+  roles_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
 input PhoneNumberWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 input PostWhereUniqueInput {
-  id: ID
+  id: ID!
 }
 
 type Mutation {
@@ -402,26 +441,56 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
     first: Int
     skip: Int! = 0
   ): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    search: String
+    sortBy: [SortUsersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   allPhoneNumbers(
     where: PhoneNumberWhereInput! = {}
     orderBy: [PhoneNumberOrderByInput!]! = []
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
+  _allPhoneNumbersMeta(
+    where: PhoneNumberWhereInput! = {}
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   Post(where: PostWhereUniqueInput!): Post
   allPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
     first: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    search: String
+    sortBy: [SortPostsBy!]
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber
