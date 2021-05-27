@@ -1,3 +1,23 @@
+type Query {
+  Package(where: PackageWhereUniqueInput!): Package
+  allPackages(
+    where: PackageWhereInput! = {}
+    orderBy: [PackageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Package!]
+  packagesCount(where: PackageWhereInput! = {}): Int
+  Person(where: PersonWhereUniqueInput!): Person
+  allPeople(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+  peopleCount(where: PersonWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 type Package {
   id: ID!
   label: String
@@ -95,105 +115,6 @@ input PersonOrderByInput {
   name: OrderDirection
 }
 
-type Mutation {
-  createPackage(data: PackageCreateInput! = {}): Package
-  createPackages(data: [PackageCreateInput!]!): [Package!]
-  updatePackage(
-    where: PackageWhereUniqueInput!
-    data: PackageUpdateInput!
-  ): Package
-  updatePackages(data: [PackagesUpdateInput!]!): [Package!]
-  deletePackage(where: PackageWhereUniqueInput!): Package
-  deletePackages(where: [PackageWhereUniqueInput!]!): [Package!]
-  createPerson(data: PersonCreateInput! = {}): Person
-  createPeople(data: [PersonCreateInput!]!): [Person!]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
-}
-
-input PackageCreateInput {
-  label: String
-  pkgjson: JSON
-  isPrivate: Boolean
-  ownedBy: PersonRelateToOneForCreateInput
-}
-
-input PersonRelateToOneForCreateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-}
-
-input PersonCreateInput {
-  name: String
-  packages: PackageRelateToManyForCreateInput! = { create: [], connect: [] }
-}
-
-input PackageRelateToManyForCreateInput {
-  create: [PackageCreateInput!]! = []
-  connect: [PackageWhereUniqueInput!]! = []
-}
-
-input PackageUpdateInput {
-  label: String
-  pkgjson: JSON
-  isPrivate: Boolean
-  ownedBy: PersonRelateToOneForUpdateInput
-}
-
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-}
-
-input PackagesUpdateInput {
-  where: PackageWhereUniqueInput!
-  data: PackageUpdateInput!
-}
-
-input PersonUpdateInput {
-  name: String
-  packages: PackageRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input PackageRelateToManyForUpdateInput {
-  create: [PackageCreateInput!]! = []
-  connect: [PackageWhereUniqueInput!]! = []
-  disconnect: [PackageWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
-}
-
-input PeopleUpdateInput {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
-}
-
-type Query {
-  Package(where: PackageWhereUniqueInput!): Package
-  allPackages(
-    where: PackageWhereInput! = {}
-    orderBy: [PackageOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Package!]
-  packagesCount(where: PackageWhereInput! = {}): Int
-  Person(where: PersonWhereUniqueInput!): Person
-  allPeople(
-    where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
-
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
 }
@@ -272,4 +193,83 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
+}
+
+type Mutation {
+  createPackage(data: PackageCreateInput! = {}): Package
+  createPackages(data: [PackageCreateInput!]!): [Package!]
+  updatePackage(
+    where: PackageWhereUniqueInput!
+    data: PackageUpdateInput!
+  ): Package
+  updatePackages(data: [PackagesUpdateInput!]!): [Package!]
+  deletePackage(where: PackageWhereUniqueInput!): Package
+  deletePackages(where: [PackageWhereUniqueInput!]!): [Package!]
+  createPerson(data: PersonCreateInput! = {}): Person
+  createPeople(data: [PersonCreateInput!]!): [Person!]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
+}
+
+input PackageCreateInput {
+  label: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneForCreateInput
+}
+
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+}
+
+input PersonCreateInput {
+  name: String
+  packages: PackageRelateToManyForCreateInput! = { create: [], connect: [] }
+}
+
+input PackageRelateToManyForCreateInput {
+  create: [PackageCreateInput!]! = []
+  connect: [PackageWhereUniqueInput!]! = []
+}
+
+input PackageUpdateInput {
+  label: String
+  pkgjson: JSON
+  isPrivate: Boolean
+  ownedBy: PersonRelateToOneForUpdateInput
+}
+
+input PersonRelateToOneForUpdateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+}
+
+input PackagesUpdateInput {
+  where: PackageWhereUniqueInput!
+  data: PackageUpdateInput!
+}
+
+input PersonUpdateInput {
+  name: String
+  packages: PackageRelateToManyForUpdateInput! = {
+    create: []
+    connect: []
+    disconnect: []
+    disconnectAll: false
+  }
+}
+
+input PackageRelateToManyForUpdateInput {
+  create: [PackageCreateInput!]! = []
+  connect: [PackageWhereUniqueInput!]! = []
+  disconnect: [PackageWhereUniqueInput!]! = []
+  disconnectAll: Boolean! = false
+}
+
+input PeopleUpdateInput {
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
 }

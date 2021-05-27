@@ -1,3 +1,23 @@
+type Query {
+  Task(where: TaskWhereUniqueInput!): Task
+  allTasks(
+    where: TaskWhereInput! = {}
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Task!]
+  tasksCount(where: TaskWhereInput! = {}): Int
+  Person(where: PersonWhereUniqueInput!): Person
+  allPeople(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+  peopleCount(where: PersonWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 type Task {
   id: ID!
   label: String
@@ -112,104 +132,6 @@ input PersonOrderByInput {
   name: OrderDirection
 }
 
-type Mutation {
-  createTask(data: TaskCreateInput! = {}): Task
-  createTasks(data: [TaskCreateInput!]!): [Task!]
-  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
-  updateTasks(data: [TasksUpdateInput!]!): [Task!]
-  deleteTask(where: TaskWhereUniqueInput!): Task
-  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task!]
-  createPerson(data: PersonCreateInput! = {}): Person
-  createPeople(data: [PersonCreateInput!]!): [Person!]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
-}
-
-input TaskCreateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneForCreateInput
-  finishBy: String
-}
-
-input PersonRelateToOneForCreateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-}
-
-input PersonCreateInput {
-  name: String
-  tasks: TaskRelateToManyForCreateInput! = { create: [], connect: [] }
-}
-
-input TaskRelateToManyForCreateInput {
-  create: [TaskCreateInput!]! = []
-  connect: [TaskWhereUniqueInput!]! = []
-}
-
-input TaskUpdateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneForUpdateInput
-  finishBy: String
-}
-
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-}
-
-input TasksUpdateInput {
-  where: TaskWhereUniqueInput!
-  data: TaskUpdateInput!
-}
-
-input PersonUpdateInput {
-  name: String
-  tasks: TaskRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input TaskRelateToManyForUpdateInput {
-  create: [TaskCreateInput!]! = []
-  connect: [TaskWhereUniqueInput!]! = []
-  disconnect: [TaskWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
-}
-
-input PeopleUpdateInput {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
-}
-
-type Query {
-  Task(where: TaskWhereUniqueInput!): Task
-  allTasks(
-    where: TaskWhereInput! = {}
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
-  Person(where: PersonWhereUniqueInput!): Person
-  allPeople(
-    where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
-
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
 }
@@ -296,4 +218,82 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
+}
+
+type Mutation {
+  createTask(data: TaskCreateInput! = {}): Task
+  createTasks(data: [TaskCreateInput!]!): [Task!]
+  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  updateTasks(data: [TasksUpdateInput!]!): [Task!]
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task!]
+  createPerson(data: PersonCreateInput! = {}): Person
+  createPeople(data: [PersonCreateInput!]!): [Person!]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PeopleUpdateInput!]!): [Person!]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person!]
+}
+
+input TaskCreateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneForCreateInput
+  finishBy: String
+}
+
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+}
+
+input PersonCreateInput {
+  name: String
+  tasks: TaskRelateToManyForCreateInput! = { create: [], connect: [] }
+}
+
+input TaskRelateToManyForCreateInput {
+  create: [TaskCreateInput!]! = []
+  connect: [TaskWhereUniqueInput!]! = []
+}
+
+input TaskUpdateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneForUpdateInput
+  finishBy: String
+}
+
+input PersonRelateToOneForUpdateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+}
+
+input TasksUpdateInput {
+  where: TaskWhereUniqueInput!
+  data: TaskUpdateInput!
+}
+
+input PersonUpdateInput {
+  name: String
+  tasks: TaskRelateToManyForUpdateInput! = {
+    create: []
+    connect: []
+    disconnect: []
+    disconnectAll: false
+  }
+}
+
+input TaskRelateToManyForUpdateInput {
+  create: [TaskCreateInput!]! = []
+  connect: [TaskWhereUniqueInput!]! = []
+  disconnect: [TaskWhereUniqueInput!]! = []
+  disconnectAll: Boolean! = false
+}
+
+input PeopleUpdateInput {
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
 }

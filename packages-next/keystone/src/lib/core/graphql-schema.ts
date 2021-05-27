@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getGqlNames, DatabaseProvider, types } from '@keystone-next/types';
+import { getGqlNames, DatabaseProvider, types, tsgql, KeystoneContext } from '@keystone-next/types';
+import { OutputTypes } from '@ts-gql/schema';
 import { InitialisedList } from './types-for-lists';
 
 import * as mutations from './mutation-resolvers';
@@ -7,13 +8,23 @@ import * as queries from './query-resolvers';
 
 export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
-  provider: DatabaseProvider
+  provider: DatabaseProvider,
+  extraFields: {
+    mutation: Record<
+      string,
+      tsgql.OutputField<unknown, any, OutputTypes<KeystoneContext>, string, KeystoneContext>
+    >;
+    query: Record<
+      string,
+      tsgql.OutputField<unknown, any, OutputTypes<KeystoneContext>, string, KeystoneContext>
+    >;
+  }
 ) {
   let query = types.object()({
     name: 'Query',
     fields: () =>
-      Object.fromEntries(
-        Object.entries(lists).flatMap(([listKey, list]) => {
+      Object.fromEntries([
+        ...Object.entries(lists).flatMap(([listKey, list]) => {
           if (list.access.read === false) return [];
           const names = getGqlNames({ listKey, ...list });
 
@@ -49,14 +60,15 @@ export function getGraphQLSchema(
             [names.listQueryName, findMany],
             [names.listQueryCountName, countQuery],
           ];
-        })
-      ),
+        }),
+        ...Object.entries(extraFields.query),
+      ]),
   } as any);
 
   let mutation = types.object()({
     name: 'Mutation',
-    fields: Object.fromEntries(
-      Object.entries(lists).flatMap(([listKey, list]) => {
+    fields: Object.fromEntries([
+      ...Object.entries(lists).flatMap(([listKey, list]) => {
         const names = getGqlNames({ listKey, ...list });
 
         const createOneArgs = {
@@ -163,15 +175,15 @@ export function getGraphQLSchema(
                 [names.deleteManyMutationName, deleteMany],
               ]),
         ];
-      })
-    ),
+      }),
+      ...Object.entries(extraFields.mutation),
+    ]),
   });
-  let graphQLSchema = new GraphQLSchema({
+  return new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
     types: collectUnreferencedConcreteInterfaceImplementations(lists),
   });
-  return graphQLSchema;
 }
 
 function collectUnreferencedConcreteInterfaceImplementations(

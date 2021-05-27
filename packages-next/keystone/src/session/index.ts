@@ -240,34 +240,16 @@ export async function createSessionContext<T>(
   };
 }
 
-export function sessionSchema(graphQLSchema: GraphQLSchema) {
-  const schemaConfig = graphQLSchema.toConfig();
-  const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
-  const endSessionField = types.field({
-    type: types.nonNull(types.Boolean),
-    async resolve(rootVal, args, context) {
-      if (context.endSession) {
-        await context.endSession();
-      }
-      return true;
-    },
-  });
-  const mutationType = new GraphQLObjectType({
-    ...mutationTypeConfig,
-    fields: () => ({
-      ...(typeof mutationTypeConfig.fields === 'function'
-        ? mutationTypeConfig.fields()
-        : mutationTypeConfig.fields),
-      endSession: {
-        ...endSessionField,
-        type: endSessionField.type.graphQLType,
+export function sessionSchema() {
+  return {
+    endSession: types.field({
+      type: types.nonNull(types.Boolean),
+      async resolve(rootVal, args, context) {
+        if (context.endSession) {
+          await context.endSession();
+        }
+        return true;
       },
     }),
-  });
-  return new GraphQLSchema({
-    ...schemaConfig,
-    // TODO: fix the fact that this would be broken if types used the Mutation type
-    types: schemaConfig.types.map(x => (x.name === 'Mutation' ? mutationType : x)),
-    mutation: mutationType,
-  });
+  };
 }
