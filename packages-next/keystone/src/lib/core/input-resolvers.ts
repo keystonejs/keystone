@@ -479,10 +479,19 @@ export async function resolveInputForCreateOrUpdate(
 
   await validationHook(listKey, operation, originalInput, addValidationError => {
     for (const [fieldKey, field] of Object.entries(list.fields)) {
+      // yes, this is a massive hack, it's just to make image and file fields work well enough
+      let val = resolvedData[fieldKey];
+      if (field.dbField.kind === 'multi') {
+        if (Object.values(resolvedData[fieldKey]).every(x => x === null)) {
+          val = null;
+        }
+        if (Object.values(resolvedData[fieldKey]).every(x => x === undefined)) {
+          val = undefined;
+        }
+      }
       if (
         field.__legacy?.isRequired &&
-        ((operation === 'create' && resolvedData[fieldKey] == null) ||
-          (operation === 'update' && resolvedData[fieldKey] === null))
+        ((operation === 'create' && val == null) || (operation === 'update' && val === null))
       ) {
         addValidationError(
           `Required field "${fieldKey}" is null or undefined.`,
