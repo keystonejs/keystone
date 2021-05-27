@@ -21,8 +21,12 @@ export const json =
     defaultValue,
     ...config
   }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  meta =>
-    jsonFieldTypePolyfilledForSQLite(meta.provider, {
+  meta => {
+    if ((config as any).isUnique) {
+      throw Error('isUnique is not a supported option for field type json');
+    }
+
+    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
         create: { arg: types.arg({ type: types.JSON }) },
@@ -35,3 +39,4 @@ export const json =
         isRequired,
       },
     });
+  };

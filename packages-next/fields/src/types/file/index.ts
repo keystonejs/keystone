@@ -6,6 +6,7 @@ import {
   BaseGeneratedListTypes,
   KeystoneContext,
   FileData,
+  FieldDefaultValue,
 } from '@keystone-next/types';
 import { getFileRef } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
@@ -14,6 +15,7 @@ import { resolveView } from '../../resolve-view';
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<FileFieldInputType>;
   };
 
 const FileFieldInput = types.inputObject({
@@ -21,7 +23,7 @@ const FileFieldInput = types.inputObject({
   fields: { upload: types.arg({ type: types.Upload }), ref: types.arg({ type: types.String }) },
 });
 
-type ImageFieldInputType =
+type FileFieldInputType =
   | undefined
   | null
   | { upload?: Promise<FileUpload> | null; ref?: string | null };
@@ -60,7 +62,7 @@ const LocalFileFieldOutput = types.object<FileData>()({
   fields: fileFields,
 });
 
-async function inputResolver(data: ImageFieldInputType, context: KeystoneContext) {
+async function inputResolver(data: FileFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
     return { mode: data, filename: data, filesize: data };
   }
@@ -81,6 +83,7 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
 export const file =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isRequired,
+    defaultValue,
     ...config
   }: FileFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
@@ -114,6 +117,7 @@ export const file =
       views: resolveView('file/views'),
       __legacy: {
         isRequired,
+        defaultValue,
       },
     });
   };

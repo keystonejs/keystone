@@ -1,5 +1,6 @@
 import {
   BaseGeneratedListTypes,
+  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   ImageData,
@@ -14,8 +15,7 @@ import type { CommonFieldConfig } from '../../interfaces';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    // i don't think this should be here?
-    // defaultValue?: FieldDefaultValue<any>;
+    defaultValue?: FieldDefaultValue<ImageFieldInputType>;
     isRequired?: boolean;
   };
 
@@ -61,28 +61,7 @@ const ImageFieldOutput = types.interface<ImageData>()({
 const LocalImageFieldOutput = types.object<ImageData>()({
   name: 'LocalImageFieldOutput',
   interfaces: [ImageFieldOutput],
-  fields: {
-    id: types.field({ type: types.nonNull(types.ID) }),
-    filesize: types.field({ type: types.nonNull(types.Int) }),
-    height: types.field({ type: types.nonNull(types.Int) }),
-    width: types.field({ type: types.nonNull(types.Int) }),
-    extension: types.field({ type: types.nonNull(ImageExtensionEnum) }),
-    ref: types.field({
-      type: types.nonNull(types.String),
-      resolve(data) {
-        return getImageRef(data.mode, data.id, data.extension);
-      },
-    }),
-    src: types.field({
-      type: types.nonNull(types.String),
-      resolve(data, args, context) {
-        if (!context.images) {
-          throw new Error('Image context is undefined');
-        }
-        return context.images.getSrc(data.mode, data.id, data.extension);
-      },
-    }),
-  },
+  fields: imageOutputFields,
 });
 
 type ImageFieldInputType =
@@ -116,6 +95,7 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 export const image =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isRequired,
+    defaultValue,
     ...config
   }: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
@@ -158,5 +138,9 @@ export const image =
       }),
       unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],
       views: resolveView('image/views'),
+      __legacy: {
+        isRequired,
+        defaultValue,
+      },
     });
   };

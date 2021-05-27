@@ -38,7 +38,7 @@ import {
   ResolvedRelationDBField,
   resolveRelationships,
 } from './prisma-schema';
-import { throwAccessDenied } from './ListTypes/graphqlErrors';
+import { accessDeniedError, throwAccessDenied } from './ListTypes/graphqlErrors';
 import {
   CreateAndUpdateInputResolvers,
   FilterInputResolvers,
@@ -50,6 +50,7 @@ import {
 } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
 import { createOneState } from './mutation-resolvers';
+import { findManyFilter } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -120,30 +121,10 @@ function getRelationVal(
 ) {
   const oppositeDbField = foreignList.fieldsIncludingOppositesToOneSidedRelations[dbField.field];
   assert(oppositeDbField.kind === 'relation');
-  const getAccess = async () => {
-    const access = await validateNonCreateListAccessControl({
-      access: foreignList.access.read,
-      args: {
-        context,
-        listKey: dbField.list,
-        operation: 'read',
-        session: context.session,
-      },
-    });
-    return access;
+  const relationFilter = {
+    [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
   };
-  const where = { [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id } };
   if (dbField.mode === 'many') {
-    const getBaseFilter = async () => {
-      const access = await getAccess();
-      if (access === false) {
-        return false;
-      }
-      if (access === true) {
-        return where;
-      }
-      return { AND: [where, await foreignList.inputResolvers.where(context)(access)] };
-    };
     return {
       findMany: async ({
         where,
@@ -153,32 +134,28 @@ function getRelationVal(
         sortBy,
         search,
       }: FindManyArgsValue) => {
-        const [baseFilter, orderBy, specificFilter] = await Promise.all([
-          getBaseFilter(),
+        const [orderBy, filter] = await Promise.all([
           resolveOrderBy(rawOrderBy, sortBy, foreignList, context),
-          foreignList.inputResolvers.where(context)(where),
+          findManyFilter(dbField.list, foreignList, context, where, search),
         ]);
-        if (baseFilter === false) {
-          return [];
+        if (filter === false) {
+          throw accessDeniedError('query');
         }
         return getPrismaModelForList(context.prisma, dbField.list).findMany({
-          where: foreignList.applySearchField({ AND: [baseFilter, specificFilter] }, search),
+          where: { AND: [filter, relationFilter] },
           orderBy,
           take: first ?? undefined,
           skip,
         });
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
-        const [baseFilter, specificFilter] = await Promise.all([
-          getBaseFilter(),
-          foreignList.inputResolvers.where(context)(where),
-        ]);
-        if (baseFilter === false) {
-          return 0;
+        const filter = await findManyFilter(dbField.list, foreignList, context, where, search);
+        if (filter === false) {
+          throw accessDeniedError('query');
         }
         return applyFirstSkipToCount({
           count: await getPrismaModelForList(context.prisma, dbField.list).count({
-            where: foreignList.applySearchField({ AND: [baseFilter, specificFilter] }, search),
+            where: { AND: [filter, relationFilter] },
           }),
           first,
           skip,
@@ -188,15 +165,23 @@ function getRelationVal(
   }
 
   return async () => {
-    const access = await getAccess();
+    const access = await validateNonCreateListAccessControl({
+      access: foreignList.access.read,
+      args: {
+        context,
+        listKey: dbField.list,
+        operation: 'read',
+        session: context.session,
+      },
+    });
     if (access === false) {
-      return null;
+      throw accessDeniedError('query');
     }
     return getPrismaModelForList(context.prisma, dbField.list).findFirst({
       where:
         access === true
-          ? where
-          : { AND: [where, await foreignList.inputResolvers.where(context)(getAccess)] },
+          ? relationFilter
+          : { AND: [relationFilter, await foreignList.inputResolvers.where(context)(access)] },
     });
   };
 }

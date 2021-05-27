@@ -7,6 +7,7 @@ import {
   resolveUniqueWhereInput,
   resolveOrderBy,
 } from './input-resolvers';
+import { accessDeniedError } from './ListTypes/graphqlErrors';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList } from './utils';
 
@@ -99,11 +100,15 @@ export async function findOne(
 ) {
   const filter = await findOneFilter(args, listKey, list, context);
   if (filter === false) {
-    return null;
+    throw accessDeniedError('query');
   }
-  return getPrismaModelForList(context.prisma, listKey).findFirst({
+  const item = await getPrismaModelForList(context.prisma, listKey).findFirst({
     where: filter,
   });
+  if (item === null) {
+    throw accessDeniedError('query');
+  }
+  return item;
 }
 
 export async function findMany(
@@ -118,7 +123,7 @@ export async function findMany(
   ]);
 
   if (resolvedWhere === false) {
-    return [];
+    throw accessDeniedError('query');
   }
   return getPrismaModelForList(context.prisma, listKey).findMany({
     where: resolvedWhere,
@@ -137,7 +142,7 @@ export async function count(
 ) {
   const resolvedWhere = await findManyFilter(listKey, list, context, where || {}, search);
   if (resolvedWhere === false) {
-    return 0;
+    throw accessDeniedError('query');
   }
   return getPrismaModelForList(context.prisma, listKey).count({
     where: resolvedWhere,
