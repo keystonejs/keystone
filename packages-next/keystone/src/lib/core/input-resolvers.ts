@@ -392,7 +392,10 @@ async function resolveInputHook(
   );
   if (list.hooks.resolveInput) {
     // TODO: the resolveInput types are wrong
-    resolvedData = (await list.hooks.resolveInput(args)) as any;
+    resolvedData = (await list.hooks.resolveInput({
+      ...args,
+      resolvedData,
+    })) as any;
   }
   return resolvedData;
 }
