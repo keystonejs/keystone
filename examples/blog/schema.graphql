@@ -115,6 +115,7 @@ input PostWhereUniqueInput {
 
 input AuthorWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input AuthorOrderByInput {

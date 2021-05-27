@@ -20,7 +20,7 @@ model Package {
 }
 
 model Person {
-  packages Package[] @relation("Package_ownedBy")
   id       Int       @id @default(autoincrement())
   name     String?
+  packages Package[] @relation("Package_ownedBy")
 }

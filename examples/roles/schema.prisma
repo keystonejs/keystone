@@ -20,19 +20,18 @@ model Todo {
 }
 
 model Person {
-  tasks    Todo[]  @relation("Todo_assignedTo")
   id       Int     @id @default(autoincrement())
   name     String?
   email    String?
   password String?
   role     Role?   @relation("Person_role", fields: [roleId], references: [id])
   roleId   Int?    @map("role")
+  tasks    Todo[]  @relation("Todo_assignedTo")
 
   @@index([roleId])
 }
 
 model Role {
-  assignedTo         Person[] @relation("Person_role")
   id                 Int      @id @default(autoincrement())
   name               String?
   canCreateTodos     Boolean?
@@ -41,4 +40,5 @@ model Role {
   canEditOtherPeople Boolean?
   canManagePeople    Boolean?
   canManageRoles     Boolean?
+  assignedTo         Person[] @relation("Person_role")
 }

@@ -22,11 +22,11 @@ model Todo {
 }
 
 model User {
-  tasks     Todo[]    @relation("Todo_assignedTo")
   id        Int       @id @default(autoincrement())
   name      String?
   email     String?
   password  String?
+  tasks     Todo[]    @relation("Todo_assignedTo")
   createdAt DateTime?
   updatedAt DateTime?
 }

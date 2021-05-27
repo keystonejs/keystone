@@ -214,7 +214,6 @@ input PostOrderByInput {
 
 input UserWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input UserOrderByInput {

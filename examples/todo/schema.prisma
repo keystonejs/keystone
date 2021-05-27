@@ -21,7 +21,7 @@ model Task {
 }
 
 model Person {
-  tasks Task[]  @relation("Task_assignedTo")
   id    Int     @id @default(autoincrement())
   name  String?
+  tasks Task[]  @relation("Task_assignedTo")
 }

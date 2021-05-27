@@ -214,6 +214,7 @@ input TagOrderByInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input UserOrderByInput {

@@ -11,7 +11,7 @@ generator client {
 model User {
   id                      Int        @id @default(autoincrement())
   name                    String?
-  email                   String?
+  email                   String?    @unique
   password                String?
   cart                    CartItem[] @relation("CartItem_user")
   orders                  Order[]    @relation("Order_user")
@@ -26,8 +26,6 @@ model User {
 }
 
 model Product {
-  user                  User?         @relation("Product_user", fields: [userId], references: [id])
-  userId                Int?          @map("user")
   id                    Int           @id @default(autoincrement())
   name                  String?
   description           String?
@@ -35,29 +33,31 @@ model Product {
   photoId               Int?          @unique @map("photo")
   status                String?
   price                 Int?
+  user                  User?         @relation("Product_user", fields: [userId], references: [id])
+  userId                Int?          @map("user")
   from_CartItem_product CartItem[]    @relation("CartItem_product")
 
   @@index([userId])
 }
 
 model ProductImage {
-  product              Product?    @relation("Product_photo")
   id                   Int         @id @default(autoincrement())
   image                String?
   altText              String?
+  product              Product?    @relation("Product_photo")
   from_OrderItem_photo OrderItem[] @relation("OrderItem_photo")
 }
 
 model CartItem {
-  user      User?    @relation("CartItem_user", fields: [userId], references: [id])
-  userId    Int?     @map("user")
   id        Int      @id @default(autoincrement())
   quantity  Int?
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId Int?     @map("product")
+  user      User?    @relation("CartItem_user", fields: [userId], references: [id])
+  userId    Int?     @map("user")
 
-  @@index([userId])
   @@index([productId])
+  @@index([userId])
 }
 
 model OrderItem {
@@ -76,18 +76,17 @@ model OrderItem {
 }
 
 model Order {
-  user   User?       @relation("Order_user", fields: [userId], references: [id])
-  userId Int?        @map("user")
-  items  OrderItem[] @relation("OrderItem_order")
   id     Int         @id @default(autoincrement())
   total  Int?
+  items  OrderItem[] @relation("OrderItem_order")
+  user   User?       @relation("Order_user", fields: [userId], references: [id])
+  userId Int?        @map("user")
   charge String?
 
   @@index([userId])
 }
 
 model Role {
-  assignedTo        User[]   @relation("User_role")
   id                Int      @id @default(autoincrement())
   name              String?
   canManageProducts Boolean?
@@ -96,4 +95,5 @@ model Role {
   canManageRoles    Boolean?
   canManageCart     Boolean?
   canManageOrders   Boolean?
+  assignedTo        User[]   @relation("User_role")
 }

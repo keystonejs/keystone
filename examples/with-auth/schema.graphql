@@ -118,6 +118,7 @@ input TaskWhereUniqueInput {
 
 input PersonWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input PersonOrderByInput {

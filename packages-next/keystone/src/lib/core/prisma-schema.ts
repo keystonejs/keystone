@@ -227,7 +227,23 @@ export function resolveRelationships(lists: ListsToPrintPrismaSchema): ListsWith
       }
     }
   }
-  return resolvedLists;
+  // resolving the relationships essentially means that the relationships will be in a different order in the fields of a list
+  // this doesn't really change the behaviour of anything but it means that the order of the fields in the prisma schema will be
+  // the same as the user provided
+  return Object.fromEntries(
+    Object.entries(resolvedLists).map(([listKey, list]) => {
+      // this adds the fields based on the order that the user passed in
+      // (except it will not add the opposites to one-sided relations)
+      const fields = Object.fromEntries(
+        Object.keys(lists[listKey].fields).map(fieldKey => [fieldKey, list.fields[fieldKey]])
+      );
+      // then we add the opposites to one-sided relations
+      for (const [fieldKey, fieldVal] of Object.entries(list.fields)) {
+        fields[fieldKey] = fieldVal;
+      }
+      return [listKey, { fields }];
+    })
+  );
 }
 
 function areArraysEqual(a: any[], b: any[]) {

@@ -448,6 +448,7 @@ input ProductOrderByInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input ProductWhereUniqueInput {

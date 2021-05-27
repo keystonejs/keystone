@@ -21,8 +21,8 @@ model Post {
 }
 
 model Author {
-  posts Post[]  @relation("Post_author")
   id    Int     @id @default(autoincrement())
   name  String?
-  email String?
+  email String? @unique
+  posts Post[]  @relation("Post_author")
 }

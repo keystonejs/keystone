@@ -11,26 +11,26 @@ generator client {
 model User {
   id       Int     @id @default(autoincrement())
   name     String?
-  email    String?
+  email    String? @unique
   password String?
   posts    Post[]  @relation("Post_author")
 }
 
 model Post {
-  author      User?     @relation("Post_author", fields: [authorId], references: [id])
-  authorId    Int?      @map("author")
   id          Int       @id @default(autoincrement())
   title       String?
   status      String?
   content     Json?
   publishDate DateTime?
+  author      User?     @relation("Post_author", fields: [authorId], references: [id])
+  authorId    Int?      @map("author")
   tags        Tag[]     @relation("Post_tags_Tag_posts")
 
   @@index([authorId])
 }
 
 model Tag {
-  posts Post[]  @relation("Post_tags_Tag_posts")
   id    Int     @id @default(autoincrement())
   name  String?
+  posts Post[]  @relation("Post_tags_Tag_posts")
 }

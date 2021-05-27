@@ -12,6 +12,7 @@ type PasswordState {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input UserWhereInput {
