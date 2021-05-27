@@ -58,15 +58,13 @@ export const createExpressServer = async (
     server.use(cors(corsConfig));
   }
 
-  const sessionStrategy = config.session ? config.session() : undefined;
-
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
   addApolloServer({
     server,
     config,
     graphQLSchema,
     createContext,
-    sessionStrategy,
+    sessionStrategy: config.session,
     apolloConfig: config.graphql?.apolloConfig,
   });
 
@@ -75,7 +73,7 @@ export const createExpressServer = async (
   } else {
     if (isVerbose) console.log('✨ Preparing Admin UI Next.js app');
     server.use(
-      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
+      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, config.session)
     );
   }
 

@@ -79,39 +79,35 @@ type FieldSelections = {
 */
 
 export function withItemData(
-  createSession: () => SessionStrategy<Record<string, any>>,
+  _sessionStrategy: SessionStrategy<Record<string, any>>,
   fieldSelections: FieldSelections = {}
-): () => SessionStrategy<{ listKey: string; itemId: string; data: any }> {
-  return (): SessionStrategy<any> => {
-    const { get, ...sessionStrategy } = createSession();
-    return {
-      ...sessionStrategy,
-      get: async ({ req, createContext }) => {
-        const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
-        if (
-          !session ||
-          !session.listKey ||
-          !session.itemId ||
-          !sudoContext.lists[session.listKey]
-        ) {
-          return;
-        }
-
-        try {
-          // If no field selection is specified, just load the id. We still load the item,
-          // because doing so validates that it exists in the database
-          const item = await sudoContext.lists[session.listKey].findOne({
-            where: { id: session.itemId },
-            query: fieldSelections[session.listKey] || 'id',
-          });
-          if (item === null) {
-            return;
-          }
-          return { ...session, data: item };
-        } catch (err) {}
-      },
-    };
+): SessionStrategy<{ listKey: string; itemId: string; data: any }> {
+  const { get, ...sessionStrategy } = _sessionStrategy;
+  return {
+    ...sessionStrategy,
+    get: async ({ req, createContext }) => {
+      const session = await get({ req, createContext });
+      const sudoContext = createContext({}).sudo();
+      if (!session || !session.listKey || !session.itemId || !sudoContext.lists[session.listKey]) {
+        return;
+      }
+      // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
+      // throw; I think this needs to be reviewed, but for now this prevents a system crash when
+      // the session item is invalid
+      try {
+        // If no field selection is specified, just load the id. We still load the item,
+        // because doing so validates that it exists in the database
+        const item = await sudoContext.lists[session.listKey].findOne({
+          where: { id: session.itemId },
+          query: fieldSelections[session.listKey] || 'id',
+        });
+        return { ...session, listKey: session.listKey, itemId: session.itemId, data: item };
+      } catch (e) {
+        // TODO: This swallows all errors, we need a way to differentiate between "not found" and
+        // actual exceptions that should be thrown
+        return;
+      }
+    },
   };
 }
 
@@ -123,56 +119,54 @@ export function statelessSessions<T>({
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions): () => SessionStrategy<T> {
-  return () => {
-    if (!secret) {
-      throw new Error('You must specify a session secret to use sessions');
-    }
-    if (secret.length < 32) {
-      throw new Error('The session secret must be at least 32 characters long');
-    }
-    return {
-      async get({ req }) {
-        if (!req.headers.cookie) return;
-        let cookies = cookie.parse(req.headers.cookie);
-        if (!cookies[TOKEN_NAME]) return;
-        try {
-          return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
-        } catch (err) {}
-      },
-      async end({ res }) {
-        res.setHeader(
-          'Set-Cookie',
-          cookie.serialize(TOKEN_NAME, '', {
-            maxAge: 0,
-            expires: new Date(),
-            httpOnly: true,
-            secure,
-            path,
-            sameSite,
-            domain,
-          })
-        );
-      },
-      async start({ res, data }) {
-        let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
+}: StatelessSessionsOptions): SessionStrategy<T> {
+  if (!secret) {
+    throw new Error('You must specify a session secret to use sessions');
+  }
+  if (secret.length < 32) {
+    throw new Error('The session secret must be at least 32 characters long');
+  }
+  return {
+    async get({ req }) {
+      if (!req.headers.cookie) return;
+      let cookies = cookie.parse(req.headers.cookie);
+      if (!cookies[TOKEN_NAME]) return;
+      try {
+        return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
+      } catch (err) {}
+    },
+    async end({ res }) {
+      res.setHeader(
+        'Set-Cookie',
+        cookie.serialize(TOKEN_NAME, '', {
+          maxAge: 0,
+          expires: new Date(),
+          httpOnly: true,
+          secure,
+          path,
+          sameSite,
+          domain,
+        })
+      );
+    },
+    async start({ res, data }) {
+      let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
-        res.setHeader(
-          'Set-Cookie',
-          cookie.serialize(TOKEN_NAME, sealedData, {
-            maxAge,
-            expires: new Date(Date.now() + maxAge * 1000),
-            httpOnly: true,
-            secure,
-            path,
-            sameSite,
-            domain,
-          })
-        );
+      res.setHeader(
+        'Set-Cookie',
+        cookie.serialize(TOKEN_NAME, sealedData, {
+          maxAge,
+          expires: new Date(Date.now() + maxAge * 1000),
+          httpOnly: true,
+          secure,
+          path,
+          sameSite,
+          domain,
+        })
+      );
 
-        return sealedData;
-      },
-    };
+      return sealedData;
+    },
   };
 }
 
@@ -180,47 +174,43 @@ export function storedSessions({
   store: storeOption,
   maxAge = MAX_AGE,
   ...statelessSessionsOptions
-}: {
-  store: SessionStoreFunction;
-} & StatelessSessionsOptions): () => SessionStrategy<JSONValue> {
-  return () => {
-    let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge })();
-    let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
-    let isConnected = false;
-    return {
-      async get({ req, createContext }) {
-        const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
-        const sessionId = data?.sessionId;
-        if (typeof sessionId === 'string') {
-          if (!isConnected) {
-            await store.connect?.();
-            isConnected = true;
-          }
-          return store.get(sessionId);
-        }
-      },
-      async start({ res, data, createContext }) {
-        let sessionId = generateSessionId();
+}: { store: SessionStoreFunction } & StatelessSessionsOptions): SessionStrategy<JSONValue> {
+  let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
+  let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
+  let isConnected = false;
+  return {
+    async get({ req, createContext }) {
+      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+      const sessionId = data?.sessionId;
+      if (typeof sessionId === 'string') {
         if (!isConnected) {
           await store.connect?.();
           isConnected = true;
         }
-        await store.set(sessionId, data);
-        return start?.({ res, data: { sessionId }, createContext }) || '';
-      },
-      async end({ req, res, createContext }) {
-        const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
-        const sessionId = data?.sessionId;
-        if (typeof sessionId === 'string') {
-          if (!isConnected) {
-            await store.connect?.();
-            isConnected = true;
-          }
-          await store.delete(sessionId);
+        return store.get(sessionId);
+      }
+    },
+    async start({ res, data, createContext }) {
+      let sessionId = generateSessionId();
+      if (!isConnected) {
+        await store.connect?.();
+        isConnected = true;
+      }
+      await store.set(sessionId, data);
+      return start?.({ res, data: { sessionId }, createContext }) || '';
+    },
+    async end({ req, res, createContext }) {
+      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+      const sessionId = data?.sessionId;
+      if (typeof sessionId === 'string') {
+        if (!isConnected) {
+          await store.connect?.();
+          isConnected = true;
         }
-        await end?.({ req, res, createContext });
-      },
-    };
+        await store.delete(sessionId);
+      }
+      await end?.({ req, res, createContext });
+    },
   };
 }
 
