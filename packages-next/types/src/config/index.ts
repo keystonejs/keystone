@@ -23,7 +23,7 @@ export type KeystoneConfig = {
   db: DatabaseConfig;
   ui?: AdminUIConfig;
   server?: ServerConfig;
-  session?: () => SessionStrategy<any>;
+  session?: SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
