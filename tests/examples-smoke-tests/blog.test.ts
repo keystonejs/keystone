@@ -10,8 +10,8 @@ exampleProjectTests('blog', browserType => {
     page.goto('http://localhost:3000');
   });
   test('Load list', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);
-    await page.waitForSelector('button:has-text("Create Person")');
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
+    await page.waitForSelector('button:has-text("Create Author")');
   });
   afterAll(async () => {
     await browser.close();

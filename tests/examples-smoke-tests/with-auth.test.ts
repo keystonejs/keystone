@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests } from './utils';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 
 exampleProjectTests('with-auth', browserType => {
   let browser: Browser = undefined as any;
@@ -9,10 +9,7 @@ exampleProjectTests('with-auth', browserType => {
     page = await browser.newPage();
     page.goto('http://localhost:3000');
   });
-  test('Load list', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);
-    await page.waitForSelector('button:has-text("Create Person")');
-  });
+  initFirstItemTest(() => page);
   afterAll(async () => {
     await browser.close();
   });
