@@ -50,7 +50,7 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
-    defaultValue?: FieldDefaultValue<Record<string, unknown>>;
+    defaultValue?: FieldDefaultValue<Record<string, unknown>, TGeneratedListTypes>;
     isUnique?: boolean;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 

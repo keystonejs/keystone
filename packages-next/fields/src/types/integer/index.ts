@@ -8,7 +8,7 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     isRequired?: boolean;
     isUnique?: boolean;
     isIndexed?: boolean;
-    defaultValue?: FieldDefaultValue<number>;
+    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
   };
 
 export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(

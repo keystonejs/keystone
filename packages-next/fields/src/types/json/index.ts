@@ -10,7 +10,7 @@ import { Json, PrismaJsonInterface } from './Implementation';
 
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   FieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<JSONValue>;
+    defaultValue?: FieldDefaultValue<JSONValue, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 
