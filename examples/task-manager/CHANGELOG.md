@@ -1,4 +1,4 @@
-# @keystone-next/example-todo
+# @keystone-next/example-task-manager
 
 ## 4.0.0
 

@@ -18,5 +18,5 @@
     "@keystone-next/keystone": "^18.0.0",
     "apollo-server-micro": "^2.24.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/graphql-api-endpoint"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/graphql-api-endpoint"
 }
