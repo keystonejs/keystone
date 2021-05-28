@@ -219,7 +219,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
       <Portal>
         <div
           ref={consumerRef}
-          // role="status"
+          role="status"
           css={{
             background: colors.background,
             borderRadius: radii.medium,
