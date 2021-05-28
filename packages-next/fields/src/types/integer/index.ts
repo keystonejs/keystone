@@ -14,7 +14,7 @@ import { getIndexType } from '../../get-index-type';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<number>;
+    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
     isUnique?: boolean;
     isIndexed?: boolean;

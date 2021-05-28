@@ -1,0 +1,256 @@
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  isAdmin: Boolean
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  isAdmin: Boolean
+  isAdmin_not: Boolean
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  createUser(data: UserCreateInput): User
+  createUsers(data: [UsersCreateInput]): [User]
+  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUsers(data: [UsersUpdateInput]): [User]
+  deleteUser(id: ID!): User
+  deleteUsers(ids: [ID!]): [User]
+  endSession: Boolean!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+type Query {
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}

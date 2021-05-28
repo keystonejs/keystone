@@ -17,7 +17,7 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
     isIndexed?: boolean;
     isUnique?: boolean;
     isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
   };
 
 export const timestamp =

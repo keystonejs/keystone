@@ -1,0 +1,639 @@
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  height: Int!
+  width: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  height: Int!
+  width: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  avatar: ImageFieldOutput
+  attachment: FileFieldOutput
+  password: PasswordState
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers(
+    where: PhoneNumberWhereInput! = {}
+    search: String
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    sortBy: [SortPhoneNumbersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [PhoneNumber!]!
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  _phoneNumbersMeta(
+    where: PhoneNumberWhereInput! = {}
+    search: String
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    sortBy: [SortPhoneNumbersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  randomNumber: Float
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type PhoneNumber {
+  id: ID!
+  label: String
+  user: User
+  type: String
+  value: String
+}
+
+input PhoneNumberWhereInput {
+  AND: [PhoneNumberWhereInput!]
+  OR: [PhoneNumberWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  user_is_null: Boolean
+  user: UserWhereInput
+  type: String
+  type_not: String
+  type_lt: String
+  type_lte: String
+  type_gt: String
+  type_gte: String
+  type_in: [String]
+  type_not_in: [String]
+  value: String
+  value_not: String
+  value_contains: String
+  value_not_contains: String
+  value_in: [String]
+  value_not_in: [String]
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  isAdmin: Boolean
+  isAdmin_not: Boolean
+  roles: String
+  roles_not: String
+  roles_contains: String
+  roles_not_contains: String
+  roles_in: [String]
+  roles_not_in: [String]
+  phoneNumbers_every: PhoneNumberWhereInput
+  phoneNumbers_some: PhoneNumberWhereInput
+  phoneNumbers_none: PhoneNumberWhereInput
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_in: [String]
+  title_not_in: [String]
+  status: String
+  status_not: String
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_in: [String]
+  status_not_in: [String]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
+  author_is_null: Boolean
+  author: UserWhereInput
+}
+
+input PhoneNumberOrderByInput {
+  id: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+enum SortPhoneNumbersBy {
+  id_ASC
+  id_DESC
+  type_ASC
+  type_DESC
+  value_ASC
+  value_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Post {
+  id: ID!
+  title: String
+  status: String
+  content: Post_content_DocumentField
+  publishDate: String
+  author: User
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+}
+
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  publishDate_ASC
+  publishDate_DESC
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+  roles: OrderDirection
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+  roles_ASC
+  roles_DESC
+}
+
+input PhoneNumberWhereUniqueInput {
+  id: ID!
+}
+
+input PostWhereUniqueInput {
+  id: ID!
+}
+
+type Mutation {
+  createUser(data: UserCreateInput): User
+  createUsers(data: [UsersCreateInput]): [User]
+  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUsers(data: [UsersUpdateInput]): [User]
+  deleteUser(id: ID!): User
+  deleteUsers(ids: [ID!]): [User]
+  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
+  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
+  deletePhoneNumber(id: ID!): PhoneNumber
+  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
+  createPost(data: PostCreateInput): Post
+  createPosts(data: [PostsCreateInput]): [Post]
+  updatePost(id: ID!, data: PostUpdateInput): Post
+  updatePosts(data: [PostsUpdateInput]): [Post]
+  deletePost(id: ID!): Post
+  deletePosts(ids: [ID!]): [Post]
+  endSession: Boolean!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+  createRandomPosts: [Post!]!
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  avatar: ImageFieldInput
+  attachment: FileFieldInput
+  password: String
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers: PhoneNumberRelateToManyInput
+  posts: PostRelateToManyInput
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+input PhoneNumberRelateToManyInput {
+  create: [PhoneNumberCreateInput] = []
+  connect: [PhoneNumberWhereUniqueInput] = []
+  disconnect: [PhoneNumberWhereUniqueInput] = []
+  disconnectAll: Boolean
+}
+
+input PhoneNumberCreateInput {
+  user: UserRelateToOneInput
+  type: String
+  value: String
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput] = []
+  connect: [PostWhereUniqueInput] = []
+  disconnect: [PostWhereUniqueInput] = []
+  disconnectAll: Boolean
+}
+
+input PostCreateInput {
+  title: String
+  status: String
+  content: JSON
+  publishDate: String
+  author: UserRelateToOneInput
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  avatar: ImageFieldInput
+  attachment: FileFieldInput
+  password: String
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers: PhoneNumberRelateToManyInput
+  posts: PostRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input PhoneNumbersCreateInput {
+  data: PhoneNumberCreateInput
+}
+
+input PhoneNumberUpdateInput {
+  user: UserRelateToOneInput
+  type: String
+  value: String
+}
+
+input PhoneNumbersUpdateInput {
+  id: ID!
+  data: PhoneNumberUpdateInput
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+input PostUpdateInput {
+  title: String
+  status: String
+  content: JSON
+  publishDate: String
+  author: UserRelateToOneInput
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
+}
+
+type Query {
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int
+  PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  allPhoneNumbers(
+    where: PhoneNumberWhereInput! = {}
+    search: String
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    sortBy: [SortPhoneNumbersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [PhoneNumber!]
+  _allPhoneNumbersMeta(
+    where: PhoneNumberWhereInput! = {}
+    search: String
+    orderBy: [PhoneNumberOrderByInput!]! = []
+    sortBy: [SortPhoneNumbersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
+    )
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
+  Post(where: PostWhereUniqueInput!): Post
+  allPosts(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    orderBy: [PostOrderByInput!]! = []
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
+  randomNumber: RandomNumber
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type RandomNumber {
+  number: Int
+  generatedAt: Int
+}

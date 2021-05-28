@@ -167,13 +167,13 @@ type Mutation {
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostsUpdateInput]): [Post]
   deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]!): [Post]
+  deletePosts(ids: [ID!]): [Post]
   createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
   updateAuthors(data: [AuthorsUpdateInput]): [Author]
   deleteAuthor(id: ID!): Author
-  deleteAuthors(ids: [ID!]!): [Author]
+  deleteAuthors(ids: [ID!]): [Author]
 }
 
 input PostCreateInput {
@@ -181,23 +181,27 @@ input PostCreateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneForCreateInput
+  author: AuthorRelateToOneInput
 }
 
-input AuthorRelateToOneForCreateInput {
+input AuthorRelateToOneInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
+  disconnect: AuthorWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 input AuthorCreateInput {
   name: String
   email: String
-  posts: PostRelateToManyForCreateInput! = { create: [], connect: [] }
+  posts: PostRelateToManyInput
 }
 
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]! = []
-  connect: [PostWhereUniqueInput!]! = []
+input PostRelateToManyInput {
+  create: [PostCreateInput] = []
+  connect: [PostWhereUniqueInput] = []
+  disconnect: [PostWhereUniqueInput] = []
+  disconnectAll: Boolean
 }
 
 input PostsCreateInput {
@@ -209,12 +213,7 @@ input PostUpdateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneForUpdateInput
-}
-
-input AuthorRelateToOneForUpdateInput {
-  create: AuthorCreateInput
-  connect: AuthorWhereUniqueInput
+  author: AuthorRelateToOneInput
 }
 
 input PostsUpdateInput {
@@ -229,19 +228,7 @@ input AuthorsCreateInput {
 input AuthorUpdateInput {
   name: String
   email: String
-  posts: PostRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input PostRelateToManyForUpdateInput {
-  create: [PostCreateInput!]! = []
-  connect: [PostWhereUniqueInput!]! = []
-  disconnect: [PostWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
+  posts: PostRelateToManyInput
 }
 
 input AuthorsUpdateInput {

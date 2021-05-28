@@ -18,7 +18,7 @@ export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     isRequired?: boolean;
     precision?: number;
     scale?: number;
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isIndexed?: boolean;
     isUnique?: boolean;
   };

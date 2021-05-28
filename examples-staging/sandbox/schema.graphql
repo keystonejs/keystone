@@ -1,0 +1,408 @@
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  assignedTo: User
+  finishBy: String
+  createdAt: String
+  updatedAt: String
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  tasks(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]!
+  tasksCount(where: TodoWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  createdAt: String
+  updatedAt: String
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+input TodoWhereInput {
+  AND: [TodoWhereInput!]
+  OR: [TodoWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  assignedTo_is_null: Boolean
+  assignedTo: UserWhereInput
+  finishBy: String
+  finishBy_not: String
+  finishBy_lt: String
+  finishBy_lte: String
+  finishBy_gt: String
+  finishBy_gte: String
+  finishBy_in: [String]
+  finishBy_not_in: [String]
+  createdAt: String
+  createdAt_not: String
+  createdAt_lt: String
+  createdAt_lte: String
+  createdAt_gt: String
+  createdAt_gte: String
+  createdAt_in: [String]
+  createdAt_not_in: [String]
+  updatedAt: String
+  updatedAt_not: String
+  updatedAt_lt: String
+  updatedAt_lte: String
+  updatedAt_gt: String
+  updatedAt_gte: String
+  updatedAt_in: [String]
+  updatedAt_not_in: [String]
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  tasks_every: TodoWhereInput
+  tasks_some: TodoWhereInput
+  tasks_none: TodoWhereInput
+  createdAt: String
+  createdAt_not: String
+  createdAt_lt: String
+  createdAt_lte: String
+  createdAt_gt: String
+  createdAt_gte: String
+  createdAt_in: [String]
+  createdAt_not_in: [String]
+  updatedAt: String
+  updatedAt_not: String
+  updatedAt_lt: String
+  updatedAt_lte: String
+  updatedAt_gt: String
+  updatedAt_gte: String
+  updatedAt_in: [String]
+  updatedAt_not_in: [String]
+}
+
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+input TodoWhereUniqueInput {
+  id: ID!
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type Mutation {
+  createTodo(data: TodoCreateInput): Todo
+  createTodos(data: [TodosCreateInput]): [Todo]
+  updateTodo(id: ID!, data: TodoUpdateInput): Todo
+  updateTodos(data: [TodosUpdateInput]): [Todo]
+  deleteTodo(id: ID!): Todo
+  deleteTodos(ids: [ID!]): [Todo]
+  createUser(data: UserCreateInput): User
+  createUsers(data: [UsersCreateInput]): [User]
+  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUsers(data: [UsersUpdateInput]): [User]
+  deleteUser(id: ID!): User
+  deleteUsers(ids: [ID!]): [User]
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
+input TodoRelateToManyInput {
+  create: [TodoCreateInput] = []
+  connect: [TodoWhereUniqueInput] = []
+  disconnect: [TodoWhereUniqueInput] = []
+  disconnectAll: Boolean
+}
+
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+type Query {
+  Todo(where: TodoWhereUniqueInput!): Todo
+  allTodos(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]
+  _allTodosMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    orderBy: [TodoOrderByInput!]! = []
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int
+  User(where: UserWhereUniqueInput!): User
+  allUsers(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    search: String
+    orderBy: [UserOrderByInput!]! = []
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

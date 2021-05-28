@@ -14,13 +14,13 @@ import { getIndexType } from '../../get-index-type';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isIndexed?: boolean;
     isUnique?: boolean;
+    isRequired?: boolean;
     ui?: {
       displayMode?: 'input' | 'textarea';
     };
-    isRequired?: boolean;
   };
 
 export const text =

@@ -1,7 +1,7 @@
 ## Feature Example - Authentication
 
 This project demonstrates how to add password based authentication to your Keystone system.
-It builds on the [Task Manager](../todo) starter project.
+It builds on the [Task Manager](../task-manager) starter project.
 
 ## Instructions
 

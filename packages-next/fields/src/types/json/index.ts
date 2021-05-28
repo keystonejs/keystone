@@ -11,7 +11,7 @@ import { resolveView } from '../../resolve-view';
 
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<JSONValue>;
+    defaultValue?: FieldDefaultValue<JSONValue, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 

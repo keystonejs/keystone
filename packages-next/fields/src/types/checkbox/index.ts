@@ -13,7 +13,7 @@ import type { CommonFieldConfig } from '../../interfaces';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<boolean>;
+    defaultValue?: FieldDefaultValue<boolean, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 

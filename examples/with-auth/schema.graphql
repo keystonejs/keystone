@@ -170,13 +170,13 @@ type Mutation {
   updateTask(id: ID!, data: TaskUpdateInput): Task
   updateTasks(data: [TasksUpdateInput]): [Task]
   deleteTask(id: ID!): Task
-  deleteTasks(ids: [ID!]!): [Task]
+  deleteTasks(ids: [ID!]): [Task]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]!): [Person]
+  deletePeople(ids: [ID!]): [Person]
   endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
@@ -191,25 +191,29 @@ input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneForCreateInput
+  assignedTo: PersonRelateToOneInput
   finishBy: String
 }
 
-input PersonRelateToOneForCreateInput {
+input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 input PersonCreateInput {
   name: String
   email: String
   password: String
-  tasks: TaskRelateToManyForCreateInput! = { create: [], connect: [] }
+  tasks: TaskRelateToManyInput
 }
 
-input TaskRelateToManyForCreateInput {
-  create: [TaskCreateInput!]! = []
-  connect: [TaskWhereUniqueInput!]! = []
+input TaskRelateToManyInput {
+  create: [TaskCreateInput] = []
+  connect: [TaskWhereUniqueInput] = []
+  disconnect: [TaskWhereUniqueInput] = []
+  disconnectAll: Boolean
 }
 
 input TasksCreateInput {
@@ -220,13 +224,8 @@ input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneForUpdateInput
+  assignedTo: PersonRelateToOneInput
   finishBy: String
-}
-
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
 }
 
 input TasksUpdateInput {
@@ -242,19 +241,7 @@ input PersonUpdateInput {
   name: String
   email: String
   password: String
-  tasks: TaskRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input TaskRelateToManyForUpdateInput {
-  create: [TaskCreateInput!]! = []
-  connect: [TaskWhereUniqueInput!]! = []
-  disconnect: [TaskWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
+  tasks: TaskRelateToManyInput
 }
 
 input PeopleUpdateInput {

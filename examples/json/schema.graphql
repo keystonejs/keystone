@@ -133,35 +133,39 @@ type Mutation {
   updatePackage(id: ID!, data: PackageUpdateInput): Package
   updatePackages(data: [PackagesUpdateInput]): [Package]
   deletePackage(id: ID!): Package
-  deletePackages(ids: [ID!]!): [Package]
+  deletePackages(ids: [ID!]): [Package]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]!): [Person]
+  deletePeople(ids: [ID!]): [Person]
 }
 
 input PackageCreateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
-  ownedBy: PersonRelateToOneForCreateInput
+  ownedBy: PersonRelateToOneInput
 }
 
-input PersonRelateToOneForCreateInput {
+input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 input PersonCreateInput {
   name: String
-  packages: PackageRelateToManyForCreateInput! = { create: [], connect: [] }
+  packages: PackageRelateToManyInput
 }
 
-input PackageRelateToManyForCreateInput {
-  create: [PackageCreateInput!]! = []
-  connect: [PackageWhereUniqueInput!]! = []
+input PackageRelateToManyInput {
+  create: [PackageCreateInput] = []
+  connect: [PackageWhereUniqueInput] = []
+  disconnect: [PackageWhereUniqueInput] = []
+  disconnectAll: Boolean
 }
 
 input PackagesCreateInput {
@@ -172,12 +176,7 @@ input PackageUpdateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
-  ownedBy: PersonRelateToOneForUpdateInput
-}
-
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
+  ownedBy: PersonRelateToOneInput
 }
 
 input PackagesUpdateInput {
@@ -191,19 +190,7 @@ input PeopleCreateInput {
 
 input PersonUpdateInput {
   name: String
-  packages: PackageRelateToManyForUpdateInput! = {
-    create: []
-    connect: []
-    disconnect: []
-    disconnectAll: false
-  }
-}
-
-input PackageRelateToManyForUpdateInput {
-  create: [PackageCreateInput!]! = []
-  connect: [PackageWhereUniqueInput!]! = []
-  disconnect: [PackageWhereUniqueInput!]! = []
-  disconnectAll: Boolean! = false
+  packages: PackageRelateToManyInput
 }
 
 input PeopleUpdateInput {

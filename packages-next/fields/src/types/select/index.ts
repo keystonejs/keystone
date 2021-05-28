@@ -22,12 +22,12 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       | {
           options: { label: string; value: string }[];
           dataType?: 'string' | 'enum';
-          defaultValue?: FieldDefaultValue<string>;
+          defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
         }
       | {
           options: { label: string; value: number }[];
           dataType: 'integer';
-          defaultValue?: FieldDefaultValue<number>;
+          defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
         }
     ) & {
       ui?: {

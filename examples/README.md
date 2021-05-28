@@ -8,7 +8,7 @@ You can use these examples as a jumping off point for adding features to your ow
 ## Base Projects
 
 There are two base projects which all the other examples build off.
-The [`todo`](./todo) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
+The [`task-manager`](./task-manager) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
 
 These projects have very simple schemas and none of the bells or whistles you'd expect in a complete project.
 You can use these as a starting point for general experimentation in a clean environment.
@@ -18,38 +18,10 @@ You can use these as a starting point for general experimentation in a clean env
 Each of the examples below demonstrates a particular feature of Keystone.
 You can use these projects to learn about, and experiment with specific features.
 
-- [`withAuth`](./with-auth): Adding password based authentication to your Keystone application.
+- [`withAuth()`](./with-auth): Adding password based authentication to your Keystone application.
 - [`JSON field`](./json): Using a JSON field in your Keystone application.
-- Data Seeding: Coming soon
-- GitHub SSO: Coming soon
-- Roles: Coming soon
-- Logging: Coming soon
-- Custom Fields: Coming soon
-- Custom Views: Coming soon
-- REST APIs: Coming soon
-- Validation: Coming soon
-- Images: Coming soon
-- Files: Coming soon
-- Hooks: Coming soon
-- Access Control: Coming soon
-- Document Field: Coming soon
-- Relationships: Coming soon
-- Schema Extension: Coming soon
-- Virtual Fields: Coming soon
-- Default Values: Coming soon
-- Select Fields: Coming soon
-- Tracking Meta: Coming soon
-- Next.js App: Coming soon
-- Null Handling: Coming soon
-- ID Fields: Coming soon
-- Fields: Coming soon
-
-## Solution Examples
-
-The solution examples show you how to bring together all of the features of Keystone to build a complete product solution.
-These examples show how the different features of Keystone work together in a more complex project.
-
-(coming soon)
+- [`defaultValue`](./default-values): Using `defaultValue` to set default values on fields in your data schema.
+- [`extendGraphqlSchema](./extend-graphql-schema): Using `config.extendGraphqlSchema` to extend your GraphQL API.
 
 ## Running examples
 

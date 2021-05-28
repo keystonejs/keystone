@@ -1,7 +1,7 @@
-## Base Project - JSON Field
+## Feature Example - JSON Field
 
 This project demonstrates the usage of the `json` field type.
-It builds on the [Task Manager](../todo) starter project.
+It builds on the [Task Manager](../task-manager) starter project.
 
 ## Instructions
 
