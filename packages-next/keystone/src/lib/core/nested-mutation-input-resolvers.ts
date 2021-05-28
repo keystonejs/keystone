@@ -166,7 +166,7 @@ async function handleCreateAndUpdate(
       try {
         return inputResolvers.create(createInput);
       } catch (err) {
-        throw new Error(`Unable to connect a ${target}`);
+        throw new Error(`Unable to create a ${target}`);
       }
     })();
 

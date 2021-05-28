@@ -613,30 +613,45 @@ export function initialiseLists(
 
     const relateToMany = types.inputObject({
       name: names.relateToManyInputName,
-      fields: {
-        create: types.arg({
-          type: types.list(create),
-          defaultValue: [],
-        }),
-        connect: types.arg({
-          type: types.list(uniqueWhere),
-          defaultValue: [],
-        }),
-        disconnect: types.arg({
-          type: types.list(uniqueWhere),
-          defaultValue: [],
-        }),
-        disconnectAll: types.arg({ type: types.Boolean }),
+      fields: () => {
+        const list = initialisedLists[listKey];
+        return {
+          ...(list.access.create === false
+            ? {}
+            : {
+                create: types.arg({
+                  type: types.list(create),
+                  defaultValue: [],
+                }),
+              }),
+          connect: types.arg({
+            type: types.list(uniqueWhere),
+            defaultValue: [],
+          }),
+          disconnect: types.arg({
+            type: types.list(uniqueWhere),
+            defaultValue: [],
+          }),
+          disconnectAll: types.arg({ type: types.Boolean }),
+        };
       },
     });
 
     const relateToOne = types.inputObject({
       name: names.relateToOneInputName,
-      fields: {
-        create: types.arg({ type: create }),
-        connect: types.arg({ type: uniqueWhere }),
-        disconnect: types.arg({ type: uniqueWhere }),
-        disconnectAll: types.arg({ type: types.Boolean }),
+      fields: () => {
+        const list = initialisedLists[listKey];
+
+        return {
+          ...(list.access.create === false
+            ? {}
+            : {
+                create: types.arg({ type: create }),
+              }),
+          connect: types.arg({ type: uniqueWhere }),
+          disconnect: types.arg({ type: uniqueWhere }),
+          disconnectAll: types.arg({ type: types.Boolean }),
+        };
       },
     });
 
