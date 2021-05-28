@@ -6,6 +6,22 @@ import * as mutations from './mutation-resolvers';
 import * as queries from './query-resolvers';
 import { applyFirstSkipToCount } from './utils';
 
+// this is not a thing that i really agree with but it's to make the behaviour consistent with old keystone
+// basically, old keystone uses Promise.allSettled and then after that maps that into promises that resolve and reject,
+// whereas the new stuff is just like "here are some promises" with no guarantees about the order they will be settled in
+// that doesn't matter when they all resolve successfully because the order they resolve successfully in
+// doesn't affect anything, if some reject though, the order that they reject in will be the order in the errors array
+// and some of our tests rely on the order of the graphql errors array. they shouldn't, but they do.
+function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]>(promises: T): T {
+  const resultsPromise = Promise.allSettled(promises);
+  return promises.map(async (_, i) => {
+    const result = (await resultsPromise)[i];
+    return result.status === 'fulfilled'
+      ? Promise.resolve(result.value)
+      : Promise.reject(result.reason);
+  }) as T;
+}
+
 export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider
@@ -163,13 +179,15 @@ export function getGraphQLSchema(
               ),
             }),
           },
-          resolve(_rootVal, args, context) {
-            return mutations.createMany(
-              { data: (args.data || []).map(input => input?.data ?? {}) },
-              listKey,
-              list,
-              context,
-              provider
+          async resolve(_rootVal, args, context) {
+            return promisesButSettledWhenAllSettledAndInOrder(
+              await mutations.createMany(
+                { data: (args.data || []).map(input => input?.data ?? {}) },
+                listKey,
+                list,
+                context,
+                provider
+              )
             );
           },
         });
@@ -186,17 +204,19 @@ export function getGraphQLSchema(
               ),
             }),
           },
-          resolve(_rootVal, { data }, context) {
-            return mutations.updateMany(
-              {
-                data: (data || [])
-                  .filter((x): x is NonNullable<typeof x> => x !== null)
-                  .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
-              },
-              listKey,
-              list,
-              context,
-              provider
+          async resolve(_rootVal, { data }, context) {
+            return promisesButSettledWhenAllSettledAndInOrder(
+              await mutations.updateMany(
+                {
+                  data: (data || [])
+                    .filter((x): x is NonNullable<typeof x> => x !== null)
+                    .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
+                },
+                listKey,
+                list,
+                context,
+                provider
+              )
             );
           },
         });
@@ -207,13 +227,15 @@ export function getGraphQLSchema(
               type: types.list(types.nonNull(types.ID)),
             }),
           },
-          resolve(rootVal, { ids }, context) {
-            return mutations.deleteMany(
-              { where: (ids || []).map(id => ({ id })) },
-              listKey,
-              list,
-              context,
-              provider
+          async resolve(rootVal, { ids }, context) {
+            return promisesButSettledWhenAllSettledAndInOrder(
+              await mutations.deleteMany(
+                { where: (ids || []).map(id => ({ id })) },
+                listKey,
+                list,
+                context,
+                provider
+              )
             );
           },
         });
