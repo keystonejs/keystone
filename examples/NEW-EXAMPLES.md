@@ -1,6 +1,6 @@
 ## Adding Examples
 
-These docs are intended for developers adding new examples to the Keystone repository.
+These docs are for developers who want to add new example projects to the Keystone repository.
 
 If you're looking for instructions on how to use the examples, please consult the [README](./README.md).
 
@@ -9,10 +9,10 @@ If you're looking for instructions on how to use the examples, please consult th
 There are three types of example project:
 
 - Base Projects: We have two of these, a blog and a task manager. We don't need any more of these
-- Feature Examples: Each example project should be based on one of the base projects and should be a minimal example of how to use a specific feature.
-  They should only include what is needed to show off their specific feature, and should not become "kitchen sink" examples.
-- Solution Examples: Each solution example is a complete project which demonstrates a complete solution, such as the e-commerce project.
-  These projects bring together a collection of features in a cohesive way.
+- Feature Projects: Should be built off a base, and be a minimal demonstration of how to use a specific feature.
+  They should only include what is needed to show off the feature, and should not become "kitchen sink" demos.
+- Solution Projects: Should be a complete demonstration of a solution such as an e-commerce project.
+  These projects combine a collection of features in a cohesive way that makes sense for the use case.
 
 ### Feature Example steps
 
@@ -27,4 +27,4 @@ There are three types of example project:
 9. [Draw the rest of the owl](https://knowyourmeme.com/memes/how-to-draw-an-owl). Write and test your example, making sure that it's clearly commented.
 10. Add a smoke test to ensure your example is executed on CI.
 11. Update the `examples/README.md` with a link to your new example.
-12. Submit a PR for your example.
+12. Submit a PR for review.
