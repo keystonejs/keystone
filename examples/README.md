@@ -21,7 +21,7 @@ You can use these projects to learn about, and experiment with specific features
 - [`withAuth()`](./with-auth): Adding password based authentication to your Keystone application.
 - [`JSON field`](./json): Using a JSON field in your Keystone application.
 - [`defaultValue`](./default-values): Using `defaultValue` to set default values on fields in your data schema.
-- [`extendGraphqlSchema](./extend-graphql-schema): Using `config.extendGraphqlSchema` to extend your GraphQL API.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Using `config.extendGraphqlSchema` to extend your GraphQL API.
 
 ## Running examples
 
