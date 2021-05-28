@@ -132,12 +132,11 @@ function getRelationVal(
       findMany: async (args: FindManyArgsValue) => {
         return getFindManyArgs(
           args,
-          args => {
+          args =>
             getPrismaModelForList(context.prisma, dbField.list).findMany({
               ...args,
               where: { AND: [args.where, relationFilter] },
-            });
-          },
+            }),
           foreignList,
           context
         );
