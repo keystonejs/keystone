@@ -9,7 +9,7 @@
 '@keystone-next/example-embedded-nextjs': patch
 '@keystone-next/example-roles': patch
 '@keystone-next/example-sandbox': patch
-'@keystone-next/example-todo': patch
+'@keystone-next/example-task-manager': patch
 '@keystone-next/example-with-auth': patch
 '@keystone-next/types': patch
 '@keystone-next/api-tests-legacy': patch
