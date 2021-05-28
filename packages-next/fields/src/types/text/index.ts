@@ -5,7 +5,7 @@ import { Text, PrismaTextInterface } from './Implementation';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   FieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isRequired?: boolean;
     isIndexed?: boolean;
     isUnique?: boolean;
