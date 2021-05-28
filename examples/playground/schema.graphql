@@ -36,6 +36,16 @@ enum SortNotesBy {
   label_DESC
 }
 
+input NoteOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input NoteUpdateInput {
   label: String
 }
@@ -107,13 +117,14 @@ type Query {
    Search for all Note items which match the where clause.
   """
   allNotes(
-    where: NoteWhereInput
+    where: NoteWhereInput! = {}
     search: String
     sortBy: [SortNotesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NoteOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Note]
+    skip: Int! = 0
+  ): [Note!]
 
   """
    Search for the Note item with the matching ID.
@@ -124,13 +135,18 @@ type Query {
    Perform a meta-query on all Note items which match the where clause.
   """
   _allNotesMeta(
-    where: NoteWhereInput
+    where: NoteWhereInput! = {}
     search: String
     sortBy: [SortNotesBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NoteOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use notesCount instead."
+    )
+  notesCount(where: NoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
