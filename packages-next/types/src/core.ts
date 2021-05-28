@@ -1,17 +1,19 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import type { GraphQLResolveInfo } from 'graphql';
-import type { GqlNames, MaybePromise } from './utils';
+import type { BaseGeneratedListTypes, GqlNames, MaybePromise } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
 
-/* TODO: Review these types */
-type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
+type FieldDefaultValueArgs<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+  context: KeystoneContext;
+  originalInput: TGeneratedListTypes['inputs']['create'];
+};
 
 export type DatabaseProvider = 'sqlite' | 'postgresql';
 
-export type FieldDefaultValue<T> =
+export type FieldDefaultValue<T, TGeneratedListTypes extends BaseGeneratedListTypes> =
   | T
   | null
-  | ((args: FieldDefaultValueArgs<T>) => MaybePromise<T | null | undefined>);
+  | ((args: FieldDefaultValueArgs<TGeneratedListTypes>) => MaybePromise<T | null | undefined>);
 
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;

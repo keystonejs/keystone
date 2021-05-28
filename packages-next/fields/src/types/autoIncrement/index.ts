@@ -7,7 +7,7 @@ export type AutoIncrementFieldConfig<TGeneratedListTypes extends BaseGeneratedLi
   FieldConfig<TGeneratedListTypes> & {
     isRequired?: boolean;
     isUnique?: boolean;
-    defaultValue?: FieldDefaultValue<number>;
+    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
   };
 
 export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes>(

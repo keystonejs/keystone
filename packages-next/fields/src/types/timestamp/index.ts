@@ -5,7 +5,7 @@ import { DateTimeUtcImplementation, PrismaDateTimeUtcInterface } from './Impleme
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   FieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isRequired?: boolean;
     isIndexed?: boolean;
     isUnique?: boolean;

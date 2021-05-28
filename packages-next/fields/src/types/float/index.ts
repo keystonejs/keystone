@@ -8,7 +8,7 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
     isRequired?: boolean;
     isUnique?: boolean;
     isIndexed?: boolean;
-    defaultValue?: FieldDefaultValue<number>;
+    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
   };
 
 export const float = <TGeneratedListTypes extends BaseGeneratedListTypes>(

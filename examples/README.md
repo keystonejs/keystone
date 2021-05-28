@@ -19,6 +19,8 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 
 - [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
 - [`JSON field`](./json): Adds a JSON field to the Task Manager base.
+- [`defaultValue`](./default-values): Adds default values to the Blog base.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
 
 ## Running examples
 
