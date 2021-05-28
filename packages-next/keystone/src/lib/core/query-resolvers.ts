@@ -115,7 +115,7 @@ export async function getFindManyArgs<T>(
   { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
   get: (args: {
     where: PrismaFilter;
-    first: number | undefined;
+    take: number | undefined;
     skip: number;
     orderBy: readonly Record<string, 'asc' | 'desc'>[];
   }) => Promise<T[]>,
@@ -134,7 +134,7 @@ export async function getFindManyArgs<T>(
   const results = await get({
     where: resolvedWhere,
     orderBy,
-    first: first ?? undefined,
+    take: first ?? undefined,
     skip,
   });
   applyMaxResults(results, list, context);
