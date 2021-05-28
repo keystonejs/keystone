@@ -23,7 +23,7 @@ const { withAuth } = createAuth({
 });
 
 // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie.
-// This session object will be made availble on the context object used in hooks, access-control,
+// This session object will be made available on the context object used in hooks, access-control,
 // resolvers, etc.
 const session = statelessSessions({
   // The session secret is used to encrypt cookie data (should be an environment variable)
