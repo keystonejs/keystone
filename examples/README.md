@@ -1,6 +1,6 @@
 # Keystone Examples
 
-👋 Welcome to the Keystone Example Projects – a collection of examples that demonstrate Keystone features.
+👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate Keystone features.
 
 You can use these as jumping off point when adding features to your own Keystone project.
 ## Base Projects
