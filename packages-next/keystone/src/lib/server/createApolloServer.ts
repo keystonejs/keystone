@@ -72,7 +72,7 @@ const _createApolloServerConfig = ({
 
   const settings = { 'request.credentials': 'same-origin' };
 
-  // check: can we access http://localhost:3000/api/graphql?
+  // is /api/graphql available?
 
   // graphql.apolloConfig.playground === false (playground not accessible in all cases)
   if (typeof pp === 'boolean' && !pp) {
@@ -80,7 +80,7 @@ const _createApolloServerConfig = ({
   // graphql.apolloConfig.playground === true (playground accessible in all cases)
   } else if (typeof pp === 'boolean') {
     playground = { settings };
-  // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation)
+  // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation - https://www.apollographql.com/docs/apollo-server/testing/graphql-playground)
   } else if (pp) {
     playground = { ...pp, settings: { ...settings, ...pp.settings } };
   // process.env.NODE_ENV === 'production' (playground not accessible in production)
