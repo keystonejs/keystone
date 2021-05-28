@@ -218,6 +218,7 @@ jobs:
             'basic.test.ts',
             'blog.test.ts',
             'default-values.test.ts',
+            'extend-graphql-schema.test.ts',
             'json.test.ts',
             'roles.test.ts',
             'task-manager.test.ts',
