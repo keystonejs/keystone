@@ -217,7 +217,7 @@ jobs:
             'auth.test.ts',
             'basic.test.ts',
             'blog.test.ts',
-            'default-values.test.js',
+            'default-values.test.ts',
             'json.test.ts',
             'roles.test.ts',
             'task-manager.test.ts',
