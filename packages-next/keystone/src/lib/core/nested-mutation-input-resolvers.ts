@@ -17,15 +17,13 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (
-    _value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['create']>>
+    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['create']>>
   ) => {
-    return resolveCreateAndConnect(
-      _value || ({} as any),
-      inputResolvers,
-      context,
-      foreignListKey,
-      target
-    );
+    if (value === undefined) {
+      return undefined;
+    }
+    assertValidManyOperation(value, target);
+    return resolveCreateAndConnect(value, inputResolvers, context, foreignListKey, target);
   };
 }
 
@@ -105,6 +103,27 @@ async function resolveCreateAndConnect(
   return result;
 }
 
+const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
+
+function assertValidManyOperation(
+  val: Exclude<
+    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>,
+    undefined
+  >,
+  target: string
+): asserts val is Exclude<typeof val, null> {
+  debugger;
+  if (
+    !val ||
+    (!Array.isArray(val.connect) &&
+      !Array.isArray(val.create) &&
+      !Array.isArray(val.disconnect) &&
+      !val.disconnectAll)
+  ) {
+    throw new Error(`Nested mutation operation invalid for ${target}`);
+  }
+}
+
 const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
   arg.status === 'fulfilled';
 const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
@@ -117,9 +136,12 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (
-    _value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>
+    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>
   ) => {
-    const value = _value || ({} as Exclude<typeof _value, null | undefined>);
+    if (value === undefined) {
+      return undefined;
+    }
+    assertValidManyOperation(value, target);
     const disconnects = getDisconnects(
       value.disconnectAll ? [] : value.disconnect || [],
       context,
@@ -164,7 +186,7 @@ async function handleCreateAndUpdate(
     const createInput = value.create;
     let create = await (async () => {
       try {
-        return inputResolvers.create(createInput);
+        return await inputResolvers.create(createInput);
       } catch (err) {
         throw new Error(`Unable to create a ${target}`);
       }
@@ -218,12 +240,8 @@ export function resolveRelateToOneForUpdateInput(
     // if (value === null) {
     //   return { disconnect: true };
     // }
-    const numOfKeys = Object.keys(value).length;
-    if (numOfKeys !== 1) {
+    if (value.connect && value.create) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
-      // throw new Error(
-      //   `If a relate to one for update input is passed, only one key can be passed but ${numOfKeys} were be passed`
-      // );
     }
     if (value.connect || value.create) {
       return handleCreateAndUpdate(value, inputResolvers, context, foreignListKey, target);

@@ -619,19 +619,10 @@ export function initialiseLists(
           ...(list.access.create === false
             ? {}
             : {
-                create: types.arg({
-                  type: types.list(create),
-                  defaultValue: [],
-                }),
+                create: types.arg({ type: types.list(create) }),
               }),
-          connect: types.arg({
-            type: types.list(uniqueWhere),
-            defaultValue: [],
-          }),
-          disconnect: types.arg({
-            type: types.list(uniqueWhere),
-            defaultValue: [],
-          }),
+          connect: types.arg({ type: types.list(uniqueWhere) }),
+          disconnect: types.arg({ type: types.list(uniqueWhere) }),
           disconnectAll: types.arg({ type: types.Boolean }),
         };
       },

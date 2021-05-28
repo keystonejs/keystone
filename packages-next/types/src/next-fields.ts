@@ -423,7 +423,7 @@ export type FieldTypeWithoutDBField<
       >;
     };
     isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<any>;
+    defaultValue?: FieldDefaultValue<any, BaseGeneratedListTypes>;
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
@@ -453,14 +453,14 @@ type AnyInputObj = tsgql.InputObjectType<
 >;
 
 type RelateToOneInput = tsgql.InputObjectType<{
-  create: tsgql.Arg<TypesForList['create'], any>;
+  create?: tsgql.Arg<TypesForList['create'], any>;
   connect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
   disconnect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
   disconnectAll: tsgql.Arg<typeof types.Boolean>;
 }>;
 
 type RelateToManyInput = tsgql.InputObjectType<{
-  create: tsgql.Arg<tsgql.ListType<TypesForList['create']>, any>;
+  create?: tsgql.Arg<tsgql.ListType<TypesForList['create']>, any>;
   connect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
   disconnect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
   disconnectAll: tsgql.Arg<typeof types.Boolean, any>;
