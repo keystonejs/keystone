@@ -46,12 +46,11 @@ import {
   getFilterInputResolvers,
   InputFilter,
   PrismaFilter,
-  resolveOrderBy,
   resolveUniqueWhereInput,
 } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
 import { createOneState } from './mutation-resolvers';
-import { findManyFilter } from './query-resolvers';
+import { findManyFilter, getFindManyArgs } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -107,6 +106,8 @@ export type InitialisedList = {
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   applySearchField: (filter: PrismaFilter, search: string | null | undefined) => PrismaFilter;
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
+  maxResults: number;
+  listKey: string;
 };
 
 function assert(condition: boolean): asserts condition {
@@ -128,27 +129,18 @@ function getRelationVal(
   };
   if (dbField.mode === 'many') {
     return {
-      findMany: async ({
-        where,
-        first,
-        skip,
-        orderBy: rawOrderBy,
-        sortBy,
-        search,
-      }: FindManyArgsValue) => {
-        const [orderBy, filter] = await Promise.all([
-          resolveOrderBy(rawOrderBy, sortBy, foreignList, context),
-          findManyFilter(dbField.list, foreignList, context, where, search),
-        ]);
-        if (filter === false) {
-          throw accessDeniedError('query');
-        }
-        return getPrismaModelForList(context.prisma, dbField.list).findMany({
-          where: { AND: [filter, relationFilter] },
-          orderBy,
-          take: first ?? undefined,
-          skip,
-        });
+      findMany: async (args: FindManyArgsValue) => {
+        return getFindManyArgs(
+          args,
+          args => {
+            getPrismaModelForList(context.prisma, dbField.list).findMany({
+              ...args,
+              where: { AND: [args.where, relationFilter] },
+            });
+          },
+          foreignList,
+          context
+        );
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
         const filter = await findManyFilter(dbField.list, foreignList, context, where, search);
@@ -809,6 +801,8 @@ export function initialiseLists(
           }
           return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
         })(),
+        maxResults: lists[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
+        listKey,
       },
     ])
   );

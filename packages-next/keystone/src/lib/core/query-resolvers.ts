@@ -9,7 +9,7 @@ import {
 } from './input-resolvers';
 import { accessDeniedError } from './ListTypes/graphqlErrors';
 import { InitialisedList } from './types-for-lists';
-import { getPrismaModelForList } from './utils';
+import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from './utils';
 
 export async function findManyFilter(
   listKey: string,
@@ -111,27 +111,48 @@ export async function findOne(
   return item;
 }
 
-export async function findMany(
+export async function getFindManyArgs<T>(
   { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
-  listKey: string,
+  get: (args: {
+    where: PrismaFilter;
+    first: number | undefined;
+    skip: number;
+    orderBy: readonly Record<string, 'asc' | 'desc'>[];
+  }) => Promise<T[]>,
   list: InitialisedList,
   context: KeystoneContext
-) {
+): Promise<T[]> {
   const [resolvedWhere, orderBy] = await Promise.all([
-    findManyFilter(listKey, list, context, where || {}, search),
+    findManyFilter(list.listKey, list, context, where || {}, search),
     resolveOrderBy(rawOrderBy, sortBy, list, context),
   ]);
+  applyEarlyMaxResults(first, list);
 
   if (resolvedWhere === false) {
     throw accessDeniedError('query');
   }
-  return getPrismaModelForList(context.prisma, listKey).findMany({
+  const results = await get({
     where: resolvedWhere,
-    // TODO: needs to have input resolvers
     orderBy,
-    take: first ?? undefined,
+    first: first ?? undefined,
     skip,
   });
+  applyMaxResults(results, list, context);
+  return results;
+}
+
+export async function findMany(
+  args: FindManyArgsValue,
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  return getFindManyArgs(
+    args,
+    args => getPrismaModelForList(context.prisma, listKey).findMany(args),
+    list,
+    context
+  );
 }
 
 export async function count(

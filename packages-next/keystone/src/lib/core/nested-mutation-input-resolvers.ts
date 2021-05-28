@@ -19,7 +19,7 @@ export function resolveRelateToManyForCreateInput(
   return async (
     value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['create']>>
   ) => {
-    if (value === undefined) {
+    if (value == null) {
       return undefined;
     }
     assertValidManyOperation(value, target);
@@ -38,7 +38,7 @@ async function getDisconnects(
       uniqueWheres.map(async filter => {
         if (filter === null) return [];
         try {
-          context.sudo().db.lists[foreignListKey].findOne({ where: filter as any });
+          await context.sudo().db.lists[foreignListKey].findOne({ where: filter as any });
         } catch (err) {
           return [];
         }
@@ -103,22 +103,18 @@ async function resolveCreateAndConnect(
   return result;
 }
 
-const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
-
 function assertValidManyOperation(
   val: Exclude<
     tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>,
-    undefined
+    undefined | null
   >,
   target: string
-): asserts val is Exclude<typeof val, null> {
-  debugger;
+) {
   if (
-    !val ||
-    (!Array.isArray(val.connect) &&
-      !Array.isArray(val.create) &&
-      !Array.isArray(val.disconnect) &&
-      !val.disconnectAll)
+    !Array.isArray(val.connect) &&
+    !Array.isArray(val.create) &&
+    !Array.isArray(val.disconnect) &&
+    !val.disconnectAll
   ) {
     throw new Error(`Nested mutation operation invalid for ${target}`);
   }
@@ -138,7 +134,7 @@ export function resolveRelateToManyForUpdateInput(
   return async (
     value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>
   ) => {
-    if (value === undefined) {
+    if (value == null) {
       return undefined;
     }
     assertValidManyOperation(value, target);
