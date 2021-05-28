@@ -1,6 +1,5 @@
 /* @jsx jsx */
-
-import { CellContainer, CellLink } from '@keystone-next/admin-ui/components';
+import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -13,16 +12,18 @@ import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fi
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
+    <FieldLabel htmlFor={field.label}>{field.label}</FieldLabel>
     {onChange ? (
       field.displayMode === 'textarea' ? (
         <TextArea
+          id={field.label}
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}
         />
       ) : (
         <TextInput
+          id={field.label}
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}

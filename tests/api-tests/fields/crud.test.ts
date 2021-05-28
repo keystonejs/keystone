@@ -116,7 +116,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   listKey: string;
                 }) => {
                   const items = await context.lists[listKey].findMany({
-                    sortBy: ['name_ASC'],
+                    orderBy: { name: 'asc' },
                     query,
                   });
                   return wrappedFn({ context, listKey, items });

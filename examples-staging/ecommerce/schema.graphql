@@ -1,0 +1,1618 @@
+input CartItemRelateToManyInput {
+  create: [CartItemCreateInput]
+  connect: [CartItemWhereUniqueInput]
+  disconnect: [CartItemWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input OrderRelateToManyInput {
+  create: [OrderCreateInput]
+  connect: [OrderWhereUniqueInput]
+  disconnect: [OrderWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input RoleRelateToOneInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: RoleWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ProductRelateToManyInput {
+  create: [ProductCreateInput]
+  connect: [ProductWhereUniqueInput]
+  disconnect: [ProductWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type User {
+  id: ID!
+  name: String
+  email: String
+  password_is_set: Boolean
+  cart(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [CartItem!]!
+  _cartMeta(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartCount instead."
+    )
+  cartCount(where: CartItemWhereInput! = {}): Int
+  orders(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Order!]!
+  _ordersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
+  role: Role
+  products(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]!
+  _productsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
+  passwordResetToken_is_set: Boolean
+  passwordResetIssuedAt: String
+  passwordResetRedeemedAt: String
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput]
+  OR: [UserWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  cart_every: CartItemWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  cart_some: CartItemWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  cart_none: CartItemWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  orders_every: OrderWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  orders_some: OrderWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  orders_none: OrderWhereInput
+  role: RoleWhereInput
+  role_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  products_every: ProductWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  products_some: ProductWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  products_none: ProductWhereInput
+  passwordResetToken_is_set: Boolean
+  passwordResetIssuedAt: String
+  passwordResetIssuedAt_not: String
+  passwordResetIssuedAt_lt: String
+  passwordResetIssuedAt_lte: String
+  passwordResetIssuedAt_gt: String
+  passwordResetIssuedAt_gte: String
+  passwordResetIssuedAt_in: [String]
+  passwordResetIssuedAt_not_in: [String]
+  passwordResetRedeemedAt: String
+  passwordResetRedeemedAt_not: String
+  passwordResetRedeemedAt_lt: String
+  passwordResetRedeemedAt_lte: String
+  passwordResetRedeemedAt_gt: String
+  passwordResetRedeemedAt_gte: String
+  passwordResetRedeemedAt_in: [String]
+  passwordResetRedeemedAt_not_in: [String]
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  passwordResetIssuedAt_ASC
+  passwordResetIssuedAt_DESC
+  passwordResetRedeemedAt_ASC
+  passwordResetRedeemedAt_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  passwordResetIssuedAt: OrderDirection
+  passwordResetRedeemedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  cart: CartItemRelateToManyInput
+  orders: OrderRelateToManyInput
+  role: RoleRelateToOneInput
+  products: ProductRelateToManyInput
+  passwordResetToken: String
+  passwordResetIssuedAt: String
+  passwordResetRedeemedAt: String
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  cart: CartItemRelateToManyInput
+  orders: OrderRelateToManyInput
+  role: RoleRelateToOneInput
+  products: ProductRelateToManyInput
+  passwordResetToken: String
+  passwordResetIssuedAt: String
+  passwordResetRedeemedAt: String
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input ProductImageRelateToOneInput {
+  create: ProductImageCreateInput
+  connect: ProductImageWhereUniqueInput
+  disconnect: ProductImageWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Product {
+  id: ID!
+  name: String
+  description: String
+  photo: ProductImage
+  status: String
+  price: Int
+  user: User
+}
+
+input ProductWhereInput {
+  AND: [ProductWhereInput]
+  OR: [ProductWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_in: [String]
+  description_not_in: [String]
+  photo: ProductImageWhereInput
+  photo_is_null: Boolean
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  price: Int
+  price_not: Int
+  price_lt: Int
+  price_lte: Int
+  price_gt: Int
+  price_gte: Int
+  price_in: [Int]
+  price_not_in: [Int]
+  user: UserWhereInput
+  user_is_null: Boolean
+}
+
+input ProductWhereUniqueInput {
+  id: ID!
+}
+
+enum SortProductsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  status_ASC
+  status_DESC
+  price_ASC
+  price_DESC
+}
+
+input ProductOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  price: OrderDirection
+}
+
+input ProductUpdateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  status: String
+  price: Int
+  user: UserRelateToOneInput
+}
+
+input ProductsUpdateInput {
+  id: ID!
+  data: ProductUpdateInput
+}
+
+input ProductCreateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  status: String
+  price: Int
+  user: UserRelateToOneInput
+}
+
+input ProductsCreateInput {
+  data: ProductCreateInput
+}
+
+type CloudinaryImage_File {
+  id: ID
+  path: String
+  filename: String
+  originalFilename: String
+  mimetype: String
+  encoding: String
+  publicUrl: String
+  publicUrlTransformed(transformation: CloudinaryImageFormat): String
+}
+
+"""
+Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+All options are strings as they ultimately end up in a URL.
+"""
+input CloudinaryImageFormat {
+  """
+   Rewrites the filename to be this pretty string. Do not include `/` or `.`
+  """
+  prettyName: String
+  width: String
+  height: String
+  crop: String
+  aspect_ratio: String
+  gravity: String
+  zoom: String
+  x: String
+  y: String
+  format: String
+  fetch_format: String
+  quality: String
+  radius: String
+  angle: String
+  effect: String
+  opacity: String
+  border: String
+  background: String
+  overlay: String
+  underlay: String
+  default_image: String
+  delay: String
+  color: String
+  color_space: String
+  dpr: String
+  page: String
+  density: String
+  flags: String
+  transformation: String
+}
+
+input ProductRelateToOneInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+  disconnect: ProductWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type ProductImage {
+  id: ID!
+  image: CloudinaryImage_File
+  altText: String
+  product: Product
+}
+
+input ProductImageWhereInput {
+  AND: [ProductImageWhereInput]
+  OR: [ProductImageWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  image: String
+  image_not: String
+  image_in: [String]
+  image_not_in: [String]
+  altText: String
+  altText_not: String
+  altText_contains: String
+  altText_not_contains: String
+  altText_in: [String]
+  altText_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+}
+
+input ProductImageWhereUniqueInput {
+  id: ID!
+}
+
+enum SortProductImagesBy {
+  id_ASC
+  id_DESC
+  altText_ASC
+  altText_DESC
+}
+
+input ProductImageOrderByInput {
+  id: OrderDirection
+  altText: OrderDirection
+}
+
+input ProductImageUpdateInput {
+  image: Upload
+  altText: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesUpdateInput {
+  id: ID!
+  data: ProductImageUpdateInput
+}
+
+input ProductImageCreateInput {
+  image: Upload
+  altText: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesCreateInput {
+  data: ProductImageCreateInput
+}
+
+"""
+ A keystone list
+"""
+type CartItem {
+  id: ID!
+  quantity: Int
+  product: Product
+  user: User
+}
+
+input CartItemWhereInput {
+  AND: [CartItemWhereInput]
+  OR: [CartItemWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  quantity: Int
+  quantity_not: Int
+  quantity_lt: Int
+  quantity_lte: Int
+  quantity_gt: Int
+  quantity_gte: Int
+  quantity_in: [Int]
+  quantity_not_in: [Int]
+  product: ProductWhereInput
+  product_is_null: Boolean
+  user: UserWhereInput
+  user_is_null: Boolean
+}
+
+input CartItemWhereUniqueInput {
+  id: ID!
+}
+
+enum SortCartItemsBy {
+  id_ASC
+  id_DESC
+  quantity_ASC
+  quantity_DESC
+}
+
+input CartItemOrderByInput {
+  id: OrderDirection
+  quantity: OrderDirection
+}
+
+input CartItemUpdateInput {
+  quantity: Int
+  product: ProductRelateToOneInput
+  user: UserRelateToOneInput
+}
+
+input CartItemsUpdateInput {
+  id: ID!
+  data: CartItemUpdateInput
+}
+
+input CartItemCreateInput {
+  quantity: Int
+  product: ProductRelateToOneInput
+  user: UserRelateToOneInput
+}
+
+input CartItemsCreateInput {
+  data: CartItemCreateInput
+}
+
+input OrderRelateToOneInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
+  disconnect: OrderWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type OrderItem {
+  id: ID!
+  name: String
+  description: String
+  photo: ProductImage
+  price: Int
+  quantity: Int
+  order: Order
+}
+
+input OrderItemWhereInput {
+  AND: [OrderItemWhereInput]
+  OR: [OrderItemWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_in: [String]
+  description_not_in: [String]
+  photo: ProductImageWhereInput
+  photo_is_null: Boolean
+  price: Int
+  price_not: Int
+  price_lt: Int
+  price_lte: Int
+  price_gt: Int
+  price_gte: Int
+  price_in: [Int]
+  price_not_in: [Int]
+  quantity: Int
+  quantity_not: Int
+  quantity_lt: Int
+  quantity_lte: Int
+  quantity_gt: Int
+  quantity_gte: Int
+  quantity_in: [Int]
+  quantity_not_in: [Int]
+  order: OrderWhereInput
+  order_is_null: Boolean
+}
+
+input OrderItemWhereUniqueInput {
+  id: ID!
+}
+
+enum SortOrderItemsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  price_ASC
+  price_DESC
+  quantity_ASC
+  quantity_DESC
+}
+
+input OrderItemOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  quantity: OrderDirection
+}
+
+input OrderItemUpdateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  price: Int
+  quantity: Int
+  order: OrderRelateToOneInput
+}
+
+input OrderItemsUpdateInput {
+  id: ID!
+  data: OrderItemUpdateInput
+}
+
+input OrderItemCreateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  price: Int
+  quantity: Int
+  order: OrderRelateToOneInput
+}
+
+input OrderItemsCreateInput {
+  data: OrderItemCreateInput
+}
+
+input OrderItemRelateToManyInput {
+  create: [OrderItemCreateInput]
+  connect: [OrderItemWhereUniqueInput]
+  disconnect: [OrderItemWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Order {
+  id: ID!
+  label: String
+  total: Int
+  items(
+    where: OrderItemWhereInput! = {}
+    search: String
+    sortBy: [SortOrderItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [OrderItem!]!
+  _itemsMeta(
+    where: OrderItemWhereInput! = {}
+    search: String
+    sortBy: [SortOrderItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use itemsCount instead."
+    )
+  itemsCount(where: OrderItemWhereInput! = {}): Int
+  user: User
+  charge: String
+}
+
+input OrderWhereInput {
+  AND: [OrderWhereInput]
+  OR: [OrderWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  total: Int
+  total_not: Int
+  total_lt: Int
+  total_lte: Int
+  total_gt: Int
+  total_gte: Int
+  total_in: [Int]
+  total_not_in: [Int]
+
+  """
+   condition must be true for all nodes
+  """
+  items_every: OrderItemWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  items_some: OrderItemWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  items_none: OrderItemWhereInput
+  user: UserWhereInput
+  user_is_null: Boolean
+  charge: String
+  charge_not: String
+  charge_contains: String
+  charge_not_contains: String
+  charge_in: [String]
+  charge_not_in: [String]
+}
+
+input OrderWhereUniqueInput {
+  id: ID!
+}
+
+enum SortOrdersBy {
+  id_ASC
+  id_DESC
+  total_ASC
+  total_DESC
+  charge_ASC
+  charge_DESC
+}
+
+input OrderOrderByInput {
+  id: OrderDirection
+  total: OrderDirection
+  charge: OrderDirection
+}
+
+input OrderUpdateInput {
+  total: Int
+  items: OrderItemRelateToManyInput
+  user: UserRelateToOneInput
+  charge: String
+}
+
+input OrdersUpdateInput {
+  id: ID!
+  data: OrderUpdateInput
+}
+
+input OrderCreateInput {
+  total: Int
+  items: OrderItemRelateToManyInput
+  user: UserRelateToOneInput
+  charge: String
+}
+
+input OrdersCreateInput {
+  data: OrderCreateInput
+}
+
+input UserRelateToManyInput {
+  create: [UserCreateInput]
+  connect: [UserWhereUniqueInput]
+  disconnect: [UserWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type Role {
+  id: ID!
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
+  assignedTo(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]!
+  _assignedToMeta(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use assignedToCount instead."
+    )
+  assignedToCount(where: UserWhereInput! = {}): Int
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput]
+  OR: [RoleWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  canManageProducts: Boolean
+  canManageProducts_not: Boolean
+  canSeeOtherUsers: Boolean
+  canSeeOtherUsers_not: Boolean
+  canManageUsers: Boolean
+  canManageUsers_not: Boolean
+  canManageRoles: Boolean
+  canManageRoles_not: Boolean
+  canManageCart: Boolean
+  canManageCart_not: Boolean
+  canManageOrders: Boolean
+  canManageOrders_not: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  assignedTo_every: UserWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  assignedTo_some: UserWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  assignedTo_none: UserWhereInput
+}
+
+input RoleWhereUniqueInput {
+  id: ID!
+}
+
+enum SortRolesBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  canManageProducts_ASC
+  canManageProducts_DESC
+  canSeeOtherUsers_ASC
+  canSeeOtherUsers_DESC
+  canManageUsers_ASC
+  canManageUsers_DESC
+  canManageRoles_ASC
+  canManageRoles_DESC
+  canManageCart_ASC
+  canManageCart_DESC
+  canManageOrders_ASC
+  canManageOrders_DESC
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  canManageProducts: OrderDirection
+  canSeeOtherUsers: OrderDirection
+  canManageUsers: OrderDirection
+  canManageRoles: OrderDirection
+  canManageCart: OrderDirection
+  canManageOrders: OrderDirection
+}
+
+input RoleUpdateInput {
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
+  assignedTo: UserRelateToManyInput
+}
+
+input RolesUpdateInput {
+  id: ID!
+  data: RoleUpdateInput
+}
+
+input RoleCreateInput {
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
+  assignedTo: UserRelateToManyInput
+}
+
+input RolesCreateInput {
+  data: RoleCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single User item.
+  """
+  createUser(data: UserCreateInput): User
+
+  """
+   Create multiple User items.
+  """
+  createUsers(data: [UsersCreateInput]): [User]
+
+  """
+   Update a single User item by ID.
+  """
+  updateUser(id: ID!, data: UserUpdateInput): User
+
+  """
+   Update multiple User items by ID.
+  """
+  updateUsers(data: [UsersUpdateInput]): [User]
+
+  """
+   Delete a single User item by ID.
+  """
+  deleteUser(id: ID!): User
+
+  """
+   Delete multiple User items by ID.
+  """
+  deleteUsers(ids: [ID!]): [User]
+
+  """
+   Create a single Product item.
+  """
+  createProduct(data: ProductCreateInput): Product
+
+  """
+   Create multiple Product items.
+  """
+  createProducts(data: [ProductsCreateInput]): [Product]
+
+  """
+   Update a single Product item by ID.
+  """
+  updateProduct(id: ID!, data: ProductUpdateInput): Product
+
+  """
+   Update multiple Product items by ID.
+  """
+  updateProducts(data: [ProductsUpdateInput]): [Product]
+
+  """
+   Delete a single Product item by ID.
+  """
+  deleteProduct(id: ID!): Product
+
+  """
+   Delete multiple Product items by ID.
+  """
+  deleteProducts(ids: [ID!]): [Product]
+
+  """
+   Create a single ProductImage item.
+  """
+  createProductImage(data: ProductImageCreateInput): ProductImage
+
+  """
+   Create multiple ProductImage items.
+  """
+  createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
+
+  """
+   Update a single ProductImage item by ID.
+  """
+  updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
+
+  """
+   Update multiple ProductImage items by ID.
+  """
+  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
+
+  """
+   Delete a single ProductImage item by ID.
+  """
+  deleteProductImage(id: ID!): ProductImage
+
+  """
+   Delete multiple ProductImage items by ID.
+  """
+  deleteProductImages(ids: [ID!]): [ProductImage]
+
+  """
+   Create a single CartItem item.
+  """
+  createCartItem(data: CartItemCreateInput): CartItem
+
+  """
+   Create multiple CartItem items.
+  """
+  createCartItems(data: [CartItemsCreateInput]): [CartItem]
+
+  """
+   Update a single CartItem item by ID.
+  """
+  updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
+
+  """
+   Update multiple CartItem items by ID.
+  """
+  updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
+
+  """
+   Delete a single CartItem item by ID.
+  """
+  deleteCartItem(id: ID!): CartItem
+
+  """
+   Delete multiple CartItem items by ID.
+  """
+  deleteCartItems(ids: [ID!]): [CartItem]
+
+  """
+   Create a single OrderItem item.
+  """
+  createOrderItem(data: OrderItemCreateInput): OrderItem
+
+  """
+   Create multiple OrderItem items.
+  """
+  createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
+
+  """
+   Update a single OrderItem item by ID.
+  """
+  updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
+
+  """
+   Update multiple OrderItem items by ID.
+  """
+  updateOrderItems(data: [OrderItemsUpdateInput]): [OrderItem]
+
+  """
+   Delete a single OrderItem item by ID.
+  """
+  deleteOrderItem(id: ID!): OrderItem
+
+  """
+   Delete multiple OrderItem items by ID.
+  """
+  deleteOrderItems(ids: [ID!]): [OrderItem]
+
+  """
+   Create a single Order item.
+  """
+  createOrder(data: OrderCreateInput): Order
+
+  """
+   Create multiple Order items.
+  """
+  createOrders(data: [OrdersCreateInput]): [Order]
+
+  """
+   Update a single Order item by ID.
+  """
+  updateOrder(id: ID!, data: OrderUpdateInput): Order
+
+  """
+   Update multiple Order items by ID.
+  """
+  updateOrders(data: [OrdersUpdateInput]): [Order]
+
+  """
+   Delete a single Order item by ID.
+  """
+  deleteOrder(id: ID!): Order
+
+  """
+   Delete multiple Order items by ID.
+  """
+  deleteOrders(ids: [ID!]): [Order]
+
+  """
+   Create a single Role item.
+  """
+  createRole(data: RoleCreateInput): Role
+
+  """
+   Create multiple Role items.
+  """
+  createRoles(data: [RolesCreateInput]): [Role]
+
+  """
+   Update a single Role item by ID.
+  """
+  updateRole(id: ID!, data: RoleUpdateInput): Role
+
+  """
+   Update multiple Role items by ID.
+  """
+  updateRoles(data: [RolesUpdateInput]): [Role]
+
+  """
+   Delete a single Role item by ID.
+  """
+  deleteRole(id: ID!): Role
+
+  """
+   Delete multiple Role items by ID.
+  """
+  deleteRoles(ids: [ID!]): [Role]
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+  sendUserPasswordResetLink(email: String!): SendUserPasswordResetLinkResult
+  redeemUserPasswordResetToken(
+    email: String!
+    token: String!
+    password: String!
+  ): RedeemUserPasswordResetTokenResult
+  addToCart(productId: ID): CartItem
+  checkout(token: String!): Order
+  endSession: Boolean!
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type SendUserPasswordResetLinkResult {
+  code: PasswordResetRequestErrorCode!
+  message: String!
+}
+
+enum PasswordResetRequestErrorCode {
+  IDENTITY_NOT_FOUND
+  MULTIPLE_IDENTITY_MATCHES
+}
+
+type ValidateUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
+
+type RedeemUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
+
+enum PasswordResetRedemptionErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  MULTIPLE_IDENTITY_MATCHES
+  TOKEN_NOT_SET
+  TOKEN_MISMATCH
+  TOKEN_EXPIRED
+  TOKEN_REDEEMED
+}
+
+type Query {
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+
+  """
+   Search for the User item with the matching ID.
+  """
+  User(where: UserWhereUniqueInput!): User
+
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use usersCount instead."
+    )
+  usersCount(where: UserWhereInput! = {}): Int
+
+  """
+   Search for all Product items which match the where clause.
+  """
+  allProducts(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]
+
+  """
+   Search for the Product item with the matching ID.
+  """
+  Product(where: ProductWhereUniqueInput!): Product
+
+  """
+   Perform a meta-query on all Product items which match the where clause.
+  """
+  _allProductsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
+
+  """
+   Search for all ProductImage items which match the where clause.
+  """
+  allProductImages(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+
+  """
+   Search for the ProductImage item with the matching ID.
+  """
+  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+
+  """
+   Perform a meta-query on all ProductImage items which match the where clause.
+  """
+  _allProductImagesMeta(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productImagesCount instead."
+    )
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
+
+  """
+   Search for all CartItem items which match the where clause.
+  """
+  allCartItems(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [CartItem!]
+
+  """
+   Search for the CartItem item with the matching ID.
+  """
+  CartItem(where: CartItemWhereUniqueInput!): CartItem
+
+  """
+   Perform a meta-query on all CartItem items which match the where clause.
+  """
+  _allCartItemsMeta(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartItemsCount instead."
+    )
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
+
+  """
+   Search for all OrderItem items which match the where clause.
+  """
+  allOrderItems(
+    where: OrderItemWhereInput! = {}
+    search: String
+    sortBy: [SortOrderItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [OrderItem!]
+
+  """
+   Search for the OrderItem item with the matching ID.
+  """
+  OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+
+  """
+   Perform a meta-query on all OrderItem items which match the where clause.
+  """
+  _allOrderItemsMeta(
+    where: OrderItemWhereInput! = {}
+    search: String
+    sortBy: [SortOrderItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use orderItemsCount instead."
+    )
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int
+
+  """
+   Search for all Order items which match the where clause.
+  """
+  allOrders(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Order!]
+
+  """
+   Search for the Order item with the matching ID.
+  """
+  Order(where: OrderWhereUniqueInput!): Order
+
+  """
+   Perform a meta-query on all Order items which match the where clause.
+  """
+  _allOrdersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
+
+  """
+   Search for all Role items which match the where clause.
+  """
+  allRoles(
+    where: RoleWhereInput! = {}
+    search: String
+    sortBy: [SortRolesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Role!]
+
+  """
+   Search for the Role item with the matching ID.
+  """
+  Role(where: RoleWhereUniqueInput!): Role
+
+  """
+   Perform a meta-query on all Role items which match the where clause.
+  """
+  _allRolesMeta(
+    where: RoleWhereInput! = {}
+    search: String
+    sortBy: [SortRolesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use rolesCount instead."
+    )
+  rolesCount(where: RoleWhereInput! = {}): Int
+  authenticatedItem: AuthenticatedItem
+  validateUserPasswordResetToken(
+    email: String!
+    token: String!
+  ): ValidateUserPasswordResetTokenResult
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

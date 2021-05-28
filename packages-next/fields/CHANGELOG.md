@@ -1,5 +1,36 @@
 # @keystone-next/fields
 
+## 9.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+* [#5677](https://github.com/keystonejs/keystone/pull/5677) [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated the `@keystone-next/admin-ui` package into `@keystone-next/keystone`.
+
+  If you were directly importing from `@keystone-next/admin-ui` you can now import the same items from `@keystone-next/keystone/admin-ui`.
+  If you have `@keystone-next/admin-ui` in your `package.json` you should remove it.
+
+### Patch Changes
+
+- Updated dependencies [[`d40c2a590`](https://github.com/keystonejs/keystone/commit/d40c2a5903f07e5a1e80d116ec4cea00289bbf6a), [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d), [`016ccad82`](https://github.com/keystonejs/keystone/commit/016ccad82ed73898a64310506117c1cbae60a512), [`8da79e71a`](https://github.com/keystonejs/keystone/commit/8da79e71abb005eb755620fb3c8f82a3a2952152), [`e2232a553`](https://github.com/keystonejs/keystone/commit/e2232a5537620bd82983ba3f5cff124cec8facab)]:
+  - @keystone-next/adapter-prisma-legacy@7.0.0
+  - @keystone-ui/button@5.0.0
+  - @keystone-ui/core@3.0.0
+  - @keystone-ui/fields@4.0.0
+  - @keystone-ui/icons@4.0.0
+  - @keystone-ui/loading@4.0.0
+  - @keystone-ui/modals@4.0.0
+  - @keystone-ui/pill@4.0.0
+  - @keystone-ui/segmented-control@4.0.0
+  - @keystone-ui/toast@4.0.0
+  - @keystone-ui/tooltip@4.0.0
+  - @keystone-next/admin-ui-utils@5.0.0
+  - @keystone-next/keystone@18.0.0
+  - @keystone-next/types@18.0.0
+  - @keystone-next/access-control-legacy@11.0.0
+  - @keystone-next/utils-legacy@11.0.0
+
 ## 8.2.0
 
 ### Minor Changes

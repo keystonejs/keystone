@@ -333,7 +333,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }: { name: string }) => name.length === 1);
@@ -362,7 +362,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }: { name: string }) => name.length === 2);
@@ -390,7 +390,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }) => name.length === 1);
@@ -425,7 +425,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }) => name.length === 2);

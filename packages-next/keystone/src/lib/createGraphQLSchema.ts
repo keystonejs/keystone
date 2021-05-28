@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
-import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
+import { getAdminMetaSchema } from '../admin-ui/system';
 import { sessionSchema } from '../session';
 
 export function createGraphQLSchema(

@@ -3,7 +3,7 @@
 import 'intersection-observer';
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
-import { gql, TypedDocumentNode, useQuery } from '@keystone-next/admin-ui/apollo';
+import { gql, TypedDocumentNode, useQuery } from '@keystone-next/keystone/admin-ui/apollo';
 import { ListMeta } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';

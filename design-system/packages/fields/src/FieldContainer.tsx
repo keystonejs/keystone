@@ -1,13 +1,6 @@
 /* @jsx jsx */
+import { jsx, forwardRefWithAs } from '@keystone-ui/core';
 
-import { ReactNode } from 'react';
-import { jsx } from '@keystone-ui/core';
-
-type FieldContainerProps = {
-  children: ReactNode;
-  className?: string;
-};
-
-export const FieldContainer = ({ children, ...props }: FieldContainerProps) => {
-  return <div {...props}>{children}</div>;
-};
+export const FieldContainer = forwardRefWithAs<'div', {}>(({ as: Tag = 'div', ...props }, ref) => {
+  return <Tag ref={ref} {...props} />;
+});

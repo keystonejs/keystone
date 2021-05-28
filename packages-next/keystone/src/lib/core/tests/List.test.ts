@@ -229,7 +229,9 @@ describe('new List()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
+      listQueryCountName: 'testsCount',
       listSortName: 'SortTestsBy',
+      listOrderName: 'TestOrderByInput',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
@@ -402,6 +404,12 @@ describe(`getGqlTypes()`, () => {
         writeOnce_ASC
         writeOnce_DESC
       }`;
+  const orderTestsBy = `input TestOrderByInput {
+       name: OrderDirection
+       email: OrderDirection
+       writeOnce: OrderDirection
+      }`;
+  const orderDirection = `enum OrderDirection { asc desc }`;
   const otherRelateToOneInput = `input OtherRelateToOneInput {
     connect: OtherWhereUniqueInput
     disconnect: OtherWhereUniqueInput
@@ -420,6 +428,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         updateInput,
         updateManyInput,
         createInput,
@@ -440,9 +450,15 @@ describe(`getGqlTypes()`, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        orderTestsBy,
+        orderDirection,
+      ].map(s => print(gql(s)))
     );
   });
   test('create: true', () => {
@@ -457,6 +473,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         createInput,
         createManyInput,
       ].map(s => print(gql(s)))
@@ -474,6 +492,8 @@ describe(`getGqlTypes()`, () => {
         whereInput,
         whereUniqueInput,
         sortTestsBy,
+        orderTestsBy,
+        orderDirection,
         updateInput,
         updateManyInput,
       ].map(s => print(gql(s)))
@@ -485,9 +505,15 @@ describe(`getGqlTypes()`, () => {
         .getGqlTypes({ schemaName })
         .map(s => print(gql(s)))
     ).toEqual(
-      [otherRelateToOneInput, type, whereInput, whereUniqueInput, sortTestsBy].map(s =>
-        print(gql(s))
-      )
+      [
+        otherRelateToOneInput,
+        type,
+        whereInput,
+        whereUniqueInput,
+        sortTestsBy,
+        orderTestsBy,
+        orderDirection,
+      ].map(s => print(gql(s)))
     );
   });
 });
@@ -495,12 +521,12 @@ describe(`getGqlTypes()`, () => {
 test('getGraphqlFilterFragment', () => {
   const list = setup();
   expect(list.getGraphqlFilterFragment()).toEqual([
-    'where: TestWhereInput',
+    'where: TestWhereInput! = {}',
     'search: String',
-    'sortBy: [SortTestsBy!]',
-    'orderBy: String',
+    'sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")',
+    'orderBy: [TestOrderByInput!]! = []',
     'first: Int',
-    'skip: Int',
+    'skip: Int! = 0',
   ]);
 });
 
@@ -511,26 +537,27 @@ describe(`getGqlQueries()`, () => {
       [
         `""" Search for all Test items which match the where clause. """
           allTests(
-          where: TestWhereInput
+          where: TestWhereInput! = {}
           search: String
-          sortBy: [SortTestsBy!]
-          orderBy: String
+          sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+          orderBy: [TestOrderByInput!]! = []
           first: Int
-          skip: Int
-        ): [Test]`,
+          skip: Int! = 0
+        ): [Test!]`,
         `""" Search for the Test item with the matching ID. """
           Test(
           where: TestWhereUniqueInput!
         ): Test`,
         `""" Perform a meta-query on all Test items which match the where clause. """
           _allTestsMeta(
-          where: TestWhereInput
+          where: TestWhereInput! = {}
           search: String
-          sortBy: [SortTestsBy!]
-          orderBy: String
+          sortBy: [SortTestsBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+          orderBy: [TestOrderByInput!]! = []
           first: Int
-          skip: Int
-        ): _QueryMeta`,
+          skip: Int! = 0
+        ): _QueryMeta @deprecated(reason: \"This query will be removed in a future version. Please use testsCount instead.\")`,
+        `testsCount(where: TestWhereInput! = {}): Int`,
       ].map(normalise)
     );
   });
@@ -946,12 +973,14 @@ test('createMutation', async () => {
 
 test('createManyMutation', async () => {
   const list = setup();
-  const result = await list.createManyMutation(
-    [
-      { data: { name: 'test1', email: 'test1@example.com' } },
-      { data: { name: 'test2', email: 'test2@example.com' } },
-    ],
-    context
+  const result = await Promise.all(
+    await list.createManyMutation(
+      [
+        { data: { name: 'test1', email: 'test1@example.com' } },
+        { data: { name: 'test2', email: 'test2@example.com' } },
+      ],
+      context
+    )
   );
   expect(result).toEqual([
     { name: 'test1', email: 'test1@example.com', index: 3 },
@@ -971,12 +1000,14 @@ test('updateMutation', async () => {
 
 test('updateManyMutation', async () => {
   const list = setup();
-  const result = await list.updateManyMutation(
-    [
-      { id: 1, data: { name: 'update1', email: 'update1@example.com' } },
-      { id: 2, data: { email: 'update2@example.com' } },
-    ],
-    context
+  const result = await Promise.all(
+    await list.updateManyMutation(
+      [
+        { id: 1, data: { name: 'update1', email: 'update1@example.com' } },
+        { id: 2, data: { email: 'update2@example.com' } },
+      ],
+      context
+    )
   );
   expect(result).toEqual([
     { name: 'update1', email: 'update1@example.com', id: 1 },
@@ -992,7 +1023,7 @@ test('deleteMutation', async () => {
 
 test('deleteManyMutation', async () => {
   const list = setup();
-  const result = await list.deleteManyMutation([1, 2], context);
+  const result = await Promise.all(await list.deleteManyMutation([1, 2], context));
   expect(result).toEqual([
     { name: 'b', email: 'b@example.com', id: 1 },
     { name: 'c', email: 'c@example.com', id: 2 },

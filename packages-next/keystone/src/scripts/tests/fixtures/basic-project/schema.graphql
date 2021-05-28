@@ -36,6 +36,16 @@ enum SortTodosBy {
   title_DESC
 }
 
+input TodoOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input TodoUpdateInput {
   title: String
 }
@@ -107,13 +117,14 @@ type Query {
    Search for all Todo items which match the where clause.
   """
   allTodos(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Todo]
+    skip: Int! = 0
+  ): [Todo!]
 
   """
    Search for the Todo item with the matching ID.
@@ -124,13 +135,18 @@ type Query {
    Perform a meta-query on all Todo items which match the where clause.
   """
   _allTodosMeta(
-    where: TodoWhereInput
+    where: TodoWhereInput! = {}
     search: String
     sortBy: [SortTodosBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use todosCount instead."
+    )
+  todosCount(where: TodoWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
