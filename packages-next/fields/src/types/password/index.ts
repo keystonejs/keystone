@@ -59,6 +59,9 @@ export const password =
     }
 
     function inputResolver(val: string | null | undefined) {
+      if (val === '') {
+        return null;
+      }
       if (typeof val === 'string') {
         return bcrypt.hash(val, 10);
       }

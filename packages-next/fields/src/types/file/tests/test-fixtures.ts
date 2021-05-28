@@ -140,7 +140,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         `,
           variables: { item: { secretFile: { ref: 'Invalid ref!' } } },
         });
-        expect(data).toEqual(null);
+        expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual('Invalid file reference');
       })
@@ -160,7 +160,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         `,
           variables: { item: { secretFile: { ref: null } } },
         });
-        expect(data).toEqual(null);
+        expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual('Either ref or upload must be passed to FileFieldInput');
       })
@@ -190,7 +190,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             },
           },
         });
-        expect(data).toEqual(null);
+        expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
           'Only one of ref and upload can be passed to FileFieldInput'
@@ -214,7 +214,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             item: { secretFile: { ref: 'Invalid', ...prepareFile('keystone.jpg') } },
           },
         });
-        expect(data).toEqual(null);
+        expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
           'Only one of ref and upload can be passed to FileFieldInput'
