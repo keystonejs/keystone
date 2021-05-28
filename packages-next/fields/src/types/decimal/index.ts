@@ -9,7 +9,7 @@ export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     isUnique?: boolean;
     precision?: number;
     scale?: number;
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
   };
 
 export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
