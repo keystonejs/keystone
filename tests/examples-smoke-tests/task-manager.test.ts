@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests } from './utils';
 
-exampleProjectTests('todo', browserType => {
+exampleProjectTests('task-manager', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
