@@ -452,14 +452,18 @@ type AnyInputObj = tsgql.InputObjectType<
   Record<string, tsgql.Arg<tsgql.InputType, tsgql.InferValueFromInputType<tsgql.InputType>>>
 >;
 
-type NonNullListArgWithDefault<Type extends tsgql.TypesExcludingNonNull> = tsgql.Arg<
-  tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<Type>>>,
-  any[]
->;
-
 type RelateToOneInput = tsgql.InputObjectType<{
   create: tsgql.Arg<TypesForList['create'], any>;
   connect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
+  disconnect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
+  disconnectAll: tsgql.Arg<typeof types.Boolean>;
+}>;
+
+type RelateToManyInput = tsgql.InputObjectType<{
+  create: tsgql.Arg<tsgql.ListType<TypesForList['create']>, any>;
+  connect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
+  disconnect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
+  disconnectAll: tsgql.Arg<typeof types.Boolean, any>;
 }>;
 
 export type TypesForList = {
@@ -477,16 +481,8 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
-      create: tsgql.InputObjectType<{
-        create: NonNullListArgWithDefault<TypesForList['create']>;
-        connect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
-      }>;
-      update: tsgql.InputObjectType<{
-        create: NonNullListArgWithDefault<TypesForList['create']>;
-        connect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
-        disconnect: NonNullListArgWithDefault<TypesForList['uniqueWhere']>;
-        disconnectAll: tsgql.Arg<tsgql.NonNullType<typeof types.Boolean>, boolean>;
-      }>;
+      create: RelateToManyInput;
+      update: RelateToManyInput;
     };
     one: {
       create: RelateToOneInput;

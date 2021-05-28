@@ -129,8 +129,7 @@ export const relationship =
           },
           create: {
             arg: types.arg({
-              type: types.nonNull(listTypes.relateTo.many.create),
-              defaultValue: { connect: [], create: [] },
+              type: listTypes.relateTo.many.create,
             }),
             async resolve(value, context, resolve) {
               return resolve(value);
@@ -138,8 +137,7 @@ export const relationship =
           },
           update: {
             arg: types.arg({
-              type: types.nonNull(listTypes.relateTo.many.update),
-              defaultValue: { connect: [], create: [], disconnect: [], disconnectAll: false },
+              type: listTypes.relateTo.many.update,
             }),
             async resolve(value, context, resolve) {
               return resolve(value);

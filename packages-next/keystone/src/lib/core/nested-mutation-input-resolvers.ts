@@ -1,136 +1,243 @@
-import { tsgql, TypesForList } from '@keystone-next/types';
-import { CreateAndUpdateInputResolvers } from './input-resolvers';
+import { KeystoneContext, tsgql, TypesForList } from '@keystone-next/types';
+import {
+  CreateAndUpdateInputResolvers,
+  UniqueInputFilter,
+  UniquePrismaFilter,
+} from './input-resolvers';
+
+const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
 // TODO: access control for the items you are connecting/disconnecting
 // the previous version of this used read access control for that
 
-export function resolveRelateToManyForCreateInput(inputResolvers: CreateAndUpdateInputResolvers) {
+export function resolveRelateToManyForCreateInput(
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
   return async (
-    value: tsgql.InferValueFromArg<
-      tsgql.Arg<
-        tsgql.NonNullType<TypesForList['relateTo']['many']['create']>,
-        { connect: never[]; create: never[] }
-      >
-    >
+    _value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['create']>>
   ) => {
-    const connects = Promise.all(value.connect.map(x => inputResolvers.uniqueWhere(x)));
-    const _creates = Promise.all(value.create.map(x => inputResolvers.create(x)));
-    const [connect, creates] = await Promise.all([connects, _creates]);
-
-    const create: any[] = [];
-
-    for (const createData of creates) {
-      if (createData.kind === 'create') {
-        create.push(createData.data);
-      }
-      if (createData.kind === 'connect') {
-        connect.push({ id: createData.id });
-      }
-    }
-    return {
-      connect,
-      create,
-    };
+    return resolveCreateAndConnect(
+      _value || ({} as any),
+      inputResolvers,
+      context,
+      foreignListKey,
+      target
+    );
   };
 }
 
-export function resolveRelateToManyForUpdateInput(inputResolvers: CreateAndUpdateInputResolvers) {
-  return async (
-    value: tsgql.InferValueFromArg<
-      tsgql.Arg<
-        tsgql.NonNullType<TypesForList['relateTo']['many']['update']>,
-        { connect: []; create: []; disconnect: []; disconnectAll: false }
-      >
-    >
-  ) => {
-    const disconnects = Promise.all(value.disconnect.map(x => inputResolvers.uniqueWhere(x)));
-    const connects = Promise.all(value.connect.map(x => inputResolvers.uniqueWhere(x)));
-    const _creates = Promise.all(value.create.map(x => inputResolvers.create(x)));
-    const [disconnect, connect, creates] = await Promise.all([disconnects, connects, _creates]);
+async function getDisconnects(
+  uniqueWheres: (UniqueInputFilter | null)[],
+  context: KeystoneContext,
+  foreignListKey: string,
+  inputResolvers: CreateAndUpdateInputResolvers
+): Promise<UniquePrismaFilter[]> {
+  return (
+    await Promise.all(
+      uniqueWheres.map(async filter => {
+        if (filter === null) return [];
+        try {
+          context.sudo().db.lists[foreignListKey].findOne({ where: filter as any });
+        } catch (err) {
+          return [];
+        }
+        return [await inputResolvers.uniqueWhere(filter)];
+      })
+    )
+  ).flat();
+}
 
-    const create: any[] = [];
+function getConnects(
+  uniqueWhere: UniqueInputFilter[],
+  context: KeystoneContext,
+  foreignListKey: string,
+  inputResolvers: CreateAndUpdateInputResolvers
+): Promise<UniquePrismaFilter>[] {
+  return uniqueWhere.map(async filter => {
+    await context.db.lists[foreignListKey].findOne({ where: filter as any });
+    return inputResolvers.uniqueWhere(filter);
+  });
+}
 
-    for (const createData of creates) {
-      if (createData.kind === 'create') {
-        create.push(createData.data);
-      }
-      if (createData.kind === 'connect') {
-        connect.push({ id: createData.id });
-      }
+async function resolveCreateAndConnect(
+  value: Exclude<
+    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>,
+    null | undefined
+  >,
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
+  const connects = Promise.allSettled(
+    getConnects((value.connect || []).filter(isNotNull), context, foreignListKey, inputResolvers)
+  );
+  const creates = Promise.allSettled(
+    (value.create || []).filter(isNotNull).map(x => inputResolvers.create(x))
+  );
+
+  const [connectResult, createResult] = await Promise.all([connects, creates]);
+
+  const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
+    x => x.reason
+  );
+
+  if (errors.length) {
+    throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
+  }
+  const result = {
+    connect: connectResult.filter(isFulfilled).map(x => x.value),
+    create: [] as Record<string, any>[],
+  };
+
+  for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
+    if (createData.kind === 'create') {
+      result.create.push(createData.data);
     }
+    if (createData.kind === 'connect') {
+      result.connect.push({ id: createData.id });
+    }
+  }
+
+  return result;
+}
+
+const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+  arg.status === 'fulfilled';
+const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
+  arg.status === 'rejected';
+
+export function resolveRelateToManyForUpdateInput(
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
+  return async (
+    _value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>
+  ) => {
+    const value = _value || ({} as Exclude<typeof _value, null | undefined>);
+    const disconnects = getDisconnects(
+      value.disconnectAll ? [] : value.disconnect || [],
+      context,
+      foreignListKey,
+      inputResolvers
+    );
+
+    const [disconnect, connectAndCreates] = await Promise.all([
+      disconnects,
+      resolveCreateAndConnect(value, inputResolvers, context, foreignListKey, target),
+    ]);
 
     return {
       set: value.disconnectAll ? [] : undefined,
-      disconnect: disconnect as any,
-      connect,
-      create,
+      disconnect,
+      ...connectAndCreates,
     };
   };
 }
 
-export function resolveRelateToOneForCreateInput(inputResolvers: CreateAndUpdateInputResolvers) {
-  return async (
-    value: tsgql.InferValueFromArg<
-      tsgql.Arg<tsgql.NonNullType<TypesForList['relateTo']['one']['create']>>
-    >
-  ) => {
-    if (value === undefined) {
-      return undefined;
+async function handleCreateAndUpdate(
+  value: Exclude<
+    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['one']['create']>>,
+    null | undefined
+  >,
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
+  if (value.connect) {
+    try {
+      await context.db.lists[foreignListKey].findOne({ where: value.connect as any });
+    } catch (err) {
+      throw new Error(`Unable to connect a ${target}`);
     }
-    if (value === null) {
-      throw new Error(`A relate to one for create input cannot be set to null`);
+    return {
+      connect: await inputResolvers.uniqueWhere(value.connect),
+    };
+  }
+  if (value.create) {
+    const createInput = value.create;
+    let create = await (async () => {
+      try {
+        return inputResolvers.create(createInput);
+      } catch (err) {
+        throw new Error(`Unable to connect a ${target}`);
+      }
+    })();
+
+    if (create.kind === 'connect') {
+      return { connect: { id: create.id } };
+    }
+    return { create: create.data };
+  }
+}
+
+export function resolveRelateToOneForCreateInput(
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
+  return async (
+    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['one']['create']>>
+  ) => {
+    if (value == null) {
+      return undefined;
     }
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
-      throw new Error(
-        `If a relate to one for create input is passed, only one key can be passed but ${numOfKeys} were be passed`
-      );
+      throw new Error(`Nested mutation operation invalid for ${target}`);
+      // throw new Error(
+      //   `If a relate to one for create input is passed, only one key can be passed but ${numOfKeys} were be passed`
+      // );
     }
-    if (value.connect) {
-      return {
-        connect: await inputResolvers.uniqueWhere(value.connect),
-      };
-    }
-    if (value.create) {
-      const create = await inputResolvers.create(value.create);
-      if (create.kind === 'connect') {
-        return { connect: { id: create.id } };
-      }
-      return { create: create.data };
-    }
-    throw new Error(`The key passed to a relate to one for create input must not be null`);
+    return handleCreateAndUpdate(value, inputResolvers, context, foreignListKey, target);
   };
 }
 
-export function resolveRelateToOneForUpdateInput(inputResolvers: CreateAndUpdateInputResolvers) {
+export function resolveRelateToOneForUpdateInput(
+  inputResolvers: CreateAndUpdateInputResolvers,
+  context: KeystoneContext,
+  foreignListKey: string,
+  target: string
+) {
   return async (
     value: tsgql.InferValueFromArg<
       tsgql.Arg<tsgql.NonNullType<TypesForList['relateTo']['one']['update']>>
     >
   ) => {
-    if (value === undefined) {
+    // should === null disconnect?
+    if (value == null) {
       return undefined;
     }
-    if (value === null) {
-      return { disconnect: true };
-    }
+    // if (value === null) {
+    //   return { disconnect: true };
+    // }
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
-      throw new Error(
-        `If a relate to one for update input is passed, only one key can be passed but ${numOfKeys} were be passed`
-      );
+      throw new Error(`Nested mutation operation invalid for ${target}`);
+      // throw new Error(
+      //   `If a relate to one for update input is passed, only one key can be passed but ${numOfKeys} were be passed`
+      // );
     }
-    if (value.connect) {
-      return {
-        connect: await inputResolvers.uniqueWhere(value.connect),
-      };
+    if (value.connect || value.create) {
+      return handleCreateAndUpdate(value, inputResolvers, context, foreignListKey, target);
     }
-    if (value.create) {
-      const create = await inputResolvers.create(value.create);
-      if (create.kind === 'connect') {
-        return { connect: { id: create.id } };
+    if (value.disconnect) {
+      try {
+        await context.sudo().db.lists[foreignListKey].findOne({ where: value.disconnect as any });
+      } catch (err) {
+        return;
       }
-      return { create: create.data };
+      return { disconnect: true };
+    }
+    if (value.disconnectAll) {
+      return { disconnect: true };
     }
   };
 }

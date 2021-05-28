@@ -448,17 +448,38 @@ export async function resolveInputForCreateOrUpdate(
                 if (field.dbField.kind !== 'relation') {
                   return undefined as any;
                 }
+                const target = `${listKey}.${fieldKey}<${field.dbField.list}>`;
                 const inputResolvers = nestedMutationState.resolvers[field.dbField.list];
-                if (operation === 'create') {
-                  if (field.dbField.mode === 'many') {
-                    return resolveRelateToManyForCreateInput(inputResolvers);
-                  }
-                  return resolveRelateToOneForCreateInput(inputResolvers);
-                }
                 if (field.dbField.mode === 'many') {
-                  return resolveRelateToManyForUpdateInput(inputResolvers);
+                  if (operation === 'create') {
+                    return resolveRelateToManyForCreateInput(
+                      inputResolvers,
+                      context,
+                      field.dbField.list,
+                      target
+                    );
+                  }
+                  return resolveRelateToManyForUpdateInput(
+                    inputResolvers,
+                    context,
+                    field.dbField.list,
+                    target
+                  );
                 }
-                return resolveRelateToOneForUpdateInput(inputResolvers);
+                if (operation === 'create') {
+                  return resolveRelateToOneForCreateInput(
+                    inputResolvers,
+                    context,
+                    field.dbField.list,
+                    target
+                  );
+                }
+                return resolveRelateToOneForUpdateInput(
+                  inputResolvers,
+                  context,
+                  field.dbField.list,
+                  target
+                );
               })()
             )
           : input;

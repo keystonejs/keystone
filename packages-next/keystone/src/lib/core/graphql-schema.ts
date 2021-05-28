@@ -52,9 +52,6 @@ export function getGraphQLSchema(
               const results = await queries.findMany(args, listKey, list, context);
               if (info && info.cacheControl && list.cacheHint) {
                 const operationName = info.operation.name && info.operation.name.value;
-                console.log(
-                  list.cacheHint({ results, operationName: operationName!, meta: false })
-                );
                 info.cacheControl.setCacheHint(
                   list.cacheHint({ results, operationName: operationName!, meta: false }) as any
                 );

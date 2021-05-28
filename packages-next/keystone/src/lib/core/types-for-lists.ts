@@ -565,50 +565,79 @@ export function initialiseLists(
       },
     });
 
-    const relateToManyForCreateFields = {
-      create: types.arg({
-        type: types.nonNull(types.list(types.nonNull(create))),
-        defaultValue: [],
-      }),
-      connect: types.arg({
-        type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
-        defaultValue: [],
-      }),
-    };
+    // const relateToManyForCreateFields = {
+    //   create: types.arg({
+    //     type: types.nonNull(types.list(types.nonNull(create))),
+    //     defaultValue: [],
+    //   }),
+    //   connect: types.arg({
+    //     type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
+    //     defaultValue: [],
+    //   }),
+    // };
 
-    const relateToManyForCreate = types.inputObject({
-      name: `${listKey}RelateToManyForCreateInput`,
-      fields: relateToManyForCreateFields,
-    });
+    // const relateToManyForCreate = types.inputObject({
+    //   name: `${listKey}RelateToManyForCreateInput`,
+    //   fields: relateToManyForCreateFields,
+    // });
 
-    const relateToManyForUpdate = types.inputObject({
-      name: `${listKey}RelateToManyForUpdateInput`,
-      fields: {
-        ...relateToManyForCreateFields,
-        disconnect: types.arg({
-          type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
-          defaultValue: [],
-        }),
-        disconnectAll: types.arg({ type: types.nonNull(types.Boolean), defaultValue: false }),
-      },
-    });
+    // const relateToManyForUpdate = types.inputObject({
+    //   name: `${listKey}RelateToManyForUpdateInput`,
+    //   fields: {
+    //     ...relateToManyForCreateFields,
+    //     disconnect: types.arg({
+    //       type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
+    //       defaultValue: [],
+    //     }),
+    //     disconnectAll: types.arg({ type: types.nonNull(types.Boolean), defaultValue: false }),
+    //   },
+    // });
 
-    const relateToOneForCreateFields = {
-      create: types.arg({ type: create }),
-      connect: types.arg({ type: uniqueWhere }),
-    };
+    // const relateToOneForCreateFields = {
+    //   create: types.arg({ type: create }),
+    //   connect: types.arg({ type: uniqueWhere }),
+    // };
 
-    const relateToOneForCreate = types.inputObject({
-      name: `${listKey}RelateToOneForCreateInput`,
-      fields: relateToOneForCreateFields,
-    });
+    // const relateToOneForCreate = types.inputObject({
+    //   name: `${listKey}RelateToOneForCreateInput`,
+    //   fields: relateToOneForCreateFields,
+    // });
 
     // this is a seperate type because:
     // - in the future, this should contain delete
     // - setting relateToOneForCreate to null is not allowed, setting relateToOneForUpdate disconnects
-    const relateToOneForUpdate = types.inputObject({
-      name: `${listKey}RelateToOneForUpdateInput`,
-      fields: relateToOneForCreateFields,
+    // const relateToOneForUpdate = types.inputObject({
+    //   name: `${listKey}RelateToOneForUpdateInput`,
+    //   fields: relateToOneForCreateFields,
+    // });
+
+    const relateToMany = types.inputObject({
+      name: names.relateToManyInputName,
+      fields: {
+        create: types.arg({
+          type: types.list(create),
+          defaultValue: [],
+        }),
+        connect: types.arg({
+          type: types.list(uniqueWhere),
+          defaultValue: [],
+        }),
+        disconnect: types.arg({
+          type: types.list(uniqueWhere),
+          defaultValue: [],
+        }),
+        disconnectAll: types.arg({ type: types.Boolean }),
+      },
+    });
+
+    const relateToOne = types.inputObject({
+      name: names.relateToOneInputName,
+      fields: {
+        create: types.arg({ type: create }),
+        connect: types.arg({ type: uniqueWhere }),
+        disconnect: types.arg({ type: uniqueWhere }),
+        disconnectAll: types.arg({ type: types.Boolean }),
+      },
     });
 
     listInfos[listKey] = {
@@ -623,12 +652,12 @@ export function initialiseLists(
         findManyArgs,
         relateTo: {
           many: {
-            create: relateToManyForCreate,
-            update: relateToManyForUpdate,
+            create: relateToMany,
+            update: relateToMany,
           },
           one: {
-            create: relateToOneForCreate,
-            update: relateToOneForUpdate,
+            create: relateToOne,
+            update: relateToOne,
           },
         },
       },
