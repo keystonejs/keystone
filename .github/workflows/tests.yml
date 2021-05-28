@@ -212,7 +212,7 @@ jobs:
       DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['auth.test.ts', 'basic.test.ts', 'roles.test.ts', 'task-manager.test.ts']
+        test: ['auth.test.ts', 'basic.test.ts', 'blog.test.ts', 'roles.test.ts', 'task-manager.test.ts', 'with-auth.test.ts']
       fail-fast: false
     steps:
       - name: Checkout Repo
