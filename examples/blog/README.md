@@ -3,6 +3,7 @@
 This project implements a basic **Blog**, with `Posts` and `Authors`.
 
 You can use it as a starting place for learning how to use Keystone.
+
 ## Instructions
 
 To run this project, clone the Keystone repository locally then navigate to this directory and run:

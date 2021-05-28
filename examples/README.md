@@ -3,14 +3,16 @@
 👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate Keystone features.
 
 You can use these as jumping off point when adding features to your own Keystone project.
+
 ## Base Projects
 
-There are two base projects which all other projects build on: 
+There are two base projects which all other projects build on:
 
 - [`task-manager`](./task-manager)
 - [`blog`](./blog)
 
 They have very simple schemas and none of the bells or whistles you'd expect in a complete project. You can use these as a starting point for general experimentation in a clean environment.
+
 ## Feature Projects
 
 Each project below demonstrates a Keystone feature you can learn about and experiment with.
