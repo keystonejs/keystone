@@ -39,8 +39,8 @@ export const Field = ({
       : undefined;
   const inputType = showInputValue ? ('text' as const) : ('password' as const);
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange === undefined ? (
         value.isSet ? (
           'Password is set'
@@ -64,7 +64,11 @@ export const Field = ({
       ) : (
         <Stack gap="small">
           <div css={{ display: 'flex' }}>
+            <VisuallyHidden as="label" htmlFor={`${field.path}-new-password`}>
+              New Password
+            </VisuallyHidden>
             <TextInput
+              id={`${field.path}-new-password`}
               autoFocus
               invalid={validation !== undefined}
               type={inputType}
@@ -81,7 +85,11 @@ export const Field = ({
               }}
             />
             <Spacer />
+            <VisuallyHidden as="label" htmlFor={`${field.path}-confirm-password`}>
+              Confirm Password
+            </VisuallyHidden>
             <TextInput
+              id={`${field.path}-confirm-password`}
               invalid={validation !== undefined}
               type={inputType}
               value={value.confirm}
