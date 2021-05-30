@@ -1,7 +1,7 @@
 ## Feature Example - Authentication
 
 This project demonstrates how to add password based authentication to your Keystone system.
-It builds on the [Task Manager](../todo) starter project.
+It builds on the [Task Manager](../task-manager) starter project.
 
 ## Instructions
 
@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to add authentication to a Keystone system.
-We're going to use the [`@keystone-next/auth`](https://next.keystonejs.com/apis/auth) package, along with Keystone's [session management API](https://next.keystonejs.com/apis/session), to add the following features to the base system:
+It uses the [`@keystone-next/auth`](https://next.keystonejs.com/apis/auth) package, along with Keystone's [session management API](https://next.keystonejs.com/apis/session), to add the following features to the Task Manager base:
 
 - Configure which fields to use for signin
 - Set up stateless session handling to keep track of the signed in user
@@ -30,7 +30,7 @@ We're going to use the [`@keystone-next/auth`](https://next.keystonejs.com/apis/
 
 ### Added fields
 
-In this example we add two new fields, `email` and `password`, to the `Person` list.
+We add two new fields, `email` and `password`, to the `Person` list.
 These are used as our _identity_ and _secret_ fields for login.
 
 ```typescript
@@ -40,7 +40,7 @@ These are used as our _identity_ and _secret_ fields for login.
 
 ### Auth config
 
-We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enabled configuration.
+We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable configuration.
 
 ```typescript
 import { createAuth } from '@keystone-next/auth';

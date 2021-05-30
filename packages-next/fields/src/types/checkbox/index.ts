@@ -5,7 +5,7 @@ import { Checkbox, PrismaCheckboxInterface } from './Implementation';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   FieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<boolean>;
+    defaultValue?: FieldDefaultValue<boolean, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 

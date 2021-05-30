@@ -14,9 +14,10 @@ import {
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
+    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
     {onChange ? (
       <TextInput
+        id={field.path}
         autoFocus={autoFocus}
         type="number"
         onChange={event => {

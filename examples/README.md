@@ -1,29 +1,30 @@
 # Keystone Examples
 
-Welcome to the Keystone Example Projects 👋.
-Here you'll find a collection of projects which show off the various features in Keystone.
+👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate Keystone features.
 
-You can use these examples as a jumping off point for adding features to your own Keystone project.
+You can use these as jumping off point when adding features to your own Keystone project.
 
 ## Base Projects
 
-There are two base projects which all the other examples build off.
-The [`task-manager`](./task-manager) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
+There are two base projects which all other projects build on:
 
-These projects have very simple schemas and none of the bells or whistles you'd expect in a complete project.
-You can use these as a starting point for general experimentation in a clean environment.
+- [`task-manager`](./task-manager)
+- [`blog`](./blog)
 
-## Feature Examples
+They have very simple schemas and none of the bells or whistles you'd expect in a complete project. You can use these as a starting point for general experimentation in a clean environment.
 
-Each of the examples below demonstrates a particular feature of Keystone.
-You can use these projects to learn about, and experiment with specific features.
+## Feature Projects
 
-- [`withAuth()`](./with-auth): Adding password based authentication to your Keystone application.
-- [`JSON field`](./json): Using a JSON field in your Keystone application.
+Each project below demonstrates a Keystone feature you can learn about and experiment with.
+
+- [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
+- [`JSON field`](./json): Adds a JSON field to the Task Manager base.
+- [`defaultValue`](./default-values): Adds default values to the Blog base.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
 
 ## Running examples
 
-To run an example you should clone this repo and then run the following commands:
+To run an example, clone this repo and run the following commands:
 
 ```shell
 yarn
