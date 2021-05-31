@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { CellContainer } from '@keystone-next/admin-ui/components';
+import { CellContainer } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,

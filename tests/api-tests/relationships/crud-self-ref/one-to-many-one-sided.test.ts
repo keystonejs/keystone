@@ -10,18 +10,15 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = { createUsers: { id: IdType }[] };
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createUsers(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as T;
-  return { users: data.createUsers };
+  const users = await context.lists.User.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  });
+
+  return { users };
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
@@ -312,10 +309,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { friend, user } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `mutation { deleteUser(id: "${user.id}") { id } } `,
-            });
-            expect(data.deleteUser.id).toBe(user.id);
+            const _user = await context.lists.User.deleteOne({ id: user.id });
+            expect(_user?.id).toBe(user.id);
 
             // Check the link has been broken
             const result = await getUserAndFriend(context, user.id, friend.id);
@@ -332,15 +327,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Delete company {name}
               const id = users.find(company => company.name === name)?.id;
-              const data = await context.graphql.run({
-                query: `mutation { deleteUser(id: "${id}") { id } }`,
-              });
-              expect(data.deleteUser.id).toBe(id);
+              const _user = await context.lists.User.deleteOne({ id });
+              expect(_user?.id).toBe(id);
 
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }: { name: string }) => name.length === 1);
@@ -369,7 +362,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }: { name: string }) => name.length === 2);
@@ -391,15 +384,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Delete friend {name}
               const id = users.find(user => user.name === name)?.id;
-              const data = await context.graphql.run({
-                query: `mutation { deleteUser(id: "${id}") { id } }`,
-              });
-              expect(data.deleteUser.id).toBe(id);
+              const _user = await context.lists.User.deleteOne({ id });
+              expect(_user?.id).toBe(id);
 
               // Check all the companies look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name friend { id name }',
                 })) as { name: string; friend: { name: string } }[];
                 const users = _users.filter(({ name }) => name.length === 1);
@@ -434,7 +425,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               // Check all the friends look how we expect
               await (async () => {
                 const _users = (await context.lists.User.findMany({
-                  sortBy: ['name_ASC'],
+                  orderBy: { name: 'asc' },
                   query: 'id name',
                 })) as { name: string }[];
                 const friends = _users.filter(({ name }) => name.length === 2);

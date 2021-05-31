@@ -78,6 +78,19 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  publishDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 input PostUpdateInput {
   title: String
   status: PostStatusType
@@ -118,21 +131,27 @@ type Author {
   name: String
   email: String
   posts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): [Post!]!
   _postsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 input AuthorWhereInput {
@@ -186,6 +205,12 @@ enum SortAuthorsBy {
   name_DESC
   email_ASC
   email_DESC
+}
+
+input AuthorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 input AuthorUpdateInput {
@@ -293,13 +318,14 @@ type Query {
    Search for all Post items which match the where clause.
   """
   allPosts(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Post]
+    skip: Int! = 0
+  ): [Post!]
 
   """
    Search for the Post item with the matching ID.
@@ -310,25 +336,31 @@ type Query {
    Perform a meta-query on all Post items which match the where clause.
   """
   _allPostsMeta(
-    where: PostWhereInput
+    where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
 
   """
    Search for all Author items which match the where clause.
   """
   allAuthors(
-    where: AuthorWhereInput
+    where: AuthorWhereInput! = {}
     search: String
     sortBy: [SortAuthorsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
-    skip: Int
-  ): [Author]
+    skip: Int! = 0
+  ): [Author!]
 
   """
    Search for the Author item with the matching ID.
@@ -339,13 +371,18 @@ type Query {
    Perform a meta-query on all Author items which match the where clause.
   """
   _allAuthorsMeta(
-    where: AuthorWhereInput
+    where: AuthorWhereInput! = {}
     search: String
     sortBy: [SortAuthorsBy!]
-    orderBy: String
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
-    skip: Int
+    skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use authorsCount instead."
+    )
+  authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

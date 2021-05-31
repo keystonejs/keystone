@@ -81,7 +81,6 @@ Options:
 - `graphql`: Configures certain aspects of the GraphQL API.
   - `cacheHint` (default: `undefined`): Allows you to specific the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this this list.
 
-
 ```typescript
 export default config({
   lists: createSchema({
@@ -696,6 +695,33 @@ export default config({
             apiSecret: process.env.CLOUDINARY_API_SECRET,
             folder: process.env.CLOUDINARY_API_FOLDER,
           },
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+### json
+
+A `json` field represents a JSON blob.
+Currently the `json` field is non-orderable and non-filterable.
+
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: json({
+          isRequired: true,
         }),
         /* ... */
       },

@@ -13,10 +13,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
-      .filter(
-        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(provider)
-      )
+      .filter(({ unSupportedAdapterList = [] }) => !unSupportedAdapterList.includes(provider))
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
@@ -103,9 +100,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 context: KeystoneContext,
                 where: Record<string, any> | undefined,
                 expected: any[],
-                sortBy = ['name_ASC']
+                orderBy: Record<string, 'asc' | 'desc'> = { name: 'asc' }
               ) =>
-                expect(await context.lists[listKey].findMany({ where, sortBy, query })).toEqual(
+                expect(await context.lists[listKey].findMany({ where, orderBy, query })).toEqual(
                   expected.map(i => storedValues[i])
                 );
 

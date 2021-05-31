@@ -65,16 +65,19 @@ export function Navigation() {
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
+        <NavItem href="/tutorials/embedded-mode-with-sqlite-nextjs">
+          Embedding Keystone and SQLite in Next.js
+        </NavItem>
       </Section>
       <Section label="Guides">
         <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/relationships">Relationships</NavItem>
         <NavItem href="/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
@@ -96,6 +99,9 @@ export function Navigation() {
         <NavItem href="/guides/custom-field-views" isPlaceholder>
           Custom Field Views
         </NavItem>
+      </Section>
+      <Section label="Examples">
+        <NavItem href="/examples">Examples</NavItem>
       </Section>
       <Section label="API">
         <SubHeading as="h4">Config</SubHeading>

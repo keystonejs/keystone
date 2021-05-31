@@ -65,7 +65,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           query {
             allUsers(
               where: { name_contains: "J" },
-              sortBy: name_ASC,
+              orderBy: { name: asc },
             ) {
               name
             }
@@ -94,17 +94,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // Count is still correct
             data = await context.graphql.run({
-              query: `
-          query {
-            meta: _allUsersMeta {
-              count
-            }
-          }
-      `,
+              query: `query { usersCount }`,
             });
 
-            expect(data).toHaveProperty('meta');
-            expect(data.meta.count).toBe(users.length);
+            expect(data).toHaveProperty('usersCount');
+            expect(data.usersCount).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
             data = await context.graphql.run({
@@ -200,8 +194,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
               where: {
                 OR: [{ title: 'One author' }, { title: 'Two authors' }],
               },
-              sortBy: ['title_ASC'],
-              query: 'title author(sortBy: [name_ASC]) { name }',
+              orderBy: { title: 'asc' },
+              query: 'title author(orderBy: { name: asc }) { name }',
             });
             expect(posts).toEqual([
               { title: 'One author', author: [{ name: 'Jess' }] },

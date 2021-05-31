@@ -4,7 +4,7 @@ import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
-import { createAdminUIServer } from '@keystone-next/admin-ui/system';
+import { createAdminUIServer } from '../../admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MiB
@@ -58,15 +58,13 @@ export const createExpressServer = async (
     server.use(cors(corsConfig));
   }
 
-  const sessionStrategy = config.session ? config.session() : undefined;
-
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
   addApolloServer({
     server,
     config,
     graphQLSchema,
     createContext,
-    sessionStrategy,
+    sessionStrategy: config.session,
     apolloConfig: config.graphql?.apolloConfig,
   });
 
@@ -75,7 +73,7 @@ export const createExpressServer = async (
   } else {
     if (isVerbose) console.log('✨ Preparing Admin UI Next.js app');
     server.use(
-      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
+      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, config.session)
     );
   }
 

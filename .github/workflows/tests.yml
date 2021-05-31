@@ -212,7 +212,18 @@ jobs:
       DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['auth.test.ts', 'basic.test.ts', 'roles.test.ts', 'todo.test.ts']
+        test:
+          [
+            'auth.test.ts',
+            'basic.test.ts',
+            'blog.test.ts',
+            'default-values.test.ts',
+            'extend-graphql-schema.test.ts',
+            'json.test.ts',
+            'roles.test.ts',
+            'task-manager.test.ts',
+            'with-auth.test.ts',
+          ]
       fail-fast: false
     steps:
       - name: Checkout Repo
@@ -292,3 +303,5 @@ jobs:
         run: yarn build
       - name: Remark
         run: yarn lint:markdown
+      - name: Example schemas
+        run: yarn lint:examples

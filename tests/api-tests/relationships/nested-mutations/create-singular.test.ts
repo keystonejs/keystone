@@ -128,16 +128,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             group: { id: expect.any(String), name: groupName },
           });
 
-          const { Group } = await context.graphql.run({
-            query: `
-              query {
-                Group(where: { id: "${event.group.id}" }) {
-                  id
-                  name
-                }
-              }`,
+          const group = await context.lists.Group.findOne({
+            where: { id: event.group.id },
+            query: 'id name',
           });
-          expect(Group).toMatchObject({ id: event.group.id, name: groupName });
+          expect(group).toMatchObject({ id: event.group.id, name: groupName });
         })
       );
 
@@ -161,16 +156,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             group: { id: expect.any(String), name: groupName },
           });
 
-          const { Group } = await context.graphql.run({
-            query: `
-              query {
-                Group(where: { id: "${event.group.id}" }) {
-                  id
-                  name
-                }
-              }`,
+          const group = await context.lists.Group.findOne({
+            where: { id: event.group.id },
+            query: 'id name',
           });
-          expect(Group).toMatchObject({ id: event.group.id, name: groupName });
+          expect(group).toMatchObject({ id: event.group.id, name: groupName });
         })
       );
     });
@@ -340,16 +330,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
 
                 // Confirm it didn't insert the record anyway
-                const data2 = await context.graphql.run({
-                  query: `
-                    query {
-                      all${group.name}s(where: { name: "${groupName}" }) {
-                        id
-                        name
-                      }
-                    }`,
+                const groups = await context.lists[group.name].findMany({
+                  where: { name: groupName },
+                  query: 'id name',
                 });
-                expect(data2[`all${group.name}s`]).toMatchObject([]);
+                expect(groups).toMatchObject([]);
               })
             );
           }

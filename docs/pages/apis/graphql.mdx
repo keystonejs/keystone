@@ -28,10 +28,10 @@ type Query {
   User(where: UserWhereUniqueInput!): User
 
   """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
 
   """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
 }
 
 type Mutation {
@@ -95,11 +95,14 @@ input UserWhereUniqueInput {
   id: ID!
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 input UserUpdateInput {
@@ -149,7 +152,7 @@ type User {
 ```graphql
 type Query {
   """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
 }
 
 input UserWhereInput {
@@ -183,11 +186,14 @@ input UserWhereInput {
   name_not_in: [String]
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 type User {
@@ -197,12 +203,11 @@ type User {
 ```
 
 <!-- prettier-ignore -->
-### _allUsersMeta
+### usersCount
 
 ```graphql
 type Query {
-  """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  usersCount(where: UserWhereInput! = {}): Int!
 }
 
 input UserWhereInput {
@@ -236,11 +241,14 @@ input UserWhereInput {
   name_not_in: [String]
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 type _QueryMeta {

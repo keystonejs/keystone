@@ -28,75 +28,56 @@ const createInitialData = async (context: KeystoneContext) => {
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
-  type T = { createCompany: { id: IdType; location: { id: IdType } } };
-  const { createCompany } = (await context.graphql.run({
-    query: `
-      mutation {
-        createCompany(data: {
-          location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
-        }) { id location { id } }
-      }`,
-  })) as T;
+  const company = await context.lists.Company.createOne({
+    data: { location: { create: { name: sampleOne(alphanumGenerator) } } },
+    query: 'id location { id }',
+  });
   const { Company, Location } = await getCompanyAndLocation(
     context,
-    createCompany.id,
-    createCompany.location.id
+    company.id,
+    company.location.id
   );
 
   // Sanity check the links are setup correctly
   expect(Company.location.id.toString()).toBe(Location.id.toString());
 
-  return { company: createCompany, location: createCompany.location };
+  return { company, location: company.location };
 };
 
 const createComplexData = async (context: KeystoneContext) => {
-  type T1 = {
-    createCompanies: { id: IdType; name: string; location: { id: IdType; name: string } }[];
-  };
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createCompanies(data: [
-          { data: { name: "A" location: { create: { name: "A" } } } }
-          { data: { name: "B" location: { create: { name: "D" } } } }
-          { data: { name: "C" location: { create: { name: "B" } } } }
-          { data: { name: "E" } }
-        ]) { id name location { id name }}
-      }`,
-  })) as T1;
-  expect(data.createCompanies[0].name).toEqual('A');
-  expect(data.createCompanies[0].location.name).toEqual('A');
-  expect(data.createCompanies[1].name).toEqual('B');
-  expect(data.createCompanies[1].location.name).toEqual('D');
-  expect(data.createCompanies[2].name).toEqual('C');
-  expect(data.createCompanies[2].location.name).toEqual('B');
-  expect(data.createCompanies[3].name).toEqual('E');
-  expect(data.createCompanies[3].location).toBe(null);
-  type T2 = {
-    createCompany: { id: IdType; name: string; location: { id: IdType; name: string } };
-    createLocation: { id: IdType; name: string };
-  };
+  const companies = await context.lists.Company.createMany({
+    data: [
+      { data: { name: 'A', location: { create: { name: 'A' } } } },
+      { data: { name: 'B', location: { create: { name: 'D' } } } },
+      { data: { name: 'C', location: { create: { name: 'B' } } } },
+      { data: { name: 'E' } },
+    ],
+    query: 'id name location { id name }',
+  });
+  expect(companies[0].name).toEqual('A');
+  expect(companies[0].location.name).toEqual('A');
+  expect(companies[1].name).toEqual('B');
+  expect(companies[1].location.name).toEqual('D');
+  expect(companies[2].name).toEqual('C');
+  expect(companies[2].location.name).toEqual('B');
+  expect(companies[3].name).toEqual('E');
+  expect(companies[3].location).toBe(null);
 
-  const data2 = (await context.graphql.run({
-    query: `mutation {
-      createCompany(data: { name: "D" location: { connect: { id: "${data.createCompanies[2].location.id}" } } }) {
-        id name location { id name }
-      }
-      createLocation(data: { name: "C" }) { id name }
-    }`,
-  })) as T2;
-  expect(data2.createCompany.name).toEqual('D');
-  expect(data2.createCompany.location.name).toEqual('B');
-  expect(data2.createLocation.name).toEqual('C');
+  const _company = await context.lists.Company.createOne({
+    data: { name: 'D', location: { connect: { id: companies[2].location.id } } },
+    query: 'id name location { id name }',
+  });
+  const _location = await context.lists.Location.createOne({
+    data: { name: 'C' },
+    query: 'id name',
+  });
+  expect(_company.name).toEqual('D');
+  expect(_company.location.name).toEqual('B');
+  expect(_location.name).toEqual('C');
 
-  type T3 = { allLocations: { id: IdType; name: string }[] };
-  const { allLocations } = (await context.graphql.run({
-    query: '{ allLocations { id name } }',
-  })) as T3;
-  return {
-    companies: [...data.createCompanies, data2.createCompany],
-    locations: allLocations,
-  };
+  type T3 = { id: IdType; name: string }[];
+  const locations = (await context.lists.Location.findMany({ query: 'id name' })) as T3;
+  return { companies: [...companies, _company], locations };
 };
 
 const getCompanyAndLocation = async (
@@ -153,10 +134,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['D', 1],
                 ['E', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allCompanies(where: { location: { name_contains: "${name}"}}) { id }}`,
+                const companies = await context.lists.Company.findMany({
+                  where: { location: { name_contains: name } },
                 });
-                expect(data.allCompanies.length).toEqual(count);
+                expect(companies.length).toEqual(count);
               })
             );
           })
@@ -202,20 +183,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const { locations } = await createInitialData(context);
             const location = locations[0];
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createCompany(data: {
-                    location: { connect: { id: "${location.id}" } }
-                  }) { id location { id } }
-                }
-            `,
+            const company = await context.lists.Company.createOne({
+              data: { location: { connect: { id: location.id } } },
+              query: 'id location { id }',
             });
-            expect(data.createCompany.location.id.toString()).toBe(location.id.toString());
+            expect(company.location.id.toString()).toBe(location.id.toString());
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
-              data.createCompany.id,
+              company.id,
               location.id
             );
             // Everything should now be connected
@@ -268,14 +244,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // `...not.toBe(expect.anything())` allows null and undefined values
             expect(company.location).not.toBe(expect.anything());
 
-            await context.graphql.run({
-              query: `
-                mutation {
-                  updateCompany(
-                    id: "${company.id}",
-                    data: { location: { connect: { id: "${location.id}" } } }
-                  ) { id location { id } } }
-            `,
+            await context.lists.Company.updateOne({
+              id: company.id,
+              data: { location: { connect: { id: location.id } } },
             });
 
             const { Company, Location } = await getCompanyAndLocation(
@@ -294,21 +265,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { companies } = await createInitialData(context);
             let company = companies[0];
             const locationName = sampleOne(alphanumGenerator);
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateCompany(
-                    id: "${company.id}",
-                    data: { location: { create: { name: "${locationName}" } } }
-                  ) { id location { id name } }
-                }
-            `,
+            const _company = await context.lists.Company.updateOne({
+              id: company.id,
+              data: { location: { create: { name: locationName } } },
+              query: 'id location { id name }',
             });
-
             const { Company, Location } = await getCompanyAndLocation(
               context,
               company.id,
-              data.updateCompany.location.id
+              _company.location.id
             );
 
             // Everything should now be connected
@@ -344,18 +309,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateCompany(
-                    id: "${company.id}",
-                    data: { location: { disconnectAll: true } }
-                  ) { id location { id name } }
-                }
-            `,
+            const _company = await context.lists.Company.updateOne({
+              id: company.id,
+              data: { location: { disconnectAll: true } },
+              query: 'id location { id name }',
             });
-            expect(data.updateCompany.id).toEqual(company.id);
-            expect(data.updateCompany.location).toBe(null);
+            expect(_company.id).toEqual(company.id);
+            expect(_company.location).toBe(null);
 
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
@@ -370,21 +330,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
 
             // Run the query with a null operation
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  updateCompany(
-                    id: "${company.id}",
-                    data: { location: null }
-                  ) { id location { id name } }
-                }
-            `,
+            const _company = await context.lists.Company.updateOne({
+              id: company.id,
+              data: { location: null },
+              query: 'id location { id name }',
             });
 
             // Check that the location is still there
-            expect(data.updateCompany.id).toEqual(company.id);
-            expect(data.updateCompany.location).not.toBe(null);
-            expect(data.updateCompany.location.id).toEqual(location.id);
+            expect(_company.id).toEqual(company.id);
+            expect(_company.location).not.toBe(null);
+            expect(_company.location.id).toEqual(location.id);
           })
         );
       });
@@ -397,10 +352,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
 
             // Run the query to disconnect the location from company
-            const data = await context.graphql.run({
-              query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
-            });
-            expect(data.deleteCompany.id).toBe(company.id);
+            const _company = await context.lists.Company.deleteOne({ id: company.id });
+            expect(_company?.id).toBe(company.id);
 
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
@@ -417,17 +370,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Delete company {name}
               const id = companies.find(company => company.name === name)?.id;
-              const data = await context.graphql.run({
-                query: `mutation { deleteCompany(id: "${id}") { id } }`,
-              });
-              expect(data.deleteCompany.id).toBe(id);
+              const _company = await context.lists.Company.deleteOne({ id });
+              expect(_company?.id).toBe(id);
 
               // Check all the companies look how we expect
               await (async () => {
-                const data = await context.graphql.run({
-                  query: '{ allCompanies(sortBy: name_ASC) { id name location { id name } } }',
+                const _companies = await context.lists.Company.findMany({
+                  orderBy: { name: 'asc' },
+                  query: 'id name location { id name }',
                 });
-
                 const expected = [
                   ['A', 'A'],
                   ['B', 'D'],
@@ -436,29 +387,30 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   ['E', null],
                 ].filter(([x]) => x !== name);
 
-                expect(data.allCompanies[0].name).toEqual(expected[0][0]);
-                expect(data.allCompanies[0].location.name).toEqual(expected[0][1]);
-                expect(data.allCompanies[1].name).toEqual(expected[1][0]);
-                expect(data.allCompanies[1].location.name).toEqual(expected[1][1]);
-                expect(data.allCompanies[2].name).toEqual(expected[2][0]);
-                expect(data.allCompanies[2].location.name).toEqual(expected[2][1]);
-                expect(data.allCompanies[3].name).toEqual(expected[3][0]);
+                expect(_companies[0].name).toEqual(expected[0][0]);
+                expect(_companies[0].location.name).toEqual(expected[0][1]);
+                expect(_companies[1].name).toEqual(expected[1][0]);
+                expect(_companies[1].location.name).toEqual(expected[1][1]);
+                expect(_companies[2].name).toEqual(expected[2][0]);
+                expect(_companies[2].location.name).toEqual(expected[2][1]);
+                expect(_companies[3].name).toEqual(expected[3][0]);
                 if (expected[3][1] === null) {
-                  expect(data.allCompanies[3].location).toBe(null);
+                  expect(_companies[3].location).toBe(null);
                 } else {
-                  expect(data.allCompanies[2].location.name).toEqual(expected[3][1]);
+                  expect(_companies[2].location.name).toEqual(expected[3][1]);
                 }
               })();
 
               // Check all the locations look how we expect
               await (async () => {
-                const data = await context.graphql.run({
-                  query: '{ allLocations(sortBy: name_ASC) { id name } }',
+                const _locations = await context.lists.Location.findMany({
+                  orderBy: { name: 'asc' },
+                  query: 'id name',
                 });
-                expect(data.allLocations[0].name).toEqual('A');
-                expect(data.allLocations[1].name).toEqual('B');
-                expect(data.allLocations[2].name).toEqual('C');
-                expect(data.allLocations[3].name).toEqual('D');
+                expect(_locations[0].name).toEqual('A');
+                expect(_locations[1].name).toEqual('B');
+                expect(_locations[2].name).toEqual('C');
+                expect(_locations[3].name).toEqual('D');
               })();
             })
           );
@@ -479,7 +431,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the companies look how we expect
               const companies = await context.lists.Company.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: { name: 'asc' },
                 query: 'id name location { id name }',
               });
               expect(companies[0].name).toEqual('A');
@@ -511,7 +463,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               // Check all the locations look how we expect
               const _locations = await context.lists.Location.findMany({
-                sortBy: ['name_ASC'],
+                orderBy: { name: 'asc' },
                 query: 'id name',
               });
               const expected = ['A', 'B', 'C', 'D'].filter(x => x !== name);

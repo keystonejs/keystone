@@ -28,7 +28,7 @@ async function textPromptImpl(message: string): Promise<string> {
   return value;
 }
 
-export let shouldPrompt = process.stdout.isTTY;
+export let shouldPrompt = process.stdout.isTTY && !process.env.SKIP_PROMPTS;
 
 export let confirmPrompt = confirmPromptImpl;
 export let textPrompt = textPromptImpl;

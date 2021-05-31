@@ -1,5 +1,22 @@
 # @keystone-ui/popover
 
+## 4.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+### Patch Changes
+
+- Updated dependencies [[`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d)]:
+  - @keystone-ui/core@3.0.0
+
+## 3.1.0
+
+### Minor Changes
+
+- [#5670](https://github.com/keystonejs/keystone/pull/5670) [`669f0d8ac`](https://github.com/keystonejs/keystone/commit/669f0d8acfce5d6b7eaaa972ab354597c53c2568) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added focustrap to the PopoverDialog component, when the PopoverDialog is open, browser focus is now trapped within it till the dialog is closed.
+
 ## 3.0.0
 
 ### Major Changes

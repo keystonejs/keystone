@@ -2,7 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
 
 import {
   CardValueComponent,
@@ -14,9 +14,10 @@ import {
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
+    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
     {onChange ? (
       <TextInput
+        id={field.path}
         autoFocus={autoFocus}
         type="number"
         onChange={event => {

@@ -112,21 +112,13 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
             test(
               'Configuring uniqueness on one field does not affect others',
               keystoneTestWrapper(async ({ context }) => {
-                const data = await context.graphql.run({
-                  query: `
-                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
-                    foo: createTest(data: $fooData) { id }
-                    bar: createTest(data: $barData) { id }
-                  }
-                `,
-                  variables: {
-                    fooData: { testField: mod.exampleValue(matrixValue), name: 'jess' },
-                    barData: { testField: mod.exampleValue2(matrixValue), name: 'jess' },
-                  },
+                const items = await context.lists.Test.createMany({
+                  data: [
+                    { data: { testField: mod.exampleValue(matrixValue), name: 'jess' } },
+                    { data: { testField: mod.exampleValue2(matrixValue), name: 'jess' } },
+                  ],
                 });
-
-                expect(data).toHaveProperty('foo.id');
-                expect(data).toHaveProperty('bar.id');
+                expect(items).toHaveLength(2);
               })
             );
           });

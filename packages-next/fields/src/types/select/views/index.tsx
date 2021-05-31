@@ -1,6 +1,6 @@
 /* @jsx jsx */
-
-import { CellContainer, CellLink } from '@keystone-next/admin-ui/components';
+import { Fragment } from 'react';
+import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -13,28 +13,34 @@ import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fi
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
+  <FieldContainer as={field.displayMode === 'select' ? 'div' : 'fieldset'}>
     {field.displayMode === 'select' ? (
-      <Select
-        isClearable
-        autoFocus={autoFocus}
-        options={field.options}
-        isDisabled={onChange === undefined}
-        onChange={value => {
-          onChange?.(value);
-        }}
-        value={value}
-        portalMenu
-      />
+      <Fragment>
+        <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+        <Select
+          id={field.path}
+          isClearable
+          autoFocus={autoFocus}
+          options={field.options}
+          isDisabled={onChange === undefined}
+          onChange={value => {
+            onChange?.(value);
+          }}
+          value={value}
+          portalMenu
+        />
+      </Fragment>
     ) : (
-      <SegmentedControl
-        segments={field.options.map(x => x.label)}
-        selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
-        onChange={index => {
-          onChange?.(field.options[index]);
-        }}
-      />
+      <Fragment>
+        <FieldLabel as="legend">{field.label}</FieldLabel>
+        <SegmentedControl
+          segments={field.options.map(x => x.label)}
+          selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
+          onChange={index => {
+            onChange?.(field.options[index]);
+          }}
+        />
+      </Fragment>
     )}
   </FieldContainer>
 );

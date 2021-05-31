@@ -74,7 +74,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create an item that does the nested create
           const user = await context.lists.User.createOne({
             data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
-            query: 'id notes(sortBy: [content_ASC]) { id content }',
+            query: 'id notes(orderBy: { content: asc }) { id content }',
           });
 
           expect(user).toMatchObject({
@@ -90,7 +90,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(sortBy: [content_ASC]) { id content }',
+            query: 'id notes(orderBy: { content: asc }) { id content }',
           })) as T;
 
           expect(user1).toMatchObject({
@@ -102,16 +102,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Sanity check that the items are actually created
-          const { allNotes } = await context.graphql.run({
-            query: `
-              query {
-                allNotes(where: { id_in: [${user1.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
-                  id
-                  content
-                }
-              }`,
+          const notes = await context.lists.Note.findMany({
+            where: { id_in: user1.notes.map(({ id }) => id) },
           });
-          expect(allNotes).toHaveLength(user1.notes.length);
+          expect(notes).toHaveLength(user1.notes.length);
 
           // Test an empty list of related notes
           const user2 = await context.lists.User.createOne({
@@ -151,7 +145,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               username: 'A thing',
               notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
             },
-            query: 'id notes(sortBy: [content_ASC]) { id content }',
+            query: 'id notes(orderBy: { content: asc }) { id content }',
           })) as T;
 
           expect(_user).toMatchObject({
@@ -164,16 +158,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Sanity check that the items are actually created
-          const { allNotes } = await context.graphql.run({
-            query: `
-              query {
-                allNotes(where: { id_in: [${_user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
-                  id
-                  content
-                }
-              }`,
+          const notes = await context.lists.Note.findMany({
+            where: { id_in: _user.notes.map(({ id }) => id) },
           });
-          expect(allNotes).toHaveLength(_user.notes.length);
+          expect(notes).toHaveLength(_user.notes.length);
         })
       );
     });
@@ -293,18 +281,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(error.path![0]).toEqual('createUserToNotesNoCreate');
 
             // Confirm it didn't insert either of the records anyway
-            const { allNoteNoCreates, allUserToNotesNoCreates } = await context.graphql.run({
-              query: `
-                query {
-                  allNoteNoCreates(where: { content: "${noteContent}" }) {
-                    id
-                    content
-                  }
-                  allUserToNotesNoCreates(where: { username: "${userName}" }) {
-                    id
-                    username
-                  }
-                }`,
+            const allNoteNoCreates = await context.lists.NoteNoCreate.findMany({
+              where: { content: noteContent },
+            });
+            const allUserToNotesNoCreates = await context.lists.UserToNotesNoCreate.findMany({
+              where: { username: userName },
             });
             expect(allNoteNoCreates).toMatchObject([]);
             expect(allUserToNotesNoCreates).toMatchObject([]);
@@ -347,16 +328,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(error.path![0]).toEqual('updateUserToNotesNoCreate');
 
             // Confirm it didn't insert the record anyway
-            const { allNoteNoCreates } = await context.graphql.run({
-              query: `
-                query {
-                  allNoteNoCreates(where: { content: "${noteContent}" }) {
-                    id
-                    content
-                  }
-                }`,
+            const items = await context.lists.NoteNoCreate.findMany({
+              where: { content: noteContent },
             });
-            expect(allNoteNoCreates).toMatchObject([]);
+            expect(items).toMatchObject([]);
           })
         );
       });

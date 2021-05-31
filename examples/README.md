@@ -1,58 +1,30 @@
 # Keystone Examples
 
-Welcome to the Keystone Example Projects 👋.
-Here you'll find a collection of projects which show off the various features in Keystone.
+👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate Keystone features.
 
-You can use these examples as a jumping off point for adding features to your own Keystone project.
+You can use these as jumping off point when adding features to your own Keystone project.
 
 ## Base Projects
 
-There are two base projects which all the other examples build off.
-The [`todo`](./todo) project is a basic task management application, while the [`blog`](./blog) project is a basic blogging app.
+There are two base projects which all other projects build on:
 
-These projects have very simple schemas and none of the bells or whistles you'd expect in a complete project.
-You can use these as a starting point for general experimentation in a clean environment.
+- [`task-manager`](./task-manager)
+- [`blog`](./blog)
 
-## Feature Examples
+They have very simple schemas and none of the bells or whistles you'd expect in a complete project. You can use these as a starting point for general experimentation in a clean environment.
 
-Each of the examples below demonstrates a particular feature of Keystone.
-You can use these projects to learn about, and experiment with specific features.
+## Feature Projects
 
-- [`withAuth`](./with-auth): Adding password based authentication to your Keystone application.
-- Data Seeding: Coming soon
-- GitHub SSO: Coming soon
-- Roles: Coming soon
-- Logging: Coming soon
-- Custom Fields: Coming soon
-- Custom Views: Coming soon
-- REST APIs: Coming soon
-- Validation: Coming soon
-- Images: Coming soon
-- Files: Coming soon
-- Hooks: Coming soon
-- Access Control: Coming soon
-- Document Field: Coming soon
-- Relationships: Coming soon
-- Schema Extension: Coming soon
-- Virtual Fields: Coming soon
-- Default Values: Coming soon
-- Select Fields: Coming soon
-- Tracking Meta: Coming soon
-- Next.js App: Coming soon
-- Null Handling: Coming soon
-- ID Fields: Coming soon
-- Fields: Coming soon
+Each project below demonstrates a Keystone feature you can learn about and experiment with.
 
-## Solution Examples
-
-The solution examples show you how to bring together all of the features of Keystone to build a complete product solution.
-These examples show how the different features of Keystone work together in a more complex project.
-
-(coming soon)
+- [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
+- [`JSON field`](./json): Adds a JSON field to the Task Manager base.
+- [`defaultValue`](./default-values): Adds default values to the Blog base.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
 
 ## Running examples
 
-To run an example you should clone this repo and then run the following commands:
+To run an example, clone this repo and run the following commands:
 
 ```shell
 yarn

@@ -3,8 +3,8 @@ import { Markdown } from '../../components/Page';
 # Session API
 
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
-It has a TypeScript type of `() => SessionStrategy<any>`.
-In general you will use functions from the `@keystone-next/keystone/session` package, rather than writing this function yourself.
+It has a TypeScript type of `SessionStrategy<any>`.
+In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
 
 ```typescript
 import { config } from '@keystone-next/keystone/schema';
@@ -19,6 +19,7 @@ export default config({
       secure: true,
       path: '/',
       domain: 'localhost',
+      sameSite: 'lax',
     }),
     { User: 'name isAdmin' }
   ),
@@ -63,8 +64,10 @@ Options
   For Firefox, the `https:` requirements are ignored when the `secure` attribute is set by localhost (since Firefox 75).
 - `path` (default: `'/'`): A path that must exist in the requested URL, or the browser won't send the cookie header.
   The forward slash (`/`) character is interpreted as a directory separator, and subdirectories will be matched as well: for `path: '/docs'`, `/docs`, `/docs/Web/`, and `/docs/Web/HTTP` will all match.
-- `domain` (default: current document URL): Host to which the cookie will be sent. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `domain` cookie attribute..
+- `domain` (default: current document URL): Host to which the cookie will be sent. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `domain` cookie attribute.
   **Note**: Only one domain is allowed. If a domain is specified then subdomains are always included.
+- `sameSite` (default: `'lax'`): Controls whether the cookie is sent with cross-origin requests. Can be one of `true`, `false`, `'strict'`, `'lax'` or `'none'`. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `sameSite` cookie attribute.
+  **Note**: The `secure` attribute must also be set when `sameSite` is set to `none`!
 
 ### Session stores
 

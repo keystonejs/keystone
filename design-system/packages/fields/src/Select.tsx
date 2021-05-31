@@ -114,6 +114,7 @@ const useStyles = ({
 const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
 export function Select({
+  id,
   onChange,
   value,
   width: widthKey = 'large',
@@ -131,6 +132,7 @@ export function Select({
 
   return (
     <ReactSelect
+      inputId={id}
       value={value}
       // css={{ width: tokens.width }}
       styles={composedStyles}
@@ -149,6 +151,7 @@ export function Select({
 }
 
 export function MultiSelect({
+  id,
   onChange,
   value,
   width: widthKey = 'large',
@@ -167,6 +170,7 @@ export function MultiSelect({
   return (
     <ReactSelect
       // css={{ width: tokens.width }}
+      inputId={id}
       styles={composedStyles}
       value={value}
       onChange={value => {

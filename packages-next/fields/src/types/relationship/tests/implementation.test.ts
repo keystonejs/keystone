@@ -54,7 +54,7 @@ class MockList {
       whereUniqueInputName: `${ref}WhereUniqueInput`,
       relateToManyInputName: `${ref}RelateToManyInput`,
       relateToOneInputName: `${ref}RelateToOneInput`,
-      whereInputName: '',
+      whereInputName: `${ref}WhereInput`,
       listQueryName: '',
       itemQueryName: '',
     };
@@ -363,6 +363,20 @@ describe('Type Generation', () => {
               type: {
                 name: {
                   value: '_QueryMeta',
+                },
+              },
+            },
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: `${path}Count`,
+              },
+              // We don't have control over this type, so we just check for
+              // existence
+              arguments: expect.any(Array),
+              type: {
+                name: {
+                  value: 'Int',
                 },
               },
             },

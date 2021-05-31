@@ -11,9 +11,9 @@ import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
 } from '@keystone-next/admin-ui-utils';
-import { gql, useApolloClient } from '@keystone-next/admin-ui/apollo';
+import { gql, useApolloClient } from '@keystone-next/keystone/admin-ui/apollo';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from '@keystone-next/admin-ui/router';
+import { Link } from '@keystone-next/keystone/admin-ui/router';
 import { controller } from '../index';
 import { RelationshipSelect } from '../RelationshipSelect';
 import { useItemState } from './useItemState';

@@ -3,17 +3,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack, Inline } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-next/admin-ui/context';
+import { useRawKeystone } from '@keystone-next/keystone/admin-ui/context';
 import { FieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
-import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
-import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
-import { useRouter, Link } from '@keystone-next/admin-ui/router';
-import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';
+import { useReinitContext, useKeystone } from '@keystone-next/keystone/admin-ui/context';
+import { useRouter, Link } from '@keystone-next/keystone/admin-ui/router';
+import { GraphQLErrorNotice } from '@keystone-next/keystone/admin-ui/components';
 import {
   Fields,
   serializeValueToObjByFieldKey,
@@ -122,9 +122,14 @@ const Welcome = ({ value }: { value: any }) => {
         </Checkbox>
       </div>
       <form onSubmit={onSubmit}>
+        <VisuallyHidden as="label" htmlFor="email-field">
+          Email Address
+        </VisuallyHidden>
         <TextInput
+          id="email-field"
           disabled={!subscribe}
           autoFocus
+          placeholder={'Email'}
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
@@ -211,7 +216,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   return mode === 'init' ? (
     <SigninContainer>
       <H1>Welcome to KeystoneJS</H1>
-      <p>Get Started by creating the first user:</p>
+      <p>Create your first user to get started:</p>
       <form
         onSubmit={event => {
           event.preventDefault();

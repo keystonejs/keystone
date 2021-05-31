@@ -1,12 +1,9 @@
-import { IncomingMessage } from 'http';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
 
 import type { ImageMode, FileMode, KeystoneContext } from '..';
 
-import { CreateContext } from '../core';
-import type { BaseKeystone } from '../base';
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
 import type {
@@ -25,7 +22,7 @@ export type KeystoneConfig = {
   db: DatabaseConfig;
   ui?: AdminUIConfig;
   server?: ServerConfig;
-  session?: () => SessionStrategy<any>;
+  session?: SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
@@ -104,10 +101,8 @@ export type AdminUIConfig = {
   // path?: string;
   getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
-    req: IncomingMessage;
-    session: any;
+    context: KeystoneContext;
     isValidSession: boolean;
-    createContext: CreateContext;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
@@ -144,7 +139,7 @@ export type GraphQLConfig = {
 
 // config.extendGraphqlSchema
 
-export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
+export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
 // config.files
 

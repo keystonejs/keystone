@@ -1,8 +1,8 @@
 import Path from 'path';
 import prettier from 'prettier';
 import fs from 'fs-extra';
-import { buildAdminUI, generateAdminUI } from '@keystone-next/admin-ui/system';
 import { AdminFileToWrite } from '@keystone-next/types';
+import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
@@ -54,7 +54,7 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   // of the configuration file in the .next/ directory. Even if we're not building
   // an Admin UI, we still need to run the `build()` function so that this config
   // file is correctly compiled.
-  const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
+  const pkgDir = Path.dirname(require.resolve('@keystone-next/keystone/package.json'));
   const p = serializePathForImport(
     Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
   );
@@ -90,12 +90,12 @@ export async function build(cwd: string) {
 
   const { keystone, graphQLSchema } = createSystem(config);
 
-  await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
+  await validateCommittedArtifacts(graphQLSchema, config, cwd);
 
   console.log('✨ Building Keystone');
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
   if (config.ui?.isDisabled) {
     console.log('✨ Skipping Admin UI code generation');
