@@ -86,7 +86,7 @@ export class DocumentImplementation<P extends string> extends Implementation<P> 
                   context.graphql,
                   this.relationships,
                   this.componentBlocks,
-                  listKey => context.keystone.lists[listKey].gqlNames
+                  context.gqlNames
                 )
               : document,
         };
