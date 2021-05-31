@@ -470,7 +470,9 @@ export function initialiseLists(
             //   })
             // ),
           },
-          ...Object.values(fields).map(x => x.__legacy?.filters?.fields ?? {})
+          ...Object.values(fields).map(field =>
+            field.access.read === false ? {} : field.__legacy?.filters?.fields ?? {}
+          )
         );
       },
     });

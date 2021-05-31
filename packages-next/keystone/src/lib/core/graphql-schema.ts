@@ -263,7 +263,16 @@ export function getGraphQLSchema(
   let graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    types: collectUnreferencedConcreteInterfaceImplementations(lists),
+    types: [
+      ...collectUnreferencedConcreteInterfaceImplementations(lists),
+      // our tests are wrong imo and test
+      // "if any access is allowed, the where and unique where should be there even if they're not actually used in the schema"
+      ...Object.values(lists)
+        .filter(
+          list => list.access.read || list.access.create || list.access.update || list.access.delete
+        )
+        .flatMap(list => [list.types.where.graphQLType, list.types.uniqueWhere.graphQLType]),
+    ],
   });
   return graphQLSchema;
 }
