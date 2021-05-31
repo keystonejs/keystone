@@ -14,33 +14,17 @@ function setupKeystone(provider: ProviderName) {
           access: {
             read: true,
             create: ({ originalInput }) => {
-              if (Array.isArray(originalInput)) {
-                return !originalInput.some(item => item.data.name === 'bad');
-              } else {
-                return (originalInput as any).name !== 'bad';
-              }
+              return originalInput.name !== 'bad';
             },
             update: ({ originalInput }) => {
-              if (Array.isArray(originalInput)) {
-                return !originalInput.some(item => item.data.name === 'bad');
-              } else {
-                return (originalInput as any).name !== 'bad';
-              }
+              return originalInput.name !== 'bad';
             },
-            delete: async ({ context, itemId, itemIds }) => {
-              if (itemIds !== undefined) {
-                const items = await context.lists.User.findMany({
-                  where: { id_in: itemIds },
-                  query: 'id name',
-                });
-                return !items.some(item => item.name.startsWith('no delete'));
-              } else {
-                const item = await context.lists.User.findOne({
-                  where: { id: itemId as string },
-                  query: 'id name',
-                });
-                return item?.name !== 'no delete';
-              }
+            delete: async ({ context, itemId }) => {
+              const item = await context.lists.User.findOne({
+                where: { id: itemId as string },
+                query: 'id name',
+              });
+              return item.name.startsWith('no delete');
             },
           },
         }),
