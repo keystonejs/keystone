@@ -42,14 +42,14 @@ import { getConfigPath } from './utils';
 export async function postinstall(cwd: string, shouldFix: boolean) {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const { keystone, graphQLSchema } = createSystem(config);
+  const { graphQLSchema } = createSystem(config);
 
   if (shouldFix) {
-    await generateCommittedArtifacts(graphQLSchema, keystone, cwd);
+    await generateCommittedArtifacts(graphQLSchema, config, cwd);
     console.log('✨ Generated GraphQL and Prisma schemas');
   } else {
-    await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
+    await validateCommittedArtifacts(graphQLSchema, config, cwd);
     console.log('✨ GraphQL and Prisma schemas are up to date');
   }
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 }
