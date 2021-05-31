@@ -206,7 +206,7 @@ function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
-  access: IndividualFieldAccessControl<FieldReadAccessArgs>,
+  access: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>,
   listKey: string,
   fieldPath: string,
   lists: Record<string, InitialisedList>
@@ -320,9 +320,9 @@ function assertIdFieldGraphQLTypesCorrect(
 }
 
 type ResolvedFieldAccessControl = {
-  read: IndividualFieldAccessControl<FieldReadAccessArgs>;
-  create: IndividualFieldAccessControl<FieldCreateAccessArgs>;
-  update: IndividualFieldAccessControl<FieldUpdateAccessArgs>;
+  read: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>;
+  create: IndividualFieldAccessControl<FieldCreateAccessArgs<BaseGeneratedListTypes>>;
+  update: IndividualFieldAccessControl<FieldUpdateAccessArgs<BaseGeneratedListTypes>>;
 };
 
 function parseFieldAccessControl(
