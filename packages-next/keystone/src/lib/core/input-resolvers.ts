@@ -265,8 +265,7 @@ async function validationHook(
   }
 }
 
-async function getAccessControlledItemForDelete(
-  listKey: string,
+export async function getAccessControlledItemForDelete(
   list: InitialisedList,
   context: KeystoneContext,
   access: boolean | InputFilter,
@@ -275,7 +274,7 @@ async function getAccessControlledItemForDelete(
   if (access === false) {
     throw accessDeniedError('mutation');
   }
-  const prismaModel = getPrismaModelForList(context.prisma, listKey);
+  const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
   let where: PrismaFilter = mapUniqueWhereToWhere(
     list,
     await resolveUniqueWhereInput(inputFilter, list.fields, context)
@@ -291,25 +290,18 @@ async function getAccessControlledItemForDelete(
 }
 
 export async function processDelete(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   filter: UniqueInputFilter
 ) {
   const access = await validateNonCreateListAccessControl({
     access: list.access.delete,
-    args: { context, listKey, operation: 'delete', session: context.session },
+    args: { context, listKey: list.listKey, operation: 'delete', session: context.session },
   });
-  const existingItem = await getAccessControlledItemForDelete(
-    listKey,
-    list,
-    context,
-    access,
-    filter
-  );
+  const existingItem = await getAccessControlledItemForDelete(list, context, access, filter);
 
-  const hookArgs = { operation: 'delete' as const, listKey, context, existingItem };
-  await validationHook(listKey, 'delete', undefined, async addValidationError => {
+  const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
+  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateDelete?.({
@@ -321,7 +313,7 @@ export async function processDelete(
     );
   });
 
-  await validationHook(listKey, 'delete', undefined, async addValidationError => {
+  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
     await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
   });
 
@@ -367,7 +359,6 @@ async function runSideEffectOnlyHook<
 }
 
 async function resolveInputHook(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'create' | 'update',
@@ -375,7 +366,14 @@ async function resolveInputHook(
   originalInput: Record<string, any>,
   existingItem: Record<string, any> | undefined
 ) {
-  const args = { context, listKey, operation, originalInput, resolvedData, existingItem };
+  const args = {
+    context,
+    listKey: list.listKey,
+    operation,
+    originalInput,
+    resolvedData,
+    existingItem,
+  };
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -417,13 +415,12 @@ function flattenMultiDbFields(
 }
 
 export async function resolveInputForCreateOrUpdate(
-  listKey: string,
-  operation: 'create' | 'update',
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, any>,
   existingItem: Record<string, any> | undefined
 ) {
+  const operation = existingItem === undefined ? ('create' as const) : ('update' as const);
   const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   let resolvedData = Object.fromEntries(
     await Promise.all(
@@ -448,7 +445,7 @@ export async function resolveInputForCreateOrUpdate(
                 if (field.dbField.kind !== 'relation') {
                   return undefined as any;
                 }
-                const target = `${listKey}.${fieldKey}<${field.dbField.list}>`;
+                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
                 const inputResolvers = nestedMutationState.resolvers[field.dbField.list];
                 if (field.dbField.mode === 'many') {
                   if (operation === 'create') {
@@ -489,7 +486,6 @@ export async function resolveInputForCreateOrUpdate(
   );
 
   resolvedData = await resolveInputHook(
-    listKey,
     list,
     context,
     operation,
@@ -498,7 +494,7 @@ export async function resolveInputForCreateOrUpdate(
     existingItem
   );
 
-  await validationHook(listKey, operation, originalInput, addValidationError => {
+  await validationHook(list.listKey, operation, originalInput, addValidationError => {
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // yes, this is a massive hack, it's just to make image and file fields work well enough
       let val = resolvedData[fieldKey];
@@ -525,13 +521,13 @@ export async function resolveInputForCreateOrUpdate(
 
   const args = {
     context,
-    listKey,
+    listKey: list.listKey,
     operation,
     originalInput,
     resolvedData,
     existingItem,
   };
-  await validationHook(listKey, operation, originalInput, async addValidationError => {
+  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateInput?.({
@@ -543,7 +539,7 @@ export async function resolveInputForCreateOrUpdate(
     );
   });
 
-  await validationHook(listKey, operation, originalInput, async addValidationError => {
+  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
     await list.hooks.validateInput?.({ ...args, addValidationError });
   });
   const originalInputKeys = new Set(Object.keys(originalInput));
@@ -564,13 +560,12 @@ export async function resolveInputForCreateOrUpdate(
 }
 
 export async function applyAccessControlForUpdate(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniqueInputFilter,
   update: Record<string, any>
 ) {
-  const prismaModel = getPrismaModelForList(context.prisma, listKey);
+  const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
   const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
   const itemId =
     resolvedUniqueWhere.id !== undefined
@@ -590,7 +585,7 @@ export async function applyAccessControlForUpdate(
     args: {
       context,
       itemId,
-      listKey,
+      listKey: list.listKey,
       operation: 'update',
       originalInput: update,
       session: context.session,
@@ -611,12 +606,11 @@ export async function applyAccessControlForUpdate(
   if (!item) {
     throw accessDeniedError('mutation');
   }
-  await checkFieldAccessControlForUpdate(listKey, list, context, update, item);
+  await checkFieldAccessControlForUpdate(list, context, update, item);
   return item;
 }
 
 export async function applyAccessControlForCreate(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, unknown>
@@ -625,7 +619,7 @@ export async function applyAccessControlForCreate(
     access: list.access.create,
     args: {
       context,
-      listKey,
+      listKey: list.listKey,
       operation: 'create',
       originalInput,
       session: context.session,
@@ -634,11 +628,10 @@ export async function applyAccessControlForCreate(
   if (!result) {
     throwAccessDenied('mutation');
   }
-  await checkFieldAccessControlForCreate(listKey, list, context, originalInput);
+  await checkFieldAccessControlForCreate(list, context, originalInput);
 }
 
 async function checkFieldAccessControlForUpdate(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, any>,
@@ -652,7 +645,7 @@ async function checkFieldAccessControlForUpdate(
         args: {
           context,
           fieldKey,
-          listKey,
+          listKey: list.listKey,
           operation: 'update',
           originalInput,
           session: context.session,
@@ -669,7 +662,6 @@ async function checkFieldAccessControlForUpdate(
 }
 
 async function checkFieldAccessControlForCreate(
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   originalInput: Record<string, any>
@@ -682,7 +674,7 @@ async function checkFieldAccessControlForCreate(
         args: {
           context,
           fieldKey,
-          listKey,
+          listKey: list.listKey,
           operation: 'create',
           originalInput,
           session: context.session,

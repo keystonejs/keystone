@@ -30,7 +30,7 @@ export function getGraphQLSchema(
     name: 'Query',
     fields: () =>
       Object.fromEntries(
-        Object.entries(lists).flatMap(([listKey, list]) => {
+        Object.values(lists).flatMap(list => {
           if (list.access.read === false) return [];
           const names = getGqlNames(list);
 
@@ -42,14 +42,14 @@ export function getGraphQLSchema(
               }),
             },
             async resolve(_rootVal, args, context) {
-              return queries.findOne(args, listKey, list, context);
+              return queries.findOne(args, list, context);
             },
           });
           const findMany = types.field({
             type: types.list(types.nonNull(list.types.output)),
             args: list.types.findManyArgs,
             async resolve(_rootVal, args, context, info) {
-              const results = await queries.findMany(args, listKey, list, context);
+              const results = await queries.findMany(args, list, context);
               if (info && info.cacheControl && list.cacheHint) {
                 const operationName = info.operation.name && info.operation.name.value;
                 info.cacheControl.setCacheHint(
@@ -65,7 +65,7 @@ export function getGraphQLSchema(
               where: types.arg({ type: types.nonNull(list.types.where), defaultValue: {} }),
             },
             async resolve(_rootVal, args, context, info) {
-              const count = await queries.count(args, listKey, list, context);
+              const count = await queries.count(args, list, context);
               if (info && info.cacheControl && list.cacheHint) {
                 const operationName = info.operation.name && info.operation.name.value;
                 info.cacheControl.setCacheHint(
@@ -87,7 +87,7 @@ export function getGraphQLSchema(
               return {
                 getCount: async () => {
                   const count = applyFirstSkipToCount({
-                    count: await queries.count({ where, search }, listKey, list, context),
+                    count: await queries.count({ where, search }, list, context),
                     first,
                     skip,
                   });
@@ -120,7 +120,7 @@ export function getGraphQLSchema(
   let mutation = types.object()({
     name: 'Mutation',
     fields: Object.fromEntries(
-      Object.entries(lists).flatMap(([listKey, list]) => {
+      Object.values(lists).flatMap(list => {
         const names = getGqlNames(list);
 
         const createOneArgs = {
@@ -132,7 +132,7 @@ export function getGraphQLSchema(
           type: list.types.output,
           args: createOneArgs,
           resolve(_rootVal, { data }, context) {
-            return mutations.createOne({ data: data ?? {} }, listKey, list, context);
+            return mutations.createOne({ data: data ?? {} }, list, context);
           },
         });
         const updateOneArgs = {
@@ -147,7 +147,7 @@ export function getGraphQLSchema(
           type: list.types.output,
           args: updateOneArgs,
           resolve(_rootVal, { data, id }, context) {
-            return mutations.updateOne({ data: data ?? {}, where: { id } }, listKey, list, context);
+            return mutations.updateOne({ data: data ?? {}, where: { id } }, list, context);
           },
         });
         const deleteOne = types.field({
@@ -158,7 +158,7 @@ export function getGraphQLSchema(
             }),
           },
           resolve(rootVal, { id }, context) {
-            return mutations.deleteOne({ where: { id } }, listKey, list, context);
+            return mutations.deleteOne({ where: { id } }, list, context);
           },
         });
 
@@ -180,7 +180,6 @@ export function getGraphQLSchema(
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.createMany(
                 { data: (args.data || []).map(input => input?.data ?? {}) },
-                listKey,
                 list,
                 context,
                 provider
@@ -209,7 +208,6 @@ export function getGraphQLSchema(
                     .filter((x): x is NonNullable<typeof x> => x !== null)
                     .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
                 },
-                listKey,
                 list,
                 context,
                 provider
@@ -228,7 +226,6 @@ export function getGraphQLSchema(
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.deleteMany(
                 { where: (ids || []).map(id => ({ id })) },
-                listKey,
                 list,
                 context,
                 provider

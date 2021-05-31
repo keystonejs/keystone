@@ -142,7 +142,7 @@ function getRelationVal(
         );
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
-        const filter = await findManyFilter(dbField.list, foreignList, context, where, search);
+        const filter = await findManyFilter(foreignList, context, where, search);
         if (filter === false) {
           throw accessDeniedError('query');
         }
@@ -824,12 +824,7 @@ function createAndUpdateInputResolvers(
     resolvers: Object.fromEntries(
       Object.entries(lists).map(([listKey, list]) => {
         const create = async (input: any) => {
-          const { afterChange, data } = await createOneState(
-            { data: input },
-            listKey,
-            list,
-            context
-          );
+          const { afterChange, data } = await createOneState({ data: input }, list, context);
           // TODO: update this comment with the addition of using nested mutations + fetching the item by id after
           // we can only create the item from a nested mutation in the transaction if we have the id.
           // you might be asking, why not use prisma's nested mutations?

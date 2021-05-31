@@ -12,16 +12,15 @@ import { getPrismaModelForList } from './utils';
 
 export async function createMany(
   { data }: { data: Record<string, any>[] },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async rawData => {
-    const { afterChange, data } = await createOneState({ data: rawData }, listKey, list, context);
+    const { afterChange, data } = await createOneState({ data: rawData }, list, context);
     const item = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, listKey).create({ data })
+      getPrismaModelForList(context.prisma, list.listKey).create({ data })
     );
     await afterChange(item);
     return item;
@@ -30,14 +29,11 @@ export async function createMany(
 
 export async function createOneState(
   { data: rawData }: { data: Record<string, any> },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  await applyAccessControlForCreate(listKey, list, context, rawData);
+  await applyAccessControlForCreate(list, context, rawData);
   const { data, afterChange } = await resolveInputForCreateOrUpdate(
-    listKey,
-    'create',
     list,
     context,
     rawData,
@@ -51,36 +47,27 @@ export async function createOneState(
 
 export async function createOne(
   args: { data: Record<string, any> },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { afterChange, data } = await createOneState(args, listKey, list, context);
-  const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+  const { afterChange, data } = await createOneState(args, list, context);
+  const item = await getPrismaModelForList(context.prisma, list.listKey).create({ data });
   await afterChange(item);
   return item;
 }
 
 export async function updateMany(
   { data }: { data: { where: Record<string, any>; data: Record<string, any> }[] },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-    const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
-    const { afterChange, data } = await resolveInputForCreateOrUpdate(
-      listKey,
-      'update',
-      list,
-      context,
-      rawData,
-      item
-    );
+    const item = await applyAccessControlForUpdate(list, context, rawUniqueWhere, rawData);
+    const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
     const updatedItem = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, listKey).update({
+      getPrismaModelForList(context.prisma, list.listKey).update({
         where: { id: item.id },
         data,
       })
@@ -95,21 +82,13 @@ export async function updateOne(
     where: rawUniqueWhere,
     data: rawData,
   }: { where: Record<string, any>; data: Record<string, any> },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const item = await applyAccessControlForUpdate(listKey, list, context, rawUniqueWhere, rawData);
-  const { afterChange, data } = await resolveInputForCreateOrUpdate(
-    listKey,
-    'update',
-    list,
-    context,
-    rawData,
-    item
-  );
+  const item = await applyAccessControlForUpdate(list, context, rawUniqueWhere, rawData);
+  const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
-  const updatedItem = await getPrismaModelForList(context.prisma, listKey).update({
+  const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
     where: { id: item.id },
     data,
   });
@@ -121,16 +100,15 @@ export async function updateOne(
 
 export async function deleteMany(
   { where }: { where: UniqueInputFilter[] },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return where.map(async where => {
-    const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
+    const { afterDelete, existingItem } = await processDelete(list, context, where);
     await writeLimit(() =>
-      getPrismaModelForList(context.prisma, listKey).delete({
+      getPrismaModelForList(context.prisma, list.listKey).delete({
         where: { id: existingItem.id },
       })
     );
@@ -141,12 +119,11 @@ export async function deleteMany(
 
 export async function deleteOne(
   { where }: { where: UniqueInputFilter },
-  listKey: string,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { afterDelete, existingItem } = await processDelete(listKey, list, context, where);
-  const item = await getPrismaModelForList(context.prisma, listKey).delete({
+  const { afterDelete, existingItem } = await processDelete(list, context, where);
+  const item = await getPrismaModelForList(context.prisma, list.listKey).delete({
     where: { id: existingItem.id },
   });
   await afterDelete();
