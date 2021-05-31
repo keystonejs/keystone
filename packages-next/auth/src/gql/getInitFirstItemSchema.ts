@@ -1,4 +1,5 @@
-import type { GraphQLSchemaExtension, BaseKeystone } from '@keystone-next/types';
+import type { GraphQLSchemaExtension } from '@keystone-next/types';
+import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema, printType } from 'graphql';
 
 import { AuthGqlNames, InitFirstItemConfig } from '../types';
 
@@ -7,31 +8,32 @@ export function getInitFirstItemSchema({
   fields,
   itemData,
   gqlNames,
-  keystone,
+  graphQLSchema,
 }: {
   listKey: string;
   fields: InitFirstItemConfig<any>['fields'];
   itemData: InitFirstItemConfig<any>['itemData'];
   gqlNames: AuthGqlNames;
-  keystone: BaseKeystone;
+  graphQLSchema: GraphQLSchema;
 }): GraphQLSchemaExtension {
+  const createInputConfig = assertInputObjectType(
+    graphQLSchema.getType(`${listKey}CreateInput`)
+  ).toConfig();
+  const fieldsSet = new Set(fields);
+  const initialCreateInput = printType(
+    new GraphQLInputObjectType({
+      ...createInputConfig,
+      fields: Object.fromEntries(
+        Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
+      ),
+      name: gqlNames.CreateInitialInput,
+    })
+  );
   return {
     typeDefs: `
-        input ${gqlNames.CreateInitialInput} {
-          ${Array.prototype
-            .concat(
-              ...fields.map(fieldPath =>
-                keystone.lists[listKey].fieldsByPath[fieldPath].gqlCreateInputFields({
-                  schemaName: 'public',
-                })
-              )
-            )
-            .join('\n')}
-        }
+        ${initialCreateInput}
         type Mutation {
-          ${gqlNames.createInitialItem}(data: ${gqlNames.CreateInitialInput}!): ${
-      gqlNames.ItemAuthenticationWithPasswordSuccess
-    }!
+          ${gqlNames.createInitialItem}(data: ${gqlNames.CreateInitialInput}!): ${gqlNames.ItemAuthenticationWithPasswordSuccess}!
         }
       `,
     resolvers: {
