@@ -51,10 +51,10 @@ export default withAuth(
       : {
           provider: 'sqlite',
           url: databaseURL,
-          async onConnect(keystone) {
+          async onConnect(context) {
             console.log('Connected to the database!');
             if (process.argv.includes('--seed-data')) {
-              await insertSeedData(keystone);
+              await insertSeedData(context);
             }
           },
         },
