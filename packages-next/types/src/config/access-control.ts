@@ -1,4 +1,3 @@
-import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import type { MaybePromise } from '../utils';
 import type { BaseGeneratedListTypes, KeystoneContext } from '..';
 
@@ -13,7 +12,9 @@ type CreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseA
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput: GeneratedListTypes['inputs']['create'];
+  originalInput?:
+    | GeneratedListTypes['inputs']['create']
+    | readonly { readonly data: GeneratedListTypes['inputs']['create'] }[];
 };
 
 export type CreateAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
@@ -29,14 +30,20 @@ export type ReadListAccessControl<GeneratedListTypes extends BaseGeneratedListTy
 
 type UpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseAccessArgs & {
   /**
-   * The id being updated
+   * The id being updated if a single item is being updated
    */
-  itemId: IdType;
+  itemId?: string;
+  /**
+   * The ids being updated if many items are being updated
+   */
+  itemIds?: string[];
   operation: 'update';
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput: GeneratedListTypes['inputs']['update'];
+  originalInput?:
+    | GeneratedListTypes['inputs']['update']
+    | readonly { readonly id: string; readonly data: GeneratedListTypes['inputs']['update'] }[];
 };
 
 export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
@@ -48,9 +55,13 @@ export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedList
 
 type DeleteAccessArgs = BaseAccessArgs & {
   /**
-   * The id being deleted
+   * The id being deleted if a single item is being deleted
    */
-  itemId: IdType;
+  itemId?: string;
+  /**
+   * The ids being deleted if many items are being deleted
+   */
+  itemIds?: string[];
   operation: 'delete';
 };
 
@@ -72,7 +83,7 @@ export type ListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes>
         | CreateAccessArgs<GeneratedListTypes>
         | UpdateAccessArgs<GeneratedListTypes>
         | DeleteAccessArgs
-    ) => MaybePromise<boolean>)
+    ) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>)
   | boolean;
 
 export type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>);
@@ -81,23 +92,20 @@ type BaseFieldAccessArgs = {
   fieldKey: string;
 };
 
-export type FieldCreateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
-> = CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
+export type FieldCreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
 
-export type FieldReadAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
-> = ReadAccessArgs &
-  BaseFieldAccessArgs & {
-    item: GeneratedListTypes['backing'];
-  };
+export type FieldReadAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  ReadAccessArgs &
+    BaseFieldAccessArgs & {
+      item: GeneratedListTypes['backing'];
+    };
 
-export type FieldUpdateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
-> = UpdateAccessArgs<GeneratedListTypes> &
-  BaseFieldAccessArgs & {
-    item: GeneratedListTypes['backing'];
-  };
+export type FieldUpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
+  UpdateAccessArgs<GeneratedListTypes> &
+    BaseFieldAccessArgs & {
+      item: GeneratedListTypes['backing'];
+    };
 
 export type FieldAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | {

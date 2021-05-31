@@ -27,12 +27,20 @@ function setupKeystone(provider: ProviderName) {
                 return (originalInput as any).name !== 'bad';
               }
             },
-            delete: async ({ context, itemId }) => {
-              const item = await context.lists.User.findOne({
-                where: { id: itemId as any as string },
-                query: 'id name',
-              });
-              return item?.name !== 'no delete';
+            delete: async ({ context, itemId, itemIds }) => {
+              if (itemIds !== undefined) {
+                const items = await context.lists.User.findMany({
+                  where: { id_in: itemIds },
+                  query: 'id name',
+                });
+                return !items.some(item => item.name.startsWith('no delete'));
+              } else {
+                const item = await context.lists.User.findOne({
+                  where: { id: itemId as string },
+                  query: 'id name',
+                });
+                return item?.name !== 'no delete';
+              }
             },
           },
         }),
