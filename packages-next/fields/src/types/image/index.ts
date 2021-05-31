@@ -15,7 +15,7 @@ import type { CommonFieldConfig } from '../../interfaces';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<ImageFieldInputType>;
+    defaultValue?: FieldDefaultValue<ImageFieldInputType, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 

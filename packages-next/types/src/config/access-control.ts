@@ -47,10 +47,10 @@ export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedList
     ) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>);
 
 type DeleteAccessArgs = BaseAccessArgs & {
-  // /**
-  //  * The id being deleted
-  //  */
-  // itemId: IdType;
+  /**
+   * The id being deleted
+   */
+  itemId: IdType;
   operation: 'delete';
 };
 

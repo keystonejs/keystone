@@ -15,7 +15,7 @@ import { resolveView } from '../../resolve-view';
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<FileFieldInputType>;
+    defaultValue?: FieldDefaultValue<FileFieldInputType, TGeneratedListTypes>;
   };
 
 const FileFieldInput = types.inputObject({

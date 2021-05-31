@@ -3,7 +3,7 @@ import { products } from './data';
 
 export async function insertSeedData(context: KeystoneContext) {
   console.log(`🌱 Inserting Seed Data: ${products.length} Products`);
-  const { prisma } = context.keystone.adapter;
+  const { prisma } = context;
   for (const product of products) {
     console.log(`  🛍️ Adding Product: ${product.name}`);
     const { id } = await prisma.productImage.create({

@@ -20,7 +20,7 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
      */
     workFactor?: number;
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
-    defaultValue?: FieldDefaultValue<string>;
+    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isRequired?: boolean;
   };
 

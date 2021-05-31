@@ -76,7 +76,7 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
     isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<Record<string, any>[]>;
+    defaultValue?: FieldDefaultValue<Record<string, any>[], TGeneratedListTypes>;
   };
 
 const views = path.join(

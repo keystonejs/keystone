@@ -17,6 +17,5 @@ export type Session = {
 };
 
 export type ListAccessArgs = {
-  itemId?: string;
   session?: Session;
 };

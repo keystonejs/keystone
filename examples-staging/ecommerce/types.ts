@@ -34,6 +34,5 @@ export type AccessControl = {
 };
 
 export type ListAccessArgs = {
-  itemId?: string;
   session?: Session;
 };
