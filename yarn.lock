@@ -5715,7 +5715,11 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
+<<<<<<< HEAD
 dotenv@^10.0.0:
+=======
+dotenv@10.0.0:
+>>>>>>> Working through integration issues with the cloud app locally
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==

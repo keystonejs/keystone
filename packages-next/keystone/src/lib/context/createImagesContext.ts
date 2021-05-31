@@ -41,8 +41,8 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
   return { width, height, filesize, extension };
 };
 
-export function createImagesContext(config?: KeystoneConfig): ImagesContext | undefined {
-  if (!config || !config.images) {
+export function createImagesContext(config: KeystoneConfig): ImagesContext | undefined {
+  if (!config.images) {
     return;
   }
 
@@ -99,7 +99,7 @@ export function createImagesContext(config?: KeystoneConfig): ImagesContext | un
       const id = uuid();
 
       if (isCloudAsset(mode)) {
-        const metadata = await uploadImageToCloud(apiKey, stream);
+        const metadata = await uploadImageToCloud(apiKey, stream, id);
 
         return { mode, id, ...metadata };
       }
