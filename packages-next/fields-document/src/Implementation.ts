@@ -1,7 +1,7 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '@keystone-next/fields';
 import { FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields';
-import { BaseKeystoneList, GqlNames, KeystoneContext } from '@keystone-next/types';
+import { BaseKeystoneList, KeystoneContext } from '@keystone-next/types';
 // eslint-disable-next-line import/no-unresolved
 import { addRelationshipData } from './relationship-data';
 import { ComponentBlock } from './component-blocks';
@@ -86,7 +86,7 @@ export class DocumentImplementation<P extends string> extends Implementation<P> 
                   context.graphql,
                   this.relationships,
                   this.componentBlocks,
-                  context.gqlNames as (listKey: string) => GqlNames
+                  context.gqlNames
                 )
               : document,
         };
