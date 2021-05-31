@@ -4,7 +4,6 @@ import type { Config } from 'apollo-server-express';
 
 import type { ImageMode, FileMode, KeystoneContext } from '..';
 
-import type { BaseKeystone } from '../base';
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
 import type {
@@ -140,7 +139,7 @@ export type GraphQLConfig = {
 
 // config.extendGraphqlSchema
 
-export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
+export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
 // config.files
 
