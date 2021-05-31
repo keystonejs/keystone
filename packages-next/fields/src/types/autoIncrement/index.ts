@@ -18,11 +18,7 @@ export const autoIncrement =
     config: AutoIncrementFieldConfig<TGeneratedListTypes> = {}
   ): FieldTypeFunc =>
   meta => {
-    if (meta.fieldKey !== 'id') {
-      throw new Error(
-        `The autoIncrement field type is only supported as an idField but is used at ${meta.fieldKey}.${meta.fieldKey}`
-      );
-    }
+    const type = meta.fieldKey === 'id' ? types.ID : types.Int;
     return fieldType({
       kind: 'scalar',
       mode: 'required',
@@ -34,27 +30,30 @@ export const autoIncrement =
         where: { arg: types.arg({ type: filters[meta.provider].Int.required }) },
         // TODO: fix the fact that TS did not catch that a resolver is needed here
         uniqueWhere: {
-          arg: types.arg({ type: types.ID }),
+          arg: types.arg({ type }),
           resolve(value) {
             return Number(value);
           },
         },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({
-        type: types.nonNull(types.ID),
-        // TODO: should @ts-gql/schema understand the coercion that graphql-js can do here?
-        resolve({ value }) {
-          return value.toString();
-        },
-      }),
+      output:
+        meta.fieldKey === 'id'
+          ? types.field({
+              type: types.nonNull(types.ID),
+              // TODO: should @ts-gql/schema understand the coercion that graphql-js can do here?
+              resolve({ value }) {
+                return value.toString();
+              },
+            })
+          : types.field({ type: types.Int }),
       views: resolveView('integer/views'),
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.ID),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.ID),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.ID),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
           },
           impls: {
             ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
