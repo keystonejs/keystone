@@ -88,7 +88,10 @@ Add the `.keystone` directory to your `.gitignore` file. The contents of `.keyst
 
 ### Create your Keystone config
 
-Now add a `keystone.ts` [configuration file](/apis/config) to your project root with a simple `Post` [list](/apis/schema). This will give us the ability to create and edit blog records in Keystone’s Admin UI:
+To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [configuration file](/apis/config) to your project root with a simple `Post` [list](/apis/schema) containing fields for a Title, Slug, and some Content.
+
+?> **Note:** We're enabling experimental features to generate the APIs that make embedded mode work. These may change in future versions.
+
 
 ```tsx
 // keystone.ts
@@ -114,7 +117,8 @@ export default config({
 });
 ```
 
-?> **Note:** We're enabling experimental features to generate the APIs that make embedded mode work. These may change in future versions.
+!> For simplicity we set all Post fields as [`text`](/apis/fields#text) above. For a highly customizable rich text editor use the [`document`](/guides/document-fields) field type. 
+
 
 ### Add Keystone to Next.js config
 

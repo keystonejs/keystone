@@ -12,18 +12,18 @@ import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fi
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel htmlFor={field.label}>{field.label}</FieldLabel>
+    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
     {onChange ? (
       field.displayMode === 'textarea' ? (
         <TextArea
-          id={field.label}
+          id={field.path}
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}
         />
       ) : (
         <TextInput
-          id={field.label}
+          id={field.path}
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}

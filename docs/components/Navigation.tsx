@@ -100,6 +100,9 @@ export function Navigation() {
           Custom Field Views
         </NavItem>
       </Section>
+      <Section label="Examples">
+        <NavItem href="/examples">Examples</NavItem>
+      </Section>
       <Section label="API">
         <SubHeading as="h4">Config</SubHeading>
         <NavItem href="/apis/config">Config API</NavItem>
