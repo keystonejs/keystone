@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import hashString from '@emotion/hash';
-import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { AdminMeta, FieldViews } from '@keystone-next/types';
 import { useLazyQuery } from '../apollo';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
+import { getGqlNames } from '../../lib/gqlNames';
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
 
@@ -71,11 +72,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     adminMeta.lists.forEach(list => {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
-        gqlNames: getGqlNames({
-          listKey: list.key,
-          itemQueryName: list.itemQueryName,
-          listQueryName: list.listQueryName,
-        }),
+        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }),
         fields: {},
       };
       list.fields.forEach(field => {

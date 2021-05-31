@@ -1,8 +1,9 @@
-import { KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
+import { KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { createKeystone } from './createKeystone';
+import { getGqlNames } from './gqlNames';
 
 export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
@@ -29,8 +30,7 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
         listKey,
         getGqlNames({
           listKey,
-          itemQueryName: list.gqlNames.itemQueryName,
-          listQueryName: list.gqlNames.listQueryName.slice(3),
+          pluralGraphQLName: list.gqlNames.listQueryName.slice(3),
         }),
       ];
     })
