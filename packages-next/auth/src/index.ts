@@ -288,8 +288,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
       },
       extendGraphqlSchema: existingExtendGraphQLSchema
-        ? (schema, keystone) =>
-            existingExtendGraphQLSchema(extendGraphqlSchema(schema, keystone), keystone)
+        ? schema => existingExtendGraphQLSchema(extendGraphqlSchema(schema))
         : extendGraphqlSchema,
     };
   };

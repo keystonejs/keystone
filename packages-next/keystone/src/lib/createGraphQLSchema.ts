@@ -14,11 +14,9 @@ export function createGraphQLSchema(
     resolvers: keystone.getResolvers({ schemaName }),
   });
 
-  // TODO: find a way to not pass keystone in here, if we can - it's too broad and makes
-  // everything in the keystone instance public API
   // Merge in the user defined graphQL API
   if (config.extendGraphqlSchema) {
-    graphQLSchema = config.extendGraphqlSchema(graphQLSchema, keystone);
+    graphQLSchema = config.extendGraphqlSchema(graphQLSchema);
   }
 
   // Merge in session graphQL API
