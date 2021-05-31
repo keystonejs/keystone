@@ -12,9 +12,7 @@ type CreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseA
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput?:
-    | GeneratedListTypes['inputs']['create']
-    | readonly { readonly data: GeneratedListTypes['inputs']['create'] }[];
+  originalInput: GeneratedListTypes['inputs']['create'];
 };
 
 export type CreateAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
@@ -30,20 +28,14 @@ export type ReadListAccessControl<GeneratedListTypes extends BaseGeneratedListTy
 
 type UpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseAccessArgs & {
   /**
-   * The id being updated if a single item is being updated
+   * The id being updated
    */
-  itemId?: string;
-  /**
-   * The ids being updated if many items are being updated
-   */
-  itemIds?: string[];
+  itemId: string;
   operation: 'update';
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput?:
-    | GeneratedListTypes['inputs']['update']
-    | readonly { readonly id: string; readonly data: GeneratedListTypes['inputs']['update'] }[];
+  originalInput: GeneratedListTypes['inputs']['update'];
 };
 
 export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
@@ -55,13 +47,9 @@ export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedList
 
 type DeleteAccessArgs = BaseAccessArgs & {
   /**
-   * The id being deleted if a single item is being deleted
+   * The id being deleted
    */
-  itemId?: string;
-  /**
-   * The ids being deleted if many items are being deleted
-   */
-  itemIds?: string[];
+  itemId: string;
   operation: 'delete';
 };
 

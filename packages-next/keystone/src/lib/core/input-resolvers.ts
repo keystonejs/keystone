@@ -294,9 +294,10 @@ export async function processDelete(
   context: KeystoneContext,
   filter: UniqueInputFilter
 ) {
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(filter, list.listKey, context);
   const access = await validateNonCreateListAccessControl({
     access: list.access.delete,
-    args: { context, listKey: list.listKey, operation: 'delete', session: context.session },
+    args: { context, listKey: list.listKey, operation: 'delete', session: context.session, itemId },
   });
   const existingItem = await getAccessControlledItemForDelete(list, context, access, filter);
 
@@ -559,6 +560,23 @@ export async function resolveInputForCreateOrUpdate(
   };
 }
 
+export async function getStringifiedItemIdFromUniqueWhereInput(
+  uniqueWhere: UniqueInputFilter,
+  listKey: string,
+  context: KeystoneContext
+): Promise<string> {
+  return uniqueWhere.id !== undefined
+    ? uniqueWhere.id
+    : await (async () => {
+        try {
+          const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere as any });
+          return item.id;
+        } catch (err) {
+          throw accessDeniedError('mutation');
+        }
+      })();
+}
+
 export async function applyAccessControlForUpdate(
   list: InitialisedList,
   context: KeystoneContext,
@@ -567,19 +585,7 @@ export async function applyAccessControlForUpdate(
 ) {
   const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
   const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
-  const itemId =
-    resolvedUniqueWhere.id !== undefined
-      ? resolvedUniqueWhere.id
-      : await (async () => {
-          const item = await prismaModel.findUnique({
-            where: resolvedUniqueWhere,
-            select: { id: true },
-          });
-          if (!item) {
-            throw accessDeniedError('mutation');
-          }
-          return item.id;
-        })();
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
   const accessControl = await validateNonCreateListAccessControl({
     access: list.access.update,
     args: {
