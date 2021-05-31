@@ -4,6 +4,7 @@ import {
   UniqueInputFilter,
   UniquePrismaFilter,
 } from './input-resolvers';
+import { isRejected, isFulfilled } from './utils';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
@@ -119,11 +120,6 @@ function assertValidManyOperation(
     throw new Error(`Nested mutation operation invalid for ${target}`);
   }
 }
-
-const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
-  arg.status === 'fulfilled';
-const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
-  arg.status === 'rejected';
 
 export function resolveRelateToManyForUpdateInput(
   inputResolvers: CreateAndUpdateInputResolvers,

@@ -145,3 +145,10 @@ export function applyMaxResults(
     }
   }
 }
+
+// these aren't here out of thinking this is better syntax(i do not think it is),
+// it's just because TS won't infer the arg is X bit
+export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+  arg.status === 'fulfilled';
+export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
+  arg.status === 'rejected';
