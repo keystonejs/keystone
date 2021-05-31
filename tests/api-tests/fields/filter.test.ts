@@ -13,10 +13,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
-      .filter(
-        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(provider)
-      )
+      .filter(({ unSupportedAdapterList = [] }) => !unSupportedAdapterList.includes(provider))
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
