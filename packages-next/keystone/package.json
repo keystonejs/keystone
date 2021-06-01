@@ -30,7 +30,6 @@
     "@graphql-tools/merge": "^6.2.14",
     "@graphql-tools/schema": "^7.1.5",
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/access-control-legacy": "^11.0.0",
     "@keystone-next/admin-ui-utils": "^5.0.0",
     "@keystone-next/fields": "^9.0.0",
     "@keystone-next/types": "^18.0.0",
