@@ -18,6 +18,7 @@ export type AutoIncrementFieldConfig<TGeneratedListTypes extends BaseGeneratedLi
     isRequired?: boolean;
     isIndexed?: boolean;
     isUnique?: boolean;
+    gqlType?: 'ID' | 'Int';
   };
 
 export const autoIncrement =
@@ -26,10 +27,11 @@ export const autoIncrement =
     defaultValue,
     isIndexed,
     isUnique,
+    gqlType,
     ...config
   }: AutoIncrementFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    const type = meta.fieldKey === 'id' ? types.ID : types.Int;
+    const type = meta.fieldKey === 'id' || gqlType === 'ID' ? types.ID : types.Int;
     const __legacy = {
       isRequired,
       defaultValue,
@@ -76,6 +78,12 @@ export const autoIncrement =
         __legacy,
       });
     }
+    const inputResolver = (val: number | string | null | undefined) => {
+      if (val == null) {
+        return val;
+      }
+      return Number(val);
+    };
     return fieldType({
       kind: 'scalar',
       mode: 'optional',
@@ -86,12 +94,18 @@ export const autoIncrement =
       ...config,
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
-        uniqueWhere: { arg: types.arg({ type: types.Int }) },
-        create: { arg: types.arg({ type: types.Int }) },
-        update: { arg: types.arg({ type: types.Int }) },
+        uniqueWhere: { arg: types.arg({ type: type }), resolve: inputResolver },
+        create: { arg: types.arg({ type: types.Int }), resolve: inputResolver },
+        update: { arg: types.arg({ type: type }), resolve: inputResolver },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.Int }),
+      output: types.field({
+        type,
+        resolve({ value }) {
+          if (value === null) return null;
+          return type === types.ID ? value.toString() : value;
+        },
+      }),
       views: resolveView('integer/views'),
       __legacy,
     });
