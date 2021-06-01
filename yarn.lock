@@ -2769,20 +2769,6 @@
   resolved "https://registry.yarnpkg.com/@types/keygrip/-/keygrip-1.0.2.tgz#513abfd256d7ad0bf1ee1873606317b33b1b2a72"
   integrity sha512-GJhpTepz2udxGexqos8wgaBx4I/zWIDPh/KOGEwAqtuGDkOUJu5eFvwmdBX4AmB8Odsr+9pHCQqiAqDL/yKMKw==
 
-"@types/keystonejs__fields@*":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__fields/-/keystonejs__fields-5.1.1.tgz#1c91718eeee0b2e58a2b3f57ad234967bad202df"
-  integrity sha512-m8Ny/rTXzzoKO33UDkcspmHK0Q/qP4teo2510+HG1NMxM7pF/jPPL/viGtAJF/eIYEsSZxzwNSTFWMw/DlPIwQ==
-
-"@types/keystonejs__keystone@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-7.0.1.tgz#3dbb00813aff29149f0ae877514be0b077455ec0"
-  integrity sha512-m0LTB8aKkBQrU5+B2Qc2e5YMdi/YrmqH5doPtETqda6zMaFeV+L9DGAUQMyT8CjOK73kPDMVljNDkZ5/MvQ3RA==
-  dependencies:
-    "@types/express" "*"
-    "@types/keystonejs__fields" "*"
-    graphql "^15.4.0"
-
 "@types/koa-compose@*":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@types/koa-compose/-/koa-compose-3.2.5.tgz#85eb2e80ac50be95f37ccf8c407c09bbe3468e9d"
@@ -7107,7 +7093,7 @@ graphql-upload@^12.0.0:
     isobject "^4.0.0"
     object-path "^0.11.5"
 
-graphql@^15.3.0, graphql@^15.4.0, graphql@^15.5.0:
+graphql@^15.3.0, graphql@^15.5.0:
   version "15.5.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.0.tgz#39d19494dbe69d1ea719915b578bf920344a69d5"
   integrity sha512-OmaM7y0kaK31NKG31q4YbD2beNYa6jBBKtMFT6gLYJljHLJr42IqJ8KX08u3Li/0ifzTU5HjmoOOrwa5BRLeDA==
