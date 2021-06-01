@@ -87,6 +87,8 @@ export const autoIncrement =
       input: {
         where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
         uniqueWhere: { arg: types.arg({ type: types.Int }) },
+        create: { arg: types.arg({ type: types.Int }) },
+        update: { arg: types.arg({ type: types.Int }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
       },
       output: types.field({ type: types.Int }),
