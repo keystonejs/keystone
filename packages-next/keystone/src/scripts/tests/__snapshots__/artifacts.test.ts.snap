@@ -12,8 +12,8 @@ type Scalars = {
 };
 
 export type TodoWhereInput = {
-  readonly AND?: ReadonlyArray<TodoWhereInput | null> | null;
-  readonly OR?: ReadonlyArray<TodoWhereInput | null> | null;
+  readonly AND?: ReadonlyArray<TodoWhereInput> | null;
+  readonly OR?: ReadonlyArray<TodoWhereInput> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
   readonly id_lt?: Scalars['ID'] | null;
@@ -43,6 +43,14 @@ export type TodoOrderByInput = {
 
 export type OrderDirection = 'asc' | 'desc';
 
+export type TodoCreateInput = {
+  readonly title?: Scalars['String'] | null;
+};
+
+export type TodosCreateInput = {
+  readonly data?: TodoCreateInput | null;
+};
+
 export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
 };
@@ -50,14 +58,6 @@ export type TodoUpdateInput = {
 export type TodosUpdateInput = {
   readonly id: Scalars['ID'];
   readonly data?: TodoUpdateInput | null;
-};
-
-export type TodoCreateInput = {
-  readonly title?: Scalars['String'] | null;
-};
-
-export type TodosCreateInput = {
-  readonly data?: TodoCreateInput | null;
 };
 
 export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
@@ -74,10 +74,7 @@ export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 export type TodoListTypeInfo = {
   key: 'Todo';
   fields: 'id' | 'title';
-  backing: {
-    readonly id: string;
-    readonly title?: string | null;
-  };
+  backing: import('.prisma/client').Todo;
   inputs: {
     where: TodoWhereInput;
     create: TodoCreateInput;

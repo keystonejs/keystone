@@ -1,3 +1,4 @@
+import { getGqlNames } from '@keystone-next/types';
 import {
   GraphQLSchema,
   parse,
@@ -12,6 +13,7 @@ import {
   InputValueDefinitionNode,
 } from 'graphql';
 import prettier from 'prettier';
+import { InitialisedList } from './core/types-for-lists';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
   return `export type ${node.name.value} =\n${node
@@ -70,8 +72,11 @@ function printInputTypesFromSchema(
   return { printedTypes: typeString + '\n', ast, printTypeNode };
 }
 
-export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQLSchema) {
-  return '';
+export function printGeneratedTypes(
+  printedSchema: string,
+  graphQLSchema: GraphQLSchema,
+  lists: Record<string, InitialisedList>
+) {
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',
@@ -117,26 +122,17 @@ export function printGeneratedTypes(printedSchema: string, graphQLSchema: GraphQ
     return types + '}';
   };
 
-  for (const listKey in (undefined as any).lists) {
-    const list = (undefined as any).lists[listKey];
-    let backingTypes = '{\n';
-    for (const field of list.fields) {
-      for (const [key, { optional, type }] of Object.entries(field.getBackingTypes()) as any) {
-        backingTypes += `readonly ${JSON.stringify(key)}${optional ? '?' : ''}: ${type};\n`;
-      }
-    }
-    backingTypes += '}';
-
-    const { gqlNames } = list;
+  for (const [listKey, list] of Object.entries(lists)) {
+    const gqlNames = getGqlNames(list);
     let listTypeInfoName = `${listKey}ListTypeInfo`;
     const listQuery = queryNodeFieldsByName[gqlNames.listQueryName];
     printedTypes += `
 export type ${listTypeInfoName} = {
   key: ${JSON.stringify(listKey)};
-  fields: ${Object.keys(list.fieldsByPath)
+  fields: ${Object.keys(list.fields)
     .map(x => JSON.stringify(x))
     .join('|')}
-  backing: ${backingTypes};
+  backing: import(".prisma/client").${listKey};
   inputs: {
     where: ${gqlNames.whereInputName};
     create: ${gqlNames.createInputName};

@@ -1,48 +1,3 @@
-type Task {
-  id: ID!
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: Person
-  finishBy: String
-}
-
-enum TaskPriorityType {
-  low
-  medium
-  high
-}
-
-type Person {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  tasks(
-    where: TaskWhereInput! = {}
-    search: String
-    orderBy: [TaskOrderByInput!]! = []
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Task!]!
-  tasksCount(where: TaskWhereInput! = {}): Int!
-  _tasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    orderBy: [TaskOrderByInput!]! = []
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
 input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
@@ -82,6 +37,16 @@ input TaskWhereInput {
   finishBy_not_in: [String]
 }
 
+enum TaskPriorityType {
+  low
+  medium
+  high
+}
+
+input TaskWhereUniqueInput {
+  id: ID!
+}
+
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
@@ -111,17 +76,47 @@ input PersonWhereInput {
   tasks_none: TaskWhereInput
 }
 
-input TaskOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  priority: OrderDirection
-  isComplete: OrderDirection
-  finishBy: OrderDirection
+input PersonWhereUniqueInput {
+  id: ID!
 }
 
-enum OrderDirection {
-  asc
-  desc
+type Task {
+  id: ID!
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: Person
+  finishBy: String
+}
+
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  tasks(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Task!]!
+  tasksCount(where: TaskWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+type PasswordState {
+  isSet: Boolean!
 }
 
 enum SortTasksBy {
@@ -137,22 +132,21 @@ enum SortTasksBy {
   finishBy_DESC
 }
 
+input TaskOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  priority: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 type _QueryMeta {
   count: Int
-}
-
-input TaskWhereUniqueInput {
-  id: ID!
-}
-
-input PersonWhereUniqueInput {
-  id: ID!
-}
-
-input PersonOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
 }
 
 enum SortPeopleBy {
@@ -162,6 +156,12 @@ enum SortPeopleBy {
   name_DESC
   email_ASC
   email_DESC
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 type Mutation {
@@ -210,9 +210,9 @@ input PersonCreateInput {
 }
 
 input TaskRelateToManyInput {
-  create: [TaskCreateInput] = []
-  connect: [TaskWhereUniqueInput] = []
-  disconnect: [TaskWhereUniqueInput] = []
+  create: [TaskCreateInput]
+  connect: [TaskWhereUniqueInput]
+  disconnect: [TaskWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -254,18 +254,18 @@ type Query {
   allTasks(
     where: TaskWhereInput! = {}
     search: String
-    orderBy: [TaskOrderByInput!]! = []
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task!]
   _allTasksMeta(
     where: TaskWhereInput! = {}
     search: String
-    orderBy: [TaskOrderByInput!]! = []
     sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -277,18 +277,18 @@ type Query {
   allPeople(
     where: PersonWhereInput! = {}
     search: String
-    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String
-    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

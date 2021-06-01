@@ -1,70 +1,30 @@
-type Todo {
-  id: ID!
+input TodoWhereInput {
+  AND: [TodoWhereInput!]
+  OR: [TodoWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
   label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
   isComplete: Boolean
+  isComplete_not: Boolean
   isPrivate: Boolean
-  assignedTo: Person
+  isPrivate_not: Boolean
+  assignedTo_is_null: Boolean
+  assignedTo: PersonWhereInput
 }
 
-type Person {
+input TodoWhereUniqueInput {
   id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  role: Role
-  tasks(
-    where: TodoWhereInput! = {}
-    search: String
-    orderBy: [TodoOrderByInput!]! = []
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]!
-  tasksCount(where: TodoWhereInput! = {}): Int!
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    orderBy: [TodoOrderByInput!]! = []
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
-type Role {
-  id: ID!
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo(
-    where: PersonWhereInput! = {}
-    search: String
-    orderBy: [PersonOrderByInput!]! = []
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Person!]!
-  assignedToCount(where: PersonWhereInput! = {}): Int!
-  _assignedToMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    orderBy: [PersonOrderByInput!]! = []
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
 }
 
 input PersonWhereInput {
@@ -96,6 +56,10 @@ input PersonWhereInput {
   tasks_every: TodoWhereInput
   tasks_some: TodoWhereInput
   tasks_none: TodoWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID!
 }
 
 input RoleWhereInput {
@@ -132,29 +96,86 @@ input RoleWhereInput {
   assignedTo_none: PersonWhereInput
 }
 
-input TodoWhereInput {
-  AND: [TodoWhereInput!]
-  OR: [TodoWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+input RoleWhereUniqueInput {
+  id: ID!
+}
+
+type Todo {
+  id: ID!
   label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
   isComplete: Boolean
-  isComplete_not: Boolean
   isPrivate: Boolean
-  isPrivate_not: Boolean
-  assignedTo_is_null: Boolean
-  assignedTo: PersonWhereInput
+  assignedTo: Person
+}
+
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  role: Role
+  tasks(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]!
+  tasksCount(where: TodoWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type Role {
+  id: ID!
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]!
+  assignedToCount(where: PersonWhereInput! = {}): Int!
+  _assignedToMeta(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
 }
 
 input PersonOrderByInput {
@@ -168,24 +189,8 @@ enum OrderDirection {
   desc
 }
 
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
 type _QueryMeta {
   count: Int
-}
-
-input TodoOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  isPrivate: OrderDirection
 }
 
 enum SortTodosBy {
@@ -199,27 +204,11 @@ enum SortTodosBy {
   isPrivate_DESC
 }
 
-input TodoWhereUniqueInput {
-  id: ID!
-}
-
-input PersonWhereUniqueInput {
-  id: ID!
-}
-
-input RoleWhereUniqueInput {
-  id: ID!
-}
-
-input RoleOrderByInput {
+input TodoOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  canCreateTodos: OrderDirection
-  canManageAllTodos: OrderDirection
-  canSeeOtherPeople: OrderDirection
-  canEditOtherPeople: OrderDirection
-  canManagePeople: OrderDirection
-  canManageRoles: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  isPrivate: OrderDirection
 }
 
 enum SortRolesBy {
@@ -239,6 +228,17 @@ enum SortRolesBy {
   canManagePeople_DESC
   canManageRoles_ASC
   canManageRoles_DESC
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  canCreateTodos: OrderDirection
+  canManageAllTodos: OrderDirection
+  canSeeOtherPeople: OrderDirection
+  canEditOtherPeople: OrderDirection
+  canManagePeople: OrderDirection
+  canManageRoles: OrderDirection
 }
 
 type Mutation {
@@ -311,16 +311,16 @@ input RoleCreateInput {
 }
 
 input PersonRelateToManyInput {
-  create: [PersonCreateInput] = []
-  connect: [PersonWhereUniqueInput] = []
-  disconnect: [PersonWhereUniqueInput] = []
+  create: [PersonCreateInput]
+  connect: [PersonWhereUniqueInput]
+  disconnect: [PersonWhereUniqueInput]
   disconnectAll: Boolean
 }
 
 input TodoRelateToManyInput {
-  create: [TodoCreateInput] = []
-  connect: [TodoWhereUniqueInput] = []
-  disconnect: [TodoWhereUniqueInput] = []
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -382,18 +382,18 @@ type Query {
   allTodos(
     where: TodoWhereInput! = {}
     search: String
-    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
   _allTodosMeta(
     where: TodoWhereInput! = {}
     search: String
-    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -405,18 +405,18 @@ type Query {
   allPeople(
     where: PersonWhereInput! = {}
     search: String
-    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String
-    orderBy: [PersonOrderByInput!]! = []
     sortBy: [SortPeopleBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -428,18 +428,18 @@ type Query {
   allRoles(
     where: RoleWhereInput! = {}
     search: String
-    orderBy: [RoleOrderByInput!]! = []
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]
   _allRolesMeta(
     where: RoleWhereInput! = {}
     search: String
-    orderBy: [RoleOrderByInput!]! = []
     sortBy: [SortRolesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

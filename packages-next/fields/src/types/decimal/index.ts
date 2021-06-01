@@ -91,7 +91,8 @@ export const decimal =
       output: types.field({
         type: types.String,
         resolve({ value }) {
-          return value?.toString() ?? null;
+          if (value === null) return null;
+          return value.toFixed(scale);
         },
       }),
       views: resolveView('decimal/views'),

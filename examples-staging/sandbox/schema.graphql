@@ -1,45 +1,3 @@
-type Todo {
-  id: ID!
-  label: String
-  isComplete: Boolean
-  assignedTo: User
-  finishBy: String
-  createdAt: String
-  updatedAt: String
-}
-
-type User {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  tasks(
-    where: TodoWhereInput! = {}
-    search: String
-    orderBy: [TodoOrderByInput!]! = []
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]!
-  tasksCount(where: TodoWhereInput! = {}): Int!
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    orderBy: [TodoOrderByInput!]! = []
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  createdAt: String
-  updatedAt: String
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
@@ -87,6 +45,10 @@ input TodoWhereInput {
   updatedAt_not_in: [String]
 }
 
+input TodoWhereUniqueInput {
+  id: ID!
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
@@ -132,18 +94,50 @@ input UserWhereInput {
   updatedAt_not_in: [String]
 }
 
-input TodoOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  finishBy: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
+input UserWhereUniqueInput {
+  id: ID!
 }
 
-enum OrderDirection {
-  asc
-  desc
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  assignedTo: User
+  finishBy: String
+  createdAt: String
+  updatedAt: String
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  tasks(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]!
+  tasksCount(where: TodoWhereInput! = {}): Int!
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  createdAt: String
+  updatedAt: String
+}
+
+type PasswordState {
+  isSet: Boolean!
 }
 
 enum SortTodosBy {
@@ -161,24 +155,22 @@ enum SortTodosBy {
   updatedAt_DESC
 }
 
-type _QueryMeta {
-  count: Int
-}
-
-input TodoWhereUniqueInput {
-  id: ID!
-}
-
-input UserWhereUniqueInput {
-  id: ID!
-}
-
-input UserOrderByInput {
+input TodoOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 enum SortUsersBy {
@@ -192,6 +184,14 @@ enum SortUsersBy {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
 }
 
 type Mutation {
@@ -231,9 +231,9 @@ input UserCreateInput {
 }
 
 input TodoRelateToManyInput {
-  create: [TodoCreateInput] = []
-  connect: [TodoWhereUniqueInput] = []
-  disconnect: [TodoWhereUniqueInput] = []
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -274,18 +274,18 @@ type Query {
   allTodos(
     where: TodoWhereInput! = {}
     search: String
-    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
   _allTodosMeta(
     where: TodoWhereInput! = {}
     search: String
-    orderBy: [TodoOrderByInput!]! = []
     sortBy: [SortTodosBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -297,18 +297,18 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     search: String
-    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
-    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

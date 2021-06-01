@@ -1,42 +1,3 @@
-type Post {
-  id: ID!
-  title: String
-  status: PostStatusType
-  content: String
-  publishDate: String
-  author: Author
-}
-
-enum PostStatusType {
-  draft
-  published
-}
-
-type Author {
-  id: ID!
-  name: String
-  email: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-}
-
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -80,6 +41,15 @@ input PostWhereInput {
   author: AuthorWhereInput
 }
 
+enum PostStatusType {
+  draft
+  published
+}
+
+input PostWhereUniqueInput {
+  id: ID!
+}
+
 input AuthorWhereInput {
   AND: [AuthorWhereInput!]
   OR: [AuthorWhereInput!]
@@ -108,17 +78,42 @@ input AuthorWhereInput {
   posts_none: PostWhereInput
 }
 
-input PostOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  content: OrderDirection
-  publishDate: OrderDirection
+input AuthorWhereUniqueInput {
+  id: ID!
 }
 
-enum OrderDirection {
-  asc
-  desc
+type Post {
+  id: ID!
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: Author
+}
+
+type Author {
+  id: ID!
+  name: String
+  email: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 enum SortPostsBy {
@@ -134,22 +129,21 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  publishDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
 type _QueryMeta {
   count: Int
-}
-
-input PostWhereUniqueInput {
-  id: ID!
-}
-
-input AuthorWhereUniqueInput {
-  id: ID!
-}
-
-input AuthorOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
 }
 
 enum SortAuthorsBy {
@@ -159,6 +153,12 @@ enum SortAuthorsBy {
   name_DESC
   email_ASC
   email_DESC
+}
+
+input AuthorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 type Mutation {
@@ -203,9 +203,9 @@ input AuthorCreateInput {
 }
 
 input PostRelateToManyInput {
-  create: [PostCreateInput] = []
-  connect: [PostWhereUniqueInput] = []
-  disconnect: [PostWhereUniqueInput] = []
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -246,18 +246,18 @@ type Query {
   allPosts(
     where: PostWhereInput! = {}
     search: String
-    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
-    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -269,18 +269,18 @@ type Query {
   allAuthors(
     where: AuthorWhereInput! = {}
     search: String
-    orderBy: [AuthorOrderByInput!]! = []
     sortBy: [SortAuthorsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Author!]
   _allAuthorsMeta(
     where: AuthorWhereInput! = {}
     search: String
-    orderBy: [AuthorOrderByInput!]! = []
     sortBy: [SortAuthorsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta

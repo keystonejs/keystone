@@ -51,9 +51,12 @@ export function getGraphQLSchema(
             async resolve(_rootVal, args, context, info) {
               const results = await queries.findMany(args, list, context);
               if (info && info.cacheControl && list.cacheHint) {
-                const operationName = info.operation.name && info.operation.name.value;
                 info.cacheControl.setCacheHint(
-                  list.cacheHint({ results, operationName: operationName!, meta: false }) as any
+                  list.cacheHint({
+                    results,
+                    operationName: info.operation.name?.value,
+                    meta: false,
+                  }) as any
                 );
               }
               return results;
@@ -67,11 +70,10 @@ export function getGraphQLSchema(
             async resolve(_rootVal, args, context, info) {
               const count = await queries.count(args, list, context);
               if (info && info.cacheControl && list.cacheHint) {
-                const operationName = info.operation.name && info.operation.name.value;
                 info.cacheControl.setCacheHint(
                   list.cacheHint({
                     results: count,
-                    operationName: operationName!,
+                    operationName: info.operation.name?.value,
                     meta: true,
                   }) as any
                 );
@@ -92,11 +94,10 @@ export function getGraphQLSchema(
                     skip,
                   });
                   if (info && info.cacheControl && list.cacheHint) {
-                    const operationName = info.operation.name && info.operation.name.value;
                     info.cacheControl.setCacheHint(
                       list.cacheHint({
                         results: count,
-                        operationName: operationName!,
+                        operationName: info.operation.name?.value,
                         meta: true,
                       }) as any
                     );

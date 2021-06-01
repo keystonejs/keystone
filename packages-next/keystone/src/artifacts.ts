@@ -175,13 +175,15 @@ export async function generateNodeModulesArtifacts(
   config: KeystoneConfig,
   cwd: string
 ) {
+  const { lists } = initialiseLists(config.lists, getDBProvider(config.db));
+
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
     generatePrismaClient(cwd),
     fs.outputFile(
       path.join(dotKeystoneDir, 'types.d.ts'),
-      printGeneratedTypes(printedSchema, graphQLSchema)
+      printGeneratedTypes(printedSchema, graphQLSchema, lists)
     ),
     fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
     ...(config.experimental?.generateNodeAPI

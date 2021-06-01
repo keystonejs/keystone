@@ -1,95 +1,58 @@
-type User {
-  id: ID!
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
   name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
   email: String
-  password: PasswordState
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  email_i: String
+  email_not_i: String
+  email_contains_i: String
+  email_not_contains_i: String
+  email_starts_with_i: String
+  email_not_starts_with_i: String
+  email_ends_with_i: String
+  email_not_ends_with_i: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
 }
 
-type PasswordState {
-  isSet: Boolean!
-}
-
-type Post {
+input UserWhereUniqueInput {
   id: ID!
-  title: String
-  status: String
-  content: Post_content_DocumentField
-  publishDate: String
-  author: User
-  tags(
-    where: TagWhereInput! = {}
-    search: String
-    orderBy: [TagOrderByInput!]! = []
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Tag!]!
-  tagsCount(where: TagWhereInput! = {}): Int!
-  _tagsMeta(
-    where: TagWhereInput! = {}
-    search: String
-    orderBy: [TagOrderByInput!]! = []
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-}
-
-type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
-
-type Tag {
-  id: ID!
-  name: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    orderBy: [PostOrderByInput!]! = []
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
 }
 
 input PostWhereInput {
@@ -144,57 +107,8 @@ input PostWhereInput {
   tags_none: TagWhereInput
 }
 
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_starts_with: String
-  email_not_starts_with: String
-  email_ends_with: String
-  email_not_ends_with: String
-  email_i: String
-  email_not_i: String
-  email_contains_i: String
-  email_not_contains_i: String
-  email_starts_with_i: String
-  email_not_starts_with_i: String
-  email_ends_with_i: String
-  email_not_ends_with_i: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
+input PostWhereUniqueInput {
+  id: ID!
 }
 
 input TagWhereInput {
@@ -231,16 +145,102 @@ input TagWhereInput {
   posts_none: PostWhereInput
 }
 
-input PostOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  publishDate: OrderDirection
+input TagWhereUniqueInput {
+  id: ID!
 }
 
-enum OrderDirection {
-  asc
-  desc
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type Post {
+  id: ID!
+  title: String
+  status: String
+  content: Post_content_DocumentField
+  publishDate: String
+  author: User
+  tags(
+    where: TagWhereInput! = {}
+    search: String
+    sortBy: [SortTagsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Tag!]!
+  tagsCount(where: TagWhereInput! = {}): Int!
+  _tagsMeta(
+    where: TagWhereInput! = {}
+    search: String
+    sortBy: [SortTagsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type Tag {
+  id: ID!
+  name: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]!
+  postsCount(where: PostWhereInput! = {}): Int!
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
 }
 
 enum SortPostsBy {
@@ -254,13 +254,20 @@ enum SortPostsBy {
   publishDate_DESC
 }
 
-type _QueryMeta {
-  count: Int
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
 }
 
-input TagOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
+enum OrderDirection {
+  asc
+  desc
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 enum SortTagsBy {
@@ -270,14 +277,9 @@ enum SortTagsBy {
   name_DESC
 }
 
-input UserWhereUniqueInput {
-  id: ID!
-}
-
-input UserOrderByInput {
+input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
 }
 
 enum SortUsersBy {
@@ -289,12 +291,10 @@ enum SortUsersBy {
   email_DESC
 }
 
-input PostWhereUniqueInput {
-  id: ID!
-}
-
-input TagWhereUniqueInput {
-  id: ID!
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 type Mutation {
@@ -334,9 +334,9 @@ input UserCreateInput {
 }
 
 input PostRelateToManyInput {
-  create: [PostCreateInput] = []
-  connect: [PostWhereUniqueInput] = []
-  disconnect: [PostWhereUniqueInput] = []
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -357,9 +357,9 @@ input UserRelateToOneInput {
 }
 
 input TagRelateToManyInput {
-  create: [TagCreateInput] = []
-  connect: [TagWhereUniqueInput] = []
-  disconnect: [TagWhereUniqueInput] = []
+  create: [TagCreateInput]
+  connect: [TagWhereUniqueInput]
+  disconnect: [TagWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -421,18 +421,18 @@ type Query {
   allUsers(
     where: UserWhereInput! = {}
     search: String
-    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
-    orderBy: [UserOrderByInput!]! = []
     sortBy: [SortUsersBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -444,18 +444,18 @@ type Query {
   allPosts(
     where: PostWhereInput! = {}
     search: String
-    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
-    orderBy: [PostOrderByInput!]! = []
     sortBy: [SortPostsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
@@ -467,18 +467,18 @@ type Query {
   allTags(
     where: TagWhereInput! = {}
     search: String
-    orderBy: [TagOrderByInput!]! = []
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Tag!]
   _allTagsMeta(
     where: TagWhereInput! = {}
     search: String
-    orderBy: [TagOrderByInput!]! = []
     sortBy: [SortTagsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
