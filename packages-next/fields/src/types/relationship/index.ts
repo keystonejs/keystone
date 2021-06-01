@@ -58,6 +58,7 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
       hideCreate?: boolean;
     };
     defaultValue?: FieldDefaultValue<Record<string, any>, TGeneratedListTypes>;
+    withMeta?: boolean;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
@@ -65,6 +66,7 @@ export const relationship =
     many = false,
     ref,
     defaultValue,
+    withMeta = true,
     ...config
   }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -104,6 +106,11 @@ export const relationship =
         };
       },
     };
+    if (!meta.lists[foreignListKey]) {
+      throw new Error(
+        `Unable to resolve related list '${foreignListKey}' from ${meta.listKey}.${meta.fieldKey}`
+      );
+    }
     const listTypes = meta.lists[foreignListKey].types;
     if (many) {
       const whereInputResolve =
@@ -146,36 +153,38 @@ export const relationship =
         },
         output: types.field({
           args: listTypes.findManyArgs,
-          type: types.nonNull(types.list(types.nonNull(listTypes.output))),
+          type: types.list(types.nonNull(listTypes.output)),
           resolve({ value }, args) {
             return value.findMany(args);
           },
         }),
-        extraOutputFields: {
-          [`${meta.fieldKey}Count`]: types.field({
-            type: types.nonNull(types.Int),
-            args: {
-              where: types.arg({ type: types.nonNull(listTypes.where), defaultValue: {} }),
-            },
-            resolve({ value }, args) {
-              return value.count({
-                where: args.where,
-                orderBy: [],
-                sortBy: undefined,
-                first: undefined,
-                search: undefined,
-                skip: 0,
-              });
-            },
-          }),
-          [`_${meta.fieldKey}Meta`]: types.field({
-            type: QueryMeta,
-            args: listTypes.findManyArgs,
-            resolve({ value }, args) {
-              return { getCount: () => value.count(args) };
-            },
-          }),
-        },
+        extraOutputFields: withMeta
+          ? {
+              [`_${meta.fieldKey}Meta`]: types.field({
+                type: QueryMeta,
+                args: listTypes.findManyArgs,
+                resolve({ value }, args) {
+                  return { getCount: () => value.count(args) };
+                },
+              }),
+              [`${meta.fieldKey}Count`]: types.field({
+                type: types.Int,
+                args: {
+                  where: types.arg({ type: types.nonNull(listTypes.where), defaultValue: {} }),
+                },
+                resolve({ value }, args) {
+                  return value.count({
+                    where: args.where,
+                    orderBy: [],
+                    sortBy: undefined,
+                    first: undefined,
+                    search: undefined,
+                    skip: 0,
+                  });
+                },
+              }),
+            }
+          : {},
         __legacy: {
           filters: {
             fields: {

@@ -90,7 +90,12 @@ export function resolveRelationships(lists: ListsToPrintPrismaSchema): ListsWith
           continue;
         }
         alreadyResolvedTwoWayRelationships.add(foreignRef);
-        const foreignField = foreignUnresolvedList.fields[field.field].dbField;
+        const foreignField = foreignUnresolvedList.fields[field.field]?.dbField;
+        if (!foreignField) {
+          throw new Error(
+            `The relationship field at ${localRef} points to ${foreignRef} but no field at ${foreignRef} exists`
+          );
+        }
 
         if (foreignField.kind !== 'relation') {
           throw new Error(
