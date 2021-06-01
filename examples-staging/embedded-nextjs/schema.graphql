@@ -63,16 +63,25 @@ enum OrderDirection {
   desc
 }
 
+input PostCreateInput {
+  title: String
+  slug: String
+  content: String
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
 input PostUpdateInput {
   title: String
   slug: String
   content: String
 }
 
-input PostCreateInput {
-  title: String
-  slug: String
-  content: String
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
 }
 
 type _QueryMeta {
@@ -86,15 +95,6 @@ type Mutation {
   updatePosts(data: [PostsUpdateInput]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]): [Post]
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
 }
 
 type Query {

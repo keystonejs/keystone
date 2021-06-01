@@ -65,6 +65,17 @@ enum OrderDirection {
   desc
 }
 
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -72,11 +83,9 @@ input UserUpdateInput {
   isAdmin: Boolean
 }
 
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
 type _QueryMeta {
@@ -98,15 +107,6 @@ type Mutation {
   createInitialUser(
     data: CreateInitialUserInput!
   ): UserAuthenticationWithPasswordSuccess!
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
 }
 
 type Query {

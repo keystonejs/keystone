@@ -85,7 +85,7 @@ enum OrderDirection {
   desc
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: PostStatusType
   content: String
@@ -100,12 +100,21 @@ input AuthorRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PostCreateInput {
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+input PostUpdateInput {
   title: String
   status: PostStatusType
   content: String
   publishDate: String
   author: AuthorRelateToOneInput
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
 }
 
 type Author {
@@ -184,7 +193,7 @@ input AuthorOrderByInput {
   email: OrderDirection
 }
 
-input AuthorUpdateInput {
+input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyInput
@@ -197,10 +206,19 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input AuthorCreateInput {
+input AuthorsCreateInput {
+  data: AuthorCreateInput
+}
+
+input AuthorUpdateInput {
   name: String
   email: String
   posts: PostRelateToManyInput
+}
+
+input AuthorsUpdateInput {
+  id: ID!
+  data: AuthorUpdateInput
 }
 
 type Mutation {
@@ -216,24 +234,6 @@ type Mutation {
   updateAuthors(data: [AuthorsUpdateInput]): [Author]
   deleteAuthor(id: ID!): Author
   deleteAuthors(ids: [ID!]): [Author]
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
-}
-
-input AuthorsCreateInput {
-  data: AuthorCreateInput
-}
-
-input AuthorsUpdateInput {
-  id: ID!
-  data: AuthorUpdateInput
 }
 
 type Query {

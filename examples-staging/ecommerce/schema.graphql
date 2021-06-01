@@ -158,7 +158,7 @@ enum OrderDirection {
   desc
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
@@ -199,7 +199,11 @@ input ProductRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserCreateInput {
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -210,6 +214,11 @@ input UserCreateInput {
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
 type Product {
@@ -292,7 +301,7 @@ input ProductOrderByInput {
   price: OrderDirection
 }
 
-input ProductUpdateInput {
+input ProductCreateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -315,13 +324,22 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductCreateInput {
+input ProductsCreateInput {
+  data: ProductCreateInput
+}
+
+input ProductUpdateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
   status: String
   price: Int
   user: UserRelateToOneInput
+}
+
+input ProductsUpdateInput {
+  id: ID!
+  data: ProductUpdateInput
 }
 
 type ProductImage {
@@ -417,7 +435,7 @@ input ProductImageOrderByInput {
   altText: OrderDirection
 }
 
-input ProductImageUpdateInput {
+input ProductImageCreateInput {
   image: Upload
   altText: String
   product: ProductRelateToOneInput
@@ -435,10 +453,19 @@ input ProductRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductImageCreateInput {
+input ProductImagesCreateInput {
+  data: ProductImageCreateInput
+}
+
+input ProductImageUpdateInput {
   image: Upload
   altText: String
   product: ProductRelateToOneInput
+}
+
+input ProductImagesUpdateInput {
+  id: ID!
+  data: ProductImageUpdateInput
 }
 
 type CartItem {
@@ -489,16 +516,25 @@ input CartItemOrderByInput {
   quantity: OrderDirection
 }
 
+input CartItemCreateInput {
+  quantity: Int
+  product: ProductRelateToOneInput
+  user: UserRelateToOneInput
+}
+
+input CartItemsCreateInput {
+  data: CartItemCreateInput
+}
+
 input CartItemUpdateInput {
   quantity: Int
   product: ProductRelateToOneInput
   user: UserRelateToOneInput
 }
 
-input CartItemCreateInput {
-  quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
+input CartItemsUpdateInput {
+  id: ID!
+  data: CartItemUpdateInput
 }
 
 type OrderItem {
@@ -581,7 +617,7 @@ input OrderItemOrderByInput {
   quantity: OrderDirection
 }
 
-input OrderItemUpdateInput {
+input OrderItemCreateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -597,13 +633,22 @@ input OrderRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input OrderItemCreateInput {
+input OrderItemsCreateInput {
+  data: OrderItemCreateInput
+}
+
+input OrderItemUpdateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
   price: Int
   quantity: Int
   order: OrderRelateToOneInput
+}
+
+input OrderItemsUpdateInput {
+  id: ID!
+  data: OrderItemUpdateInput
 }
 
 type Order {
@@ -684,7 +729,7 @@ input OrderOrderByInput {
   charge: OrderDirection
 }
 
-input OrderUpdateInput {
+input OrderCreateInput {
   total: Int
   items: OrderItemRelateToManyInput
   user: UserRelateToOneInput
@@ -698,11 +743,20 @@ input OrderItemRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input OrderCreateInput {
+input OrdersCreateInput {
+  data: OrderCreateInput
+}
+
+input OrderUpdateInput {
   total: Int
   items: OrderItemRelateToManyInput
   user: UserRelateToOneInput
   charge: String
+}
+
+input OrdersUpdateInput {
+  id: ID!
+  data: OrderUpdateInput
 }
 
 type Role {
@@ -803,7 +857,7 @@ input RoleOrderByInput {
   canManageOrders: OrderDirection
 }
 
-input RoleUpdateInput {
+input RoleCreateInput {
   name: String
   canManageProducts: Boolean
   canSeeOtherUsers: Boolean
@@ -821,7 +875,11 @@ input UserRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RoleCreateInput {
+input RolesCreateInput {
+  data: RoleCreateInput
+}
+
+input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
   canSeeOtherUsers: Boolean
@@ -830,6 +888,11 @@ input RoleCreateInput {
   canManageCart: Boolean
   canManageOrders: Boolean
   assignedTo: UserRelateToManyInput
+}
+
+input RolesUpdateInput {
+  id: ID!
+  data: RoleUpdateInput
 }
 
 type Mutation {
@@ -891,69 +954,6 @@ type Mutation {
   ): RedeemUserPasswordResetTokenResult
   addToCart(productId: ID): CartItem
   checkout(token: String!): Order
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
-}
-
-input ProductsCreateInput {
-  data: ProductCreateInput
-}
-
-input ProductsUpdateInput {
-  id: ID!
-  data: ProductUpdateInput
-}
-
-input ProductImagesCreateInput {
-  data: ProductImageCreateInput
-}
-
-input ProductImagesUpdateInput {
-  id: ID!
-  data: ProductImageUpdateInput
-}
-
-input CartItemsCreateInput {
-  data: CartItemCreateInput
-}
-
-input CartItemsUpdateInput {
-  id: ID!
-  data: CartItemUpdateInput
-}
-
-input OrderItemsCreateInput {
-  data: OrderItemCreateInput
-}
-
-input OrderItemsUpdateInput {
-  id: ID!
-  data: OrderItemUpdateInput
-}
-
-input OrdersCreateInput {
-  data: OrderCreateInput
-}
-
-input OrdersUpdateInput {
-  id: ID!
-  data: OrderUpdateInput
-}
-
-input RolesCreateInput {
-  data: RoleCreateInput
-}
-
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
 }
 
 type Query {

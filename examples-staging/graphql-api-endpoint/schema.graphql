@@ -109,7 +109,7 @@ enum OrderDirection {
   desc
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
@@ -123,11 +123,20 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserCreateInput {
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserUpdateInput {
   name: String
   email: String
   password: String
   posts: PostRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
 type Post {
@@ -244,7 +253,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: String
   content: JSON
@@ -267,13 +276,22 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PostCreateInput {
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+input PostUpdateInput {
   title: String
   status: String
   content: JSON
   publishDate: String
   author: UserRelateToOneInput
   tags: TagRelateToManyInput
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
 }
 
 type Tag {
@@ -350,14 +368,23 @@ input TagOrderByInput {
   name: OrderDirection
 }
 
+input TagCreateInput {
+  name: String
+  posts: PostRelateToManyInput
+}
+
+input TagsCreateInput {
+  data: TagCreateInput
+}
+
 input TagUpdateInput {
   name: String
   posts: PostRelateToManyInput
 }
 
-input TagCreateInput {
-  name: String
-  posts: PostRelateToManyInput
+input TagsUpdateInput {
+  id: ID!
+  data: TagUpdateInput
 }
 
 type Mutation {
@@ -387,33 +414,6 @@ type Mutation {
   createInitialUser(
     data: CreateInitialUserInput!
   ): UserAuthenticationWithPasswordSuccess!
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
-}
-
-input TagsCreateInput {
-  data: TagCreateInput
-}
-
-input TagsUpdateInput {
-  id: ID!
-  data: TagUpdateInput
 }
 
 type Query {

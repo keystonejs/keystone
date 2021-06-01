@@ -61,7 +61,7 @@ enum OrderDirection {
   desc
 }
 
-input PackageUpdateInput {
+input PackageCreateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
@@ -75,11 +75,20 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PackageCreateInput {
+input PackagesCreateInput {
+  data: PackageCreateInput
+}
+
+input PackageUpdateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
   ownedBy: PersonRelateToOneInput
+}
+
+input PackagesUpdateInput {
+  id: ID!
+  data: PackageUpdateInput
 }
 
 type Person {
@@ -148,7 +157,7 @@ input PersonOrderByInput {
   name: OrderDirection
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   packages: PackageRelateToManyInput
 }
@@ -160,9 +169,18 @@ input PackageRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PersonCreateInput {
+input PeopleCreateInput {
+  data: PersonCreateInput
+}
+
+input PersonUpdateInput {
   name: String
   packages: PackageRelateToManyInput
+}
+
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
 }
 
 type Mutation {
@@ -178,24 +196,6 @@ type Mutation {
   updatePeople(data: [PeopleUpdateInput]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]): [Person]
-}
-
-input PackagesCreateInput {
-  data: PackageCreateInput
-}
-
-input PackagesUpdateInput {
-  id: ID!
-  data: PackageUpdateInput
-}
-
-input PeopleCreateInput {
-  data: PersonCreateInput
-}
-
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
 }
 
 type Query {

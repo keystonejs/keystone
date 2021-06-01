@@ -58,7 +58,7 @@ enum OrderDirection {
   desc
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
@@ -72,11 +72,20 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodoCreateInput {
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
+input TodoUpdateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
   assignedTo: PersonRelateToOneInput
+}
+
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
 }
 
 type Person {
@@ -164,7 +173,7 @@ input PersonOrderByInput {
   email: OrderDirection
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   email: String
   password: String
@@ -186,12 +195,21 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PersonCreateInput {
+input PeopleCreateInput {
+  data: PersonCreateInput
+}
+
+input PersonUpdateInput {
   name: String
   email: String
   password: String
   role: RoleRelateToOneInput
   tasks: TodoRelateToManyInput
+}
+
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
 }
 
 type Role {
@@ -292,7 +310,7 @@ input RoleOrderByInput {
   canManageRoles: OrderDirection
 }
 
-input RoleUpdateInput {
+input RoleCreateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean
@@ -310,7 +328,11 @@ input PersonRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RoleCreateInput {
+input RolesCreateInput {
+  data: RoleCreateInput
+}
+
+input RoleUpdateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean
@@ -319,6 +341,11 @@ input RoleCreateInput {
   canManagePeople: Boolean
   canManageRoles: Boolean
   assignedTo: PersonRelateToManyInput
+}
+
+input RolesUpdateInput {
+  id: ID!
+  data: RoleUpdateInput
 }
 
 type Mutation {
@@ -348,33 +375,6 @@ type Mutation {
   createInitialPerson(
     data: CreateInitialPersonInput!
   ): PersonAuthenticationWithPasswordSuccess!
-}
-
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
-}
-
-input PeopleCreateInput {
-  data: PersonCreateInput
-}
-
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
-}
-
-input RolesCreateInput {
-  data: RoleCreateInput
-}
-
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
 }
 
 type Query {

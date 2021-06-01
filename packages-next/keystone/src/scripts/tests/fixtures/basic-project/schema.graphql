@@ -43,12 +43,21 @@ enum OrderDirection {
   desc
 }
 
+input TodoCreateInput {
+  title: String
+}
+
+input TodosCreateInput {
+  data: TodoCreateInput
+}
+
 input TodoUpdateInput {
   title: String
 }
 
-input TodoCreateInput {
-  title: String
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
 }
 
 type _QueryMeta {
@@ -62,15 +71,6 @@ type Mutation {
   updateTodos(data: [TodosUpdateInput]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]): [Todo]
-}
-
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
 }
 
 type Query {

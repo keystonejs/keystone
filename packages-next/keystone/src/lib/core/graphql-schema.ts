@@ -1,4 +1,4 @@
-import { GraphQLNamedType, GraphQLObjectType, GraphQLSchema, GraphQLType } from 'graphql';
+import { GraphQLNamedType, GraphQLSchema } from 'graphql';
 import { getGqlNames, DatabaseProvider, types, QueryMeta } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
@@ -108,6 +108,9 @@ export function getGraphQLSchema(
       ),
   } as any);
 
+  const createManyByList: Record<string, types.InputObjectType<any>> = {};
+  const updateManyByList: Record<string, types.InputObjectType<any>> = {};
+
   let mutation = types.object()({
     name: 'Mutation',
     fields: Object.fromEntries(
@@ -153,18 +156,20 @@ export function getGraphQLSchema(
           },
         });
 
+        const createManyInput = types.inputObject({
+          name: names.createManyInputName,
+          fields: {
+            data: types.arg({ type: list.types.create }),
+          },
+        });
+
+        createManyByList[list.listKey] = createManyInput;
+
         const createMany = types.field({
           type: types.list(list.types.output),
           args: {
             data: types.arg({
-              type: types.list(
-                types.inputObject({
-                  name: names.createManyInputName,
-                  fields: {
-                    data: types.arg({ type: list.types.create }),
-                  },
-                })
-              ),
+              type: types.list(createManyInput),
             }),
           },
           async resolve(_rootVal, args, context) {
@@ -179,16 +184,18 @@ export function getGraphQLSchema(
           },
         });
 
+        const updateManyInput = types.inputObject({
+          name: names.updateManyInputName,
+          fields: updateOneArgs,
+        });
+
+        updateManyByList[list.listKey] = updateManyInput;
+
         const updateMany = types.field({
           type: types.list(list.types.output),
           args: {
             data: types.arg({
-              type: types.list(
-                types.inputObject({
-                  name: names.updateManyInputName,
-                  fields: updateOneArgs,
-                })
-              ),
+              type: types.list(updateManyInput),
             }),
           },
           async resolve(_rootVal, { data }, context) {
@@ -251,12 +258,16 @@ export function getGraphQLSchema(
   let graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    types: collectTypes(lists),
+    types: collectTypes(lists, createManyByList, updateManyByList),
   });
   return graphQLSchema;
 }
 
-function collectTypes(lists: Record<string, InitialisedList>) {
+function collectTypes(
+  lists: Record<string, InitialisedList>,
+  createManyByList: Record<string, types.InputObjectType<any>>,
+  updateManyByList: Record<string, types.InputObjectType<any>>
+) {
   const types: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
@@ -267,12 +278,15 @@ function collectTypes(lists: Record<string, InitialisedList>) {
       types.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
       types.push(list.types.orderBy.graphQLType);
     }
-    if (list.access.update) {
-      types.push(list.types.update.graphQLType);
-    }
     if (list.access.create) {
       types.push(list.types.create.graphQLType);
+      types.push(createManyByList[list.listKey].graphQLType);
     }
+    if (list.access.update) {
+      types.push(list.types.update.graphQLType);
+      types.push(updateManyByList[list.listKey].graphQLType);
+    }
+
     for (const field of Object.values(list.fields)) {
       if (
         list.access.read !== false &&
