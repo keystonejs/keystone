@@ -150,11 +150,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           // The good users should exist in the database
           const users = await context.lists.User.findMany();
-          expect(users).toEqual([
-            { id: data!.createUsers[0].id },
-            { id: data!.createUsers[2].id },
-            { id: data!.createUsers[4].id },
-          ]);
+          // the ordering isn't consistent so we order them ourselves here
+          expect(users.map(x => x.id).sort()).toEqual(
+            [data!.createUsers[0].id, data!.createUsers[2].id, data!.createUsers[4].id].sort()
+          );
         })
       );
 
