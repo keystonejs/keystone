@@ -1,9 +1,7 @@
 import {
   BaseGeneratedListTypes,
   types,
-  tsgql,
   ItemRootValue,
-  KeystoneContext,
   FieldTypeFunc,
   fieldType,
 } from '@keystone-next/types';
@@ -12,8 +10,8 @@ import type { CommonFieldConfig } from '../../interfaces';
 
 export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    field: tsgql.OutputField<ItemRootValue, any, any, string, KeystoneContext>;
-    unreferencedConcreteInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
+    field: types.Field<ItemRootValue, any, any, string>;
+    unreferencedConcreteInterfaceImplementations?: types.ObjectType<any>[];
     graphQLReturnFragment?: string;
   };
 

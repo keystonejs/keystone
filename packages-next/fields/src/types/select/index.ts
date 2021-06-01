@@ -7,7 +7,6 @@ import {
   filters,
   legacyFilters,
   orderDirectionEnum,
-  tsgql,
   types,
 } from '@keystone-next/types';
 // @ts-ignore
@@ -132,7 +131,7 @@ export const select =
     });
   };
 
-const getFilters = (meta: FieldData, type: tsgql.ScalarType<any> | tsgql.EnumType<any>) => ({
+const getFilters = (meta: FieldData, type: types.ScalarType<any> | types.EnumType<any>) => ({
   fields: {
     ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
     ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),

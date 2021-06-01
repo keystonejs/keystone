@@ -1,4 +1,4 @@
-import { KeystoneContext, tsgql, TypesForList } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, types } from '@keystone-next/types';
 import {
   CreateAndUpdateInputResolvers,
   UniqueInputFilter,
@@ -18,7 +18,7 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (
-    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['create']>>
+    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['create']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -63,7 +63,7 @@ function getConnects(
 
 async function resolveCreateAndConnect(
   value: Exclude<
-    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>,
+    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>,
     null | undefined
   >,
   inputResolvers: CreateAndUpdateInputResolvers,
@@ -106,7 +106,7 @@ async function resolveCreateAndConnect(
 
 function assertValidManyOperation(
   val: Exclude<
-    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>,
+    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>,
     undefined | null
   >,
   target: string
@@ -128,7 +128,7 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (
-    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['many']['update']>>
+    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -156,7 +156,7 @@ export function resolveRelateToManyForUpdateInput(
 
 async function handleCreateAndUpdate(
   value: Exclude<
-    tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['one']['create']>>,
+    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['one']['create']>>,
     null | undefined
   >,
   inputResolvers: CreateAndUpdateInputResolvers,
@@ -198,7 +198,7 @@ export function resolveRelateToOneForCreateInput(
   target: string
 ) {
   return async (
-    value: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo']['one']['create']>>
+    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['one']['create']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -221,8 +221,8 @@ export function resolveRelateToOneForUpdateInput(
   target: string
 ) {
   return async (
-    value: tsgql.InferValueFromArg<
-      tsgql.Arg<tsgql.NonNullType<TypesForList['relateTo']['one']['update']>>
+    value: types.InferValueFromArg<
+      types.Arg<types.NonNullType<TypesForList['relateTo']['one']['update']>>
     >
   ) => {
     // should === null disconnect?

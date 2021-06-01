@@ -1,6 +1,5 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import {
-  tsgql,
   JSONValue,
   ItemRootValue,
   KeystoneContext,
@@ -14,13 +13,7 @@ import {
 } from '.';
 
 function mapOutputFieldToSQLite(
-  field: tsgql.OutputField<
-    { id: IdType; value: JSONValue; item: ItemRootValue },
-    {},
-    any,
-    'value',
-    KeystoneContext
-  >
+  field: types.Field<{ id: IdType; value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value);
   return types.fields<{
@@ -48,7 +41,7 @@ function mapOutputFieldToSQLite(
   }).value;
 }
 
-function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
+function mapUpdateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
   arg: UpdateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): UpdateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -57,7 +50,7 @@ function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
   return {
     arg: arg.arg,
     async resolve(
-      input: tsgql.InferValueFromArg<Arg>,
+      input: types.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -73,7 +66,7 @@ function mapUpdateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
   } as any;
 }
 
-function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
+function mapCreateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
   arg: CreateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): CreateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -82,7 +75,7 @@ function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
   return {
     arg: arg.arg,
     async resolve(
-      input: tsgql.InferValueFromArg<Arg>,
+      input: types.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -99,10 +92,10 @@ function mapCreateInputArgToSQLite<Arg extends tsgql.Arg<tsgql.InputType, any>>(
 }
 
 export function jsonFieldTypePolyfilledForSQLite<
-  CreateArg extends tsgql.Arg<tsgql.InputType, any>,
-  UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
+  CreateArg extends types.Arg<types.InputType, any>,
+  UpdateArg extends types.Arg<types.InputType, any>,
+  FilterArg extends types.Arg<types.InputType, any>,
+  UniqueFilterArg extends types.Arg<types.InputType, any>
 >(
   provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<

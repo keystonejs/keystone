@@ -117,7 +117,7 @@ ${
     await fs.outputFile(
       filepath,
       format(
-        `import {types,tsgql} from '../../next-fields'
+        `import {types} from '../..'
 
 ${
   provider !== 'sqlite'
@@ -249,12 +249,12 @@ function printInputTypeForTSGQL(
   assert(inputType.constraints.minNumFields === expectedMaxMinNumFields);
   const nameOfInputObjectTypeType = `${inputTypeName}Type`;
   const fields = inputType.fields.map(x => [x.name, pickInputTypeForField(x)] as const);
-  return `type ${nameOfInputObjectTypeType} = tsgql.InputObjectType<{
+  return `type ${nameOfInputObjectTypeType} = types.InputObjectType<{
     ${fields
       .map(([name, field]) => {
-        return `${field.isNullable ? '// can be null\n' : ''}${name}: tsgql.Arg<${
+        return `${field.isNullable ? '// can be null\n' : ''}${name}: types.Arg<${
           field.isList
-            ? `tsgql.ListType<tsgql.NonNullType<typeof ${field.type}>>`
+            ? `types.ListType<types.NonNullType<typeof ${field.type}>>`
             : `typeof ${field.type}`
         }>`;
       })
@@ -283,5 +283,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Json: 'types.JSON',
   DateTime: 'types.String',
   BigInt: 'types.String',
-  Decimal: 'types.Decimal',
+  Decimal: 'types.String',
 };

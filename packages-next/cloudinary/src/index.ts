@@ -5,7 +5,6 @@ import {
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
   types,
-  tsgql,
 } from '@keystone-next/types';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
@@ -81,7 +80,7 @@ type CloudinaryImage_File = {
   encoding: string | null;
   publicUrl: string | null;
   publicUrlTransformed: (args: {
-    transformation: tsgql.InferValueFromArg<tsgql.Arg<typeof CloudinaryImageFormat>>;
+    transformation: types.InferValueFromArg<types.Arg<typeof CloudinaryImageFormat>>;
   }) => string | null;
 };
 
@@ -159,7 +158,7 @@ export const cloudinaryImage =
             publicUrlTransformed: ({
               transformation,
             }: {
-              transformation: tsgql.InferValueFromArg<tsgql.Arg<typeof CloudinaryImageFormat>>;
+              transformation: types.InferValueFromArg<types.Arg<typeof CloudinaryImageFormat>>;
             }) => adapter.publicUrlTransformed(val, transformation ?? {}),
             ...val,
           };

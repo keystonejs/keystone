@@ -1,52 +1,13 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
-import * as tsgql from '@ts-gql/schema';
-import GraphQLJSON from 'graphql-type-json';
-import type { FileUpload } from 'graphql-upload';
-// this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
-// @ts-ignore
-import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
+// import * as tsgql from '@ts-gql/schema';
 import Decimal from 'decimal.js';
-import { GraphQLScalarType } from 'graphql';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider, FieldDefaultValue } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
+import { types } from '.';
 
 export { Decimal };
-
-// we could allow numbers in parseValue/parseLiteral but that feels like a footgun
-const DecimalScalar = new GraphQLScalarType({
-  name: 'Decimal',
-  description: 'An arbitrary-precision Decimal type. The serialized form is a string.',
-
-  serialize(value: Decimal) {
-    return value.toString();
-  },
-
-  parseValue(value) {
-    if (value instanceof Decimal) {
-      return value;
-    }
-    if (typeof value === 'string') {
-    }
-    return new Decimal(value);
-  },
-
-  parseLiteral(ast) {
-    if (ast.kind !== 'StringValue') {
-      throw new TypeError(`The Decimal only accepts strings as input`);
-    }
-
-    return new Decimal(ast.value);
-  },
-});
-
-export const types = {
-  JSON: tsgql.types.scalar<JSONValue>(GraphQLJSON),
-  Upload: tsgql.types.scalar<Promise<FileUpload>>(GraphQLUpload),
-  Decimal: tsgql.types.scalar<Decimal>(DecimalScalar),
-  ...tsgql.bindTypesToContext<KeystoneContext>(),
-};
 
 export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
   name: '_QueryMeta',
@@ -60,7 +21,7 @@ export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
   },
 });
 
-export { tsgql };
+// export { tsgql };
 
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
 // because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
@@ -88,26 +49,26 @@ export type FieldData = {
 
 export type FieldTypeFunc<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
-    | tsgql.Arg<tsgql.InputType, any>
+  CreateArg extends types.Arg<types.InputType, any> | undefined =
+    | types.Arg<types.InputType, any>
     | undefined,
-  UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
 > = (
   data: FieldData
 ) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
-    | tsgql.Arg<tsgql.InputType, any>
+  CreateArg extends types.Arg<types.InputType, any> | undefined =
+    | types.Arg<types.InputType, any>
     | undefined,
-  UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
 > = {
   dbField: TDBField;
 } & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
@@ -273,11 +234,11 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never;
 
-export type OrderByFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
+export type OrderByFieldInputArg<Val, TArg extends types.Arg<types.InputType, any>> = {
   arg: TArg;
 } & ResolveFunc<
   (
-    value: Exclude<tsgql.InferValueFromArg<TArg>, null | undefined>,
+    value: Exclude<types.InferValueFromArg<TArg>, null | undefined>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >;
@@ -290,18 +251,18 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
 
 export type UpdateFieldInputArg<
   TDBField extends DBField,
-  TArg extends tsgql.Arg<tsgql.InputType, any>
+  TArg extends types.Arg<types.InputType, any>
 > = {
   arg: TArg;
 } & ResolveFunc<
   FieldInputResolver<
-    tsgql.InferValueFromArg<TArg>,
+    types.InferValueFromArg<TArg>,
     DBFieldToInputValue<TDBField>,
     any
     // i think this is broken because variance?
     // TDBField extends RelationDBField<infer Mode>
     //   ? (
-    //       input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+    //       input: types.InferValueFromArg<types.Arg<TypesForList['relateTo'][Mode]['create']>>
     //     ) => Promise<any>
     //   : undefined
   >
@@ -314,23 +275,23 @@ type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResol
   // i think this is broken because variance?
   // TDBField extends RelationDBField<infer Mode>
   //   ? (
-  //       input: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['relateTo'][Mode]['create']>>
+  //       input: types.InferValueFromArg<types.Arg<TypesForList['relateTo'][Mode]['create']>>
   //     ) => Promise<any>
   //   : undefined
 >;
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
-  TArg extends tsgql.Arg<tsgql.InputType, any> | undefined
+  TArg extends types.Arg<types.InputType, any> | undefined
 > = {
   arg: TArg;
-} & (TArg extends tsgql.Arg<tsgql.InputType, any>
-  ? DBFieldToInputValue<TDBField> extends tsgql.InferValueFromArg<TArg>
+} & (TArg extends types.Arg<types.InputType, any>
+  ? DBFieldToInputValue<TDBField> extends types.InferValueFromArg<TArg>
     ? {
-        resolve?: CreateFieldInputResolver<tsgql.InferValueFromArg<TArg>, TDBField>;
+        resolve?: CreateFieldInputResolver<types.InferValueFromArg<TArg>, TDBField>;
       }
     : {
-        resolve: CreateFieldInputResolver<tsgql.InferValueFromArg<TArg>, TDBField>;
+        resolve: CreateFieldInputResolver<types.InferValueFromArg<TArg>, TDBField>;
       }
   : {
       resolve: CreateFieldInputResolver<undefined, TDBField>;
@@ -338,20 +299,20 @@ export type CreateFieldInputArg<
 
 export type WhereFieldInputArg<
   TDBField extends DBField,
-  TArg extends tsgql.Arg<tsgql.InputType, any>
+  TArg extends types.Arg<types.InputType, any>
 > = {
   arg: TArg;
 } & ResolveFunc<
   FieldInputResolver<
-    Exclude<tsgql.InferValueFromArg<TArg>, undefined>,
+    Exclude<types.InferValueFromArg<TArg>, undefined>,
     DBFieldFilters<TDBField>,
     any
     // i think this is broken because variance?
     // TDBField extends RelationDBField<infer Mode>
     //   ? (
     //       input: {
-    //         many: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['manyRelationWhere']>>;
-    //         one: tsgql.InferValueFromArg<tsgql.Arg<TypesForList['where']>>;
+    //         many: types.InferValueFromArg<types.Arg<TypesForList['manyRelationWhere']>>;
+    //         one: types.InferValueFromArg<types.Arg<TypesForList['where']>>;
     //       }[Mode]
     //     ) => Promise<any>
     //   : undefined
@@ -365,21 +326,20 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
     ? { resolve?: Func }
     : { resolve: Func };
 
-export type UniqueWhereFieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
+export type UniqueWhereFieldInputArg<Val, TArg extends types.Arg<types.InputType, any>> = {
   arg: TArg;
 } & ResolveFunc<
   (
-    value: Exclude<tsgql.InferValueFromArg<TArg>, undefined | null>,
+    value: Exclude<types.InferValueFromArg<TArg>, undefined | null>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >;
 
-type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
+type FieldTypeOutputField<TDBField extends DBField> = types.Field<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
-  tsgql.OutputTypes<KeystoneContext>,
-  'value',
-  KeystoneContext
+  types.OutputType,
+  'value'
 >;
 
 export type OrderDirection = 'asc' | 'desc';
@@ -392,13 +352,13 @@ type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends Scalaris
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined =
-    | tsgql.Arg<tsgql.InputType, any>
+  CreateArg extends types.Arg<types.InputType, any> | undefined =
+    | types.Arg<types.InputType, any>
     | undefined,
-  UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  OrderByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
+  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
@@ -413,10 +373,10 @@ export type FieldTypeWithoutDBField<
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   // maybe this should be called `types` and accept any type?
   // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
-  unreferencedConcreteInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
+  unreferencedConcreteInterfaceImplementations?: types.ObjectType<any>[];
   __legacy?: {
     filters?: {
-      fields: Record<string, tsgql.Arg<any, any>>;
+      fields: Record<string, types.Arg<any, any>>;
       impls: Record<
         string,
         (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
@@ -429,11 +389,11 @@ export type FieldTypeWithoutDBField<
 
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
-    CreateArg extends tsgql.Arg<tsgql.InputType, any> | undefined,
-    UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
-    FilterArg extends tsgql.Arg<tsgql.InputType, any>,
-    UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>,
-    OrderByArg extends tsgql.Arg<tsgql.InputType, any>
+    CreateArg extends types.Arg<types.InputType, any> | undefined,
+    UpdateArg extends types.Arg<types.InputType, any>,
+    FilterArg extends types.Arg<types.InputType, any>,
+    UniqueFilterArg extends types.Arg<types.InputType, any>,
+    OrderByArg extends types.Arg<types.InputType, any>
   >(
     stuff: FieldTypeWithoutDBField<
       TDBField,
@@ -448,22 +408,22 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   };
 }
 
-type AnyInputObj = tsgql.InputObjectType<
-  Record<string, tsgql.Arg<tsgql.InputType, tsgql.InferValueFromInputType<tsgql.InputType>>>
+type AnyInputObj = types.InputObjectType<
+  Record<string, types.Arg<types.InputType, types.InferValueFromInputType<types.InputType>>>
 >;
 
-type RelateToOneInput = tsgql.InputObjectType<{
-  create?: tsgql.Arg<TypesForList['create'], any>;
-  connect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
-  disconnect: tsgql.Arg<TypesForList['uniqueWhere'], any>;
-  disconnectAll: tsgql.Arg<typeof types.Boolean>;
+type RelateToOneInput = types.InputObjectType<{
+  create?: types.Arg<TypesForList['create'], any>;
+  connect: types.Arg<TypesForList['uniqueWhere'], any>;
+  disconnect: types.Arg<TypesForList['uniqueWhere'], any>;
+  disconnectAll: types.Arg<typeof types.Boolean>;
 }>;
 
-type RelateToManyInput = tsgql.InputObjectType<{
-  create?: tsgql.Arg<tsgql.ListType<TypesForList['create']>, any>;
-  connect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
-  disconnect: tsgql.Arg<tsgql.ListType<TypesForList['uniqueWhere']>, any>;
-  disconnectAll: tsgql.Arg<typeof types.Boolean, any>;
+type RelateToManyInput = types.InputObjectType<{
+  create?: types.Arg<types.ListType<TypesForList['create']>, any>;
+  connect: types.Arg<types.ListType<TypesForList['uniqueWhere']>, any>;
+  disconnect: types.Arg<types.ListType<TypesForList['uniqueWhere']>, any>;
+  disconnectAll: types.Arg<typeof types.Boolean, any>;
 }>;
 
 export type TypesForList = {
@@ -472,14 +432,14 @@ export type TypesForList = {
   uniqueWhere: AnyInputObj;
   where: AnyInputObj;
   orderBy: AnyInputObj;
-  output: tsgql.ObjectType<ItemRootValue, string, KeystoneContext>;
+  output: types.ObjectType<ItemRootValue>;
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
-      where: tsgql.InputObjectType<{
-        every: tsgql.Arg<AnyInputObj>;
-        some: tsgql.Arg<AnyInputObj>;
-        none: tsgql.Arg<AnyInputObj>;
+      where: types.InputObjectType<{
+        every: types.Arg<AnyInputObj>;
+        some: types.Arg<AnyInputObj>;
+        none: types.Arg<AnyInputObj>;
       }>;
       create: RelateToManyInput;
       update: RelateToManyInput;
@@ -492,17 +452,17 @@ export type TypesForList = {
 };
 
 export type FindManyArgs = {
-  where: tsgql.Arg<tsgql.NonNullType<TypesForList['where']>, {}>;
-  orderBy: tsgql.Arg<
-    tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['orderBy']>>>,
+  where: types.Arg<types.NonNullType<TypesForList['where']>, {}>;
+  orderBy: types.Arg<
+    types.NonNullType<types.ListType<types.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
   >;
-  search: tsgql.Arg<typeof types.String>;
-  sortBy: tsgql.Arg<
-    tsgql.ListType<tsgql.NonNullType<tsgql.EnumType<Record<string, tsgql.EnumValue<string>>>>>
+  search: types.Arg<typeof types.String>;
+  sortBy: types.Arg<
+    types.ListType<types.NonNullType<types.EnumType<Record<string, types.EnumValue<string>>>>>
   >;
-  first: tsgql.Arg<typeof types.Int>;
-  skip: tsgql.Arg<tsgql.NonNullType<typeof types.Int>, number>;
+  first: types.Arg<typeof types.Int>;
+  skip: types.Arg<types.NonNullType<typeof types.Int>, number>;
 };
 
-export type FindManyArgsValue = tsgql.InferValueFromArgs<FindManyArgs>;
+export type FindManyArgsValue = types.InferValueFromArgs<FindManyArgs>;

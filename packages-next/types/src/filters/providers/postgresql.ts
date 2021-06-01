@@ -1,27 +1,27 @@
-import { types, tsgql } from '../../next-fields';
+import { types } from '../..';
 
 const QueryMode = types.enum({
   name: 'QueryMode',
   values: types.enumValues(['default', 'insensitive']),
 });
 
-type StringNullableFilterType = tsgql.InputObjectType<{
+type StringNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  contains: tsgql.Arg<typeof types.String>;
-  startsWith: tsgql.Arg<typeof types.String>;
-  endsWith: tsgql.Arg<typeof types.String>;
-  mode: tsgql.Arg<typeof QueryMode>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  contains: types.Arg<typeof types.String>;
+  startsWith: types.Arg<typeof types.String>;
+  endsWith: types.Arg<typeof types.String>;
+  mode: types.Arg<typeof QueryMode>;
   // can be null
-  not: tsgql.Arg<typeof NestedStringNullableFilter>;
+  not: types.Arg<typeof NestedStringNullableFilter>;
 }>;
 
 const StringNullableFilter: StringNullableFilterType = types.inputObject({
@@ -46,22 +46,22 @@ const StringNullableFilter: StringNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedStringNullableFilterType = tsgql.InputObjectType<{
+type NestedStringNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  contains: tsgql.Arg<typeof types.String>;
-  startsWith: tsgql.Arg<typeof types.String>;
-  endsWith: tsgql.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  contains: types.Arg<typeof types.String>;
+  startsWith: types.Arg<typeof types.String>;
+  endsWith: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedStringNullableFilter>;
+  not: types.Arg<typeof NestedStringNullableFilter>;
 }>;
 
 const NestedStringNullableFilter: NestedStringNullableFilterType = types.inputObject({
@@ -85,19 +85,19 @@ const NestedStringNullableFilter: NestedStringNullableFilterType = types.inputOb
   }),
 });
 
-type StringFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  contains: tsgql.Arg<typeof types.String>;
-  startsWith: tsgql.Arg<typeof types.String>;
-  endsWith: tsgql.Arg<typeof types.String>;
-  mode: tsgql.Arg<typeof QueryMode>;
-  not: tsgql.Arg<typeof NestedStringFilter>;
+type StringFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  contains: types.Arg<typeof types.String>;
+  startsWith: types.Arg<typeof types.String>;
+  endsWith: types.Arg<typeof types.String>;
+  mode: types.Arg<typeof QueryMode>;
+  not: types.Arg<typeof NestedStringFilter>;
 }>;
 
 const StringFilter: StringFilterType = types.inputObject({
@@ -118,18 +118,18 @@ const StringFilter: StringFilterType = types.inputObject({
   }),
 });
 
-type NestedStringFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  contains: tsgql.Arg<typeof types.String>;
-  startsWith: tsgql.Arg<typeof types.String>;
-  endsWith: tsgql.Arg<typeof types.String>;
-  not: tsgql.Arg<typeof NestedStringFilter>;
+type NestedStringFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  contains: types.Arg<typeof types.String>;
+  startsWith: types.Arg<typeof types.String>;
+  endsWith: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedStringFilter>;
 }>;
 
 const NestedStringFilter: NestedStringFilterType = types.inputObject({
@@ -149,14 +149,14 @@ const NestedStringFilter: NestedStringFilterType = types.inputObject({
   }),
 });
 
-type StringNullableListFilterType = tsgql.InputObjectType<{
+type StringNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  has: tsgql.Arg<typeof types.String>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.String>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const StringNullableListFilter: StringNullableListFilterType = types.inputObject({
@@ -172,11 +172,11 @@ const StringNullableListFilter: StringNullableListFilterType = types.inputObject
   }),
 });
 
-type BoolNullableFilterType = tsgql.InputObjectType<{
+type BoolNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Boolean>;
+  equals: types.Arg<typeof types.Boolean>;
   // can be null
-  not: tsgql.Arg<typeof NestedBoolNullableFilter>;
+  not: types.Arg<typeof NestedBoolNullableFilter>;
 }>;
 
 const BoolNullableFilter: BoolNullableFilterType = types.inputObject({
@@ -189,11 +189,11 @@ const BoolNullableFilter: BoolNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedBoolNullableFilterType = tsgql.InputObjectType<{
+type NestedBoolNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Boolean>;
+  equals: types.Arg<typeof types.Boolean>;
   // can be null
-  not: tsgql.Arg<typeof NestedBoolNullableFilter>;
+  not: types.Arg<typeof NestedBoolNullableFilter>;
 }>;
 
 const NestedBoolNullableFilter: NestedBoolNullableFilterType = types.inputObject({
@@ -206,9 +206,9 @@ const NestedBoolNullableFilter: NestedBoolNullableFilterType = types.inputObject
   }),
 });
 
-type BoolFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Boolean>;
-  not: tsgql.Arg<typeof NestedBoolFilter>;
+type BoolFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Boolean>;
+  not: types.Arg<typeof NestedBoolFilter>;
 }>;
 
 const BoolFilter: BoolFilterType = types.inputObject({
@@ -219,9 +219,9 @@ const BoolFilter: BoolFilterType = types.inputObject({
   }),
 });
 
-type NestedBoolFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Boolean>;
-  not: tsgql.Arg<typeof NestedBoolFilter>;
+type NestedBoolFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Boolean>;
+  not: types.Arg<typeof NestedBoolFilter>;
 }>;
 
 const NestedBoolFilter: NestedBoolFilterType = types.inputObject({
@@ -232,14 +232,14 @@ const NestedBoolFilter: NestedBoolFilterType = types.inputObject({
   }),
 });
 
-type BoolNullableListFilterType = tsgql.InputObjectType<{
+type BoolNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Boolean>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.Boolean>>>;
   // can be null
-  has: tsgql.Arg<typeof types.Boolean>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Boolean>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Boolean>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.Boolean>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.Boolean>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.Boolean>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const BoolNullableListFilter: BoolNullableListFilterType = types.inputObject({
@@ -255,19 +255,19 @@ const BoolNullableListFilter: BoolNullableListFilterType = types.inputObject({
   }),
 });
 
-type IntNullableFilterType = tsgql.InputObjectType<{
+type IntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Int>;
+  equals: types.Arg<typeof types.Int>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  lt: tsgql.Arg<typeof types.Int>;
-  lte: tsgql.Arg<typeof types.Int>;
-  gt: tsgql.Arg<typeof types.Int>;
-  gte: tsgql.Arg<typeof types.Int>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  lt: types.Arg<typeof types.Int>;
+  lte: types.Arg<typeof types.Int>;
+  gt: types.Arg<typeof types.Int>;
+  gte: types.Arg<typeof types.Int>;
   // can be null
-  not: tsgql.Arg<typeof NestedIntNullableFilter>;
+  not: types.Arg<typeof NestedIntNullableFilter>;
 }>;
 
 const IntNullableFilter: IntNullableFilterType = types.inputObject({
@@ -288,19 +288,19 @@ const IntNullableFilter: IntNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedIntNullableFilterType = tsgql.InputObjectType<{
+type NestedIntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Int>;
+  equals: types.Arg<typeof types.Int>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  lt: tsgql.Arg<typeof types.Int>;
-  lte: tsgql.Arg<typeof types.Int>;
-  gt: tsgql.Arg<typeof types.Int>;
-  gte: tsgql.Arg<typeof types.Int>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  lt: types.Arg<typeof types.Int>;
+  lte: types.Arg<typeof types.Int>;
+  gt: types.Arg<typeof types.Int>;
+  gte: types.Arg<typeof types.Int>;
   // can be null
-  not: tsgql.Arg<typeof NestedIntNullableFilter>;
+  not: types.Arg<typeof NestedIntNullableFilter>;
 }>;
 
 const NestedIntNullableFilter: NestedIntNullableFilterType = types.inputObject({
@@ -321,15 +321,15 @@ const NestedIntNullableFilter: NestedIntNullableFilterType = types.inputObject({
   }),
 });
 
-type IntFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Int>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  lt: tsgql.Arg<typeof types.Int>;
-  lte: tsgql.Arg<typeof types.Int>;
-  gt: tsgql.Arg<typeof types.Int>;
-  gte: tsgql.Arg<typeof types.Int>;
-  not: tsgql.Arg<typeof NestedIntFilter>;
+type IntFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Int>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  lt: types.Arg<typeof types.Int>;
+  lte: types.Arg<typeof types.Int>;
+  gt: types.Arg<typeof types.Int>;
+  gte: types.Arg<typeof types.Int>;
+  not: types.Arg<typeof NestedIntFilter>;
 }>;
 
 const IntFilter: IntFilterType = types.inputObject({
@@ -346,15 +346,15 @@ const IntFilter: IntFilterType = types.inputObject({
   }),
 });
 
-type NestedIntFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Int>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  lt: tsgql.Arg<typeof types.Int>;
-  lte: tsgql.Arg<typeof types.Int>;
-  gt: tsgql.Arg<typeof types.Int>;
-  gte: tsgql.Arg<typeof types.Int>;
-  not: tsgql.Arg<typeof NestedIntFilter>;
+type NestedIntFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Int>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  lt: types.Arg<typeof types.Int>;
+  lte: types.Arg<typeof types.Int>;
+  gt: types.Arg<typeof types.Int>;
+  gte: types.Arg<typeof types.Int>;
+  not: types.Arg<typeof NestedIntFilter>;
 }>;
 
 const NestedIntFilter: NestedIntFilterType = types.inputObject({
@@ -371,14 +371,14 @@ const NestedIntFilter: NestedIntFilterType = types.inputObject({
   }),
 });
 
-type IntNullableListFilterType = tsgql.InputObjectType<{
+type IntNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
   // can be null
-  has: tsgql.Arg<typeof types.Int>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Int>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.Int>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const IntNullableListFilter: IntNullableListFilterType = types.inputObject({
@@ -394,19 +394,19 @@ const IntNullableListFilter: IntNullableListFilterType = types.inputObject({
   }),
 });
 
-type FloatNullableFilterType = tsgql.InputObjectType<{
+type FloatNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Float>;
+  equals: types.Arg<typeof types.Float>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  lt: tsgql.Arg<typeof types.Float>;
-  lte: tsgql.Arg<typeof types.Float>;
-  gt: tsgql.Arg<typeof types.Float>;
-  gte: tsgql.Arg<typeof types.Float>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  lt: types.Arg<typeof types.Float>;
+  lte: types.Arg<typeof types.Float>;
+  gt: types.Arg<typeof types.Float>;
+  gte: types.Arg<typeof types.Float>;
   // can be null
-  not: tsgql.Arg<typeof NestedFloatNullableFilter>;
+  not: types.Arg<typeof NestedFloatNullableFilter>;
 }>;
 
 const FloatNullableFilter: FloatNullableFilterType = types.inputObject({
@@ -427,19 +427,19 @@ const FloatNullableFilter: FloatNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedFloatNullableFilterType = tsgql.InputObjectType<{
+type NestedFloatNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Float>;
+  equals: types.Arg<typeof types.Float>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  lt: tsgql.Arg<typeof types.Float>;
-  lte: tsgql.Arg<typeof types.Float>;
-  gt: tsgql.Arg<typeof types.Float>;
-  gte: tsgql.Arg<typeof types.Float>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  lt: types.Arg<typeof types.Float>;
+  lte: types.Arg<typeof types.Float>;
+  gt: types.Arg<typeof types.Float>;
+  gte: types.Arg<typeof types.Float>;
   // can be null
-  not: tsgql.Arg<typeof NestedFloatNullableFilter>;
+  not: types.Arg<typeof NestedFloatNullableFilter>;
 }>;
 
 const NestedFloatNullableFilter: NestedFloatNullableFilterType = types.inputObject({
@@ -460,15 +460,15 @@ const NestedFloatNullableFilter: NestedFloatNullableFilterType = types.inputObje
   }),
 });
 
-type FloatFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Float>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  lt: tsgql.Arg<typeof types.Float>;
-  lte: tsgql.Arg<typeof types.Float>;
-  gt: tsgql.Arg<typeof types.Float>;
-  gte: tsgql.Arg<typeof types.Float>;
-  not: tsgql.Arg<typeof NestedFloatFilter>;
+type FloatFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Float>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  lt: types.Arg<typeof types.Float>;
+  lte: types.Arg<typeof types.Float>;
+  gt: types.Arg<typeof types.Float>;
+  gte: types.Arg<typeof types.Float>;
+  not: types.Arg<typeof NestedFloatFilter>;
 }>;
 
 const FloatFilter: FloatFilterType = types.inputObject({
@@ -485,15 +485,15 @@ const FloatFilter: FloatFilterType = types.inputObject({
   }),
 });
 
-type NestedFloatFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Float>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  lt: tsgql.Arg<typeof types.Float>;
-  lte: tsgql.Arg<typeof types.Float>;
-  gt: tsgql.Arg<typeof types.Float>;
-  gte: tsgql.Arg<typeof types.Float>;
-  not: tsgql.Arg<typeof NestedFloatFilter>;
+type NestedFloatFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.Float>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  lt: types.Arg<typeof types.Float>;
+  lte: types.Arg<typeof types.Float>;
+  gt: types.Arg<typeof types.Float>;
+  gte: types.Arg<typeof types.Float>;
+  not: types.Arg<typeof NestedFloatFilter>;
 }>;
 
 const NestedFloatFilter: NestedFloatFilterType = types.inputObject({
@@ -510,14 +510,14 @@ const NestedFloatFilter: NestedFloatFilterType = types.inputObject({
   }),
 });
 
-type FloatNullableListFilterType = tsgql.InputObjectType<{
+type FloatNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
   // can be null
-  has: tsgql.Arg<typeof types.Float>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Float>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.Float>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const FloatNullableListFilter: FloatNullableListFilterType = types.inputObject({
@@ -533,19 +533,19 @@ const FloatNullableListFilter: FloatNullableListFilterType = types.inputObject({
   }),
 });
 
-type DateTimeNullableFilterType = tsgql.InputObjectType<{
+type DateTimeNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedDateTimeNullableFilter>;
+  not: types.Arg<typeof NestedDateTimeNullableFilter>;
 }>;
 
 const DateTimeNullableFilter: DateTimeNullableFilterType = types.inputObject({
@@ -566,19 +566,19 @@ const DateTimeNullableFilter: DateTimeNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedDateTimeNullableFilterType = tsgql.InputObjectType<{
+type NestedDateTimeNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedDateTimeNullableFilter>;
+  not: types.Arg<typeof NestedDateTimeNullableFilter>;
 }>;
 
 const NestedDateTimeNullableFilter: NestedDateTimeNullableFilterType = types.inputObject({
@@ -599,15 +599,15 @@ const NestedDateTimeNullableFilter: NestedDateTimeNullableFilterType = types.inp
   }),
 });
 
-type DateTimeFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  not: tsgql.Arg<typeof NestedDateTimeFilter>;
+type DateTimeFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedDateTimeFilter>;
 }>;
 
 const DateTimeFilter: DateTimeFilterType = types.inputObject({
@@ -624,15 +624,15 @@ const DateTimeFilter: DateTimeFilterType = types.inputObject({
   }),
 });
 
-type NestedDateTimeFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  not: tsgql.Arg<typeof NestedDateTimeFilter>;
+type NestedDateTimeFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedDateTimeFilter>;
 }>;
 
 const NestedDateTimeFilter: NestedDateTimeFilterType = types.inputObject({
@@ -649,14 +649,14 @@ const NestedDateTimeFilter: NestedDateTimeFilterType = types.inputObject({
   }),
 });
 
-type DateTimeNullableListFilterType = tsgql.InputObjectType<{
+type DateTimeNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  has: tsgql.Arg<typeof types.String>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.String>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const DateTimeNullableListFilter: DateTimeNullableListFilterType = types.inputObject({
@@ -672,19 +672,19 @@ const DateTimeNullableListFilter: DateTimeNullableListFilterType = types.inputOb
   }),
 });
 
-type BigIntNullableFilterType = tsgql.InputObjectType<{
+type BigIntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedBigIntNullableFilter>;
+  not: types.Arg<typeof NestedBigIntNullableFilter>;
 }>;
 
 const BigIntNullableFilter: BigIntNullableFilterType = types.inputObject({
@@ -705,19 +705,19 @@ const BigIntNullableFilter: BigIntNullableFilterType = types.inputObject({
   }),
 });
 
-type NestedBigIntNullableFilterType = tsgql.InputObjectType<{
+type NestedBigIntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.String>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedBigIntNullableFilter>;
+  not: types.Arg<typeof NestedBigIntNullableFilter>;
 }>;
 
 const NestedBigIntNullableFilter: NestedBigIntNullableFilterType = types.inputObject({
@@ -738,15 +738,15 @@ const NestedBigIntNullableFilter: NestedBigIntNullableFilterType = types.inputOb
   }),
 });
 
-type BigIntFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  not: tsgql.Arg<typeof NestedBigIntFilter>;
+type BigIntFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedBigIntFilter>;
 }>;
 
 const BigIntFilter: BigIntFilterType = types.inputObject({
@@ -763,15 +763,15 @@ const BigIntFilter: BigIntFilterType = types.inputObject({
   }),
 });
 
-type NestedBigIntFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.String>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  lt: tsgql.Arg<typeof types.String>;
-  lte: tsgql.Arg<typeof types.String>;
-  gt: tsgql.Arg<typeof types.String>;
-  gte: tsgql.Arg<typeof types.String>;
-  not: tsgql.Arg<typeof NestedBigIntFilter>;
+type NestedBigIntFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedBigIntFilter>;
 }>;
 
 const NestedBigIntFilter: NestedBigIntFilterType = types.inputObject({
@@ -788,14 +788,14 @@ const NestedBigIntFilter: NestedBigIntFilterType = types.inputObject({
   }),
 });
 
-type BigIntNullableListFilterType = tsgql.InputObjectType<{
+type BigIntNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  has: tsgql.Arg<typeof types.String>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.String>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.String>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const BigIntNullableListFilter: BigIntNullableListFilterType = types.inputObject({
@@ -811,11 +811,11 @@ const BigIntNullableListFilter: BigIntNullableListFilterType = types.inputObject
   }),
 });
 
-type JsonNullableFilterType = tsgql.InputObjectType<{
+type JsonNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.JSON>;
+  equals: types.Arg<typeof types.JSON>;
   // can be null
-  not: tsgql.Arg<typeof types.JSON>;
+  not: types.Arg<typeof types.JSON>;
 }>;
 
 const JsonNullableFilter: JsonNullableFilterType = types.inputObject({
@@ -828,9 +828,9 @@ const JsonNullableFilter: JsonNullableFilterType = types.inputObject({
   }),
 });
 
-type JsonFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.JSON>;
-  not: tsgql.Arg<typeof types.JSON>;
+type JsonFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.JSON>;
+  not: types.Arg<typeof types.JSON>;
 }>;
 
 const JsonFilter: JsonFilterType = types.inputObject({
@@ -841,14 +841,14 @@ const JsonFilter: JsonFilterType = types.inputObject({
   }),
 });
 
-type JsonNullableListFilterType = tsgql.InputObjectType<{
+type JsonNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.JSON>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.JSON>>>;
   // can be null
-  has: tsgql.Arg<typeof types.JSON>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.JSON>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.JSON>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.JSON>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.JSON>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.JSON>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const JsonNullableListFilter: JsonNullableListFilterType = types.inputObject({
@@ -864,141 +864,141 @@ const JsonNullableListFilter: JsonNullableListFilterType = types.inputObject({
   }),
 });
 
-type DecimalNullableFilterType = tsgql.InputObjectType<{
+type DecimalNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Decimal>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  lt: tsgql.Arg<typeof types.Decimal>;
-  lte: tsgql.Arg<typeof types.Decimal>;
-  gt: tsgql.Arg<typeof types.Decimal>;
-  gte: tsgql.Arg<typeof types.Decimal>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedDecimalNullableFilter>;
+  not: types.Arg<typeof NestedDecimalNullableFilter>;
 }>;
 
 const DecimalNullableFilter: DecimalNullableFilterType = types.inputObject({
   name: 'DecimalNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Decimal }),
+    equals: types.arg({ type: types.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    lt: types.arg({ type: types.Decimal }),
-    lte: types.arg({ type: types.Decimal }),
-    gt: types.arg({ type: types.Decimal }),
-    gte: types.arg({ type: types.Decimal }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    lt: types.arg({ type: types.String }),
+    lte: types.arg({ type: types.String }),
+    gt: types.arg({ type: types.String }),
+    gte: types.arg({ type: types.String }),
     // can be null
     not: types.arg({ type: NestedDecimalNullableFilter }),
   }),
 });
 
-type NestedDecimalNullableFilterType = tsgql.InputObjectType<{
+type NestedDecimalNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<typeof types.Decimal>;
+  equals: types.Arg<typeof types.String>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  lt: tsgql.Arg<typeof types.Decimal>;
-  lte: tsgql.Arg<typeof types.Decimal>;
-  gt: tsgql.Arg<typeof types.Decimal>;
-  gte: tsgql.Arg<typeof types.Decimal>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
   // can be null
-  not: tsgql.Arg<typeof NestedDecimalNullableFilter>;
+  not: types.Arg<typeof NestedDecimalNullableFilter>;
 }>;
 
 const NestedDecimalNullableFilter: NestedDecimalNullableFilterType = types.inputObject({
   name: 'NestedDecimalNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Decimal }),
+    equals: types.arg({ type: types.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    lt: types.arg({ type: types.Decimal }),
-    lte: types.arg({ type: types.Decimal }),
-    gt: types.arg({ type: types.Decimal }),
-    gte: types.arg({ type: types.Decimal }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    lt: types.arg({ type: types.String }),
+    lte: types.arg({ type: types.String }),
+    gt: types.arg({ type: types.String }),
+    gte: types.arg({ type: types.String }),
     // can be null
     not: types.arg({ type: NestedDecimalNullableFilter }),
   }),
 });
 
-type DecimalFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Decimal>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  lt: tsgql.Arg<typeof types.Decimal>;
-  lte: tsgql.Arg<typeof types.Decimal>;
-  gt: tsgql.Arg<typeof types.Decimal>;
-  gte: tsgql.Arg<typeof types.Decimal>;
-  not: tsgql.Arg<typeof NestedDecimalFilter>;
+type DecimalFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedDecimalFilter>;
 }>;
 
 const DecimalFilter: DecimalFilterType = types.inputObject({
   name: 'DecimalFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Decimal }),
-    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    lt: types.arg({ type: types.Decimal }),
-    lte: types.arg({ type: types.Decimal }),
-    gt: types.arg({ type: types.Decimal }),
-    gte: types.arg({ type: types.Decimal }),
+    equals: types.arg({ type: types.String }),
+    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    lt: types.arg({ type: types.String }),
+    lte: types.arg({ type: types.String }),
+    gt: types.arg({ type: types.String }),
+    gte: types.arg({ type: types.String }),
     not: types.arg({ type: NestedDecimalFilter }),
   }),
 });
 
-type NestedDecimalFilterType = tsgql.InputObjectType<{
-  equals: tsgql.Arg<typeof types.Decimal>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  lt: tsgql.Arg<typeof types.Decimal>;
-  lte: tsgql.Arg<typeof types.Decimal>;
-  gt: tsgql.Arg<typeof types.Decimal>;
-  gte: tsgql.Arg<typeof types.Decimal>;
-  not: tsgql.Arg<typeof NestedDecimalFilter>;
+type NestedDecimalFilterType = types.InputObjectType<{
+  equals: types.Arg<typeof types.String>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  lt: types.Arg<typeof types.String>;
+  lte: types.Arg<typeof types.String>;
+  gt: types.Arg<typeof types.String>;
+  gte: types.Arg<typeof types.String>;
+  not: types.Arg<typeof NestedDecimalFilter>;
 }>;
 
 const NestedDecimalFilter: NestedDecimalFilterType = types.inputObject({
   name: 'NestedDecimalFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Decimal }),
-    in: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    lt: types.arg({ type: types.Decimal }),
-    lte: types.arg({ type: types.Decimal }),
-    gt: types.arg({ type: types.Decimal }),
-    gte: types.arg({ type: types.Decimal }),
+    equals: types.arg({ type: types.String }),
+    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    lt: types.arg({ type: types.String }),
+    lte: types.arg({ type: types.String }),
+    gt: types.arg({ type: types.String }),
+    gte: types.arg({ type: types.String }),
     not: types.arg({ type: NestedDecimalFilter }),
   }),
 });
 
-type DecimalNullableListFilterType = tsgql.InputObjectType<{
+type DecimalNullableListFilterType = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
   // can be null
-  has: tsgql.Arg<typeof types.Decimal>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<typeof types.Decimal>>>;
-  isEmpty: tsgql.Arg<typeof types.Boolean>;
+  has: types.Arg<typeof types.String>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  isEmpty: types.Arg<typeof types.Boolean>;
 }>;
 
 const DecimalNullableListFilter: DecimalNullableListFilterType = types.inputObject({
   name: 'DecimalNullableListFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    equals: types.arg({ type: types.list(types.nonNull(types.String)) }),
     // can be null
-    has: types.arg({ type: types.Decimal }),
-    hasEvery: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
-    hasSome: types.arg({ type: types.list(types.nonNull(types.Decimal)) }),
+    has: types.arg({ type: types.String }),
+    hasEvery: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    hasSome: types.arg({ type: types.list(types.nonNull(types.String)) }),
     isEmpty: types.arg({ type: types.Boolean }),
   }),
 });

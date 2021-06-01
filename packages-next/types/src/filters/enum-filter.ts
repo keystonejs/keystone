@@ -1,37 +1,37 @@
-import { tsgql, types } from '../next-fields';
+import { types } from '..';
 
 // yes, these two types have the fields but they're semantically different types
 // (even though, yes, having EnumFilter by defined as EnumNullableFilter<Enum>, would be the same type but names would show up differently in editors for example)
 
-export type EnumNullableFilter<Enum extends tsgql.EnumType<any>> = tsgql.InputObjectType<{
+export type EnumNullableFilter<Enum extends types.EnumType<any>> = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<Enum>;
+  equals: types.Arg<Enum>;
   // can be null
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
+  in: types.Arg<types.ListType<types.NonNullType<Enum>>>;
   // can be null
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<Enum>>>;
   // can be null
-  not: tsgql.Arg<EnumNullableFilter<Enum>>;
+  not: types.Arg<EnumNullableFilter<Enum>>;
 }>;
 
-export type EnumFilter<Enum extends tsgql.EnumType<any>> = tsgql.InputObjectType<{
-  equals: tsgql.Arg<Enum>;
-  in: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
-  notIn: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
-  not: tsgql.Arg<EnumFilter<Enum>>;
+export type EnumFilter<Enum extends types.EnumType<any>> = types.InputObjectType<{
+  equals: types.Arg<Enum>;
+  in: types.Arg<types.ListType<types.NonNullType<Enum>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<Enum>>>;
+  not: types.Arg<EnumFilter<Enum>>;
 }>;
 
-type EnumNullableListFilterType<Enum extends tsgql.EnumType<any>> = tsgql.InputObjectType<{
+type EnumNullableListFilterType<Enum extends types.EnumType<any>> = types.InputObjectType<{
   // can be null
-  equals: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
+  equals: types.Arg<types.ListType<types.NonNullType<Enum>>>;
   // can be null
-  has: tsgql.Arg<Enum>;
-  hasEvery: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
-  hasSome: tsgql.Arg<tsgql.ListType<tsgql.NonNullType<Enum>>>;
-  isEmpty: tsgql.Arg<Enum>;
+  has: types.Arg<Enum>;
+  hasEvery: types.Arg<types.ListType<types.NonNullType<Enum>>>;
+  hasSome: types.Arg<types.ListType<types.NonNullType<Enum>>>;
+  isEmpty: types.Arg<Enum>;
 }>;
 
-export function enumFilters<Enum extends tsgql.EnumType<any>>(
+export function enumFilters<Enum extends types.EnumType<any>>(
   enumType: Enum
 ): {
   optional: EnumNullableFilter<Enum>;
