@@ -647,10 +647,10 @@ export function initialiseLists(
         create,
         orderBy,
         update,
-        manyRelationWhere,
         findManyArgs,
         relateTo: {
           many: {
+            where: manyRelationWhere,
             create: relateToMany,
             update: relateToMany,
           },
@@ -686,22 +686,41 @@ export function initialiseLists(
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
     Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
+      let hasAnAccessibleCreateField = false;
+      let hasAnAccessibleUpdateField = false;
+      const fields = Object.fromEntries(
+        Object.entries(list.fields).map(([fieldKey, field]) => {
+          const access = parseFieldAccessControl(field.access);
+          if (access.create && field.input?.create) {
+            hasAnAccessibleCreateField = true;
+          }
+          if (access.update && field.input?.update) {
+            hasAnAccessibleUpdateField = true;
+          }
+          return [
+            fieldKey,
+            {
+              ...field,
+              access,
+              dbField: listsWithResolvedDBFields[listKey].fields[fieldKey],
+              hooks: field.hooks ?? {},
+            },
+          ];
+        })
+      );
+      const access = parseListAccessControl(list.access);
+      if (!hasAnAccessibleCreateField) {
+        access.create = false;
+      }
+      if (!hasAnAccessibleUpdateField) {
+        access.update = false;
+      }
       return [
         listKey,
         {
           ...list,
-          access: parseListAccessControl(list.access),
-          fields: Object.fromEntries(
-            Object.entries(list.fields).map(([fieldKey, field]) => [
-              fieldKey,
-              {
-                ...field,
-                access: parseFieldAccessControl(field.access),
-                dbField: listsWithResolvedDBFields[listKey].fields[fieldKey],
-                hooks: field.hooks ?? {},
-              },
-            ])
-          ),
+          access,
+          fields,
         },
       ];
     })

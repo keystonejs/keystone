@@ -122,7 +122,7 @@ export const relationship =
         ...commonConfig,
         input: {
           where: {
-            arg: types.arg({ type: listTypes.manyRelationWhere }),
+            arg: types.arg({ type: listTypes.relateTo.many.where }),
             async resolve(value, context, resolve) {
               return resolve(value);
             },

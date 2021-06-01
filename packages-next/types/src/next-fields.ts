@@ -473,14 +473,14 @@ export type TypesForList = {
   where: AnyInputObj;
   orderBy: AnyInputObj;
   output: tsgql.ObjectType<ItemRootValue, string, KeystoneContext>;
-  manyRelationWhere: tsgql.InputObjectType<{
-    every: tsgql.Arg<AnyInputObj>;
-    some: tsgql.Arg<AnyInputObj>;
-    none: tsgql.Arg<AnyInputObj>;
-  }>;
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
+      where: tsgql.InputObjectType<{
+        every: tsgql.Arg<AnyInputObj>;
+        some: tsgql.Arg<AnyInputObj>;
+        none: tsgql.Arg<AnyInputObj>;
+      }>;
       create: RelateToManyInput;
       update: RelateToManyInput;
     };
