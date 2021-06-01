@@ -1,4 +1,4 @@
-import { types } from '../..';
+import * as types from '../../ts-gql-schema';
 
 const QueryMode = types.enum({
   name: 'QueryMode',

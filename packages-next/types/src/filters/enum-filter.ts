@@ -1,4 +1,4 @@
-import { types } from '..';
+import * as types from '../ts-gql-schema';
 
 // yes, these two types have the fields but they're semantically different types
 // (even though, yes, having EnumFilter by defined as EnumNullableFilter<Enum>, would be the same type but names would show up differently in editors for example)

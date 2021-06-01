@@ -117,7 +117,8 @@ ${
     await fs.outputFile(
       filepath,
       format(
-        `import {types} from '../..'
+        `import * as types from '../../ts-gql-schema';
+
 
 ${
   provider !== 'sqlite'

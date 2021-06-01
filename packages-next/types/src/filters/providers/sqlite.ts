@@ -1,4 +1,4 @@
-import { types } from '../..';
+import * as types from '../../ts-gql-schema';
 
 type StringNullableFilterType = types.InputObjectType<{
   // can be null
