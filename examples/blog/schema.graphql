@@ -1,3 +1,17 @@
+type Post {
+  id: ID!
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: Author
+}
+
+enum PostStatusType {
+  draft
+  published
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -41,13 +55,86 @@ input PostWhereInput {
   author: AuthorWhereInput
 }
 
-enum PostStatusType {
-  draft
-  published
-}
-
 input PostWhereUniqueInput {
   id: ID!
+}
+
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  content_ASC
+  content_DESC
+  publishDate_ASC
+  publishDate_DESC
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  publishDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PostCreateInput {
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: AuthorRelateToOneInput
+}
+
+input AuthorRelateToOneInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
+  disconnect: AuthorWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input PostUpdateInput {
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: AuthorRelateToOneInput
+}
+
+type Author {
+  id: ID!
+  name: String
+  email: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input AuthorWhereInput {
@@ -82,70 +169,6 @@ input AuthorWhereUniqueInput {
   id: ID!
 }
 
-type Post {
-  id: ID!
-  title: String
-  status: PostStatusType
-  content: String
-  publishDate: String
-  author: Author
-}
-
-type Author {
-  id: ID!
-  name: String
-  email: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  postsCount(where: PostWhereInput! = {}): Int
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
-}
-
-input PostOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  content: OrderDirection
-  publishDate: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
-}
-
-type _QueryMeta {
-  count: Int
-}
-
 enum SortAuthorsBy {
   id_ASC
   id_DESC
@@ -159,6 +182,25 @@ input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
+}
+
+input AuthorCreateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input AuthorUpdateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
 }
 
 type Mutation {
@@ -176,44 +218,8 @@ type Mutation {
   deleteAuthors(ids: [ID!]): [Author]
 }
 
-input PostCreateInput {
-  title: String
-  status: PostStatusType
-  content: String
-  publishDate: String
-  author: AuthorRelateToOneInput
-}
-
-input AuthorRelateToOneInput {
-  create: AuthorCreateInput
-  connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input AuthorCreateInput {
-  name: String
-  email: String
-  posts: PostRelateToManyInput
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input PostsCreateInput {
   data: PostCreateInput
-}
-
-input PostUpdateInput {
-  title: String
-  status: PostStatusType
-  content: String
-  publishDate: String
-  author: AuthorRelateToOneInput
 }
 
 input PostsUpdateInput {
@@ -223,12 +229,6 @@ input PostsUpdateInput {
 
 input AuthorsCreateInput {
   data: AuthorCreateInput
-}
-
-input AuthorUpdateInput {
-  name: String
-  email: String
-  posts: PostRelateToManyInput
 }
 
 input AuthorsUpdateInput {

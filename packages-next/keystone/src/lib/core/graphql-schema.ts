@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { GraphQLNamedType, GraphQLObjectType, GraphQLSchema, GraphQLType } from 'graphql';
 import { getGqlNames, DatabaseProvider, types, QueryMeta } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
@@ -251,33 +251,40 @@ export function getGraphQLSchema(
   let graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    types: [
-      ...collectUnreferencedConcreteInterfaceImplementations(lists),
-      // our tests are wrong imo and test
-      // "if any access is allowed, the where and unique where should be there even if they're not actually used in the schema"
-      ...Object.values(lists)
-        .filter(
-          list => list.access.read || list.access.create || list.access.update || list.access.delete
-        )
-        .flatMap(list => [list.types.where.graphQLType, list.types.uniqueWhere.graphQLType]),
-    ],
+    types: collectTypes(lists),
   });
   return graphQLSchema;
 }
 
-function collectUnreferencedConcreteInterfaceImplementations(
-  lists: Record<string, InitialisedList>
-) {
-  const unreferencedConcreteInterfaceImplementations: GraphQLObjectType[] = [];
+function collectTypes(lists: Record<string, InitialisedList>) {
+  const types: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
-    if (list.access.read === false) continue;
+    // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
+    if (list.access.read || list.access.create || list.access.update || list.access.delete) {
+      types.push(list.types.output.graphQLType);
+      types.push(list.types.where.graphQLType);
+      types.push(list.types.uniqueWhere.graphQLType);
+      types.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
+      types.push(list.types.orderBy.graphQLType);
+    }
+    if (list.access.create) {
+      types.push(list.types.create.graphQLType);
+    }
+    if (list.access.update) {
+      types.push(list.types.update.graphQLType);
+    }
+    if (list.access.update) {
+      types.push(list.types.update.graphQLType);
+    }
     for (const field of Object.values(list.fields)) {
-      if (field.access.read !== false && field.unreferencedConcreteInterfaceImplementations) {
-        unreferencedConcreteInterfaceImplementations.push(
-          ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-        );
+      if (
+        list.access.read !== false &&
+        field.access.read !== false &&
+        field.unreferencedConcreteInterfaceImplementations
+      ) {
+        types.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType));
       }
     }
   }
-  return unreferencedConcreteInterfaceImplementations;
+  return types;
 }

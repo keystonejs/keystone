@@ -1,3 +1,11 @@
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: Person
+}
+
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
@@ -25,6 +33,85 @@ input TodoWhereInput {
 
 input TodoWhereUniqueInput {
   id: ID!
+}
+
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  isPrivate_ASC
+  isPrivate_DESC
+}
+
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  isPrivate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneInput
+}
+
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneInput
+}
+
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  role: Role
+  tasks(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  tasksCount(where: TodoWhereInput! = {}): Int
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input PersonWhereInput {
@@ -60,6 +147,81 @@ input PersonWhereInput {
 
 input PersonWhereUniqueInput {
   id: ID!
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
+input PersonCreateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneInput
+  tasks: TodoRelateToManyInput
+}
+
+input RoleRelateToOneInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: RoleWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TodoRelateToManyInput {
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PersonUpdateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneInput
+  tasks: TodoRelateToManyInput
+}
+
+type Role {
+  id: ID!
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+  _assignedToMeta(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  assignedToCount(where: PersonWhereInput! = {}): Int
 }
 
 input RoleWhereInput {
@@ -100,117 +262,6 @@ input RoleWhereUniqueInput {
   id: ID!
 }
 
-type Todo {
-  id: ID!
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: Person
-}
-
-type Person {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  role: Role
-  tasks(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  tasksCount(where: TodoWhereInput! = {}): Int
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
-type Role {
-  id: ID!
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Person!]
-  _assignedToMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  assignedToCount(where: PersonWhereInput! = {}): Int
-}
-
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
-input PersonOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
-}
-
-type _QueryMeta {
-  count: Int
-}
-
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  isComplete_ASC
-  isComplete_DESC
-  isPrivate_ASC
-  isPrivate_DESC
-}
-
-input TodoOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  isPrivate: OrderDirection
-}
-
 enum SortRolesBy {
   id_ASC
   id_DESC
@@ -239,6 +290,35 @@ input RoleOrderByInput {
   canEditOtherPeople: OrderDirection
   canManagePeople: OrderDirection
   canManageRoles: OrderDirection
+}
+
+input RoleCreateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyInput
+}
+
+input PersonRelateToManyInput {
+  create: [PersonCreateInput]
+  connect: [PersonWhereUniqueInput]
+  disconnect: [PersonWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input RoleUpdateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyInput
 }
 
 type Mutation {
@@ -270,69 +350,8 @@ type Mutation {
   ): PersonAuthenticationWithPasswordSuccess!
 }
 
-input TodoCreateInput {
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
-}
-
-input PersonRelateToOneInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input PersonCreateInput {
-  name: String
-  email: String
-  password: String
-  role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
-}
-
-input RoleRelateToOneInput {
-  create: RoleCreateInput
-  connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input RoleCreateInput {
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
-}
-
-input PersonRelateToManyInput {
-  create: [PersonCreateInput]
-  connect: [PersonWhereUniqueInput]
-  disconnect: [PersonWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input TodosCreateInput {
   data: TodoCreateInput
-}
-
-input TodoUpdateInput {
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
 }
 
 input TodosUpdateInput {
@@ -344,14 +363,6 @@ input PeopleCreateInput {
   data: PersonCreateInput
 }
 
-input PersonUpdateInput {
-  name: String
-  email: String
-  password: String
-  role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
-}
-
 input PeopleUpdateInput {
   id: ID!
   data: PersonUpdateInput
@@ -359,17 +370,6 @@ input PeopleUpdateInput {
 
 input RolesCreateInput {
   data: RoleCreateInput
-}
-
-input RoleUpdateInput {
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
 }
 
 input RolesUpdateInput {

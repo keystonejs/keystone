@@ -1,3 +1,15 @@
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  isAdmin: Boolean
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
@@ -30,18 +42,6 @@ input UserWhereUniqueInput {
   id: ID!
 }
 
-type User {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  isAdmin: Boolean
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
 enum SortUsersBy {
   id_ASC
   id_DESC
@@ -65,6 +65,20 @@ enum OrderDirection {
   desc
 }
 
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
 type _QueryMeta {
   count: Int
 }
@@ -86,22 +100,8 @@ type Mutation {
   ): UserAuthenticationWithPasswordSuccess!
 }
 
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
-}
-
 input UsersCreateInput {
   data: UserCreateInput
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
 }
 
 input UsersUpdateInput {

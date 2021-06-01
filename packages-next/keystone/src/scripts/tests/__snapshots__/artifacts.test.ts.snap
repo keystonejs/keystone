@@ -47,12 +47,12 @@ export type TodoCreateInput = {
   readonly title?: Scalars['String'] | null;
 };
 
-export type TodosCreateInput = {
-  readonly data?: TodoCreateInput | null;
-};
-
 export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
+};
+
+export type TodosCreateInput = {
+  readonly data?: TodoCreateInput | null;
 };
 
 export type TodosUpdateInput = {

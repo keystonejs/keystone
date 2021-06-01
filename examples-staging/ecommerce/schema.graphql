@@ -1,287 +1,3 @@
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  cart_every: CartItemWhereInput
-  cart_some: CartItemWhereInput
-  cart_none: CartItemWhereInput
-  orders_every: OrderWhereInput
-  orders_some: OrderWhereInput
-  orders_none: OrderWhereInput
-  role_is_null: Boolean
-  role: RoleWhereInput
-  products_every: ProductWhereInput
-  products_some: ProductWhereInput
-  products_none: ProductWhereInput
-  passwordResetToken_is_set: Boolean
-  passwordResetIssuedAt: String
-  passwordResetIssuedAt_not: String
-  passwordResetIssuedAt_lt: String
-  passwordResetIssuedAt_lte: String
-  passwordResetIssuedAt_gt: String
-  passwordResetIssuedAt_gte: String
-  passwordResetIssuedAt_in: [String]
-  passwordResetIssuedAt_not_in: [String]
-  passwordResetRedeemedAt: String
-  passwordResetRedeemedAt_not: String
-  passwordResetRedeemedAt_lt: String
-  passwordResetRedeemedAt_lte: String
-  passwordResetRedeemedAt_gt: String
-  passwordResetRedeemedAt_gte: String
-  passwordResetRedeemedAt_in: [String]
-  passwordResetRedeemedAt_not_in: [String]
-}
-
-input UserWhereUniqueInput {
-  id: ID!
-}
-
-input ProductWhereInput {
-  AND: [ProductWhereInput!]
-  OR: [ProductWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  description: String
-  description_not: String
-  description_contains: String
-  description_not_contains: String
-  description_in: [String]
-  description_not_in: [String]
-  photo_is_null: Boolean
-  photo: ProductImageWhereInput
-  status: String
-  status_not: String
-  status_lt: String
-  status_lte: String
-  status_gt: String
-  status_gte: String
-  status_in: [String]
-  status_not_in: [String]
-  price: Int
-  price_not: Int
-  price_lt: Int
-  price_lte: Int
-  price_gt: Int
-  price_gte: Int
-  price_in: [Int]
-  price_not_in: [Int]
-  user_is_null: Boolean
-  user: UserWhereInput
-}
-
-input ProductWhereUniqueInput {
-  id: ID!
-}
-
-input ProductImageWhereInput {
-  AND: [ProductImageWhereInput!]
-  OR: [ProductImageWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  altText: String
-  altText_not: String
-  altText_contains: String
-  altText_not_contains: String
-  altText_in: [String]
-  altText_not_in: [String]
-  product_is_null: Boolean
-  product: ProductWhereInput
-}
-
-input ProductImageWhereUniqueInput {
-  id: ID!
-}
-
-input CartItemWhereInput {
-  AND: [CartItemWhereInput!]
-  OR: [CartItemWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  quantity: Int
-  quantity_not: Int
-  quantity_lt: Int
-  quantity_lte: Int
-  quantity_gt: Int
-  quantity_gte: Int
-  quantity_in: [Int]
-  quantity_not_in: [Int]
-  product_is_null: Boolean
-  product: ProductWhereInput
-  user_is_null: Boolean
-  user: UserWhereInput
-}
-
-input CartItemWhereUniqueInput {
-  id: ID!
-}
-
-input OrderItemWhereInput {
-  AND: [OrderItemWhereInput!]
-  OR: [OrderItemWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  description: String
-  description_not: String
-  description_contains: String
-  description_not_contains: String
-  description_in: [String]
-  description_not_in: [String]
-  photo_is_null: Boolean
-  photo: ProductImageWhereInput
-  price: Int
-  price_not: Int
-  price_lt: Int
-  price_lte: Int
-  price_gt: Int
-  price_gte: Int
-  price_in: [Int]
-  price_not_in: [Int]
-  quantity: Int
-  quantity_not: Int
-  quantity_lt: Int
-  quantity_lte: Int
-  quantity_gt: Int
-  quantity_gte: Int
-  quantity_in: [Int]
-  quantity_not_in: [Int]
-  order_is_null: Boolean
-  order: OrderWhereInput
-}
-
-input OrderItemWhereUniqueInput {
-  id: ID!
-}
-
-input OrderWhereInput {
-  AND: [OrderWhereInput!]
-  OR: [OrderWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  total: Int
-  total_not: Int
-  total_lt: Int
-  total_lte: Int
-  total_gt: Int
-  total_gte: Int
-  total_in: [Int]
-  total_not_in: [Int]
-  items_every: OrderItemWhereInput
-  items_some: OrderItemWhereInput
-  items_none: OrderItemWhereInput
-  user_is_null: Boolean
-  user: UserWhereInput
-  charge: String
-  charge_not: String
-  charge_contains: String
-  charge_not_contains: String
-  charge_in: [String]
-  charge_not_in: [String]
-}
-
-input OrderWhereUniqueInput {
-  id: ID!
-}
-
-input RoleWhereInput {
-  AND: [RoleWhereInput!]
-  OR: [RoleWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  canManageProducts: Boolean
-  canManageProducts_not: Boolean
-  canSeeOtherUsers: Boolean
-  canSeeOtherUsers_not: Boolean
-  canManageUsers: Boolean
-  canManageUsers_not: Boolean
-  canManageRoles: Boolean
-  canManageRoles_not: Boolean
-  canManageCart: Boolean
-  canManageCart_not: Boolean
-  canManageOrders: Boolean
-  canManageOrders_not: Boolean
-  assignedTo_every: UserWhereInput
-  assignedTo_some: UserWhereInput
-  assignedTo_none: UserWhereInput
-}
-
-input RoleWhereUniqueInput {
-  id: ID!
-}
-
 type User {
   id: ID!
   name: String
@@ -354,11 +70,146 @@ type PasswordState {
   isSet: Boolean!
 }
 
-type CartItem {
+type _QueryMeta {
+  count: Int
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  cart_every: CartItemWhereInput
+  cart_some: CartItemWhereInput
+  cart_none: CartItemWhereInput
+  orders_every: OrderWhereInput
+  orders_some: OrderWhereInput
+  orders_none: OrderWhereInput
+  role_is_null: Boolean
+  role: RoleWhereInput
+  products_every: ProductWhereInput
+  products_some: ProductWhereInput
+  products_none: ProductWhereInput
+  passwordResetToken_is_set: Boolean
+  passwordResetIssuedAt: String
+  passwordResetIssuedAt_not: String
+  passwordResetIssuedAt_lt: String
+  passwordResetIssuedAt_lte: String
+  passwordResetIssuedAt_gt: String
+  passwordResetIssuedAt_gte: String
+  passwordResetIssuedAt_in: [String]
+  passwordResetIssuedAt_not_in: [String]
+  passwordResetRedeemedAt: String
+  passwordResetRedeemedAt_not: String
+  passwordResetRedeemedAt_lt: String
+  passwordResetRedeemedAt_lte: String
+  passwordResetRedeemedAt_gt: String
+  passwordResetRedeemedAt_gte: String
+  passwordResetRedeemedAt_in: [String]
+  passwordResetRedeemedAt_not_in: [String]
+}
+
+input UserWhereUniqueInput {
   id: ID!
-  quantity: Int
-  product: Product
-  user: User
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  passwordResetIssuedAt_ASC
+  passwordResetIssuedAt_DESC
+  passwordResetRedeemedAt_ASC
+  passwordResetRedeemedAt_DESC
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  passwordResetIssuedAt: OrderDirection
+  passwordResetRedeemedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  cart: CartItemRelateToManyInput
+  orders: OrderRelateToManyInput
+  role: RoleRelateToOneInput
+  products: ProductRelateToManyInput
+  passwordResetToken: String
+  passwordResetIssuedAt: String
+  passwordResetRedeemedAt: String
+}
+
+input CartItemRelateToManyInput {
+  create: [CartItemCreateInput]
+  connect: [CartItemWhereUniqueInput]
+  disconnect: [CartItemWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input OrderRelateToManyInput {
+  create: [OrderCreateInput]
+  connect: [OrderWhereUniqueInput]
+  disconnect: [OrderWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input RoleRelateToOneInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: RoleWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ProductRelateToManyInput {
+  create: [ProductCreateInput]
+  connect: [ProductWhereUniqueInput]
+  disconnect: [ProductWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  cart: CartItemRelateToManyInput
+  orders: OrderRelateToManyInput
+  role: RoleRelateToOneInput
+  products: ProductRelateToManyInput
+  passwordResetToken: String
+  passwordResetIssuedAt: String
+  passwordResetRedeemedAt: String
 }
 
 type Product {
@@ -369,6 +220,108 @@ type Product {
   status: String
   price: Int
   user: User
+}
+
+input ProductWhereInput {
+  AND: [ProductWhereInput!]
+  OR: [ProductWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_in: [String]
+  description_not_in: [String]
+  photo_is_null: Boolean
+  photo: ProductImageWhereInput
+  status: String
+  status_not: String
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_in: [String]
+  status_not_in: [String]
+  price: Int
+  price_not: Int
+  price_lt: Int
+  price_lte: Int
+  price_gt: Int
+  price_gte: Int
+  price_in: [Int]
+  price_not_in: [Int]
+  user_is_null: Boolean
+  user: UserWhereInput
+}
+
+input ProductWhereUniqueInput {
+  id: ID!
+}
+
+enum SortProductsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  status_ASC
+  status_DESC
+  price_ASC
+  price_DESC
+}
+
+input ProductOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  price: OrderDirection
+}
+
+input ProductCreateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  status: String
+  price: Int
+  user: UserRelateToOneInput
+}
+
+input ProductImageRelateToOneInput {
+  create: ProductImageCreateInput
+  connect: ProductImageWhereUniqueInput
+  disconnect: ProductImageWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ProductUpdateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  status: String
+  price: Int
+  user: UserRelateToOneInput
 }
 
 type ProductImage {
@@ -427,6 +380,103 @@ input CloudinaryImageFormat {
   transformation: String
 }
 
+input ProductImageWhereInput {
+  AND: [ProductImageWhereInput!]
+  OR: [ProductImageWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  altText: String
+  altText_not: String
+  altText_contains: String
+  altText_not_contains: String
+  altText_in: [String]
+  altText_not_in: [String]
+  product_is_null: Boolean
+  product: ProductWhereInput
+}
+
+input ProductImageWhereUniqueInput {
+  id: ID!
+}
+
+enum SortProductImagesBy {
+  id_ASC
+  id_DESC
+  altText_ASC
+  altText_DESC
+}
+
+input ProductImageOrderByInput {
+  id: OrderDirection
+  altText: OrderDirection
+}
+
+input ProductImageCreateInput {
+  image: Upload
+  altText: String
+  product: ProductRelateToOneInput
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input ProductRelateToOneInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+  disconnect: ProductWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ProductImageUpdateInput {
+  image: Upload
+  altText: String
+  product: ProductRelateToOneInput
+}
+
+type CartItem {
+  id: ID!
+  quantity: Int
+  product: Product
+  user: User
+}
+
+input CartItemWhereInput {
+  AND: [CartItemWhereInput!]
+  OR: [CartItemWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  quantity: Int
+  quantity_not: Int
+  quantity_lt: Int
+  quantity_lte: Int
+  quantity_gt: Int
+  quantity_gte: Int
+  quantity_in: [Int]
+  quantity_not_in: [Int]
+  product_is_null: Boolean
+  product: ProductWhereInput
+  user_is_null: Boolean
+  user: UserWhereInput
+}
+
+input CartItemWhereUniqueInput {
+  id: ID!
+}
+
 enum SortCartItemsBy {
   id_ASC
   id_DESC
@@ -439,13 +489,121 @@ input CartItemOrderByInput {
   quantity: OrderDirection
 }
 
-enum OrderDirection {
-  asc
-  desc
+input CartItemCreateInput {
+  quantity: Int
+  product: ProductRelateToOneInput
+  user: UserRelateToOneInput
 }
 
-type _QueryMeta {
-  count: Int
+input CartItemUpdateInput {
+  quantity: Int
+  product: ProductRelateToOneInput
+  user: UserRelateToOneInput
+}
+
+type OrderItem {
+  id: ID!
+  name: String
+  description: String
+  photo: ProductImage
+  price: Int
+  quantity: Int
+  order: Order
+}
+
+input OrderItemWhereInput {
+  AND: [OrderItemWhereInput!]
+  OR: [OrderItemWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_in: [String]
+  description_not_in: [String]
+  photo_is_null: Boolean
+  photo: ProductImageWhereInput
+  price: Int
+  price_not: Int
+  price_lt: Int
+  price_lte: Int
+  price_gt: Int
+  price_gte: Int
+  price_in: [Int]
+  price_not_in: [Int]
+  quantity: Int
+  quantity_not: Int
+  quantity_lt: Int
+  quantity_lte: Int
+  quantity_gt: Int
+  quantity_gte: Int
+  quantity_in: [Int]
+  quantity_not_in: [Int]
+  order_is_null: Boolean
+  order: OrderWhereInput
+}
+
+input OrderItemWhereUniqueInput {
+  id: ID!
+}
+
+enum SortOrderItemsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  price_ASC
+  price_DESC
+  quantity_ASC
+  quantity_DESC
+}
+
+input OrderItemOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  quantity: OrderDirection
+}
+
+input OrderItemCreateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  price: Int
+  quantity: Int
+  order: OrderRelateToOneInput
+}
+
+input OrderRelateToOneInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
+  disconnect: OrderWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input OrderItemUpdateInput {
+  name: String
+  description: String
+  photo: ProductImageRelateToOneInput
+  price: Int
+  quantity: Int
+  order: OrderRelateToOneInput
 }
 
 type Order {
@@ -475,35 +633,40 @@ type Order {
   charge: String
 }
 
-type OrderItem {
+input OrderWhereInput {
+  AND: [OrderWhereInput!]
+  OR: [OrderWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  total: Int
+  total_not: Int
+  total_lt: Int
+  total_lte: Int
+  total_gt: Int
+  total_gte: Int
+  total_in: [Int]
+  total_not_in: [Int]
+  items_every: OrderItemWhereInput
+  items_some: OrderItemWhereInput
+  items_none: OrderItemWhereInput
+  user_is_null: Boolean
+  user: UserWhereInput
+  charge: String
+  charge_not: String
+  charge_contains: String
+  charge_not_contains: String
+  charge_in: [String]
+  charge_not_in: [String]
+}
+
+input OrderWhereUniqueInput {
   id: ID!
-  name: String
-  description: String
-  photo: ProductImage
-  price: Int
-  quantity: Int
-  order: Order
-}
-
-enum SortOrderItemsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  price_ASC
-  price_DESC
-  quantity_ASC
-  quantity_DESC
-}
-
-input OrderItemOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  description: OrderDirection
-  price: OrderDirection
-  quantity: OrderDirection
 }
 
 enum SortOrdersBy {
@@ -519,6 +682,27 @@ input OrderOrderByInput {
   id: OrderDirection
   total: OrderDirection
   charge: OrderDirection
+}
+
+input OrderCreateInput {
+  total: Int
+  items: OrderItemRelateToManyInput
+  user: UserRelateToOneInput
+  charge: String
+}
+
+input OrderItemRelateToManyInput {
+  create: [OrderItemCreateInput]
+  connect: [OrderItemWhereUniqueInput]
+  disconnect: [OrderItemWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input OrderUpdateInput {
+  total: Int
+  items: OrderItemRelateToManyInput
+  user: UserRelateToOneInput
+  charge: String
 }
 
 type Role {
@@ -551,58 +735,42 @@ type Role {
   assignedToCount(where: UserWhereInput! = {}): Int
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  passwordResetIssuedAt_ASC
-  passwordResetIssuedAt_DESC
-  passwordResetRedeemedAt_ASC
-  passwordResetRedeemedAt_DESC
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  canManageProducts: Boolean
+  canManageProducts_not: Boolean
+  canSeeOtherUsers: Boolean
+  canSeeOtherUsers_not: Boolean
+  canManageUsers: Boolean
+  canManageUsers_not: Boolean
+  canManageRoles: Boolean
+  canManageRoles_not: Boolean
+  canManageCart: Boolean
+  canManageCart_not: Boolean
+  canManageOrders: Boolean
+  canManageOrders_not: Boolean
+  assignedTo_every: UserWhereInput
+  assignedTo_some: UserWhereInput
+  assignedTo_none: UserWhereInput
 }
 
-input UserOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  passwordResetIssuedAt: OrderDirection
-  passwordResetRedeemedAt: OrderDirection
-}
-
-enum SortProductsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  status_ASC
-  status_DESC
-  price_ASC
-  price_DESC
-}
-
-input ProductOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  description: OrderDirection
-  status: OrderDirection
-  price: OrderDirection
-}
-
-enum SortProductImagesBy {
-  id_ASC
-  id_DESC
-  altText_ASC
-  altText_DESC
-}
-
-input ProductImageOrderByInput {
-  id: OrderDirection
-  altText: OrderDirection
+input RoleWhereUniqueInput {
+  id: ID!
 }
 
 enum SortRolesBy {
@@ -633,6 +801,35 @@ input RoleOrderByInput {
   canManageRoles: OrderDirection
   canManageCart: OrderDirection
   canManageOrders: OrderDirection
+}
+
+input RoleCreateInput {
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
+  assignedTo: UserRelateToManyInput
+}
+
+input UserRelateToManyInput {
+  create: [UserCreateInput]
+  connect: [UserWhereUniqueInput]
+  disconnect: [UserWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input RoleUpdateInput {
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
+  assignedTo: UserRelateToManyInput
 }
 
 type Mutation {
@@ -696,157 +893,8 @@ type Mutation {
   checkout(token: String!): Order
 }
 
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
-  products: ProductRelateToManyInput
-  passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
-}
-
-input CartItemRelateToManyInput {
-  create: [CartItemCreateInput]
-  connect: [CartItemWhereUniqueInput]
-  disconnect: [CartItemWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input CartItemCreateInput {
-  quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
-}
-
-input ProductRelateToOneInput {
-  create: ProductCreateInput
-  connect: ProductWhereUniqueInput
-  disconnect: ProductWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input ProductCreateInput {
-  name: String
-  description: String
-  photo: ProductImageRelateToOneInput
-  status: String
-  price: Int
-  user: UserRelateToOneInput
-}
-
-input ProductImageRelateToOneInput {
-  create: ProductImageCreateInput
-  connect: ProductImageWhereUniqueInput
-  disconnect: ProductImageWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input ProductImageCreateInput {
-  image: Upload
-  altText: String
-  product: ProductRelateToOneInput
-}
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input OrderRelateToManyInput {
-  create: [OrderCreateInput]
-  connect: [OrderWhereUniqueInput]
-  disconnect: [OrderWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input OrderCreateInput {
-  total: Int
-  items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
-  charge: String
-}
-
-input OrderItemRelateToManyInput {
-  create: [OrderItemCreateInput]
-  connect: [OrderItemWhereUniqueInput]
-  disconnect: [OrderItemWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input OrderItemCreateInput {
-  name: String
-  description: String
-  photo: ProductImageRelateToOneInput
-  price: Int
-  quantity: Int
-  order: OrderRelateToOneInput
-}
-
-input OrderRelateToOneInput {
-  create: OrderCreateInput
-  connect: OrderWhereUniqueInput
-  disconnect: OrderWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input RoleRelateToOneInput {
-  create: RoleCreateInput
-  connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input RoleCreateInput {
-  name: String
-  canManageProducts: Boolean
-  canSeeOtherUsers: Boolean
-  canManageUsers: Boolean
-  canManageRoles: Boolean
-  canManageCart: Boolean
-  canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
-}
-
-input UserRelateToManyInput {
-  create: [UserCreateInput]
-  connect: [UserWhereUniqueInput]
-  disconnect: [UserWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input ProductRelateToManyInput {
-  create: [ProductCreateInput]
-  connect: [ProductWhereUniqueInput]
-  disconnect: [ProductWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input UsersCreateInput {
   data: UserCreateInput
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
-  products: ProductRelateToManyInput
-  passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
 }
 
 input UsersUpdateInput {
@@ -858,15 +906,6 @@ input ProductsCreateInput {
   data: ProductCreateInput
 }
 
-input ProductUpdateInput {
-  name: String
-  description: String
-  photo: ProductImageRelateToOneInput
-  status: String
-  price: Int
-  user: UserRelateToOneInput
-}
-
 input ProductsUpdateInput {
   id: ID!
   data: ProductUpdateInput
@@ -874,12 +913,6 @@ input ProductsUpdateInput {
 
 input ProductImagesCreateInput {
   data: ProductImageCreateInput
-}
-
-input ProductImageUpdateInput {
-  image: Upload
-  altText: String
-  product: ProductRelateToOneInput
 }
 
 input ProductImagesUpdateInput {
@@ -891,12 +924,6 @@ input CartItemsCreateInput {
   data: CartItemCreateInput
 }
 
-input CartItemUpdateInput {
-  quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
-}
-
 input CartItemsUpdateInput {
   id: ID!
   data: CartItemUpdateInput
@@ -904,15 +931,6 @@ input CartItemsUpdateInput {
 
 input OrderItemsCreateInput {
   data: OrderItemCreateInput
-}
-
-input OrderItemUpdateInput {
-  name: String
-  description: String
-  photo: ProductImageRelateToOneInput
-  price: Int
-  quantity: Int
-  order: OrderRelateToOneInput
 }
 
 input OrderItemsUpdateInput {
@@ -924,13 +942,6 @@ input OrdersCreateInput {
   data: OrderCreateInput
 }
 
-input OrderUpdateInput {
-  total: Int
-  items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
-  charge: String
-}
-
 input OrdersUpdateInput {
   id: ID!
   data: OrderUpdateInput
@@ -938,17 +949,6 @@ input OrdersUpdateInput {
 
 input RolesCreateInput {
   data: RoleCreateInput
-}
-
-input RoleUpdateInput {
-  name: String
-  canManageProducts: Boolean
-  canSeeOtherUsers: Boolean
-  canManageUsers: Boolean
-  canManageRoles: Boolean
-  canManageCart: Boolean
-  canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
 }
 
 input RolesUpdateInput {

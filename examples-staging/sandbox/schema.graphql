@@ -1,3 +1,13 @@
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  assignedTo: User
+  finishBy: String
+  createdAt: String
+  updatedAt: String
+}
+
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
@@ -49,6 +59,92 @@ input TodoWhereUniqueInput {
   id: ID!
 }
 
+enum SortTodosBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  assignedTo: UserRelateToOneInput
+  finishBy: String
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  tasks(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Todo!]
+  _tasksMeta(
+    where: TodoWhereInput! = {}
+    search: String
+    sortBy: [SortTodosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TodoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  tasksCount(where: TodoWhereInput! = {}): Int
+  createdAt: String
+  updatedAt: String
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type _QueryMeta {
+  count: Int
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
@@ -98,81 +194,6 @@ input UserWhereUniqueInput {
   id: ID!
 }
 
-type Todo {
-  id: ID!
-  label: String
-  isComplete: Boolean
-  assignedTo: User
-  finishBy: String
-  createdAt: String
-  updatedAt: String
-}
-
-type User {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  tasks(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  tasksCount(where: TodoWhereInput! = {}): Int
-  createdAt: String
-  updatedAt: String
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-input TodoOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  finishBy: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
-}
-
-type _QueryMeta {
-  count: Int
-}
-
 enum SortUsersBy {
   id_ASC
   id_DESC
@@ -194,6 +215,27 @@ input UserOrderByInput {
   updatedAt: OrderDirection
 }
 
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
+input TodoRelateToManyInput {
+  create: [TodoCreateInput]
+  connect: [TodoWhereUniqueInput]
+  disconnect: [TodoWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+  tasks: TodoRelateToManyInput
+}
+
 type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
@@ -209,43 +251,8 @@ type Mutation {
   deleteUsers(ids: [ID!]): [User]
 }
 
-input TodoCreateInput {
-  label: String
-  isComplete: Boolean
-  assignedTo: UserRelateToOneInput
-  finishBy: String
-}
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  tasks: TodoRelateToManyInput
-}
-
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input TodosCreateInput {
   data: TodoCreateInput
-}
-
-input TodoUpdateInput {
-  label: String
-  isComplete: Boolean
-  assignedTo: UserRelateToOneInput
-  finishBy: String
 }
 
 input TodosUpdateInput {
@@ -255,13 +262,6 @@ input TodosUpdateInput {
 
 input UsersCreateInput {
   data: UserCreateInput
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  tasks: TodoRelateToManyInput
 }
 
 input UsersUpdateInput {

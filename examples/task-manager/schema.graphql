@@ -1,3 +1,18 @@
+type Task {
+  id: ID!
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: Person
+  finishBy: String
+}
+
+enum TaskPriorityType {
+  low
+  medium
+  high
+}
+
 input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
@@ -37,73 +52,8 @@ input TaskWhereInput {
   finishBy_not_in: [String]
 }
 
-enum TaskPriorityType {
-  low
-  medium
-  high
-}
-
 input TaskWhereUniqueInput {
   id: ID!
-}
-
-input PersonWhereInput {
-  AND: [PersonWhereInput!]
-  OR: [PersonWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  tasks_every: TaskWhereInput
-  tasks_some: TaskWhereInput
-  tasks_none: TaskWhereInput
-}
-
-input PersonWhereUniqueInput {
-  id: ID!
-}
-
-type Task {
-  id: ID!
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: Person
-  finishBy: String
-}
-
-type Person {
-  id: ID!
-  name: String
-  tasks(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Task!]
-  _tasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-  tasksCount(where: TaskWhereInput! = {}): Int
 }
 
 enum SortTasksBy {
@@ -132,8 +82,81 @@ enum OrderDirection {
   desc
 }
 
+input TaskCreateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
+}
+
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TaskUpdateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
+}
+
+type Person {
+  id: ID!
+  name: String
+  tasks(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Task!]
+  _tasksMeta(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+  tasksCount(where: TaskWhereInput! = {}): Int
+}
+
 type _QueryMeta {
   count: Int
+}
+
+input PersonWhereInput {
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  tasks_every: TaskWhereInput
+  tasks_some: TaskWhereInput
+  tasks_none: TaskWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID!
 }
 
 enum SortPeopleBy {
@@ -146,6 +169,23 @@ enum SortPeopleBy {
 input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
+}
+
+input PersonCreateInput {
+  name: String
+  tasks: TaskRelateToManyInput
+}
+
+input TaskRelateToManyInput {
+  create: [TaskCreateInput]
+  connect: [TaskWhereUniqueInput]
+  disconnect: [TaskWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PersonUpdateInput {
+  name: String
+  tasks: TaskRelateToManyInput
 }
 
 type Mutation {
@@ -163,43 +203,8 @@ type Mutation {
   deletePeople(ids: [ID!]): [Person]
 }
 
-input TaskCreateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
-  finishBy: String
-}
-
-input PersonRelateToOneInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input PersonCreateInput {
-  name: String
-  tasks: TaskRelateToManyInput
-}
-
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input TasksCreateInput {
   data: TaskCreateInput
-}
-
-input TaskUpdateInput {
-  label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
-  finishBy: String
 }
 
 input TasksUpdateInput {
@@ -209,11 +214,6 @@ input TasksUpdateInput {
 
 input PeopleCreateInput {
   data: PersonCreateInput
-}
-
-input PersonUpdateInput {
-  name: String
-  tasks: TaskRelateToManyInput
 }
 
 input PeopleUpdateInput {
