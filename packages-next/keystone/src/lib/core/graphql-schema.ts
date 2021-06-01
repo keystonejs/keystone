@@ -8,7 +8,7 @@ import { applyFirstSkipToCount } from './utils';
 
 // this is not a thing that i really agree with but it's to make the behaviour consistent with old keystone
 // basically, old keystone uses Promise.allSettled and then after that maps that into promises that resolve and reject,
-// whereas the new stuff is just like "here are some promises" with no guarantees about the order they will be settled in
+// whereas the new stuff is just like "here are some promises" with no guarantees about the order they will be settled in.
 // that doesn't matter when they all resolve successfully because the order they resolve successfully in
 // doesn't affect anything, if some reject though, the order that they reject in will be the order in the errors array
 // and some of our tests rely on the order of the graphql errors array. they shouldn't, but they do.
@@ -41,6 +41,7 @@ export function getGraphQLSchema(
                 type: types.nonNull(list.types.uniqueWhere),
               }),
             },
+            description: `Search for the ${list.listKey} item with the matching ID.`,
             async resolve(_rootVal, args, context) {
               return queries.findOne(args, list, context);
             },
@@ -48,6 +49,7 @@ export function getGraphQLSchema(
           const findMany = types.field({
             type: types.list(types.nonNull(list.types.output)),
             args: list.types.findManyArgs,
+            description: `Search for all ${list.listKey} items which match the where clause.`,
             async resolve(_rootVal, args, context, info) {
               return queries.findMany(args, list, context, info);
             },
@@ -75,6 +77,7 @@ export function getGraphQLSchema(
           const metaQuery = types.field({
             type: QueryMeta,
             args: list.types.findManyArgs,
+            description: `Perform a meta-query on all ${list.listKey} items which match the where clause.`,
             resolve(_rootVal, { first, search, skip, where }, context, info) {
               return {
                 getCount: async () => {
@@ -99,8 +102,8 @@ export function getGraphQLSchema(
             deprecationReason: `This query will be removed in a future version. Please use ${names.listQueryCountName} instead.`,
           });
           return [
-            [names.itemQueryName, findOne],
             [names.listQueryName, findMany],
+            [names.itemQueryName, findOne],
             [names.listQueryMetaName, metaQuery],
             [names.listQueryCountName, countQuery],
           ];
@@ -125,6 +128,7 @@ export function getGraphQLSchema(
         const createOne = types.field({
           type: list.types.output,
           args: createOneArgs,
+          description: `Create a single ${list.listKey} item.`,
           resolve(_rootVal, { data }, context) {
             return mutations.createOne({ data: data ?? {} }, list, context);
           },
@@ -140,6 +144,7 @@ export function getGraphQLSchema(
         const updateOne = types.field({
           type: list.types.output,
           args: updateOneArgs,
+          description: `Create a single ${list.listKey} item.`,
           resolve(_rootVal, { data, id }, context) {
             return mutations.updateOne({ data: data ?? {}, where: { id } }, list, context);
           },

@@ -2489,10 +2489,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@ts-gql/schema@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.8.0.tgz#c1507a635b0bc4317458757086aa41402580005b"
-  integrity sha512-J4mtZqpL+62SzmMapfjLSvziPTUoFNssCNEtPD/rLHCzsRLvCltOKJX6uGZs+JXofjVw1Gw0RPb6YAl9DiQ8vw==
+"@ts-gql/schema@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.9.0.tgz#9bb099ab1d723582daabbd8e32799fb4e7f669eb"
+  integrity sha512-vwYj8/ibhrilRZ9kFuLtp72DoyP9s+Zx9DCu2/06AkfzTc8zWpGW/1C9r131ZwVgeYOxtoSCk/CtfPmhytz7GA==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
