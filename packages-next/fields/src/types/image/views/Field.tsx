@@ -13,8 +13,6 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
-// import NextImage from '@keystone-next/keystone/admin-ui/image';
-
 import { ImageValue } from './index';
 
 function useObjectURL(fileData: File | undefined) {
@@ -204,18 +202,7 @@ function ImgView({
       {errorMessage === undefined ? (
         value.kind === 'from-server' ? (
           <ImageWrapper>
-            <img
-              height={value.data.height}
-              width={value.data.width}
-              src={value.data.src}
-              alt={field.path}
-            />
-            {/* <NextImage
-              height={value.data.height}
-              width={value.data.width}
-              src={value.data.src}
-              alt={field.path}
-            /> */}
+            <img css={{ width: '100%' }} src={value.data.src} alt={field.path} />
           </ImageWrapper>
         ) : (
           <ImageWrapper>
