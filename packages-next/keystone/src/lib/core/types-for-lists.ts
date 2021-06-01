@@ -50,7 +50,7 @@ import {
 } from './input-resolvers';
 import { keyToLabel, labelToPath, labelToClass } from './ListTypes/utils';
 import { createOneState } from './mutation-resolvers';
-import { findManyFilter, getFindManyArgs } from './query-resolvers';
+import { findMany, findManyFilter } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -131,16 +131,13 @@ function getRelationVal(
   if (dbField.mode === 'many') {
     return {
       findMany: async (args: FindManyArgsValue) => {
-        return getFindManyArgs(
+        return findMany(
           args,
-          args =>
-            getPrismaModelForList(context.prisma, dbField.list).findMany({
-              ...args,
-              where: { AND: [args.where, relationFilter] },
-            }),
+
           foreignList,
           context,
-          info
+          info,
+          relationFilter
         );
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
@@ -148,14 +145,14 @@ function getRelationVal(
         if (filter === false) {
           throw accessDeniedError('query');
         }
-        const count = await applyFirstSkipToCount({
+        const count = applyFirstSkipToCount({
           count: await getPrismaModelForList(context.prisma, dbField.list).count({
             where: { AND: [filter, relationFilter] },
           }),
           first,
           skip,
         });
-        if (info && info.cacheControl && foreignList.cacheHint) {
+        if (info.cacheControl && foreignList.cacheHint) {
           info.cacheControl.setCacheHint(
             foreignList.cacheHint({
               results: count,

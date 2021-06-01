@@ -1,4 +1,4 @@
-import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
+import { FindManyArgsValue, ItemRootValue, KeystoneContext } from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
 import { validateNonCreateListAccessControl } from './access-control';
 import {
@@ -109,18 +109,13 @@ export async function findOne(
   return item;
 }
 
-export async function getFindManyArgs<T>(
+export async function findMany(
   { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
-  get: (args: {
-    where: PrismaFilter;
-    take: number | undefined;
-    skip: number;
-    orderBy: readonly Record<string, 'asc' | 'desc'>[];
-  }) => Promise<T[]>,
   list: InitialisedList,
   context: KeystoneContext,
-  info: GraphQLResolveInfo
-): Promise<T[]> {
+  info: GraphQLResolveInfo,
+  extraFilter?: PrismaFilter
+): Promise<ItemRootValue[]> {
   const [resolvedWhere, orderBy] = await Promise.all([
     findManyFilter(list, context, where || {}, search),
     resolveOrderBy(rawOrderBy, sortBy, list, context),
@@ -130,8 +125,8 @@ export async function getFindManyArgs<T>(
   if (resolvedWhere === false) {
     throw accessDeniedError('query');
   }
-  const results = await get({
-    where: resolvedWhere,
+  const results = await getPrismaModelForList(context.prisma, list.listKey).findMany({
+    where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
     orderBy,
     take: first ?? undefined,
     skip,
@@ -147,21 +142,6 @@ export async function getFindManyArgs<T>(
     );
   }
   return results;
-}
-
-export async function findMany(
-  args: FindManyArgsValue,
-  list: InitialisedList,
-  context: KeystoneContext,
-  info: GraphQLResolveInfo
-) {
-  return getFindManyArgs(
-    args,
-    args => getPrismaModelForList(context.prisma, list.listKey).findMany(args),
-    list,
-    context,
-    info
-  );
 }
 
 export async function count(
