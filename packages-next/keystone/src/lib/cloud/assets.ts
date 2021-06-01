@@ -2,7 +2,6 @@ import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { ImageMetadata } from '@keystone-next/types';
-import fromBuffer from 'image-type';
 
 const CLOUD_IMAGES_DOMAIN = 'imgix.net';
 const CLOUD_GRAPHQL_API_ENDPOINT = 'http://localhost:4000/api/graphql';
@@ -41,29 +40,36 @@ export const getImagesDomain = async (apiKey: string) => {
   return allImgixSources[0].domain;
 };
 
-export const getImageMetadataFromCloud = async (
-  apiKey: string,
-  filename: string
-): Promise<ImageMetadata> => {
-  const response = await fetch(`${CLOUD_REST_API_ENDPOINT}/images?apiKey=${apiKey}&id=${filename}`);
+export const getImageMetadataFromCloud = async ({
+  apiKey,
+  filename,
+}: {
+  apiKey: string;
+  filename: string;
+}): Promise<ImageMetadata> => {
+  const response = await fetch(`${CLOUD_REST_API_ENDPOINT}/images/${filename}`, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
 
   return await response.json();
 };
 
 const uploadAssetToCloud = async ({
   apiKey,
-  fileName,
+  filename,
   stream,
   apiRoute,
 }: {
   apiKey: string;
-  fileName: string;
+  filename: string;
   stream: Readable;
   apiRoute: string;
 }): Promise<any> => {
   const form = new FormData();
 
-  form.append('image', stream, fileName);
+  form.append('image', stream, filename);
   form.append('apiKey', apiKey);
 
   const response = await fetch(`${CLOUD_REST_API_ENDPOINT}/${apiRoute}`, {
@@ -77,8 +83,8 @@ const uploadAssetToCloud = async ({
 export const uploadImageToCloud = async (
   apiKey: string,
   stream: Readable,
-  fileName: string
-): Promise<ImageMetadata> => uploadAssetToCloud({ apiKey, stream, fileName, apiRoute: 'images' });
+  filename: string
+): Promise<ImageMetadata> => uploadAssetToCloud({ apiKey, stream, filename, apiRoute: 'images' });
 
-export const uploadFileToCloud = async (apiKey: string, fileName: string, stream: Readable) =>
-  uploadAssetToCloud({ apiKey, stream, fileName, apiRoute: 'files' });
+export const uploadFileToCloud = async (apiKey: string, filename: string, stream: Readable) =>
+  uploadAssetToCloud({ apiKey, stream, filename, apiRoute: 'files' });

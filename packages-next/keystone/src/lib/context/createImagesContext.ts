@@ -82,7 +82,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
       if (isCloudAsset(mode)) {
         const { id, extension } = imageRef;
         const filename = `${id}.${extension}`;
-        const metadata = await getImageMetadataFromCloud(filename, apiKey);
+        const metadata = await getImageMetadataFromCloud({ filename, apiKey });
 
         return { ...imageRef, ...metadata };
       }
