@@ -121,8 +121,7 @@ type User {
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo!]!
-  tasksCount(where: TodoWhereInput! = {}): Int!
+  ): [Todo!]
   _tasksMeta(
     where: TodoWhereInput! = {}
     search: String
@@ -132,6 +131,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
 }

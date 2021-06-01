@@ -122,8 +122,7 @@ type Person {
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Todo!]!
-  tasksCount(where: TodoWhereInput! = {}): Int!
+  ): [Todo!]
   _tasksMeta(
     where: TodoWhereInput! = {}
     search: String
@@ -133,6 +132,7 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  tasksCount(where: TodoWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -156,8 +156,7 @@ type Role {
     orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Person!]!
-  assignedToCount(where: PersonWhereInput! = {}): Int!
+  ): [Person!]
   _assignedToMeta(
     where: PersonWhereInput! = {}
     search: String
@@ -167,6 +166,7 @@ type Role {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  assignedToCount(where: PersonWhereInput! = {}): Int
 }
 
 enum SortPeopleBy {

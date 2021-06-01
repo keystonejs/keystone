@@ -174,8 +174,7 @@ type User {
     orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [PhoneNumber!]!
-  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int!
+  ): [PhoneNumber!]
   _phoneNumbersMeta(
     where: PhoneNumberWhereInput! = {}
     search: String
@@ -185,6 +184,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     search: String
@@ -193,8 +193,7 @@ type User {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -204,6 +203,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
 

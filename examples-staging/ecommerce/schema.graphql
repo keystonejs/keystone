@@ -295,8 +295,7 @@ type User {
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [CartItem!]!
-  cartCount(where: CartItemWhereInput! = {}): Int!
+  ): [CartItem!]
   _cartMeta(
     where: CartItemWhereInput! = {}
     search: String
@@ -306,6 +305,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
     search: String
@@ -314,8 +314,7 @@ type User {
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Order!]!
-  ordersCount(where: OrderWhereInput! = {}): Int!
+  ): [Order!]
   _ordersMeta(
     where: OrderWhereInput! = {}
     search: String
@@ -325,6 +324,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   products(
     where: ProductWhereInput! = {}
@@ -334,8 +334,7 @@ type User {
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Product!]!
-  productsCount(where: ProductWhereInput! = {}): Int!
+  ): [Product!]
   _productsMeta(
     where: ProductWhereInput! = {}
     search: String
@@ -345,6 +344,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken: PasswordState
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
@@ -460,8 +460,7 @@ type Order {
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [OrderItem!]!
-  itemsCount(where: OrderItemWhereInput! = {}): Int!
+  ): [OrderItem!]
   _itemsMeta(
     where: OrderItemWhereInput! = {}
     search: String
@@ -471,6 +470,7 @@ type Order {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  itemsCount(where: OrderItemWhereInput! = {}): Int
   user: User
   charge: String
 }
@@ -538,8 +538,7 @@ type Role {
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [User!]!
-  assignedToCount(where: UserWhereInput! = {}): Int!
+  ): [User!]
   _assignedToMeta(
     where: UserWhereInput! = {}
     search: String
@@ -549,6 +548,7 @@ type Role {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  assignedToCount(where: UserWhereInput! = {}): Int
 }
 
 enum SortUsersBy {

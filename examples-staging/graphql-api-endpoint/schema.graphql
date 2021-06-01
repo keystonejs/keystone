@@ -162,8 +162,7 @@ type User {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -173,6 +172,7 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -194,8 +194,7 @@ type Post {
     orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Tag!]!
-  tagsCount(where: TagWhereInput! = {}): Int!
+  ): [Tag!]
   _tagsMeta(
     where: TagWhereInput! = {}
     search: String
@@ -205,6 +204,7 @@ type Post {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  tagsCount(where: TagWhereInput! = {}): Int
 }
 
 type Post_content_DocumentField {
@@ -230,8 +230,7 @@ type Tag {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -241,6 +240,7 @@ type Tag {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 enum SortPostsBy {

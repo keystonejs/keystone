@@ -103,8 +103,7 @@ type Author {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
-  postsCount(where: PostWhereInput! = {}): Int!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -114,6 +113,7 @@ type Author {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 enum SortPostsBy {

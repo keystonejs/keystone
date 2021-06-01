@@ -102,8 +102,7 @@ type Person {
     orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Task!]!
-  tasksCount(where: TaskWhereInput! = {}): Int!
+  ): [Task!]
   _tasksMeta(
     where: TaskWhereInput! = {}
     search: String
@@ -113,6 +112,7 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+  tasksCount(where: TaskWhereInput! = {}): Int
 }
 
 type PasswordState {
