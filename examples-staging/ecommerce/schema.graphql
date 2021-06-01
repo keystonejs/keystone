@@ -158,7 +158,7 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -199,7 +199,7 @@ input ProductRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
@@ -292,7 +292,7 @@ input ProductOrderByInput {
   price: OrderDirection
 }
 
-input ProductCreateInput {
+input ProductUpdateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -315,7 +315,7 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductUpdateInput {
+input ProductCreateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -417,7 +417,7 @@ input ProductImageOrderByInput {
   altText: OrderDirection
 }
 
-input ProductImageCreateInput {
+input ProductImageUpdateInput {
   image: Upload
   altText: String
   product: ProductRelateToOneInput
@@ -435,7 +435,7 @@ input ProductRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductImageUpdateInput {
+input ProductImageCreateInput {
   image: Upload
   altText: String
   product: ProductRelateToOneInput
@@ -489,13 +489,13 @@ input CartItemOrderByInput {
   quantity: OrderDirection
 }
 
-input CartItemCreateInput {
+input CartItemUpdateInput {
   quantity: Int
   product: ProductRelateToOneInput
   user: UserRelateToOneInput
 }
 
-input CartItemUpdateInput {
+input CartItemCreateInput {
   quantity: Int
   product: ProductRelateToOneInput
   user: UserRelateToOneInput
@@ -581,7 +581,7 @@ input OrderItemOrderByInput {
   quantity: OrderDirection
 }
 
-input OrderItemCreateInput {
+input OrderItemUpdateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -597,7 +597,7 @@ input OrderRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input OrderItemUpdateInput {
+input OrderItemCreateInput {
   name: String
   description: String
   photo: ProductImageRelateToOneInput
@@ -684,7 +684,7 @@ input OrderOrderByInput {
   charge: OrderDirection
 }
 
-input OrderCreateInput {
+input OrderUpdateInput {
   total: Int
   items: OrderItemRelateToManyInput
   user: UserRelateToOneInput
@@ -698,7 +698,7 @@ input OrderItemRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input OrderUpdateInput {
+input OrderCreateInput {
   total: Int
   items: OrderItemRelateToManyInput
   user: UserRelateToOneInput
@@ -803,7 +803,7 @@ input RoleOrderByInput {
   canManageOrders: OrderDirection
 }
 
-input RoleCreateInput {
+input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
   canSeeOtherUsers: Boolean
@@ -821,7 +821,7 @@ input UserRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RoleUpdateInput {
+input RoleCreateInput {
   name: String
   canManageProducts: Boolean
   canSeeOtherUsers: Boolean

@@ -58,7 +58,7 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
+input TodoUpdateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
@@ -72,7 +72,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
@@ -164,7 +164,7 @@ input PersonOrderByInput {
   email: OrderDirection
 }
 
-input PersonCreateInput {
+input PersonUpdateInput {
   name: String
   email: String
   password: String
@@ -186,7 +186,7 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   email: String
   password: String
@@ -292,7 +292,7 @@ input RoleOrderByInput {
   canManageRoles: OrderDirection
 }
 
-input RoleCreateInput {
+input RoleUpdateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean
@@ -310,7 +310,7 @@ input PersonRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RoleUpdateInput {
+input RoleCreateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean

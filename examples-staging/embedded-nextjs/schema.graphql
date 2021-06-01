@@ -63,13 +63,13 @@ enum OrderDirection {
   desc
 }
 
-input PostCreateInput {
+input PostUpdateInput {
   title: String
   slug: String
   content: String
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   slug: String
   content: String

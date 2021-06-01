@@ -109,7 +109,7 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -123,7 +123,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
@@ -244,7 +244,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-input PostCreateInput {
+input PostUpdateInput {
   title: String
   status: String
   content: JSON
@@ -267,7 +267,7 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: String
   content: JSON
@@ -350,12 +350,12 @@ input TagOrderByInput {
   name: OrderDirection
 }
 
-input TagCreateInput {
+input TagUpdateInput {
   name: String
   posts: PostRelateToManyInput
 }
 
-input TagUpdateInput {
+input TagCreateInput {
   name: String
   posts: PostRelateToManyInput
 }

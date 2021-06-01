@@ -43,11 +43,11 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
+input TodoUpdateInput {
   title: String
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   title: String
 }
 

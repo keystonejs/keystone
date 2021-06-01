@@ -61,7 +61,7 @@ enum OrderDirection {
   desc
 }
 
-input PackageCreateInput {
+input PackageUpdateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
@@ -75,7 +75,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PackageUpdateInput {
+input PackageCreateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
@@ -148,7 +148,7 @@ input PersonOrderByInput {
   name: OrderDirection
 }
 
-input PersonCreateInput {
+input PersonUpdateInput {
   name: String
   packages: PackageRelateToManyInput
 }
@@ -160,7 +160,7 @@ input PackageRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   packages: PackageRelateToManyInput
 }

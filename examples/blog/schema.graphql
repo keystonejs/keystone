@@ -85,7 +85,7 @@ enum OrderDirection {
   desc
 }
 
-input PostCreateInput {
+input PostUpdateInput {
   title: String
   status: PostStatusType
   content: String
@@ -100,7 +100,7 @@ input AuthorRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: PostStatusType
   content: String
@@ -184,7 +184,7 @@ input AuthorOrderByInput {
   email: OrderDirection
 }
 
-input AuthorCreateInput {
+input AuthorUpdateInput {
   name: String
   email: String
   posts: PostRelateToManyInput
@@ -197,7 +197,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input AuthorUpdateInput {
+input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyInput

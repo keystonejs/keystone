@@ -88,7 +88,7 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
+input TodoUpdateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneInput
@@ -102,7 +102,7 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneInput
@@ -215,7 +215,7 @@ input UserOrderByInput {
   updatedAt: OrderDirection
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -229,7 +229,7 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String

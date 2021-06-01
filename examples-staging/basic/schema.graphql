@@ -150,7 +150,7 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   avatar: ImageFieldInput
@@ -191,7 +191,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   avatar: ImageFieldInput
@@ -276,7 +276,7 @@ input PhoneNumberOrderByInput {
   value: OrderDirection
 }
 
-input PhoneNumberCreateInput {
+input PhoneNumberUpdateInput {
   user: UserRelateToOneInput
   type: String
   value: String
@@ -289,7 +289,7 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PhoneNumberUpdateInput {
+input PhoneNumberCreateInput {
   user: UserRelateToOneInput
   type: String
   value: String
@@ -375,7 +375,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-input PostCreateInput {
+input PostUpdateInput {
   title: String
   status: String
   content: JSON
@@ -383,7 +383,7 @@ input PostCreateInput {
   author: UserRelateToOneInput
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: String
   content: JSON

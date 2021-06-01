@@ -82,7 +82,7 @@ enum OrderDirection {
   desc
 }
 
-input TaskCreateInput {
+input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
@@ -97,7 +97,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TaskUpdateInput {
+input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
@@ -171,7 +171,7 @@ input PersonOrderByInput {
   name: OrderDirection
 }
 
-input PersonCreateInput {
+input PersonUpdateInput {
   name: String
   tasks: TaskRelateToManyInput
 }
@@ -183,7 +183,7 @@ input TaskRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   tasks: TaskRelateToManyInput
 }

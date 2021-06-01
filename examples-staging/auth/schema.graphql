@@ -65,14 +65,14 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
   isAdmin: Boolean
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
