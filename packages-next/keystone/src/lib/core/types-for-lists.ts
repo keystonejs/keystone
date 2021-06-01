@@ -691,7 +691,7 @@ export function initialiseLists(
       const fields = Object.fromEntries(
         Object.entries(list.fields).map(([fieldKey, field]) => {
           const access = parseFieldAccessControl(field.access);
-          if (access.create && field.input?.create) {
+          if (access.create && field.input?.create?.arg) {
             hasAnAccessibleCreateField = true;
           }
           if (access.update && field.input?.update) {
