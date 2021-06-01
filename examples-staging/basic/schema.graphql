@@ -150,7 +150,7 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   avatar: ImageFieldInput
@@ -191,11 +191,12 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   avatar: ImageFieldInput
@@ -207,9 +208,8 @@ input UserUpdateInput {
   posts: PostRelateToManyInput
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UsersCreateInput {
+  data: UserCreateInput
 }
 
 type LocalImageFieldOutput implements ImageFieldOutput {
@@ -285,7 +285,7 @@ input PhoneNumberOrderByInput {
   value: OrderDirection
 }
 
-input PhoneNumberCreateInput {
+input PhoneNumberUpdateInput {
   user: UserRelateToOneInput
   type: String
   value: String
@@ -298,19 +298,19 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PhoneNumbersCreateInput {
-  data: PhoneNumberCreateInput
+input PhoneNumbersUpdateInput {
+  id: ID!
+  data: PhoneNumberUpdateInput
 }
 
-input PhoneNumberUpdateInput {
+input PhoneNumberCreateInput {
   user: UserRelateToOneInput
   type: String
   value: String
 }
 
-input PhoneNumbersUpdateInput {
-  id: ID!
-  data: PhoneNumberUpdateInput
+input PhoneNumbersCreateInput {
+  data: PhoneNumberCreateInput
 }
 
 type Post {
@@ -393,18 +393,6 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-input PostCreateInput {
-  title: String
-  status: String
-  content: JSON
-  publishDate: String
-  author: UserRelateToOneInput
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 input PostUpdateInput {
   title: String
   status: String
@@ -416,6 +404,18 @@ input PostUpdateInput {
 input PostsUpdateInput {
   id: ID!
   data: PostUpdateInput
+}
+
+input PostCreateInput {
+  title: String
+  status: String
+  content: JSON
+  publishDate: String
+  author: UserRelateToOneInput
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 type Mutation {

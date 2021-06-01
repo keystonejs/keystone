@@ -58,7 +58,7 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
+input TodoUpdateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
@@ -72,20 +72,20 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
   assignedTo: PersonRelateToOneInput
 }
 
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
+input TodosCreateInput {
+  data: TodoCreateInput
 }
 
 type Person {
@@ -173,7 +173,7 @@ input PersonOrderByInput {
   email: OrderDirection
 }
 
-input PersonCreateInput {
+input PersonUpdateInput {
   name: String
   email: String
   password: String
@@ -195,11 +195,12 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PeopleCreateInput {
-  data: PersonCreateInput
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   email: String
   password: String
@@ -207,9 +208,8 @@ input PersonUpdateInput {
   tasks: TodoRelateToManyInput
 }
 
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 type Role {
@@ -310,7 +310,7 @@ input RoleOrderByInput {
   canManageRoles: OrderDirection
 }
 
-input RoleCreateInput {
+input RoleUpdateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean
@@ -328,11 +328,12 @@ input PersonRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RolesCreateInput {
-  data: RoleCreateInput
+input RolesUpdateInput {
+  id: ID!
+  data: RoleUpdateInput
 }
 
-input RoleUpdateInput {
+input RoleCreateInput {
   name: String
   canCreateTodos: Boolean
   canManageAllTodos: Boolean
@@ -343,9 +344,8 @@ input RoleUpdateInput {
   assignedTo: PersonRelateToManyInput
 }
 
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
+input RolesCreateInput {
+  data: RoleCreateInput
 }
 
 type Mutation {

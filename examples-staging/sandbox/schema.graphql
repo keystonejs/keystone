@@ -88,7 +88,7 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
+input TodoUpdateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneInput
@@ -102,20 +102,20 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
+input TodosUpdateInput {
+  id: ID!
+  data: TodoUpdateInput
 }
 
-input TodoUpdateInput {
+input TodoCreateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneInput
   finishBy: String
 }
 
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
+input TodosCreateInput {
+  data: TodoCreateInput
 }
 
 type User {
@@ -224,7 +224,7 @@ input UserOrderByInput {
   updatedAt: OrderDirection
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -238,20 +238,20 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
   tasks: TodoRelateToManyInput
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UsersCreateInput {
+  data: UserCreateInput
 }
 
 type Mutation {

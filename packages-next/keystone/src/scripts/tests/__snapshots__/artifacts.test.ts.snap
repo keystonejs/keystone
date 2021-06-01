@@ -43,14 +43,6 @@ export type TodoOrderByInput = {
 
 export type OrderDirection = 'asc' | 'desc';
 
-export type TodoCreateInput = {
-  readonly title?: Scalars['String'] | null;
-};
-
-export type TodosCreateInput = {
-  readonly data?: TodoCreateInput | null;
-};
-
 export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
 };
@@ -58,6 +50,14 @@ export type TodoUpdateInput = {
 export type TodosUpdateInput = {
   readonly id: Scalars['ID'];
   readonly data?: TodoUpdateInput | null;
+};
+
+export type TodoCreateInput = {
+  readonly title?: Scalars['String'] | null;
+};
+
+export type TodosCreateInput = {
+  readonly data?: TodoCreateInput | null;
 };
 
 export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';

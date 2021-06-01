@@ -43,14 +43,6 @@ enum OrderDirection {
   desc
 }
 
-input TodoCreateInput {
-  title: String
-}
-
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
 input TodoUpdateInput {
   title: String
 }
@@ -58,6 +50,14 @@ input TodoUpdateInput {
 input TodosUpdateInput {
   id: ID!
   data: TodoUpdateInput
+}
+
+input TodoCreateInput {
+  title: String
+}
+
+input TodosCreateInput {
+  data: TodoCreateInput
 }
 
 type _QueryMeta {

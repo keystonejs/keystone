@@ -65,17 +65,6 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  isAdmin: Boolean
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
 input UserUpdateInput {
   name: String
   email: String
@@ -86,6 +75,17 @@ input UserUpdateInput {
 input UsersUpdateInput {
   id: ID!
   data: UserUpdateInput
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  isAdmin: Boolean
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
 }
 
 type _QueryMeta {

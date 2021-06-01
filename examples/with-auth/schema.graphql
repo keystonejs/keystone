@@ -82,7 +82,7 @@ enum OrderDirection {
   desc
 }
 
-input TaskCreateInput {
+input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
@@ -97,11 +97,12 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TasksCreateInput {
-  data: TaskCreateInput
+input TasksUpdateInput {
+  id: ID!
+  data: TaskUpdateInput
 }
 
-input TaskUpdateInput {
+input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
@@ -109,9 +110,8 @@ input TaskUpdateInput {
   finishBy: String
 }
 
-input TasksUpdateInput {
-  id: ID!
-  data: TaskUpdateInput
+input TasksCreateInput {
+  data: TaskCreateInput
 }
 
 type Person {
@@ -196,7 +196,7 @@ input PersonOrderByInput {
   email: OrderDirection
 }
 
-input PersonCreateInput {
+input PersonUpdateInput {
   name: String
   email: String
   password: String
@@ -210,20 +210,20 @@ input TaskRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PeopleCreateInput {
-  data: PersonCreateInput
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
 }
 
-input PersonUpdateInput {
+input PersonCreateInput {
   name: String
   email: String
   password: String
   tasks: TaskRelateToManyInput
 }
 
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 type Mutation {

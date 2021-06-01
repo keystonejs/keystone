@@ -109,7 +109,7 @@ enum OrderDirection {
   desc
 }
 
-input UserCreateInput {
+input UserUpdateInput {
   name: String
   email: String
   password: String
@@ -123,20 +123,20 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
 }
 
-input UserUpdateInput {
+input UserCreateInput {
   name: String
   email: String
   password: String
   posts: PostRelateToManyInput
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UsersCreateInput {
+  data: UserCreateInput
 }
 
 type Post {
@@ -253,7 +253,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-input PostCreateInput {
+input PostUpdateInput {
   title: String
   status: String
   content: JSON
@@ -276,11 +276,12 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
 }
 
-input PostUpdateInput {
+input PostCreateInput {
   title: String
   status: String
   content: JSON
@@ -289,9 +290,8 @@ input PostUpdateInput {
   tags: TagRelateToManyInput
 }
 
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 type Tag {
@@ -368,15 +368,6 @@ input TagOrderByInput {
   name: OrderDirection
 }
 
-input TagCreateInput {
-  name: String
-  posts: PostRelateToManyInput
-}
-
-input TagsCreateInput {
-  data: TagCreateInput
-}
-
 input TagUpdateInput {
   name: String
   posts: PostRelateToManyInput
@@ -385,6 +376,15 @@ input TagUpdateInput {
 input TagsUpdateInput {
   id: ID!
   data: TagUpdateInput
+}
+
+input TagCreateInput {
+  name: String
+  posts: PostRelateToManyInput
+}
+
+input TagsCreateInput {
+  data: TagCreateInput
 }
 
 type Mutation {

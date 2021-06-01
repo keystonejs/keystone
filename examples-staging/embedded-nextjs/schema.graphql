@@ -63,16 +63,6 @@ enum OrderDirection {
   desc
 }
 
-input PostCreateInput {
-  title: String
-  slug: String
-  content: String
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 input PostUpdateInput {
   title: String
   slug: String
@@ -82,6 +72,16 @@ input PostUpdateInput {
 input PostsUpdateInput {
   id: ID!
   data: PostUpdateInput
+}
+
+input PostCreateInput {
+  title: String
+  slug: String
+  content: String
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
 }
 
 type _QueryMeta {

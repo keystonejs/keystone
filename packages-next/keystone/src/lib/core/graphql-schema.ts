@@ -278,13 +278,13 @@ function collectTypes(
       types.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
       types.push(list.types.orderBy.graphQLType);
     }
-    if (list.access.create) {
-      types.push(list.types.create.graphQLType);
-      types.push(createManyByList[list.listKey].graphQLType);
-    }
     if (list.access.update) {
       types.push(list.types.update.graphQLType);
       types.push(updateManyByList[list.listKey].graphQLType);
+    }
+    if (list.access.create) {
+      types.push(list.types.create.graphQLType);
+      types.push(createManyByList[list.listKey].graphQLType);
     }
 
     for (const field of Object.values(list.fields)) {
