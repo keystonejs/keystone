@@ -49,17 +49,7 @@ export function getGraphQLSchema(
             type: types.list(types.nonNull(list.types.output)),
             args: list.types.findManyArgs,
             async resolve(_rootVal, args, context, info) {
-              const results = await queries.findMany(args, list, context);
-              if (info && info.cacheControl && list.cacheHint) {
-                info.cacheControl.setCacheHint(
-                  list.cacheHint({
-                    results,
-                    operationName: info.operation.name?.value,
-                    meta: false,
-                  }) as any
-                );
-              }
-              return results;
+              return queries.findMany(args, list, context, info);
             },
           });
           const countQuery = types.field({

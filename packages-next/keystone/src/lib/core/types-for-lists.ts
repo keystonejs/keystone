@@ -29,7 +29,7 @@ import {
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
-import { GraphQLEnumType } from 'graphql';
+import { GraphQLEnumType, GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
 import { applyFirstSkipToCount, getPrismaModelForList, IdType, PrismaPromise } from './utils';
 import {
@@ -120,7 +120,8 @@ function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
   foreignList: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
 ) {
   const oppositeDbField = foreignList.fieldsIncludingOppositesToOneSidedRelations[dbField.field];
   assert(oppositeDbField.kind === 'relation');
@@ -138,7 +139,8 @@ function getRelationVal(
               where: { AND: [args.where, relationFilter] },
             }),
           foreignList,
-          context
+          context,
+          info
         );
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
@@ -146,13 +148,23 @@ function getRelationVal(
         if (filter === false) {
           throw accessDeniedError('query');
         }
-        return applyFirstSkipToCount({
+        const count = await applyFirstSkipToCount({
           count: await getPrismaModelForList(context.prisma, dbField.list).count({
             where: { AND: [filter, relationFilter] },
           }),
           first,
           skip,
         });
+        if (info && info.cacheControl && foreignList.cacheHint) {
+          info.cacheControl.setCacheHint(
+            foreignList.cacheHint({
+              results: count,
+              operationName: info.operation.name?.value,
+              meta: true,
+            }) as any
+          );
+        }
+        return count;
       },
     };
   }
@@ -183,10 +195,10 @@ function getValueForDBField(
   rootVal: ItemRootValue,
   dbField: ResolvedDBField,
   id: IdType,
-  listKey: string,
   fieldPath: string,
   context: KeystoneContext,
-  lists: Record<string, InitialisedList>
+  lists: Record<string, InitialisedList>,
+  info: GraphQLResolveInfo
 ) {
   if (dbField.kind === 'multi') {
     return Object.fromEntries(
@@ -197,7 +209,7 @@ function getValueForDBField(
     );
   }
   if (dbField.kind === 'relation') {
-    return getRelationVal(dbField, id, lists[dbField.list], context);
+    return getRelationVal(dbField, id, lists[dbField.list], context, info);
   }
   return rootVal[fieldPath] as any;
 }
@@ -244,7 +256,7 @@ function outputTypeField(
         info.cacheControl.setCacheHint(cacheHint as any);
       }
 
-      const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context, lists);
+      const value = getValueForDBField(rootVal, dbField, id, fieldPath, context, lists, info);
 
       if (output.resolve) {
         return output.resolve({ id, value, item: rootVal }, args, context, info);

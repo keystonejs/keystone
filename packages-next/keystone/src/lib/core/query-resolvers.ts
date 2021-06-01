@@ -1,4 +1,5 @@
 import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
+import { GraphQLResolveInfo } from 'graphql';
 import { validateNonCreateListAccessControl } from './access-control';
 import {
   InputFilter,
@@ -117,7 +118,8 @@ export async function getFindManyArgs<T>(
     orderBy: readonly Record<string, 'asc' | 'desc'>[];
   }) => Promise<T[]>,
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
 ): Promise<T[]> {
   const [resolvedWhere, orderBy] = await Promise.all([
     findManyFilter(list, context, where || {}, search),
@@ -135,19 +137,30 @@ export async function getFindManyArgs<T>(
     skip,
   });
   applyMaxResults(results, list, context);
+  if (info.cacheControl && list.cacheHint) {
+    info.cacheControl.setCacheHint(
+      list.cacheHint({
+        results,
+        operationName: info.operation.name?.value,
+        meta: false,
+      }) as any
+    );
+  }
   return results;
 }
 
 export async function findMany(
   args: FindManyArgsValue,
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
 ) {
   return getFindManyArgs(
     args,
     args => getPrismaModelForList(context.prisma, list.listKey).findMany(args),
     list,
-    context
+    context,
+    info
   );
 }
 
