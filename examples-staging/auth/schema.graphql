@@ -10,8 +10,8 @@ type User {
 }
 
 input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID

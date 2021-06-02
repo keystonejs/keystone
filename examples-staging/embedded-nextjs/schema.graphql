@@ -9,8 +9,8 @@ type Post {
 }
 
 input PostWhereInput {
-  AND: [PostWhereInput]
-  OR: [PostWhereInput]
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
