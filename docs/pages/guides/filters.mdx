@@ -123,7 +123,9 @@ Relationship filters will depend on whether you have `many: true` or `many: fals
 
 ### One
 
-If you have `many: false` configured on the relationship field, then you can find items based on
+If you have `many: false` configured on the relationship field, then you can find items based on a `where` filter using the fields from the related list.
+
+For example, to find all the tasks where the task is assigned to a used named `"Alice"`, we can run the following query.
 
 ```graphql
 {
@@ -135,5 +137,18 @@ If you have `many: false` configured on the relationship field, then you can fin
 ```
 
 ### Many
+
+If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `all` of the related items match a `where` filter using the fields from the related list.
+
+For example, to find all the people which have `some` posts with the label `"Hello"`, we can run the following query:
+
+```graphql
+{
+  allPeople(where: { tasks_some: { label: "Hello" } }) {
+    id
+    name
+  }
+}
+```
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
