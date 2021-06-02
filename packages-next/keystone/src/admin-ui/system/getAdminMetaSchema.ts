@@ -281,7 +281,6 @@ export function getAdminMetaSchema({
   const queryTypeConfig = schema.getQueryType()!.toConfig();
   return new GraphQLSchema({
     ...schemaConfig,
-    // TODO: fix the fact that this would be broken if types used the Query type
     types: schemaConfig.types.filter(x => x.name !== 'Query'),
     query: new GraphQLObjectType({
       ...queryTypeConfig,

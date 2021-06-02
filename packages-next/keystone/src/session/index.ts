@@ -215,7 +215,6 @@ export function sessionSchema(graphQLSchema: GraphQLSchema) {
   });
   return new GraphQLSchema({
     ...schemaConfig,
-    // TODO: fix the fact that this would be broken if types used the Mutation type
     types: schemaConfig.types.map(x => (x.name === 'Mutation' ? mutationType : x)),
     mutation: mutationType,
   });
