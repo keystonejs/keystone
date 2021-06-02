@@ -66,7 +66,7 @@ async function getDisconnects(
         } catch (err) {
           return [];
         }
-        return [resolveUniqueWhereInput(filter, foreignList.fields, context)];
+        return [await resolveUniqueWhereInput(filter, foreignList.fields, context)];
       })
     )
   ).flat();
