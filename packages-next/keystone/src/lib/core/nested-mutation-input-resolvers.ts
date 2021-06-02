@@ -1,20 +1,42 @@
 import { KeystoneContext, TypesForList, types } from '@keystone-next/types';
-import {
-  CreateAndUpdateInputResolvers,
-  resolveUniqueWhereInput,
-  UniqueInputFilter,
-  UniquePrismaFilter,
-} from './input-resolvers';
+import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from './input-resolvers';
+import { createOneState } from './mutations/resolvers';
 import { InitialisedList } from './types-for-lists';
-import { isRejected, isFulfilled } from './utils';
+import {
+  isRejected,
+  isFulfilled,
+  getPrismaModelForList,
+  promiseAllRejectWithAllErrors,
+  IdType,
+} from './utils';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
+
+export class NestedMutationState {
+  #afterChanges: (() => void | Promise<void>)[] = [];
+  #context: KeystoneContext;
+  constructor(context: KeystoneContext) {
+    this.#context = context;
+  }
+  async create(
+    input: Record<string, any>,
+    list: InitialisedList
+  ): Promise<{ kind: 'connect'; id: IdType } | { kind: 'create'; data: Record<string, any> }> {
+    const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
+    const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
+    this.#afterChanges.push(() => afterChange(item));
+    return { kind: 'connect' as const, id: item.id };
+  }
+  async commit() {
+    await promiseAllRejectWithAllErrors(this.#afterChanges);
+  }
+}
 
 // TODO: access control for the items you are connecting/disconnecting
 // the previous version of this used read access control for that
 
 export function resolveRelateToManyForCreateInput(
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -26,7 +48,7 @@ export function resolveRelateToManyForCreateInput(
       return undefined;
     }
     assertValidManyOperation(value, target);
-    return resolveCreateAndConnect(value, inputResolvers, context, foreignList, target);
+    return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
   };
 }
 
@@ -66,7 +88,7 @@ async function resolveCreateAndConnect(
     types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>,
     null | undefined
   >,
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -75,7 +97,7 @@ async function resolveCreateAndConnect(
     getConnects((value.connect || []).filter(isNotNull), context, foreignList)
   );
   const creates = Promise.allSettled(
-    (value.create || []).filter(isNotNull).map(x => inputResolvers.create(x))
+    (value.create || []).filter(isNotNull).map(x => nestedMutationState.create(x, foreignList))
   );
 
   const [connectResult, createResult] = await Promise.all([connects, creates]);
@@ -122,7 +144,7 @@ function assertValidManyOperation(
 }
 
 export function resolveRelateToManyForUpdateInput(
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -142,7 +164,7 @@ export function resolveRelateToManyForUpdateInput(
 
     const [disconnect, connectAndCreates] = await Promise.all([
       disconnects,
-      resolveCreateAndConnect(value, inputResolvers, context, foreignList, target),
+      resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
     ]);
 
     return {
@@ -158,7 +180,7 @@ async function handleCreateAndUpdate(
     types.InferValueFromArg<types.Arg<TypesForList['relateTo']['one']['create']>>,
     null | undefined
   >,
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -177,7 +199,7 @@ async function handleCreateAndUpdate(
     const createInput = value.create;
     let create = await (async () => {
       try {
-        return await inputResolvers.create(createInput);
+        return await nestedMutationState.create(createInput, foreignList);
       } catch (err) {
         throw new Error(`Unable to create a ${target}`);
       }
@@ -191,7 +213,7 @@ async function handleCreateAndUpdate(
 }
 
 export function resolveRelateToOneForCreateInput(
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -209,12 +231,12 @@ export function resolveRelateToOneForCreateInput(
       //   `If a relate to one for create input is passed, only one key can be passed but ${numOfKeys} were be passed`
       // );
     }
-    return handleCreateAndUpdate(value, inputResolvers, context, foreignList, target);
+    return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
   };
 }
 
 export function resolveRelateToOneForUpdateInput(
-  inputResolvers: CreateAndUpdateInputResolvers,
+  nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
@@ -235,7 +257,7 @@ export function resolveRelateToOneForUpdateInput(
       throw new Error(`Nested mutation operation invalid for ${target}`);
     }
     if (value.connect || value.create) {
-      return handleCreateAndUpdate(value, inputResolvers, context, foreignList, target);
+      return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
     }
     if (value.disconnect) {
       try {

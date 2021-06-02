@@ -37,24 +37,13 @@ import {
   resolveRelationships,
 } from './prisma-schema';
 import { accessDeniedError } from './graphql-errors';
-import {
-  CreateAndUpdateInputResolvers,
-  InputFilter,
-  PrismaFilter,
-  resolveWhereInput,
-} from './input-resolvers';
-import { createOneState } from './mutations/resolvers';
+import { InputFilter, PrismaFilter, resolveWhereInput } from './input-resolvers';
 import { findMany, findManyFilter } from './queries/resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
   hooks: FieldHooks<BaseGeneratedListTypes>;
-};
-
-type NestedMutationState = {
-  resolvers: Record<string, CreateAndUpdateInputResolvers>;
-  afterChanges: (() => Promise<void> | void)[];
 };
 
 export type InitialisedList = {
@@ -64,9 +53,6 @@ export type InitialisedList = {
   filterImpls: Record<string, (input: InputFilter[string]) => PrismaFilter>;
   types: TypesForList;
   access: ResolvedListAccessControl;
-  inputResolvers: {
-    createAndUpdate: (context: KeystoneContext) => NestedMutationState;
-  };
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   applySearchField: (filter: PrismaFilter, search: string | null | undefined) => PrismaFilter;
@@ -622,9 +608,6 @@ export function initialiseLists(
       ...list,
       ...listInfos[listKey],
       hooks: list.hooks || {},
-      inputResolvers: {
-        createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
-      },
       fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
       filterImpls: Object.assign(
         {},
@@ -685,25 +668,4 @@ export function initialiseLists(
     lists: initialisedLists,
     listsWithResolvedRelations: listsWithResolvedDBFields,
   };
-}
-
-function createAndUpdateInputResolvers(
-  lists: Record<string, InitialisedList>,
-  context: KeystoneContext
-) {
-  let ret: NestedMutationState = {
-    resolvers: Object.fromEntries(
-      Object.entries(lists).map(([listKey, list]) => {
-        const create = async (input: any) => {
-          const { afterChange, data } = await createOneState({ data: input }, list, context);
-          const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
-          ret.afterChanges.push(() => afterChange(item));
-          return { kind: 'connect' as const, id: item.id };
-        };
-        return [listKey, { create }];
-      })
-    ),
-    afterChanges: [],
-  };
-  return ret;
 }

@@ -7,6 +7,7 @@ import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-sc
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList, IdType, promiseAllRejectWithAllErrors } from './utils';
 import {
+  NestedMutationState,
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
   resolveRelateToOneForCreateInput,
@@ -289,7 +290,7 @@ export async function resolveInputForCreateOrUpdate(
   existingItem: Record<string, any> | undefined
 ) {
   const operation = existingItem === undefined ? ('create' as const) : ('update' as const);
-  const nestedMutationState = list.inputResolvers.createAndUpdate(context);
+  const nestedMutationState = new NestedMutationState(context);
   let resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -314,19 +315,18 @@ export async function resolveInputForCreateOrUpdate(
                   return undefined as any;
                 }
                 const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
-                const inputResolvers = nestedMutationState.resolvers[field.dbField.list];
                 const foreignList = list.lists[field.dbField.list];
                 if (field.dbField.mode === 'many') {
                   if (operation === 'create') {
                     return resolveRelateToManyForCreateInput(
-                      inputResolvers,
+                      nestedMutationState,
                       context,
                       foreignList,
                       target
                     );
                   }
                   return resolveRelateToManyForUpdateInput(
-                    inputResolvers,
+                    nestedMutationState,
                     context,
                     foreignList,
                     target
@@ -334,14 +334,14 @@ export async function resolveInputForCreateOrUpdate(
                 }
                 if (operation === 'create') {
                   return resolveRelateToOneForCreateInput(
-                    inputResolvers,
+                    nestedMutationState,
                     context,
                     foreignList,
                     target
                   );
                 }
                 return resolveRelateToOneForUpdateInput(
-                  inputResolvers,
+                  nestedMutationState,
                   context,
                   foreignList,
                   target
@@ -417,7 +417,7 @@ export async function resolveInputForCreateOrUpdate(
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
-      await promiseAllRejectWithAllErrors(nestedMutationState.afterChanges.map(x => x()));
+      await nestedMutationState.commit();
       await runSideEffectOnlyHook(
         list,
         'afterChange',
