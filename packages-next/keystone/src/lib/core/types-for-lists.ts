@@ -367,15 +367,6 @@ export function initialiseLists(
             OR: types.arg({
               type: types.list(types.nonNull(where)),
             }),
-            // NOT: types.arg({
-            //   type: types.list(types.nonNull(where)),
-            // }),
-            // ...Object.fromEntries(
-            //   Object.entries(fields).flatMap(([key, field]) => {
-            //     if (!field.input?.where?.arg || field.access.read === false) return [];
-            //     return [[key, field.input.where.arg]] as const;
-            //   })
-            // ),
           },
           ...Object.values(fields).map(field =>
             field.access.read === false ? {} : field.__legacy?.filters?.fields ?? {}
@@ -461,11 +452,9 @@ export function initialiseLists(
       fields: () => {
         const list = initialisedLists[listKey];
         return {
-          ...(list.access.create === false
-            ? {}
-            : {
-                create: types.arg({ type: types.list(create) }),
-              }),
+          ...(list.access.create !== false && {
+            create: types.arg({ type: types.list(create) }),
+          }),
           connect: types.arg({ type: types.list(uniqueWhere) }),
           disconnect: types.arg({ type: types.list(uniqueWhere) }),
           disconnectAll: types.arg({ type: types.Boolean }),
@@ -479,11 +468,9 @@ export function initialiseLists(
         const list = initialisedLists[listKey];
 
         return {
-          ...(list.access.create === false
-            ? {}
-            : {
-                create: types.arg({ type: create }),
-              }),
+          ...(list.access.create !== false && {
+            create: types.arg({ type: create }),
+          }),
           connect: types.arg({ type: uniqueWhere }),
           disconnect: types.arg({ type: uniqueWhere }),
           disconnectAll: types.arg({ type: types.Boolean }),
