@@ -39,10 +39,9 @@ import {
 import { accessDeniedError } from './graphql-errors';
 import {
   CreateAndUpdateInputResolvers,
-  FilterInputResolvers,
-  getFilterInputResolvers,
   InputFilter,
   PrismaFilter,
+  resolveWhereInput,
 } from './input-resolvers';
 import { createOneState } from './mutations/resolvers';
 import { findMany, findManyFilter } from './queries/resolvers';
@@ -66,7 +65,6 @@ export type InitialisedList = {
   types: TypesForList;
   access: ResolvedListAccessControl;
   inputResolvers: {
-    where: (context: KeystoneContext) => FilterInputResolvers['where'];
     createAndUpdate: (context: KeystoneContext) => NestedMutationState;
   };
   hooks: ListHooks<BaseGeneratedListTypes>;
@@ -140,11 +138,12 @@ function getRelationVal(
     if (access === false) {
       throw accessDeniedError('query');
     }
+
     return getPrismaModelForList(context.prisma, dbField.list).findFirst({
       where:
         access === true
           ? relationFilter
-          : { AND: [relationFilter, await foreignList.inputResolvers.where(context)(access)] },
+          : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
     });
   };
 }
@@ -624,7 +623,6 @@ export function initialiseLists(
       ...listInfos[listKey],
       hooks: list.hooks || {},
       inputResolvers: {
-        where: context => getWhereInputResolvers(context)[listKey].where,
         createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
       },
       fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
@@ -639,10 +637,7 @@ export function initialiseLists(
                   key,
                   (val: any) =>
                     resolve(val, foreignListWhereInput =>
-                      initialisedLists[foreignListKey].inputResolvers.where(
-                        // we're abusing the fact that the context technically isn't used rn
-                        {} as any
-                      )(foreignListWhereInput)
+                      resolveWhereInput(foreignListWhereInput, initialisedLists[foreignListKey])
                     ),
                 ];
               })
@@ -685,8 +680,6 @@ export function initialiseLists(
       lists: initialisedLists,
     };
   }
-
-  const getWhereInputResolvers = getFilterInputResolvers(initialisedLists);
 
   return {
     lists: initialisedLists,

@@ -7,6 +7,7 @@ import {
   UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveOrderBy,
+  resolveWhereInput,
 } from '../input-resolvers';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
@@ -30,11 +31,10 @@ export async function findManyFilter(
   if (!access) {
     return false;
   }
-  const whereInputResolver = list.inputResolvers.where(context);
-  let resolvedWhere = await whereInputResolver(where || {});
+  let resolvedWhere = await resolveWhereInput(where || {}, list);
   if (typeof access === 'object') {
     resolvedWhere = {
-      AND: [resolvedWhere, await whereInputResolver(access)],
+      AND: [resolvedWhere, await resolveWhereInput(access, list)],
     };
   }
 
@@ -88,7 +88,7 @@ async function findOneFilter(
   const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
   return access === true
     ? wherePrismaFilter
-    : { AND: [wherePrismaFilter, await list.inputResolvers.where(context)(access)] };
+    : { AND: [wherePrismaFilter, await resolveWhereInput(access, list)] };
 }
 
 export async function findOne(

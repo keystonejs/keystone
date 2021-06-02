@@ -68,11 +68,9 @@ export async function resolveUniqueWhereInput(
   };
 }
 
-async function resolveLegacyWhereInput(
+export async function resolveWhereInput(
   inputFilter: InputFilter,
-  list: InitialisedList,
-  context: KeystoneContext,
-  inputResolvers: Record<string, FilterInputResolvers>
+  list: InitialisedList
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
@@ -80,9 +78,7 @@ async function resolveLegacyWhereInput(
         if (fieldKey === 'OR' || fieldKey === 'AND') {
           return {
             [fieldKey]: await Promise.all(
-              value.map((value: any) =>
-                resolveLegacyWhereInput(value, list, context, inputResolvers)
-              )
+              value.map((value: any) => resolveWhereInput(value, list))
             ),
           };
         }
@@ -105,22 +101,6 @@ export function weakMemoize<Args extends [object], Return>(
     cache.set(arg, ret);
     return ret;
   };
-}
-
-export function getFilterInputResolvers(lists: Record<string, InitialisedList>) {
-  return weakMemoize(function filterInputResolversInner(context: KeystoneContext) {
-    const inputResolvers = Object.fromEntries(
-      Object.entries(lists).map(([listKey, list]): [string, FilterInputResolvers] => {
-        return [
-          listKey,
-          {
-            where: async input => resolveLegacyWhereInput(input, list, context, inputResolvers),
-          },
-        ];
-      })
-    );
-    return inputResolvers;
-  });
 }
 
 type ValidationError = { msg: string; data: {}; internalData: {} };
@@ -167,7 +147,7 @@ export async function getAccessControlledItemForDelete(
     await resolveUniqueWhereInput(inputFilter, list.fields, context)
   );
   if (typeof access === 'object') {
-    where = { AND: [where, await list.inputResolvers.where(context)(access)] };
+    where = { AND: [where, await resolveWhereInput(access, list)] };
   }
   const item = await prismaModel.findFirst({ where });
   if (item === null) {
@@ -494,7 +474,7 @@ export async function applyAccessControlForUpdate(
       accessControl === true
         ? uniqueWhereInWhereForm
         : {
-            AND: [uniqueWhereInWhereForm, await list.inputResolvers.where(context)(accessControl)],
+            AND: [uniqueWhereInWhereForm, resolveWhereInput(accessControl, list)],
           },
   });
   if (!item) {
