@@ -70,7 +70,7 @@ Different field types support different filters. The field `finishBy: timestamp(
 
 For a full list of the different filters provided by each field type, please check the [Query Filter API](../apis/filters).
 
-For more complex queries, you can combine multiple queries at once, and only those items which match all queries will be returned.
+For more complex queries, you can combine multiple filters, and only those items which match all conditions will be returned.
 
 ```graphql
 {
@@ -86,8 +86,8 @@ For more complex queries, you can combine multiple queries at once, and only tho
 
 ## Combined Filters
 
-For more advanced queries, you might need to explicitly combine different queries.
-The `AND` operater accepts a list of sub-queries, and will only return those items which match all of these sub-queries.
+For more advanced queries, you might need to explicitly combine different filters.
+The `AND` operater accepts a list of sub-filters, and will only return those items which match all of these conditions.
 
 ```graphql
 {
@@ -101,7 +101,7 @@ The `AND` operater accepts a list of sub-queries, and will only return those ite
 }
 ```
 
-The `OR` operater accepts a list of sub-queries, and will only return those items which match at least one of these sub-queries.
+The `OR` operater accepts a list of sub-filters, and will only return those items which match at least one of these conditions.
 
 ```graphql
 {
