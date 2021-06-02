@@ -2472,6 +2472,13 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
+"@ts-gql/schema@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.9.0.tgz#9bb099ab1d723582daabbd8e32799fb4e7f669eb"
+  integrity sha512-vwYj8/ibhrilRZ9kFuLtp72DoyP9s+Zx9DCu2/06AkfzTc8zWpGW/1C9r131ZwVgeYOxtoSCk/CtfPmhytz7GA==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
 "@types/accepts@*", "@types/accepts@^1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/accepts/-/accepts-1.3.5.tgz#c34bec115cfc746e04fe5a059df4ce7e7b391575"
