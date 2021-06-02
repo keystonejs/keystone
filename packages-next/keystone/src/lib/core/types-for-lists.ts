@@ -793,36 +793,9 @@ function createAndUpdateInputResolvers(
       Object.entries(lists).map(([listKey, list]) => {
         const create = async (input: any) => {
           const { afterChange, data } = await createOneState({ data: input }, list, context);
-          // TODO: update this comment with the addition of using nested mutations + fetching the item by id after
-          // we can only create the item from a nested mutation in the transaction if we have the id.
-          // you might be asking, why not use prisma's nested mutations?
-
-          // we can't for to-many relations because when if we do
-          // prisma.item.create({ data: { others: { create: [{}] } } });
-          // we don't have a way to get the item that was created in the nested mutation
-          // and we need the item to call the afterChange hook
-          // now we have the item that was created to call afterChange with
-          // and it still happens in a transaction
-
-          // we _technically_ could use prisma's nested mutations for to-one relations since there is just one item
-          // we don't do that though because people should just use uuids(or some other id field that generates the value before getting to the db),
-          // it's not worth the complexity to make this marginally better for something that we don't recommend
-          if (data.id === undefined) {
-            const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
-            await afterChange(item);
-            return { kind: 'connect' as const, id: item.id };
-          } else {
-            ret.afterChanges.push(async () => {
-              const item = await getPrismaModelForList(context.prisma, listKey).findUnique({
-                where: { id: data.id },
-              });
-              if (!item) {
-                throw new Error('could not find item after creating it');
-              }
-              await afterChange(item);
-            });
-            return { kind: 'create' as const, data };
-          }
+          const item = await getPrismaModelForList(context.prisma, listKey).create({ data });
+          ret.afterChanges.push(() => afterChange(item));
+          return { kind: 'connect' as const, id: item.id };
         };
         return [
           listKey,
