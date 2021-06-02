@@ -37,8 +37,8 @@ const { withAuth } = createAuth({
     },
   },
   /* This loads the related role for the current user, including all permissions */
-  sessionData: {
-    query: `name role {
+  sessionData: `
+    name role {
       id
       name
       canCreateTodos
@@ -48,7 +48,6 @@ const { withAuth } = createAuth({
       canManagePeople
       canManageRoles
     }`,
-  },
 });
 
 export default withAuth(

@@ -23,7 +23,7 @@ const auth = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
   },
-  sessionData: { query: 'name' },
+  sessionData: 'name',
 });
 
 export default auth.withAuth(

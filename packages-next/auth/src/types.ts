@@ -49,7 +49,7 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   /** "Magic link" functionality */
   magicAuthLink?: AuthTokenTypeConfig;
   /** Session data population */
-  sessionData?: { query: string };
+  sessionData?: string;
 };
 
 export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {

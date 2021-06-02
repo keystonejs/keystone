@@ -19,7 +19,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   // Additional options
-  sessionData: { query: 'id name email` }
+  sessionData: 'id name email`,
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { isAdmin: true },
@@ -142,9 +142,7 @@ The authentication mutations will set the values `{ listKey, itemId }` on the `c
 You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/access-control) or using [hooks](../guides/hooks).
 Configuring `sessionData` will add an `session.data` based on the `itemId`, populated by the fields given in `sessionData.query`.
 
-#### Options
-
-- `query` (required): A GraphQL query string which indicates which fields should be populated on the `session.data` object
+The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
 
 ```typescript
 import { createAuth } from '@keystone-next/auth';
@@ -153,7 +151,7 @@ const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  sessionData: { query: 'id name isAdmin' },
+  sessionData: 'id name isAdmin',
 });
 ```
 

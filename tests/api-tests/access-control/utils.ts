@@ -137,7 +137,7 @@ function setupKeystone(provider: ProviderName) {
     listKey: 'User',
     identityField: 'email',
     secretField: 'password',
-    sessionData: { query: 'id' },
+    sessionData: 'id',
   });
   return setupFromConfig({
     provider,

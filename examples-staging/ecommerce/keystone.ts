@@ -35,7 +35,7 @@ const { withAuth } = createAuth({
       await sendPasswordResetEmail(args.token, args.identity);
     },
   },
-  sessionData: { query: `id name email role { ${permissionsList.join(' ')} }` },
+  sessionData: `id name email role { ${permissionsList.join(' ')} }`,
 });
 
 export default withAuth(

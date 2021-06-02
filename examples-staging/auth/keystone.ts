@@ -41,7 +41,7 @@ const { withAuth } = createAuth({
     },
   },
   // Populate session.data based on the authed user
-  sessionData: { query: 'name isAdmin' },
+  sessionData: 'name isAdmin',
   /* TODO -- complete the UI for these features and enable them
   passwordResetLink: {
     sendToken(args) {

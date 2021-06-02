@@ -271,7 +271,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           // because doing so validates that it exists in the database
           const data = await sudoContext.lists[listKey].findOne({
             where: { id: session.itemId },
-            query: sessionData?.query || 'id',
+            query: sessionData? || 'id',
           });
           return { ...session, itemId: session.itemId, listKey, data };
         } catch (e) {

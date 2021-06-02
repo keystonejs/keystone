@@ -17,7 +17,7 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
-  sessionData: { query: 'name isAdmin' },
+  sessionData: 'name isAdmin',
 });
 
 // TODO -- Create a separate example for access control in the Admin UI

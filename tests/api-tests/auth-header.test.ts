@@ -38,7 +38,7 @@ const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  sessionData: { query: 'id' },
+  sessionData: 'id',
 });
 
 function setupKeystone(provider: ProviderName) {
