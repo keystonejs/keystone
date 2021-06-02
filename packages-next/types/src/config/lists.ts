@@ -1,7 +1,6 @@
 import type { CacheHint } from '../next-fields';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
 import { FieldTypeFunc } from '../next-fields';
-import { CacheHintArgs } from '../base';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields } from './fields';
@@ -180,14 +179,20 @@ export type ListGraphQLConfig = {
    * @default listConfig.description
    */
   description?: string;
-  // was previously top-level itemQueryName
-  pluralName?: string; // the name of the graphql query for getting multiple items
+  /**
+   * The plural form of the list key to use in the generated GraphQL schema.
+   * Note that there is no singular here because the singular used in the GraphQL schema is the list key.
+   */
+  // was previously top-level listQueryName
+  plural?: string;
   // was previously top-level queryLimits
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
 };
+
+export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
 
 export type ListDBConfig = {
   /**

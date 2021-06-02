@@ -186,7 +186,12 @@ export function getNamesFromList(
     path: path || labelToPath(_plural),
   };
 
-  const pluralGraphQLName = graphql?.pluralName || labelToClass(_plural);
+  const pluralGraphQLName = graphql?.plural || labelToClass(_plural);
+  if (pluralGraphQLName === listKey) {
+    throw new Error(
+      `The list key and the plural must be different but the list key ${listKey} is the same as the ${listKey} plural GraphQL name`
+    );
+  }
   return {
     pluralGraphQLName,
     adminUILabels,
