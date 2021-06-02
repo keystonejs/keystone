@@ -93,21 +93,18 @@ function mapCreateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
 
 export function jsonFieldTypePolyfilledForSQLite<
   CreateArg extends types.Arg<types.InputType, any>,
-  UpdateArg extends types.Arg<types.InputType, any>,
-  FilterArg extends types.Arg<types.InputType, any>,
-  UniqueFilterArg extends types.Arg<types.InputType, any>
+  UpdateArg extends types.Arg<types.InputType, any>
 >(
   provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<
     ScalarDBField<'Json', 'optional'>,
     CreateArg,
     UpdateArg,
-    FilterArg,
-    UniqueFilterArg
+    types.Arg<types.InputType, any>,
+    types.Arg<types.InputType, any>
   > & {
     input?: {
       uniqueWhere?: undefined;
-      where?: undefined;
       orderBy?: undefined;
     };
   }
