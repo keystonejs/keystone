@@ -2,11 +2,7 @@ import { ItemRootValue, KeystoneContext, OrderDirection } from '@keystone-next/t
 import { validateCreateListAccessControl, validateFieldAccessControl } from './access-control';
 import { validateNonCreateListAccessControl } from './access-control';
 import { mapUniqueWhereToWhere } from './query-resolvers';
-import {
-  accessDeniedError,
-  throwAccessDenied,
-  ValidationFailureError,
-} from './ListTypes/graphqlErrors';
+import { accessDeniedError, ValidationFailureError } from './graphql-errors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList, IdType, promiseAllRejectWithAllErrors } from './utils';
@@ -524,7 +520,7 @@ export async function applyAccessControlForCreate(
     },
   });
   if (!result) {
-    throwAccessDenied('mutation');
+    throw accessDeniedError('mutation');
   }
   await checkFieldAccessControlForCreate(list, context, originalInput);
 }
@@ -555,7 +551,7 @@ async function checkFieldAccessControlForUpdate(
   );
 
   if (results.some(canAccess => !canAccess)) {
-    throwAccessDenied('mutation');
+    throw accessDeniedError('mutation');
   }
 }
 
@@ -582,7 +578,7 @@ async function checkFieldAccessControlForCreate(
   );
 
   if (results.some(canAccess => !canAccess)) {
-    throwAccessDenied('mutation');
+    throw accessDeniedError('mutation');
   }
 }
 

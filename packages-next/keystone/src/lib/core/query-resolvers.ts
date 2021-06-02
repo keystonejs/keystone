@@ -8,7 +8,7 @@ import {
   resolveUniqueWhereInput,
   resolveOrderBy,
 } from './input-resolvers';
-import { accessDeniedError } from './ListTypes/graphqlErrors';
+import { accessDeniedError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from './utils';
 
