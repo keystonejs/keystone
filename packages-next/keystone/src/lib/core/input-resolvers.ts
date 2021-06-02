@@ -9,7 +9,7 @@ import {
 } from './ListTypes/graphqlErrors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
-import { getPrismaModelForList, IdType } from './utils';
+import { getPrismaModelForList, IdType, promiseAllRejectWithAllErrors } from './utils';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -195,7 +195,7 @@ export async function processDelete(
 
   const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
   await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await Promise.all(
+    await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateDelete?.({
           ...hookArgs,
@@ -241,7 +241,7 @@ async function runSideEffectOnlyHook<
   args: Args,
   shouldRunFieldLevelHook: (fieldKey: string) => boolean
 ) {
-  await Promise.all(
+  await promiseAllRejectWithAllErrors(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         await field.hooks[hookName]?.({ fieldPath: fieldKey, ...args });
@@ -268,7 +268,7 @@ async function resolveInputHook(
     existingItem,
   };
   resolvedData = Object.fromEntries(
-    await Promise.all(
+    await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         if (field.hooks.resolveInput === undefined) {
           return [fieldKey, resolvedData[fieldKey]];
@@ -316,7 +316,7 @@ export async function resolveInputForCreateOrUpdate(
   const operation = existingItem === undefined ? ('create' as const) : ('update' as const);
   const nestedMutationState = list.inputResolvers.createAndUpdate(context);
   let resolvedData = Object.fromEntries(
-    await Promise.all(
+    await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputConfig = field.input?.[operation];
         let input = originalInput[fieldKey];
@@ -421,7 +421,7 @@ export async function resolveInputForCreateOrUpdate(
     existingItem,
   };
   await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await Promise.all(
+    await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateInput?.({
           ...args,
@@ -441,7 +441,7 @@ export async function resolveInputForCreateOrUpdate(
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
-      await Promise.all(nestedMutationState.afterChanges.map(x => x()));
+      await promiseAllRejectWithAllErrors(nestedMutationState.afterChanges.map(x => x()));
       await runSideEffectOnlyHook(
         list,
         'afterChange',
