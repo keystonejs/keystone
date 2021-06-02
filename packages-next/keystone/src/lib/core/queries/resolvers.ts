@@ -1,16 +1,16 @@
 import { FindManyArgsValue, ItemRootValue, KeystoneContext } from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
-import { validateNonCreateListAccessControl } from './access-control';
+import { validateNonCreateListAccessControl } from '../access-control';
 import {
   InputFilter,
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveOrderBy,
-} from './input-resolvers';
-import { accessDeniedError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
-import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from './utils';
+} from '../input-resolvers';
+import { accessDeniedError } from '../graphql-errors';
+import { InitialisedList } from '../types-for-lists';
+import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from '../utils';
 
 export async function findManyFilter(
   list: InitialisedList,

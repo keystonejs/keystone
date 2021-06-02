@@ -47,7 +47,7 @@ import {
   resolveUniqueWhereInput,
 } from './input-resolvers';
 import { createOneState } from './mutations/resolvers';
-import { findMany, findManyFilter } from './query-resolvers';
+import { findMany, findManyFilter } from './queries/resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;

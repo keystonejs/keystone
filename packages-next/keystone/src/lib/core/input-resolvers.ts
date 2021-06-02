@@ -1,7 +1,7 @@
 import { ItemRootValue, KeystoneContext, OrderDirection } from '@keystone-next/types';
 import { validateCreateListAccessControl, validateFieldAccessControl } from './access-control';
 import { validateNonCreateListAccessControl } from './access-control';
-import { mapUniqueWhereToWhere } from './query-resolvers';
+import { mapUniqueWhereToWhere } from './queries/resolvers';
 import { accessDeniedError, ValidationFailureError } from './graphql-errors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
