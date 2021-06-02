@@ -668,7 +668,7 @@ export function initialiseLists(
           );
         }
 
-        if (dbField.index !== 'unique' || fieldKey === 'id') {
+        if (dbField.index !== 'unique' && fieldKey !== 'id') {
           throw new Error(
             `Fields must have a unique index or be the idField to specify a uniqueWhere input but the field at ${listKey}.${fieldKey} specifies a uniqueWhere input without a unique index`
           );
