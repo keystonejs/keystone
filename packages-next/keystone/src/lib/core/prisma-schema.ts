@@ -395,7 +395,14 @@ function collectEnums(lists: ListsWithResolvedRelations) {
         }
         if (!areArraysEqual(alreadyExistingEnum.values, field.values)) {
           throw new Error(
-            `The fields ${alreadyExistingEnum.firstDefinedByRef} and ${field.values} both specify Prisma`
+            `The fields ${alreadyExistingEnum.firstDefinedByRef} and ${ref} both specify Prisma schema enums` +
+              `with the name ${field.name} but they have different values:\n` +
+              `enum from ${alreadyExistingEnum.firstDefinedByRef}:\n${JSON.stringify(
+                alreadyExistingEnum.values,
+                null,
+                2
+              )}\n` +
+              `enum from ${ref}:\n${JSON.stringify(field.values, null, 2)}`
           );
         }
       }
