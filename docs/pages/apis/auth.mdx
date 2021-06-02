@@ -19,6 +19,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   // Additional options
+  sessionData: 'id name email`,
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { isAdmin: true },
@@ -132,6 +133,27 @@ This page uses the `authenticateUserWithPassword` mutation to let users sign in 
 
 The following options add extra functionality to your Keystone authentication system.
 By default they are disabled.
+
+### sessionData
+
+This option adds support for setting a custom `session.data` value based on the authenticated user.
+
+The authentication mutations will set the values `{ listKey, itemId }` on the `context.session` object.
+You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/access-control) or using [hooks](../guides/hooks).
+Configuring `sessionData` will add an `session.data` based on the `itemId`, populated by the fields given in `sessionData.query`.
+
+The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id name isAdmin',
+});
+```
 
 ### initFirstItem
 
