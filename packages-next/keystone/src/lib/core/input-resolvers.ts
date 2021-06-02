@@ -28,10 +28,16 @@ export type PrismaFilter = Record<string, any> & {
   NOT?: PrismaFilter[] | PrismaFilter;
   // just so that if you pass an array to something expecting a PrismaFilter, you get an error
   length?: undefined;
+  // so that if you pass a promise, you get an error
+  then?: undefined;
 };
 
 export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input filter' };
-export type UniquePrismaFilter = Record<string, any> & { _____?: 'unique prisma filter' };
+export type UniquePrismaFilter = Record<string, any> & {
+  _____?: 'unique prisma filter';
+  // so that if you pass a promise, you get an error
+  then?: undefined;
+};
 
 export type CreateItemInput = Record<string, any> & { _____?: 'create item input' };
 export type ResolvedCreateItemInput = Record<string, any> & { _____?: 'unique prisma filter' };
@@ -474,7 +480,7 @@ export async function applyAccessControlForUpdate(
       accessControl === true
         ? uniqueWhereInWhereForm
         : {
-            AND: [uniqueWhereInWhereForm, resolveWhereInput(accessControl, list)],
+            AND: [uniqueWhereInWhereForm, await resolveWhereInput(accessControl, list)],
           },
   });
   if (!item) {
