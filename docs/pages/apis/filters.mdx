@@ -15,85 +15,89 @@ In all the examples below we will use a field named `foo` as the base of the fil
 
 | **Filter name** | **Type**  | **Description** |
 | --------------- | --------- | --------------- |
-| `foo`           | `Boolean` |                 |
-| `foo_not`       | `Boolean` |                 |
+| `foo`           | `Boolean` | Equals          |
+| `foo_not`       | `Boolean` | Does not equal  |
 
 ### integer
 
-| **Filter name** | **Type** | **Description** |
-| --------------- | -------- | --------------- |
-| `foo`           | `Int`    |                 |
-| `foo_not`       | `Int`    |                 |
-| `foo_lt`        | `Int`    |                 |
-| `foo_lte`       | `Int`    |                 |
-| `foo_gt`        | `Int`    |                 |
-| `foo_gte`       | `Int`    |                 |
-| `foo_in`        | `[Int]`  |                 |
-| `foo_not_in`    | `[Int]`  |                 |
+| **Filter name** | **Type** | **Description**       |
+| --------------- | -------- | --------------------- |
+| `foo`           | `Int`    | Equals                |
+| `foo_not`       | `Int`    | Does not equal        |
+| `foo_lt`        | `Int`    | Less than             |
+| `foo_lte`       | `Int`    | Less than or equal    |
+| `foo_gt`        | `Int`    | Greater than          |
+| `foo_gte`       | `Int`    | Greater than or equal |
+| `foo_in`        | `[Int]`  | Is in the array       |
+| `foo_not_in`    | `[Int]`  | Is not in the array   |
+
+### json
+
+The `json` field type does not support filters.
 
 ### float
 
-| **Filter name** | **Type**  | **Description** |
-| --------------- | --------- | --------------- |
-| `foo`           | `Float`   |                 |
-| `foo_not`       | `Float`   |                 |
-| `foo_lt`        | `Float`   |                 |
-| `foo_lte`       | `Float`   |                 |
-| `foo_gt`        | `Float`   |                 |
-| `foo_gte`       | `Float`   |                 |
-| `foo_in`        | `[Float]` |                 |
-| `foo_not_in`    | `[Float]` |                 |
+| **Filter name** | **Type**  | **Description**       |
+| --------------- | --------- | --------------------- |
+| `foo`           | `Float`   | Equals                |
+| `foo_not`       | `Float`   | Does not equal        |
+| `foo_lt`        | `Float`   | Less than             |
+| `foo_lte`       | `Float`   | Less than or equal    |
+| `foo_gt`        | `Float`   | Greater than          |
+| `foo_gte`       | `Float`   | Greater than or equal |
+| `foo_in`        | `[Float]` | Is in the array       |
+| `foo_not_in`    | `[Float]` | Is not in the array   |
 
 ### password
 
 | **Filter name** | **Type**  | **Description** |
 | --------------- | --------- | --------------- |
-| `foo_is_set`    | `Boolean` |                 |
+| `foo_is_set`    | `Boolean` | A value is set  |
 
 ### select
 
-| **Filter name** | **Type**   | **Description** |
-| --------------- | ---------- | --------------- |
-| `foo`           | `String`   |                 |
-| `foo_not`       | `String`   |                 |
-| `foo_in`        | `[String]` |                 |
-| `foo_not_in`    | `[String]` |                 |
+| **Filter name** | **Type**   | **Description**     |
+| --------------- | ---------- | ------------------- |
+| `foo`           | `String`   | Equals              |
+| `foo_not`       | `String`   | Does not equal      |
+| `foo_in`        | `[String]` | Is in the array     |
+| `foo_not_in`    | `[String]` | Is not in the array |
 
 ### text
 
-| **Filter name**         | **Type**   | **Description** |
-| ----------------------- | ---------- | --------------- |
-| `foo`                   | `String`   |                 |
-| `foo_not`               | `String`   |                 |
-| `foo_contains`          | `String`   |                 |
-| `foo_not_contains`      | `String`   |                 |
-| `foo_starts_with`       | `String`   |                 |
-| `foo_not_starts_with`   | `String`   |                 |
-| `foo_ends_with`         | `String`   |                 |
-| `foo_not_ends_with`     | `String`   |                 |
-| `foo_i`                 | `String`   |                 |
-| `foo_not_i`             | `String`   |                 |
-| `foo_contains_i`        | `String`   |                 |
-| `foo_not_contains_i`    | `String`   |                 |
-| `foo_starts_with_i`     | `String`   |                 |
-| `foo_not_starts_with_i` | `String`   |                 |
-| `foo_ends_with_i`       | `String`   |                 |
-| `foo_not_ends_with_i`   | `String`   |                 |
-| `foo_in`                | `[String]` |                 |
-| `foo_not_in`            | `[String]` |                 |
+| **Filter name**         | **Type**   | **Description**                        | ** Notes **       |
+| ----------------------- | ---------- | -------------------------------------- | ----------------- |
+| `foo`                   | `String`   | Equals                                 |
+| `foo_not`               | `String`   | Does not equal                         |
+| `foo_contains`          | `String`   | Contains                               |
+| `foo_not_contains`      | `String`   | Does not contain                       |
+| `foo_starts_with`       | `String`   | Starts with                            | `postgresql` only |
+| `foo_not_starts_with`   | `String`   | Does not start with                    | `postgresql` only |
+| `foo_ends_with`         | `String`   | Ends with                              | `postgresql` only |
+| `foo_not_ends_with`     | `String`   | Does not end with                      | `postgresql` only |
+| `foo_i`                 | `String`   | Equals (case insensitive)              | `postgresql` only |
+| `foo_not_i`             | `String`   | Does not equal (case insensitive)      | `postgresql` only |
+| `foo_contains_i`        | `String`   | Contains (case insensitive)            | `postgresql` only |
+| `foo_not_contains_i`    | `String`   | Does not contain (case insensitive)    | `postgresql` only |
+| `foo_starts_with_i`     | `String`   | Starts with (case insensitive)         | `postgresql` only |
+| `foo_not_starts_with_i` | `String`   | Does not start with (case insensitive) | `postgresql` only |
+| `foo_ends_with_i`       | `String`   | Ends with (case insensitive)           | `postgresql` only |
+| `foo_not_ends_with_i`   | `String`   | Does not end with (case insensitive)   | `postgresql` only |
+| `foo_in`                | `[String]` | Is in the array                        |
+| `foo_not_in`            | `[String]` | Is not in the array                    |
 
 ### timestamp
 
-| **Filter name** | **Type**   | **Description** |
-| --------------- | ---------- | --------------- |
-| `foo`           | `String`   |                 |
-| `foo_not`       | `String`   |                 |
-| `foo_lt`        | `String`   |                 |
-| `foo_lte`       | `String`   |                 |
-| `foo_gt`        | `String`   |                 |
-| `foo_gte`       | `String`   |                 |
-| `foo_in`        | `[String]` |                 |
-| `foo_not_in`    | `[String]` |                 |
+| **Filter name** | **Type**   | **Description**       |
+| --------------- | ---------- | --------------------- |
+| `foo`           | `String`   | Equals                |
+| `foo_not`       | `String`   | Does not equal        |
+| `foo_lt`        | `String`   | Less than             |
+| `foo_lte`       | `String`   | Less than or equal    |
+| `foo_gt`        | `String`   | Greater than          |
+| `foo_gte`       | `String`   | Greater than or equal |
+| `foo_in`        | `[String]` | Is in the array       |
+| `foo_not_in`    | `[String]` | Is not in the array   |
 
 ## Relationship type
 
@@ -101,33 +105,33 @@ In all the examples below we will use a field named `foo` as the base of the fil
 
 #### many: true
 
-| **Filter name** | **Type**        | **Description** |
-| --------------- | --------------- | --------------- |
-| `foos_every`    | `FooWhereInput` |                 |
-| `foos_some`     | `FooWhereInput` |                 |
-| `foos_none`     | `FooWhereInput` |                 |
+| **Filter name** | **Type**        | **Description**                            |
+| --------------- | --------------- | ------------------------------------------ |
+| `foos_every`    | `FooWhereInput` | All related items match the nested filter  |
+| `foos_some`     | `FooWhereInput` | Some related items match the nested filter |
+| `foos_none`     | `FooWhereInput` | No related items match the nested filter   |
 
 #### many: false
 
-| **Filter name** | **Type**        | **Description** |
-| --------------- | --------------- | --------------- |
-| `foo`           | `FooWhereInput` |                 |
-| `foo_is_null`   | `Boolean`       |                 |
+| **Filter name** | **Type**        | **Description**           |
+| --------------- | --------------- | ------------------------- |
+| `foo`           | `FooWhereInput` | Matches the nested filter |
+| `foo_is_null`   | `Boolean`       | Is `null`                 |
 
 ## Index types
 
 ### autoIncrement
 
-| **Filter name** | **Type** | **Description** |
-| --------------- | -------- | --------------- |
-| `id`            | `ID`     |                 |
-| `id_not`        | `ID`     |                 |
-| `id_lt`         | `ID`     |                 |
-| `id_lte`        | `ID`     |                 |
-| `id_gt`         | `ID`     |                 |
-| `id_gte`        | `ID`     |                 |
-| `id_in`         | `[ID]`   |                 |
-| `id_not_in`     | `[ID]`   |                 |
+| **Filter name** | **Type** | **Description**       |
+| --------------- | -------- | --------------------- |
+| `id`            | `ID`     | Equals                |
+| `id_not`        | `ID`     | Does not equal        |
+| `id_lt`         | `ID`     | Less than             |
+| `id_lte`        | `ID`     | Less than or equal    |
+| `id_gt`         | `ID`     | Greater than          |
+| `id_gte`        | `ID`     | Greater than or equal |
+| `id_in`         | `[ID]`   | Is in the array       |
+| `id_not_in`     | `[ID]`   | Is not in the array   |
 
 ## Virtual type
 
