@@ -200,10 +200,11 @@ describe('Type Generation', () => {
     const schema = getSchema(relationship({ many: true, ref: 'Zip' }));
 
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
-      "type Test {
+      "\\"\\"\\" A keystone list\\"\\"\\"
+      type Test {
         id: ID!
         foo(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
-        _fooMeta(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
+        _fooMeta(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta @deprecated(reason: \\"This query will be removed in a future version. Please use fooCount instead.\\")
         fooCount(where: ZipWhereInput! = {}): Int
       }"
     `);
@@ -213,7 +214,8 @@ describe('Type Generation', () => {
     const schema = getSchema(relationship({ many: true, ref: 'Zip', withMeta: false }));
 
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
-      "type Test {
+      "\\"\\"\\" A keystone list\\"\\"\\"
+      type Test {
         id: ID!
         foo(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
       }"
