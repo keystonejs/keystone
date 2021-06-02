@@ -311,7 +311,6 @@ type Mutation {
    Delete multiple Person items by ID.
   """
   deletePeople(ids: [ID!]): [Person]
-  endSession: Boolean!
   authenticatePersonWithPassword(
     email: String!
     password: String!
@@ -319,6 +318,37 @@ type Mutation {
   createInitialPerson(
     data: CreateInitialPersonInput!
   ): PersonAuthenticationWithPasswordSuccess!
+  endSession: Boolean!
+}
+
+union AuthenticatedItem = Person
+
+union PersonAuthenticationWithPasswordResult =
+    PersonAuthenticationWithPasswordSuccess
+  | PersonAuthenticationWithPasswordFailure
+
+type PersonAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: Person!
+}
+
+type PersonAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialPersonInput {
+  name: String
+  email: String
+  password: String
 }
 
 type Query {
@@ -391,8 +421,8 @@ type Query {
       reason: "This query will be removed in a future version. Please use peopleCount instead."
     )
   peopleCount(where: PersonWhereInput! = {}): Int
-  keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  keystone: KeystoneMeta!
 }
 
 type KeystoneMeta {
@@ -473,34 +503,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-union AuthenticatedItem = Person
-
-union PersonAuthenticationWithPasswordResult =
-    PersonAuthenticationWithPasswordSuccess
-  | PersonAuthenticationWithPasswordFailure
-
-type PersonAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: Person!
-}
-
-type PersonAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialPersonInput {
-  name: String
-  email: String
-  password: String
 }

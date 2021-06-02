@@ -102,7 +102,7 @@ export function applyFirstSkipToCount({
   return count;
 }
 
-const limitedExceedError = (args: { type: string; limit: number; list: string }) =>
+const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
   new LimitsExceededError({ data: args });
 
 export function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
@@ -115,7 +115,7 @@ export function applyEarlyMaxResults(_first: number | null | undefined, list: In
   // * The query explicitly has a "first" that exceeds the limit
   // * The query has no "first", and has more results than the limit
   if (first < Infinity && first > list.maxResults) {
-    throw limitedExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
 }
 
@@ -125,12 +125,12 @@ export function applyMaxResults(
   context: KeystoneContext
 ) {
   if (results.length > list.maxResults) {
-    throw limitedExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
   if (context) {
     context.totalResults += Array.isArray(results) ? results.length : 1;
     if (context.totalResults > context.maxTotalResults) {
-      throw limitedExceedError({
+      throw limitsExceedError({
         list: list.listKey,
         type: 'maxTotalResults',
         limit: context.maxTotalResults,

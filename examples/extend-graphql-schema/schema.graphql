@@ -313,6 +313,15 @@ type Mutation {
   publishPost(id: ID!): Post
 }
 
+"""
+ A custom type to represent statistics for a user
+"""
+type Statistics {
+  draft: Int
+  published: Int
+  latest: Post
+}
+
 type Query {
   """
    Search for all Post items which match the where clause.
@@ -383,7 +392,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use authorsCount instead."
     )
   authorsCount(where: AuthorWhereInput! = {}): Int
-  keystone: KeystoneMeta!
 
   """
    Return all posts for a user from the last <days> days
@@ -394,6 +402,7 @@ type Query {
    Compute statistics for a user
   """
   stats(id: ID!): Statistics
+  keystone: KeystoneMeta!
 }
 
 type KeystoneMeta {
@@ -474,13 +483,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-"""
- A custom type to represent statistics for a user
-"""
-type Statistics {
-  draft: Int
-  published: Int
-  latest: Post
 }

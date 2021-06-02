@@ -539,7 +539,6 @@ type Mutation {
    Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
-  endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -548,6 +547,42 @@ type Mutation {
     data: CreateInitialUserInput!
   ): UserAuthenticationWithPasswordSuccess!
   createRandomPosts: [Post!]!
+  endSession: Boolean!
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type RandomNumber {
+  number: Int
+  generatedAt: Int
 }
 
 type Query {
@@ -655,9 +690,9 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-  keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber
+  keystone: KeystoneMeta!
 }
 
 type KeystoneMeta {
@@ -738,39 +773,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
-}
-
-type RandomNumber {
-  number: Int
-  generatedAt: Int
 }
