@@ -6,9 +6,9 @@ import {
   processDelete,
   resolveInputForCreateOrUpdate,
   UniqueInputFilter,
-} from './input-resolvers';
-import { InitialisedList } from './types-for-lists';
-import { getPrismaModelForList } from './utils';
+} from '../input-resolvers';
+import { InitialisedList } from '../types-for-lists';
+import { getPrismaModelForList } from '../utils';
 
 export async function createMany(
   { data }: { data: Record<string, any>[] },

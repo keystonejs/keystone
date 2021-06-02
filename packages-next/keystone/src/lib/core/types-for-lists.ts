@@ -46,7 +46,7 @@ import {
   PrismaFilter,
   resolveUniqueWhereInput,
 } from './input-resolvers';
-import { createOneState } from './mutation-resolvers';
+import { createOneState } from './mutations/resolvers';
 import { findMany, findManyFilter } from './query-resolvers';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
