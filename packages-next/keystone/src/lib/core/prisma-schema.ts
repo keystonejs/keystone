@@ -419,7 +419,7 @@ function assertFieldIsValidIdField(
 ): asserts field is ScalarDBField<'Int' | 'String', 'required'> {
   if (field.kind !== 'scalar') {
     throw new Error(
-      `id fields must be either String or Int Prisma scalars but the id field for the ${listKey} list is not a scalar`
+      `id fields must be either a String or Int Prisma scalar but the id field for the ${listKey} list is not a scalar`
     );
   }
   if (field.scalar !== 'String' && field.scalar !== 'Int') {
@@ -429,7 +429,7 @@ function assertFieldIsValidIdField(
   }
   if (field.mode !== 'required') {
     throw new Error(
-      `id fields must singular required field but the id field for the ${listKey} list ${
+      `id fields must be a singular required field but the id field for the ${listKey} list is ${
         field.mode === 'many' ? 'a many' : 'an optional'
       } field`
     );
