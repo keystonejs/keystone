@@ -1,3 +1,6 @@
+"""
+ A keystone list
+"""
 type Todo {
   id: ID!
   title: String
@@ -65,16 +68,41 @@ type _QueryMeta {
 }
 
 type Mutation {
+  """
+   Create a single Todo item.
+  """
   createTodo(data: TodoCreateInput): Todo
+
+  """
+  Create multiple Todo items.
+  """
   createTodos(data: [TodosCreateInput]): [Todo]
+
+  """
+   Update a single Todo item by ID.
+  """
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
+
+  """
+   Update multiple Todo items by ID.
+  """
   updateTodos(data: [TodosUpdateInput]): [Todo]
+
+  """
+   Delete a single Todo item by ID.
+  """
   deleteTodo(id: ID!): Todo
+
+  """
+   Delete many Todo items by ID.
+  """
   deleteTodos(ids: [ID!]): [Todo]
 }
 
 type Query {
-  Todo(where: TodoWhereUniqueInput!): Todo
+  """
+   Search for all Todo items which match the where clause.
+  """
   allTodos(
     where: TodoWhereInput! = {}
     search: String
@@ -84,6 +112,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Todo!]
+
+  """
+   Search for the Todo item with the matching ID.
+  """
+  Todo(where: TodoWhereUniqueInput!): Todo
+
+  """
+   Perform a meta-query on all Todo items which match the where clause.
+  """
   _allTodosMeta(
     where: TodoWhereInput! = {}
     search: String

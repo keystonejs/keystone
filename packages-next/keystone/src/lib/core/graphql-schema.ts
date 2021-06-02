@@ -41,7 +41,7 @@ export function getGraphQLSchema(
                 type: types.nonNull(list.types.uniqueWhere),
               }),
             },
-            description: `Search for the ${list.listKey} item with the matching ID.`,
+            description: ` Search for the ${list.listKey} item with the matching ID.`,
             async resolve(_rootVal, args, context) {
               return queries.findOne(args, list, context);
             },
@@ -49,7 +49,7 @@ export function getGraphQLSchema(
           const findMany = types.field({
             type: types.list(types.nonNull(list.types.output)),
             args: list.types.findManyArgs,
-            description: `Search for all ${list.listKey} items which match the where clause.`,
+            description: ` Search for all ${list.listKey} items which match the where clause.`,
             async resolve(_rootVal, args, context, info) {
               return queries.findMany(args, list, context, info);
             },
@@ -77,7 +77,7 @@ export function getGraphQLSchema(
           const metaQuery = types.field({
             type: QueryMeta,
             args: list.types.findManyArgs,
-            description: `Perform a meta-query on all ${list.listKey} items which match the where clause.`,
+            description: ` Perform a meta-query on all ${list.listKey} items which match the where clause.`,
             resolve(_rootVal, { first, search, skip, where }, context, info) {
               return {
                 getCount: async () => {
@@ -128,36 +128,9 @@ export function getGraphQLSchema(
         const createOne = types.field({
           type: list.types.output,
           args: createOneArgs,
-          description: `Create a single ${list.listKey} item.`,
+          description: ` Create a single ${list.listKey} item.`,
           resolve(_rootVal, { data }, context) {
             return mutations.createOne({ data: data ?? {} }, list, context);
-          },
-        });
-        const updateOneArgs = {
-          id: types.arg({
-            type: types.nonNull(types.ID),
-          }),
-          data: types.arg({
-            type: list.types.update,
-          }),
-        };
-        const updateOne = types.field({
-          type: list.types.output,
-          args: updateOneArgs,
-          description: `Create a single ${list.listKey} item.`,
-          resolve(_rootVal, { data, id }, context) {
-            return mutations.updateOne({ data: data ?? {}, where: { id } }, list, context);
-          },
-        });
-        const deleteOne = types.field({
-          type: list.types.output,
-          args: {
-            id: types.arg({
-              type: types.nonNull(types.ID),
-            }),
-          },
-          resolve(rootVal, { id }, context) {
-            return mutations.deleteOne({ where: { id } }, list, context);
           },
         });
 
@@ -177,6 +150,7 @@ export function getGraphQLSchema(
               type: types.list(createManyInput),
             }),
           },
+          description: `Create multiple ${list.listKey} items.`,
           async resolve(_rootVal, args, context) {
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.createMany(
@@ -186,6 +160,23 @@ export function getGraphQLSchema(
                 provider
               )
             );
+          },
+        });
+
+        const updateOneArgs = {
+          id: types.arg({
+            type: types.nonNull(types.ID),
+          }),
+          data: types.arg({
+            type: list.types.update,
+          }),
+        };
+        const updateOne = types.field({
+          type: list.types.output,
+          args: updateOneArgs,
+          description: ` Update a single ${list.listKey} item by ID.`,
+          resolve(_rootVal, { data, id }, context) {
+            return mutations.updateOne({ data: data ?? {}, where: { id } }, list, context);
           },
         });
 
@@ -203,6 +194,7 @@ export function getGraphQLSchema(
               type: types.list(updateManyInput),
             }),
           },
+          description: ` Update multiple ${list.listKey} items by ID.`,
           async resolve(_rootVal, { data }, context) {
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.updateMany(
@@ -218,6 +210,20 @@ export function getGraphQLSchema(
             );
           },
         });
+
+        const deleteOne = types.field({
+          type: list.types.output,
+          args: {
+            id: types.arg({
+              type: types.nonNull(types.ID),
+            }),
+          },
+          description: ` Delete a single ${list.listKey} item by ID.`,
+          resolve(rootVal, { id }, context) {
+            return mutations.deleteOne({ where: { id } }, list, context);
+          },
+        });
+
         const deleteMany = types.field({
           type: types.list(list.types.output),
           args: {
@@ -225,6 +231,7 @@ export function getGraphQLSchema(
               type: types.list(types.nonNull(types.ID)),
             }),
           },
+          description: ` Delete many ${list.listKey} items by ID.`,
           async resolve(rootVal, { ids }, context) {
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.deleteMany(

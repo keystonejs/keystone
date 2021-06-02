@@ -1,3 +1,6 @@
+"""
+ A keystone list
+"""
 type User {
   id: ID!
   name: String
@@ -229,6 +232,9 @@ type LocalFileFieldOutput implements FileFieldOutput {
   src: String!
 }
 
+"""
+ A keystone list
+"""
 type PhoneNumber {
   id: ID!
   label: String
@@ -313,6 +319,9 @@ input PhoneNumbersCreateInput {
   data: PhoneNumberCreateInput
 }
 
+"""
+ A keystone list
+"""
 type Post {
   id: ID!
   title: String
@@ -419,23 +428,94 @@ input PostsCreateInput {
 }
 
 type Mutation {
+  """
+   Create a single User item.
+  """
   createUser(data: UserCreateInput): User
+
+  """
+  Create multiple User items.
+  """
   createUsers(data: [UsersCreateInput]): [User]
+
+  """
+   Update a single User item by ID.
+  """
   updateUser(id: ID!, data: UserUpdateInput): User
+
+  """
+   Update multiple User items by ID.
+  """
   updateUsers(data: [UsersUpdateInput]): [User]
+
+  """
+   Delete a single User item by ID.
+  """
   deleteUser(id: ID!): User
+
+  """
+   Delete many User items by ID.
+  """
   deleteUsers(ids: [ID!]): [User]
+
+  """
+   Create a single PhoneNumber item.
+  """
   createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
+
+  """
+  Create multiple PhoneNumber items.
+  """
   createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+
+  """
+   Update a single PhoneNumber item by ID.
+  """
   updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
+
+  """
+   Update multiple PhoneNumber items by ID.
+  """
   updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
+
+  """
+   Delete a single PhoneNumber item by ID.
+  """
   deletePhoneNumber(id: ID!): PhoneNumber
+
+  """
+   Delete many PhoneNumber items by ID.
+  """
   deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
+
+  """
+   Create a single Post item.
+  """
   createPost(data: PostCreateInput): Post
+
+  """
+  Create multiple Post items.
+  """
   createPosts(data: [PostsCreateInput]): [Post]
+
+  """
+   Update a single Post item by ID.
+  """
   updatePost(id: ID!, data: PostUpdateInput): Post
+
+  """
+   Update multiple Post items by ID.
+  """
   updatePosts(data: [PostsUpdateInput]): [Post]
+
+  """
+   Delete a single Post item by ID.
+  """
   deletePost(id: ID!): Post
+
+  """
+   Delete many Post items by ID.
+  """
   deletePosts(ids: [ID!]): [Post]
   endSession: Boolean!
   authenticateUserWithPassword(
@@ -449,7 +529,9 @@ type Mutation {
 }
 
 type Query {
-  User(where: UserWhereUniqueInput!): User
+  """
+   Search for all User items which match the where clause.
+  """
   allUsers(
     where: UserWhereInput! = {}
     search: String
@@ -459,6 +541,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
+
+  """
+   Search for the User item with the matching ID.
+  """
+  User(where: UserWhereUniqueInput!): User
+
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
@@ -472,7 +563,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
   usersCount(where: UserWhereInput! = {}): Int
-  PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+
+  """
+   Search for all PhoneNumber items which match the where clause.
+  """
   allPhoneNumbers(
     where: PhoneNumberWhereInput! = {}
     search: String
@@ -482,6 +576,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]
+
+  """
+   Search for the PhoneNumber item with the matching ID.
+  """
+  PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+
+  """
+   Perform a meta-query on all PhoneNumber items which match the where clause.
+  """
   _allPhoneNumbersMeta(
     where: PhoneNumberWhereInput! = {}
     search: String
@@ -495,7 +598,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
     )
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Search for all Post items which match the where clause.
+  """
   allPosts(
     where: PostWhereInput! = {}
     search: String
@@ -505,6 +611,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
+
+  """
+   Search for the Post item with the matching ID.
+  """
+  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String

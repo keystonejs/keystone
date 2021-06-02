@@ -409,6 +409,7 @@ export function initialiseLists(
 
     let output = types.object<ItemRootValue>()({
       name: names.outputTypeName,
+      description: ' A keystone list',
       fields: () => {
         const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
         return {

@@ -1,3 +1,6 @@
+"""
+ A keystone list
+"""
 type User {
   id: ID!
   name: String
@@ -221,6 +224,9 @@ input UsersCreateInput {
   data: UserCreateInput
 }
 
+"""
+ A keystone list
+"""
 type Product {
   id: ID!
   name: String
@@ -342,6 +348,9 @@ input ProductsCreateInput {
   data: ProductCreateInput
 }
 
+"""
+ A keystone list
+"""
 type ProductImage {
   id: ID!
   image: CloudinaryImage_File
@@ -468,6 +477,9 @@ input ProductImagesCreateInput {
   data: ProductImageCreateInput
 }
 
+"""
+ A keystone list
+"""
 type CartItem {
   id: ID!
   quantity: Int
@@ -537,6 +549,9 @@ input CartItemsCreateInput {
   data: CartItemCreateInput
 }
 
+"""
+ A keystone list
+"""
 type OrderItem {
   id: ID!
   name: String
@@ -651,6 +666,9 @@ input OrderItemsCreateInput {
   data: OrderItemCreateInput
 }
 
+"""
+ A keystone list
+"""
 type Order {
   id: ID!
   label: String
@@ -759,6 +777,9 @@ input OrdersCreateInput {
   data: OrderCreateInput
 }
 
+"""
+ A keystone list
+"""
 type Role {
   id: ID!
   name: String
@@ -896,47 +917,214 @@ input RolesCreateInput {
 }
 
 type Mutation {
+  """
+   Create a single User item.
+  """
   createUser(data: UserCreateInput): User
+
+  """
+  Create multiple User items.
+  """
   createUsers(data: [UsersCreateInput]): [User]
+
+  """
+   Update a single User item by ID.
+  """
   updateUser(id: ID!, data: UserUpdateInput): User
+
+  """
+   Update multiple User items by ID.
+  """
   updateUsers(data: [UsersUpdateInput]): [User]
+
+  """
+   Delete a single User item by ID.
+  """
   deleteUser(id: ID!): User
+
+  """
+   Delete many User items by ID.
+  """
   deleteUsers(ids: [ID!]): [User]
+
+  """
+   Create a single Product item.
+  """
   createProduct(data: ProductCreateInput): Product
+
+  """
+  Create multiple Product items.
+  """
   createProducts(data: [ProductsCreateInput]): [Product]
+
+  """
+   Update a single Product item by ID.
+  """
   updateProduct(id: ID!, data: ProductUpdateInput): Product
+
+  """
+   Update multiple Product items by ID.
+  """
   updateProducts(data: [ProductsUpdateInput]): [Product]
+
+  """
+   Delete a single Product item by ID.
+  """
   deleteProduct(id: ID!): Product
+
+  """
+   Delete many Product items by ID.
+  """
   deleteProducts(ids: [ID!]): [Product]
+
+  """
+   Create a single ProductImage item.
+  """
   createProductImage(data: ProductImageCreateInput): ProductImage
+
+  """
+  Create multiple ProductImage items.
+  """
   createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
+
+  """
+   Update a single ProductImage item by ID.
+  """
   updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
+
+  """
+   Update multiple ProductImage items by ID.
+  """
   updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
+
+  """
+   Delete a single ProductImage item by ID.
+  """
   deleteProductImage(id: ID!): ProductImage
+
+  """
+   Delete many ProductImage items by ID.
+  """
   deleteProductImages(ids: [ID!]): [ProductImage]
+
+  """
+   Create a single CartItem item.
+  """
   createCartItem(data: CartItemCreateInput): CartItem
+
+  """
+  Create multiple CartItem items.
+  """
   createCartItems(data: [CartItemsCreateInput]): [CartItem]
+
+  """
+   Update a single CartItem item by ID.
+  """
   updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
+
+  """
+   Update multiple CartItem items by ID.
+  """
   updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
+
+  """
+   Delete a single CartItem item by ID.
+  """
   deleteCartItem(id: ID!): CartItem
+
+  """
+   Delete many CartItem items by ID.
+  """
   deleteCartItems(ids: [ID!]): [CartItem]
+
+  """
+   Create a single OrderItem item.
+  """
   createOrderItem(data: OrderItemCreateInput): OrderItem
+
+  """
+  Create multiple OrderItem items.
+  """
   createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
+
+  """
+   Update a single OrderItem item by ID.
+  """
   updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
+
+  """
+   Update multiple OrderItem items by ID.
+  """
   updateOrderItems(data: [OrderItemsUpdateInput]): [OrderItem]
+
+  """
+   Delete a single OrderItem item by ID.
+  """
   deleteOrderItem(id: ID!): OrderItem
+
+  """
+   Delete many OrderItem items by ID.
+  """
   deleteOrderItems(ids: [ID!]): [OrderItem]
+
+  """
+   Create a single Order item.
+  """
   createOrder(data: OrderCreateInput): Order
+
+  """
+  Create multiple Order items.
+  """
   createOrders(data: [OrdersCreateInput]): [Order]
+
+  """
+   Update a single Order item by ID.
+  """
   updateOrder(id: ID!, data: OrderUpdateInput): Order
+
+  """
+   Update multiple Order items by ID.
+  """
   updateOrders(data: [OrdersUpdateInput]): [Order]
+
+  """
+   Delete a single Order item by ID.
+  """
   deleteOrder(id: ID!): Order
+
+  """
+   Delete many Order items by ID.
+  """
   deleteOrders(ids: [ID!]): [Order]
+
+  """
+   Create a single Role item.
+  """
   createRole(data: RoleCreateInput): Role
+
+  """
+  Create multiple Role items.
+  """
   createRoles(data: [RolesCreateInput]): [Role]
+
+  """
+   Update a single Role item by ID.
+  """
   updateRole(id: ID!, data: RoleUpdateInput): Role
+
+  """
+   Update multiple Role items by ID.
+  """
   updateRoles(data: [RolesUpdateInput]): [Role]
+
+  """
+   Delete a single Role item by ID.
+  """
   deleteRole(id: ID!): Role
+
+  """
+   Delete many Role items by ID.
+  """
   deleteRoles(ids: [ID!]): [Role]
   endSession: Boolean!
   authenticateUserWithPassword(
@@ -957,7 +1145,9 @@ type Mutation {
 }
 
 type Query {
-  User(where: UserWhereUniqueInput!): User
+  """
+   Search for all User items which match the where clause.
+  """
   allUsers(
     where: UserWhereInput! = {}
     search: String
@@ -967,6 +1157,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
+
+  """
+   Search for the User item with the matching ID.
+  """
+  User(where: UserWhereUniqueInput!): User
+
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
@@ -980,7 +1179,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
   usersCount(where: UserWhereInput! = {}): Int
-  Product(where: ProductWhereUniqueInput!): Product
+
+  """
+   Search for all Product items which match the where clause.
+  """
   allProducts(
     where: ProductWhereInput! = {}
     search: String
@@ -990,6 +1192,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Product!]
+
+  """
+   Search for the Product item with the matching ID.
+  """
+  Product(where: ProductWhereUniqueInput!): Product
+
+  """
+   Perform a meta-query on all Product items which match the where clause.
+  """
   _allProductsMeta(
     where: ProductWhereInput! = {}
     search: String
@@ -1003,7 +1214,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use productsCount instead."
     )
   productsCount(where: ProductWhereInput! = {}): Int
-  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+
+  """
+   Search for all ProductImage items which match the where clause.
+  """
   allProductImages(
     where: ProductImageWhereInput! = {}
     search: String
@@ -1013,6 +1227,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
+
+  """
+   Search for the ProductImage item with the matching ID.
+  """
+  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+
+  """
+   Perform a meta-query on all ProductImage items which match the where clause.
+  """
   _allProductImagesMeta(
     where: ProductImageWhereInput! = {}
     search: String
@@ -1026,7 +1249,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use productImagesCount instead."
     )
   productImagesCount(where: ProductImageWhereInput! = {}): Int
-  CartItem(where: CartItemWhereUniqueInput!): CartItem
+
+  """
+   Search for all CartItem items which match the where clause.
+  """
   allCartItems(
     where: CartItemWhereInput! = {}
     search: String
@@ -1036,6 +1262,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [CartItem!]
+
+  """
+   Search for the CartItem item with the matching ID.
+  """
+  CartItem(where: CartItemWhereUniqueInput!): CartItem
+
+  """
+   Perform a meta-query on all CartItem items which match the where clause.
+  """
   _allCartItemsMeta(
     where: CartItemWhereInput! = {}
     search: String
@@ -1049,7 +1284,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use cartItemsCount instead."
     )
   cartItemsCount(where: CartItemWhereInput! = {}): Int
-  OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+
+  """
+   Search for all OrderItem items which match the where clause.
+  """
   allOrderItems(
     where: OrderItemWhereInput! = {}
     search: String
@@ -1059,6 +1297,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
+
+  """
+   Search for the OrderItem item with the matching ID.
+  """
+  OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+
+  """
+   Perform a meta-query on all OrderItem items which match the where clause.
+  """
   _allOrderItemsMeta(
     where: OrderItemWhereInput! = {}
     search: String
@@ -1072,7 +1319,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use orderItemsCount instead."
     )
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
-  Order(where: OrderWhereUniqueInput!): Order
+
+  """
+   Search for all Order items which match the where clause.
+  """
   allOrders(
     where: OrderWhereInput! = {}
     search: String
@@ -1082,6 +1332,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Order!]
+
+  """
+   Search for the Order item with the matching ID.
+  """
+  Order(where: OrderWhereUniqueInput!): Order
+
+  """
+   Perform a meta-query on all Order items which match the where clause.
+  """
   _allOrdersMeta(
     where: OrderWhereInput! = {}
     search: String
@@ -1095,7 +1354,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use ordersCount instead."
     )
   ordersCount(where: OrderWhereInput! = {}): Int
-  Role(where: RoleWhereUniqueInput!): Role
+
+  """
+   Search for all Role items which match the where clause.
+  """
   allRoles(
     where: RoleWhereInput! = {}
     search: String
@@ -1105,6 +1367,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Role!]
+
+  """
+   Search for the Role item with the matching ID.
+  """
+  Role(where: RoleWhereUniqueInput!): Role
+
+  """
+   Perform a meta-query on all Role items which match the where clause.
+  """
   _allRolesMeta(
     where: RoleWhereInput! = {}
     search: String

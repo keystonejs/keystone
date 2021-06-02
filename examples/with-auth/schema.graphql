@@ -1,3 +1,6 @@
+"""
+ A keystone list
+"""
 type Task {
   id: ID!
   label: String
@@ -114,6 +117,9 @@ input TasksCreateInput {
   data: TaskCreateInput
 }
 
+"""
+ A keystone list
+"""
 type Person {
   id: ID!
   name: String
@@ -227,17 +233,64 @@ input PeopleCreateInput {
 }
 
 type Mutation {
+  """
+   Create a single Task item.
+  """
   createTask(data: TaskCreateInput): Task
+
+  """
+  Create multiple Task items.
+  """
   createTasks(data: [TasksCreateInput]): [Task]
+
+  """
+   Update a single Task item by ID.
+  """
   updateTask(id: ID!, data: TaskUpdateInput): Task
+
+  """
+   Update multiple Task items by ID.
+  """
   updateTasks(data: [TasksUpdateInput]): [Task]
+
+  """
+   Delete a single Task item by ID.
+  """
   deleteTask(id: ID!): Task
+
+  """
+   Delete many Task items by ID.
+  """
   deleteTasks(ids: [ID!]): [Task]
+
+  """
+   Create a single Person item.
+  """
   createPerson(data: PersonCreateInput): Person
+
+  """
+  Create multiple Person items.
+  """
   createPeople(data: [PeopleCreateInput]): [Person]
+
+  """
+   Update a single Person item by ID.
+  """
   updatePerson(id: ID!, data: PersonUpdateInput): Person
+
+  """
+   Update multiple Person items by ID.
+  """
   updatePeople(data: [PeopleUpdateInput]): [Person]
+
+  """
+   Delete a single Person item by ID.
+  """
   deletePerson(id: ID!): Person
+
+  """
+   Delete many Person items by ID.
+  """
   deletePeople(ids: [ID!]): [Person]
   endSession: Boolean!
   authenticatePersonWithPassword(
@@ -250,7 +303,9 @@ type Mutation {
 }
 
 type Query {
-  Task(where: TaskWhereUniqueInput!): Task
+  """
+   Search for all Task items which match the where clause.
+  """
   allTasks(
     where: TaskWhereInput! = {}
     search: String
@@ -260,6 +315,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Task!]
+
+  """
+   Search for the Task item with the matching ID.
+  """
+  Task(where: TaskWhereUniqueInput!): Task
+
+  """
+   Perform a meta-query on all Task items which match the where clause.
+  """
   _allTasksMeta(
     where: TaskWhereInput! = {}
     search: String
@@ -273,7 +337,10 @@ type Query {
       reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
   tasksCount(where: TaskWhereInput! = {}): Int
-  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Search for all Person items which match the where clause.
+  """
   allPeople(
     where: PersonWhereInput! = {}
     search: String
@@ -283,6 +350,15 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Person!]
+
+  """
+   Search for the Person item with the matching ID.
+  """
+  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Perform a meta-query on all Person items which match the where clause.
+  """
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String
