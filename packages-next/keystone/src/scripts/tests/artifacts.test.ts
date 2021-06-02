@@ -54,9 +54,9 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall');
     const files = await getFiles(tmp, ['schema.prisma', 'schema.graphql']);
     // to update them
-    for (const [file, content] of Object.entries(files)) {
-      require('fs').writeFileSync(`${__dirname}/fixtures/basic-project/${file}`, content);
-    }
+    // for (const [file, content] of Object.entries(files)) {
+    //   require('fs').writeFileSync(`${__dirname}/fixtures/basic-project/${file}`, content);
+    // }
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`));
     expect(recording()).toMatchInlineSnapshot(`
       "Your Prisma and GraphQL schemas are not up to date
