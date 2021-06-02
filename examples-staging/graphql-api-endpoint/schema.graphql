@@ -98,7 +98,7 @@ input UserWhereInput {
   posts_some: PostWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   posts_none: PostWhereInput
 }
@@ -258,7 +258,7 @@ input PostWhereInput {
   tags_some: TagWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   tags_none: TagWhereInput
 }
@@ -397,7 +397,7 @@ input TagWhereInput {
   posts_some: PostWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   posts_none: PostWhereInput
 }

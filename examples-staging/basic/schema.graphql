@@ -133,7 +133,7 @@ input UserWhereInput {
   phoneNumbers_some: PhoneNumberWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   phoneNumbers_none: PhoneNumberWhereInput
 
@@ -148,7 +148,7 @@ input UserWhereInput {
   posts_some: PostWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   posts_none: PostWhereInput
 }

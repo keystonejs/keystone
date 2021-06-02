@@ -176,7 +176,7 @@ input PersonWhereInput {
   tasks_some: TaskWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   tasks_none: TaskWhereInput
 }

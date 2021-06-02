@@ -122,7 +122,7 @@ input UserWhereInput {
   cart_some: CartItemWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   cart_none: CartItemWhereInput
 
@@ -137,7 +137,7 @@ input UserWhereInput {
   orders_some: OrderWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   orders_none: OrderWhereInput
   role: RoleWhereInput
@@ -154,7 +154,7 @@ input UserWhereInput {
   products_some: ProductWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   products_none: ProductWhereInput
   passwordResetToken_is_set: Boolean
@@ -771,7 +771,7 @@ input OrderWhereInput {
   items_some: OrderItemWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   items_none: OrderItemWhereInput
   user: UserWhereInput
@@ -910,7 +910,7 @@ input RoleWhereInput {
   assignedTo_some: UserWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   assignedTo_none: UserWhereInput
 }

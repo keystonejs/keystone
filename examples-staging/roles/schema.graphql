@@ -170,7 +170,7 @@ input PersonWhereInput {
   tasks_some: TodoWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   tasks_none: TodoWhereInput
 }
@@ -310,7 +310,7 @@ input RoleWhereInput {
   assignedTo_some: PersonWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   assignedTo_none: PersonWhereInput
 }

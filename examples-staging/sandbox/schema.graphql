@@ -199,7 +199,7 @@ input UserWhereInput {
   tasks_some: TodoWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   tasks_none: TodoWhereInput
   createdAt: String

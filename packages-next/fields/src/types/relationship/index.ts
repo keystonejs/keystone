@@ -199,7 +199,7 @@ export const relationship =
               }),
               [`${meta.fieldKey}_none`]: types.arg({
                 type: listTypes.where,
-                description: 'condition must be false for all nodes',
+                description: ' condition must be false for all nodes',
               }),
             },
             impls: {

@@ -157,7 +157,7 @@ input PersonWhereInput {
   packages_some: PackageWhereInput
 
   """
-  condition must be false for all nodes
+   condition must be false for all nodes
   """
   packages_none: PackageWhereInput
 }
