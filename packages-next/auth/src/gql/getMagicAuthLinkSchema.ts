@@ -126,9 +126,8 @@ export function getMagicAuthLinkSchema<I extends string>({
           if (!result.success) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: listKey,
-              // TODO: need to get this from _somewhere_
-              itemPlural: listKey,
+              listKey,
+              context,
               code: result.code,
             });
 
