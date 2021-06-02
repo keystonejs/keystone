@@ -43,7 +43,6 @@ import {
   getFilterInputResolvers,
   InputFilter,
   PrismaFilter,
-  resolveUniqueWhereInput,
 } from './input-resolvers';
 import { createOneState } from './mutations/resolvers';
 import { findMany, findManyFilter } from './queries/resolvers';
@@ -76,6 +75,7 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   maxResults: number;
   listKey: string;
+  lists: Record<string, InitialisedList>;
 };
 
 function assert(condition: boolean): asserts condition {
@@ -616,78 +616,75 @@ export function initialiseLists(
     );
   }
 
-  const initialisedLists: Record<string, InitialisedList> = Object.fromEntries(
-    Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]): [
-      string,
-      InitialisedList
-    ] => [
-      listKey,
-      {
-        ...list,
-        ...listInfos[listKey],
-        hooks: list.hooks || {},
-        inputResolvers: {
-          where: context => getWhereInputResolvers(context)[listKey].where,
-          createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
-        },
-        fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
-        filterImpls: Object.assign(
-          {},
-          ...Object.values(list.fields).map(field => {
-            if (field.dbField.kind === 'relation' && field.__legacy?.filters) {
-              const foreignListKey = field.dbField.list;
-              return Object.fromEntries(
-                Object.entries(field.__legacy.filters.impls).map(([key, resolve]) => {
-                  return [
-                    key,
-                    (val: any) =>
-                      resolve(val, foreignListWhereInput =>
-                        initialisedLists[foreignListKey].inputResolvers.where(
-                          // we're abusing the fact that the context technically isn't used rn
-                          {} as any
-                        )(foreignListWhereInput)
-                      ),
-                  ];
-                })
-              );
-            }
-            return field.__legacy?.filters?.impls ?? {};
-          })
-        ),
-        applySearchField: (filter, search) => {
-          const searchFieldName = lists[listKey].db?.searchField ?? 'name';
-          const searchField = list.fields[searchFieldName];
-          if (search != null && search !== '' && searchField) {
-            if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
-              // FIXME: Think about regex
-              const mode = provider === 'sqlite' ? undefined : 'insensitive';
-              filter = {
-                AND: [filter, { [searchFieldName]: { contains: search, mode } }],
-              };
+  const initialisedLists: Record<string, InitialisedList> = {};
 
-              // const f = escapeRegExp;
-              // this._query.andWhere(`${baseTableAlias}.${searchFieldName}`, '~*', f(search));
-            } else {
-              // Return no results
-              filter = {
-                AND: [filter, { [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }],
-              };
-            }
-          }
-          return filter;
-        },
-        cacheHint: (() => {
-          const cacheHint = lists[listKey].graphql?.cacheHint;
-          if (cacheHint === undefined) {
-            return undefined;
-          }
-          return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
-        })(),
-        maxResults: lists[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
-        listKey,
+  for (const [listKey, list] of Object.entries(listsWithInitialisedFieldsAndResolvedDbFields)) {
+    initialisedLists[listKey] = {
+      ...list,
+      ...listInfos[listKey],
+      hooks: list.hooks || {},
+      inputResolvers: {
+        where: context => getWhereInputResolvers(context)[listKey].where,
+        createAndUpdate: context => createAndUpdateInputResolvers(initialisedLists, context),
       },
-    ])
-  );
+      fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
+      filterImpls: Object.assign(
+        {},
+        ...Object.values(list.fields).map(field => {
+          if (field.dbField.kind === 'relation' && field.__legacy?.filters) {
+            const foreignListKey = field.dbField.list;
+            return Object.fromEntries(
+              Object.entries(field.__legacy.filters.impls).map(([key, resolve]) => {
+                return [
+                  key,
+                  (val: any) =>
+                    resolve(val, foreignListWhereInput =>
+                      initialisedLists[foreignListKey].inputResolvers.where(
+                        // we're abusing the fact that the context technically isn't used rn
+                        {} as any
+                      )(foreignListWhereInput)
+                    ),
+                ];
+              })
+            );
+          }
+          return field.__legacy?.filters?.impls ?? {};
+        })
+      ),
+      applySearchField: (filter, search) => {
+        const searchFieldName = lists[listKey].db?.searchField ?? 'name';
+        const searchField = list.fields[searchFieldName];
+        if (search != null && search !== '' && searchField) {
+          if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
+            // FIXME: Think about regex
+            const mode = provider === 'sqlite' ? undefined : 'insensitive';
+            filter = {
+              AND: [filter, { [searchFieldName]: { contains: search, mode } }],
+            };
+
+            // const f = escapeRegExp;
+            // this._query.andWhere(`${baseTableAlias}.${searchFieldName}`, '~*', f(search));
+          } else {
+            // Return no results
+            filter = {
+              AND: [filter, { [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }],
+            };
+          }
+        }
+        return filter;
+      },
+      cacheHint: (() => {
+        const cacheHint = lists[listKey].graphql?.cacheHint;
+        if (cacheHint === undefined) {
+          return undefined;
+        }
+        return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
+      })(),
+      maxResults: lists[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
+      listKey,
+      lists: initialisedLists,
+    };
+  }
 
   const getWhereInputResolvers = getFilterInputResolvers(initialisedLists);
 
@@ -710,13 +707,7 @@ function createAndUpdateInputResolvers(
           ret.afterChanges.push(() => afterChange(item));
           return { kind: 'connect' as const, id: item.id };
         };
-        return [
-          listKey,
-          {
-            create,
-            uniqueWhere: input => resolveUniqueWhereInput(input, list.fields, context),
-          },
-        ];
+        return [listKey, { create }];
       })
     ),
     afterChanges: [],

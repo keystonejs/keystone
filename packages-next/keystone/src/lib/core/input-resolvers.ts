@@ -40,7 +40,6 @@ export type FilterInputResolvers = {
 };
 
 export type CreateAndUpdateInputResolvers = {
-  uniqueWhere: (where: UniqueInputFilter) => Promise<UniquePrismaFilter>;
   create: (
     input: Record<string, any>
   ) => Promise<{ kind: 'create'; data: Record<string, any> } | { kind: 'connect'; id: IdType }>;
@@ -336,19 +335,20 @@ export async function resolveInputForCreateOrUpdate(
                 }
                 const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
                 const inputResolvers = nestedMutationState.resolvers[field.dbField.list];
+                const foreignList = list.lists[field.dbField.list];
                 if (field.dbField.mode === 'many') {
                   if (operation === 'create') {
                     return resolveRelateToManyForCreateInput(
                       inputResolvers,
                       context,
-                      field.dbField.list,
+                      foreignList,
                       target
                     );
                   }
                   return resolveRelateToManyForUpdateInput(
                     inputResolvers,
                     context,
-                    field.dbField.list,
+                    foreignList,
                     target
                   );
                 }
@@ -356,14 +356,14 @@ export async function resolveInputForCreateOrUpdate(
                   return resolveRelateToOneForCreateInput(
                     inputResolvers,
                     context,
-                    field.dbField.list,
+                    foreignList,
                     target
                   );
                 }
                 return resolveRelateToOneForUpdateInput(
                   inputResolvers,
                   context,
-                  field.dbField.list,
+                  foreignList,
                   target
                 );
               })()

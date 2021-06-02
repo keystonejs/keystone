@@ -1,9 +1,11 @@
 import { KeystoneContext, TypesForList, types } from '@keystone-next/types';
 import {
   CreateAndUpdateInputResolvers,
+  resolveUniqueWhereInput,
   UniqueInputFilter,
   UniquePrismaFilter,
 } from './input-resolvers';
+import { InitialisedList } from './types-for-lists';
 import { isRejected, isFulfilled } from './utils';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
@@ -14,7 +16,7 @@ const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 export function resolveRelateToManyForCreateInput(
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   return async (
@@ -24,26 +26,25 @@ export function resolveRelateToManyForCreateInput(
       return undefined;
     }
     assertValidManyOperation(value, target);
-    return resolveCreateAndConnect(value, inputResolvers, context, foreignListKey, target);
+    return resolveCreateAndConnect(value, inputResolvers, context, foreignList, target);
   };
 }
 
 async function getDisconnects(
   uniqueWheres: (UniqueInputFilter | null)[],
   context: KeystoneContext,
-  foreignListKey: string,
-  inputResolvers: CreateAndUpdateInputResolvers
+  foreignList: InitialisedList
 ): Promise<UniquePrismaFilter[]> {
   return (
     await Promise.all(
       uniqueWheres.map(async filter => {
         if (filter === null) return [];
         try {
-          await context.sudo().db.lists[foreignListKey].findOne({ where: filter as any });
+          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter as any });
         } catch (err) {
           return [];
         }
-        return [await inputResolvers.uniqueWhere(filter)];
+        return [resolveUniqueWhereInput(filter, foreignList.fields, context)];
       })
     )
   ).flat();
@@ -52,12 +53,11 @@ async function getDisconnects(
 function getConnects(
   uniqueWhere: UniqueInputFilter[],
   context: KeystoneContext,
-  foreignListKey: string,
-  inputResolvers: CreateAndUpdateInputResolvers
+  foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
   return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignListKey].findOne({ where: filter as any });
-    return inputResolvers.uniqueWhere(filter);
+    await context.db.lists[foreignList.listKey].findOne({ where: filter as any });
+    return resolveUniqueWhereInput(filter, foreignList.fields, context);
   });
 }
 
@@ -68,11 +68,11 @@ async function resolveCreateAndConnect(
   >,
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   const connects = Promise.allSettled(
-    getConnects((value.connect || []).filter(isNotNull), context, foreignListKey, inputResolvers)
+    getConnects((value.connect || []).filter(isNotNull), context, foreignList)
   );
   const creates = Promise.allSettled(
     (value.create || []).filter(isNotNull).map(x => inputResolvers.create(x))
@@ -124,7 +124,7 @@ function assertValidManyOperation(
 export function resolveRelateToManyForUpdateInput(
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   return async (
@@ -137,13 +137,12 @@ export function resolveRelateToManyForUpdateInput(
     const disconnects = getDisconnects(
       value.disconnectAll ? [] : value.disconnect || [],
       context,
-      foreignListKey,
-      inputResolvers
+      foreignList
     );
 
     const [disconnect, connectAndCreates] = await Promise.all([
       disconnects,
-      resolveCreateAndConnect(value, inputResolvers, context, foreignListKey, target),
+      resolveCreateAndConnect(value, inputResolvers, context, foreignList, target),
     ]);
 
     return {
@@ -161,17 +160,17 @@ async function handleCreateAndUpdate(
   >,
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   if (value.connect) {
     try {
-      await context.db.lists[foreignListKey].findOne({ where: value.connect as any });
+      await context.db.lists[foreignList.listKey].findOne({ where: value.connect as any });
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
     return {
-      connect: await inputResolvers.uniqueWhere(value.connect),
+      connect: await resolveUniqueWhereInput(value.connect, foreignList.fields, context),
     };
   }
   if (value.create) {
@@ -194,7 +193,7 @@ async function handleCreateAndUpdate(
 export function resolveRelateToOneForCreateInput(
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   return async (
@@ -210,14 +209,14 @@ export function resolveRelateToOneForCreateInput(
       //   `If a relate to one for create input is passed, only one key can be passed but ${numOfKeys} were be passed`
       // );
     }
-    return handleCreateAndUpdate(value, inputResolvers, context, foreignListKey, target);
+    return handleCreateAndUpdate(value, inputResolvers, context, foreignList, target);
   };
 }
 
 export function resolveRelateToOneForUpdateInput(
   inputResolvers: CreateAndUpdateInputResolvers,
   context: KeystoneContext,
-  foreignListKey: string,
+  foreignList: InitialisedList,
   target: string
 ) {
   return async (
@@ -236,11 +235,13 @@ export function resolveRelateToOneForUpdateInput(
       throw new Error(`Nested mutation operation invalid for ${target}`);
     }
     if (value.connect || value.create) {
-      return handleCreateAndUpdate(value, inputResolvers, context, foreignListKey, target);
+      return handleCreateAndUpdate(value, inputResolvers, context, foreignList, target);
     }
     if (value.disconnect) {
       try {
-        await context.sudo().db.lists[foreignListKey].findOne({ where: value.disconnect as any });
+        await context
+          .sudo()
+          .db.lists[foreignList.listKey].findOne({ where: value.disconnect as any });
       } catch (err) {
         return;
       }
