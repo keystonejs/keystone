@@ -9,15 +9,7 @@ import {
   CacheHint,
   FieldReadAccessArgs,
   IndividualFieldAccessControl,
-  FieldAccessControl,
-  FieldCreateAccessArgs,
-  FieldUpdateAccessArgs,
   BaseGeneratedListTypes,
-  CreateAccessControl,
-  DeleteListAccessControl,
-  ReadListAccessControl,
-  UpdateListAccessControl,
-  ListAccessControl,
   ListInfo,
   ListHooks,
   KeystoneConfig,
@@ -28,7 +20,14 @@ import {
 } from '@keystone-next/types';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import { GraphQLEnumType, GraphQLResolveInfo } from 'graphql';
-import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
+import {
+  ResolvedFieldAccessControl,
+  ResolvedListAccessControl,
+  validateFieldAccessControl,
+  validateNonCreateListAccessControl,
+  parseListAccessControl,
+  parseFieldAccessControl,
+} from './access-control';
 import { applyFirstSkipToCount, getNamesFromList, getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
@@ -53,13 +52,6 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
   hooks: FieldHooks<BaseGeneratedListTypes>;
-};
-
-type ResolvedListAccessControl = {
-  read: ReadListAccessControl<BaseGeneratedListTypes>;
-  create: CreateAccessControl<BaseGeneratedListTypes>;
-  update: UpdateListAccessControl<BaseGeneratedListTypes>;
-  delete: DeleteListAccessControl<BaseGeneratedListTypes>;
 };
 
 type NestedMutationState = {
@@ -295,41 +287,6 @@ function assertIdFieldGraphQLTypesCorrect(
       `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${listKey} defines the type ${idField.output.type.graphQLType.toString()}`
     );
   }
-}
-
-type ResolvedFieldAccessControl = {
-  read: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>;
-  create: IndividualFieldAccessControl<FieldCreateAccessArgs<BaseGeneratedListTypes>>;
-  update: IndividualFieldAccessControl<FieldUpdateAccessArgs<BaseGeneratedListTypes>>;
-};
-
-function parseFieldAccessControl(
-  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
-): ResolvedFieldAccessControl {
-  if (typeof access === 'boolean' || typeof access === 'function') {
-    return { create: access, read: access, update: access };
-  }
-  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
-  return {
-    create: access?.create ?? true,
-    read: access?.read ?? true,
-    update: access?.update ?? true,
-  };
-}
-
-function parseListAccessControl(
-  access: ListAccessControl<BaseGeneratedListTypes> | undefined
-): ResolvedListAccessControl {
-  if (typeof access === 'boolean' || typeof access === 'function') {
-    return { create: access, read: access, update: access, delete: access };
-  }
-  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
-  return {
-    create: access?.create ?? true,
-    read: access?.read ?? true,
-    update: access?.update ?? true,
-    delete: access?.delete ?? true,
-  };
 }
 
 export function initialiseLists(

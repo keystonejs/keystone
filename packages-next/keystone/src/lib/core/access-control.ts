@@ -1,4 +1,17 @@
-import { KeystoneContext } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  CreateAccessControl,
+  DeleteListAccessControl,
+  FieldAccessControl,
+  FieldCreateAccessArgs,
+  FieldReadAccessArgs,
+  FieldUpdateAccessArgs,
+  IndividualFieldAccessControl,
+  KeystoneContext,
+  ListAccessControl,
+  ReadListAccessControl,
+  UpdateListAccessControl,
+} from '@keystone-next/types';
 import { GraphQLInputObjectType } from 'graphql';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { InputFilter } from './input-resolvers';
@@ -80,3 +93,45 @@ export async function validateFieldAccessControl<
   }
   return result;
 }
+
+export function parseFieldAccessControl(
+  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
+): ResolvedFieldAccessControl {
+  if (typeof access === 'boolean' || typeof access === 'function') {
+    return { create: access, read: access, update: access };
+  }
+  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
+  return {
+    create: access?.create ?? true,
+    read: access?.read ?? true,
+    update: access?.update ?? true,
+  };
+}
+
+export type ResolvedFieldAccessControl = {
+  read: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>;
+  create: IndividualFieldAccessControl<FieldCreateAccessArgs<BaseGeneratedListTypes>>;
+  update: IndividualFieldAccessControl<FieldUpdateAccessArgs<BaseGeneratedListTypes>>;
+};
+
+export function parseListAccessControl(
+  access: ListAccessControl<BaseGeneratedListTypes> | undefined
+): ResolvedListAccessControl {
+  if (typeof access === 'boolean' || typeof access === 'function') {
+    return { create: access, read: access, update: access, delete: access };
+  }
+  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
+  return {
+    create: access?.create ?? true,
+    read: access?.read ?? true,
+    update: access?.update ?? true,
+    delete: access?.delete ?? true,
+  };
+}
+
+export type ResolvedListAccessControl = {
+  read: ReadListAccessControl<BaseGeneratedListTypes>;
+  create: CreateAccessControl<BaseGeneratedListTypes>;
+  update: UpdateListAccessControl<BaseGeneratedListTypes>;
+  delete: DeleteListAccessControl<BaseGeneratedListTypes>;
+};
