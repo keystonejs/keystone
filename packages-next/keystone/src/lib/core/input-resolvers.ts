@@ -5,7 +5,7 @@ import { mapUniqueWhereToWhere } from './queries/resolvers';
 import { accessDeniedError, ValidationFailureError } from './graphql-errors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
-import { getPrismaModelForList, IdType, promiseAllRejectWithAllErrors } from './utils';
+import { getPrismaModelForList, promiseAllRejectWithAllErrors } from './utils';
 import {
   NestedMutationState,
   resolveRelateToManyForCreateInput,
@@ -37,19 +37,6 @@ export type UniquePrismaFilter = Record<string, any> & {
   _____?: 'unique prisma filter';
   // so that if you pass a promise, you get an error
   then?: undefined;
-};
-
-export type CreateItemInput = Record<string, any> & { _____?: 'create item input' };
-export type ResolvedCreateItemInput = Record<string, any> & { _____?: 'unique prisma filter' };
-
-export type FilterInputResolvers = {
-  where: (where: InputFilter) => Promise<PrismaFilter>;
-};
-
-export type CreateAndUpdateInputResolvers = {
-  create: (
-    input: Record<string, any>
-  ) => Promise<{ kind: 'create'; data: Record<string, any> } | { kind: 'connect'; id: IdType }>;
 };
 
 export async function resolveUniqueWhereInput(
