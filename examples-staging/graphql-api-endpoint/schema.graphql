@@ -38,8 +38,8 @@ type User {
 }
 
 input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -202,8 +202,8 @@ type Post {
 }
 
 input PostWhereInput {
-  AND: [PostWhereInput]
-  OR: [PostWhereInput]
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -341,8 +341,8 @@ type Tag {
 }
 
 input TagWhereInput {
-  AND: [TagWhereInput]
-  OR: [TagWhereInput]
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID

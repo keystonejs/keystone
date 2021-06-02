@@ -17,8 +17,8 @@ type Todo {
 }
 
 input TodoWhereInput {
-  AND: [TodoWhereInput]
-  OR: [TodoWhereInput]
+  AND: [TodoWhereInput!]
+  OR: [TodoWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -139,8 +139,8 @@ type Person {
 }
 
 input PersonWhereInput {
-  AND: [PersonWhereInput]
-  OR: [PersonWhereInput]
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -269,8 +269,8 @@ type Role {
 }
 
 input RoleWhereInput {
-  AND: [RoleWhereInput]
-  OR: [RoleWhereInput]
+  AND: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
