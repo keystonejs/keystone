@@ -5,7 +5,7 @@
   "main": "dist/modals.cjs.js",
   "module": "dist/modals.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.7"
+    "@types/react": "^17.0.9"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
@@ -14,7 +14,7 @@
     "react": "^17.0.2",
     "react-focus-lock": "^2.5.1",
     "react-remove-scroll": "^2.4.2",
-    "react-transition-group": "^4.4.1"
+    "react-transition-group": "^4.4.2"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
