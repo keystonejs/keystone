@@ -1,5 +1,16 @@
 # @keystone-ui/fields
 
+## 4.1.0
+
+### Minor Changes
+
+- [#5761](https://github.com/keystonejs/keystone/pull/5761) [`3a7acc2c5`](https://github.com/keystonejs/keystone/commit/3a7acc2c5114fbcbde994d1f4c6cc0b21c572ec0) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added as prop to FieldContainer component.
+
+### Patch Changes
+
+- Updated dependencies [[`fe5b463ed`](https://github.com/keystonejs/keystone/commit/fe5b463ed07c2a524a3cde554ac07575d31e6712)]:
+  - @keystone-ui/popover@4.0.1
+
 ## 4.0.0
 
 ### Major Changes

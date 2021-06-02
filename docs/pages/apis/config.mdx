@@ -209,18 +209,15 @@ import type { SessionStrategy } from '@keystone-next/types';
 ```
 
 The `session` config option allows you to configure session management of your Keystone system.
-It has a TypeScript type of `() => SessionStrategy<any>`.
+It has a TypeScript type of `SessionStrategy<any>`.
 
-In general you will use functions from the `@keystone-next/keystone/session` package, rather than writing this function yourself.
+In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
 
 ```typescript
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 
 export default config({
-  session: withItemData(
-    statelessSessions({ /* ... */ }),
-    { /* ... */ }
-  ),
+  session: statelessSessions({ /* ... */ }),
   /* ... */
 });
 ```

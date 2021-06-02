@@ -48,6 +48,8 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   passwordResetLink?: AuthTokenTypeConfig;
   /** "Magic link" functionality */
   magicAuthLink?: AuthTokenTypeConfig;
+  /** Session data population */
+  sessionData?: string;
 };
 
 export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {

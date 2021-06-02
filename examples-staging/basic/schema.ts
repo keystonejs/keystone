@@ -15,7 +15,7 @@ import { document } from '@keystone-next/fields-document';
 import { types } from '@keystone-next/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 
-// TODO: Can we generate this type based on withItemData in the main config?
+// TODO: Can we generate this type based on sessionData in the main config?
 type AccessArgs = {
   session?: {
     itemId?: string;

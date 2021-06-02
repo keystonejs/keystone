@@ -1,5 +1,5 @@
 import { config } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { lists } from './schema';
 
@@ -36,6 +36,18 @@ const { withAuth } = createAuth({
       },
     },
   },
+  /* This loads the related role for the current user, including all permissions */
+  sessionData: `
+    name role {
+      id
+      name
+      canCreateTodos
+      canManageAllTodos
+      canSeeOtherPeople
+      canEditOtherPeople
+      canManagePeople
+      canManageRoles
+    }`,
 });
 
 export default withAuth(
@@ -49,18 +61,6 @@ export default withAuth(
       /* Everyone who is signed in can access the Admin UI */
       isAccessAllowed: isSignedIn,
     },
-    session: withItemData(statelessSessions(sessionConfig), {
-      /* This loads the related role for the current user, including all permissions */
-      Person: `name role {
-        id
-        name
-        canCreateTodos
-        canManageAllTodos
-        canSeeOtherPeople
-        canEditOtherPeople
-        canManagePeople
-        canManageRoles
-      }`,
-    }),
+    session: statelessSessions(sessionConfig),
   })
 );
