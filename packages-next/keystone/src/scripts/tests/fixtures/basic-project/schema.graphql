@@ -74,7 +74,7 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
 
   """
-  Create multiple Todo items.
+   Create multiple Todo items.
   """
   createTodos(data: [TodosCreateInput]): [Todo]
 
@@ -94,7 +94,7 @@ type Mutation {
   deleteTodo(id: ID!): Todo
 
   """
-   Delete many Todo items by ID.
+   Delete multiple Todo items by ID.
   """
   deleteTodos(ids: [ID!]): [Todo]
 }

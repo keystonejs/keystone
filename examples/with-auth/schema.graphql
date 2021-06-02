@@ -35,16 +35,12 @@ input TaskWhereInput {
   label_not_in: [String]
   priority: TaskPriorityType
   priority_not: TaskPriorityType
-  priority_lt: TaskPriorityType
-  priority_lte: TaskPriorityType
-  priority_gt: TaskPriorityType
-  priority_gte: TaskPriorityType
   priority_in: [TaskPriorityType]
   priority_not_in: [TaskPriorityType]
   isComplete: Boolean
   isComplete_not: Boolean
-  assignedTo_is_null: Boolean
   assignedTo: PersonWhereInput
+  assignedTo_is_null: Boolean
   finishBy: String
   finishBy_not: String
   finishBy_lt: String
@@ -143,6 +139,9 @@ type Person {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
   tasksCount(where: TaskWhereInput! = {}): Int
 }
 
@@ -178,8 +177,20 @@ input PersonWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
   tasks_every: TaskWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   tasks_some: TaskWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   tasks_none: TaskWhereInput
 }
 

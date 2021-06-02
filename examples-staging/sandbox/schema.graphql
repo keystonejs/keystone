@@ -30,8 +30,8 @@ input TodoWhereInput {
   label_not_in: [String]
   isComplete: Boolean
   isComplete_not: Boolean
-  assignedTo_is_null: Boolean
   assignedTo: UserWhereInput
+  assignedTo_is_null: Boolean
   finishBy: String
   finishBy_not: String
   finishBy_lt: String
@@ -147,6 +147,9 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
   tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
@@ -184,8 +187,20 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
   tasks_every: TodoWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   tasks_some: TodoWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   tasks_none: TodoWhereInput
   createdAt: String
   createdAt_not: String

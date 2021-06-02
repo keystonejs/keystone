@@ -163,6 +163,7 @@ export const relationship =
               [`_${meta.fieldKey}Meta`]: types.field({
                 type: QueryMeta,
                 args: listTypes.findManyArgs,
+                deprecationReason: `This query will be removed in a future version. Please use ${meta.fieldKey}Count instead.`,
                 resolve({ value }, args) {
                   return { getCount: () => value.count(args) };
                 },
@@ -188,9 +189,18 @@ export const relationship =
         __legacy: {
           filters: {
             fields: {
-              [`${meta.fieldKey}_every`]: types.arg({ type: listTypes.where }),
-              [`${meta.fieldKey}_some`]: types.arg({ type: listTypes.where }),
-              [`${meta.fieldKey}_none`]: types.arg({ type: listTypes.where }),
+              [`${meta.fieldKey}_every`]: types.arg({
+                type: listTypes.where,
+                description: ' condition must be true for all nodes',
+              }),
+              [`${meta.fieldKey}_some`]: types.arg({
+                type: listTypes.where,
+                description: ' condition must be true for at least 1 node',
+              }),
+              [`${meta.fieldKey}_none`]: types.arg({
+                type: listTypes.where,
+                description: 'condition must be false for all nodes',
+              }),
             },
             impls: {
               [`${meta.fieldKey}_every`]: whereInputResolve('every'),
@@ -241,18 +251,18 @@ export const relationship =
       __legacy: {
         filters: {
           fields: {
-            [`${meta.fieldKey}_is_null`]: types.arg({ type: types.Boolean }),
             [meta.fieldKey]: types.arg({ type: listTypes.where }),
+            [`${meta.fieldKey}_is_null`]: types.arg({ type: types.Boolean }),
           },
           impls: {
-            [`${meta.fieldKey}_is_null`]: value =>
-              value ? { [meta.fieldKey]: null } : { NOT: { [meta.fieldKey]: null } },
             [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {
               if (value === null) {
                 throw new Error('i wonder what should happen here');
               }
               return { [meta.fieldKey]: await resolve!(value) };
             },
+            [`${meta.fieldKey}_is_null`]: value =>
+              value ? { [meta.fieldKey]: null } : { NOT: { [meta.fieldKey]: null } },
           },
         },
         defaultValue,

@@ -34,10 +34,6 @@ input PostWhereInput {
   title_not_in: [String]
   status: PostStatusType
   status_not: PostStatusType
-  status_lt: PostStatusType
-  status_lte: PostStatusType
-  status_gt: PostStatusType
-  status_gte: PostStatusType
   status_in: [PostStatusType]
   status_not_in: [PostStatusType]
   content: String
@@ -54,8 +50,8 @@ input PostWhereInput {
   publishDate_gte: String
   publishDate_in: [String]
   publishDate_not_in: [String]
-  author_is_null: Boolean
   author: AuthorWhereInput
+  author_is_null: Boolean
 }
 
 input PostWhereUniqueInput {
@@ -145,6 +141,9 @@ type Author {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
   postsCount(where: PostWhereInput! = {}): Int
 }
 
@@ -175,8 +174,20 @@ input AuthorWhereInput {
   email_not_contains: String
   email_in: [String]
   email_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
   posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   posts_some: PostWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   posts_none: PostWhereInput
 }
 

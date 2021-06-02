@@ -134,12 +134,10 @@ export const select =
 const getFilters = (meta: FieldData, type: types.ScalarType<any> | types.EnumType<any>) => ({
   fields: {
     ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
-    ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),
     ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
   },
   impls: {
     ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-    ...legacyFilters.impls.orderingConditions(meta.fieldKey),
     ...legacyFilters.impls.inConditions(meta.fieldKey),
   },
 });

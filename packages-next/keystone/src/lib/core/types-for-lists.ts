@@ -568,52 +568,6 @@ export function initialiseLists(
       },
     });
 
-    // const relateToManyForCreateFields = {
-    //   create: types.arg({
-    //     type: types.nonNull(types.list(types.nonNull(create))),
-    //     defaultValue: [],
-    //   }),
-    //   connect: types.arg({
-    //     type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
-    //     defaultValue: [],
-    //   }),
-    // };
-
-    // const relateToManyForCreate = types.inputObject({
-    //   name: `${listKey}RelateToManyForCreateInput`,
-    //   fields: relateToManyForCreateFields,
-    // });
-
-    // const relateToManyForUpdate = types.inputObject({
-    //   name: `${listKey}RelateToManyForUpdateInput`,
-    //   fields: {
-    //     ...relateToManyForCreateFields,
-    //     disconnect: types.arg({
-    //       type: types.nonNull(types.list(types.nonNull(uniqueWhere))),
-    //       defaultValue: [],
-    //     }),
-    //     disconnectAll: types.arg({ type: types.nonNull(types.Boolean), defaultValue: false }),
-    //   },
-    // });
-
-    // const relateToOneForCreateFields = {
-    //   create: types.arg({ type: create }),
-    //   connect: types.arg({ type: uniqueWhere }),
-    // };
-
-    // const relateToOneForCreate = types.inputObject({
-    //   name: `${listKey}RelateToOneForCreateInput`,
-    //   fields: relateToOneForCreateFields,
-    // });
-
-    // this is a seperate type because:
-    // - in the future, this should contain delete
-    // - setting relateToOneForCreate to null is not allowed, setting relateToOneForUpdate disconnects
-    // const relateToOneForUpdate = types.inputObject({
-    //   name: `${listKey}RelateToOneForUpdateInput`,
-    //   fields: relateToOneForCreateFields,
-    // });
-
     const relateToMany = types.inputObject({
       name: names.relateToManyInputName,
       fields: () => {

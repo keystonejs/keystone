@@ -28,6 +28,9 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
+    )
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
@@ -47,6 +50,9 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
   postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
@@ -115,11 +121,35 @@ input UserWhereInput {
   roles_not_contains: String
   roles_in: [String]
   roles_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
   phoneNumbers_every: PhoneNumberWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   phoneNumbers_some: PhoneNumberWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   phoneNumbers_none: PhoneNumberWhereInput
+
+  """
+   condition must be true for all nodes
+  """
   posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   posts_some: PostWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   posts_none: PostWhereInput
 }
 
@@ -254,14 +284,10 @@ input PhoneNumberWhereInput {
   id_gte: ID
   id_in: [ID]
   id_not_in: [ID]
-  user_is_null: Boolean
   user: UserWhereInput
+  user_is_null: Boolean
   type: String
   type_not: String
-  type_lt: String
-  type_lte: String
-  type_gt: String
-  type_gte: String
   type_in: [String]
   type_not_in: [String]
   value: String
@@ -362,10 +388,6 @@ input PostWhereInput {
   title_not_in: [String]
   status: String
   status_not: String
-  status_lt: String
-  status_lte: String
-  status_gt: String
-  status_gte: String
   status_in: [String]
   status_not_in: [String]
   publishDate: String
@@ -376,8 +398,8 @@ input PostWhereInput {
   publishDate_gte: String
   publishDate_in: [String]
   publishDate_not_in: [String]
-  author_is_null: Boolean
   author: UserWhereInput
+  author_is_null: Boolean
 }
 
 input PostWhereUniqueInput {

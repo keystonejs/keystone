@@ -24,6 +24,9 @@ type User {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
   postsCount(where: PostWhereInput! = {}): Int
 }
 
@@ -83,8 +86,20 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
+
+  """
+   condition must be true for all nodes
+  """
   posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   posts_some: PostWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   posts_none: PostWhereInput
 }
 
@@ -170,6 +185,9 @@ type Post {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tagsCount instead."
+    )
   tagsCount(where: TagWhereInput! = {}): Int
 }
 
@@ -216,10 +234,6 @@ input PostWhereInput {
   title_not_in: [String]
   status: String
   status_not: String
-  status_lt: String
-  status_lte: String
-  status_gt: String
-  status_gte: String
   status_in: [String]
   status_not_in: [String]
   publishDate: String
@@ -230,10 +244,22 @@ input PostWhereInput {
   publishDate_gte: String
   publishDate_in: [String]
   publishDate_not_in: [String]
-  author_is_null: Boolean
   author: UserWhereInput
+  author_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
   tags_every: TagWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   tags_some: TagWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   tags_none: TagWhereInput
 }
 
@@ -324,6 +350,9 @@ type Tag {
     first: Int
     skip: Int! = 0
   ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
   postsCount(where: PostWhereInput! = {}): Int
 }
 
@@ -356,8 +385,20 @@ input TagWhereInput {
   name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
   posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
   posts_some: PostWhereInput
+
+  """
+  condition must be false for all nodes
+  """
   posts_none: PostWhereInput
 }
 
