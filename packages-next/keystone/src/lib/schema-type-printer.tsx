@@ -107,7 +107,7 @@ export function printGeneratedTypes(
 
   let queryNodeFieldsByName: Record<string, FieldDefinitionNode> = {};
 
-  for (const field of queryNode!.fields!) {
+  for (const field of queryNode.fields!) {
     queryNodeFieldsByName[field.name.value] = field;
   }
 
