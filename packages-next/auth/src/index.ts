@@ -199,31 +199,6 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       throw new Error(msg);
     }
 
-    // // FIXME: Until we explicity support user defined field types, should we just check against .type.type === 'Password'?
-    // const { type } = secretFieldConfig;
-    // const secretPrototype = type && type.implementation && type.implementation.prototype;
-    // const secretTypename = type && type.type;
-    // if (typeof secretPrototype.compare !== 'function' || secretPrototype.compare.length < 2) {
-    //   const s = JSON.stringify(secretField);
-    //   const st = JSON.stringify(secretTypename);
-    //   let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, which uses the field type ${st}. But the ${st} field type doesn't implement the required compare() functionality.`;
-    //   if (secretTypename !== 'Password') {
-    //     msg += ` Did you mean to reference a field of type Password instead?`;
-    //   }
-    //   throw new Error(msg);
-    // }
-
-    // // Ditto here, just explicitly enforce the use of our `password` field.
-    // if (typeof secretPrototype.generateHash !== 'function') {
-    //   const s = JSON.stringify(secretField);
-    //   const st = JSON.stringify(secretTypename);
-    //   let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, which uses the field type ${st}. But the ${st} field type doesn't implement the required generateHash() functionality.`;
-    //   if (secretTypename !== 'Password') {
-    //     msg += ` Did you mean to reference a field of type Password instead?`;
-    //   }
-    //   throw new Error(msg);
-    // }
-
     // TODO: Could also validate initFirstItem.itemData keys?
     for (const field of initFirstItem?.fields || []) {
       if (listConfig.fields[field] === undefined) {

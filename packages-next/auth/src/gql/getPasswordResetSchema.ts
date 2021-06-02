@@ -79,10 +79,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              // FIXME
-              itemSingular: listKey,
-              // FIXME
-              itemPlural: listKey,
+              context,
+              listKey,
               code: result.code,
             });
             return { code: result.code, message };
@@ -130,10 +128,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             // or 'The auth token provided has expired.'
             const message = getAuthTokenErrorMessage({
               identityField,
-              // FIXME
-              itemSingular: listKey,
-              // FIXME
-              itemPlural: listKey,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };
@@ -181,10 +177,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              // FIXME
-              itemSingular: listKey,
-              // FIXME
-              itemPlural: listKey,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };

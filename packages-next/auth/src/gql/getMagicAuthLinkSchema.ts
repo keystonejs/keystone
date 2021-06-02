@@ -75,9 +75,8 @@ export function getMagicAuthLinkSchema<I extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: listKey,
-              // FIXME
-              itemPlural: listKey,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };

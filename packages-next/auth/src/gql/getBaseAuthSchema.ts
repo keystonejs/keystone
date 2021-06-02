@@ -74,10 +74,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             const message = getPasswordAuthError({
               identityField,
               secretField,
-              // FIXME
-              itemSingular: listKey,
-              // FIXME
-              itemPlural: listKey,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };
