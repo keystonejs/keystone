@@ -1,4 +1,9 @@
-import { FindManyArgsValue, ItemRootValue, KeystoneContext } from '@keystone-next/types';
+import {
+  FindManyArgsValue,
+  ItemRootValue,
+  KeystoneContext,
+  OrderDirection,
+} from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
 import { validateNonCreateListAccessControl } from '../access-control';
 import {
@@ -6,12 +11,12 @@ import {
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
-  resolveOrderBy,
   resolveWhereInput,
-} from '../input-resolvers';
+} from '../where-inputs';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from '../utils';
+import { getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
 
 export async function findManyFilter(
   list: InitialisedList,
@@ -142,6 +147,58 @@ export async function findMany(
     );
   }
   return results;
+}
+
+async function resolveOrderBy(
+  orderBy: readonly Record<string, any>[],
+  sortBy: readonly string[] | null | undefined,
+  list: InitialisedList,
+  context: KeystoneContext
+): Promise<readonly Record<string, OrderDirection>[]> {
+  return (
+    await Promise.all(
+      orderBy.map(async orderBySelection => {
+        const keys = Object.keys(orderBySelection);
+        if (keys.length !== 1) {
+          throw new Error(
+            `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+          );
+        }
+
+        const fieldKey = keys[0];
+
+        const value = orderBySelection[fieldKey];
+
+        if (value === null) {
+          throw new Error('null cannot be passed as an order direction');
+        }
+
+        const field = list.fields[fieldKey];
+        const resolveOrderBy = field.input!.orderBy!.resolve;
+        const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
+        if (field.dbField.kind === 'multi') {
+          const keys = Object.keys(resolvedValue);
+          if (keys.length !== 1) {
+            throw new Error(
+              `Only a single key must be returned from an orderBy input resolver for a multi db field`
+            );
+          }
+          const innerKey = keys[0];
+          return {
+            [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
+          };
+        }
+        return { [fieldKey]: resolvedValue };
+      })
+    )
+  ).concat(
+    sortBy?.map(sort => {
+      if (sort.endsWith('_DESC')) {
+        return { [sort.slice(0, -'_DESC'.length)]: 'desc' };
+      }
+      return { [sort.slice(0, -'_ASC'.length)]: 'asc' };
+    }) || []
+  );
 }
 
 export async function count(

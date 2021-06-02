@@ -14,7 +14,7 @@ import {
 } from '@keystone-next/types';
 import { GraphQLInputObjectType } from 'graphql';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
-import { InputFilter } from './input-resolvers';
+import { InputFilter } from './where-inputs';
 
 export async function validateNonCreateListAccessControl<
   Args extends {

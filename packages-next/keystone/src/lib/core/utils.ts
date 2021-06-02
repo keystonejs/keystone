@@ -1,7 +1,7 @@
 import { ItemRootValue, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import pluralize from 'pluralize';
 import { humanize } from '@keystone-next/utils-legacy';
-import { PrismaFilter, UniquePrismaFilter } from './input-resolvers';
+import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 import { LimitsExceededError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 

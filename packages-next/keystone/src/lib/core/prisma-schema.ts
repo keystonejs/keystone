@@ -286,7 +286,7 @@ function printNativeType(nativeType: string | undefined, datasourceName: string)
   return nativeType === undefined ? '' : ` @${datasourceName}.${nativeType}`;
 }
 
-export function getDBFieldPathForFieldOnMultiField(fieldPath: string, subField: string) {
+export function getDBFieldKeyForFieldOnMultiField(fieldPath: string, subField: string) {
   return `${fieldPath}_${subField}`;
 }
 
@@ -340,7 +340,7 @@ function printField(
     return Object.entries(field.fields)
       .map(([subField, field]) =>
         printField(
-          getDBFieldPathForFieldOnMultiField(fieldPath, subField),
+          getDBFieldKeyForFieldOnMultiField(fieldPath, subField),
           field,
           datasourceName,
           lists

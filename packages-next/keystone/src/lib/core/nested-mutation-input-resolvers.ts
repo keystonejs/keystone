@@ -1,5 +1,5 @@
 import { KeystoneContext, TypesForList, types } from '@keystone-next/types';
-import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from './input-resolvers';
+import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from './where-inputs';
 import { createOneState } from './mutations/resolvers';
 import { InitialisedList } from './types-for-lists';
 import {
