@@ -1,16 +1,7 @@
-import { ItemRootValue, KeystoneContext, types } from '@keystone-next/types';
+import { ItemRootValue, KeystoneContext } from '@keystone-next/types';
 import { PrismaFilter, UniquePrismaFilter } from './input-resolvers';
 import { LimitsExceededError } from './ListTypes/graphqlErrors';
 import { InitialisedList } from './types-for-lists';
-
-export const prismaScalarsToGraphQLScalars = {
-  String: types.String,
-  Boolean: types.Boolean,
-  Int: types.Int,
-  Float: types.Float,
-  DateTime: types.String,
-  Json: types.JSON,
-};
 
 declare const prisma: unique symbol;
 

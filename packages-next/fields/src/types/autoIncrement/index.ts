@@ -91,7 +91,7 @@ export const autoIncrement =
     })({
       ...config,
       input: {
-        uniqueWhere: { arg: types.arg({ type }), resolve: inputResolver },
+        uniqueWhere: isUnique ? { arg: types.arg({ type }), resolve: inputResolver } : undefined,
         create: { arg: types.arg({ type }), resolve: inputResolver },
         update: { arg: types.arg({ type }), resolve: inputResolver },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

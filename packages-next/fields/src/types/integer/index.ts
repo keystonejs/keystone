@@ -36,10 +36,7 @@ export const integer =
     })({
       ...config,
       input: {
-        uniqueWhere:
-          getIndexType({ isIndexed, isUnique }) === 'unique'
-            ? { arg: types.arg({ type: types.Int }) }
-            : undefined,
+        uniqueWhere: isUnique ? { arg: types.arg({ type: types.Int }) } : undefined,
         create: { arg: types.arg({ type: types.Int }) },
         update: { arg: types.arg({ type: types.Int }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

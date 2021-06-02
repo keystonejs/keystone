@@ -39,10 +39,7 @@ export const text =
     })({
       ...config,
       input: {
-        uniqueWhere:
-          getIndexType({ isIndexed, isUnique }) === 'unique'
-            ? { arg: types.arg({ type: types.String }) }
-            : undefined,
+        uniqueWhere: isUnique ? { arg: types.arg({ type: types.String }) } : undefined,
         create: { arg: types.arg({ type: types.String }) },
         update: { arg: types.arg({ type: types.String }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

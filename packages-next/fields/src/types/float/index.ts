@@ -36,10 +36,6 @@ export const float =
     })({
       ...config,
       input: {
-        uniqueWhere:
-          getIndexType({ isIndexed, isUnique }) === 'unique'
-            ? { arg: types.arg({ type: types.Float }) }
-            : undefined,
         create: { arg: types.arg({ type: types.Float }) },
         update: { arg: types.arg({ type: types.Float }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

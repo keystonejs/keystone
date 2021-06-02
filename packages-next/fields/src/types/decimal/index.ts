@@ -66,10 +66,6 @@ export const decimal =
     })({
       ...config,
       input: {
-        uniqueWhere:
-          index === 'unique'
-            ? { arg: types.arg({ type: types.String }), resolve: x => new Decimal(x) }
-            : undefined,
         create: {
           arg: types.arg({ type: types.String }),
           resolve(val) {

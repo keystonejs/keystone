@@ -188,17 +188,6 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   : never;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldFilters<TDBField extends DBField> =
-  | ({
-      AND?: DBFieldFiltersInner<TDBField>;
-      OR?: DBFieldFiltersInner<TDBField>;
-      NOT?: DBFieldFiltersInner<TDBField>;
-    } & DBFieldFiltersInner<TDBField>)
-  | null;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldUniqueFilter<TDBField extends DBField> = any;
 
 type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
@@ -292,28 +281,6 @@ export type CreateFieldInputArg<
   : {
       resolve: CreateFieldInputResolver<undefined, TDBField>;
     });
-
-export type WhereFieldInputArg<
-  TDBField extends DBField,
-  TArg extends types.Arg<types.InputType, any>
-> = {
-  arg: TArg;
-} & ResolveFunc<
-  FieldInputResolver<
-    Exclude<types.InferValueFromArg<TArg>, undefined>,
-    DBFieldFilters<TDBField>,
-    any
-    // i think this is broken because variance?
-    // TDBField extends RelationDBField<infer Mode>
-    //   ? (
-    //       input: {
-    //         many: types.InferValueFromArg<types.Arg<TypesForList['manyRelationWhere']>>;
-    //         one: types.InferValueFromArg<types.Arg<TypesForList['where']>>;
-    //       }[Mode]
-    //     ) => Promise<any>
-    //   : undefined
-  >
->;
 
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
 

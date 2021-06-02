@@ -26,12 +26,11 @@ import {
   orderDirectionEnum,
   CacheHintArgs,
 } from '@keystone-next/types';
-// import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import pluralize from 'pluralize';
 import { GraphQLEnumType, GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from './access-control';
-import { applyFirstSkipToCount, getPrismaModelForList, IdType, PrismaPromise } from './utils';
+import { applyFirstSkipToCount, getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
   ListsWithResolvedRelations,
@@ -69,27 +68,6 @@ type NestedMutationState = {
   resolvers: Record<string, CreateAndUpdateInputResolvers>;
   afterChanges: (() => Promise<void> | void)[];
 };
-
-// normally this wouldn't really execute things in series
-// but because prisma's "promises" aren't really Promises and they
-// start lazily, this does execute the things in series
-async function prismaPromiseSeries<T>(promises: PrismaPromise<T>[]): Promise<T[]> {
-  let results: T[] = [];
-  for (const promise of promises) {
-    results.push(await promise);
-  }
-  return results;
-}
-
-export async function runPrismaOperations<T>(
-  operations: PrismaPromise<T>[],
-  context: KeystoneContext,
-  provider: DatabaseProvider
-): Promise<T[]> {
-  const runOperations =
-    provider === 'sqlite' ? prismaPromiseSeries : (x: any[]) => context.prisma.$transaction(x);
-  return runOperations(operations);
-}
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
@@ -131,14 +109,7 @@ function getRelationVal(
   if (dbField.mode === 'many') {
     return {
       findMany: async (args: FindManyArgsValue) => {
-        return findMany(
-          args,
-
-          foreignList,
-          context,
-          info,
-          relationFilter
-        );
+        return findMany(args, foreignList, context, info, relationFilter);
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
         const filter = await findManyFilter(foreignList, context, where, search);
@@ -685,6 +656,29 @@ export function initialiseLists(
   )) {
     assertNoConflictingExtraOutputFields(listKey, fields);
     assertIdFieldGraphQLTypesCorrect(listKey, fields);
+
+    for (const [fieldKey, { dbField, input }] of Object.entries(fields)) {
+      if (input?.uniqueWhere) {
+        if (
+          dbField.kind !== 'scalar' ||
+          (dbField.scalar !== 'String' && dbField.scalar !== 'Int')
+        ) {
+          throw new Error(
+            `Only String and Int scalar db fields can provide a uniqueWhere input currently but the field at ${listKey}.${fieldKey} specifies a uniqueWhere input`
+          );
+        }
+
+        if (dbField.index !== 'unique') {
+          throw new Error(
+            `Fields must have a unique index to specify a uniqueWhere input but the field at ${listKey}.${fieldKey} specifies a uniqueWhere input without a unique index`
+          );
+        }
+      }
+    }
+
+    // this is quite a hack, we could do this in a better way if we "initialised" the fields twice,
+    // the first time to see if they have an orderBy and then the second time for real
+    // but that would be more complicated and this works
     Object.assign(
       listInfos[listKey].types.findManyArgs.sortBy.type.graphQLType.ofType.ofType,
       new GraphQLEnumType({
@@ -694,7 +688,8 @@ export function initialiseLists(
             if (
               field.input?.orderBy?.arg.type === orderDirectionEnum &&
               field.input?.orderBy?.arg.defaultValue === undefined &&
-              field.input?.orderBy?.resolve === undefined
+              field.input?.orderBy?.resolve === undefined &&
+              field.access.read !== false
             ) {
               return [
                 [`${fieldKey}_ASC`, {}],
