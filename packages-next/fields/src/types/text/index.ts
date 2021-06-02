@@ -5,7 +5,6 @@ import {
   types,
   orderDirectionEnum,
   FieldTypeFunc,
-  filters,
   legacyFilters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -40,7 +39,6 @@ export const text =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].String.optional }) },
         uniqueWhere:
           getIndexType({ isIndexed, isUnique }) === 'unique'
             ? { arg: types.arg({ type: types.String }) }

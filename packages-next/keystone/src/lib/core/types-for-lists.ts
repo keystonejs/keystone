@@ -306,7 +306,7 @@ function assertIdFieldGraphQLTypesCorrect(
     );
   }
   // we may want to loosen these constraints in the future
-  if (idField.input.create?.arg !== undefined) {
+  if (idField.input.create !== undefined) {
     throw new Error(
       `The idField on a list must not define a create GraphQL input but the idField for ${listKey} does define one`
     );
@@ -559,15 +559,6 @@ export function initialiseLists(
       }),
     };
 
-    const manyRelationWhere = types.inputObject({
-      name: names.manyRelationFilter,
-      fields: {
-        every: types.arg({ type: where }),
-        some: types.arg({ type: where }),
-        none: types.arg({ type: where }),
-      },
-    });
-
     const relateToMany = types.inputObject({
       name: names.relateToManyInputName,
       fields: () => {
@@ -614,7 +605,6 @@ export function initialiseLists(
         findManyArgs,
         relateTo: {
           many: {
-            where: manyRelationWhere,
             create: relateToMany,
             update: relateToMany,
           },

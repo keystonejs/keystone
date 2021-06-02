@@ -3,7 +3,6 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
-  filters,
   legacyFilters,
   orderDirectionEnum,
   types,
@@ -31,7 +30,6 @@ export const checkbox =
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].Boolean.optional }) },
         create: { arg: types.arg({ type: types.Boolean }) },
         update: { arg: types.arg({ type: types.Boolean }) },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

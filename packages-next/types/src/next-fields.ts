@@ -53,12 +53,9 @@ export type FieldTypeFunc<
     | types.Arg<types.InputType, any>
     | undefined,
   UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
-> = (
-  data: FieldData
-) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
+> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
@@ -66,12 +63,11 @@ export type NextFieldType<
     | types.Arg<types.InputType, any>
     | undefined,
   UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -356,13 +352,11 @@ export type FieldTypeWithoutDBField<
     | types.Arg<types.InputType, any>
     | undefined,
   UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  FilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
   OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-    where?: WhereFieldInputArg<TDBField, FilterArg>;
     create?: CreateFieldInputArg<TDBField, CreateArg>;
     update?: UpdateFieldInputArg<TDBField, UpdateArg>;
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
@@ -391,19 +385,11 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends types.Arg<types.InputType, any> | undefined,
     UpdateArg extends types.Arg<types.InputType, any>,
-    FilterArg extends types.Arg<types.InputType, any>,
     UniqueFilterArg extends types.Arg<types.InputType, any>,
     OrderByArg extends types.Arg<types.InputType, any>
   >(
-    stuff: FieldTypeWithoutDBField<
-      TDBField,
-      CreateArg,
-      UpdateArg,
-      FilterArg,
-      UniqueFilterArg,
-      OrderByArg
-    >
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg, OrderByArg> {
+    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg> {
     return { ...stuff, dbField };
   };
 }
@@ -436,11 +422,6 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
-      where: types.InputObjectType<{
-        every: types.Arg<AnyInputObj>;
-        some: types.Arg<AnyInputObj>;
-        none: types.Arg<AnyInputObj>;
-      }>;
       create: RelateToManyInput;
       update: RelateToManyInput;
     };

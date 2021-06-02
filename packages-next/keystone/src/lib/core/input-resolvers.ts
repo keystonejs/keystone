@@ -1,9 +1,4 @@
-import {
-  ItemRootValue,
-  KeystoneContext,
-  NextFieldType,
-  OrderDirection,
-} from '@keystone-next/types';
+import { ItemRootValue, KeystoneContext, OrderDirection } from '@keystone-next/types';
 import { validateCreateListAccessControl, validateFieldAccessControl } from './access-control';
 import { validateNonCreateListAccessControl } from './access-control';
 import { mapUniqueWhereToWhere } from './query-resolvers';
@@ -44,22 +39,6 @@ export type UniquePrismaFilter = Record<string, any> & { _____?: 'unique prisma 
 export type CreateItemInput = Record<string, any> & { _____?: 'create item input' };
 export type ResolvedCreateItemInput = Record<string, any> & { _____?: 'unique prisma filter' };
 
-function nestWithAppropiateField(
-  fieldKey: string,
-  dbField: ResolvedDBField,
-  value: Record<string, any>
-) {
-  if (dbField.kind !== 'multi') {
-    return { [fieldKey]: value };
-  }
-  Object.fromEntries(
-    Object.entries(value).map(([key, val]) => [
-      getDBFieldPathForFieldOnMultiField(fieldKey, key),
-      val,
-    ])
-  );
-}
-
 export type FilterInputResolvers = {
   where: (where: InputFilter) => Promise<PrismaFilter>;
 };
@@ -91,93 +70,6 @@ export async function resolveUniqueWhereInput(
   const resolvedVal = resolver ? await resolver(val, context) : val;
   return {
     [key]: resolvedVal,
-  };
-}
-
-type FieldInfoRequiredForResolvingWhereInput = Record<
-  string,
-  // i am intentionally only passing in specific things to make it clear this function cares about nothing else
-  {
-    dbField: ResolvedDBField;
-    input?: {
-      where?: NonNullable<NonNullable<NextFieldType['input']>['where']>;
-    };
-  }
->;
-
-// this is used for the new filters
-// (so this is currently unused)
-// @ts-expect-error
-async function resolveWhereInput(
-  inputFilter: InputFilter,
-  fields: FieldInfoRequiredForResolvingWhereInput,
-  context: KeystoneContext,
-  inputResolvers: Record<string, FilterInputResolvers>
-): Promise<PrismaFilter> {
-  return {
-    AND: await Promise.all(
-      Object.entries(inputFilter).map(async ([fieldKey, value]) => {
-        if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
-          return {
-            [fieldKey]: await Promise.all(
-              // this is used for the new filters
-              // (so this is currently unused)
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              value.map((value: any) => resolveWhereInput(value, fields, context, inputResolvers))
-            ),
-          };
-        }
-        const field = fields[fieldKey];
-        // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
-        const where = field.input!.where!;
-        const dbField = field.dbField;
-        const ret = where.resolve
-          ? await where.resolve(
-              value,
-              context,
-              (() => {
-                if (field.dbField.kind !== 'relation') {
-                  return undefined as any;
-                }
-                const whereResolver = inputResolvers[field.dbField.list].where;
-                if (field.dbField.mode === 'many') {
-                  return async () => {
-                    if (value === null) {
-                      throw new Error('A many relation filter cannot be set to null');
-                    }
-                    return Object.fromEntries(
-                      await Promise.all(
-                        Object.entries(value).map(async ([key, val]) => {
-                          if (val === null) {
-                            throw new Error(
-                              `The key ${key} in a many relation filter cannot be set to null`
-                            );
-                          }
-                          return [key, await whereResolver(val as any)];
-                        })
-                      )
-                    );
-                  };
-                }
-                return whereResolver;
-              })()
-            )
-          : value;
-        if (ret === null) {
-          if (field.dbField.kind === 'multi') {
-            throw new Error('multi db fields cannot return null from where input resolvers');
-          }
-          return { [fieldKey]: null };
-        }
-        const { AND, OR, NOT, ...rest } = ret;
-        return {
-          AND: AND?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          OR: OR?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          NOT: NOT?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          ...nestWithAppropiateField(fieldKey, dbField, rest),
-        };
-      })
-    ),
   };
 }
 

@@ -4,7 +4,6 @@ import {
   fieldType,
   types,
   orderDirectionEnum,
-  filters,
   legacyFilters,
   FieldDefaultValue,
 } from '@keystone-next/types';
@@ -37,7 +36,6 @@ export const float =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].Float.optional }) },
         uniqueWhere:
           getIndexType({ isIndexed, isUnique }) === 'unique'
             ? { arg: types.arg({ type: types.Float }) }

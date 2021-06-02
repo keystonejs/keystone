@@ -1,4 +1,3 @@
-// i think these tests should be covered by things elsewhere but adding @ts-nocheck instead of removing for now
 import { createSystem, initConfig } from '@keystone-next/keystone';
 import { config, list } from '@keystone-next/keystone/schema';
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';

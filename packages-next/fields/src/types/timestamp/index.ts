@@ -4,7 +4,6 @@ import {
   types,
   FieldTypeFunc,
   orderDirectionEnum,
-  filters,
   legacyFilters,
   FieldDefaultValue,
 } from '@keystone-next/types';
@@ -43,7 +42,6 @@ export const timestamp =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].DateTime.optional }) },
         create: { arg: types.arg({ type: types.String }), resolve: inputResolver },
         update: { arg: types.arg({ type: types.String }), resolve: inputResolver },
         orderBy: { arg: types.arg({ type: orderDirectionEnum }) },

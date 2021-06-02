@@ -128,12 +128,6 @@ export const relationship =
       })({
         ...commonConfig,
         input: {
-          where: {
-            arg: types.arg({ type: listTypes.relateTo.many.where }),
-            async resolve(value, context, resolve) {
-              return resolve(value);
-            },
-          },
           create: {
             arg: types.arg({
               type: listTypes.relateTo.many.create,
@@ -220,15 +214,6 @@ export const relationship =
     })({
       ...commonConfig,
       input: {
-        where: {
-          arg: types.arg({ type: listTypes.where }),
-          resolve(value, context, resolve) {
-            if (value === null) {
-              return null;
-            }
-            return resolve(value);
-          },
-        },
         create: {
           arg: types.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {

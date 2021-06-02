@@ -3,7 +3,6 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
-  filters,
   legacyFilters,
   orderDirectionEnum,
   types,
@@ -37,7 +36,6 @@ export const integer =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
         uniqueWhere:
           getIndexType({ isIndexed, isUnique }) === 'unique'
             ? { arg: types.arg({ type: types.Int }) }

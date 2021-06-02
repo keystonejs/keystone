@@ -3,7 +3,6 @@ import {
   FieldTypeFunc,
   BaseGeneratedListTypes,
   types,
-  filters,
   orderDirectionEnum,
   Decimal,
   legacyFilters,
@@ -67,7 +66,6 @@ export const decimal =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].Decimal.optional }) },
         uniqueWhere:
           index === 'unique'
             ? { arg: types.arg({ type: types.String }), resolve: x => new Decimal(x) }

@@ -3,7 +3,6 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
-  filters,
   legacyFilters,
   orderDirectionEnum,
   types,
@@ -57,7 +56,6 @@ export const autoIncrement =
       })({
         ...config,
         input: {
-          where: { arg: types.arg({ type: filters[meta.provider].Int.required }) },
           // TODO: fix the fact that TS did not catch that a resolver is needed here
           uniqueWhere: {
             arg: types.arg({ type }),
@@ -93,7 +91,6 @@ export const autoIncrement =
     })({
       ...config,
       input: {
-        where: { arg: types.arg({ type: filters[meta.provider].Int.optional }) },
         uniqueWhere: { arg: types.arg({ type }), resolve: inputResolver },
         create: { arg: types.arg({ type }), resolve: inputResolver },
         update: { arg: types.arg({ type }), resolve: inputResolver },
