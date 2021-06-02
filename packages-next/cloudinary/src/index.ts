@@ -34,11 +34,11 @@ type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
 const CloudinaryImageFormat = types.inputObject({
   name: 'CloudinaryImageFormat',
   description:
-    'Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference)\n' +
+    'Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).\n' +
     'All options are strings as they ultimately end up in a URL.',
   fields: {
     prettyName: types.arg({
-      description: 'Rewrites the filename to be this pretty string. Do not include `/` or `.`',
+      description: ' Rewrites the filename to be this pretty string. Do not include `/` or `.`',
       type: types.String,
     }),
     width: types.arg({ type: types.String }),
