@@ -42,23 +42,23 @@ function collectTypes(
   createManyByList: Record<string, types.InputObjectType<any>>,
   updateManyByList: Record<string, types.InputObjectType<any>>
 ) {
-  const types: GraphQLNamedType[] = [];
+  const collectedTypes: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
     if (list.access.read || list.access.create || list.access.update || list.access.delete) {
-      types.push(list.types.output.graphQLType);
-      types.push(list.types.where.graphQLType);
-      types.push(list.types.uniqueWhere.graphQLType);
-      types.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
-      types.push(list.types.orderBy.graphQLType);
+      collectedTypes.push(list.types.output.graphQLType);
+      collectedTypes.push(list.types.where.graphQLType);
+      collectedTypes.push(list.types.uniqueWhere.graphQLType);
+      collectedTypes.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
+      collectedTypes.push(list.types.orderBy.graphQLType);
     }
     if (list.access.update) {
-      types.push(list.types.update.graphQLType);
-      types.push(updateManyByList[list.listKey].graphQLType);
+      collectedTypes.push(list.types.update.graphQLType);
+      collectedTypes.push(updateManyByList[list.listKey].graphQLType);
     }
     if (list.access.create) {
-      types.push(list.types.create.graphQLType);
-      types.push(createManyByList[list.listKey].graphQLType);
+      collectedTypes.push(list.types.create.graphQLType);
+      collectedTypes.push(createManyByList[list.listKey].graphQLType);
     }
 
     for (const field of Object.values(list.fields)) {
@@ -67,9 +67,14 @@ function collectTypes(
         field.access.read !== false &&
         field.unreferencedConcreteInterfaceImplementations
       ) {
-        types.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType));
+        // this _IS_ actually necessary, unlike the things above
+        collectedTypes.push(
+          ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
+        );
       }
     }
   }
-  return types;
+  // this is not necessary, just about ordering
+  collectedTypes.push(types.JSON.graphQLType);
+  return collectedTypes;
 }
