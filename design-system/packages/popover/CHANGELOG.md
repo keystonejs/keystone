@@ -1,5 +1,11 @@
 # @keystone-ui/popover
 
+## 4.0.1
+
+### Patch Changes
+
+- [#5811](https://github.com/keystonejs/keystone/pull/5811) [`fe5b463ed`](https://github.com/keystonejs/keystone/commit/fe5b463ed07c2a524a3cde554ac07575d31e6712) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed popover to not be focusable or read by screen reader when not visible.
+
 ## 4.0.0
 
 ### Major Changes
