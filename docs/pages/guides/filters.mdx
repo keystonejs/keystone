@@ -4,10 +4,9 @@ import { Markdown } from '../../components/Page';
 
 Keystone provides a powerful GraphQL API for querying the data in your system.
 At the core of this system are **query filters**.
-
 In this guide we'll show you how to use filters to find data in your system.
 
-This guide uses the schema defined in the [Task Manager](FIXME) example project.
+This guide uses the schema defined in the [Task Manager](https://github.com/keystonejs/keystone/tree/master/examples/task-manager) example project.
 
 ## Scalar Filters
 
@@ -58,7 +57,7 @@ The `text()` field type also supports searching for sub-strings within a field:
 }
 ```
 
-Different field types support different filters. The field `finishBy: timestampe()`, for example, lets you filter by tasks with a due date after a particular date:
+Different field types support different filters. The field `finishBy: timestamp()`, for example, lets you filter by tasks with a due date after a particular date:
 
 ```graphql
 {
@@ -118,8 +117,8 @@ The `OR` operater accepts a list of sub-queries, and will only return those item
 
 ## Relationship Filters
 
-As well as filtering by scalar fields, you can also filter against relationships.
-Relationship filters will depend on whether you have `many: true` or `many: false` on the field.
+As well as filtering by scalar fields, you can also filter against relationship fields.
+Relationship filters will depend on whether you have `many: true` or `many: false` configured on the field.
 
 ### One
 
