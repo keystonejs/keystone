@@ -22,7 +22,7 @@ export const lists = createSchema({
           }
         },
       }),
-      // Static default: When a task is first created its incomplete
+      // Static default: When a task is first created, it is incomplete
       isComplete: checkbox({ defaultValue: false }),
       assignedTo: relationship({
         ref: 'Person.tasks',

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/website",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -14,10 +14,10 @@
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/fields-document": "^6.0.0",
+    "@keystone-next/fields-document": "^6.0.1",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.0.0",
-    "@keystone-ui/fields": "^4.0.0",
+    "@keystone-ui/fields": "^4.1.0",
     "@keystone-ui/icons": "^4.0.0",
     "@keystone-ui/notice": "^4.0.0",
     "@keystone-ui/toast": "^4.0.0",
@@ -26,7 +26,7 @@
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.2.3",
     "@preconstruct/next": "^3.0.0",
-    "@primer/octicons-react": "^14.1.0",
+    "@primer/octicons-react": "^14.2.1",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",

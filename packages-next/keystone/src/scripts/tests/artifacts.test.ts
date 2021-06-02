@@ -55,7 +55,7 @@ describe('postinstall', () => {
     const files = await getFiles(tmp, ['schema.prisma', 'schema.graphql']);
     // to update them
     // for (const [file, content] of Object.entries(files)) {
-    //   fs.writeFileSync(`${__dirname}/fixtures/basic-project/${file}`, content);
+    //   require('fs').writeFileSync(`${__dirname}/fixtures/basic-project/${file}`, content);
     // }
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`));
     expect(recording()).toMatchInlineSnapshot(`

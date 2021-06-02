@@ -1,7 +1,7 @@
 import express from 'express';
 import { text, timestamp, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import {
   multiAdapterRunners,
@@ -34,7 +34,12 @@ const initialData = {
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.data;
 
-const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
+const auth = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id',
+});
 
 function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
@@ -62,7 +67,7 @@ function setupKeystone(provider: ProviderName) {
             },
           }),
         }),
-        session: withItemData(statelessSessions({ secret: COOKIE_SECRET }), { User: 'id' }),
+        session: statelessSessions({ secret: COOKIE_SECRET }),
       }) as KeystoneConfig
     ),
   });

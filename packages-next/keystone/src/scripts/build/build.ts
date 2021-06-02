@@ -90,12 +90,12 @@ export async function build(cwd: string) {
 
   const { keystone, graphQLSchema } = createSystem(config);
 
-  await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
+  await validateCommittedArtifacts(graphQLSchema, config, cwd);
 
   console.log('✨ Building Keystone');
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
   if (config.ui?.isDisabled) {
     console.log('✨ Skipping Admin UI code generation');
