@@ -63,10 +63,15 @@ function sortRelationships(left: Rel, right: Rel) {
   return [left, right];
 }
 
-// TODO: validate no conflicts with multi fields so users get a better error than prisma format failing
-
+// what's going on here:
+// - validating all the relationships
+// - for relationships involving to-one: deciding which side owns the foreign key
+// - turning one-sided relationships into two-sided relationships so that elsewhere in Keystone,
+//   you only have to reason about two-sided relationships
+//   (note that this means that there are "fields" in the returned ListsWithResolvedRelations
+//   which are not actually proper Keystone fields, they are just a db field and nothing else)
 export function resolveRelationships(lists: ListsToPrintPrismaSchema): ListsWithResolvedRelations {
-  const alreadyResolvedTwoWayRelationships = new Set<string>();
+  const alreadyResolvedTwoSidedRelationships = new Set<string>();
   const resolvedLists: ListsWithResolvedRelations = Object.fromEntries(
     Object.keys(lists).map(listKey => [listKey, { fields: {} }])
   );
@@ -86,10 +91,10 @@ export function resolveRelationships(lists: ListsToPrintPrismaSchema): ListsWith
       if (field.field) {
         const localRef = `${listKey}.${fieldPath}`;
         const foreignRef = `${field.list}.${field.field}`;
-        if (alreadyResolvedTwoWayRelationships.has(localRef)) {
+        if (alreadyResolvedTwoSidedRelationships.has(localRef)) {
           continue;
         }
-        alreadyResolvedTwoWayRelationships.add(foreignRef);
+        alreadyResolvedTwoSidedRelationships.add(foreignRef);
         const foreignField = foreignUnresolvedList.fields[field.field]?.dbField;
         if (!foreignField) {
           throw new Error(
