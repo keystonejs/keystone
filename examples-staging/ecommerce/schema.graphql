@@ -107,8 +107,8 @@ type User {
 }
 
 input UserWhereInput {
-  AND: [UserWhereInput]
-  OR: [UserWhereInput]
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -289,8 +289,8 @@ type Product {
 }
 
 input ProductWhereInput {
-  AND: [ProductWhereInput]
-  OR: [ProductWhereInput]
+  AND: [ProductWhereInput!]
+  OR: [ProductWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -449,8 +449,8 @@ type ProductImage {
 }
 
 input ProductImageWhereInput {
-  AND: [ProductImageWhereInput]
-  OR: [ProductImageWhereInput]
+  AND: [ProductImageWhereInput!]
+  OR: [ProductImageWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -521,8 +521,8 @@ type CartItem {
 }
 
 input CartItemWhereInput {
-  AND: [CartItemWhereInput]
-  OR: [CartItemWhereInput]
+  AND: [CartItemWhereInput!]
+  OR: [CartItemWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -603,8 +603,8 @@ type OrderItem {
 }
 
 input OrderItemWhereInput {
-  AND: [OrderItemWhereInput]
-  OR: [OrderItemWhereInput]
+  AND: [OrderItemWhereInput!]
+  OR: [OrderItemWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -740,8 +740,8 @@ type Order {
 }
 
 input OrderWhereInput {
-  AND: [OrderWhereInput]
-  OR: [OrderWhereInput]
+  AND: [OrderWhereInput!]
+  OR: [OrderWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -869,8 +869,8 @@ type Role {
 }
 
 input RoleWhereInput {
-  AND: [RoleWhereInput]
-  OR: [RoleWhereInput]
+  AND: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID

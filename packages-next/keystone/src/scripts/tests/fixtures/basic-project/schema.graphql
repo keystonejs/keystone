@@ -7,8 +7,8 @@ type Todo {
 }
 
 input TodoWhereInput {
-  AND: [TodoWhereInput]
-  OR: [TodoWhereInput]
+  AND: [TodoWhereInput!]
+  OR: [TodoWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
