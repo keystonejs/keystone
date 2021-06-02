@@ -13,17 +13,17 @@ import {
   resolveWhereInput,
   UniqueInputFilter,
 } from '../where-inputs';
+import { ResolvedDBField, getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
+import { mapUniqueWhereToWhere } from '../queries/resolvers';
+import { InitialisedList } from '../types-for-lists';
+import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
 import {
   NestedMutationState,
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
-} from '../nested-mutation-input-resolvers';
-import { ResolvedDBField, getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
-import { mapUniqueWhereToWhere } from '../queries/resolvers';
-import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
+} from './nested-mutation-input-resolvers';
 
 export async function createMany(
   { data }: { data: Record<string, any>[] },
