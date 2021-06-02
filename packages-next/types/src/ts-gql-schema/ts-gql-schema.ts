@@ -4,23 +4,16 @@ import { GraphQLJSON } from 'graphql-type-json';
 // @ts-ignore
 import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
 import type { FileUpload } from 'graphql-upload';
-import { KeystoneContext } from './context';
-import { JSONValue } from './utils';
+import { KeystoneContext } from '../context';
+import { JSONValue } from '../utils';
 export * from '@ts-gql/schema/types-without-context';
+export { bindTypesToContext } from '@ts-gql/schema';
+export { field, fields, interface, interfaceField, object, union } from './types-with-context';
 
 export type Context = KeystoneContext;
 
-export const bindTypesToContext = tsgqlSchema.bindTypesToContext;
-
-const types = tsgqlSchema.bindTypesToContext<Context>();
-
-export const { fields, interfaceField, object, union, field } = types;
-
 export const JSON = tsgqlSchema.types.scalar<JSONValue>(GraphQLJSON);
 export const Upload = tsgqlSchema.types.scalar<Promise<FileUpload>>(GraphQLUpload);
-
-const interfaceType = types.interface;
-export { interfaceType as interface };
 
 export type NullableType = tsgqlSchema.NullableType<Context>;
 export type Type = tsgqlSchema.Type<Context>;

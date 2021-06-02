@@ -4,7 +4,7 @@ import Decimal from 'decimal.js';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider, FieldDefaultValue } from './core';
-import * as types from './ts-gql-schema';
+import { types } from './ts-gql-schema';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
