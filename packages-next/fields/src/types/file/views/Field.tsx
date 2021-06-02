@@ -80,8 +80,6 @@ export function Field({
   onChange,
 }: FieldProps<typeof import('.').controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const fieldContainerRef = useRef<HTMLFieldSetElement | null>(null);
-  const fieldLegendRef = useRef<HTMLLegendElement | null>(null);
 
   const errorMessage = createErrorMessage(value, forceValidation);
 
@@ -103,10 +101,8 @@ export function Field({
   const inputKey = useMemo(() => Math.random(), [value]);
 
   return (
-    <FieldContainer as="fieldset" ref={fieldContainerRef}>
-      <FieldLabel ref={fieldLegendRef} as="legend">
-        {field.label}
-      </FieldLabel>
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
       {value.kind === 'ref' ? (
         <RefView
           field={field}
