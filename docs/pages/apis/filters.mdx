@@ -1,0 +1,148 @@
+import { Markdown } from '../../components/Page';
+
+# Query Filter API
+
+Each field type provides its own set of filters which can be used with [queries](./graphql#all-users).
+This page lists all the filters available for each field type.
+For more details on how to use filters in queries please consult to the [GraphQL Queries - Filters](../guides/filters) guide.
+
+Keystone filters are typically named after the field they are filtering. For example, a `text` field called `foo` would have filters named `foo_starts_with`, `foo_contains`, etc.
+In all the examples below we will use a field named `foo` as the base of the filter names.
+
+## Scalar types
+
+### checkbox
+
+| **Filter name** | **Type**  | **Description** |
+| --------------- | --------- | --------------- |
+| `foo`           | `Boolean` |                 |
+| `foo_not`       | `Boolean` |                 |
+
+### integer
+
+| **Filter name** | **Type** | **Description** |
+| --------------- | -------- | --------------- |
+| `foo`           | `Int`    |                 |
+| `foo_not`       | `Int`    |                 |
+| `foo_lt`        | `Int`    |                 |
+| `foo_lte`       | `Int`    |                 |
+| `foo_gt`        | `Int`    |                 |
+| `foo_gte`       | `Int`    |                 |
+| `foo_in`        | `[Int]`  |                 |
+| `foo_not_in`    | `[Int]`  |                 |
+
+### float
+
+| **Filter name** | **Type**  | **Description** |
+| --------------- | --------- | --------------- |
+| `foo`           | `Float`   |                 |
+| `foo_not`       | `Float`   |                 |
+| `foo_lt`        | `Float`   |                 |
+| `foo_lte`       | `Float`   |                 |
+| `foo_gt`        | `Float`   |                 |
+| `foo_gte`       | `Float`   |                 |
+| `foo_in`        | `[Float]` |                 |
+| `foo_not_in`    | `[Float]` |                 |
+
+### password
+
+| **Filter name** | **Type**  | **Description** |
+| --------------- | --------- | --------------- |
+| `foo_is_set`    | `Boolean` |                 |
+
+### select
+
+| **Filter name** | **Type**   | **Description** |
+| --------------- | ---------- | --------------- |
+| `foo`           | `String`   |                 |
+| `foo_not`       | `String`   |                 |
+| `foo_in`        | `[String]` |                 |
+| `foo_not_in`    | `[String]` |                 |
+
+### text
+
+| **Filter name**         | **Type**   | **Description** |
+| ----------------------- | ---------- | --------------- |
+| `foo`                   | `String`   |                 |
+| `foo_not`               | `String`   |                 |
+| `foo_contains`          | `String`   |                 |
+| `foo_not_contains`      | `String`   |                 |
+| `foo_starts_with`       | `String`   |                 |
+| `foo_not_starts_with`   | `String`   |                 |
+| `foo_ends_with`         | `String`   |                 |
+| `foo_not_ends_with`     | `String`   |                 |
+| `foo_i`                 | `String`   |                 |
+| `foo_not_i`             | `String`   |                 |
+| `foo_contains_i`        | `String`   |                 |
+| `foo_not_contains_i`    | `String`   |                 |
+| `foo_starts_with_i`     | `String`   |                 |
+| `foo_not_starts_with_i` | `String`   |                 |
+| `foo_ends_with_i`       | `String`   |                 |
+| `foo_not_ends_with_i`   | `String`   |                 |
+| `foo_in`                | `[String]` |                 |
+| `foo_not_in`            | `[String]` |                 |
+
+### timestamp
+
+| **Filter name** | **Type**   | **Description** |
+| --------------- | ---------- | --------------- |
+| `foo`           | `String`   |                 |
+| `foo_not`       | `String`   |                 |
+| `foo_lt`        | `String`   |                 |
+| `foo_lte`       | `String`   |                 |
+| `foo_gt`        | `String`   |                 |
+| `foo_gte`       | `String`   |                 |
+| `foo_in`        | `[String]` |                 |
+| `foo_not_in`    | `[String]` |                 |
+
+## Relationship type
+
+### relationship
+
+#### many: true
+
+| **Filter name** | **Type**        | **Description** |
+| --------------- | --------------- | --------------- |
+| `foos_every`    | `FooWhereInput` |                 |
+| `foos_some`     | `FooWhereInput` |                 |
+| `foos_none`     | `FooWhereInput` |                 |
+
+#### many: false
+
+| **Filter name** | **Type**        | **Description** |
+| --------------- | --------------- | --------------- |
+| `foo`           | `FooWhereInput` |                 |
+| `foo_is_null`   | `Boolean`       |                 |
+
+## Index types
+
+### autoIncrement
+
+| **Filter name** | **Type** | **Description** |
+| --------------- | -------- | --------------- |
+| `id`            | `ID`     |                 |
+| `id_not`        | `ID`     |                 |
+| `id_lt`         | `ID`     |                 |
+| `id_lte`        | `ID`     |                 |
+| `id_gt`         | `ID`     |                 |
+| `id_gte`        | `ID`     |                 |
+| `id_in`         | `[ID]`   |                 |
+| `id_not_in`     | `[ID]`   |                 |
+
+## Virtual type
+
+### virtual
+
+The `virtual` field type does not support filters.
+
+## File types
+
+### file
+
+The `file` field type does not support filters.
+
+### image
+
+The `image` field type does not support filters.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
