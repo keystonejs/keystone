@@ -234,7 +234,7 @@ type Mutation {
   createPost(data: PostCreateInput): Post
 
   """
-  Create multiple Post items.
+   Create multiple Post items.
   """
   createPosts(data: [PostsCreateInput]): [Post]
 
@@ -254,7 +254,7 @@ type Mutation {
   deletePost(id: ID!): Post
 
   """
-   Delete many Post items by ID.
+   Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
 
@@ -264,7 +264,7 @@ type Mutation {
   createAuthor(data: AuthorCreateInput): Author
 
   """
-  Create multiple Author items.
+   Create multiple Author items.
   """
   createAuthors(data: [AuthorsCreateInput]): [Author]
 
@@ -284,7 +284,7 @@ type Mutation {
   deleteAuthor(id: ID!): Author
 
   """
-   Delete many Author items by ID.
+   Delete multiple Author items by ID.
   """
   deleteAuthors(ids: [ID!]): [Author]
 

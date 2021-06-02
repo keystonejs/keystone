@@ -364,7 +364,7 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
 
   """
-  Create multiple Todo items.
+   Create multiple Todo items.
   """
   createTodos(data: [TodosCreateInput]): [Todo]
 
@@ -384,7 +384,7 @@ type Mutation {
   deleteTodo(id: ID!): Todo
 
   """
-   Delete many Todo items by ID.
+   Delete multiple Todo items by ID.
   """
   deleteTodos(ids: [ID!]): [Todo]
 
@@ -394,7 +394,7 @@ type Mutation {
   createPerson(data: PersonCreateInput): Person
 
   """
-  Create multiple Person items.
+   Create multiple Person items.
   """
   createPeople(data: [PeopleCreateInput]): [Person]
 
@@ -414,7 +414,7 @@ type Mutation {
   deletePerson(id: ID!): Person
 
   """
-   Delete many Person items by ID.
+   Delete multiple Person items by ID.
   """
   deletePeople(ids: [ID!]): [Person]
 
@@ -424,7 +424,7 @@ type Mutation {
   createRole(data: RoleCreateInput): Role
 
   """
-  Create multiple Role items.
+   Create multiple Role items.
   """
   createRoles(data: [RolesCreateInput]): [Role]
 
@@ -444,7 +444,7 @@ type Mutation {
   deleteRole(id: ID!): Role
 
   """
-   Delete many Role items by ID.
+   Delete multiple Role items by ID.
   """
   deleteRoles(ids: [ID!]): [Role]
   endSession: Boolean!

@@ -150,7 +150,7 @@ export function getGraphQLSchema(
               type: types.list(createManyInput),
             }),
           },
-          description: `Create multiple ${list.listKey} items.`,
+          description: ` Create multiple ${list.listKey} items.`,
           async resolve(_rootVal, args, context) {
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.createMany(
@@ -231,7 +231,7 @@ export function getGraphQLSchema(
               type: types.list(types.nonNull(types.ID)),
             }),
           },
-          description: ` Delete many ${list.listKey} items by ID.`,
+          description: ` Delete multiple ${list.listKey} items by ID.`,
           async resolve(rootVal, { ids }, context) {
             return promisesButSettledWhenAllSettledAndInOrder(
               await mutations.deleteMany(

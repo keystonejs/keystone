@@ -403,7 +403,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
 
   """
-  Create multiple User items.
+   Create multiple User items.
   """
   createUsers(data: [UsersCreateInput]): [User]
 
@@ -423,7 +423,7 @@ type Mutation {
   deleteUser(id: ID!): User
 
   """
-   Delete many User items by ID.
+   Delete multiple User items by ID.
   """
   deleteUsers(ids: [ID!]): [User]
 
@@ -433,7 +433,7 @@ type Mutation {
   createPost(data: PostCreateInput): Post
 
   """
-  Create multiple Post items.
+   Create multiple Post items.
   """
   createPosts(data: [PostsCreateInput]): [Post]
 
@@ -453,7 +453,7 @@ type Mutation {
   deletePost(id: ID!): Post
 
   """
-   Delete many Post items by ID.
+   Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
 
@@ -463,7 +463,7 @@ type Mutation {
   createTag(data: TagCreateInput): Tag
 
   """
-  Create multiple Tag items.
+   Create multiple Tag items.
   """
   createTags(data: [TagsCreateInput]): [Tag]
 
@@ -483,7 +483,7 @@ type Mutation {
   deleteTag(id: ID!): Tag
 
   """
-   Delete many Tag items by ID.
+   Delete multiple Tag items by ID.
   """
   deleteTags(ids: [ID!]): [Tag]
   endSession: Boolean!

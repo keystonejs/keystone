@@ -102,7 +102,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
 
   """
-  Create multiple User items.
+   Create multiple User items.
   """
   createUsers(data: [UsersCreateInput]): [User]
 
@@ -122,7 +122,7 @@ type Mutation {
   deleteUser(id: ID!): User
 
   """
-   Delete many User items by ID.
+   Delete multiple User items by ID.
   """
   deleteUsers(ids: [ID!]): [User]
   endSession: Boolean!

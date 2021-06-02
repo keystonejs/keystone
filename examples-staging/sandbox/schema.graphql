@@ -267,7 +267,7 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
 
   """
-  Create multiple Todo items.
+   Create multiple Todo items.
   """
   createTodos(data: [TodosCreateInput]): [Todo]
 
@@ -287,7 +287,7 @@ type Mutation {
   deleteTodo(id: ID!): Todo
 
   """
-   Delete many Todo items by ID.
+   Delete multiple Todo items by ID.
   """
   deleteTodos(ids: [ID!]): [Todo]
 
@@ -297,7 +297,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
 
   """
-  Create multiple User items.
+   Create multiple User items.
   """
   createUsers(data: [UsersCreateInput]): [User]
 
@@ -317,7 +317,7 @@ type Mutation {
   deleteUser(id: ID!): User
 
   """
-   Delete many User items by ID.
+   Delete multiple User items by ID.
   """
   deleteUsers(ids: [ID!]): [User]
 }

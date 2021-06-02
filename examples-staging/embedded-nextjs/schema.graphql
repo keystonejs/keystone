@@ -98,7 +98,7 @@ type Mutation {
   createPost(data: PostCreateInput): Post
 
   """
-  Create multiple Post items.
+   Create multiple Post items.
   """
   createPosts(data: [PostsCreateInput]): [Post]
 
@@ -118,7 +118,7 @@ type Mutation {
   deletePost(id: ID!): Post
 
   """
-   Delete many Post items by ID.
+   Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
 }

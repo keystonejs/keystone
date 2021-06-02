@@ -923,7 +923,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
 
   """
-  Create multiple User items.
+   Create multiple User items.
   """
   createUsers(data: [UsersCreateInput]): [User]
 
@@ -943,7 +943,7 @@ type Mutation {
   deleteUser(id: ID!): User
 
   """
-   Delete many User items by ID.
+   Delete multiple User items by ID.
   """
   deleteUsers(ids: [ID!]): [User]
 
@@ -953,7 +953,7 @@ type Mutation {
   createProduct(data: ProductCreateInput): Product
 
   """
-  Create multiple Product items.
+   Create multiple Product items.
   """
   createProducts(data: [ProductsCreateInput]): [Product]
 
@@ -973,7 +973,7 @@ type Mutation {
   deleteProduct(id: ID!): Product
 
   """
-   Delete many Product items by ID.
+   Delete multiple Product items by ID.
   """
   deleteProducts(ids: [ID!]): [Product]
 
@@ -983,7 +983,7 @@ type Mutation {
   createProductImage(data: ProductImageCreateInput): ProductImage
 
   """
-  Create multiple ProductImage items.
+   Create multiple ProductImage items.
   """
   createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
 
@@ -1003,7 +1003,7 @@ type Mutation {
   deleteProductImage(id: ID!): ProductImage
 
   """
-   Delete many ProductImage items by ID.
+   Delete multiple ProductImage items by ID.
   """
   deleteProductImages(ids: [ID!]): [ProductImage]
 
@@ -1013,7 +1013,7 @@ type Mutation {
   createCartItem(data: CartItemCreateInput): CartItem
 
   """
-  Create multiple CartItem items.
+   Create multiple CartItem items.
   """
   createCartItems(data: [CartItemsCreateInput]): [CartItem]
 
@@ -1033,7 +1033,7 @@ type Mutation {
   deleteCartItem(id: ID!): CartItem
 
   """
-   Delete many CartItem items by ID.
+   Delete multiple CartItem items by ID.
   """
   deleteCartItems(ids: [ID!]): [CartItem]
 
@@ -1043,7 +1043,7 @@ type Mutation {
   createOrderItem(data: OrderItemCreateInput): OrderItem
 
   """
-  Create multiple OrderItem items.
+   Create multiple OrderItem items.
   """
   createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
 
@@ -1063,7 +1063,7 @@ type Mutation {
   deleteOrderItem(id: ID!): OrderItem
 
   """
-   Delete many OrderItem items by ID.
+   Delete multiple OrderItem items by ID.
   """
   deleteOrderItems(ids: [ID!]): [OrderItem]
 
@@ -1073,7 +1073,7 @@ type Mutation {
   createOrder(data: OrderCreateInput): Order
 
   """
-  Create multiple Order items.
+   Create multiple Order items.
   """
   createOrders(data: [OrdersCreateInput]): [Order]
 
@@ -1093,7 +1093,7 @@ type Mutation {
   deleteOrder(id: ID!): Order
 
   """
-   Delete many Order items by ID.
+   Delete multiple Order items by ID.
   """
   deleteOrders(ids: [ID!]): [Order]
 
@@ -1103,7 +1103,7 @@ type Mutation {
   createRole(data: RoleCreateInput): Role
 
   """
-  Create multiple Role items.
+   Create multiple Role items.
   """
   createRoles(data: [RolesCreateInput]): [Role]
 
@@ -1123,7 +1123,7 @@ type Mutation {
   deleteRole(id: ID!): Role
 
   """
-   Delete many Role items by ID.
+   Delete multiple Role items by ID.
   """
   deleteRoles(ids: [ID!]): [Role]
   endSession: Boolean!

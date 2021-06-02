@@ -434,7 +434,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
 
   """
-  Create multiple User items.
+   Create multiple User items.
   """
   createUsers(data: [UsersCreateInput]): [User]
 
@@ -454,7 +454,7 @@ type Mutation {
   deleteUser(id: ID!): User
 
   """
-   Delete many User items by ID.
+   Delete multiple User items by ID.
   """
   deleteUsers(ids: [ID!]): [User]
 
@@ -464,7 +464,7 @@ type Mutation {
   createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
 
   """
-  Create multiple PhoneNumber items.
+   Create multiple PhoneNumber items.
   """
   createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
 
@@ -484,7 +484,7 @@ type Mutation {
   deletePhoneNumber(id: ID!): PhoneNumber
 
   """
-   Delete many PhoneNumber items by ID.
+   Delete multiple PhoneNumber items by ID.
   """
   deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
 
@@ -494,7 +494,7 @@ type Mutation {
   createPost(data: PostCreateInput): Post
 
   """
-  Create multiple Post items.
+   Create multiple Post items.
   """
   createPosts(data: [PostsCreateInput]): [Post]
 
@@ -514,7 +514,7 @@ type Mutation {
   deletePost(id: ID!): Post
 
   """
-   Delete many Post items by ID.
+   Delete multiple Post items by ID.
   """
   deletePosts(ids: [ID!]): [Post]
   endSession: Boolean!

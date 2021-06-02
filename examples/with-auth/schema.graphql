@@ -239,7 +239,7 @@ type Mutation {
   createTask(data: TaskCreateInput): Task
 
   """
-  Create multiple Task items.
+   Create multiple Task items.
   """
   createTasks(data: [TasksCreateInput]): [Task]
 
@@ -259,7 +259,7 @@ type Mutation {
   deleteTask(id: ID!): Task
 
   """
-   Delete many Task items by ID.
+   Delete multiple Task items by ID.
   """
   deleteTasks(ids: [ID!]): [Task]
 
@@ -269,7 +269,7 @@ type Mutation {
   createPerson(data: PersonCreateInput): Person
 
   """
-  Create multiple Person items.
+   Create multiple Person items.
   """
   createPeople(data: [PeopleCreateInput]): [Person]
 
@@ -289,7 +289,7 @@ type Mutation {
   deletePerson(id: ID!): Person
 
   """
-   Delete many Person items by ID.
+   Delete multiple Person items by ID.
   """
   deletePeople(ids: [ID!]): [Person]
   endSession: Boolean!

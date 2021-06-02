@@ -196,7 +196,7 @@ type Mutation {
   createPackage(data: PackageCreateInput): Package
 
   """
-  Create multiple Package items.
+   Create multiple Package items.
   """
   createPackages(data: [PackagesCreateInput]): [Package]
 
@@ -216,7 +216,7 @@ type Mutation {
   deletePackage(id: ID!): Package
 
   """
-   Delete many Package items by ID.
+   Delete multiple Package items by ID.
   """
   deletePackages(ids: [ID!]): [Package]
 
@@ -226,7 +226,7 @@ type Mutation {
   createPerson(data: PersonCreateInput): Person
 
   """
-  Create multiple Person items.
+   Create multiple Person items.
   """
   createPeople(data: [PeopleCreateInput]): [Person]
 
@@ -246,7 +246,7 @@ type Mutation {
   deletePerson(id: ID!): Person
 
   """
-   Delete many Person items by ID.
+   Delete multiple Person items by ID.
   """
   deletePeople(ids: [ID!]): [Person]
 }
