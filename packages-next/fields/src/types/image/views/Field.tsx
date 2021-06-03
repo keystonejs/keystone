@@ -2,9 +2,9 @@
 
 import copy from 'copy-to-clipboard';
 import bytes from 'bytes';
-import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
+import { jsx, Stack, useTheme, Text, VisuallyHidden } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { TextInput } from '@keystone-ui/fields';
 import { parseImageRef } from '@keystone-next/utils-legacy';
@@ -32,44 +32,53 @@ function useObjectURL(fileData: File | undefined) {
 }
 
 const RefView = ({
+  field,
   onChange,
   onCancel,
   error,
 }: {
+  field: any;
   onChange: (value: string) => void;
   onCancel: () => void;
   error?: string;
 }) => {
   return (
-    <Stack
-      gap="small"
-      across
-      css={{
-        width: '100%',
-        justifyContent: 'space-between',
-        'div:first-of-type': {
-          flex: '2',
-        },
-      }}
-    >
-      <TextInput
-        placeholder="Paste the image ref here"
-        onChange={event => {
-          onChange(event.target.value);
-        }}
+    <Fragment>
+      <VisuallyHidden htmlFor={`${field.path}--ref-input`} as="label">
+        {'Paste the image ref here'}
+      </VisuallyHidden>
+      <Stack
+        gap="small"
+        across
         css={{
           width: '100%',
+          justifyContent: 'space-between',
+          'div:first-of-type': {
+            flex: '2',
+          },
         }}
-      />
-      <Button tone="passive" onClick={onCancel}>
-        Cancel
-      </Button>
-      {error ? (
-        <Pill weight="light" tone="negative">
-          {error}
-        </Pill>
-      ) : null}
-    </Stack>
+      >
+        <TextInput
+          id={`${field.path}--ref-input`}
+          autoFocus
+          placeholder="Paste the image ref here"
+          onChange={event => {
+            onChange(event.target.value);
+          }}
+          css={{
+            width: '100%',
+          }}
+        />
+        <Button tone="passive" onClick={onCancel}>
+          Cancel
+        </Button>
+        {error ? (
+          <Pill weight="light" tone="negative">
+            {error}
+          </Pill>
+        ) : null}
+      </Stack>
+    </Fragment>
   );
 };
 
@@ -102,10 +111,11 @@ export function Field({
   const inputKey = useMemo(() => Math.random(), [value]);
 
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
       {value.kind === 'ref' ? (
         <RefView
+          field={field}
           onChange={ref => {
             onChange?.({
               kind: 'ref',
