@@ -54,10 +54,6 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
     fs.mkdirSync(storagePath, { recursive: true });
   }
 
-  if (isCloudAsset(images.upload) && !apiKey.length) {
-    throw new Error('To enable cloud assets you must have your apiKey set in your Keystone config');
-  }
-
   return {
     getSrc: async (mode, id, extension) => {
       const filename = `${id}.${extension}`;
