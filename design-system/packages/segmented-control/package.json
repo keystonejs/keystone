@@ -5,7 +5,7 @@
   "main": "dist/segmented-control.cjs.js",
   "module": "dist/segmented-control.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.7",
+    "@types/react": "^17.0.9",
     "react": "^17.0.2"
   },
   "dependencies": {
