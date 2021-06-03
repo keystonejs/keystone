@@ -13,7 +13,6 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-import type { CloudConfig } from './cloud';
 import type { BaseFields, FieldType, FieldConfig } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
@@ -24,11 +23,11 @@ export type KeystoneConfig = {
   ui?: AdminUIConfig;
   server?: ServerConfig;
   session?: SessionStrategy<any>;
-  cloud?: CloudConfig;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
   images?: ImagesConfig;
+  cloud?: CloudConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -178,6 +177,12 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
+};
+
+// config.cloud
+
+export type CloudConfig = {
+  apiKey: string;
 };
 
 // Exports from sibling packages
