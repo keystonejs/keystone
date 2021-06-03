@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import type { ReactNode } from 'react';
-import { Box, BoxProps, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
+import { ReactNode } from 'react';
+import { Box, BoxProps, Stack, Text, jsx, useTheme, forwardRefWithAs } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -24,13 +24,14 @@ type CardContainerProps = {
   children: ReactNode;
   mode: 'view' | 'create' | 'edit';
 } & BoxProps;
-const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
+const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContainerProps, ref) => {
   const { tones } = useTheme();
 
   const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive'];
 
   return (
     <Box
+      ref={ref}
       paddingLeft="xlarge"
       css={{
         position: 'relative',
@@ -50,7 +51,7 @@ const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
       {...props}
     />
   );
-};
+});
 
 export function Cards({
   localList,
@@ -125,6 +126,7 @@ export function Cards({
     <Stack gap="xlarge">
       {[...value.currentIds].map(id => {
         const itemGetter = items[id];
+
         return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
           <CardContainer mode="edit" key={id}>
             <InlineEdit
@@ -175,7 +177,7 @@ export function Cards({
                   }
                   itemForField[graphqlField] = fieldGetter.data;
                 }
-
+                console.log(itemForField);
                 return (
                   <field.views.CardValue
                     key={fieldPath}
@@ -241,7 +243,18 @@ export function Cards({
       })}
       {onChange === undefined ? null : field.display.inlineConnect && showConnectItems ? (
         <CardContainer mode="edit">
-          <Stack gap="small" marginY="medium" across>
+          <Stack
+            gap="small"
+            marginY="medium"
+            across
+            css={{
+              width: '100%',
+              justifyContent: 'space-between',
+              'div:first-of-type': {
+                flex: '2',
+              },
+            }}
+          >
             <RelationshipSelect
               autoFocus
               controlShouldRenderValue={isLoadingLazyItems}

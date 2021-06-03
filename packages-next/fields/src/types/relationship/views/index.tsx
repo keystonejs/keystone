@@ -143,7 +143,7 @@ export const Field = ({
   }
 
   return (
-    <FieldContainer>
+    <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange ? (
         <Fragment>
