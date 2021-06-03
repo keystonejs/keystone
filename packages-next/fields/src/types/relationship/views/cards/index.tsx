@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { ReactNode } from 'react';
-import { Box, BoxProps, Stack, Text, jsx, useTheme, forwardRefWithAs } from '@keystone-ui/core';
+import type { ReactNode } from 'react';
+import { Box, BoxProps, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -24,14 +24,13 @@ type CardContainerProps = {
   children: ReactNode;
   mode: 'view' | 'create' | 'edit';
 } & BoxProps;
-const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContainerProps, ref) => {
+const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
   const { tones } = useTheme();
 
   const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive'];
 
   return (
     <Box
-      ref={ref}
       paddingLeft="xlarge"
       css={{
         position: 'relative',
@@ -51,7 +50,7 @@ const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContain
       {...props}
     />
   );
-});
+};
 
 export function Cards({
   localList,
@@ -177,7 +176,6 @@ export function Cards({
                   }
                   itemForField[graphqlField] = fieldGetter.data;
                 }
-                console.log(itemForField);
                 return (
                   <field.views.CardValue
                     key={fieldPath}
