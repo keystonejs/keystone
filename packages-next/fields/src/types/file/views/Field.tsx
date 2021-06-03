@@ -3,7 +3,7 @@ import { Fragment, useMemo, useRef, RefObject } from 'react';
 import copy from 'copy-to-clipboard';
 import bytes from 'bytes';
 
-import { jsx, Stack, Text } from '@keystone-ui/core';
+import { jsx, Stack, Text, VisuallyHidden } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
@@ -22,44 +22,53 @@ export function validateRef({ ref }: { ref: string }) {
 }
 
 const RefView = ({
+  field,
   onChange,
   onCancel,
   error,
 }: {
+  field: any;
   onChange: (value: string) => void;
   onCancel: () => void;
   error?: string;
 }) => {
   return (
-    <Stack
-      gap="small"
-      across
-      css={{
-        width: '100%',
-        justifyContent: 'space-between',
-        'div:first-of-type': {
-          flex: '2',
-        },
-      }}
-    >
-      <TextInput
-        placeholder="Paste the file ref here"
-        onChange={event => {
-          onChange(event.target.value);
-        }}
+    <Fragment>
+      <VisuallyHidden as="label" htmlFor={`${field.path}--ref-input`}>
+        Paste the file ref here
+      </VisuallyHidden>
+      <Stack
+        gap="small"
+        across
         css={{
           width: '100%',
+          justifyContent: 'space-between',
+          'div:first-of-type': {
+            flex: '2',
+          },
         }}
-      />
-      <Button tone="passive" onClick={onCancel}>
-        Cancel
-      </Button>
-      {error ? (
-        <Pill weight="light" tone="negative">
-          {error}
-        </Pill>
-      ) : null}
-    </Stack>
+      >
+        <TextInput
+          autoFocus
+          id={`${field.path}=--ref-input`}
+          placeholder="Paste the file ref here"
+          onChange={event => {
+            onChange(event.target.value);
+          }}
+          css={{
+            width: '100%',
+          }}
+        />
+        <Button tone="passive" onClick={onCancel}>
+          Cancel
+        </Button>
+        {error ? (
+          <Pill weight="light" tone="negative">
+            {error}
+          </Pill>
+        ) : null}
+      </Stack>
+    </Fragment>
   );
 };
 
@@ -92,10 +101,11 @@ export function Field({
   const inputKey = useMemo(() => Math.random(), [value]);
 
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
       {value.kind === 'ref' ? (
         <RefView
+          field={field}
           onChange={ref => {
             onChange?.({
               kind: 'ref',
@@ -143,10 +153,6 @@ function FileView({
   inputRef: RefObject<HTMLInputElement>;
 }) {
   const { addToast } = useToasts();
-
-  // const imagePathFromUpload = useObjectURL(
-  //   errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
-  // );
   const onSuccess = () => {
     addToast({ title: 'Copied file ref to clipboard', tone: 'positive' });
   };
