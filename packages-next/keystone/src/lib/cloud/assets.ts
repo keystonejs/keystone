@@ -70,11 +70,13 @@ const uploadAssetToCloud = async ({
   const form = new FormData();
 
   form.append('image', stream, filename);
-  form.append('apiKey', apiKey);
 
   const response = await fetch(`${CLOUD_REST_API_ENDPOINT}/${apiRoute}`, {
     method: 'POST',
     body: form,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
   });
 
   return await response.json();
