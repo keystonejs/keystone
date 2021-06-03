@@ -1,6 +1,7 @@
 import { DatabaseProvider, getGqlNames, types } from '@keystone-next/types';
 import { InitialisedList } from '../types-for-lists';
-import * as mutations from './resolvers';
+import * as createAndUpdate from './create-update';
+import * as deletes from './delete';
 
 // this is not a thing that i really agree with but it's to make the behaviour consistent with old keystone
 // basically, old keystone uses Promise.allSettled and then after that maps that into promises that resolve and reject,
@@ -31,7 +32,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     args: createOneArgs,
     description: ` Create a single ${list.listKey} item.`,
     resolve(_rootVal, { data }, context) {
-      return mutations.createOne({ data: data ?? {} }, list, context);
+      return createAndUpdate.createOne({ data: data ?? {} }, list, context);
     },
   });
 
@@ -50,9 +51,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       }),
     },
     description: ` Create multiple ${list.listKey} items.`,
-    async resolve(_rootVal, args, context) {
+    resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        mutations.createMany(
+        createAndUpdate.createMany(
           { data: (args.data || []).map(input => input?.data ?? {}) },
           list,
           context,
@@ -75,7 +76,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     args: updateOneArgs,
     description: ` Update a single ${list.listKey} item by ID.`,
     resolve(_rootVal, { data, id }, context) {
-      return mutations.updateOne({ data: data ?? {}, where: { id } }, list, context);
+      return createAndUpdate.updateOne({ data: data ?? {}, where: { id } }, list, context);
     },
   });
 
@@ -92,9 +93,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       }),
     },
     description: ` Update multiple ${list.listKey} items by ID.`,
-    async resolve(_rootVal, { data }, context) {
+    resolve(_rootVal, { data }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        mutations.updateMany(
+        createAndUpdate.updateMany(
           {
             data: (data || [])
               .filter((x): x is NonNullable<typeof x> => x !== null)
@@ -117,7 +118,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
     description: ` Delete a single ${list.listKey} item by ID.`,
     resolve(rootVal, { id }, context) {
-      return mutations.deleteOne({ where: { id } }, list, context);
+      return deletes.deleteOne({ where: { id } }, list, context);
     },
   });
 
@@ -129,9 +130,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       }),
     },
     description: ` Delete multiple ${list.listKey} items by ID.`,
-    async resolve(rootVal, { ids }, context) {
+    resolve(rootVal, { ids }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        mutations.deleteMany({ where: (ids || []).map(id => ({ id })) }, list, context, provider)
+        deletes.deleteMany({ where: (ids || []).map(id => ({ id })) }, list, context, provider)
       );
     },
   });

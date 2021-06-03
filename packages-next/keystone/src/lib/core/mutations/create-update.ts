@@ -1,20 +1,6 @@
 import { KeystoneContext, DatabaseProvider, ItemRootValue } from '@keystone-next/types';
 import pLimit from 'p-limit';
-import {
-  validateCreateListAccessControl,
-  validateFieldAccessControl,
-  validateNonCreateListAccessControl,
-} from '../access-control';
-import { accessDeniedError, ValidationFailureError } from '../graphql-errors';
-import {
-  InputFilter,
-  PrismaFilter,
-  resolveUniqueWhereInput,
-  resolveWhereInput,
-  UniqueInputFilter,
-} from '../where-inputs';
 import { ResolvedDBField } from '../resolve-relationships';
-import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import {
   getPrismaModelForList,
@@ -28,6 +14,8 @@ import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-input-resolvers';
+import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
+import { runSideEffectOnlyHook, validationHook } from './hooks';
 
 export function createMany(
   { data }: { data: Record<string, any>[] },
@@ -83,7 +71,7 @@ export function updateMany(
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-    const item = await applyAccessControlForUpdate(list, context, rawUniqueWhere, rawData);
+    const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
     const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
     const updatedItem = await writeLimit(() =>
       getPrismaModelForList(context.prisma, list.listKey).update({
@@ -104,7 +92,7 @@ export async function updateOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const item = await applyAccessControlForUpdate(list, context, rawUniqueWhere, rawData);
+  const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
   const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
@@ -115,163 +103,6 @@ export async function updateOne(
   await afterChange(updatedItem);
 
   return updatedItem;
-}
-
-export function deleteMany(
-  { where }: { where: UniqueInputFilter[] },
-  list: InitialisedList,
-  context: KeystoneContext,
-  provider: DatabaseProvider
-) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return where.map(async where => {
-    const { afterDelete, existingItem } = await processDelete(list, context, where);
-    await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).delete({
-        where: { id: existingItem.id },
-      })
-    );
-    afterDelete();
-    return existingItem;
-  });
-}
-
-export async function deleteOne(
-  { where }: { where: UniqueInputFilter },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  const { afterDelete, existingItem } = await processDelete(list, context, where);
-  const item = await getPrismaModelForList(context.prisma, list.listKey).delete({
-    where: { id: existingItem.id },
-  });
-  await afterDelete();
-  return item;
-}
-
-async function applyAccessControlForUpdate(
-  list: InitialisedList,
-  context: KeystoneContext,
-  uniqueWhere: UniqueInputFilter,
-  update: Record<string, any>
-) {
-  const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
-  const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
-  const accessControl = await validateNonCreateListAccessControl({
-    access: list.access.update,
-    args: {
-      context,
-      itemId,
-      listKey: list.listKey,
-      operation: 'update',
-      originalInput: update,
-      session: context.session,
-    },
-  });
-  if (accessControl === false) {
-    throw accessDeniedError('mutation');
-  }
-  const uniqueWhereInWhereForm = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
-  const item = await prismaModel.findFirst({
-    where:
-      accessControl === true
-        ? uniqueWhereInWhereForm
-        : {
-            AND: [uniqueWhereInWhereForm, await resolveWhereInput(accessControl, list)],
-          },
-  });
-  if (!item) {
-    throw accessDeniedError('mutation');
-  }
-  await checkFieldAccessControlForUpdate(list, context, update, item);
-  return item;
-}
-
-async function applyAccessControlForCreate(
-  list: InitialisedList,
-  context: KeystoneContext,
-  originalInput: Record<string, unknown>
-) {
-  const result = await validateCreateListAccessControl({
-    access: list.access.create,
-    args: {
-      context,
-      listKey: list.listKey,
-      operation: 'create',
-      originalInput,
-      session: context.session,
-    },
-  });
-  if (!result) {
-    throw accessDeniedError('mutation');
-  }
-  await checkFieldAccessControlForCreate(list, context, originalInput);
-}
-
-async function checkFieldAccessControlForCreate(
-  list: InitialisedList,
-  context: KeystoneContext,
-  originalInput: Record<string, any>
-) {
-  const results = await Promise.all(
-    Object.keys(originalInput).map(fieldKey => {
-      const field = list.fields[fieldKey];
-      return validateFieldAccessControl({
-        access: field.access.create,
-        args: {
-          context,
-          fieldKey,
-          listKey: list.listKey,
-          operation: 'create',
-          originalInput,
-          session: context.session,
-        },
-      });
-    })
-  );
-
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError('mutation');
-  }
-}
-
-export async function processDelete(
-  list: InitialisedList,
-  context: KeystoneContext,
-  filter: UniqueInputFilter
-) {
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(filter, list.listKey, context);
-  const access = await validateNonCreateListAccessControl({
-    access: list.access.delete,
-    args: { context, listKey: list.listKey, operation: 'delete', session: context.session, itemId },
-  });
-  const existingItem = await getAccessControlledItemForDelete(list, context, access, filter);
-
-  const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        await field.hooks.validateDelete?.({
-          ...hookArgs,
-          addValidationError,
-          fieldPath: fieldKey,
-        });
-      })
-    );
-  });
-
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
-  });
-
-  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs, () => true);
-  return {
-    existingItem,
-    afterDelete: async () => {
-      await runSideEffectOnlyHook(list, 'afterDelete', hookArgs, () => true);
-    },
-  };
 }
 
 async function resolveInputForCreateOrUpdate(
@@ -467,143 +298,10 @@ async function resolveInputHook(
     )
   );
   if (list.hooks.resolveInput) {
-    // TODO: the resolveInput types are wrong
     resolvedData = (await list.hooks.resolveInput({
       ...args,
       resolvedData,
     })) as any;
   }
   return resolvedData;
-}
-
-async function runSideEffectOnlyHook<
-  HookName extends string,
-  List extends {
-    fields: Record<
-      string,
-      {
-        hooks: {
-          [Key in HookName]?: (args: { fieldPath: string } & Args) => Promise<void> | void;
-        };
-      }
-    >;
-    hooks: {
-      [Key in HookName]?: (args: any) => Promise<void> | void;
-    };
-  },
-  Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
->(
-  list: List,
-  hookName: HookName,
-  args: Args,
-  shouldRunFieldLevelHook: (fieldKey: string) => boolean
-) {
-  await promiseAllRejectWithAllErrors(
-    Object.entries(list.fields).map(async ([fieldKey, field]) => {
-      if (shouldRunFieldLevelHook(fieldKey)) {
-        await field.hooks[hookName]?.({ fieldPath: fieldKey, ...args });
-      }
-    })
-  );
-  await list.hooks[hookName]?.(args);
-}
-
-type ValidationError = { msg: string; data: {}; internalData: {} };
-
-type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
-
-async function validationHook(
-  listKey: string,
-  operation: 'create' | 'update' | 'delete',
-  originalInput: Record<string, string> | undefined,
-  validationHook: (addValidationError: AddValidationError) => void | Promise<void>
-) {
-  const errors: ValidationError[] = [];
-
-  await validationHook((msg, data = {}, internalData = {}) => {
-    errors.push({ msg, data, internalData });
-  });
-
-  if (errors.length) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey,
-        operation,
-      },
-      internalData: { errors: errors.map(e => e.internalData), data: originalInput },
-    });
-  }
-}
-
-async function checkFieldAccessControlForUpdate(
-  list: InitialisedList,
-  context: KeystoneContext,
-  originalInput: Record<string, any>,
-  item: Record<string, any>
-) {
-  const results = await Promise.all(
-    Object.keys(originalInput).map(fieldKey => {
-      const field = list.fields[fieldKey];
-      return validateFieldAccessControl({
-        access: field.access.update,
-        args: {
-          context,
-          fieldKey,
-          listKey: list.listKey,
-          operation: 'update',
-          originalInput,
-          session: context.session,
-          item,
-          itemId: item.id,
-        },
-      });
-    })
-  );
-
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError('mutation');
-  }
-}
-
-async function getAccessControlledItemForDelete(
-  list: InitialisedList,
-  context: KeystoneContext,
-  access: boolean | InputFilter,
-  inputFilter: UniqueInputFilter
-): Promise<ItemRootValue> {
-  if (access === false) {
-    throw accessDeniedError('mutation');
-  }
-  const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
-  let where: PrismaFilter = mapUniqueWhereToWhere(
-    list,
-    await resolveUniqueWhereInput(inputFilter, list.fields, context)
-  );
-  if (typeof access === 'object') {
-    where = { AND: [where, await resolveWhereInput(access, list)] };
-  }
-  const item = await prismaModel.findFirst({ where });
-  if (item === null) {
-    throw accessDeniedError('mutation');
-  }
-  return item;
-}
-
-async function getStringifiedItemIdFromUniqueWhereInput(
-  uniqueWhere: UniqueInputFilter,
-  listKey: string,
-  context: KeystoneContext
-): Promise<string> {
-  return uniqueWhere.id !== undefined
-    ? uniqueWhere.id
-    : await (async () => {
-        try {
-          const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere as any });
-          return item.id;
-        } catch (err) {
-          throw accessDeniedError('mutation');
-        }
-      })();
 }

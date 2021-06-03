@@ -8,7 +8,7 @@ import {
   promiseAllRejectWithAllErrors,
   IdType,
 } from '../utils';
-import { createOneState } from './resolvers';
+import { createOneState } from './create-update';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
