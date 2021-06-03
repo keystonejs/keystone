@@ -13,9 +13,9 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs';
-import { accessDeniedError } from '../graphql-errors';
+import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { applyEarlyMaxResults, applyMaxResults, getPrismaModelForList } from '../utils';
+import { getPrismaModelForList } from '../utils';
 import { getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
 
 export async function findManyFilter(
@@ -213,4 +213,41 @@ export async function count(
   return getPrismaModelForList(context.prisma, list.listKey).count({
     where: resolvedWhere,
   });
+}
+
+const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
+  new LimitsExceededError({ data: args });
+
+export function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
+  const first = _first ?? Infinity;
+  // We want to help devs by failing fast and noisily if limits are violated.
+  // Unfortunately, we can't always be sure of intent.
+  // E.g., if the query has a "first: 10", is it bad if more results could come back?
+  // Maybe yes, or maybe the dev is just paginating posts.
+  // But we can be sure there's a problem in two cases:
+  // * The query explicitly has a "first" that exceeds the limit
+  // * The query has no "first", and has more results than the limit
+  if (first < Infinity && first > list.maxResults) {
+    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+  }
+}
+
+export function applyMaxResults(
+  results: unknown[],
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  if (results.length > list.maxResults) {
+    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+  }
+  if (context) {
+    context.totalResults += Array.isArray(results) ? results.length : 1;
+    if (context.totalResults > context.maxTotalResults) {
+      throw limitsExceedError({
+        list: list.listKey,
+        type: 'maxTotalResults',
+        limit: context.maxTotalResults,
+      });
+    }
+  }
 }

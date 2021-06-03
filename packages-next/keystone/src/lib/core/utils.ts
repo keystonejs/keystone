@@ -1,9 +1,7 @@
-import { ItemRootValue, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
+import { ItemRootValue, KeystoneConfig } from '@keystone-next/types';
 import pluralize from 'pluralize';
 import { humanize } from '@keystone-next/utils-legacy';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
-import { LimitsExceededError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
 
 declare const prisma: unique symbol;
 
@@ -100,43 +98,6 @@ export function applyFirstSkipToCount({
   }
   count = Math.max(0, count); // Don't want to go negative from a skip!
   return count;
-}
-
-const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
-  new LimitsExceededError({ data: args });
-
-export function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
-  const first = _first ?? Infinity;
-  // We want to help devs by failing fast and noisily if limits are violated.
-  // Unfortunately, we can't always be sure of intent.
-  // E.g., if the query has a "first: 10", is it bad if more results could come back?
-  // Maybe yes, or maybe the dev is just paginating posts.
-  // But we can be sure there's a problem in two cases:
-  // * The query explicitly has a "first" that exceeds the limit
-  // * The query has no "first", and has more results than the limit
-  if (first < Infinity && first > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
-  }
-}
-
-export function applyMaxResults(
-  results: unknown[],
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  if (results.length > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
-  }
-  if (context) {
-    context.totalResults += Array.isArray(results) ? results.length : 1;
-    if (context.totalResults > context.maxTotalResults) {
-      throw limitsExceedError({
-        list: list.listKey,
-        type: 'maxTotalResults',
-        limit: context.maxTotalResults,
-      });
-    }
-  }
 }
 
 // these aren't here out of thinking this is better syntax(i do not think it is),

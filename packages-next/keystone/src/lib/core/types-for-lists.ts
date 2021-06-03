@@ -115,25 +115,24 @@ function assertIdFieldGraphQLTypesCorrect(
 }
 
 export function initialiseLists(
-  lists: KeystoneConfig['lists'],
+  listsConfig: KeystoneConfig['lists'],
   provider: DatabaseProvider
 ): {
   lists: Record<string, InitialisedList>;
   listsWithResolvedRelations: ListsWithResolvedRelations;
 } {
   const listInfos: Record<string, ListInfo> = {};
-  for (const [listKey, list] of Object.entries(lists)) {
-    const _names = getNamesFromList(listKey, list);
+  for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const names = getGqlNames({
       listKey,
-      pluralGraphQLName: _names.pluralGraphQLName,
+      pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
     });
 
     let output = types.object<ItemRootValue>()({
       name: names.outputTypeName,
       description: ' A keystone list',
       fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const { fields } = lists[listKey];
         return {
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([fieldPath, field]) => {
@@ -151,7 +150,7 @@ export function initialiseLists(
                     field.access.read,
                     listKey,
                     fieldPath,
-                    initialisedLists
+                    lists
                   ),
                 ];
               });
@@ -160,18 +159,6 @@ export function initialiseLists(
         };
       },
     });
-    // const uniqueWhere = types.inputObject({
-    //   name: names.whereUniqueInputName,
-    //   fields: () => {
-    //     const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
-    //     return Object.fromEntries(
-    //       Object.entries(fields).flatMap(([key, field]) => {
-    //         if (!field.input?.uniqueWhere || field.access.read === false) return [];
-    //         return [[key, field.input.uniqueWhere.arg]] as const;
-    //       })
-    //     );
-    //   },
-    // });
 
     const uniqueWhere = types.inputObject({
       name: names.whereUniqueInputName,
@@ -179,11 +166,12 @@ export function initialiseLists(
         id: types.arg({ type: types.nonNull(types.ID) }),
       },
     });
+
     // TODO: validate no fields are named AND, NOT, or OR
     const where: TypesForList['where'] = types.inputObject({
       name: names.whereInputName,
       fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const { fields } = lists[listKey];
         return Object.assign(
           {
             AND: types.arg({
@@ -203,7 +191,7 @@ export function initialiseLists(
     const create = types.inputObject({
       name: names.createInputName,
       fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
             if (!field.input?.create?.arg || field.access.create === false) return [];
@@ -216,7 +204,7 @@ export function initialiseLists(
     const update = types.inputObject({
       name: names.updateInputName,
       fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
             if (!field.input?.update?.arg || field.access.update === false) return [];
@@ -229,7 +217,7 @@ export function initialiseLists(
     const orderBy = types.inputObject({
       name: names.listOrderName,
       fields: () => {
-        const { fields } = listsWithInitialisedFieldsAndResolvedDbFields[listKey];
+        const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
             if (!field.input?.orderBy?.arg || field.access.read === false) return [];
@@ -275,7 +263,7 @@ export function initialiseLists(
     const relateToMany = types.inputObject({
       name: names.relateToManyInputName,
       fields: () => {
-        const list = initialisedLists[listKey];
+        const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
             create: types.arg({ type: types.list(create) }),
@@ -290,7 +278,7 @@ export function initialiseLists(
     const relateToOne = types.inputObject({
       name: names.relateToOneInputName,
       fields: () => {
-        const list = initialisedLists[listKey];
+        const list = lists[listKey];
 
         return {
           ...(list.access.create !== false && {
@@ -327,7 +315,7 @@ export function initialiseLists(
   }
 
   const listsWithInitialisedFields = Object.fromEntries(
-    Object.entries(lists).map(([listKey, list]) => [
+    Object.entries(listsConfig).map(([listKey, list]) => [
       listKey,
       {
         fields: Object.fromEntries(
@@ -441,10 +429,10 @@ export function initialiseLists(
     );
   }
 
-  const initialisedLists: Record<string, InitialisedList> = {};
+  const lists: Record<string, InitialisedList> = {};
 
   for (const [listKey, list] of Object.entries(listsWithInitialisedFieldsAndResolvedDbFields)) {
-    initialisedLists[listKey] = {
+    lists[listKey] = {
       ...list,
       ...listInfos[listKey],
       hooks: list.hooks || {},
@@ -460,7 +448,7 @@ export function initialiseLists(
                   key,
                   (val: any) =>
                     resolve(val, foreignListWhereInput =>
-                      resolveWhereInput(foreignListWhereInput, initialisedLists[foreignListKey])
+                      resolveWhereInput(foreignListWhereInput, lists[foreignListKey])
                     ),
                 ];
               })
@@ -470,7 +458,7 @@ export function initialiseLists(
         })
       ),
       applySearchField: (filter, search) => {
-        const searchFieldName = lists[listKey].db?.searchField ?? 'name';
+        const searchFieldName = listsConfig[listKey].db?.searchField ?? 'name';
         const searchField = list.fields[searchFieldName];
         if (search != null && search !== '' && searchField) {
           if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
@@ -492,20 +480,20 @@ export function initialiseLists(
         return filter;
       },
       cacheHint: (() => {
-        const cacheHint = lists[listKey].graphql?.cacheHint;
+        const cacheHint = listsConfig[listKey].graphql?.cacheHint;
         if (cacheHint === undefined) {
           return undefined;
         }
         return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
       })(),
-      maxResults: lists[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
+      maxResults: listsConfig[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
       listKey,
-      lists: initialisedLists,
+      lists,
     };
   }
 
   return {
-    lists: initialisedLists,
+    lists,
     listsWithResolvedRelations: listsWithResolvedDBFields,
   };
 }

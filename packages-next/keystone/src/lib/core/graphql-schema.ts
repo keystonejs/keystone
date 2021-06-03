@@ -67,7 +67,7 @@ function collectTypes(
         field.access.read !== false &&
         field.unreferencedConcreteInterfaceImplementations
       ) {
-        // this _IS_ actually necessary, unlike the things above
+        // this _IS_ actually necessary since they aren't implicitly referenced by other things, unlike the things above
         collectedTypes.push(
           ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
         );
