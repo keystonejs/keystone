@@ -1,4 +1,4 @@
-> ⚠️  &nbsp; Note: we're not accepting public contributions just yet, but you will be able to soon. To learn more reach out in the [Community Slack](https://community.keystonejs.com/)
+> ⚠️   Note: we're not accepting public contributions just yet, but you will be able to soon. To learn more reach out in the [Community Slack](https://community.keystonejs.com/)
 
 ## Adding Examples
 

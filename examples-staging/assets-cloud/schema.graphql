@@ -56,8 +56,8 @@ type Post {
 }
 
 input PostWhereInput {
-  AND: [PostWhereInput]
-  OR: [PostWhereInput]
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -190,8 +190,8 @@ type Author {
 }
 
 input AuthorWhereInput {
-  AND: [AuthorWhereInput]
-  OR: [AuthorWhereInput]
+  AND: [AuthorWhereInput!]
+  OR: [AuthorWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
