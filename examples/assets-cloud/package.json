@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-next/assets-cloud",
-  "version": "2.0.0",
+  "name": "@keystone-next/example-assets-cloud",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
