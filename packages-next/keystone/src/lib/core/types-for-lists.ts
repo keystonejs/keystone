@@ -167,7 +167,6 @@ export function initialiseLists(
       },
     });
 
-    // TODO: validate no fields are named AND, NOT, or OR
     const where: TypesForList['where'] = types.inputObject({
       name: names.whereInputName,
       fields: () => {
@@ -348,15 +347,8 @@ export function initialiseLists(
           if (access.update && field.input?.update) {
             hasAnAccessibleUpdateField = true;
           }
-          return [
-            fieldKey,
-            {
-              ...field,
-              access,
-              dbField: listsWithResolvedDBFields[listKey].fields[fieldKey],
-              hooks: field.hooks ?? {},
-            },
-          ];
+          const dbField = listsWithResolvedDBFields[listKey].fields[fieldKey];
+          return [fieldKey, { ...field, access, dbField, hooks: field.hooks ?? {} }];
         })
       );
       const access = parseListAccessControl(list.access);
@@ -366,14 +358,7 @@ export function initialiseLists(
       if (!hasAnAccessibleUpdateField) {
         access.update = false;
       }
-      return [
-        listKey,
-        {
-          ...list,
-          access,
-          fields,
-        },
-      ];
+      return [listKey, { ...list, access, fields }];
     })
   );
 
@@ -384,6 +369,11 @@ export function initialiseLists(
     assertIdFieldGraphQLTypesCorrect(listKey, fields);
 
     for (const [fieldKey, { dbField, input }] of Object.entries(fields)) {
+      if (fieldKey === 'AND' || fieldKey === 'OR' || fieldKey === 'NOT') {
+        throw new Error(
+          `Fields cannot be named ${fieldKey} but there is a field named ${fieldKey} on ${listKey}`
+        );
+      }
       if (input?.uniqueWhere) {
         if (
           dbField.kind !== 'scalar' ||
