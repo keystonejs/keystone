@@ -13,7 +13,7 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-import { CloudConfig } from './cloud';
+import type { CloudConfig } from './cloud';
 import type { BaseFields, FieldType, FieldConfig } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
