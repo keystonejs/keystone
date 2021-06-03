@@ -13,10 +13,14 @@ import {
   resolveWhereInput,
   UniqueInputFilter,
 } from '../where-inputs';
-import { ResolvedDBField, getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
+import { ResolvedDBField } from '../resolve-relationships';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
+import {
+  getPrismaModelForList,
+  promiseAllRejectWithAllErrors,
+  getDBFieldKeyForFieldOnMultiField,
+} from '../utils';
 import {
   NestedMutationState,
   resolveRelateToManyForCreateInput,
@@ -25,7 +29,7 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-input-resolvers';
 
-export async function createMany(
+export function createMany(
   { data }: { data: Record<string, any>[] },
   list: InitialisedList,
   context: KeystoneContext,
@@ -71,7 +75,7 @@ export async function createOne(
   return item;
 }
 
-export async function updateMany(
+export function updateMany(
   { data }: { data: { where: Record<string, any>; data: Record<string, any> }[] },
   list: InitialisedList,
   context: KeystoneContext,
@@ -113,7 +117,7 @@ export async function updateOne(
   return updatedItem;
 }
 
-export async function deleteMany(
+export function deleteMany(
   { where }: { where: UniqueInputFilter[] },
   list: InitialisedList,
   context: KeystoneContext,
@@ -276,7 +280,7 @@ async function resolveInputForCreateOrUpdate(
   originalInput: Record<string, any>,
   existingItem: Record<string, any> | undefined
 ) {
-  const operation = existingItem === undefined ? ('create' as const) : ('update' as const);
+  const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
   let resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
@@ -404,7 +408,7 @@ async function resolveInputForCreateOrUpdate(
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
-      await nestedMutationState.commit();
+      await nestedMutationState.afterChange();
       await runSideEffectOnlyHook(
         list,
         'afterChange',

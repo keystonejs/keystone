@@ -13,13 +13,15 @@ import { GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { resolveWhereInput } from '../where-inputs';
-import {
-  getDBFieldKeyForFieldOnMultiField,
-  ResolvedDBField,
-  ResolvedRelationDBField,
-} from '../prisma-schema';
+import {} from '../prisma-schema';
+import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
-import { applyFirstSkipToCount, getPrismaModelForList, IdType } from '../utils';
+import {
+  applyFirstSkipToCount,
+  getPrismaModelForList,
+  IdType,
+  getDBFieldKeyForFieldOnMultiField,
+} from '../utils';
 import { findMany, findManyFilter } from './resolvers';
 
 function assert(condition: boolean): asserts condition {
@@ -35,7 +37,7 @@ function getRelationVal(
   context: KeystoneContext,
   info: GraphQLResolveInfo
 ) {
-  const oppositeDbField = foreignList.fieldsIncludingOppositesToOneSidedRelations[dbField.field];
+  const oppositeDbField = foreignList.resolvedDbFields[dbField.field];
   assert(oppositeDbField.kind === 'relation');
   const relationFilter = {
     [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },

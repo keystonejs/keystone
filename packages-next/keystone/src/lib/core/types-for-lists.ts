@@ -23,9 +23,10 @@ import {
   parseFieldAccessControl,
 } from './access-control';
 import { getNamesFromList } from './utils';
-import { ListsWithResolvedRelations, ResolvedDBField, resolveRelationships } from './prisma-schema';
+import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { InputFilter, PrismaFilter, resolveWhereInput } from './where-inputs';
 import { outputTypeField } from './queries/output-field';
+import { assertFieldsValid } from './field-assertions';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
@@ -35,7 +36,8 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
-  fieldsIncludingOppositesToOneSidedRelations: Record<string, ResolvedDBField>;
+  /** This will include the opposites to one-sided relationships */
+  resolvedDbFields: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
   filterImpls: Record<string, (input: InputFilter[string]) => PrismaFilter>;
   types: TypesForList;
@@ -49,78 +51,10 @@ export type InitialisedList = {
   lists: Record<string, InitialisedList>;
 };
 
-function assertNoConflictingExtraOutputFields(
-  listKey: string,
-  fields: Record<string, InitialisedField>
-) {
-  const fieldPaths = new Set(Object.keys(fields));
-  const alreadyFoundFields: Record<string, string> = {};
-  for (const [fieldPath, field] of Object.entries(fields)) {
-    if (field.extraOutputFields) {
-      for (const outputTypeFieldName of Object.keys(field.extraOutputFields)) {
-        // note that this and the case handled below are fundamentally the same thing but i want different errors for each of them
-        if (fieldPaths.has(outputTypeFieldName)) {
-          throw new Error(
-            `The field ${fieldPath} on the ${listKey} list defines an extra GraphQL output field named ${outputTypeFieldName} which conflicts with the Keystone field type named ${outputTypeFieldName} on the same list`
-          );
-        }
-        const alreadyFoundField = alreadyFoundFields[outputTypeFieldName];
-        if (alreadyFoundField !== undefined) {
-          throw new Error(
-            `The field ${fieldPath} on the ${listKey} list defines an extra GraphQL output field named ${outputTypeFieldName} which conflicts with the Keystone field type named ${alreadyFoundField} which also defines an extra GraphQL output field named ${outputTypeFieldName}`
-          );
-        }
-        alreadyFoundFields[outputTypeFieldName] = fieldPath;
-      }
-    }
-  }
-}
-
-function assertIdFieldGraphQLTypesCorrect(
-  listKey: string,
-  fields: Record<string, InitialisedField>
-) {
-  const idField = fields.id;
-  if (idField.input?.uniqueWhere === undefined) {
-    throw new Error(
-      `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${listKey} does not define one`
-    );
-  }
-  if (idField.input.uniqueWhere.arg.type !== types.ID) {
-    throw new Error(
-      `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${listKey} defines the type ${idField.input.uniqueWhere.arg.type.graphQLType.toString()}`
-    );
-  }
-  // we may want to loosen these constraints in the future
-  if (idField.input.create !== undefined) {
-    throw new Error(
-      `The idField on a list must not define a create GraphQL input but the idField for ${listKey} does define one`
-    );
-  }
-  if (idField.input.update !== undefined) {
-    throw new Error(
-      `The idField on a list must not define an update GraphQL input but the idField for ${listKey} does define one`
-    );
-  }
-  if (idField.access.read === false) {
-    throw new Error(
-      `The idField on a list must not have access.read be set to false but ${listKey} does`
-    );
-  }
-  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== types.ID) {
-    throw new Error(
-      `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${listKey} defines the type ${idField.output.type.graphQLType.toString()}`
-    );
-  }
-}
-
 export function initialiseLists(
   listsConfig: KeystoneConfig['lists'],
   provider: DatabaseProvider
-): {
-  lists: Record<string, InitialisedList>;
-  listsWithResolvedRelations: ListsWithResolvedRelations;
-} {
+): Record<string, InitialisedList> {
   const listInfos: Record<string, ListInfo> = {};
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const names = getGqlNames({
@@ -300,14 +234,8 @@ export function initialiseLists(
         update,
         findManyArgs,
         relateTo: {
-          many: {
-            create: relateToMany,
-            update: relateToMany,
-          },
-          one: {
-            create: relateToOne,
-            update: relateToOne,
-          },
+          many: { create: relateToMany, update: relateToMany },
+          one: { create: relateToOne, update: relateToOne },
         },
       },
     };
@@ -347,7 +275,7 @@ export function initialiseLists(
           if (access.update && field.input?.update) {
             hasAnAccessibleUpdateField = true;
           }
-          const dbField = listsWithResolvedDBFields[listKey].fields[fieldKey];
+          const dbField = listsWithResolvedDBFields[listKey].resolvedDbFields[fieldKey];
           return [fieldKey, { ...field, access, dbField, hooks: field.hooks ?? {} }];
         })
       );
@@ -365,33 +293,7 @@ export function initialiseLists(
   for (const [listKey, { fields, pluralGraphQLName }] of Object.entries(
     listsWithInitialisedFieldsAndResolvedDbFields
   )) {
-    assertNoConflictingExtraOutputFields(listKey, fields);
-    assertIdFieldGraphQLTypesCorrect(listKey, fields);
-
-    for (const [fieldKey, { dbField, input }] of Object.entries(fields)) {
-      if (fieldKey === 'AND' || fieldKey === 'OR' || fieldKey === 'NOT') {
-        throw new Error(
-          `Fields cannot be named ${fieldKey} but there is a field named ${fieldKey} on ${listKey}`
-        );
-      }
-      if (input?.uniqueWhere) {
-        if (
-          dbField.kind !== 'scalar' ||
-          (dbField.scalar !== 'String' && dbField.scalar !== 'Int')
-        ) {
-          throw new Error(
-            `Only String and Int scalar db fields can provide a uniqueWhere input currently but the field at ${listKey}.${fieldKey} specifies a uniqueWhere input`
-          );
-        }
-
-        if (dbField.index !== 'unique' && fieldKey !== 'id') {
-          throw new Error(
-            `Fields must have a unique index or be the idField to specify a uniqueWhere input but the field at ${listKey}.${fieldKey} specifies a uniqueWhere input without a unique index`
-          );
-        }
-      }
-    }
-
+    assertFieldsValid({ listKey, fields });
     // this is quite a hack, we could do this in a better way if we "initialised" the fields twice,
     // the first time to see if they have an orderBy and then the second time for real
     // but that would be more complicated and this works
@@ -425,8 +327,8 @@ export function initialiseLists(
     lists[listKey] = {
       ...list,
       ...listInfos[listKey],
+      ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
-      fieldsIncludingOppositesToOneSidedRelations: listsWithResolvedDBFields[listKey].fields,
       filterImpls: Object.assign(
         {},
         ...Object.values(list.fields).map(field => {
@@ -452,14 +354,10 @@ export function initialiseLists(
         const searchField = list.fields[searchFieldName];
         if (search != null && search !== '' && searchField) {
           if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
-            // FIXME: Think about regex
             const mode = provider === 'sqlite' ? undefined : 'insensitive';
             filter = {
               AND: [filter, { [searchFieldName]: { contains: search, mode } }],
             };
-
-            // const f = escapeRegExp;
-            // this._query.andWhere(`${baseTableAlias}.${searchFieldName}`, '~*', f(search));
           } else {
             // Return no results
             filter = {
@@ -482,8 +380,5 @@ export function initialiseLists(
     };
   }
 
-  return {
-    lists,
-    listsWithResolvedRelations: listsWithResolvedDBFields,
-  };
+  return lists;
 }

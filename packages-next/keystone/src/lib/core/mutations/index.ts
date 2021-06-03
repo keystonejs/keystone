@@ -52,7 +52,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     description: ` Create multiple ${list.listKey} items.`,
     async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await mutations.createMany(
+        mutations.createMany(
           { data: (args.data || []).map(input => input?.data ?? {}) },
           list,
           context,
@@ -94,7 +94,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     description: ` Update multiple ${list.listKey} items by ID.`,
     async resolve(_rootVal, { data }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await mutations.updateMany(
+        mutations.updateMany(
           {
             data: (data || [])
               .filter((x): x is NonNullable<typeof x> => x !== null)
@@ -131,12 +131,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     description: ` Delete multiple ${list.listKey} items by ID.`,
     async resolve(rootVal, { ids }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await mutations.deleteMany(
-          { where: (ids || []).map(id => ({ id })) },
-          list,
-          context,
-          provider
-        )
+        mutations.deleteMany({ where: (ids || []).map(id => ({ id })) }, list, context, provider)
       );
     },
   });

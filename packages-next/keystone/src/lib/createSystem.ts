@@ -42,14 +42,14 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
       })
     ),
   };
-  const { lists } = initialiseLists(transformedConfig.lists, provider);
+  const lists = initialiseLists(transformedConfig.lists, provider);
   const adminMeta = createAdminMeta(transformedConfig, lists);
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
 export function createSystem(config: KeystoneConfig) {
   const provider = getDBProvider(config.db);
-  const { lists } = initialiseLists(config.lists, provider);
+  const lists = initialiseLists(config.lists, provider);
 
   const adminMeta = createAdminMeta(config, lists);
 

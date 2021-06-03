@@ -172,3 +172,7 @@ const keyToLabel = (str: string) => {
 const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase();
 
 const labelToClass = (str: string) => str.replace(/\s+/g, '');
+
+export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: string) {
+  return `${fieldKey}_${subField}`;
+}

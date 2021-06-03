@@ -9,15 +9,15 @@ export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider
 ) {
-  let query = types.object()({
+  const query = types.object()({
     name: 'Query',
-    fields: () => Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
+    fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
   });
 
   const createManyByList: Record<string, types.InputObjectType<any>> = {};
   const updateManyByList: Record<string, types.InputObjectType<any>> = {};
 
-  let mutation = types.object()({
+  const mutation = types.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
@@ -29,7 +29,7 @@ export function getGraphQLSchema(
       })
     ),
   });
-  let graphQLSchema = new GraphQLSchema({
+  const graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
     types: collectTypes(lists, createManyByList, updateManyByList),
@@ -67,7 +67,7 @@ function collectTypes(
         field.access.read !== false &&
         field.unreferencedConcreteInterfaceImplementations
       ) {
-        // this _IS_ actually necessary since they aren't implicitly referenced by other things, unlike the things above
+        // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
         collectedTypes.push(
           ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
         );

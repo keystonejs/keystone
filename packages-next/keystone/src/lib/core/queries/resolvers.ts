@@ -15,8 +15,7 @@ import {
 } from '../where-inputs';
 import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList } from '../utils';
-import { getDBFieldKeyForFieldOnMultiField } from '../prisma-schema';
+import { getPrismaModelForList, getDBFieldKeyForFieldOnMultiField } from '../utils';
 
 export async function findManyFilter(
   list: InitialisedList,

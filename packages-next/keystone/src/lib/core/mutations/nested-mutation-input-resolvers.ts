@@ -27,13 +27,10 @@ export class NestedMutationState {
     this.#afterChanges.push(() => afterChange(item));
     return { kind: 'connect' as const, id: item.id };
   }
-  async commit() {
+  async afterChange() {
     await promiseAllRejectWithAllErrors(this.#afterChanges);
   }
 }
-
-// TODO: access control for the items you are connecting/disconnecting
-// the previous version of this used read access control for that
 
 export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
@@ -227,9 +224,6 @@ export function resolveRelateToOneForCreateInput(
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
-      // throw new Error(
-      //   `If a relate to one for create input is passed, only one key can be passed but ${numOfKeys} were be passed`
-      // );
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
   };
@@ -246,13 +240,9 @@ export function resolveRelateToOneForUpdateInput(
       types.Arg<types.NonNullType<TypesForList['relateTo']['one']['update']>>
     >
   ) => {
-    // should === null disconnect?
     if (value == null) {
       return undefined;
     }
-    // if (value === null) {
-    //   return { disconnect: true };
-    // }
     if (value.connect && value.create) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
     }
