@@ -13,7 +13,7 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-import type { CloudConfig } from './cloud';
+import type { KeystoneCloudConfig } from './keystone-cloud';
 import type { BaseFields, FieldType, FieldConfig } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
@@ -24,7 +24,7 @@ export type KeystoneConfig = {
   ui?: AdminUIConfig;
   server?: ServerConfig;
   session?: SessionStrategy<any>;
-  cloud?: CloudConfig;
+
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
@@ -37,6 +37,8 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
+    /** Config options for Keystone Cloud */
+    keystoneCloud?: KeystoneCloudConfig;
   };
 };
 
