@@ -534,29 +534,27 @@ A `virtual` field represents a value which is computed a read time, rather than 
 
 Options:
 
-- `resolver` (required):
-- `graphQLReturnType` (required):
+- `field` (required):
 - `graphQLReturnFragment` (default: `undefined` ):
-- `extendGraphQLTypes` (default: `[]`):
-- `args` (default: `[]`):
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
 import { virtual } from '@keystone-next/fields';
+import { types } from '@keystone-next/types';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
         fieldName: virtual({
-          resolver: (item, args, context, info) => `/* ... */`,
-          graphQLReturnType: '...',
+          field: types.field({
+            type: types.String,
+            args: { something: types.arg({ type: types.Int }) },
+            resolve(item, args, context, info) {
+
+            }
+          })
           graphQLReturnFragment: '...',
-          extendGraphQLTypes: ['...'],
-          args: [
-            { name: '...', type: 'String' },
-            /* ... */
-          ],
         }),
         /* ... */
       },
