@@ -63,7 +63,7 @@ export async function checkFieldAccessControlForUpdate(
           originalInput,
           session: context.session,
           item,
-          itemId: item.id,
+          itemId: item.id.toString(),
         },
       });
     })
