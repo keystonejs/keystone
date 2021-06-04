@@ -54,7 +54,9 @@ export function getInitFirstItemSchema({
           }
 
           // Update system state
-          // this is strictly speaking incorrect. the db API, do we need
+          // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
+          // (this is also mostly fine, the chance that people are using things where
+          // the input value can't round-trip like the Upload scalar here is quite low)
           const item = await dbItemAPI.createOne({ data: { ...data, ...itemData } });
           const sessionToken = await context.startSession({ listKey, itemId: item.id.toString() });
           return { item, sessionToken };
