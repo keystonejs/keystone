@@ -8,7 +8,7 @@ import {
   FieldControllerConfig,
 } from '@keystone-next/types';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { validateImage, validateRef } from './Field';
+import { validateImage, validateRef, ImageWrapper } from './Field';
 
 export { Field } from './Field';
 
@@ -35,7 +35,11 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
+      {data && (
+        <ImageWrapper>
+          <img css={{ width: '100%' }} alt={data.filename} src={data.src} />
+        </ImageWrapper>
+      )}
     </FieldContainer>
   );
 };
