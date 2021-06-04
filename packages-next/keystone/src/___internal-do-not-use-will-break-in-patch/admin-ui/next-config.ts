@@ -13,13 +13,7 @@ export const config = withPreconstruct({
       ),
     };
     if (isServer) {
-      config.externals = [
-        ...config.externals,
-        /@keystone-next\/keystone/,
-        // ughhh
-        /@keystone-next\/types/,
-        /prisma[\/\\]generated-client/,
-      ];
+      config.externals = [...config.externals, /@keystone-next\/keystone/, /@keystone-next\/types/];
     }
     return config;
   },
