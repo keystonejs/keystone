@@ -21,8 +21,6 @@ export const QueryMeta = types.object<{ getCount: () => Promise<number> }>()({
   },
 });
 
-// export { tsgql };
-
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
 // because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
 // so we have a copy of it but using a union of string literals instead of an enum
