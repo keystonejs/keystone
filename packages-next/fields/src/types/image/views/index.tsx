@@ -10,7 +10,7 @@ import {
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { validateImage, validateRef, ImageWrapper } from './Field';
 
-export { Field } from './Field';=
+export { Field } from './Field';
 
 export const Cell: CellComponent = ({ item, field }) => {
   const data = item[field.path];
