@@ -12,4 +12,3 @@ export { select } from './types/select';
 export { text } from './types/text';
 export { timestamp } from './types/timestamp';
 export { virtual } from './types/virtual';
-// export { uuid } from './types/uuid';
