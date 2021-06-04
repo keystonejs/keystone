@@ -1,3 +1,5 @@
+> ⚠️   Note: we're not accepting public contributions just yet, but you will be able to soon. To learn more reach out in the [Community Slack](https://community.keystonejs.com/)
+
 ## Adding Examples
 
 These docs are for developers who want to add new example projects to the Keystone repository.

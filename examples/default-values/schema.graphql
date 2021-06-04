@@ -24,8 +24,8 @@ type Task {
 }
 
 input TaskWhereInput {
-  AND: [TaskWhereInput]
-  OR: [TaskWhereInput]
+  AND: [TaskWhereInput!]
+  OR: [TaskWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -151,8 +151,8 @@ type Person {
 }
 
 input PersonWhereInput {
-  AND: [PersonWhereInput]
-  OR: [PersonWhereInput]
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID

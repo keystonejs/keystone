@@ -27,7 +27,7 @@ export const getSchemaExtension =
     passwordResetLink?: AuthTokenTypeConfig;
     magicAuthLink?: AuthTokenTypeConfig;
   }): ExtendGraphqlSchema =>
-  (schema, keystone) =>
+  schema =>
     [
       getBaseAuthSchema({
         identityField,
@@ -42,7 +42,7 @@ export const getSchemaExtension =
           fields: initFirstItem.fields,
           itemData: initFirstItem.itemData,
           gqlNames,
-          keystone,
+          graphQLSchema: schema,
         }),
       passwordResetLink &&
         getPasswordResetSchema({

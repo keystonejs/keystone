@@ -12,8 +12,8 @@ type Scalars = {
 };
 
 export type TodoWhereInput = {
-  readonly AND?: ReadonlyArray<TodoWhereInput | null> | null;
-  readonly OR?: ReadonlyArray<TodoWhereInput | null> | null;
+  readonly AND?: ReadonlyArray<TodoWhereInput> | null;
+  readonly OR?: ReadonlyArray<TodoWhereInput> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
   readonly id_lt?: Scalars['ID'] | null;

@@ -8,10 +8,10 @@ import { ExitError, getConfigPath } from './utils';
 export async function prisma(cwd: string, args: string[]) {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const { keystone, graphQLSchema } = createSystem(config);
+  const { graphQLSchema } = createSystem(config);
 
-  await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+  await validateCommittedArtifacts(graphQLSchema, config, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
     cwd,

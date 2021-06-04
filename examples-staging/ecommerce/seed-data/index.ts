@@ -1,9 +1,8 @@
 import { KeystoneContext } from '@keystone-next/types';
 import { products } from './data';
 
-export async function insertSeedData(context: KeystoneContext) {
+export async function insertSeedData({ prisma }: KeystoneContext) {
   console.log(`🌱 Inserting Seed Data: ${products.length} Products`);
-  const { prisma } = context.keystone.adapter;
   for (const product of products) {
     console.log(`  🛍️ Adding Product: ${product.name}`);
     const { id } = await prisma.productImage.create({

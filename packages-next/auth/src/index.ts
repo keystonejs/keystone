@@ -5,6 +5,7 @@ import {
   KeystoneConfig,
   KeystoneContext,
   AdminUIConfig,
+  SessionStrategy,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
@@ -25,6 +26,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   identityField,
   magicAuthLink,
   passwordResetLink,
+  sessionData,
 }: AuthConfig<GeneratedListTypes>) {
   // The protectIdentities flag is currently under review to see whether it should be
   // part of the createAuth API (in which case its use cases need to be documented and tested)
@@ -235,6 +237,53 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   /**
+   * withItemData
+   *
+   * Automatically injects a session.data value with the authenticated item
+   */
+  /* TODO:
+    - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
+  */
+  const withItemData = (
+    _sessionStrategy: SessionStrategy<Record<string, any>>
+  ): SessionStrategy<{ listKey: string; itemId: string; data: any }> => {
+    const { get, ...sessionStrategy } = _sessionStrategy;
+    return {
+      ...sessionStrategy,
+      get: async ({ req, createContext }) => {
+        const session = await get({ req, createContext });
+        const sudoContext = createContext({}).sudo();
+        if (
+          !session ||
+          !session.listKey ||
+          session.listKey !== listKey ||
+          !session.itemId ||
+          !sudoContext.lists[session.listKey]
+        ) {
+          return;
+        }
+
+        // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
+        // throw; I think this needs to be reviewed, but for now this prevents a system crash when
+        // the session item is invalid
+        try {
+          // If no field selection is specified, just load the id. We still load the item,
+          // because doing so validates that it exists in the database
+          const data = await sudoContext.lists[listKey].findOne({
+            where: { id: session.itemId },
+            query: sessionData || 'id',
+          });
+          return { ...session, itemId: session.itemId, listKey, data };
+        } catch (e) {
+          // TODO: This swallows all errors, we need a way to differentiate between "not found" and
+          // actual exceptions that should be thrown
+          return;
+        }
+      },
+    };
+  };
+
+  /**
    * withAuth
    *
    * Automatically extends config with the correct auth functionality. This is the easiest way to
@@ -274,11 +323,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         },
       };
     }
+    let session = keystoneConfig.session;
+    if (session && sessionData) {
+      session = withItemData(session);
+    }
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
     const listConfig = keystoneConfig.lists[listKey];
     return {
       ...keystoneConfig,
       ui,
+      session,
       // Add the additional fields to the references lists fields object
       // TODO: The fields we're adding here shouldn't naively replace existing fields with the same key
       // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
@@ -288,8 +342,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
       },
       extendGraphqlSchema: existingExtendGraphQLSchema
-        ? (schema, keystone) =>
-            existingExtendGraphQLSchema(extendGraphqlSchema(schema, keystone), keystone)
+        ? schema => existingExtendGraphQLSchema(extendGraphqlSchema(schema))
         : extendGraphqlSchema,
     };
   };

@@ -174,21 +174,19 @@ const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
-        list.gqlNames.listSortName
+      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $orderBy: [${
+        list.gqlNames.listOrderName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
+        }(where: $where,first: $first, skip: $skip, orderBy: $orderBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
           }
           ${selectedGqlFields}
         }
-        meta: ${list.gqlNames.listQueryMetaName}(where: $where) {
-          count
-        }
+        count: ${list.gqlNames.listQueryCountName}(where: $where)
       }
     `;
     }, [list, selectedFields]),
@@ -199,7 +197,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         where: filters.where,
         first: pageSize,
         skip: (currentPage - 1) * pageSize,
-        sortBy: sort ? [`${sort.field}_${sort.direction}`] : undefined,
+        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
       },
     }
   );
@@ -217,7 +215,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const dataGetter = makeDataGetter<
     DeepNullable<{
-      meta: { count: number };
+      count: number;
       items: { id: string; [key: string]: any }[];
     }>
   >(data, error?.graphQLErrors);
@@ -254,7 +252,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         <Fragment>
           <Stack across gap="medium" align="center" marginTop="xlarge">
             {showCreate && <CreateButton listKey={listKey} />}
-            {data.meta.count || filters.filters.length ? <FilterAdd listKey={listKey} /> : null}
+            {data.count || filters.filters.length ? <FilterAdd listKey={listKey} /> : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
             {Boolean(Object.keys(query).length) && (
               <Button size="small" onClick={resetToDefaults}>
@@ -262,7 +260,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
               </Button>
             )}
           </Stack>
-          {data.meta.count ? (
+          {data.count ? (
             <Fragment>
               <ResultsSummaryContainer>
                 {(() => {
@@ -291,7 +289,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         pageSize={pageSize}
                         plural={list.plural}
                         singular={list.singular}
-                        total={data.meta.count}
+                        total={data.count}
                       />
                       , sorted by <SortSelection list={list} />
                       with{' '}
@@ -307,7 +305,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                 })()}
               </ResultsSummaryContainer>
               <ListTable
-                count={data.meta.count}
+                count={data.count}
                 currentPage={currentPage}
                 itemsGetter={dataGetter.get('items')}
                 listKey={listKey}

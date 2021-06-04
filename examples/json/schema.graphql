@@ -17,8 +17,8 @@ type Package {
 }
 
 input PackageWhereInput {
-  AND: [PackageWhereInput]
-  OR: [PackageWhereInput]
+  AND: [PackageWhereInput!]
+  OR: [PackageWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -124,8 +124,8 @@ type Person {
 }
 
 input PersonWhereInput {
-  AND: [PersonWhereInput]
-  OR: [PersonWhereInput]
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
