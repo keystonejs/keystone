@@ -40,7 +40,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
           <img
             css={{ width: '100%' }}
             alt={data.filename}
-            src={data.src || data.publicUrlTransformed}
+            src={data.src}
           />
         </ImageWrapper>
       )}
