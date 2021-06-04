@@ -31,6 +31,8 @@ const PasswordState = types.object<{ isSet: boolean }>()({
   },
 });
 
+const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
+
 export const password =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     bcrypt = bcryptjs,
@@ -86,7 +88,7 @@ export const password =
       output: types.field({
         type: PasswordState,
         resolve(val) {
-          return { isSet: val.value !== null };
+          return { isSet: val.value !== null && bcryptHashRegex.test(val.value) };
         },
         extensions: {
           keystoneSecretField: {
