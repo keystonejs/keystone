@@ -37,11 +37,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {data && (
         <ImageWrapper>
-          <img
-            css={{ width: '100%' }}
-            alt={data.filename}
-            src={data.src}
-          />
+          <img css={{ width: '100%' }} alt={data.filename} src={data.src} />
         </ImageWrapper>
       )}
     </FieldContainer>
