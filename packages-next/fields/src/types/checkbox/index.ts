@@ -1,6 +1,7 @@
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
+  CommonFieldConfig,
   fieldType,
   FieldTypeFunc,
   legacyFilters,
@@ -8,7 +9,6 @@ import {
   types,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

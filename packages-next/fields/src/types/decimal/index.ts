@@ -2,6 +2,7 @@ import {
   fieldType,
   FieldTypeFunc,
   BaseGeneratedListTypes,
+  CommonFieldConfig,
   types,
   orderDirectionEnum,
   Decimal,
@@ -9,7 +10,6 @@ import {
   FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 import { getIndexType } from '../../get-index-type';
 
 export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

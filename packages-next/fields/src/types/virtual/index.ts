@@ -2,11 +2,11 @@ import {
   BaseGeneratedListTypes,
   types,
   ItemRootValue,
+  CommonFieldConfig,
   FieldTypeFunc,
   fieldType,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 
 export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

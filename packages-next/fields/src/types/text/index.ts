@@ -1,6 +1,7 @@
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
+  CommonFieldConfig,
   fieldType,
   types,
   orderDirectionEnum,
@@ -8,7 +9,6 @@ import {
   legacyFilters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 import { getIndexType } from '../../get-index-type';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

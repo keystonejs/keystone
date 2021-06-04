@@ -3,11 +3,11 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
+  CommonFieldConfig,
   types,
 } from '@keystone-next/types';
 import bcryptjs from 'bcryptjs';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

@@ -3,6 +3,7 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
+  CommonFieldConfig,
   ImageData,
   ImageExtension,
   KeystoneContext,
@@ -11,7 +12,6 @@ import {
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

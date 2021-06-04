@@ -1,6 +1,7 @@
 import {
   BaseGeneratedListTypes,
   FieldTypeFunc,
+  CommonFieldConfig,
   fieldType,
   types,
   AdminMetaRootVal,
@@ -8,7 +9,6 @@ import {
   QueryMeta,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -115,9 +115,6 @@ export const relationship =
     if (many) {
       const whereInputResolve =
         (key: string) => async (value: any, resolve?: (val: any) => Promise<any>) => {
-          if (value === null) {
-            throw new Error('i wonder what should happen here');
-          }
           return { [meta.fieldKey]: { [key]: await resolve!(value) } };
         };
       return fieldType({
@@ -241,9 +238,6 @@ export const relationship =
           },
           impls: {
             [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {
-              if (value === null) {
-                throw new Error('i wonder what should happen here');
-              }
               return { [meta.fieldKey]: await resolve!(value) };
             },
             [`${meta.fieldKey}_is_null`]: value =>

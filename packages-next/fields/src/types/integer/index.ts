@@ -3,12 +3,12 @@ import {
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
+  CommonFieldConfig,
   legacyFilters,
   orderDirectionEnum,
   types,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 import { getIndexType } from '../../get-index-type';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

@@ -3,12 +3,12 @@ import {
   fieldType,
   types,
   FieldTypeFunc,
+  CommonFieldConfig,
   orderDirectionEnum,
   legacyFilters,
   FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 import { getIndexType } from '../../get-index-type';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

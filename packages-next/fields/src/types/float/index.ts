@@ -1,6 +1,7 @@
 import {
   BaseGeneratedListTypes,
   FieldTypeFunc,
+  CommonFieldConfig,
   fieldType,
   types,
   orderDirectionEnum,
@@ -8,7 +9,6 @@ import {
   FieldDefaultValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { CommonFieldConfig } from '../../interfaces';
 import { getIndexType } from '../../get-index-type';
 
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
