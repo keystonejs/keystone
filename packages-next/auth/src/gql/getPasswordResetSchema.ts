@@ -13,7 +13,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   protectIdentities,
   gqlNames,
   passwordResetLink,
-  secretFieldImpl,
+  passwordResetTokenSecretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
@@ -21,7 +21,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
-  secretFieldImpl: SecretFieldImpl;
+  passwordResetTokenSecretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `
@@ -112,7 +112,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
-            secretFieldImpl,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
             args[identityField],
@@ -164,7 +164,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
-            secretFieldImpl,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
             args[identityField],

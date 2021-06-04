@@ -12,14 +12,14 @@ export function getMagicAuthLinkSchema<I extends string>({
   protectIdentities,
   gqlNames,
   magicAuthLink,
-  secretFieldImpl,
+  magicAuthTokenSecretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
-  secretFieldImpl: SecretFieldImpl;
+  magicAuthTokenSecretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `
@@ -111,7 +111,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             listKey,
-            secretFieldImpl,
+            magicAuthTokenSecretFieldImpl,
             tokenType,
             identityField,
             args[identityField],

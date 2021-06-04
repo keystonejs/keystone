@@ -1,7 +1,7 @@
 import { mergeSchemas } from '@graphql-tools/merge';
 import { ExtendGraphqlSchema } from '@keystone-next/types';
 
-import { assertObjectType } from 'graphql';
+import { assertObjectType, GraphQLSchema } from 'graphql';
 import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
@@ -25,6 +25,13 @@ function assertSecretFieldImpl(
   }
 }
 
+export function getSecretFieldImpl(schema: GraphQLSchema, listKey: string, fieldKey: string) {
+  const gqlOutputType = assertObjectType(schema.getType(listKey));
+  const secretFieldImpl = gqlOutputType.getFields()?.[fieldKey].extensions?.keystoneSecretField;
+  assertSecretFieldImpl(secretFieldImpl, listKey, fieldKey);
+  return secretFieldImpl;
+}
+
 export const getSchemaExtension =
   ({
     identityField,
@@ -46,11 +53,6 @@ export const getSchemaExtension =
     magicAuthLink?: AuthTokenTypeConfig;
   }): ExtendGraphqlSchema =>
   schema => {
-    const gqlOutputType = assertObjectType(schema.getType(listKey));
-    const secretFieldImpl =
-      gqlOutputType.getFields()?.[secretField].extensions?.keystoneSecretField;
-    assertSecretFieldImpl(secretFieldImpl, listKey, secretField);
-
     return [
       getBaseAuthSchema({
         identityField,
@@ -58,7 +60,7 @@ export const getSchemaExtension =
         protectIdentities,
         secretField,
         gqlNames,
-        secretFieldImpl,
+        secretFieldImpl: getSecretFieldImpl(schema, listKey, secretField),
       }),
       initFirstItem &&
         getInitFirstItemSchema({
@@ -76,7 +78,11 @@ export const getSchemaExtension =
           secretField,
           passwordResetLink,
           gqlNames,
-          secretFieldImpl,
+          passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
+            schema,
+            listKey,
+            'passwordResetToken'
+          ),
         }),
       magicAuthLink &&
         getMagicAuthLinkSchema({
@@ -85,7 +91,7 @@ export const getSchemaExtension =
           protectIdentities,
           magicAuthLink,
           gqlNames,
-          secretFieldImpl,
+          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(schema, listKey, 'magicAuthToken'),
         }),
     ]
       .filter(x => x)
