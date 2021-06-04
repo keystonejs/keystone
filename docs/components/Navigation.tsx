@@ -73,6 +73,7 @@ export function Navigation() {
         <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/relationships">Relationships</NavItem>
+        <NavItem href="/guides/filters">Query Filters</NavItem>
         <NavItem href="/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
@@ -120,6 +121,7 @@ export function Navigation() {
 
         <SubHeading as="h4">GraphQL</SubHeading>
         <NavItem href="/apis/graphql">GraphQL API</NavItem>
+        <NavItem href="/apis/filters">Query Filter API</NavItem>
       </Section>
     </nav>
   );

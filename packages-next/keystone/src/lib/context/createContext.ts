@@ -26,7 +26,7 @@ export function makeCreateContext({
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
 }) {
-  const images = createImagesContext(config.images);
+  const images = createImagesContext(config);
   const files = createFilesContext(config.files);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
