@@ -182,9 +182,6 @@ async function handleCreateAndUpdate(
   foreignList: InitialisedList,
   target: string
 ) {
-  if (value.connect && value.create) {
-    throw new Error(`Nested mutation operation invalid for ${target}`);
-  }
   if (value.connect) {
     try {
       await context.db.lists[foreignList.listKey].findOne({ where: value.connect as any });
@@ -224,6 +221,10 @@ export function resolveRelateToOneForCreateInput(
     if (value == null) {
       return undefined;
     }
+    const numOfKeys = Object.keys(value).length;
+    if (numOfKeys !== 1) {
+      throw new Error(`Nested mutation operation invalid for ${target}`);
+    }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
   };
 }
@@ -241,6 +242,9 @@ export function resolveRelateToOneForUpdateInput(
   ) => {
     if (value == null) {
       return undefined;
+    }
+    if (value.connect && value.create) {
+      throw new Error(`Nested mutation operation invalid for ${target}`);
     }
     if (value.connect || value.create) {
       return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
