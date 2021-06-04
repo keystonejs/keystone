@@ -118,11 +118,6 @@ The following functions will create a new `KeystoneContext` object with this beh
 
 The `KeystoneContext` object exposes the underlying database driver directly via `context.prisma`, which is a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
 
-### Access control helpers
-
-The functions `getListAccessControlForUser()` and `getFieldAccessControlForUser()` are used by the internal Keystone resolvers to apply access control.
-They should not be called directly.
-
 ### Images API
 
 If [support for image fields](./config#images) is enabled in the system, then an `images` API will be made available on the `context` object.
@@ -165,7 +160,5 @@ The following properties are deprecated and should not be used.
 They will be removed in future releases.
 
 `gqlNames`: A function which takes a `listKey` and returns an object containing the GraphQL query, mutation and type names related to that list.
-
-`keystone`: An object representing the internal state of the system.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
