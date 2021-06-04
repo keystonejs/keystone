@@ -338,8 +338,6 @@ export type FieldTypeWithoutDBField<
   views: string;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
-  // maybe this should be called `types` and accept any type?
-  // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
   unreferencedConcreteInterfaceImplementations?: types.ObjectType<any>[];
   __legacy?: {
     filters?: {
