@@ -385,7 +385,7 @@ export function validateImage({
 // Styled Components
 // ==============================
 
-const ImageWrapper = ({ children }: { children: ReactNode }) => {
+export const ImageWrapper = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
 
   return (

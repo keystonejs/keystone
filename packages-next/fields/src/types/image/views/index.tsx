@@ -1,8 +1,6 @@
 /* @jsx jsx */
 
-import { ReactNode } from 'react';
-
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core';
 import {
   CardValueComponent,
   CellComponent,
@@ -12,7 +10,7 @@ import {
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { validateImage, validateRef } from './Field';
 
-export { Field } from './Field';
+export { Field, ImageWrapper } from './Field';
 
 export const Cell: CellComponent = ({ item, field }) => {
   const data = item[field.path];
@@ -130,30 +128,4 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       return {};
     },
   };
-};
-
-// ==============================
-// Styled Components
-// ==============================
-
-const ImageWrapper = ({ children }: { children: ReactNode }) => {
-  const theme = useTheme();
-
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        borderRadius: theme.radii.medium,
-        border: `1px solid ${theme.colors.border}`,
-        flexShrink: 0,
-        lineHeight: 0,
-        padding: 4,
-        position: 'relative',
-        textAlign: 'center',
-        width: '130px', // 120px image + chrome
-      }}
-    >
-      {children}
-    </div>
-  );
 };
