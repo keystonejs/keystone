@@ -1,4 +1,3 @@
-import { InitialisedList } from '@keystone-next/keystone/src/lib/core/types-for-lists';
 import { JSONValue, types as tsgqlTypesFromTypesPkg } from '@keystone-next/types';
 import {
   KeystoneContext,
@@ -8,6 +7,7 @@ import {
   FieldMetaRootVal,
 } from '@keystone-next/types';
 import { GraphQLSchema, GraphQLObjectType, assertScalarType } from 'graphql';
+import { InitialisedList } from '../../lib/core/types-for-lists';
 
 const types = {
   ...tsgqlTypesFromTypesPkg,

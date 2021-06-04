@@ -13,7 +13,6 @@ import { GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { resolveWhereInput } from '../where-inputs';
-import {} from '../prisma-schema';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {

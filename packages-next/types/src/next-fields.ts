@@ -1,5 +1,3 @@
-import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
-// import * as tsgql from '@ts-gql/schema';
 import Decimal from 'decimal.js';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
@@ -32,7 +30,7 @@ export type CacheHint = {
   scope?: CacheScope;
 };
 
-export type ItemRootValue = { id: IdType; [key: string]: unknown };
+export type ItemRootValue = { id: unknown; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
 

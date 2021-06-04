@@ -25,7 +25,7 @@ export class NestedMutationState {
     const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
     const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
     this.#afterChanges.push(() => afterChange(item));
-    return { kind: 'connect' as const, id: item.id };
+    return { kind: 'connect' as const, id: item.id as any };
   }
   async afterChange() {
     await promiseAllRejectWithAllErrors(this.#afterChanges);

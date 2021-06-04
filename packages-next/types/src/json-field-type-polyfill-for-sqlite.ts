@@ -1,4 +1,3 @@
-import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import {
   JSONValue,
   ItemRootValue,
@@ -13,11 +12,10 @@ import {
 } from '.';
 
 function mapOutputFieldToSQLite(
-  field: types.Field<{ id: IdType; value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
+  field: types.Field<{ value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value);
   return types.fields<{
-    id: IdType;
     value: string | null;
     item: ItemRootValue;
   }>()({
@@ -35,7 +33,7 @@ function mapOutputFieldToSQLite(
         try {
           value = JSON.parse(rootVal.value);
         } catch (err) {}
-        return innerResolver({ id: rootVal.id, item: rootVal.item, value }, ...extra);
+        return innerResolver({ item: rootVal.item, value }, ...extra);
       },
     }),
   }).value;
