@@ -47,27 +47,23 @@ export type FieldData = {
   fieldKey: string;
 };
 
-export type FieldTypeFunc<
-  TDBField extends DBField = DBField,
-  CreateArg extends types.Arg<types.InputType, any> | undefined =
-    | types.Arg<types.InputType, any>
-    | undefined,
-  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
-> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>;
+export type FieldTypeFunc = (data: FieldData) => NextFieldType;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends types.Arg<types.InputType, any> | undefined =
-    | types.Arg<types.InputType, any>
-    | undefined,
-  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
+  CreateArg extends types.Arg<types.InputType> | undefined = types.Arg<types.InputType> | undefined,
+  UpdateArg extends types.Arg<types.InputType> = types.Arg<types.InputType>,
+  UniqueWhereArg extends types.Arg<types.NullableInputType, undefined> = types.Arg<
+    types.NullableInputType,
+    undefined
+  >,
+  OrderByArg extends types.Arg<types.NullableInputType, undefined> = types.Arg<
+    types.NullableInputType,
+    undefined
+  >
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -187,8 +183,17 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
     { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
   : never;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldUniqueFilter<TDBField extends DBField> = any;
+type DBFieldUniqueWhere<TDBField extends DBField> = TDBField extends ScalarDBField<
+  infer Scalar,
+  'optional' | 'required'
+>
+  ? Scalar extends 'String' | 'Int'
+    ? {
+        String: string;
+        Int: number;
+      }[Scalar]
+    : any
+  : any;
 
 type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
@@ -219,7 +224,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never;
 
-export type OrderByFieldInputArg<Val, TArg extends types.Arg<types.InputType, any>> = {
+export type OrderByFieldInputArg<Val, TArg extends types.Arg<types.NullableInputType>> = {
   arg: TArg;
 } & ResolveFunc<
   (
@@ -289,7 +294,7 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
     ? { resolve?: Func }
     : { resolve: Func };
 
-export type UniqueWhereFieldInputArg<Val, TArg extends types.Arg<types.InputType, any>> = {
+export type UniqueWhereFieldInputArg<Val, TArg extends types.Arg<types.InputType>> = {
   arg: TArg;
 } & ResolveFunc<
   (
@@ -315,15 +320,19 @@ type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends Scalaris
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends types.Arg<types.InputType, any> | undefined =
-    | types.Arg<types.InputType, any>
-    | undefined,
-  UpdateArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  UniqueFilterArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>,
-  OrderByArg extends types.Arg<types.InputType, any> = types.Arg<types.InputType, any>
+  CreateArg extends types.Arg<types.InputType> | undefined = types.Arg<types.InputType> | undefined,
+  UpdateArg extends types.Arg<types.InputType> = types.Arg<types.InputType>,
+  UniqueWhereArg extends types.Arg<types.NullableInputType, undefined> = types.Arg<
+    types.NullableInputType,
+    undefined
+  >,
+  OrderByArg extends types.Arg<types.NullableInputType, undefined> = types.Arg<
+    types.NullableInputType,
+    undefined
+  >
 > = {
   input?: {
-    uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
+    uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
     create?: CreateFieldInputArg<TDBField, CreateArg>;
     update?: UpdateFieldInputArg<TDBField, UpdateArg>;
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
@@ -337,7 +346,7 @@ export type FieldTypeWithoutDBField<
   unreferencedConcreteInterfaceImplementations?: types.ObjectType<any>[];
   __legacy?: {
     filters?: {
-      fields: Record<string, types.Arg<any, any>>;
+      fields: Record<string, types.Arg<any>>;
       impls: Record<
         string,
         (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
@@ -350,33 +359,31 @@ export type FieldTypeWithoutDBField<
 
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
-    CreateArg extends types.Arg<types.InputType, any> | undefined,
-    UpdateArg extends types.Arg<types.InputType, any>,
-    UniqueFilterArg extends types.Arg<types.InputType, any>,
-    OrderByArg extends types.Arg<types.InputType, any>
+    CreateArg extends types.Arg<types.InputType> | undefined,
+    UpdateArg extends types.Arg<types.InputType>,
+    UniqueWhereArg extends types.Arg<types.NullableInputType, undefined>,
+    OrderByArg extends types.Arg<types.NullableInputType, undefined>
   >(
-    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg>
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueFilterArg, OrderByArg> {
+    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
     return { ...stuff, dbField };
   };
 }
 
-type AnyInputObj = types.InputObjectType<
-  Record<string, types.Arg<types.InputType, types.InferValueFromInputType<types.InputType>>>
->;
+type AnyInputObj = types.InputObjectType<Record<string, types.Arg<types.InputType, any>>>;
 
 type RelateToOneInput = types.InputObjectType<{
-  create?: types.Arg<TypesForList['create'], any>;
-  connect: types.Arg<TypesForList['uniqueWhere'], any>;
-  disconnect: types.Arg<TypesForList['uniqueWhere'], any>;
+  create?: types.Arg<TypesForList['create']>;
+  connect: types.Arg<TypesForList['uniqueWhere']>;
+  disconnect: types.Arg<TypesForList['uniqueWhere']>;
   disconnectAll: types.Arg<typeof types.Boolean>;
 }>;
 
 type RelateToManyInput = types.InputObjectType<{
-  create?: types.Arg<types.ListType<TypesForList['create']>, any>;
-  connect: types.Arg<types.ListType<TypesForList['uniqueWhere']>, any>;
-  disconnect: types.Arg<types.ListType<TypesForList['uniqueWhere']>, any>;
-  disconnectAll: types.Arg<typeof types.Boolean, any>;
+  create?: types.Arg<types.ListType<TypesForList['create']>>;
+  connect: types.Arg<types.ListType<TypesForList['uniqueWhere']>>;
+  disconnect: types.Arg<types.ListType<TypesForList['uniqueWhere']>>;
+  disconnectAll: types.Arg<typeof types.Boolean>;
 }>;
 
 export type TypesForList = {
