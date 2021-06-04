@@ -131,13 +131,6 @@ type GraphQLExecutionArguments = {
   variables?: Record<string, any>;
 };
 
-// Access control API
-
-export type AccessControlContext = {
-  getListAccessControlForUser: any; // TODO
-  getFieldAccessControlForUser: any; // TODO
-};
-
 // Session API
 
 export type SessionContext<T> = {
