@@ -61,7 +61,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
 
     const orientation = across ? 'horizontal' : 'vertical';
     const { dimension, flexDirection, marginProperty } = orientationMap[orientation];
-    const Child = getChildTag(props.as);
+    const ChildWrapper = getChildTag(props.as);
 
     return (
       <Box
@@ -87,7 +87,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
                 {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
 
                 {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <Child css={{ ':empty': { display: 'none' } }}>{child}</Child>
+                <ChildWrapper css={{ ':empty': { display: 'none' } }}>{child}</ChildWrapper>
               </Fragment>
             );
           })}
