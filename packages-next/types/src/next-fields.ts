@@ -113,7 +113,6 @@ export type ScalarDBField<
    * The native database type that the field should use. See https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types for what the possible native types should be
    * The native type should not include @datasourcename. so to specify the uuid type, the correct value for nativeType would be `Uuid`
    */
-  // TODO: type this well rather than just accepting a string(it can't just be a set of string literals though)
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
