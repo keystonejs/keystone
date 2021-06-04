@@ -8,9 +8,9 @@ import {
   FieldControllerConfig,
 } from '@keystone-next/types';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { validateImage, validateRef } from './Field';
+import { validateImage, validateRef, ImageWrapper } from './Field';
 
-export { Field, ImageWrapper } from './Field';
+export { Field } from './Field';=
 
 export const Cell: CellComponent = ({ item, field }) => {
   const data = item[field.path];
