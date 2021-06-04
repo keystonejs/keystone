@@ -1,7 +1,16 @@
 /** @jsx jsx */
 
 import type { ReactNode } from 'react';
-import { Box, BoxProps, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
+import {
+  Box,
+  BoxProps,
+  Stack,
+  Text,
+  jsx,
+  useTheme,
+  forwardRefWithAs,
+  VisuallyHidden,
+} from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -24,13 +33,14 @@ type CardContainerProps = {
   children: ReactNode;
   mode: 'view' | 'create' | 'edit';
 } & BoxProps;
-const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
+const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContainerProps, ref) => {
   const { tones } = useTheme();
 
   const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive'];
 
   return (
     <Box
+      ref={ref}
       paddingLeft="xlarge"
       css={{
         position: 'relative',
@@ -50,7 +60,7 @@ const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
       {...props}
     />
   );
-};
+});
 
 export function Cards({
   localList,
@@ -123,122 +133,136 @@ export function Cards({
 
   return (
     <Stack gap="xlarge">
-      {[...value.currentIds].map(id => {
-        const itemGetter = items[id];
+      <Stack
+        as="ul"
+        gap="xlarge"
+        css={{
+          padding: 0,
+          marginBottom: 0,
+          li: {
+            listStyle: 'none',
+          },
+        }}
+      >
+        {[...value.currentIds].map((id, index) => {
+          const itemGetter = items[id];
 
-        return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
-          <CardContainer mode="edit" key={id}>
-            <InlineEdit
-              list={foreignList}
-              fields={field.display.inlineEdit!.fields}
-              onSave={newItemGetter => {
-                setItems({
-                  ...items,
-                  [id]: newItemGetter,
-                });
-                const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                itemsBeingEdited.delete(id);
-                onChange({
-                  ...value,
-                  itemsBeingEdited,
-                });
-              }}
-              selectedFields={selectedFields}
-              itemGetter={itemGetter}
-              onCancel={() => {
-                const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                itemsBeingEdited.delete(id);
-                onChange({
-                  ...value,
-                  itemsBeingEdited,
-                });
-              }}
-            />
-          </CardContainer>
-        ) : (
-          <CardContainer mode="view" key={id}>
-            <Stack gap="xlarge">
-              {field.display.cardFields.map(fieldPath => {
-                const field = foreignList.fields[fieldPath];
-                const itemForField: Record<string, any> = {};
-                for (const graphqlField of getRootGraphQLFieldsFromFieldController(
-                  field.controller
-                )) {
-                  const fieldGetter = itemGetter.get(graphqlField);
-                  if (fieldGetter.errors) {
-                    const errorMessage = fieldGetter.errors[0].message;
-                    return (
-                      <FieldContainer>
-                        <FieldLabel>{field.label}</FieldLabel>
-                        {errorMessage}
-                      </FieldContainer>
-                    );
+          return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
+            <CardContainer mode="edit" key={id}>
+              <VisuallyHidden as="h2">{`${field.label} ${index + 1}: Edit mode`}</VisuallyHidden>
+              <InlineEdit
+                list={foreignList}
+                fields={field.display.inlineEdit!.fields}
+                onSave={newItemGetter => {
+                  setItems({
+                    ...items,
+                    [id]: newItemGetter,
+                  });
+                  const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                  itemsBeingEdited.delete(id);
+                  onChange({
+                    ...value,
+                    itemsBeingEdited,
+                  });
+                }}
+                selectedFields={selectedFields}
+                itemGetter={itemGetter}
+                onCancel={() => {
+                  const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                  itemsBeingEdited.delete(id);
+                  onChange({
+                    ...value,
+                    itemsBeingEdited,
+                  });
+                }}
+              />
+            </CardContainer>
+          ) : (
+            <CardContainer mode="view" key={id}>
+              <VisuallyHidden as="h2">{`${field.label} ${index + 1}`}</VisuallyHidden>
+              <Stack gap="xlarge">
+                {field.display.cardFields.map(fieldPath => {
+                  const field = foreignList.fields[fieldPath];
+                  const itemForField: Record<string, any> = {};
+                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                    field.controller
+                  )) {
+                    const fieldGetter = itemGetter.get(graphqlField);
+                    if (fieldGetter.errors) {
+                      const errorMessage = fieldGetter.errors[0].message;
+                      return (
+                        <FieldContainer>
+                          <FieldLabel>{field.label}</FieldLabel>
+                          {errorMessage}
+                        </FieldContainer>
+                      );
+                    }
+                    itemForField[graphqlField] = fieldGetter.data;
                   }
-                  itemForField[graphqlField] = fieldGetter.data;
-                }
-                return (
-                  <field.views.CardValue
-                    key={fieldPath}
-                    field={field.controller}
-                    item={itemForField}
-                  />
-                );
-              })}
-            </Stack>
-            <Stack across gap="small" marginTop="xlarge">
-              {field.display.inlineEdit && onChange !== undefined && (
-                <Button
-                  size="small"
-                  disabled={onChange === undefined}
-                  onClick={() => {
-                    onChange({
-                      ...value,
-                      itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
-                    });
-                  }}
-                  tone="active"
-                >
-                  Edit
-                </Button>
-              )}
-              {field.display.removeMode === 'disconnect' && onChange !== undefined && (
-                <Tooltip content="This item will not be deleted. It will only be removed from this field.">
-                  {props => (
-                    <Button
-                      size="small"
-                      disabled={onChange === undefined}
-                      onClick={() => {
-                        const currentIds = new Set(value.currentIds);
-                        currentIds.delete(id);
-                        onChange({
-                          ...value,
-                          currentIds,
-                        });
-                      }}
-                      {...props}
-                      tone="negative"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </Tooltip>
-              )}
-              {field.display.linkToItem && (
-                <Button
-                  size="small"
-                  weight="link"
-                  tone="active"
-                  css={{ textDecoration: 'none' }}
-                  as={Link}
-                  href={`/${foreignList.path}/${id}`}
-                >
-                  View {foreignList.singular} details
-                </Button>
-              )}
-            </Stack>
-          </CardContainer>
-        );
-      })}
+                  return (
+                    <field.views.CardValue
+                      key={fieldPath}
+                      field={field.controller}
+                      item={itemForField}
+                    />
+                  );
+                })}
+              </Stack>
+              <Stack across gap="small" marginTop="xlarge">
+                {field.display.inlineEdit && onChange !== undefined && (
+                  <Button
+                    size="small"
+                    disabled={onChange === undefined}
+                    onClick={() => {
+                      onChange({
+                        ...value,
+                        itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
+                      });
+                    }}
+                    tone="active"
+                  >
+                    Edit
+                  </Button>
+                )}
+                {field.display.removeMode === 'disconnect' && onChange !== undefined && (
+                  <Tooltip content="This item will not be deleted. It will only be removed from this field.">
+                    {props => (
+                      <Button
+                        size="small"
+                        disabled={onChange === undefined}
+                        onClick={() => {
+                          const currentIds = new Set(value.currentIds);
+                          currentIds.delete(id);
+                          onChange({
+                            ...value,
+                            currentIds,
+                          });
+                        }}
+                        {...props}
+                        tone="negative"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </Tooltip>
+                )}
+                {field.display.linkToItem && (
+                  <Button
+                    size="small"
+                    weight="link"
+                    tone="active"
+                    css={{ textDecoration: 'none' }}
+                    as={Link}
+                    href={`/${foreignList.path}/${id}`}
+                  >
+                    View {foreignList.singular} details
+                  </Button>
+                )}
+              </Stack>
+            </CardContainer>
+          );
+        })}
+      </Stack>
       {onChange === undefined ? null : field.display.inlineConnect && showConnectItems ? (
         <CardContainer mode="edit">
           <Stack

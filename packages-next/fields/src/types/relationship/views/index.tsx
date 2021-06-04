@@ -113,7 +113,7 @@ export const Field = ({
 
   if (value.kind === 'cards-view') {
     return (
-      <Stack as="fieldset" gap="medium">
+      <FieldContainer as="fieldset">
         <FieldLegend>{field.label}</FieldLegend>
         <Cards
           forceValidation={forceValidation}
@@ -124,7 +124,7 @@ export const Field = ({
           foreignList={foreignList}
           localList={localList}
         />
-      </Stack>
+      </FieldContainer>
     );
   }
 
