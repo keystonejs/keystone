@@ -20,8 +20,8 @@ const getImagesSubdomain = async ({
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: `  
-        query($apiKey:String) { 
+      query: `
+        query($apiKey:String) {
           allImgixSources(where: { project: { apiKeys: { apiKey: $apiKey } } }) {
             domain
           }
