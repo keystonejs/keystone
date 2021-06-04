@@ -168,13 +168,16 @@ In order to query Keystone content we need to use the [`getStaticProps`](https:/
 ```tsx
 // pages/index.tsx
 
+import { InferGetStaticPropsType } from "next";
 import Link from 'next/link';
 
 // Import the generated Lists API from Keystone
 import { lists } from '.keystone/api';
 
 // Home receives a `posts` prop from `getStaticProps` below
-export default function Home({ posts }) {
+export default function Home({
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
       <main style={{margin: "3rem"}}>
@@ -207,10 +210,17 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from "next";
 import Link from 'next/link';
 import { lists } from '.keystone/api';
 
-export default function Home({ post }) {
+export default function PostPage({
+  post,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
       <main style={{margin: "3rem"}}>
@@ -226,7 +236,7 @@ export default function Home({ post }) {
   );
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const posts = await lists.Post.findMany({
     query: `slug`,
   });
@@ -242,9 +252,11 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params: { slug } }) {
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext) {
   const [post] = await lists.Post.findMany({
-    where: { slug },
+    where: { slug: params!.slug as string },
     query: 'id title content',
   });
   return { props: { post } };
