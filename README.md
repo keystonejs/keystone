@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/readme-header-next.png" width="445">
   <br><br>
-  <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
+  <p><b>A scalable platform and CMS to build Node.js applications!</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
   <br>
   <p>Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless content management system around.</p>
