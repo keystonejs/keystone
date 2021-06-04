@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import {
   CardValueComponent,
   CellComponent,
@@ -35,7 +35,15 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
+      {data && (
+        <ImageWrapper>
+          <img
+            css={{ width: '100%' }}
+            alt={data.filename}
+            src={data.src || data.publicUrlTransformed}
+          />
+        </ImageWrapper>
+      )}
     </FieldContainer>
   );
 };
@@ -124,4 +132,30 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       return {};
     },
   };
+};
+
+// ==============================
+// Styled Components
+// ==============================
+
+const ImageWrapper = ({ children }: { children: ReactNode }) => {
+  const theme = useTheme();
+
+  return (
+    <div
+      css={{
+        backgroundColor: 'white',
+        borderRadius: theme.radii.medium,
+        border: `1px solid ${theme.colors.border}`,
+        flexShrink: 0,
+        lineHeight: 0,
+        padding: 4,
+        position: 'relative',
+        textAlign: 'center',
+        width: '130px', // 120px image + chrome
+      }}
+    >
+      {children}
+    </div>
+  );
 };
