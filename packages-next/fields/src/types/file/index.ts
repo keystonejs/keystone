@@ -107,10 +107,15 @@ export const file =
       output: types.field({
         type: FileFieldOutput,
         resolve({ value: { filesize, filename, mode } }) {
-          if (filesize === null || filename === null || mode !== 'local') {
+          if (
+            filesize === null ||
+            filename === null ||
+            mode === null ||
+            (mode !== 'local' && mode !== 'keystone-cloud')
+          ) {
             return null;
           }
-          return { mode: 'local', filename, filesize };
+          return { mode, filename, filesize };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],

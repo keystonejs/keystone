@@ -129,11 +129,12 @@ export const image =
             height === null ||
             width === null ||
             id === null ||
-            mode !== 'local'
+            mode === null ||
+            (mode !== 'local' && mode !== 'keystone-cloud')
           ) {
             return null;
           }
-          return { mode: 'local', extension, filesize, height, width, id };
+          return { mode, extension, filesize, height, width, id };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],
