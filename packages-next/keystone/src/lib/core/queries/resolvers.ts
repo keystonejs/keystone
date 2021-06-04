@@ -217,7 +217,7 @@ export async function count(
 const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
   new LimitsExceededError({ data: args });
 
-export function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
+function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
   const first = _first ?? Infinity;
   // We want to help devs by failing fast and noisily if limits are violated.
   // Unfortunately, we can't always be sure of intent.
@@ -231,11 +231,7 @@ export function applyEarlyMaxResults(_first: number | null | undefined, list: In
   }
 }
 
-export function applyMaxResults(
-  results: unknown[],
-  list: InitialisedList,
-  context: KeystoneContext
-) {
+function applyMaxResults(results: unknown[], list: InitialisedList, context: KeystoneContext) {
   if (results.length > list.maxResults) {
     throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
