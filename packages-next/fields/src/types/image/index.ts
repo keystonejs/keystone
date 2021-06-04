@@ -32,8 +32,8 @@ const ImageFieldInput = types.inputObject({
 const imageOutputFields = types.fields<ImageData>()({
   id: types.field({ type: types.nonNull(types.ID) }),
   filesize: types.field({ type: types.nonNull(types.Int) }),
-  height: types.field({ type: types.nonNull(types.Int) }),
   width: types.field({ type: types.nonNull(types.Int) }),
+  height: types.field({ type: types.nonNull(types.Int) }),
   extension: types.field({ type: types.nonNull(ImageExtensionEnum) }),
   ref: types.field({
     type: types.nonNull(types.String),

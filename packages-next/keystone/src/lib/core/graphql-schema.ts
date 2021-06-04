@@ -47,6 +47,18 @@ function collectTypes(
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
     if (list.access.read || list.access.create || list.access.update || list.access.delete) {
       collectedTypes.push(list.types.output.graphQLType);
+      for (const field of Object.values(list.fields)) {
+        if (
+          list.access.read !== false &&
+          field.access.read !== false &&
+          field.unreferencedConcreteInterfaceImplementations
+        ) {
+          // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
+          collectedTypes.push(
+            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
+          );
+        }
+      }
       collectedTypes.push(list.types.where.graphQLType);
       collectedTypes.push(list.types.uniqueWhere.graphQLType);
       collectedTypes.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
@@ -59,19 +71,6 @@ function collectTypes(
     if (list.access.create) {
       collectedTypes.push(list.types.create.graphQLType);
       collectedTypes.push(createManyByList[list.listKey].graphQLType);
-    }
-
-    for (const field of Object.values(list.fields)) {
-      if (
-        list.access.read !== false &&
-        field.access.read !== false &&
-        field.unreferencedConcreteInterfaceImplementations
-      ) {
-        // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-        collectedTypes.push(
-          ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-        );
-      }
     }
   }
   // this is not necessary, just about ordering

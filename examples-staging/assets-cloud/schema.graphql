@@ -19,8 +19,8 @@ enum PostStatusType {
 interface ImageFieldOutput {
   id: ID!
   filesize: Int!
-  height: Int!
   width: Int!
+  height: Int!
   extension: ImageExtension!
   ref: String!
   src: String!
@@ -31,6 +31,16 @@ enum ImageExtension {
   png
   webp
   gif
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
 }
 
 input PostWhereInput {
@@ -144,16 +154,6 @@ input PostCreateInput {
 
 input PostsCreateInput {
   data: PostCreateInput
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  height: Int!
-  width: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
 }
 
 """

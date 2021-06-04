@@ -60,8 +60,8 @@ type User {
 interface ImageFieldOutput {
   id: ID!
   filesize: Int!
-  height: Int!
   width: Int!
+  height: Int!
   extension: ImageExtension!
   ref: String!
   src: String!
@@ -87,6 +87,23 @@ type PasswordState {
 
 type _QueryMeta {
   count: Int
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
 }
 
 input UserWhereInput {
@@ -243,23 +260,6 @@ input UserCreateInput {
 
 input UsersCreateInput {
   data: UserCreateInput
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  height: Int!
-  width: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  src: String!
 }
 
 """
