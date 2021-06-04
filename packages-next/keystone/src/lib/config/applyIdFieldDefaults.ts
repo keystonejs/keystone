@@ -13,10 +13,9 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    const setIdField = config.lists[key].idField ?? autoIncrement({});
-    // i feel like this shouldn't live here?
+    const idFieldOption = config.lists[key].idField ?? autoIncrement({});
     const actualIdField = (args: FieldData): NextFieldType => {
-      const idField = setIdField(args);
+      const idField = idFieldOption(args);
       return {
         ...idField,
         ui: {
