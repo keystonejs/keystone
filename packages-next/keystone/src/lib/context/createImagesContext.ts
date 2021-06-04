@@ -4,13 +4,12 @@ import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-import { parseImageRef, isLocalAsset, isCloudAsset } from '@keystone-next/utils-legacy';
+import { parseImageRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
 import {
-  getImagesDomain,
-  buildCloudImageSrc,
-  getImageMetadataFromCloud,
-  uploadImageToCloud,
-} from '../cloud/assets';
+  buildKeystoneCloudImageSrc,
+  getImageMetadataFromKeystoneCloud,
+  uploadImageToKeystoneCloud,
+} from '../keystone-cloud/assets';
 
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
@@ -46,9 +45,10 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
     return;
   }
 
-  const { images, cloud } = config;
+  const { images, experimental } = config;
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
-  const { apiKey = '' } = cloud || {};
+  const { apiKey = '', imagesDomain = '', graphqlApiEndpoint = '', restApiEndpoint = '' } =
+    experimental?.keystoneCloud || {};
 
   if (isLocalAsset(images.upload)) {
     fs.mkdirSync(storagePath, { recursive: true });
@@ -58,10 +58,13 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
     getSrc: async (mode, id, extension) => {
       const filename = `${id}.${extension}`;
 
-      if (isCloudAsset(mode)) {
-        const domain = await getImagesDomain(apiKey);
-
-        return buildCloudImageSrc(domain, filename);
+      if (isKeystoneCloudAsset(mode)) {
+        return await buildKeystoneCloudImageSrc({
+          apiKey,
+          imagesDomain,
+          graphqlApiEndpoint,
+          filename,
+        });
       }
 
       return `${baseUrl}/${filename}`;
@@ -75,10 +78,14 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
 
       const { mode } = imageRef;
 
-      if (isCloudAsset(mode)) {
+      if (isKeystoneCloudAsset(mode)) {
         const { id, extension } = imageRef;
         const filename = `${id}.${extension}`;
-        const metadata = await getImageMetadataFromCloud({ filename, apiKey });
+        const metadata = await getImageMetadataFromKeystoneCloud({
+          filename,
+          apiKey,
+          restApiEndpoint,
+        });
 
         return { ...imageRef, ...metadata };
       }
@@ -94,8 +101,13 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
       const { upload: mode } = images;
       const id = uuid();
 
-      if (isCloudAsset(mode)) {
-        const metadata = await uploadImageToCloud(apiKey, stream, id);
+      if (isKeystoneCloudAsset(mode)) {
+        const metadata = await uploadImageToKeystoneCloud({
+          apiKey,
+          stream,
+          restApiEndpoint,
+          filename: id,
+        });
 
         return { mode, id, ...metadata };
       }

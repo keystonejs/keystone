@@ -27,7 +27,6 @@ export type KeystoneConfig = {
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
   images?: ImagesConfig;
-  cloud?: CloudConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -36,6 +35,8 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
+    /** Config options for Keystone Cloud */
+    keystoneCloud?: KeystoneCloudConfig;
   };
 };
 
@@ -179,10 +180,13 @@ export type ImagesConfig = {
   };
 };
 
-// config.cloud
+// config.experimental.keystoneCloud
 
-export type CloudConfig = {
+export type KeystoneCloudConfig = {
   apiKey: string;
+  imagesDomain: string;
+  graphqlApiEndpoint: string;
+  restApiEndpoint: string;
 };
 
 // Exports from sibling packages

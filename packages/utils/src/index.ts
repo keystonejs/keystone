@@ -258,7 +258,7 @@ export const humanize = (str: string) => {
     .join(' ');
 };
 
-const IMAGEREGEX = /^(local|cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
+const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
 
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
@@ -296,4 +296,4 @@ export const parseImageRef = (
 
 export const isLocalAsset = (mode: AssetMode) => mode === 'local';
 
-export const isCloudAsset = (mode: AssetMode) => mode === 'cloud';
+export const isKeystoneCloudAsset = (mode: AssetMode) => mode === 'keystone-cloud';
