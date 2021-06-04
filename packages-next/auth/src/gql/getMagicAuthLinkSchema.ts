@@ -58,7 +58,6 @@ export function getMagicAuthLinkSchema<I extends string>({
     resolvers: {
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
-          // const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
@@ -108,7 +107,6 @@ export function getMagicAuthLinkSchema<I extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          // const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
