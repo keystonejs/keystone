@@ -459,6 +459,10 @@ input ProductImageWhereInput {
   id_gte: ID
   id_in: [ID]
   id_not_in: [ID]
+  image: String
+  image_not: String
+  image_in: [String]
+  image_not_in: [String]
   altText: String
   altText_not: String
   altText_contains: String

@@ -125,7 +125,7 @@ export function outputTypeField(
   cacheHint: CacheHint | undefined,
   access: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>,
   listKey: string,
-  fieldPath: string,
+  fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
   return types.field({
@@ -142,7 +142,7 @@ export function outputTypeField(
         access,
         args: {
           context,
-          fieldKey: fieldPath,
+          fieldKey,
           item: rootVal,
           listKey,
           operation: 'read',
@@ -153,7 +153,7 @@ export function outputTypeField(
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throw accessDeniedError('query', fieldPath, { itemId: rootVal.id });
+        throw accessDeniedError('query', fieldKey, { itemId: rootVal.id });
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -161,10 +161,10 @@ export function outputTypeField(
         info.cacheControl.setCacheHint(cacheHint as any);
       }
 
-      const value = getValueForDBField(rootVal, dbField, id, fieldPath, context, lists, info);
+      const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info);
 
       if (output.resolve) {
-        return output.resolve({ id, value, item: rootVal }, args, context, info);
+        return output.resolve({ value, item: rootVal }, args, context, info);
       }
       return value;
     },

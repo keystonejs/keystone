@@ -5,6 +5,8 @@ import {
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
   types,
+  FieldDefaultValue,
+  legacyFilters,
 } from '@keystone-next/types';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
@@ -23,6 +25,7 @@ type StoredFile = {
 type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<any, TGeneratedListTypes>;
     cloudinary: {
       cloudName: string;
       apiKey: string;
@@ -109,6 +112,8 @@ const outputType = types.object<CloudinaryImage_File>()({
 export const cloudinaryImage =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     cloudinary,
+    isRequired,
+    defaultValue,
     ...config
   }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -168,5 +173,19 @@ export const cloudinaryImage =
         path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
         'views'
       ),
+      __legacy: {
+        isRequired,
+        defaultValue,
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...legacyFilters.impls.inConditions(meta.fieldKey),
+          },
+        },
+      },
     });
   };

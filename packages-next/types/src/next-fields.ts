@@ -301,7 +301,7 @@ export type UniqueWhereFieldInputArg<Val, TArg extends types.Arg<types.InputType
 >;
 
 type FieldTypeOutputField<TDBField extends DBField> = types.Field<
-  { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
+  { value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
   types.OutputType,
   'value'
