@@ -1,5 +1,7 @@
 /* @jsx jsx */
 
+import { ReactNode } from 'react';
+
 import { jsx, useTheme } from '@keystone-ui/core';
 import {
   CardValueComponent,
