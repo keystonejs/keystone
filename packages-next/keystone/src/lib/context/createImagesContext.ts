@@ -47,8 +47,12 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
 
   const { images, experimental } = config;
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
-  const { apiKey = '', imagesDomain = '', graphqlApiEndpoint = '', restApiEndpoint = '' } =
-    experimental?.keystoneCloud || {};
+  const {
+    apiKey = '',
+    imagesDomain = '',
+    graphqlApiEndpoint = '',
+    restApiEndpoint = '',
+  } = experimental?.keystoneCloud || {};
 
   if (isLocalAsset(images.upload)) {
     fs.mkdirSync(storagePath, { recursive: true });
