@@ -2,4 +2,4 @@
 '@keystone-next/cloudinary': major
 ---
 
-The filters has been removed because it was not useful to filter by equality with the exact json blob stored in the database. 
+The filters for `cloudinaryImage` have been removed because it is not useful to filter by equality with the exact json blob stored in the database. 
