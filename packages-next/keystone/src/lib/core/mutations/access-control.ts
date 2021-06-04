@@ -166,14 +166,13 @@ async function getStringifiedItemIdFromUniqueWhereInput(
   listKey: string,
   context: KeystoneContext
 ): Promise<string> {
-  return uniqueWhere.id !== undefined
-    ? uniqueWhere.id
-    : await (async () => {
-        try {
-          const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere as any });
-          return item.id;
-        } catch (err) {
-          throw accessDeniedError('mutation');
-        }
-      })();
+  if (uniqueWhere.id !== undefined) {
+    return uniqueWhere.id;
+  }
+  try {
+    const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere as any });
+    return item.id;
+  } catch (err) {
+    throw accessDeniedError('mutation');
+  }
 }
