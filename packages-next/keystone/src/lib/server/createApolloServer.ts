@@ -66,9 +66,9 @@ const _createApolloServerConfig = ({
   const pp = apolloConfig?.playground;
   let playground: Config['playground'];
 
-  console.log('pp', pp);
-  console.log('playground', playground);
-  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+  // console.log('pp', pp);
+  // console.log('playground', playground);
+  // console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
   const settings = { 'request.credentials': 'same-origin' };
 
@@ -91,7 +91,7 @@ const _createApolloServerConfig = ({
     playground = { settings };
   }
 
-  console.log('playground (final)', playground);
+  // console.log('playground (final)', playground);
 
   return {
     uploads: false,
