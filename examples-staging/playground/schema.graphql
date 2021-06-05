@@ -7,8 +7,8 @@ type Note {
 }
 
 input NoteWhereInput {
-  AND: [NoteWhereInput]
-  OR: [NoteWhereInput]
+  AND: [NoteWhereInput!]
+  OR: [NoteWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
