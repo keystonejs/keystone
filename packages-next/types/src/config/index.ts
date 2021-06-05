@@ -2,7 +2,7 @@ import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
 
-import type { ImageMode, FileMode, KeystoneContext } from '..';
+import type { AssetMode, KeystoneContext } from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -35,6 +35,8 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
+    /** Config options for Keystone Cloud */
+    keystoneCloud?: KeystoneCloudConfig;
   };
 };
 
@@ -144,7 +146,7 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 // config.files
 
 export type FilesConfig = {
-  upload: FileMode;
+  upload: AssetMode;
   transformFilename?: (str: string) => string;
   local?: {
     /**
@@ -163,7 +165,7 @@ export type FilesConfig = {
 // config.images
 
 export type ImagesConfig = {
-  upload: ImageMode;
+  upload: AssetMode;
   local?: {
     /**
      * The path local images are uploaded to.
@@ -176,6 +178,15 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
+};
+
+// config.experimental.keystoneCloud
+
+export type KeystoneCloudConfig = {
+  apiKey: string;
+  imagesDomain: string;
+  graphqlApiEndpoint: string;
+  restApiEndpoint: string;
 };
 
 // Exports from sibling packages

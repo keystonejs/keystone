@@ -1,16 +1,20 @@
 import path from 'path';
-import { ImagesConfig, ImagesContext } from '@keystone-next/types';
+import { KeystoneConfig, ImagesContext, ImageMetadata } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-
-import { parseImageRef } from '@keystone-next/utils-legacy';
+import { parseImageRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
+import {
+  buildKeystoneCloudImageSrc,
+  getImageMetadataFromKeystoneCloud,
+  uploadImageToKeystoneCloud,
+} from '../keystone-cloud/assets';
 
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
 
-const getImageMetadataFromBuffer = async (buffer: Buffer) => {
+const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
   const filesize = buffer.length;
   const fileType = fromBuffer(buffer);
   if (!fileType) {
@@ -36,25 +40,60 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   return { width, height, filesize, extension };
 };
 
-export function createImagesContext(config?: ImagesConfig): ImagesContext | undefined {
-  if (!config) {
+export function createImagesContext(config: KeystoneConfig): ImagesContext | undefined {
+  if (!config.images) {
     return;
   }
 
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
+  const { images, experimental } = config;
+  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
+  const {
+    apiKey = '',
+    imagesDomain = '',
+    graphqlApiEndpoint = '',
+    restApiEndpoint = '',
+  } = experimental?.keystoneCloud || {};
 
-  fs.mkdirSync(storagePath, { recursive: true });
+  if (isLocalAsset(images.upload)) {
+    fs.mkdirSync(storagePath, { recursive: true });
+  }
 
   return {
-    getSrc: (mode, id, extension) => {
+    getSrc: async (mode, id, extension) => {
       const filename = `${id}.${extension}`;
+
+      if (isKeystoneCloudAsset(mode)) {
+        return await buildKeystoneCloudImageSrc({
+          apiKey,
+          imagesDomain,
+          graphqlApiEndpoint,
+          filename,
+        });
+      }
+
       return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async ref => {
       const imageRef = parseImageRef(ref);
+
       if (!imageRef) {
         throw new Error('Invalid image reference');
       }
+
+      const { mode } = imageRef;
+
+      if (isKeystoneCloudAsset(mode)) {
+        const { id, extension } = imageRef;
+        const filename = `${id}.${extension}`;
+        const metadata = await getImageMetadataFromKeystoneCloud({
+          filename,
+          apiKey,
+          restApiEndpoint,
+        });
+
+        return { ...imageRef, ...metadata };
+      }
+
       const buffer = await fs.readFile(
         path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
       );
@@ -63,8 +102,20 @@ export function createImagesContext(config?: ImagesConfig): ImagesContext | unde
       return { ...imageRef, ...metadata };
     },
     getDataFromStream: async stream => {
-      const { upload: mode } = config;
+      const { upload: mode } = images;
       const id = uuid();
+
+      if (isKeystoneCloudAsset(mode)) {
+        const metadata = await uploadImageToKeystoneCloud({
+          apiKey,
+          stream,
+          restApiEndpoint,
+          filename: id,
+        });
+
+        return { mode, id, ...metadata };
+      }
+
       const chunks = [];
 
       for await (let chunk of stream) {

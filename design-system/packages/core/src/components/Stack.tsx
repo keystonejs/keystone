@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Children, Fragment, ReactNode, isValidElement } from 'react';
+import { ElementType, Children, Fragment, ReactNode, isValidElement } from 'react';
 
 import { jsx } from '../emotion';
 import { useMediaQuery } from '../hooks/useMediaQuery';
@@ -44,6 +44,16 @@ export type StackProps = {
   gap?: keyof Theme['spacing'];
 } & BoxProps;
 
+const getChildTag = (parentTag?: ElementType<any>) => {
+  switch (parentTag) {
+    case 'ul':
+    case 'ol':
+      return 'li';
+    default:
+      return 'div';
+  }
+};
+
 export const Stack = forwardRefWithAs<'div', StackProps>(
   ({ across, align = 'stretch', children, dividers = 'none', gap = 'none', ...props }, ref) => {
     const { spacing } = useTheme();
@@ -51,6 +61,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
 
     const orientation = across ? 'horizontal' : 'vertical';
     const { dimension, flexDirection, marginProperty } = orientationMap[orientation];
+    const ChildWrapper = getChildTag(props.as);
 
     return (
       <Box
@@ -76,7 +87,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
                 {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
 
                 {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <div css={{ ':empty': { display: 'none' } }}>{child}</div>
+                <ChildWrapper css={{ ':empty': { display: 'none' } }}>{child}</ChildWrapper>
               </Fragment>
             );
           })}
