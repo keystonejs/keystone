@@ -34,10 +34,14 @@ We removed a few legacy items including:
 - Arguments `cookieSecret`, `cookie`, and `sessionStore` from the Keystone constructor.
 - Arguments `schemaName`, `schemaNames`, `keystoneOptions`, and `graphqlOptions` were unused and have been removed from the `setupServer()` function (which we also removed).
 
-### Improved `select` field type 🔽
+### Improved select field type 🔽
 
 It now uses the correct underlying type, which lets you make use of { dataType: 'enum' } and { dataType: 'integer'}.
 
 ### Squashed bugs 🐛
 
 We fixed a bug that existed in `updateMany` on lists with declarative access control.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-30) on GitHub.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
