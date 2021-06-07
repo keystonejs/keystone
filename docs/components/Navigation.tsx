@@ -60,6 +60,7 @@ export function Navigation() {
     >
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
+      <NavItem href="/releases">Releases</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
       <Section label="Tutorials">
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">

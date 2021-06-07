@@ -22,6 +22,10 @@ const statusMap = {
     label: 'Cleaning up',
     color: 'green',
   },
+  latestRelease: {
+    label: 'Latest Release',
+    color: 'green',
+  },
 };
 
 type StatusProps = {
