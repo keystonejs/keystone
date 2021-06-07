@@ -77,7 +77,7 @@ export const exampleProjectTests = (
         keystoneProcess.stderr!.off('data', listener);
         // childProcess.kill will only kill the direct child process
         // so we use tree-kill to kill the process and it's children
-        await treeKill(keystoneProcess.pid);
+        await treeKill(keystoneProcess.pid!);
       };
       await adminUIReady;
     }
