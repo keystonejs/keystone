@@ -5,6 +5,6 @@
 '@keystone-next/utils-legacy': minor
 ---
 
-Added Keystone Cloud integration capabilities for images.
-
 Replaced the types `FileMode` and `ImageMode` with `AssetMode`.
+
+Added internal experimental Keystone Cloud integration capabilities for images.
