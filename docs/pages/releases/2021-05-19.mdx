@@ -1,0 +1,17 @@
+import { Markdown } from '../../components/Page';
+
+# ✨ Release - 19th May 2021
+
+### Node updates :rocket:
+
+Node.JS engines in our packages have been updated to `12.x` and `14.x` to keep up to date with the latest versions of our dependencies.
+
+### Admin UI package moved :truck:
+
+`@keystone-next/admin-ui` now lives inside `@keystone-next/keystone/admin-ui`.
+
+If you were directly importing from `@keystone-next/admin-ui` you can now import the same items from `@keystone-next/keystone/admin-ui`.
+
+⚠️ Please remove references to `@keystone-next/admin-ui` in your `package.json` files.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
