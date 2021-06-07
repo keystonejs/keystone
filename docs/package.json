@@ -45,7 +45,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
-    "start-server-and-test": "^1.12.3",
+    "start-server-and-test": "^1.12.5",
     "typescript": "^4.2.4"
   },
   "engines": {
