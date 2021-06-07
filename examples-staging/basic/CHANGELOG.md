@@ -1,4 +1,4 @@
-# @keystone-next/app-basic
+# @keystone-next/example-app-basic
 
 ## 4.0.1
 
