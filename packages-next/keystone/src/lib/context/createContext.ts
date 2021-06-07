@@ -27,7 +27,7 @@ export function makeCreateContext({
   gqlNamesByList: Record<string, GqlNames>;
 }) {
   const images = createImagesContext(config);
-  const files = createFilesContext(config.files);
+  const files = createFilesContext(config);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),

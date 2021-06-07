@@ -27,46 +27,47 @@ export type KeystoneContext = {
 // TODO: Work out whether we can generate useful return types based on the GraphQL Query
 // passed to List API functions (see `readonly Record<string, any>` below)
 
-export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> =
-  {
-    [Key in keyof KeystoneListsTypeInfo]: {
-      findMany(
-        args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
-      ): Promise<readonly Record<string, any>[]>;
-      findOne(
-        args: { readonly where: { readonly id: string } } & ResolveFields
-      ): Promise<Record<string, any>>;
-      count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
-      updateOne(
-        args: {
+export type KeystoneListsAPI<
+  KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
+> = {
+  [Key in keyof KeystoneListsTypeInfo]: {
+    findMany(
+      args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
+    ): Promise<readonly Record<string, any>[]>;
+    findOne(
+      args: { readonly where: { readonly id: string } } & ResolveFields
+    ): Promise<Record<string, any>>;
+    count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    updateOne(
+      args: {
+        readonly id: string;
+        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+      } & ResolveFields
+    ): Promise<Record<string, any>>;
+    updateMany(
+      args: {
+        readonly data: readonly {
           readonly id: string;
           readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-        } & ResolveFields
-      ): Promise<Record<string, any>>;
-      updateMany(
-        args: {
-          readonly data: readonly {
-            readonly id: string;
-            readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-          }[];
-        } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-      createOne(
-        args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
-      ): Promise<Record<string, any>>;
-      createMany(
-        args: {
-          readonly data: readonly {
-            readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-          }[];
-        } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-      deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
-      deleteMany(
-        args: { readonly ids: readonly string[] } & ResolveFields
-      ): Promise<Record<string, any>[]>;
-    };
+        }[];
+      } & ResolveFields
+    ): Promise<Record<string, any>[]>;
+    createOne(
+      args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
+    ): Promise<Record<string, any>>;
+    createMany(
+      args: {
+        readonly data: readonly {
+          readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+        }[];
+      } & ResolveFields
+    ): Promise<Record<string, any>[]>;
+    deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
+    deleteMany(
+      args: { readonly ids: readonly string[] } & ResolveFields
+    ): Promise<Record<string, any>[]>;
   };
+};
 
 type ResolveFields = {
   /**
@@ -153,7 +154,7 @@ export type FileData = {
 };
 
 export type FilesContext = {
-  getSrc: (mode: AssetMode, filename: string) => string;
+  getSrc: (mode: AssetMode, filename: string) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };
