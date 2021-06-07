@@ -10,7 +10,7 @@ import slugify from '@sindresorhus/slugify';
 import {
   buildKeystoneCloudFileSrc,
   uploadFileToKeystoneCloud,
-  getFileSizeFromKeystoneCloud,
+  getFileFromKeystoneCloud,
 } from '../keystone-cloud/assets';
 
 const DEFAULT_BASE_URL = '/files';
@@ -78,10 +78,9 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const { mode, filename } = fileRef;
 
       if (isKeystoneCloudAsset(mode)) {
-        const filesize = await getFileSizeFromKeystoneCloud({
+        const { filesize } = await getFileFromKeystoneCloud({
           apiKey,
           filename,
-          graphqlApiEndpoint,
           restApiEndpoint,
         });
 
@@ -97,7 +96,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
       if (isKeystoneCloudAsset(mode)) {
-        const filesize = await uploadFileToKeystoneCloud({
+        const { filesize } = await uploadFileToKeystoneCloud({
           apiKey,
           stream,
           filename,

@@ -155,19 +155,16 @@ export const getImageMetadataFromKeystoneCloud = async ({
   return await response.json();
 };
 
-export const getFileSizeFromKeystoneCloud = async ({
+export const getFileFromKeystoneCloud = async ({
   apiKey,
   filename,
-  graphqlApiEndpoint,
   restApiEndpoint,
 }: {
   apiKey: string;
   filename: string;
-  graphqlApiEndpoint: string;
   restApiEndpoint: string;
-}): Promise<number> => {
-  const { bucketName, prefix } = await getS3Bucket({ apiKey, graphqlApiEndpoint });
-  const response = await fetch(`${restApiEndpoint}/files/${bucketName}/${prefix}/${filename}`, {
+}): Promise<{ filesize: number }> => {
+  const response = await fetch(`${restApiEndpoint}/files/${filename}`, {
     headers: {
       Authorization: `Bearer ${apiKey}`,
     },
