@@ -1,0 +1,26 @@
+import { Markdown } from '../../components/Page';
+
+# Release
+
+## ✨ 3rd May 2021
+
+```typescript
+"@keystone-next/adapter-prisma-legacy": "6.0.1",
+"@keystone-next/admin-ui": "14.1.0",
+"@keystone-next/access-control-legacy": "10.0.1",
+"@keystone-next/auth": "22.0.0",
+"@keystone-next/benchmarks-legacy": "6.0.1",
+"@keystone-next/cloudinary": "4.0.1",
+"@keystone-next/fields": "8.0.0",
+"@keystone-next/fields-document": "5.0.1",
+"@keystone-next/keystone": "17.0.0",
+"@keystone-next/types": "17.0.1",
+"@keystone-next/test-utils-legacy": "17.0.1",
+"@keystone-next/utils-legacy": "10.0.0",
+```
+
+## What's New
+
+This release involved a bunch of busywork behind the scenes in Keystone Next. Stripping away all the things we don't need now that we're using [Prisma](https://www.prisma.io/) exclusively. The end of the cleanup is in sight, and we're getting closer to the point where we can start working on some great new features.
+
+**Files in Keystone Next 📁**. Now you can use Admin UI to upload local files to your repo using SQLite. We also added a `maxFileSize` property for easier project config.
