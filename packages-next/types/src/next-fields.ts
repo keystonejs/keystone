@@ -30,7 +30,7 @@ export type CacheHint = {
   scope?: CacheScope;
 };
 
-export type ItemRootValue = { id: unknown; [key: string]: unknown };
+export type ItemRootValue = { id: { toString(): string }; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
 

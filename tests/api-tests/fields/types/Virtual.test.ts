@@ -1,4 +1,4 @@
-import { integer, virtual } from '@keystone-next/fields';
+import { integer, relationship, text, virtual } from '@keystone-next/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
 import {
   ProviderName,
@@ -101,6 +101,98 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
             expect(data.value).toEqual(1);
             expect(data.foo).toEqual(30);
+          }
+        )
+      );
+
+      test(
+        'referencing other list type',
+        runner(
+          function setupKeystone(provider: ProviderName) {
+            return setupFromConfig({
+              provider,
+              config: testConfig({
+                lists: createSchema({
+                  Organisation: list({
+                    fields: {
+                      name: text(),
+                      authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
+                    },
+                  }),
+                  Person: list({
+                    fields: {
+                      name: text(),
+                      authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
+                    },
+                  }),
+                  Post: list({
+                    fields: {
+                      organisationAuthor: relationship({ ref: 'Organisation.authoredPosts' }),
+                      personAuthor: relationship({ ref: 'Person.authoredPosts' }),
+                      author: virtual({
+                        field: lists =>
+                          types.field({
+                            type: types.union({
+                              name: 'Author',
+                              types: [lists.Person.types.output, lists.Organisation.types.output],
+                            }),
+                            async resolve(rootVal, args, context) {
+                              const [personAuthors, organisationAuthors] = await Promise.all([
+                                context.db.lists.Person.findMany({
+                                  where: { authoredPosts_some: { id: rootVal.id.toString() } },
+                                }),
+                                context.db.lists.Organisation.findMany({
+                                  where: { authoredPosts_some: { id: rootVal.id.toString() } },
+                                }),
+                              ]);
+                              if (personAuthors.length) {
+                                return { __typename: 'Person', ...personAuthors[0] };
+                              }
+                              if (organisationAuthors.length) {
+                                return { __typename: 'Organisation', ...organisationAuthors[0] };
+                              }
+                            },
+                          }),
+                      }),
+                    },
+                  }),
+                }),
+              }),
+            });
+          },
+          async ({ context }) => {
+            const data = await context.lists.Post.createOne({
+              data: { personAuthor: { create: { name: 'person author' } } },
+              query: `
+                author {
+                  __typename
+                  ... on Person {
+                    name
+                  }
+                  ... on Organisation {
+                    name
+                  }
+                }
+              `,
+            });
+            expect(data.author.name).toEqual('person author');
+            expect(data.author.__typename).toEqual('Person');
+            const data2 = await context.lists.Post.createOne({
+              data: { organisationAuthor: { create: { name: 'organisation author' } } },
+              query: `
+                author {
+                  __typename
+                  ... on Person {
+                    name
+                  }
+                  ... on Organisation {
+                    name
+                  }
+                }
+              `,
+            });
+            expect(data2.author.name).toEqual('organisation author');
+            expect(data2.author.__typename).toEqual('Organisation');
           }
         )
       );

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystone-next/fields": "^10.0.0",
-    "@ts-gql/schema": "0.11.1",
+    "@ts-gql/schema": "0.11.2",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
     "decimal.js": "^10.2.1",
