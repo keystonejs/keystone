@@ -13,11 +13,11 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
    * Used to **cause side effects** before a create or update operation once all validateInput hooks have resolved
    */
-  beforeChange?: BeforeOrAfterChangeHook<TGeneratedListTypes>;
+  beforeChange?: BeforeChangeHook<TGeneratedListTypes>;
   /**
    * Used to **cause side effects** after a create or update operation operation has occurred
    */
-  afterChange?: BeforeOrAfterChangeHook<TGeneratedListTypes>;
+  afterChange?: AfterChangeHook<TGeneratedListTypes>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
@@ -31,6 +31,19 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
    */
   afterDelete?: BeforeOrAfterDeleteHook<TGeneratedListTypes>;
 };
+
+// TODO: probably maybe don't do this and write it out manually
+// (this is also incorrect because the return value is wrong for many of them)
+type AddFieldPathToObj<T extends (arg: any) => any> = T extends (args: infer Args) => infer Result
+  ? (args: Args & { fieldPath: string }) => Result
+  : never;
+
+type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>> = {
+  [Key in keyof T]: AddFieldPathToObj<T[Key]>;
+};
+
+export type FieldHooks<TGeneratedListTypes extends BaseGeneratedListTypes> =
+  AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
 
 type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   | {
@@ -67,12 +80,10 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
    * The key of the list that the operation is occurring on
    */
   listKey: string;
-
-  // fieldPath: string
 };
 
 type ValidationArgs = {
-  addValidationError: (error: string) => void;
+  addValidationError: (error: string, data?: {}, internalData?: {}) => void;
 };
 
 type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -93,9 +104,13 @@ type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & ValidationArgs
 ) => Promise<void> | void;
 
-type BeforeOrAfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type BeforeChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+) => Promise<void> | void;
+
+type AfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
-    updatedItem: TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update'];
+    updatedItem: TGeneratedListTypes['backing'];
   }
 ) => Promise<void> | void;
 

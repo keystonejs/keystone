@@ -3,7 +3,7 @@ import Path from 'path';
 import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
-  webpack(config: any) {
+  webpack(config: any, { isServer }: any) {
     config.resolve.alias = {
       ...config.resolve.alias,
       react: Path.dirname(require.resolve('react/package.json')),
@@ -12,7 +12,9 @@ export const config = withPreconstruct({
         require.resolve('@keystone-next/keystone/package.json')
       ),
     };
-    config.externals = [...config.externals, /prisma[\/\\]generated-client/];
+    if (isServer) {
+      config.externals = [...config.externals, /@keystone-next\/keystone/, /@keystone-next\/types/];
+    }
     return config;
   },
 });

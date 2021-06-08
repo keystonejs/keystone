@@ -131,11 +131,6 @@ type Mutation {
   deletePosts(ids: [ID!]): [Post]
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
 type Query {
   """
    Search for all Post items which match the where clause.

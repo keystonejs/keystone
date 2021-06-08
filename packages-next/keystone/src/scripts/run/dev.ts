@@ -31,48 +31,47 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const initKeystone = async () => {
-    {
-      const { graphQLSchema } = createSystem(config);
+    const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
-      console.log('✨ Generating GraphQL and Prisma schemas');
-      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
-      await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
+    console.log('✨ Generating GraphQL and Prisma schemas');
+    const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
+    await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
-      if (config.db.useMigrations) {
-        await devMigrations(
-          config.db.url,
-          prismaSchema,
-          getSchemaPaths(cwd).prisma,
-          shouldDropDatabase
-        );
-      } else {
-        await pushPrismaSchemaToDatabase(
-          config.db.url,
-          prismaSchema,
-          getSchemaPaths(cwd).prisma,
-          shouldDropDatabase
-        );
-      }
+    if (config.db.useMigrations) {
+      await devMigrations(
+        config.db.url,
+        prismaSchema,
+        getSchemaPaths(cwd).prisma,
+        shouldDropDatabase
+      );
+    } else {
+      await pushPrismaSchemaToDatabase(
+        config.db.url,
+        prismaSchema,
+        getSchemaPaths(cwd).prisma,
+        shouldDropDatabase
+      );
     }
+
     const prismaClient = requirePrismaClient(cwd);
 
-    const { keystone, graphQLSchema, createContext } = createSystem(config, prismaClient);
+    const keystone = getKeystone(prismaClient);
 
     console.log('✨ Connecting to the database');
-    await keystone.connect({ context: createContext().sudo() });
+    await keystone.connect();
     disconnect = () => keystone.disconnect();
     if (config.ui?.isDisabled) {
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
+      await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
     }
 
     console.log('✨ Creating server');
     expressServer = await createExpressServer(
       config,
       graphQLSchema,
-      createContext,
+      keystone.createContext,
       true,
       getAdminPath(cwd)
     );

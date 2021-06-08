@@ -1,5 +1,4 @@
 import Path from 'path';
-import type { KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -11,13 +10,14 @@ import {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql';
+import { AdminMetaRootVal } from '@keystone-next/types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
 export const appTemplate = (
-  config: KeystoneConfig,
+  adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
@@ -32,17 +32,7 @@ export const appTemplate = (
   const { adminMeta } = result.data!.keystone;
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
-  const _allViews = new Set<string>();
-  Object.values(config.lists).forEach(list => {
-    for (const fieldKey of Object.keys(list.fields)) {
-      const field: FieldType<any> = list.fields[fieldKey];
-      _allViews.add(field.views);
-      if (field.config.ui?.views) {
-        _allViews.add(field.config.ui.views);
-      }
-    }
-  });
-  const allViews = [..._allViews].map(views => {
+  const allViews = adminMetaRootVal.views.map(views => {
     const viewPath = Path.isAbsolute(views)
       ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
       : views;

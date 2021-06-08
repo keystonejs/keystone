@@ -1,59 +1,65 @@
+import { JSONValue, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
 import {
   KeystoneContext,
   KeystoneConfig,
-  BaseKeystone,
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
-  JSONValue,
 } from '@keystone-next/types';
-import { bindTypesToContext } from '@ts-gql/schema';
-import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
-import { createAdminMeta } from './createAdminMeta';
+import { GraphQLSchema, GraphQLObjectType, assertScalarType } from 'graphql';
+import { InitialisedList } from '../../lib/core/types-for-lists';
 
-const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
+const schema = {
+  ...schemaAPIFromTypesPkg,
+  ...schemaAPIFromTypesPkg.bindSchemaAPIToContext<
+    KeystoneContext | { isAdminUIBuildProcess: true }
+  >(),
+};
 
 export function getAdminMetaSchema({
-  keystone,
   config,
-  schema,
+  graphQLSchema,
+  lists,
+  adminMeta: adminMetaRoot,
 }: {
-  keystone: BaseKeystone;
+  adminMeta: AdminMetaRootVal;
   config: KeystoneConfig;
-  schema: GraphQLSchema;
+  lists: Record<string, InitialisedList>;
+  graphQLSchema: GraphQLSchema;
 }) {
-  const adminMetaRoot = createAdminMeta(config, keystone);
-
   const isAccessAllowed =
     config.session === undefined
       ? undefined
       : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
-  const jsonScalar = types.scalar<JSONValue>(schema.getType('JSON') as GraphQLScalarType);
+  const jsonScalarType = graphQLSchema.getType('JSON');
+  const jsonScalar = jsonScalarType
+    ? schema.scalar<JSONValue>(assertScalarType(jsonScalarType))
+    : schemaAPIFromTypesPkg.JSON;
 
-  const KeystoneAdminUIFieldMeta = types.object<FieldMetaRootVal>()({
+  const KeystoneAdminUIFieldMeta = schema.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
     fields: {
-      path: types.field({ type: types.nonNull(types.String) }),
-      label: types.field({ type: types.nonNull(types.String) }),
-      isOrderable: types.field({
-        type: types.nonNull(types.Boolean),
+      path: schema.field({ type: schema.nonNull(schema.String) }),
+      label: schema.field({ type: schema.nonNull(schema.String) }),
+      isOrderable: schema.field({
+        type: schema.nonNull(schema.Boolean),
       }),
-      fieldMeta: types.field({ type: jsonScalar }),
-      viewsIndex: types.field({ type: types.nonNull(types.Int) }),
-      customViewsIndex: types.field({ type: types.Int }),
-      createView: types.field({
+      fieldMeta: schema.field({ type: jsonScalar }),
+      viewsIndex: schema.field({ type: schema.nonNull(schema.Int) }),
+      customViewsIndex: schema.field({ type: schema.Int }),
+      createView: schema.field({
         resolve(rootVal) {
           return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
-        type: types.nonNull(
-          types.object<FieldIdentifier>()({
+        type: schema.nonNull(
+          schema.object<FieldIdentifier>()({
             name: 'KeystoneAdminUIFieldMetaCreateView',
             fields: {
-              fieldMode: types.field({
-                type: types.nonNull(
-                  types.enum({
+              fieldMode: schema.field({
+                type: schema.nonNull(
+                  schema.enum({
                     name: 'KeystoneAdminUIFieldMetaCreateViewFieldMode',
-                    values: types.enumValues(['edit', 'hidden']),
+                    values: schema.enumValues(['edit', 'hidden']),
                   })
                 ),
                 async resolve(rootVal, args, context) {
@@ -64,7 +70,7 @@ export function getAdminMetaSchema({
                   }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
-                    listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
+                    lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.createView?.fieldMode ??
                     listConfig.ui?.createView?.defaultFieldMode;
                   return runMaybeFunction(sessionFunction, 'edit', { session: context.session });
                 },
@@ -73,19 +79,19 @@ export function getAdminMetaSchema({
           })
         ),
       }),
-      listView: types.field({
+      listView: schema.field({
         resolve(rootVal) {
           return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
-        type: types.nonNull(
-          types.object<FieldIdentifier>()({
+        type: schema.nonNull(
+          schema.object<FieldIdentifier>()({
             name: 'KeystoneAdminUIFieldMetaListView',
             fields: {
-              fieldMode: types.field({
-                type: types.nonNull(
-                  types.enum({
+              fieldMode: schema.field({
+                type: schema.nonNull(
+                  schema.enum({
                     name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
-                    values: types.enumValues(['read', 'hidden']),
+                    values: schema.enumValues(['read', 'hidden']),
                   })
                 ),
                 async resolve(rootVal, args, context) {
@@ -96,7 +102,7 @@ export function getAdminMetaSchema({
                   }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
-                    listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
+                    lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.listView?.fieldMode ??
                     listConfig.ui?.listView?.defaultFieldMode;
                   return runMaybeFunction(sessionFunction, 'read', { session: context.session });
                 },
@@ -105,23 +111,23 @@ export function getAdminMetaSchema({
           })
         ),
       }),
-      itemView: types.field({
+      itemView: schema.field({
         args: {
-          id: types.arg({
-            type: types.nonNull(types.ID),
+          id: schema.arg({
+            type: schema.nonNull(schema.ID),
           }),
         },
         resolve(rootVal, args) {
           return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id };
         },
-        type: types.object<FieldIdentifier & { itemId: string }>()({
+        type: schema.object<FieldIdentifier & { itemId: string }>()({
           name: 'KeystoneAdminUIFieldMetaItemView',
           fields: {
-            fieldMode: types.field({
-              type: types.nonNull(
-                types.enum({
+            fieldMode: schema.field({
+              type: schema.nonNull(
+                schema.enum({
                   name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-                  values: types.enumValues(['edit', 'read', 'hidden']),
+                  values: schema.enumValues(['edit', 'read', 'hidden']),
                 })
               ),
               async resolve(rootVal, args, context) {
@@ -135,7 +141,7 @@ export function getAdminMetaSchema({
                   .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =
-                  listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+                  lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
                   listConfig.ui?.itemView?.defaultFieldMode;
                 return runMaybeFunction(sessionFunction, 'edit', {
                   session: context.session,
@@ -149,33 +155,33 @@ export function getAdminMetaSchema({
     },
   });
 
-  const KeystoneAdminUISort = types.object<NonNullable<ListMetaRootVal['initialSort']>>()({
+  const KeystoneAdminUISort = schema.object<NonNullable<ListMetaRootVal['initialSort']>>()({
     name: 'KeystoneAdminUISort',
     fields: {
-      field: types.field({ type: types.nonNull(types.String) }),
-      direction: types.field({
-        type: types.nonNull(
-          types.enum({
+      field: schema.field({ type: schema.nonNull(schema.String) }),
+      direction: schema.field({
+        type: schema.nonNull(
+          schema.enum({
             name: 'KeystoneAdminUISortDirection',
-            values: types.enumValues(['ASC', 'DESC']),
+            values: schema.enumValues(['ASC', 'DESC']),
           })
         ),
       }),
     },
   });
 
-  const KeystoneAdminUIListMeta = types.object<ListMetaRootVal>()({
+  const KeystoneAdminUIListMeta = schema.object<ListMetaRootVal>()({
     name: 'KeystoneAdminUIListMeta',
     fields: {
-      key: types.field({ type: types.nonNull(types.String) }),
-      itemQueryName: types.field({
-        type: types.nonNull(types.String),
+      key: schema.field({ type: schema.nonNull(schema.String) }),
+      itemQueryName: schema.field({
+        type: schema.nonNull(schema.String),
       }),
-      listQueryName: types.field({
-        type: types.nonNull(types.String),
+      listQueryName: schema.field({
+        type: schema.nonNull(schema.String),
       }),
-      hideCreate: types.field({
-        type: types.nonNull(types.Boolean),
+      hideCreate: schema.field({
+        type: schema.nonNull(schema.Boolean),
         resolve(rootVal, args, context) {
           if ('isAdminUIBuildProcess' in context) {
             throw new Error(
@@ -186,8 +192,8 @@ export function getAdminMetaSchema({
           return runMaybeFunction(listConfig.ui?.hideCreate, false, { session: context.session });
         },
       }),
-      hideDelete: types.field({
-        type: types.nonNull(types.Boolean),
+      hideDelete: schema.field({
+        type: schema.nonNull(schema.Boolean),
         resolve(rootVal, args, context) {
           if ('isAdminUIBuildProcess' in context) {
             throw new Error(
@@ -198,22 +204,22 @@ export function getAdminMetaSchema({
           return runMaybeFunction(listConfig.ui?.hideDelete, false, { session: context.session });
         },
       }),
-      path: types.field({ type: types.nonNull(types.String) }),
-      label: types.field({ type: types.nonNull(types.String) }),
-      singular: types.field({ type: types.nonNull(types.String) }),
-      plural: types.field({ type: types.nonNull(types.String) }),
-      description: types.field({ type: types.String }),
-      initialColumns: types.field({
-        type: types.nonNull(types.list(types.nonNull(types.String))),
+      path: schema.field({ type: schema.nonNull(schema.String) }),
+      label: schema.field({ type: schema.nonNull(schema.String) }),
+      singular: schema.field({ type: schema.nonNull(schema.String) }),
+      plural: schema.field({ type: schema.nonNull(schema.String) }),
+      description: schema.field({ type: schema.String }),
+      initialColumns: schema.field({
+        type: schema.nonNull(schema.list(schema.nonNull(schema.String))),
       }),
-      pageSize: types.field({ type: types.nonNull(types.Int) }),
-      labelField: types.field({ type: types.nonNull(types.String) }),
-      fields: types.field({
-        type: types.nonNull(types.list(types.nonNull(KeystoneAdminUIFieldMeta))),
+      pageSize: schema.field({ type: schema.nonNull(schema.Int) }),
+      labelField: schema.field({ type: schema.nonNull(schema.String) }),
+      fields: schema.field({
+        type: schema.nonNull(schema.list(schema.nonNull(KeystoneAdminUIFieldMeta))),
       }),
-      initialSort: types.field({ type: KeystoneAdminUISort }),
-      isHidden: types.field({
-        type: types.nonNull(types.Boolean),
+      initialSort: schema.field({ type: KeystoneAdminUISort }),
+      isHidden: schema.field({
+        type: schema.nonNull(schema.Boolean),
         resolve(rootVal, args, context) {
           if ('isAdminUIBuildProcess' in context) {
             throw new Error(
@@ -227,23 +233,23 @@ export function getAdminMetaSchema({
     },
   });
 
-  const adminMeta = types.object<AdminMetaRootVal>()({
+  const adminMeta = schema.object<AdminMetaRootVal>()({
     name: 'KeystoneAdminMeta',
     fields: {
-      enableSignout: types.field({
-        type: types.nonNull(types.Boolean),
+      enableSignout: schema.field({
+        type: schema.nonNull(schema.Boolean),
       }),
-      enableSessionItem: types.field({
-        type: types.nonNull(types.Boolean),
+      enableSessionItem: schema.field({
+        type: schema.nonNull(schema.Boolean),
       }),
-      lists: types.field({
-        type: types.nonNull(types.list(types.nonNull(KeystoneAdminUIListMeta))),
+      lists: schema.field({
+        type: schema.nonNull(schema.list(schema.nonNull(KeystoneAdminUIListMeta))),
       }),
-      list: types.field({
+      list: schema.field({
         type: KeystoneAdminUIListMeta,
         args: {
-          key: types.arg({
-            type: types.nonNull(types.String),
+          key: schema.arg({
+            type: schema.nonNull(schema.String),
           }),
         },
         resolve(rootVal, { key }) {
@@ -253,12 +259,12 @@ export function getAdminMetaSchema({
     },
   });
 
-  const KeystoneMeta = types.nonNull(
-    types.object<{ adminMeta: AdminMetaRootVal }>()({
+  const KeystoneMeta = schema.nonNull(
+    schema.object<{ adminMeta: AdminMetaRootVal }>()({
       name: 'KeystoneMeta',
       fields: {
-        adminMeta: types.field({
-          type: types.nonNull(adminMeta),
+        adminMeta: schema.field({
+          type: schema.nonNull(adminMeta),
           resolve(rootVal, args, context) {
             if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
               return adminMetaRoot;
@@ -276,8 +282,8 @@ export function getAdminMetaSchema({
       },
     })
   );
-  const schemaConfig = schema.toConfig();
-  const queryTypeConfig = schema.getQueryType()!.toConfig();
+  const schemaConfig = graphQLSchema.toConfig();
+  const queryTypeConfig = graphQLSchema.getQueryType()!.toConfig();
   return new GraphQLSchema({
     ...schemaConfig,
     types: schemaConfig.types.filter(x => x.name !== 'Query'),

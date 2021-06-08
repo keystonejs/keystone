@@ -1,4 +1,4 @@
-import type { KeystoneConfig } from '@keystone-next/types';
+import type { FieldData, KeystoneConfig, NextFieldType } from '@keystone-next/types';
 import { autoIncrement } from '@keystone-next/fields';
 
 /* Validate lists config and default the id field */
@@ -13,20 +13,20 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    let idField = config.lists[key].idField ?? autoIncrement({});
-    idField = {
-      ...idField,
-      config: {
+    const idFieldOption = config.lists[key].idField ?? autoIncrement({});
+    const actualIdField = (args: FieldData): NextFieldType => {
+      const idField = idFieldOption(args);
+      return {
+        ...idField,
         ui: {
-          createView: { fieldMode: 'hidden', ...idField.config.ui?.createView },
-          itemView: { fieldMode: 'hidden', ...idField.config.ui?.itemView },
-          ...idField.config.ui,
+          createView: { fieldMode: 'hidden', ...idField.ui?.createView },
+          itemView: { fieldMode: 'hidden', ...idField.ui?.itemView },
+          ...idField.ui,
         },
-        ...idField.config,
-      },
+      };
     };
 
-    const fields = { id: idField, ...listConfig.fields };
+    const fields = { id: actualIdField, ...listConfig.fields };
     lists[key] = { ...listConfig, fields };
   });
   return lists;

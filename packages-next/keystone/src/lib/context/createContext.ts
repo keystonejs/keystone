@@ -4,29 +4,26 @@ import {
   SessionContext,
   KeystoneContext,
   KeystoneGraphQLAPI,
-  BaseKeystone,
-  KeystoneConfig,
   GqlNames,
+  KeystoneConfig,
 } from '@keystone-next/types';
 
+import { PrismaClient } from '../core/utils';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
-import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
 
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
-  keystone,
-  config,
   prismaClient,
   gqlNamesByList,
+  config,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
-  keystone: BaseKeystone;
   config: KeystoneConfig;
-  prismaClient: any;
+  prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
 }) {
   const images = createImagesContext(config);
@@ -79,11 +76,9 @@ export function makeCreateContext({
     const itemAPI: KeystoneContext['lists'] = {};
     const contextToReturn: KeystoneContext = {
       schemaName,
-      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       db: { lists: dbAPI },
       lists: itemAPI,
       totalResults: 0,
-      keystone,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,

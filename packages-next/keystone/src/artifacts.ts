@@ -7,7 +7,8 @@ import { format } from 'prettier';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
-import { createKeystone } from './lib/createKeystone';
+import { initialiseLists } from './lib/core/types-for-lists';
+import { printPrismaSchema } from './lib/core/prisma-schema';
 import { getDBProvider } from './lib/createSystem';
 
 export function getSchemaPaths(cwd: string) {
@@ -26,14 +27,17 @@ export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
-  const keystone = createKeystone(config, getDBProvider(config.db));
-  const prismaSchema = keystone.adapter._generatePrismaSchema({
-    rels: keystone._consolidateRelationships(),
-    clientDir: 'node_modules/.prisma/client',
-  });
+  const lists = initialiseLists(config.lists, getDBProvider(config.db));
+  const prismaSchema = printPrismaSchema(
+    lists,
+    getDBProvider(config.db),
+    'node_modules/.prisma/client'
+  );
   return {
     graphql: format(printSchema(graphQLSchema), { parser: 'graphql' }),
-    prisma: await formatSchema({ schema: prismaSchema }),
+    prisma: await formatSchema({
+      schema: prismaSchema,
+    }),
   };
 }
 
@@ -171,14 +175,15 @@ export async function generateNodeModulesArtifacts(
   config: KeystoneConfig,
   cwd: string
 ) {
-  const keystone = createKeystone(config, getDBProvider(config.db));
+  const lists = initialiseLists(config.lists, getDBProvider(config.db));
+
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
     generatePrismaClient(cwd),
     fs.outputFile(
       path.join(dotKeystoneDir, 'types.d.ts'),
-      printGeneratedTypes(printedSchema, keystone, graphQLSchema)
+      printGeneratedTypes(printedSchema, graphQLSchema, lists)
     ),
     fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
     ...(config.experimental?.generateNodeAPI

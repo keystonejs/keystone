@@ -1,5 +1,5 @@
 import type { KeystoneDbAPI } from '@keystone-next/types';
-import { AuthTokenRedemptionErrorCode } from '../types';
+import { AuthTokenRedemptionErrorCode, SecretFieldImpl } from '../types';
 import { validateSecret } from './validateSecret';
 
 // The tokensValidForMins config is from userland so could be anything; make it sane
@@ -10,8 +10,9 @@ function sanitiseValidForMinsConfig(input: any): number {
 }
 
 export async function validateAuthToken(
+  listKey: string,
+  secretFieldImpl: SecretFieldImpl,
   tokenType: 'passwordReset' | 'magicAuth',
-  list: any,
   identityField: string,
   identity: string,
   protectIdentities: boolean,
@@ -23,7 +24,7 @@ export async function validateAuthToken(
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
   const result = await validateSecret(
-    list,
+    secretFieldImpl,
     identityField,
     identity,
     `${tokenType}Token`,
@@ -55,7 +56,7 @@ export async function validateAuthToken(
   // Check that the token has not expired
   if (!item[fieldKeys.issuedAt] || typeof item[fieldKeys.issuedAt].getTime !== 'function') {
     throw new Error(
-      `Error redeeming authToken: field ${list.listKey}.${fieldKeys.issuedAt} isn't a valid Date object.`
+      `Error redeeming authToken: field ${listKey}.${fieldKeys.issuedAt} isn't a valid Date object.`
     );
   }
   const elapsedMins = (Date.now() - item[fieldKeys.issuedAt].getTime()) / (1000 * 60);

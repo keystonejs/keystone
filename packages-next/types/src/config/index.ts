@@ -11,9 +11,8 @@ import type {
   ListConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
-  // CacheHint,
 } from './lists';
-import type { BaseFields, FieldType, FieldConfig } from './fields';
+import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
@@ -46,8 +45,6 @@ export type {
   ListSchemaConfig,
   ListConfig,
   BaseFields,
-  FieldType,
-  FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
   // CacheHint,
@@ -192,3 +189,16 @@ export type KeystoneCloudConfig = {
 // Exports from sibling packages
 
 export type { ListHooks, ListAccessControl, FieldAccessControl };
+
+export type {
+  FieldCreateAccessArgs,
+  FieldReadAccessArgs,
+  FieldUpdateAccessArgs,
+  IndividualFieldAccessControl,
+  CreateAccessControl,
+  ReadListAccessControl,
+  DeleteListAccessControl,
+  UpdateListAccessControl,
+} from './access-control';
+export type { CommonFieldConfig } from './fields';
+export type { CacheHintArgs } from './lists';
