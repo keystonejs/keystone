@@ -10096,11 +10096,6 @@ p-finally@^1.0.0:
   resolved "https://registry.yarnpkg.com/p-finally/-/p-finally-1.0.0.tgz#3fbcfb15b899a44123b34b6dcc18b724336a2cae"
   integrity sha1-P7z7FbiZpEEjs0ttzBi3JDNqLK4=
 
-p-lazy@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/p-lazy/-/p-lazy-3.1.0.tgz#4b1e40482b7ee87853abbcf31824ff64e1816d61"
-  integrity sha512-sCJn0Cdahs6G6SX9+DUihVFUhrzDEduzE5xeViVBGtoqy5dBWko7W8T6Kk6TjR2uevRXJO7CShfWrqdH5s3w3g==
-
 p-limit@3.1.0, p-limit@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-3.1.0.tgz#e1daccbe78d0d1388ca18c64fea38e3e57e3706b"
@@ -10161,11 +10156,6 @@ p-map@^4.0.0:
   integrity sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==
   dependencies:
     aggregate-error "^3.0.0"
-
-p-reflect@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/p-reflect/-/p-reflect-2.1.0.tgz#5d67c7b3c577c4e780b9451fc9129675bd99fe67"
-  integrity sha512-paHV8NUz8zDHu5lhr/ngGWQiW067DK/+IbJ+RfZ4k+s8y4EKyYCz8pGYWjxCg35eHztpJAt+NUgvN4L+GCbPlg==
 
 p-retry@^4.2.0:
   version "4.5.0"

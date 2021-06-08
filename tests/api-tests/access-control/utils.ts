@@ -3,7 +3,6 @@ import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { ProviderName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createAuth } from '@keystone-next/auth';
-import { objMerge } from '@keystone-next/utils-legacy';
 import type { KeystoneConfig } from '@keystone-next/types';
 
 const FAKE_ID = { postgresql: 137, sqlite: 137 } as const;
@@ -104,17 +103,21 @@ function setupKeystone(provider: ProviderName) {
 
   listAccessVariations.forEach(access => {
     lists[getStaticListName(access)] = list({
-      fields: {
-        name: text(),
-        ...objMerge(fieldMatrix.map(variation => createFieldStatic(variation))),
-      },
+      fields: Object.assign(
+        {
+          name: text(),
+        },
+        ...fieldMatrix.map(variation => createFieldStatic(variation))
+      ),
       access,
     });
     lists[getImperativeListName(access)] = list({
-      fields: {
-        name: text(),
-        ...objMerge(fieldMatrix.map(variation => createFieldImperative(variation))),
-      },
+      fields: Object.assign(
+        {
+          name: text(),
+        },
+        ...fieldMatrix.map(variation => createFieldImperative(variation))
+      ),
       access: {
         create: () => access.create,
         read: () => access.read,
