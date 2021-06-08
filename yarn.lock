@@ -1525,6 +1525,13 @@
     camel-case "4.1.2"
     tslib "~2.2.0"
 
+"@graphql-ts/schema@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.1.1.tgz#effeb3389086ce66e9c30e71ac0c40e89e692144"
+  integrity sha512-I37QdhawPsK+HbIUcD0W4+yEB7/xSEy4y6MlHkIIujxeLYVt+ifoywZm72Te85MnOIl2qeW/q0wTVrzEmXGbcQ==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
 "@graphql-typed-document-node/core@^3.0.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
@@ -2504,13 +2511,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-
-"@ts-gql/schema@0.11.2":
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/@ts-gql/schema/-/schema-0.11.2.tgz#dca5b1d9535742da281c59a220645a0ca72ed67a"
-  integrity sha512-T6tKGEkzqKB5v+qcnTxXUNgcXz7k0CAREVQCSlhz18viGdlcDXJ6ATvRdAK9LRK0FNmQze3Hsc0Oe5UO0LQ5Xw==
-  dependencies:
-    "@babel/runtime" "^7.9.2"
 
 "@types/accepts@*", "@types/accepts@^1.3.5":
   version "1.3.5"

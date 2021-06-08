@@ -7,5 +7,5 @@ export * from './base';
 export * from './context';
 export * from './next-fields';
 export * as legacyFilters from './legacy-filters';
-export * from './ts-gql-schema';
+export * from './schema';
 export { jsonFieldTypePolyfilledForSQLite } from './json-field-type-polyfill-for-sqlite';

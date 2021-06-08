@@ -1,4 +1,4 @@
-import { JSONValue, types as tsgqlTypesFromTypesPkg } from '@keystone-next/types';
+import { JSONValue, types as schemaAPIFromTypesPkg } from '@keystone-next/types';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -10,8 +10,10 @@ import { GraphQLSchema, GraphQLObjectType, assertScalarType } from 'graphql';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
 const types = {
-  ...tsgqlTypesFromTypesPkg,
-  ...tsgqlTypesFromTypesPkg.bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>(),
+  ...schemaAPIFromTypesPkg,
+  ...schemaAPIFromTypesPkg.bindSchemaAPIToContext<
+    KeystoneContext | { isAdminUIBuildProcess: true }
+  >(),
 };
 
 export function getAdminMetaSchema({
@@ -32,7 +34,7 @@ export function getAdminMetaSchema({
   const jsonScalarType = schema.getType('JSON');
   const jsonScalar = jsonScalarType
     ? types.scalar<JSONValue>(assertScalarType(jsonScalarType))
-    : tsgqlTypesFromTypesPkg.JSON;
+    : schemaAPIFromTypesPkg.JSON;
 
   const KeystoneAdminUIFieldMeta = types.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
