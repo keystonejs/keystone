@@ -49,9 +49,6 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
-  // Not currently supported
-  // plugins?: any[]; // array of plugins that can modify the list config
-
   /**
    * The label used for the list
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
