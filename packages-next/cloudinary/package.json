@@ -14,7 +14,7 @@
     "@keystone-ui/fields": "^4.1.0",
     "@keystone-ui/pill": "^4.0.0",
     "@types/react": "^17.0.9",
-    "cloudinary": "^1.25.2",
+    "cloudinary": "^1.26.0",
     "cuid": "^2.1.8",
     "graphql-upload": "^12.0.0",
     "react": "^17.0.2"
