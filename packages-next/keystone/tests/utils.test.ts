@@ -1,4 +1,4 @@
-import { upcase, humanize } from '../src';
+import { upcase, humanize } from '../src/lib/utils';
 
 describe('utils', () => {
   test('humanize()', () => {
