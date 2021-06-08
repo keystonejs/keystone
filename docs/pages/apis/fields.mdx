@@ -296,6 +296,7 @@ Options:
 
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `minLength` (default: `8`): The minimum length password accepted.
+- `rejectCommon` (default: `false`): Rejects passwords from a list of commonly used passwords.
 - `bcrypt` (default: `require('bcryptjs')`): A module which implements the same interface as the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package, such as the native [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
   This module will be used for all encryption routines in the `password` field.
 
@@ -310,6 +311,7 @@ export default config({
         fieldName: password({
           isRequired: true,
           minLength: 10,
+          rejectCommon: true,
           bcrypt: require('bcrypt'),
         }),
         /* ... */
