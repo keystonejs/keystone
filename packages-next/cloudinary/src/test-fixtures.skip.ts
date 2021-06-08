@@ -4,8 +4,8 @@ import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
 import { text } from '@keystone-next/fields';
-import { cloudinaryImage } from './index';
 import { DatabaseProvider } from '@keystone-next/types';
+import { cloudinaryImage } from './index';
 
 const path = require('path');
 
