@@ -24,3 +24,5 @@ Removed the following exports as they're no longer used by Keystone:
 - `mergeWhereClause`
 - `createLazyDeferred`
 - `versionGreaterOrEqualTo`
+- `upcase`
+- `humanize`

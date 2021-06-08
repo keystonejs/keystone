@@ -1,6 +1,6 @@
 import { ItemRootValue, KeystoneConfig } from '@keystone-next/types';
 import pluralize from 'pluralize';
-import { humanize } from '@keystone-next/utils-legacy';
+import { humanize } from '../utils';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 
 declare const prisma: unique symbol;
