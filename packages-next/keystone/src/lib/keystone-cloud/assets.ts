@@ -39,10 +39,6 @@ const getImagesSubdomain = async ({
   return allImgixSources[0].domain;
 };
 
-/**
- * This function and request to the cloud API will not be necessary if we can
- * encode the project's S3 prefix into the apiKey.
- */
 const getS3Bucket = async ({
   apiKey,
   graphqlApiEndpoint,
