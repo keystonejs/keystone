@@ -53,8 +53,11 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
 
   const { files, experimental } = config;
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = files.local || {};
-  const { apiKey = '', graphqlApiEndpoint = '', restApiEndpoint = '' } =
-    experimental?.keystoneCloud || {};
+  const {
+    apiKey = '',
+    graphqlApiEndpoint = '',
+    restApiEndpoint = '',
+  } = experimental?.keystoneCloud || {};
 
   if (isLocalAsset(files.upload)) {
     fs.mkdirSync(storagePath, { recursive: true });
