@@ -34,6 +34,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
       <Fragment>
         <FieldLabel as="legend">{field.label}</FieldLabel>
         <SegmentedControl
+          // animate
           segments={field.options.map(x => x.label)}
           selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
           onChange={index => {

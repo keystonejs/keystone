@@ -31,6 +31,7 @@ import {
   useManagedState,
   useTheme,
   VisuallyHidden,
+  css,
 } from '@keystone-ui/core';
 
 import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
@@ -62,7 +63,7 @@ type SegmentedControlProps = {
 export const SegmentedControl = ({
   animate = false,
   fill = false,
-  initialIndex: initialIndexProp = 0,
+  initialIndex: initialIndexProp,
   onChange: onChangeProp,
   segments,
   size = 'medium',
@@ -78,7 +79,10 @@ export const SegmentedControl = ({
     onChangeProp
   );
 
+  console.log('INITIAL SELECTED INDEX IS', selectedIndex);
+
   const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
+    console.log('handleChange is called', index);
     setIndex(index, event);
   };
 
@@ -87,14 +91,22 @@ export const SegmentedControl = ({
 
   // Animate the selected segment indicator
   useEffect(() => {
+    console.log('SELECTEDINEX IS', selectedIndex);
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
-      let selected = nodes[selectedIndex];
+      let selected = selectedIndex && nodes[selectedIndex];
+      console.log('selected node IS', selected);
+      let rootRect;
+      let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
+      let offsetLeft;
+      let offsetTop;
 
-      let rootRect = rootRef.current.getBoundingClientRect();
-      let nodeRect = selected.getBoundingClientRect();
-      let offsetLeft = nodeRect.left - rootRect.left;
-      let offsetTop = nodeRect.top - rootRect.top;
+      if (selected) {
+        rootRect = rootRef.current.getBoundingClientRect();
+        nodeRect = selected.getBoundingClientRect();
+        offsetLeft = nodeRect.left - rootRect.left;
+        offsetTop = nodeRect.top - rootRect.top;
+      }
 
       setSelectedRect({
         height: nodeRect.height,
@@ -107,7 +119,15 @@ export const SegmentedControl = ({
   }, [animate, selectedIndex]);
 
   return (
-    <Box {...props}>
+    <Box
+      css={css`
+        outline: 0;
+        &:focus > div {
+          box-shadow: 0px 0px 5px blue;
+        }
+      `}
+      {...props}
+    >
       <Root fill={fill} size={size} ref={rootRef} width={width}>
         {segments.map((label, idx) => {
           const isSelected = selectedIndex === idx;
@@ -127,7 +147,9 @@ export const SegmentedControl = ({
             </Item>
           );
         })}
-        {animate && <SelectedIndicator size={size} style={selectedRect} />}
+        {(selectedIndex !== undefined || selectedIndex! < 0) && animate ? (
+          <SelectedIndicator size={size} style={selectedRect} />
+        ) : null}
       </Root>
     </Box>
   );
