@@ -8,11 +8,14 @@
     "node": "^12.20 || >= 14.13"
   },
   "dependencies": {
-    "@keystone-next/adapter-prisma-legacy": "^8.0.0",
+    "@graphql-ts/schema": "0.1.1",
     "@keystone-next/fields": "^10.0.0",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
-    "graphql": "^15.5.0"
+    "decimal.js": "^10.2.1",
+    "graphql": "^15.5.0",
+    "graphql-type-json": "^0.3.2",
+    "graphql-upload": "^12.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/types"
 }

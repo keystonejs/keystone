@@ -139,14 +139,14 @@ export const Field = ({
 };
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <CellContainer>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</CellContainer>;
+  return <CellContainer>{item[field.path]?.isSet ? 'Is set' : 'Is not set'}</CellContainer>;
 };
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}
+      {item[field.path]?.isSet ? 'Is set' : 'Is not set'}
     </FieldContainer>
   );
 };
@@ -171,7 +171,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    graphqlSelection: `${config.path}_is_set`,
+    graphqlSelection: `${config.path} {isSet}`,
     minLength: config.fieldMeta.minLength,
     defaultValue: {
       kind: 'initial',
@@ -183,7 +183,7 @@ export const controller = (
         (state.value === state.confirm && state.value.length >= config.fieldMeta.minLength)
       );
     },
-    deserialize: data => ({ kind: 'initial', isSet: data[`${config.path}_is_set`] }),
+    deserialize: data => ({ kind: 'initial', isSet: data[config.path]?.isSet ?? null }),
     serialize: value => {
       if (value.kind === 'initial') return {};
       return { [config.path]: value.value };

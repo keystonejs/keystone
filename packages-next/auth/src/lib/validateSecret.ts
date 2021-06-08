@@ -1,9 +1,9 @@
 import type { KeystoneDbAPI } from '@keystone-next/types';
-import { PasswordAuthErrorCode } from '../types';
+import { PasswordAuthErrorCode, SecretFieldImpl } from '../types';
 import { findMatchingIdentity } from './findMatchingIdentity';
 
 export async function validateSecret(
-  list: any,
+  secretFieldImpl: SecretFieldImpl,
   identityField: string,
   identity: string,
   secretField: string,
@@ -23,18 +23,17 @@ export async function validateSecret(
     code = 'SECRET_NOT_SET';
   }
 
-  const secretFieldInstance = list.fieldsByPath[secretField];
   if (code) {
     // See "Identity Protection" in the README as to why this is a thing
     if (protectIdentities) {
-      await secretFieldInstance.generateHash('simulated-password-to-counter-timing-attack');
+      await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack');
       code = 'FAILURE';
     }
     return { success: false, code };
   }
 
   const { item } = match as { success: true; item: { id: any; [prop: string]: any } };
-  if (await secretFieldInstance.compare(secret, item[secretField])) {
+  if (await secretFieldImpl.compare(secret, item[secretField])) {
     // Authenticated!
     return { success: true, item };
   } else {

@@ -47,8 +47,9 @@ async function setupFromConfig({
     ui: { isDisabled: true },
   });
 
+  const { graphQLSchema, getKeystone } = createSystem(config);
+
   const prismaClient = await (async () => {
-    const { graphQLSchema } = createSystem(config);
     const artifacts = await getCommittedArtifacts(graphQLSchema, config);
     const hash = hashPrismaSchema(artifacts.prisma);
     if (provider === 'postgresql') {
@@ -70,14 +71,21 @@ async function setupFromConfig({
     return requirePrismaClient(cwd);
   })();
 
-  const { keystone, createContext, graphQLSchema } = createSystem(config, prismaClient);
+  const keystone = getKeystone(prismaClient);
 
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
+  const app = await createExpressServer(
+    config,
+    graphQLSchema,
+    keystone.createContext,
+    true,
+    '',
+    false
+  );
 
   return {
     connect: () => keystone.connect(),
     disconnect: () => keystone.disconnect(),
-    context: createContext().sudo(),
+    context: keystone.createContext().sudo(),
     app,
   };
 }

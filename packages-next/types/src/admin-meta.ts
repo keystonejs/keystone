@@ -153,4 +153,5 @@ export type AdminMetaRootVal = {
   enableSessionItem: boolean;
   lists: Array<ListMetaRootVal>;
   listsByKey: Record<string, ListMetaRootVal>;
+  views: string[];
 };

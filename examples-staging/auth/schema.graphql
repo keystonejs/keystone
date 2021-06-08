@@ -5,8 +5,12 @@ type User {
   id: ID!
   name: String
   email: String
-  password_is_set: Boolean
+  password: PasswordState
   isAdmin: Boolean
+}
+
+type PasswordState {
+  isSet: Boolean!
 }
 
 input UserWhereInput {
@@ -138,11 +142,6 @@ type Mutation {
   ): UserAuthenticationWithPasswordSuccess!
   endSession: Boolean!
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 union AuthenticatedItem = User
 

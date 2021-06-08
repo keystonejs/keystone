@@ -1,68 +1,3 @@
-input ImageFieldInput {
-  upload: Upload
-  ref: String
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
-}
-
-interface ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-input FileFieldInput {
-  upload: Upload
-  ref: String
-}
-
-interface FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  src: String!
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  src: String!
-}
-
-input PhoneNumberRelateToManyInput {
-  create: [PhoneNumberCreateInput]
-  connect: [PhoneNumberWhereUniqueInput]
-  disconnect: [PhoneNumberWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 """
  A keystone list
 """
@@ -72,7 +7,7 @@ type User {
   email: String
   avatar: ImageFieldOutput
   attachment: FileFieldOutput
-  password_is_set: Boolean
+  password: PasswordState
   isAdmin: Boolean
   roles: String
   phoneNumbers(
@@ -83,7 +18,7 @@ type User {
     orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [PhoneNumber!]!
+  ): [PhoneNumber!]
   _phoneNumbersMeta(
     where: PhoneNumberWhereInput! = {}
     search: String
@@ -105,7 +40,7 @@ type User {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -120,6 +55,55 @@ type User {
     )
   postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
 }
 
 input UserWhereInput {
@@ -228,6 +212,35 @@ input UserUpdateInput {
   posts: PostRelateToManyInput
 }
 
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+input PhoneNumberRelateToManyInput {
+  create: [PhoneNumberCreateInput]
+  connect: [PhoneNumberWhereUniqueInput]
+  disconnect: [PhoneNumberWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input UsersUpdateInput {
   id: ID!
   data: UserUpdateInput
@@ -247,13 +260,6 @@ input UserCreateInput {
 
 input UsersCreateInput {
   data: UserCreateInput
-}
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 """
@@ -317,6 +323,13 @@ input PhoneNumberUpdateInput {
   value: String
 }
 
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
 input PhoneNumbersUpdateInput {
   id: ID!
   data: PhoneNumberUpdateInput
@@ -332,10 +345,6 @@ input PhoneNumbersCreateInput {
   data: PhoneNumberCreateInput
 }
 
-type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
 """
  A keystone list
 """
@@ -346,6 +355,10 @@ type Post {
   content: Post_content_DocumentField
   publishDate: String
   author: User
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PostWhereInput {
@@ -435,10 +448,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type _QueryMeta {
-  count: Int
-}
 
 type Mutation {
   """
@@ -540,11 +549,6 @@ type Mutation {
   createRandomPosts: [Post!]!
   endSession: Boolean!
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 union AuthenticatedItem = User
 

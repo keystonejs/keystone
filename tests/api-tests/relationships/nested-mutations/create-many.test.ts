@@ -63,6 +63,47 @@ function setupKeystone(provider: ProviderName) {
 
 multiAdapterRunners().map(({ runner, provider }) =>
   describe(`Provider: ${provider}`, () => {
+    let afterChangeWasCalled = false;
+
+    test(
+      'afterChange is called for nested creates',
+      runner(
+        function setupKeystone(provider: ProviderName) {
+          return setupFromConfig({
+            provider,
+            config: testConfig({
+              lists: createSchema({
+                Note: list({
+                  fields: {
+                    content: text(),
+                  },
+                  hooks: {
+                    afterChange() {
+                      afterChangeWasCalled = true;
+                    },
+                  },
+                }),
+                User: list({
+                  fields: {
+                    username: text(),
+                    notes: relationship({ ref: 'Note', many: true }),
+                  },
+                }),
+              }),
+            }),
+          });
+        },
+        async ({ context }) => {
+          // Update an item that does the nested create
+          const item = await context.lists.User.createOne({
+            data: { username: 'something', notes: { create: [{ content: 'some content' }] } },
+            query: 'username notes {content}',
+          });
+          expect(item).toEqual({ username: 'something', notes: [{ content: 'some content' }] });
+          expect(afterChangeWasCalled).toBe(true);
+        }
+      )
+    );
     describe('no access control', () => {
       test(
         'create nested from within create mutation',

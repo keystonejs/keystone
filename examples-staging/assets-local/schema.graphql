@@ -1,25 +1,19 @@
+"""
+ A keystone list
+"""
+type Post {
+  id: ID!
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: Author
+  hero: ImageFieldOutput
+}
+
 enum PostStatusType {
   draft
   published
-}
-
-input AuthorRelateToOneInput {
-  create: AuthorCreateInput
-  connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input ImageFieldInput {
-  upload: Upload
-  ref: String
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
 }
 
 interface ImageFieldOutput {
@@ -32,6 +26,13 @@ interface ImageFieldOutput {
   src: String!
 }
 
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
 type LocalImageFieldOutput implements ImageFieldOutput {
   id: ID!
   filesize: Int!
@@ -40,19 +41,6 @@ type LocalImageFieldOutput implements ImageFieldOutput {
   extension: ImageExtension!
   ref: String!
   src: String!
-}
-
-"""
- A keystone list
-"""
-type Post {
-  id: ID!
-  title: String
-  status: PostStatusType
-  content: String
-  publishDate: String
-  author: Author
-  hero: ImageFieldOutput
 }
 
 input PostWhereInput {
@@ -133,6 +121,23 @@ input PostUpdateInput {
   hero: ImageFieldInput
 }
 
+input AuthorRelateToOneInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
+  disconnect: AuthorWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
 input PostsUpdateInput {
   id: ID!
   data: PostUpdateInput
@@ -151,13 +156,6 @@ input PostsCreateInput {
   data: PostCreateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 """
  A keystone list
 """
@@ -173,7 +171,7 @@ type Author {
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]!
+  ): [Post!]
   _postsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -187,6 +185,10 @@ type Author {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input AuthorWhereInput {
@@ -254,6 +256,13 @@ input AuthorUpdateInput {
   posts: PostRelateToManyInput
 }
 
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input AuthorsUpdateInput {
   id: ID!
   data: AuthorUpdateInput
@@ -276,10 +285,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type _QueryMeta {
-  count: Int
-}
 
 type Mutation {
   """
@@ -342,11 +347,6 @@ type Mutation {
   """
   deleteAuthors(ids: [ID!]): [Author]
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 type Query {
   """

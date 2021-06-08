@@ -73,8 +73,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         ...list,
         gqlNames: getGqlNames({
           listKey: list.key,
-          itemQueryName: list.itemQueryName,
-          listQueryName: list.listQueryName,
+          pluralGraphQLName: list.listQueryName,
         }),
         fields: {},
       };

@@ -1,8 +1,9 @@
-import { KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
+import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
 
+import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
-import { createKeystone } from './createKeystone';
+import { initialiseLists } from './core/types-for-lists';
 
 export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
@@ -16,38 +17,83 @@ export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
   }
 }
 
-export function createSystem(config: KeystoneConfig, prismaClient?: any) {
-  const provider = getDBProvider(config.db);
-
-  const keystone = createKeystone(config, provider, prismaClient);
-
-  // Convert the Keystone lists into just what's needed by the createContext function
-  // This will in soon evolve into the code in the next-fields effort.
-  const gqlNamesByList = Object.fromEntries(
-    Object.entries(keystone.lists).map(([listKey, list]) => {
-      return [
-        listKey,
-        getGqlNames({
+function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
+  const transformedConfig: KeystoneConfig = {
+    ...config,
+    lists: Object.fromEntries(
+      Object.entries(config.lists).map(([listKey, list]) => {
+        return [
           listKey,
-          itemQueryName: list.gqlNames.itemQueryName,
-          listQueryName: list.gqlNames.listQueryName.slice(3),
-        }),
-      ];
-    })
-  );
+          {
+            ...list,
+            access: true,
+            fields: Object.fromEntries(
+              Object.entries(list.fields).map(([fieldKey, field]) => {
+                return [
+                  fieldKey,
+                  (data: FieldData) => {
+                    return { ...field(data), access: true };
+                  },
+                ];
+              })
+            ),
+          },
+        ];
+      })
+    ),
+  };
+  const lists = initialiseLists(transformedConfig.lists, provider);
+  const adminMeta = createAdminMeta(transformedConfig, lists);
+  return createGraphQLSchema(transformedConfig, lists, adminMeta);
+}
 
-  const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
+export function createSystem(config: KeystoneConfig) {
+  const provider = getDBProvider(config.db);
+  const lists = initialiseLists(config.lists, provider);
 
-  const internalSchema = createGraphQLSchema(config, keystone, 'internal');
+  const adminMeta = createAdminMeta(config, lists);
 
-  const createContext = makeCreateContext({
-    keystone,
+  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
+
+  const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
+
+  return {
     graphQLSchema,
-    internalSchema,
-    config,
-    prismaClient,
-    gqlNamesByList,
-  });
+    adminMeta,
+    getKeystone: (PrismaClient: any) => {
+      const prismaClient = new PrismaClient({
+        log: config.db.enableLogging && ['query'],
+        datasources: { [provider]: { url: config.db.url } },
+      });
+      prismaClient.$on('beforeExit', async () => {
+        // Prisma is failing to properly clean up its child processes
+        // https://github.com/keystonejs/keystone/issues/5477
+        // We explicitly send a SIGINT signal to the prisma child process on exit
+        // to ensure that the process is cleaned up appropriately.
+        prismaClient._engine.child.kill('SIGINT');
+      });
 
-  return { keystone, graphQLSchema, createContext };
+      const createContext = makeCreateContext({
+        graphQLSchema,
+        internalSchema: internalGraphQLSchema,
+        config,
+        prismaClient,
+        gqlNamesByList: Object.fromEntries(
+          Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
+        ),
+      });
+
+      return {
+        async connect() {
+          await prismaClient.$connect();
+          const context = createContext({ skipAccessControl: true, schemaName: 'internal' });
+          await config.db.onConnect?.(context);
+        },
+        async disconnect() {
+          await prismaClient.$disconnect();
+        },
+        createContext,
+      };
+    },
+  };
 }

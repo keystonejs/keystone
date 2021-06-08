@@ -1,24 +1,62 @@
-import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  FieldDefaultValue,
+  fieldType,
+  FieldTypeFunc,
+  CommonFieldConfig,
+  legacyFilters,
+  orderDirectionEnum,
+  schema,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
-import { Integer, PrismaIntegerInterface } from './Implementation';
+import { getIndexType } from '../../get-index-type';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  FieldConfig<TGeneratedListTypes> & {
+  CommonFieldConfig<TGeneratedListTypes> & {
+    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
     isUnique?: boolean;
     isIndexed?: boolean;
-    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
   };
 
-export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: IntegerFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => ({
-  type: {
-    type: 'Integer',
-    implementation: Integer,
-    adapter: PrismaIntegerInterface,
-  },
-  config,
-  views: resolveView('integer/views'),
-});
+export const integer =
+  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+    isIndexed,
+    isUnique,
+    isRequired,
+    defaultValue,
+    ...config
+  }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  meta =>
+    fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'Int',
+      index: getIndexType({ isIndexed, isUnique }),
+    })({
+      ...config,
+      input: {
+        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
+        create: { arg: schema.arg({ type: schema.Int }) },
+        update: { arg: schema.arg({ type: schema.Int }) },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+      },
+      output: schema.field({ type: schema.Int }),
+      views: resolveView('integer/views'),
+      __legacy: {
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
+          },
+          impls: {
+            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
+            ...legacyFilters.impls.inConditions(meta.fieldKey),
+          },
+        },
+        isRequired,
+        defaultValue,
+      },
+    });
