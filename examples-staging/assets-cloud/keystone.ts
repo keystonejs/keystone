@@ -20,6 +20,9 @@ export default config({
   images: {
     upload: 'keystone-cloud',
   },
+  files: {
+    upload: 'keystone-cloud',
+  },
   experimental: {
     keystoneCloud: {
       apiKey: KEYSTONE_CLOUD_API_KEY,

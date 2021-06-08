@@ -43,6 +43,39 @@ type LocalImageFieldOutput implements ImageFieldOutput {
   src: String!
 }
 
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+"""
+ A keystone list
+"""
+type Post {
+  id: ID!
+  title: String
+  status: PostStatusType
+  content: String
+  publishDate: String
+  author: Author
+  hero: ImageFieldOutput
+  attachment: FileFieldOutput
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -119,6 +152,7 @@ input PostUpdateInput {
   publishDate: String
   author: AuthorRelateToOneInput
   hero: ImageFieldInput
+  attachment: FileFieldInput
 }
 
 input AuthorRelateToOneInput {
@@ -150,6 +184,7 @@ input PostCreateInput {
   publishDate: String
   author: AuthorRelateToOneInput
   hero: ImageFieldInput
+  attachment: FileFieldInput
 }
 
 input PostsCreateInput {

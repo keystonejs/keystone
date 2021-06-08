@@ -259,7 +259,7 @@ export const humanize = (str: string) => {
 };
 
 const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
-const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
+const FILEREGEX = /^(local|keystone-cloud):file:([^\\\/:\n]+)/;
 
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;

@@ -9,19 +9,22 @@ generator client {
 }
 
 model Post {
-  id             Int       @id @default(autoincrement())
-  title          String?
-  status         String?
-  content        String?
-  publishDate    DateTime?
-  author         Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId       Int?      @map("author")
-  hero_filesize  Int?
-  hero_extension String?
-  hero_width     Int?
-  hero_height    Int?
-  hero_mode      String?
-  hero_id        String?
+  id                  Int       @id @default(autoincrement())
+  title               String?
+  status              String?
+  content             String?
+  publishDate         DateTime?
+  hero_filesize       Int?
+  hero_extension      String?
+  hero_width          Int?
+  hero_height         Int?
+  hero_mode           String?
+  hero_id             String?
+  attachment_filesize Int?
+  attachment_mode     String?
+  attachment_filename String?
+  author              Author?   @relation("Postauthor", fields: [authorId], references: [id])
+  authorId            Int?      @map("author")
 
   @@index([authorId])
 }
