@@ -49,29 +49,29 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
+  // Not currently supported
+  // plugins?: any[]; // array of plugins that can modify the list config
+
   /**
    * The label used for the list
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
    */
-  label?: string;
+  // Not currently supported
+  // label?: string;
 
   /**
    * The singular form of the list key
    * @default pluralize.singular(label)
    */
-  singular?: string;
+  // Not currently supported
+  // singular?: string;
 
   /**
    * The plural form of the list key
    * @default pluralize.plural(label)
    */
-  plural?: string;
-
-  /**
-   * The path used in the Admin UI
-   */
-  // (should be in ui?)
-  path?: string;
+  // Not currently supported
+  // plural?: string;
 
   // TODO: Come back to how we can facilitate unique fields and combinations of fields (for
   // queries, upserts, etc, in particular follow Prisma's design)
