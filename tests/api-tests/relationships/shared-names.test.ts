@@ -1,12 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
 
@@ -111,7 +106,7 @@ const createInitialData = async (context: KeystoneContext) => {
   });
 };
 
-const setupKeystone = (provider: ProviderName) =>
+const setupKeystone = (provider: DatabaseProvider) =>
   setupFromConfig({
     provider,
     config: testConfig({

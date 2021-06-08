@@ -1,10 +1,10 @@
-import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
+import { testConfig } from '@keystone-next/test-utils-legacy';
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import type { BaseFields } from '@keystone-next/types';
+import type { BaseFields, DatabaseProvider } from '@keystone-next/types';
 
-const setupList = (provider: ProviderName, fields: BaseFields<any>) => () =>
+const setupList = (provider: DatabaseProvider, fields: BaseFields<any>) => () =>
   setupFromConfig({
     provider,
     config: testConfig({

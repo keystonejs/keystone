@@ -13,10 +13,8 @@ import {
   requirePrismaClient,
   generateNodeModulesArtifacts,
 } from '@keystone-next/keystone/artifacts';
-import type { DatabaseConfig, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
+import type { DatabaseProvider, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
-
-export type ProviderName = NonNullable<DatabaseConfig['provider']>;
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
@@ -34,7 +32,7 @@ export async function setupFromConfig({
   provider,
   config: _config,
 }: {
-  provider: ProviderName;
+  provider: DatabaseProvider;
   config: TestKeystoneConfig;
 }) {
   const enableLogging = false; // Turn this on if you need verbose debug info
@@ -111,9 +109,9 @@ export type Setup = {
   app: express.Application;
 };
 
-function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise<void> | void) {
+function _keystoneRunner(provider: DatabaseProvider, tearDownFunction: () => Promise<void> | void) {
   return function (
-    setupKeystoneFn: (provider: ProviderName) => Promise<Setup>,
+    setupKeystoneFn: (provider: DatabaseProvider) => Promise<Setup>,
     testFn?: (setup: Setup) => Promise<void>
   ) {
     return async function () {
@@ -142,8 +140,8 @@ function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise
   };
 }
 
-function _before(provider: ProviderName) {
-  return async function (setupKeystone: (provider: ProviderName) => Promise<Setup>) {
+function _before(provider: DatabaseProvider) {
+  return async function (setupKeystone: (provider: DatabaseProvider) => Promise<Setup>) {
     const setup = await setupKeystone(provider);
     await setup.connect();
     return setup;

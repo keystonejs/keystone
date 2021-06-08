@@ -1,15 +1,10 @@
 import { integer, relationship, text, virtual } from '@keystone-next/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import { schema } from '@keystone-next/types';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider, schema } from '@keystone-next/types';
 
 function makeSetupKeystone(fields: BaseFields<any>) {
-  return function setupKeystone(provider: ProviderName) {
+  return function setupKeystone(provider: DatabaseProvider) {
     return setupFromConfig({
       provider,
       config: testConfig({
@@ -108,7 +103,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'referencing other list type',
         runner(
-          function setupKeystone(provider: ProviderName) {
+          function setupKeystone(provider: DatabaseProvider) {
             return setupFromConfig({
               provider,
               config: testConfig({

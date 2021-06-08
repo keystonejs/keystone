@@ -1,16 +1,12 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider } from '@keystone-next/types';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({
