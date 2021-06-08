@@ -14,6 +14,8 @@ model Post {
   status              String?
   content             String?
   publishDate         DateTime?
+  author              Author?   @relation("Post_author", fields: [authorId], references: [id])
+  authorId            Int?      @map("author")
   hero_filesize       Int?
   hero_extension      String?
   hero_width          Int?
@@ -23,8 +25,6 @@ model Post {
   attachment_filesize Int?
   attachment_mode     String?
   attachment_filename String?
-  author              Author?   @relation("Postauthor", fields: [authorId], references: [id])
-  authorId            Int?      @map("author")
 
   @@index([authorId])
 }
