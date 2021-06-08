@@ -6,7 +6,7 @@ import {
   CommonFieldConfig,
   legacyFilters,
   orderDirectionEnum,
-  types,
+  schema,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -30,7 +30,7 @@ export const autoIncrement =
     ...config
   }: AutoIncrementFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    const type = meta.fieldKey === 'id' || gqlType === 'ID' ? types.ID : types.Int;
+    const type = meta.fieldKey === 'id' || gqlType === 'ID' ? schema.ID : schema.Int;
     const __legacy = {
       isRequired,
       defaultValue,
@@ -58,15 +58,15 @@ export const autoIncrement =
         input: {
           // TODO: fix the fact that TS did not catch that a resolver is needed here
           uniqueWhere: {
-            arg: types.arg({ type }),
+            arg: schema.arg({ type }),
             resolve(value) {
               return Number(value);
             },
           },
-          orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+          orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
         },
-        output: types.field({
-          type: types.nonNull(types.ID),
+        output: schema.field({
+          type: schema.nonNull(schema.ID),
           resolve({ value }) {
             return value.toString();
           },
@@ -90,16 +90,16 @@ export const autoIncrement =
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: types.arg({ type }), resolve: x => Number(x) } : undefined,
-        create: { arg: types.arg({ type }), resolve: inputResolver },
-        update: { arg: types.arg({ type }), resolve: inputResolver },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: isUnique ? { arg: schema.arg({ type }), resolve: x => Number(x) } : undefined,
+        create: { arg: schema.arg({ type }), resolve: inputResolver },
+        update: { arg: schema.arg({ type }), resolve: inputResolver },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({
+      output: schema.field({
         type,
         resolve({ value }) {
           if (value === null) return null;
-          return type === types.ID ? value.toString() : value;
+          return type === schema.ID ? value.toString() : value;
         },
       }),
       views: resolveView('integer/views'),

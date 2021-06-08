@@ -12,7 +12,7 @@ import {
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { types } from '@keystone-next/types';
+import { schema } from '@keystone-next/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 
 // TODO: Can we generate this type based on sessionData in the main config?
@@ -83,8 +83,8 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
-        field: types.field({
-          type: types.Float,
+        field: schema.field({
+          type: schema.Float,
           resolve() {
             return randomNumber();
           },
@@ -99,8 +99,8 @@ export const lists = createSchema({
     },
     fields: {
       label: virtual({
-        field: types.field({
-          type: types.String,
+        field: schema.field({
+          type: schema.String,
           resolve(item) {
             return `${item.type} - ${item.value}`;
           },

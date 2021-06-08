@@ -3,7 +3,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  types,
+  schema,
   AdminMetaRootVal,
   FieldDefaultValue,
   QueryMeta,
@@ -126,7 +126,7 @@ export const relationship =
         ...commonConfig,
         input: {
           create: {
-            arg: types.arg({
+            arg: schema.arg({
               type: listTypes.relateTo.many.create,
             }),
             async resolve(value, context, resolve) {
@@ -134,7 +134,7 @@ export const relationship =
             },
           },
           update: {
-            arg: types.arg({
+            arg: schema.arg({
               type: listTypes.relateTo.many.update,
             }),
             async resolve(value, context, resolve) {
@@ -142,16 +142,16 @@ export const relationship =
             },
           },
         },
-        output: types.field({
+        output: schema.field({
           args: listTypes.findManyArgs,
-          type: types.list(types.nonNull(listTypes.output)),
+          type: schema.list(schema.nonNull(listTypes.output)),
           resolve({ value }, args) {
             return value.findMany(args);
           },
         }),
         extraOutputFields: withMeta
           ? {
-              [`_${meta.fieldKey}Meta`]: types.field({
+              [`_${meta.fieldKey}Meta`]: schema.field({
                 type: QueryMeta,
                 args: listTypes.findManyArgs,
                 deprecationReason: `This query will be removed in a future version. Please use ${meta.fieldKey}Count instead.`,
@@ -159,10 +159,10 @@ export const relationship =
                   return { getCount: () => value.count(args) };
                 },
               }),
-              [`${meta.fieldKey}Count`]: types.field({
-                type: types.Int,
+              [`${meta.fieldKey}Count`]: schema.field({
+                type: schema.Int,
                 args: {
-                  where: types.arg({ type: types.nonNull(listTypes.where), defaultValue: {} }),
+                  where: schema.arg({ type: schema.nonNull(listTypes.where), defaultValue: {} }),
                 },
                 resolve({ value }, args) {
                   return value.count({
@@ -180,15 +180,15 @@ export const relationship =
         __legacy: {
           filters: {
             fields: {
-              [`${meta.fieldKey}_every`]: types.arg({
+              [`${meta.fieldKey}_every`]: schema.arg({
                 type: listTypes.where,
                 description: ' condition must be true for all nodes',
               }),
-              [`${meta.fieldKey}_some`]: types.arg({
+              [`${meta.fieldKey}_some`]: schema.arg({
                 type: listTypes.where,
                 description: ' condition must be true for at least 1 node',
               }),
-              [`${meta.fieldKey}_none`]: types.arg({
+              [`${meta.fieldKey}_none`]: schema.arg({
                 type: listTypes.where,
                 description: ' condition must be false for all nodes',
               }),
@@ -212,19 +212,19 @@ export const relationship =
       ...commonConfig,
       input: {
         create: {
-          arg: types.arg({ type: listTypes.relateTo.one.create }),
+          arg: schema.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
         update: {
-          arg: types.arg({ type: listTypes.relateTo.one.update }),
+          arg: schema.arg({ type: listTypes.relateTo.one.update }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
       },
-      output: types.field({
+      output: schema.field({
         type: listTypes.output,
         resolve({ value }) {
           return value();
@@ -233,8 +233,8 @@ export const relationship =
       __legacy: {
         filters: {
           fields: {
-            [meta.fieldKey]: types.arg({ type: listTypes.where }),
-            [`${meta.fieldKey}_is_null`]: types.arg({ type: types.Boolean }),
+            [meta.fieldKey]: schema.arg({ type: listTypes.where }),
+            [`${meta.fieldKey}_is_null`]: schema.arg({ type: schema.Boolean }),
           },
           impls: {
             [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {

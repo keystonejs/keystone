@@ -1,5 +1,5 @@
 import {
-  types,
+  schema,
   ItemRootValue,
   TypesForList,
   getGqlNames,
@@ -62,7 +62,7 @@ export function initialiseLists(
       pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
     });
 
-    let output = types.object<ItemRootValue>()({
+    let output = schema.object<ItemRootValue>()({
       name: names.outputTypeName,
       description: ' A keystone list',
       fields: () => {
@@ -94,24 +94,24 @@ export function initialiseLists(
       },
     });
 
-    const uniqueWhere = types.inputObject({
+    const uniqueWhere = schema.inputObject({
       name: names.whereUniqueInputName,
       fields: {
-        id: types.arg({ type: types.nonNull(types.ID) }),
+        id: schema.arg({ type: schema.nonNull(schema.ID) }),
       },
     });
 
-    const where: TypesForList['where'] = types.inputObject({
+    const where: TypesForList['where'] = schema.inputObject({
       name: names.whereInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.assign(
           {
-            AND: types.arg({
-              type: types.list(types.nonNull(where)),
+            AND: schema.arg({
+              type: schema.list(schema.nonNull(where)),
             }),
-            OR: types.arg({
-              type: types.list(types.nonNull(where)),
+            OR: schema.arg({
+              type: schema.list(schema.nonNull(where)),
             }),
           },
           ...Object.values(fields).map(field =>
@@ -121,7 +121,7 @@ export function initialiseLists(
       },
     });
 
-    const create = types.inputObject({
+    const create = schema.inputObject({
       name: names.createInputName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -134,7 +134,7 @@ export function initialiseLists(
       },
     });
 
-    const update = types.inputObject({
+    const update = schema.inputObject({
       name: names.updateInputName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -147,7 +147,7 @@ export function initialiseLists(
       },
     });
 
-    const orderBy = types.inputObject({
+    const orderBy = schema.inputObject({
       name: names.listOrderName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -161,65 +161,65 @@ export function initialiseLists(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: types.arg({
-        type: types.nonNull(where),
+      where: schema.arg({
+        type: schema.nonNull(where),
         defaultValue: {},
       }),
-      search: types.arg({
-        type: types.String,
+      search: schema.arg({
+        type: schema.String,
       }),
-      sortBy: types.arg({
-        type: types.list(
-          types.nonNull(
-            types.enum({
+      sortBy: schema.arg({
+        type: schema.list(
+          schema.nonNull(
+            schema.enum({
               name: names.listSortName,
-              values: types.enumValues(['bad']),
+              values: schema.enumValues(['bad']),
             })
           )
         ),
         deprecationReason: 'sortBy has been deprecated in favour of orderBy',
       }),
-      orderBy: types.arg({
-        type: types.nonNull(types.list(types.nonNull(orderBy))),
+      orderBy: schema.arg({
+        type: schema.nonNull(schema.list(schema.nonNull(orderBy))),
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      first: types.arg({
-        type: types.Int,
+      first: schema.arg({
+        type: schema.Int,
       }),
-      skip: types.arg({
-        type: types.nonNull(types.Int),
+      skip: schema.arg({
+        type: schema.nonNull(schema.Int),
         defaultValue: 0,
       }),
     };
 
-    const relateToMany = types.inputObject({
+    const relateToMany = schema.inputObject({
       name: names.relateToManyInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: types.arg({ type: types.list(create) }),
+            create: schema.arg({ type: schema.list(create) }),
           }),
-          connect: types.arg({ type: types.list(uniqueWhere) }),
-          disconnect: types.arg({ type: types.list(uniqueWhere) }),
-          disconnectAll: types.arg({ type: types.Boolean }),
+          connect: schema.arg({ type: schema.list(uniqueWhere) }),
+          disconnect: schema.arg({ type: schema.list(uniqueWhere) }),
+          disconnectAll: schema.arg({ type: schema.Boolean }),
         };
       },
     });
 
-    const relateToOne = types.inputObject({
+    const relateToOne = schema.inputObject({
       name: names.relateToOneInputName,
       fields: () => {
         const list = lists[listKey];
 
         return {
           ...(list.access.create !== false && {
-            create: types.arg({ type: create }),
+            create: schema.arg({ type: create }),
           }),
-          connect: types.arg({ type: uniqueWhere }),
-          disconnect: types.arg({ type: uniqueWhere }),
-          disconnectAll: types.arg({ type: types.Boolean }),
+          connect: schema.arg({ type: uniqueWhere }),
+          disconnect: schema.arg({ type: uniqueWhere }),
+          disconnectAll: schema.arg({ type: schema.Boolean }),
         };
       },
     });

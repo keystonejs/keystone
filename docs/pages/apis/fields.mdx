@@ -540,16 +540,16 @@ Options:
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
 import { virtual } from '@keystone-next/fields';
-import { types } from '@keystone-next/types';
+import { schema } from '@keystone-next/types';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
         fieldName: virtual({
-          field: types.field({
-            type: types.String,
-            args: { something: types.arg({ type: types.Int }) },
+          field: schema.field({
+            type: schema.String,
+            args: { something: schema.arg({ type: schema.Int }) },
             resolve(item, args, context, info) {
 
             }

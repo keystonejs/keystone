@@ -1,4 +1,4 @@
-import { KeystoneContext, TypesForList, types } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -39,7 +39,7 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (
-    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['create']>>
+    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -82,7 +82,7 @@ function getConnects(
 
 async function resolveCreateAndConnect(
   value: Exclude<
-    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>,
+    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
     null | undefined
   >,
   nestedMutationState: NestedMutationState,
@@ -125,7 +125,7 @@ async function resolveCreateAndConnect(
 
 function assertValidManyOperation(
   val: Exclude<
-    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>,
+    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
     undefined | null
   >,
   target: string
@@ -147,7 +147,7 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (
-    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['many']['update']>>
+    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -174,7 +174,7 @@ export function resolveRelateToManyForUpdateInput(
 
 async function handleCreateAndUpdate(
   value: Exclude<
-    types.InferValueFromArg<types.Arg<TypesForList['relateTo']['one']['create']>>,
+    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>,
     null | undefined
   >,
   nestedMutationState: NestedMutationState,
@@ -216,7 +216,7 @@ export function resolveRelateToOneForCreateInput(
   target: string
 ) {
   return async (
-    value: types.InferValueFromArg<types.Arg<TypesForList['relateTo']['one']['create']>>
+    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>
   ) => {
     if (value == null) {
       return undefined;
@@ -236,8 +236,8 @@ export function resolveRelateToOneForUpdateInput(
   target: string
 ) {
   return async (
-    value: types.InferValueFromArg<
-      types.Arg<types.NonNullType<TypesForList['relateTo']['one']['update']>>
+    value: schema.InferValueFromArg<
+      schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
     >
   ) => {
     if (value == null) {

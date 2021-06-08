@@ -1,6 +1,6 @@
 import { integer, text, relationship, virtual } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { types } from '@keystone-next/types';
+import { schema } from '@keystone-next/types';
 import { isSignedIn, rules } from '../access';
 import formatMoney from '../lib/formatMoney';
 
@@ -13,8 +13,8 @@ export const Order = list({
   },
   fields: {
     label: virtual({
-      field: types.field({
-        type: types.String,
+      field: schema.field({
+        type: schema.String,
         resolve(item) {
           return `${formatMoney((item as any).total)}`;
         },

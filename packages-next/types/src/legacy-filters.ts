@@ -1,4 +1,4 @@
-import { types } from '.';
+import { schema } from '.';
 
 const identity = (x: any) => x;
 
@@ -122,61 +122,61 @@ export const impls = {
 };
 
 export const fields = {
-  equalityInputFields(fieldKey: string, type: types.ScalarType<any> | types.EnumType<any>) {
+  equalityInputFields(fieldKey: string, type: schema.ScalarType<any> | schema.EnumType<any>) {
     return {
-      [fieldKey]: types.arg({ type }),
-      [`${fieldKey}_not`]: types.arg({ type }),
+      [fieldKey]: schema.arg({ type }),
+      [`${fieldKey}_not`]: schema.arg({ type }),
     };
   },
   equalityInputFieldsInsensitive(
     fieldKey: string,
-    type: types.ScalarType<any> | types.EnumType<any>
+    type: schema.ScalarType<any> | schema.EnumType<any>
   ) {
     return {
-      [`${fieldKey}_i`]: types.arg({ type }),
-      [`${fieldKey}_not_i`]: types.arg({ type }),
+      [`${fieldKey}_i`]: schema.arg({ type }),
+      [`${fieldKey}_not_i`]: schema.arg({ type }),
     };
   },
-  inInputFields(fieldKey: string, type: types.ScalarType<any> | types.EnumType<any>) {
+  inInputFields(fieldKey: string, type: schema.ScalarType<any> | schema.EnumType<any>) {
     return {
-      [`${fieldKey}_in`]: types.arg({ type: types.list(type) }),
-      [`${fieldKey}_not_in`]: types.arg({ type: types.list(type) }),
+      [`${fieldKey}_in`]: schema.arg({ type: schema.list(type) }),
+      [`${fieldKey}_not_in`]: schema.arg({ type: schema.list(type) }),
     };
   },
-  orderingInputFields(fieldKey: string, type: types.ScalarType<any> | types.EnumType<any>) {
+  orderingInputFields(fieldKey: string, type: schema.ScalarType<any> | schema.EnumType<any>) {
     return {
-      [`${fieldKey}_lt`]: types.arg({ type }),
-      [`${fieldKey}_lte`]: types.arg({ type }),
-      [`${fieldKey}_gt`]: types.arg({ type }),
-      [`${fieldKey}_gte`]: types.arg({ type }),
+      [`${fieldKey}_lt`]: schema.arg({ type }),
+      [`${fieldKey}_lte`]: schema.arg({ type }),
+      [`${fieldKey}_gt`]: schema.arg({ type }),
+      [`${fieldKey}_gte`]: schema.arg({ type }),
     };
   },
-  containsInputFields(fieldKey: string, type: types.ScalarType<any> | types.EnumType<any>) {
+  containsInputFields(fieldKey: string, type: schema.ScalarType<any> | schema.EnumType<any>) {
     return {
-      [`${fieldKey}_contains`]: types.arg({ type }),
-      [`${fieldKey}_not_contains`]: types.arg({ type }),
+      [`${fieldKey}_contains`]: schema.arg({ type }),
+      [`${fieldKey}_not_contains`]: schema.arg({ type }),
     };
   },
-  stringInputFields(fieldKey: string, type: types.ScalarType<any> | types.EnumType<any>) {
+  stringInputFields(fieldKey: string, type: schema.ScalarType<any> | schema.EnumType<any>) {
     return {
       ...fields.containsInputFields(fieldKey, type),
-      [`${fieldKey}_starts_with`]: types.arg({ type }),
-      [`${fieldKey}_not_starts_with`]: types.arg({ type }),
-      [`${fieldKey}_ends_with`]: types.arg({ type }),
-      [`${fieldKey}_not_ends_with`]: types.arg({ type }),
+      [`${fieldKey}_starts_with`]: schema.arg({ type }),
+      [`${fieldKey}_not_starts_with`]: schema.arg({ type }),
+      [`${fieldKey}_ends_with`]: schema.arg({ type }),
+      [`${fieldKey}_not_ends_with`]: schema.arg({ type }),
     };
   },
   stringInputFieldsInsensitive(
     fieldKey: string,
-    type: types.ScalarType<any> | types.EnumType<any>
+    type: schema.ScalarType<any> | schema.EnumType<any>
   ) {
     return {
-      [`${fieldKey}_contains_i`]: types.arg({ type }),
-      [`${fieldKey}_not_contains_i`]: types.arg({ type }),
-      [`${fieldKey}_starts_with_i`]: types.arg({ type }),
-      [`${fieldKey}_not_starts_with_i`]: types.arg({ type }),
-      [`${fieldKey}_ends_with_i`]: types.arg({ type }),
-      [`${fieldKey}_not_ends_with_i`]: types.arg({ type }),
+      [`${fieldKey}_contains_i`]: schema.arg({ type }),
+      [`${fieldKey}_not_contains_i`]: schema.arg({ type }),
+      [`${fieldKey}_starts_with_i`]: schema.arg({ type }),
+      [`${fieldKey}_not_starts_with_i`]: schema.arg({ type }),
+      [`${fieldKey}_ends_with_i`]: schema.arg({ type }),
+      [`${fieldKey}_not_ends_with_i`]: schema.arg({ type }),
     };
   },
 };

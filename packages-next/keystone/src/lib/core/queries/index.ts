@@ -1,4 +1,4 @@
-import { getGqlNames, QueryMeta, types } from '@keystone-next/types';
+import { getGqlNames, QueryMeta, schema } from '@keystone-next/types';
 import { InitialisedList } from '../types-for-lists';
 import { applyFirstSkipToCount } from '../utils';
 import * as queries from './resolvers';
@@ -7,11 +7,11 @@ export function getQueriesForList(list: InitialisedList) {
   if (list.access.read === false) return {};
   const names = getGqlNames(list);
 
-  const findOne = types.field({
+  const findOne = schema.field({
     type: list.types.output,
     args: {
-      where: types.arg({
-        type: types.nonNull(list.types.uniqueWhere),
+      where: schema.arg({
+        type: schema.nonNull(list.types.uniqueWhere),
       }),
     },
     description: ` Search for the ${list.listKey} item with the matching ID.`,
@@ -19,18 +19,18 @@ export function getQueriesForList(list: InitialisedList) {
       return queries.findOne(args, list, context);
     },
   });
-  const findMany = types.field({
-    type: types.list(types.nonNull(list.types.output)),
+  const findMany = schema.field({
+    type: schema.list(schema.nonNull(list.types.output)),
     args: list.types.findManyArgs,
     description: ` Search for all ${list.listKey} items which match the where clause.`,
     async resolve(_rootVal, args, context, info) {
       return queries.findMany(args, list, context, info);
     },
   });
-  const countQuery = types.field({
-    type: types.Int,
+  const countQuery = schema.field({
+    type: schema.Int,
     args: {
-      where: types.arg({ type: types.nonNull(list.types.where), defaultValue: {} }),
+      where: schema.arg({ type: schema.nonNull(list.types.where), defaultValue: {} }),
     },
     async resolve(_rootVal, args, context, info) {
       const count = await queries.count(args, list, context);
@@ -47,7 +47,7 @@ export function getQueriesForList(list: InitialisedList) {
     },
   });
 
-  const metaQuery = types.field({
+  const metaQuery = schema.field({
     type: QueryMeta,
     args: list.types.findManyArgs,
     description: ` Perform a meta-query on all ${list.listKey} items which match the where clause.`,

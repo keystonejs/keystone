@@ -7,7 +7,7 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
-  types,
+  schema,
 } from '@keystone-next/types';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
@@ -19,30 +19,30 @@ export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
     isRequired?: boolean;
   };
 
-const ImageExtensionEnum = types.enum({
+const ImageExtensionEnum = schema.enum({
   name: 'ImageExtension',
-  values: types.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
+  values: schema.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
 });
 
-const ImageFieldInput = types.inputObject({
+const ImageFieldInput = schema.inputObject({
   name: 'ImageFieldInput',
-  fields: { upload: types.arg({ type: types.Upload }), ref: types.arg({ type: types.String }) },
+  fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
 });
 
-const imageOutputFields = types.fields<ImageData>()({
-  id: types.field({ type: types.nonNull(types.ID) }),
-  filesize: types.field({ type: types.nonNull(types.Int) }),
-  width: types.field({ type: types.nonNull(types.Int) }),
-  height: types.field({ type: types.nonNull(types.Int) }),
-  extension: types.field({ type: types.nonNull(ImageExtensionEnum) }),
-  ref: types.field({
-    type: types.nonNull(types.String),
+const imageOutputFields = schema.fields<ImageData>()({
+  id: schema.field({ type: schema.nonNull(schema.ID) }),
+  filesize: schema.field({ type: schema.nonNull(schema.Int) }),
+  width: schema.field({ type: schema.nonNull(schema.Int) }),
+  height: schema.field({ type: schema.nonNull(schema.Int) }),
+  extension: schema.field({ type: schema.nonNull(ImageExtensionEnum) }),
+  ref: schema.field({
+    type: schema.nonNull(schema.String),
     resolve(data) {
       return getImageRef(data.mode, data.id, data.extension);
     },
   }),
-  src: types.field({
-    type: types.nonNull(types.String),
+  src: schema.field({
+    type: schema.nonNull(schema.String),
     resolve(data, args, context) {
       if (!context.images) {
         throw new Error('Image context is undefined');
@@ -52,13 +52,13 @@ const imageOutputFields = types.fields<ImageData>()({
   }),
 });
 
-const ImageFieldOutput = types.interface<ImageData>()({
+const ImageFieldOutput = schema.interface<ImageData>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
   resolveType: () => 'LocalImageFieldOutput',
 });
 
-const LocalImageFieldOutput = types.object<ImageData>()({
+const LocalImageFieldOutput = schema.object<ImageData>()({
   name: 'LocalImageFieldOutput',
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
@@ -116,10 +116,10 @@ export const image =
     })({
       ...config,
       input: {
-        create: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
-        update: { arg: types.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        create: { arg: schema.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        update: { arg: schema.arg({ type: ImageFieldInput }), resolve: inputResolver },
       },
-      output: types.field({
+      output: schema.field({
         type: ImageFieldOutput,
         resolve({ value: { extension, filesize, height, id, mode, width } }) {
           if (

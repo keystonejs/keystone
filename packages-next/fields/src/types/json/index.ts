@@ -5,7 +5,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
-  types,
+  schema,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
@@ -29,10 +29,10 @@ export const json =
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
-        create: { arg: types.arg({ type: types.JSON }) },
-        update: { arg: types.arg({ type: types.JSON }) },
+        create: { arg: schema.arg({ type: schema.JSON }) },
+        update: { arg: schema.arg({ type: schema.JSON }) },
       },
-      output: types.field({ type: types.JSON }),
+      output: schema.field({ type: schema.JSON }),
       views: resolveView('json/views'),
       __legacy: {
         defaultValue,

@@ -3,7 +3,7 @@ import {
   FieldDefaultValue,
   CommonFieldConfig,
   fieldType,
-  types,
+  schema,
   orderDirectionEnum,
   FieldTypeFunc,
   legacyFilters,
@@ -39,12 +39,12 @@ export const text =
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: types.arg({ type: types.String }) } : undefined,
-        create: { arg: types.arg({ type: types.String }) },
-        update: { arg: types.arg({ type: types.String }) },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.String }) } : undefined,
+        create: { arg: schema.arg({ type: schema.String }) },
+        update: { arg: schema.arg({ type: schema.String }) },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.String }),
+      output: schema.field({ type: schema.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
         return { displayMode: config.ui?.displayMode ?? 'input' };
@@ -52,18 +52,21 @@ export const text =
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
             ...(meta.provider === 'sqlite'
-              ? legacyFilters.fields.containsInputFields(meta.fieldKey, types.String)
+              ? legacyFilters.fields.containsInputFields(meta.fieldKey, schema.String)
               : {
-                  ...legacyFilters.fields.stringInputFields(meta.fieldKey, types.String),
+                  ...legacyFilters.fields.stringInputFields(meta.fieldKey, schema.String),
                   ...legacyFilters.fields.equalityInputFieldsInsensitive(
                     meta.fieldKey,
-                    types.String
+                    schema.String
                   ),
-                  ...legacyFilters.fields.stringInputFieldsInsensitive(meta.fieldKey, types.String),
+                  ...legacyFilters.fields.stringInputFieldsInsensitive(
+                    meta.fieldKey,
+                    schema.String
+                  ),
                 }),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

@@ -5,7 +5,7 @@ import {
   FieldReadAccessArgs,
   BaseGeneratedListTypes,
   ItemRootValue,
-  types,
+  schema,
   FindManyArgsValue,
   KeystoneContext,
 } from '@keystone-next/types';
@@ -127,7 +127,7 @@ export function outputTypeField(
   fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
-  return types.field({
+  return schema.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,

@@ -1,6 +1,6 @@
 import {
   fieldType,
-  types,
+  schema,
   FieldTypeFunc,
   CommonFieldConfig,
   BaseGeneratedListTypes,
@@ -18,9 +18,9 @@ export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     defaultValue?: FieldDefaultValue<FileFieldInputType, TGeneratedListTypes>;
   };
 
-const FileFieldInput = types.inputObject({
+const FileFieldInput = schema.inputObject({
   name: 'FileFieldInput',
-  fields: { upload: types.arg({ type: types.Upload }), ref: types.arg({ type: types.String }) },
+  fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
 });
 
 type FileFieldInputType =
@@ -28,17 +28,17 @@ type FileFieldInputType =
   | null
   | { upload?: Promise<FileUpload> | null; ref?: string | null };
 
-const fileFields = types.fields<FileData>()({
-  filename: types.field({ type: types.nonNull(types.String) }),
-  filesize: types.field({ type: types.nonNull(types.Int) }),
-  ref: types.field({
-    type: types.nonNull(types.String),
+const fileFields = schema.fields<FileData>()({
+  filename: schema.field({ type: schema.nonNull(schema.String) }),
+  filesize: schema.field({ type: schema.nonNull(schema.Int) }),
+  ref: schema.field({
+    type: schema.nonNull(schema.String),
     resolve(data) {
       return getFileRef(data.mode, data.filename);
     },
   }),
-  src: types.field({
-    type: types.nonNull(types.String),
+  src: schema.field({
+    type: schema.nonNull(schema.String),
     resolve(data, args, context) {
       if (!context.files) {
         throw new Error(
@@ -50,13 +50,13 @@ const fileFields = types.fields<FileData>()({
   }),
 });
 
-const FileFieldOutput = types.interface<FileData>()({
+const FileFieldOutput = schema.interface<FileData>()({
   name: 'FileFieldOutput',
   fields: fileFields,
   resolveType: () => 'LocalFileFieldOutput',
 });
 
-const LocalFileFieldOutput = types.object<FileData>()({
+const LocalFileFieldOutput = schema.object<FileData>()({
   name: 'LocalFileFieldOutput',
   interfaces: [FileFieldOutput],
   fields: fileFields,
@@ -101,10 +101,10 @@ export const file =
     })({
       ...config,
       input: {
-        create: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
-        update: { arg: types.arg({ type: FileFieldInput }), resolve: inputResolver },
+        create: { arg: schema.arg({ type: FileFieldInput }), resolve: inputResolver },
+        update: { arg: schema.arg({ type: FileFieldInput }), resolve: inputResolver },
       },
-      output: types.field({
+      output: schema.field({
         type: FileFieldOutput,
         resolve({ value: { filesize, filename, mode } }) {
           if (

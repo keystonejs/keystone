@@ -4,7 +4,7 @@ import {
   CommonFieldConfig,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  types,
+  schema,
   JSONValue,
   FieldDefaultValue,
 } from '@keystone-next/types';
@@ -119,21 +119,21 @@ export const document =
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
-        create: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
-        update: { arg: types.arg({ type: types.JSON }), resolve: inputResolver },
+        create: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
+        update: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
       },
-      output: types.field({
-        type: types.object<{ document: JSONValue }>()({
+      output: schema.field({
+        type: schema.object<{ document: JSONValue }>()({
           name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
           fields: {
-            document: types.field({
+            document: schema.field({
               args: {
-                hydrateRelationships: types.arg({
-                  type: types.nonNull(types.Boolean),
+                hydrateRelationships: schema.arg({
+                  type: schema.nonNull(schema.Boolean),
                   defaultValue: false,
                 }),
               },
-              type: types.nonNull(types.JSON),
+              type: schema.nonNull(schema.JSON),
               resolve({ document }, { hydrateRelationships }, context) {
                 return hydrateRelationships
                   ? addRelationshipData(

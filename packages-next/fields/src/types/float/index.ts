@@ -3,7 +3,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  types,
+  schema,
   orderDirectionEnum,
   legacyFilters,
   FieldDefaultValue,
@@ -36,18 +36,18 @@ export const float =
     })({
       ...config,
       input: {
-        create: { arg: types.arg({ type: types.Float }) },
-        update: { arg: types.arg({ type: types.Float }) },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        create: { arg: schema.arg({ type: schema.Float }) },
+        update: { arg: schema.arg({ type: schema.Float }) },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.Float }),
+      output: schema.field({ type: schema.Float }),
       views: resolveView('float/views'),
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.Float),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.Float),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.Float),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Float),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Float),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Float),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

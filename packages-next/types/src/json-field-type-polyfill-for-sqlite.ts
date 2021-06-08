@@ -2,7 +2,7 @@ import {
   JSONValue,
   ItemRootValue,
   KeystoneContext,
-  types,
+  schema,
   UpdateFieldInputArg,
   ScalarDBField,
   CreateFieldInputArg,
@@ -12,14 +12,14 @@ import {
 } from '.';
 
 function mapOutputFieldToSQLite(
-  field: types.Field<{ value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
+  field: schema.Field<{ value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value);
-  return types.fields<{
+  return schema.fields<{
     value: string | null;
     item: ItemRootValue;
   }>()({
-    value: types.field({
+    value: schema.field({
       type: field.type,
       args: field.args,
       deprecationReason: field.deprecationReason,
@@ -39,7 +39,7 @@ function mapOutputFieldToSQLite(
   }).value;
 }
 
-function mapUpdateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
+function mapUpdateInputArgToSQLite<Arg extends schema.Arg<schema.InputType, any>>(
   arg: UpdateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): UpdateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -48,7 +48,7 @@ function mapUpdateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
   return {
     arg: arg.arg,
     async resolve(
-      input: types.InferValueFromArg<Arg>,
+      input: schema.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -64,7 +64,7 @@ function mapUpdateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
   } as any;
 }
 
-function mapCreateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
+function mapCreateInputArgToSQLite<Arg extends schema.Arg<schema.InputType, any>>(
   arg: CreateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): CreateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -73,7 +73,7 @@ function mapCreateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
   return {
     arg: arg.arg,
     async resolve(
-      input: types.InferValueFromArg<Arg>,
+      input: schema.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -90,16 +90,16 @@ function mapCreateInputArgToSQLite<Arg extends types.Arg<types.InputType, any>>(
 }
 
 export function jsonFieldTypePolyfilledForSQLite<
-  CreateArg extends types.Arg<types.InputType, any>,
-  UpdateArg extends types.Arg<types.InputType, any>
+  CreateArg extends schema.Arg<schema.InputType, any>,
+  UpdateArg extends schema.Arg<schema.InputType, any>
 >(
   provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<
     ScalarDBField<'Json', 'optional'>,
     CreateArg,
     UpdateArg,
-    types.Arg<types.NullableInputType, undefined>,
-    types.Arg<types.NullableInputType, undefined>
+    schema.Arg<schema.NullableInputType, undefined>,
+    schema.Arg<schema.NullableInputType, undefined>
   > & {
     input?: {
       uniqueWhere?: undefined;

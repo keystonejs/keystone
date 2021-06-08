@@ -1,1 +1,1 @@
-export * as types from './graphql-ts-schema';
+export * as schema from './graphql-ts-schema';

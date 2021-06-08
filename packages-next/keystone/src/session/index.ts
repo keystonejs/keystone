@@ -8,7 +8,7 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  types,
+  schema,
 } from '@keystone-next/types';
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
@@ -192,8 +192,8 @@ export async function createSessionContext<T>(
 export function sessionSchema(graphQLSchema: GraphQLSchema) {
   const schemaConfig = graphQLSchema.toConfig();
   const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
-  const endSessionField = types.field({
-    type: types.nonNull(types.Boolean),
+  const endSessionField = schema.field({
+    type: schema.nonNull(schema.Boolean),
     async resolve(rootVal, args, context) {
       if (context.endSession) {
         await context.endSession();

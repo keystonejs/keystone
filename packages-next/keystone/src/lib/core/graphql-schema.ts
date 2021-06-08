@@ -1,5 +1,5 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider, types } from '@keystone-next/types';
+import { DatabaseProvider, schema } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';
@@ -9,15 +9,15 @@ export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider
 ) {
-  const query = types.object()({
+  const query = schema.object()({
     name: 'Query',
     fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
   });
 
-  const createManyByList: Record<string, types.InputObjectType<any>> = {};
-  const updateManyByList: Record<string, types.InputObjectType<any>> = {};
+  const createManyByList: Record<string, schema.InputObjectType<any>> = {};
+  const updateManyByList: Record<string, schema.InputObjectType<any>> = {};
 
-  const mutation = types.object()({
+  const mutation = schema.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
@@ -39,8 +39,8 @@ export function getGraphQLSchema(
 
 function collectTypes(
   lists: Record<string, InitialisedList>,
-  createManyByList: Record<string, types.InputObjectType<any>>,
-  updateManyByList: Record<string, types.InputObjectType<any>>
+  createManyByList: Record<string, schema.InputObjectType<any>>,
+  updateManyByList: Record<string, schema.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
@@ -74,6 +74,6 @@ function collectTypes(
     }
   }
   // this is not necessary, just about ordering
-  collectedTypes.push(types.JSON.graphQLType);
+  collectedTypes.push(schema.JSON.graphQLType);
   return collectedTypes;
 }

@@ -3,7 +3,7 @@ import {
   FieldTypeFunc,
   BaseGeneratedListTypes,
   CommonFieldConfig,
-  types,
+  schema,
   orderDirectionEnum,
   Decimal,
   legacyFilters,
@@ -67,23 +67,23 @@ export const decimal =
       ...config,
       input: {
         create: {
-          arg: types.arg({ type: types.String }),
+          arg: schema.arg({ type: schema.String }),
           resolve(val) {
             if (val == null) return val;
             return new Decimal(val);
           },
         },
         update: {
-          arg: types.arg({ type: types.String }),
+          arg: schema.arg({ type: schema.String }),
           resolve(val) {
             if (val == null) return val;
             return new Decimal(val);
           },
         },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({
-        type: types.String,
+      output: schema.field({
+        type: schema.String,
         resolve({ value }) {
           if (value === null) return null;
           return value.toFixed(scale);
@@ -97,8 +97,8 @@ export const decimal =
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.String),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

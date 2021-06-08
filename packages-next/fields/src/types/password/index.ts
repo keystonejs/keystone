@@ -4,7 +4,7 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  types,
+  schema,
 } from '@keystone-next/types';
 import bcryptjs from 'bcryptjs';
 import { resolveView } from '../../resolve-view';
@@ -24,10 +24,10 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
     isRequired?: boolean;
   };
 
-const PasswordState = types.object<{ isSet: boolean }>()({
+const PasswordState = schema.object<{ isSet: boolean }>()({
   name: 'PasswordState',
   fields: {
-    isSet: types.field({ type: types.nonNull(types.Boolean) }),
+    isSet: schema.field({ type: schema.nonNull(schema.Boolean) }),
   },
 });
 
@@ -75,17 +75,17 @@ export const password =
       ...config,
       input: {
         create: {
-          arg: types.arg({ type: types.String }),
+          arg: schema.arg({ type: schema.String }),
           resolve: inputResolver,
         },
         update: {
-          arg: types.arg({ type: types.String }),
+          arg: schema.arg({ type: schema.String }),
           resolve: inputResolver,
         },
       },
       views: resolveView('password/views'),
       getAdminMeta: () => ({ minLength: minLength }),
-      output: types.field({
+      output: schema.field({
         type: PasswordState,
         resolve(val) {
           return { isSet: val.value !== null && bcryptHashRegex.test(val.value) };
@@ -104,7 +104,7 @@ export const password =
       __legacy: {
         filters: {
           fields: {
-            [`${meta.fieldKey}_is_set`]: types.arg({ type: types.Boolean }),
+            [`${meta.fieldKey}_is_set`]: schema.arg({ type: schema.Boolean }),
           },
           impls: {
             [`${meta.fieldKey}_is_set`]: value =>

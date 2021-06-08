@@ -1,4 +1,4 @@
-import { DatabaseProvider, getGqlNames, types } from '@keystone-next/types';
+import { DatabaseProvider, getGqlNames, schema } from '@keystone-next/types';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';
@@ -23,11 +23,11 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
   const names = getGqlNames(list);
 
   const createOneArgs = {
-    data: types.arg({
+    data: schema.arg({
       type: list.types.create,
     }),
   };
-  const createOne = types.field({
+  const createOne = schema.field({
     type: list.types.output,
     args: createOneArgs,
     description: ` Create a single ${list.listKey} item.`,
@@ -36,18 +36,18 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const createManyInput = types.inputObject({
+  const createManyInput = schema.inputObject({
     name: names.createManyInputName,
     fields: {
-      data: types.arg({ type: list.types.create }),
+      data: schema.arg({ type: list.types.create }),
     },
   });
 
-  const createMany = types.field({
-    type: types.list(list.types.output),
+  const createMany = schema.field({
+    type: schema.list(list.types.output),
     args: {
-      data: types.arg({
-        type: types.list(createManyInput),
+      data: schema.arg({
+        type: schema.list(createManyInput),
       }),
     },
     description: ` Create multiple ${list.listKey} items.`,
@@ -64,14 +64,14 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
   });
 
   const updateOneArgs = {
-    id: types.arg({
-      type: types.nonNull(types.ID),
+    id: schema.arg({
+      type: schema.nonNull(schema.ID),
     }),
-    data: types.arg({
+    data: schema.arg({
       type: list.types.update,
     }),
   };
-  const updateOne = types.field({
+  const updateOne = schema.field({
     type: list.types.output,
     args: updateOneArgs,
     description: ` Update a single ${list.listKey} item by ID.`,
@@ -80,16 +80,16 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const updateManyInput = types.inputObject({
+  const updateManyInput = schema.inputObject({
     name: names.updateManyInputName,
     fields: updateOneArgs,
   });
 
-  const updateMany = types.field({
-    type: types.list(list.types.output),
+  const updateMany = schema.field({
+    type: schema.list(list.types.output),
     args: {
-      data: types.arg({
-        type: types.list(updateManyInput),
+      data: schema.arg({
+        type: schema.list(updateManyInput),
       }),
     },
     description: ` Update multiple ${list.listKey} items by ID.`,
@@ -109,11 +109,11 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const deleteOne = types.field({
+  const deleteOne = schema.field({
     type: list.types.output,
     args: {
-      id: types.arg({
-        type: types.nonNull(types.ID),
+      id: schema.arg({
+        type: schema.nonNull(schema.ID),
       }),
     },
     description: ` Delete a single ${list.listKey} item by ID.`,
@@ -122,11 +122,11 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const deleteMany = types.field({
-    type: types.list(list.types.output),
+  const deleteMany = schema.field({
+    type: schema.list(list.types.output),
     args: {
-      ids: types.arg({
-        type: types.list(types.nonNull(types.ID)),
+      ids: schema.arg({
+        type: schema.list(schema.nonNull(schema.ID)),
       }),
     },
     description: ` Delete multiple ${list.listKey} items by ID.`,

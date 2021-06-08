@@ -6,7 +6,7 @@ import {
   CommonFieldConfig,
   legacyFilters,
   orderDirectionEnum,
-  types,
+  schema,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -36,19 +36,19 @@ export const integer =
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: types.arg({ type: types.Int }) } : undefined,
-        create: { arg: types.arg({ type: types.Int }) },
-        update: { arg: types.arg({ type: types.Int }) },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
+        create: { arg: schema.arg({ type: schema.Int }) },
+        update: { arg: schema.arg({ type: schema.Int }) },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({ type: types.Int }),
+      output: schema.field({ type: schema.Int }),
       views: resolveView('integer/views'),
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.Int),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

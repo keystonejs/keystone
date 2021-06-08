@@ -1,7 +1,7 @@
 import {
   BaseGeneratedListTypes,
   fieldType,
-  types,
+  schema,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
@@ -42,12 +42,12 @@ export const timestamp =
     })({
       ...config,
       input: {
-        create: { arg: types.arg({ type: types.String }), resolve: inputResolver },
-        update: { arg: types.arg({ type: types.String }), resolve: inputResolver },
-        orderBy: { arg: types.arg({ type: orderDirectionEnum }) },
+        create: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
+        update: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
+        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
-      output: types.field({
-        type: types.String,
+      output: schema.field({
+        type: schema.String,
         resolve({ value }) {
           if (value === null) return null;
           return value.toISOString();
@@ -57,9 +57,9 @@ export const timestamp =
       __legacy: {
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, types.String),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.String),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

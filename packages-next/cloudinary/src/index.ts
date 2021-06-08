@@ -4,7 +4,7 @@ import {
   BaseGeneratedListTypes,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  types,
+  schema,
   FieldDefaultValue,
   legacyFilters,
 } from '@keystone-next/types';
@@ -34,44 +34,44 @@ type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     };
   };
 
-const CloudinaryImageFormat = types.inputObject({
+const CloudinaryImageFormat = schema.inputObject({
   name: 'CloudinaryImageFormat',
   description:
     'Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).\n' +
     'All options are strings as they ultimately end up in a URL.',
   fields: {
-    prettyName: types.arg({
+    prettyName: schema.arg({
       description: ' Rewrites the filename to be this pretty string. Do not include `/` or `.`',
-      type: types.String,
+      type: schema.String,
     }),
-    width: types.arg({ type: types.String }),
-    height: types.arg({ type: types.String }),
-    crop: types.arg({ type: types.String }),
-    aspect_ratio: types.arg({ type: types.String }),
-    gravity: types.arg({ type: types.String }),
-    zoom: types.arg({ type: types.String }),
-    x: types.arg({ type: types.String }),
-    y: types.arg({ type: types.String }),
-    format: types.arg({ type: types.String }),
-    fetch_format: types.arg({ type: types.String }),
-    quality: types.arg({ type: types.String }),
-    radius: types.arg({ type: types.String }),
-    angle: types.arg({ type: types.String }),
-    effect: types.arg({ type: types.String }),
-    opacity: types.arg({ type: types.String }),
-    border: types.arg({ type: types.String }),
-    background: types.arg({ type: types.String }),
-    overlay: types.arg({ type: types.String }),
-    underlay: types.arg({ type: types.String }),
-    default_image: types.arg({ type: types.String }),
-    delay: types.arg({ type: types.String }),
-    color: types.arg({ type: types.String }),
-    color_space: types.arg({ type: types.String }),
-    dpr: types.arg({ type: types.String }),
-    page: types.arg({ type: types.String }),
-    density: types.arg({ type: types.String }),
-    flags: types.arg({ type: types.String }),
-    transformation: types.arg({ type: types.String }),
+    width: schema.arg({ type: schema.String }),
+    height: schema.arg({ type: schema.String }),
+    crop: schema.arg({ type: schema.String }),
+    aspect_ratio: schema.arg({ type: schema.String }),
+    gravity: schema.arg({ type: schema.String }),
+    zoom: schema.arg({ type: schema.String }),
+    x: schema.arg({ type: schema.String }),
+    y: schema.arg({ type: schema.String }),
+    format: schema.arg({ type: schema.String }),
+    fetch_format: schema.arg({ type: schema.String }),
+    quality: schema.arg({ type: schema.String }),
+    radius: schema.arg({ type: schema.String }),
+    angle: schema.arg({ type: schema.String }),
+    effect: schema.arg({ type: schema.String }),
+    opacity: schema.arg({ type: schema.String }),
+    border: schema.arg({ type: schema.String }),
+    background: schema.arg({ type: schema.String }),
+    overlay: schema.arg({ type: schema.String }),
+    underlay: schema.arg({ type: schema.String }),
+    default_image: schema.arg({ type: schema.String }),
+    delay: schema.arg({ type: schema.String }),
+    color: schema.arg({ type: schema.String }),
+    color_space: schema.arg({ type: schema.String }),
+    dpr: schema.arg({ type: schema.String }),
+    page: schema.arg({ type: schema.String }),
+    density: schema.arg({ type: schema.String }),
+    flags: schema.arg({ type: schema.String }),
+    transformation: schema.arg({ type: schema.String }),
   },
 });
 
@@ -83,25 +83,25 @@ type CloudinaryImage_File = {
   encoding: string | null;
   publicUrl: string | null;
   publicUrlTransformed: (args: {
-    transformation: types.InferValueFromArg<types.Arg<typeof CloudinaryImageFormat>>;
+    transformation: schema.InferValueFromArg<schema.Arg<typeof CloudinaryImageFormat>>;
   }) => string | null;
 };
 
-const outputType = types.object<CloudinaryImage_File>()({
+const outputType = schema.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
-    id: types.field({ type: types.ID }),
+    id: schema.field({ type: schema.ID }),
     // path: types.field({ type: types.String }),
-    filename: types.field({ type: types.String }),
-    originalFilename: types.field({ type: types.String }),
-    mimetype: types.field({ type: types.String }),
-    encoding: types.field({ type: types.String }),
-    publicUrl: types.field({ type: types.String }),
-    publicUrlTransformed: types.field({
+    filename: schema.field({ type: schema.String }),
+    originalFilename: schema.field({ type: schema.String }),
+    mimetype: schema.field({ type: schema.String }),
+    encoding: schema.field({ type: schema.String }),
+    publicUrl: schema.field({ type: schema.String }),
+    publicUrlTransformed: schema.field({
       args: {
-        transformation: types.arg({ type: CloudinaryImageFormat }),
+        transformation: schema.arg({ type: CloudinaryImageFormat }),
       },
-      type: types.String,
+      type: schema.String,
       resolve(rootVal, args) {
         return rootVal.publicUrlTransformed(args);
       },
@@ -148,10 +148,10 @@ export const cloudinaryImage =
     };
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       input: {
-        create: { arg: types.arg({ type: types.Upload }), resolve: resolveInput },
-        update: { arg: types.arg({ type: types.Upload }), resolve: resolveInput },
+        create: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
+        update: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
       },
-      output: types.field({
+      output: schema.field({
         type: outputType,
         resolve({ value }) {
           if (value === null) {
@@ -163,7 +163,7 @@ export const cloudinaryImage =
             publicUrlTransformed: ({
               transformation,
             }: {
-              transformation: types.InferValueFromArg<types.Arg<typeof CloudinaryImageFormat>>;
+              transformation: schema.InferValueFromArg<schema.Arg<typeof CloudinaryImageFormat>>;
             }) => adapter.publicUrlTransformed(val, transformation ?? {}),
             ...val,
           };
@@ -178,8 +178,8 @@ export const cloudinaryImage =
         defaultValue,
         filters: {
           fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, types.String),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, types.String),
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
           },
           impls: {
             ...legacyFilters.impls.equalityConditions(meta.fieldKey),

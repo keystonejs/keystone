@@ -1,6 +1,6 @@
 import {
   BaseGeneratedListTypes,
-  types,
+  schema,
   ItemRootValue,
   CommonFieldConfig,
   FieldTypeFunc,
@@ -9,14 +9,14 @@ import {
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
-type VirtualFieldGraphQLField = types.Field<ItemRootValue, any, any, string>;
+type VirtualFieldGraphQLField = schema.Field<ItemRootValue, any, any, string>;
 
 export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     field:
       | VirtualFieldGraphQLField
       | ((lists: Record<string, ListInfo>) => VirtualFieldGraphQLField);
-    unreferencedConcreteInterfaceImplementations?: types.ObjectType<any>[];
+    unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
     graphQLReturnFragment?: string;
   };
 
@@ -33,7 +33,7 @@ export const virtual =
       kind: 'none',
     })({
       ...config,
-      output: types.field({
+      output: schema.field({
         ...(usableField as any),
         resolve({ item }, ...args) {
           return usableField.resolve!(item as any, ...args);

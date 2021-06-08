@@ -6,7 +6,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { types } from '@keystone-next/types';
+import { schema } from '@keystone-next/types';
 
 function makeSetupKeystone(fields: BaseFields<any>) {
   return function setupKeystone(provider: ProviderName) {
@@ -34,8 +34,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              field: types.field({
-                type: types.Int,
+              field: schema.field({
+                type: schema.Int,
                 resolve() {
                   return 42;
                 },
@@ -58,11 +58,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              field: types.field({
-                type: types.Int,
+              field: schema.field({
+                type: schema.Int,
                 args: {
-                  x: types.arg({ type: types.Int }),
-                  y: types.arg({ type: types.Int }),
+                  x: schema.arg({ type: schema.Int }),
+                  y: schema.arg({ type: schema.Int }),
                 },
                 resolve: (item, { x = 5, y = 6 }) => x! * y!,
               }),
@@ -84,11 +84,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              field: types.field({
-                type: types.Int,
+              field: schema.field({
+                type: schema.Int,
                 args: {
-                  x: types.arg({ type: types.Int }),
-                  y: types.arg({ type: types.Int }),
+                  x: schema.arg({ type: schema.Int }),
+                  y: schema.arg({ type: schema.Int }),
                 },
                 resolve: (item, { x = 5, y = 6 }) => x! * y!,
               }),
@@ -131,8 +131,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
                       personAuthor: relationship({ ref: 'Person.authoredPosts' }),
                       author: virtual({
                         field: lists =>
-                          types.field({
-                            type: types.union({
+                          schema.field({
+                            type: schema.union({
                               name: 'Author',
                               types: [lists.Person.types.output, lists.Organisation.types.output],
                             }),
@@ -202,13 +202,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(
           makeSetupKeystone({
             foo: virtual({
-              field: types.field({
-                type: types.list(
-                  types.object<{ title: string; rating: number }>()({
+              field: schema.field({
+                type: schema.list(
+                  schema.object<{ title: string; rating: number }>()({
                     name: 'Movie',
                     fields: {
-                      title: types.field({ type: types.String }),
-                      rating: types.field({ type: types.Int }),
+                      title: schema.field({ type: schema.String }),
+                      rating: schema.field({ type: schema.Int }),
                     },
                   })
                 ),
