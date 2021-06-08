@@ -6,7 +6,35 @@ import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
 import type { FileUpload } from 'graphql-upload';
 import { KeystoneContext } from '../context';
 import { JSONValue } from '../utils';
-export * from '@graphql-ts/schema/api-without-context';
+export {
+  Boolean,
+  Float,
+  ID,
+  Int,
+  String,
+  enum,
+  enumValues,
+  arg,
+  inputObject,
+  list,
+  nonNull,
+  scalar,
+} from '@graphql-ts/schema/api-without-context';
+export type {
+  Arg,
+  EnumType,
+  EnumValue,
+  InferValueFromArg,
+  InferValueFromArgs,
+  InferValueFromInputType,
+  InputObjectType,
+  InferValueFromOutputType,
+  InputType,
+  ListType,
+  NonNullType,
+  NullableInputType,
+  ScalarType,
+} from '@graphql-ts/schema/api-without-context';
 export { bindSchemaAPIToContext } from '@graphql-ts/schema';
 export { field, fields, interface, interfaceField, object, union } from './schema-api-with-context';
 
