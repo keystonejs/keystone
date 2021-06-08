@@ -72,8 +72,8 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           type.name,
           {
             name: type.name,
-            fields: Object.fromEntries(type.fields.map(x => [x.name, x])),
-            inputFields: Object.fromEntries(type.inputFields.map(x => [x.name, x])),
+            fields: Object.fromEntries((type.fields || []).map(x => [x.name, x])),
+            inputFields: Object.fromEntries((type.inputFields || []).map(x => [x.name, x])),
           },
         ])
       );
