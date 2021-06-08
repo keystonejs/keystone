@@ -28,7 +28,7 @@ export class NestedMutationState {
     return { kind: 'connect' as const, id: item.id as any };
   }
   async afterChange() {
-    await promiseAllRejectWithAllErrors(this.#afterChanges);
+    await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
   }
 }
 
