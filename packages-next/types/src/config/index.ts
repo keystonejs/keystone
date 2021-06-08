@@ -26,6 +26,7 @@ export type KeystoneConfig = {
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
   images?: ImagesConfig;
+  testing?: TestingConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -175,6 +176,13 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
+};
+
+// config.testing
+
+export type TestingConfig = {
+  isolateRuns?: Boolean;
+  artifactPath?: string;
 };
 
 // config.experimental.keystoneCloud

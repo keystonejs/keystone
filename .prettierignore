@@ -6,4 +6,4 @@ coverage
 **/dist
 **/.next
 **/.keystone
-.api-test-prisma-clients
+.keystone-tests
