@@ -189,7 +189,30 @@ export default config({
 
 ### json
 
-(coming soon)
+A `json` field represents a JSON blob.
+Currently the `json` field is non-orderable and non-filterable.
+
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: json({
+          isRequired: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
 
 ### float
 
@@ -699,33 +722,6 @@ export default config({
             apiSecret: process.env.CLOUDINARY_API_SECRET,
             folder: process.env.CLOUDINARY_API_FOLDER,
           },
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
-  }),
-  /* ... */
-});
-```
-
-### json
-
-A `json` field represents a JSON blob.
-Currently the `json` field is non-orderable and non-filterable.
-
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-
-```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { cloudinaryImage } from '@keystone-next/cloudinary';
-
-export default config({
-  lists: createSchema({
-    ListName: list({
-      fields: {
-        fieldName: json({
-          isRequired: true,
         }),
         /* ... */
       },
