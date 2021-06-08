@@ -1,6 +1,5 @@
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
 import { KeystoneContext } from '@keystone-next/types';
-import { arrayToObject } from '@keystone-next/utils-legacy';
 import {
   setupKeystone,
   getStaticListName,
@@ -68,16 +67,15 @@ multiAdapterRunners().map(({ before, after, provider }) =>
       queries = __schema.queryType.fields.map(({ name }) => name);
       mutations = __schema.mutationType.fields.map(({ name }) => name);
       types = __schema.types.map(({ name }) => name);
-      fieldTypes = __schema.types.reduce(
-        (acc, type) => ({
-          ...acc,
-          [type.name]: {
+      fieldTypes = Object.fromEntries(
+        __schema.types.map(type => [
+          type.name,
+          {
             name: type.name,
-            fields: arrayToObject(type.fields || [], 'name'),
-            inputFields: arrayToObject(type.inputFields || [], 'name'),
+            fields: Object.fromEntries(type.fields.map(x => [x.name, x])),
+            inputFields: Object.fromEntries(type.inputFields.map(x => [x.name, x])),
           },
-        }),
-        {}
+        ])
       );
     });
     afterAll(async () => {
