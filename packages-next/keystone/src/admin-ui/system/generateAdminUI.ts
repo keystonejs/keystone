@@ -5,7 +5,7 @@ import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
-import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
@@ -47,7 +47,7 @@ async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) 
 export const generateAdminUI = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone,
+  adminMeta: AdminMetaRootVal,
   projectAdminPath: string
 ) => {
   // Nuke any existing files in our target directory
@@ -83,7 +83,7 @@ export const generateAdminUI = async (
   const adminFiles = writeAdminFiles(
     config,
     graphQLSchema,
-    keystone,
+    adminMeta,
     configFileExists,
     projectAdminPath
   );

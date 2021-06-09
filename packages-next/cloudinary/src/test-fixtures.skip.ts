@@ -4,7 +4,7 @@ import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
 import { text } from '@keystone-next/fields';
-import { ProviderName } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider } from '@keystone-next/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');
@@ -83,7 +83,7 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = (provider: ProviderName) => [
+export const supportedFilters = (provider: DatabaseProvider) => [
   'null_equality',
   !['postgresql', 'sqlite'].includes(provider) && 'in_empty_null',
 ];

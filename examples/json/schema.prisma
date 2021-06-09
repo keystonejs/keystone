@@ -13,7 +13,7 @@ model Package {
   label     String?
   pkgjson   String?
   isPrivate Boolean?
-  ownedBy   Person?  @relation("PackageownedBy", fields: [ownedById], references: [id])
+  ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
   ownedById Int?     @map("ownedBy")
 
   @@index([ownedById])
@@ -22,5 +22,5 @@ model Package {
 model Person {
   id       Int       @id @default(autoincrement())
   name     String?
-  packages Package[] @relation("PackageownedBy")
+  packages Package[] @relation("Package_ownedBy")
 }

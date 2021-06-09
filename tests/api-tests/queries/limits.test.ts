@@ -5,11 +5,11 @@ import {
   setupFromConfig,
   networkedGraphqlRequest,
   testConfig,
-  ProviderName,
 } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider } from '@keystone-next/types';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({

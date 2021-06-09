@@ -296,6 +296,7 @@ Options:
 
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `minLength` (default: `8`): The minimum length password accepted.
+- `rejectCommon` (default: `false`): Rejects passwords from a list of commonly used passwords.
 - `bcrypt` (default: `require('bcryptjs')`): A module which implements the same interface as the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package, such as the native [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
   This module will be used for all encryption routines in the `password` field.
 
@@ -310,6 +311,7 @@ export default config({
         fieldName: password({
           isRequired: true,
           minLength: 10,
+          rejectCommon: true,
           bcrypt: require('bcrypt'),
         }),
         /* ... */
@@ -557,29 +559,27 @@ A `virtual` field represents a value which is computed a read time, rather than 
 
 Options:
 
-- `resolver` (required):
-- `graphQLReturnType` (required):
+- `field` (required):
 - `graphQLReturnFragment` (default: `undefined` ):
-- `extendGraphQLTypes` (default: `[]`):
-- `args` (default: `[]`):
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
 import { virtual } from '@keystone-next/fields';
+import { schema } from '@keystone-next/types';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
         fieldName: virtual({
-          resolver: (item, args, context, info) => `/* ... */`,
-          graphQLReturnType: '...',
+          field: schema.field({
+            type: schema.String,
+            args: { something: schema.arg({ type: schema.Int }) },
+            resolve(item, args, context, info) {
+
+            }
+          })
           graphQLReturnFragment: '...',
-          extendGraphQLTypes: ['...'],
-          args: [
-            { name: '...', type: 'String' },
-            /* ... */
-          ],
         }),
         /* ... */
       },

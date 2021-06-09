@@ -3,7 +3,8 @@ import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/config/initConfig';
 
 export function createListsAPI(config: KeystoneConfig, prismaClient: any) {
-  const { createContext, keystone } = createSystem(initConfig(config), prismaClient);
+  const { getKeystone } = createSystem(initConfig(config));
+  const keystone = getKeystone(prismaClient);
   keystone.connect();
-  return createContext().sudo().lists;
+  return keystone.createContext().sudo().lists;
 }

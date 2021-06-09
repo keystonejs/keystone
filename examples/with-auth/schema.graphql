@@ -1,16 +1,3 @@
-enum TaskPriorityType {
-  low
-  medium
-  high
-}
-
-input PersonRelateToOneInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
-}
-
 """
  A keystone list
 """
@@ -21,6 +8,12 @@ type Task {
   isComplete: Boolean
   assignedTo: Person
   finishBy: String
+}
+
+enum TaskPriorityType {
+  low
+  medium
+  high
 }
 
 input TaskWhereInput {
@@ -96,6 +89,13 @@ input TaskUpdateInput {
   finishBy: String
 }
 
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
 input TasksUpdateInput {
   id: ID!
   data: TaskUpdateInput
@@ -113,13 +113,6 @@ input TasksCreateInput {
   data: TaskCreateInput
 }
 
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 """
  A keystone list
 """
@@ -127,7 +120,7 @@ type Person {
   id: ID!
   name: String
   email: String
-  password_is_set: Boolean
+  password: PasswordState
   tasks(
     where: TaskWhereInput! = {}
     search: String
@@ -136,7 +129,7 @@ type Person {
     orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Task!]!
+  ): [Task!]
   _tasksMeta(
     where: TaskWhereInput! = {}
     search: String
@@ -150,6 +143,14 @@ type Person {
       reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
   tasksCount(where: TaskWhereInput! = {}): Int
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type _QueryMeta {
+  count: Int
 }
 
 input PersonWhereInput {
@@ -219,6 +220,13 @@ input PersonUpdateInput {
   tasks: TaskRelateToManyInput
 }
 
+input TaskRelateToManyInput {
+  create: [TaskCreateInput]
+  connect: [TaskWhereUniqueInput]
+  disconnect: [TaskWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input PeopleUpdateInput {
   id: ID!
   data: PersonUpdateInput
@@ -242,10 +250,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type _QueryMeta {
-  count: Int
-}
 
 type Mutation {
   """
@@ -316,11 +320,6 @@ type Mutation {
   ): PersonAuthenticationWithPasswordSuccess!
   endSession: Boolean!
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 union AuthenticatedItem = Person
 

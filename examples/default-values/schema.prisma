@@ -13,9 +13,9 @@ model Task {
   label        String?
   priority     String?
   isComplete   Boolean?
-  finishBy     DateTime?
-  assignedTo   Person?   @relation("TaskassignedTo", fields: [assignedToId], references: [id])
+  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
   assignedToId Int?      @map("assignedTo")
+  finishBy     DateTime?
 
   @@index([assignedToId])
 }
@@ -23,5 +23,5 @@ model Task {
 model Person {
   id    Int     @id @default(autoincrement())
   name  String?
-  tasks Task[]  @relation("TaskassignedTo")
+  tasks Task[]  @relation("Task_assignedTo")
 }

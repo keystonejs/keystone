@@ -1,7 +1,6 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import { BaseKeystone } from './base';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
@@ -21,10 +20,7 @@ export type KeystoneContext = {
   schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
-  /** @deprecated */
-  keystone: BaseKeystone;
-} & AccessControlContext &
-  Partial<SessionContext<any>>;
+} & Partial<SessionContext<any>>;
 
 // List item API
 
@@ -133,13 +129,6 @@ export type KeystoneGraphQLAPI<
 type GraphQLExecutionArguments = {
   query: string | DocumentNode;
   variables?: Record<string, any>;
-};
-
-// Access control API
-
-export type AccessControlContext = {
-  getListAccessControlForUser: any; // TODO
-  getFieldAccessControlForUser: any; // TODO
 };
 
 // Session API

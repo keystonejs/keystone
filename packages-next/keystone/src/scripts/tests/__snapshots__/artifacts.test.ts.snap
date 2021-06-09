@@ -74,10 +74,7 @@ export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 export type TodoListTypeInfo = {
   key: 'Todo';
   fields: 'id' | 'title';
-  backing: {
-    readonly id: string;
-    readonly title?: string | null;
-  };
+  backing: import('.prisma/client').Todo;
   inputs: {
     where: TodoWhereInput;
     create: TodoCreateInput;

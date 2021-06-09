@@ -1,26 +1,45 @@
-import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  schema,
+  ItemRootValue,
+  CommonFieldConfig,
+  FieldTypeFunc,
+  fieldType,
+  ListInfo,
+} from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
-import { Virtual, PrismaVirtualInterface } from './Implementation';
+
+type VirtualFieldGraphQLField = schema.Field<ItemRootValue, any, any, string>;
 
 export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  FieldConfig<TGeneratedListTypes> & {
-    resolver: (rootVal: any, args: any, context: KeystoneContext, info: any) => any;
-    graphQLReturnType?: string;
+  CommonFieldConfig<TGeneratedListTypes> & {
+    field:
+      | VirtualFieldGraphQLField
+      | ((lists: Record<string, ListInfo>) => VirtualFieldGraphQLField);
+    unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
     graphQLReturnFragment?: string;
-    extendGraphQLTypes?: string[];
-    args?: { name: string; type: string }[];
   };
 
-export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: VirtualFieldConfig<TGeneratedListTypes>
-): FieldType<TGeneratedListTypes> => ({
-  type: {
-    type: 'Virtual',
-    implementation: Virtual,
-    adapter: PrismaVirtualInterface,
-  },
-  config,
-  views: resolveView('virtual/views'),
-  getAdminMeta: () => ({ graphQLReturnFragment: config.graphQLReturnFragment ?? '' }),
-});
+export const virtual =
+  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+    graphQLReturnFragment = '',
+    field,
+    ...config
+  }: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  meta => {
+    const usableField = typeof field === 'function' ? field(meta.lists) : field;
+
+    return fieldType({
+      kind: 'none',
+    })({
+      ...config,
+      output: schema.field({
+        ...(usableField as any),
+        resolve({ item }, ...args) {
+          return usableField.resolve!(item as any, ...args);
+        },
+      }),
+      views: resolveView('virtual/views'),
+      getAdminMeta: () => ({ graphQLReturnFragment }),
+    });
+  };

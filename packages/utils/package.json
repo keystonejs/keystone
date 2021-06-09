@@ -13,9 +13,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@keystone-next/types": "^19.0.0",
-    "p-lazy": "^3.1.0",
-    "p-reflect": "^2.1.0",
-    "semver": "^7.3.5"
+    "@keystone-next/types": "^19.0.0"
   }
 }

@@ -5,14 +5,15 @@ import { createApolloServerMicro } from '../lib/server/createApolloServer';
 
 export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any) {
   const initializedKeystoneConfig = initConfig(keystoneConfig);
-  const { graphQLSchema, keystone, createContext } = createSystem(
-    initializedKeystoneConfig,
-    prismaClient
-  );
+  const { graphQLSchema, getKeystone } = createSystem(initializedKeystoneConfig);
+
+  const keystone = getKeystone(prismaClient);
+
+  keystone.connect();
 
   const apolloServer = createApolloServerMicro({
     graphQLSchema,
-    createContext,
+    createContext: keystone.createContext,
     sessionStrategy: initializedKeystoneConfig.session,
     apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
     connectionPromise: keystone.connect(),
