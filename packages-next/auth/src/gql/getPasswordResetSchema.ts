@@ -1,6 +1,6 @@
 import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
-import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
+import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
@@ -13,6 +13,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   protectIdentities,
   gqlNames,
   passwordResetLink,
+  passwordResetTokenSecretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
@@ -20,6 +21,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
+  passwordResetTokenSecretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `
@@ -61,7 +63,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
     resolvers: {
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
-          const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
@@ -78,8 +79,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              context,
+              listKey,
               code: result.code,
             });
             return { code: result.code, message };
@@ -107,12 +108,12 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           args: { [P in I]: string } & { [P in S]: string } & { token: string },
           context
         ) {
-          const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
+            listKey,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
-            list,
             identityField,
             args[identityField],
             protectIdentities,
@@ -127,8 +128,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             // or 'The auth token provided has expired.'
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };
@@ -159,12 +160,12 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           args: { [P in I]: string } & { token: string },
           context
         ) {
-          const list = context.keystone.lists[listKey];
           const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
+            listKey,
+            passwordResetTokenSecretFieldImpl,
             tokenType,
-            list,
             identityField,
             args[identityField],
             protectIdentities,
@@ -176,8 +177,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
-              itemSingular: list.adminUILabels.singular,
-              itemPlural: list.adminUILabels.plural,
+              listKey,
+              context,
               code: result.code,
             });
             return { code: result.code, message };

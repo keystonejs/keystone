@@ -13,7 +13,7 @@ model User {
   name     String?
   email    String? @unique
   password String?
-  posts    Post[]  @relation("Postauthor")
+  posts    Post[]  @relation("Post_author")
 }
 
 model Post {
@@ -22,9 +22,9 @@ model Post {
   status      String?
   content     Json?
   publishDate DateTime?
-  author      User?     @relation("Postauthor", fields: [authorId], references: [id])
+  author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    Int?      @map("author")
-  tags        Tag[]     @relation("Post_tags_Tag_posts", references: [id])
+  tags        Tag[]     @relation("Post_tags_Tag_posts")
 
   @@index([authorId])
 }
@@ -32,5 +32,5 @@ model Post {
 model Tag {
   id    Int     @id @default(autoincrement())
   name  String?
-  posts Post[]  @relation("Post_tags_Tag_posts", references: [id])
+  posts Post[]  @relation("Post_tags_Tag_posts")
 }

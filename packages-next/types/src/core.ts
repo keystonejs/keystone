@@ -44,35 +44,33 @@ export type GraphQLSchemaExtension = {
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
 export function getGqlNames({
   listKey,
-  itemQueryName: _itemQueryName,
-  listQueryName: _listQueryName,
+  pluralGraphQLName,
 }: {
   listKey: string;
-  itemQueryName: string;
-  listQueryName: string;
+  pluralGraphQLName: string;
 }): GqlNames {
-  const _lowerListName = _listQueryName.slice(0, 1).toLowerCase() + _listQueryName.slice(1);
+  const _lowerListName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1);
   return {
     outputTypeName: listKey,
-    itemQueryName: _itemQueryName,
-    listQueryName: `all${_listQueryName}`,
-    listQueryMetaName: `_all${_listQueryName}Meta`,
+    itemQueryName: listKey,
+    listQueryName: `all${pluralGraphQLName}`,
+    listQueryMetaName: `_all${pluralGraphQLName}Meta`,
     listQueryCountName: `${_lowerListName}Count`,
-    listSortName: `Sort${_listQueryName}By`,
-    listOrderName: `${_itemQueryName}OrderByInput`,
-    deleteMutationName: `delete${_itemQueryName}`,
-    updateMutationName: `update${_itemQueryName}`,
-    createMutationName: `create${_itemQueryName}`,
-    deleteManyMutationName: `delete${_listQueryName}`,
-    updateManyMutationName: `update${_listQueryName}`,
-    createManyMutationName: `create${_listQueryName}`,
-    whereInputName: `${_itemQueryName}WhereInput`,
-    whereUniqueInputName: `${_itemQueryName}WhereUniqueInput`,
-    updateInputName: `${_itemQueryName}UpdateInput`,
-    createInputName: `${_itemQueryName}CreateInput`,
-    updateManyInputName: `${_listQueryName}UpdateInput`,
-    createManyInputName: `${_listQueryName}CreateInput`,
-    relateToManyInputName: `${_itemQueryName}RelateToManyInput`,
-    relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
+    listSortName: `Sort${pluralGraphQLName}By`,
+    listOrderName: `${listKey}OrderByInput`,
+    deleteMutationName: `delete${listKey}`,
+    updateMutationName: `update${listKey}`,
+    createMutationName: `create${listKey}`,
+    deleteManyMutationName: `delete${pluralGraphQLName}`,
+    updateManyMutationName: `update${pluralGraphQLName}`,
+    createManyMutationName: `create${pluralGraphQLName}`,
+    whereInputName: `${listKey}WhereInput`,
+    whereUniqueInputName: `${listKey}WhereUniqueInput`,
+    updateInputName: `${listKey}UpdateInput`,
+    createInputName: `${listKey}CreateInput`,
+    updateManyInputName: `${pluralGraphQLName}UpdateInput`,
+    createManyInputName: `${pluralGraphQLName}CreateInput`,
+    relateToManyInputName: `${listKey}RelateToManyInput`,
+    relateToOneInputName: `${listKey}RelateToOneInput`,
   };
 }

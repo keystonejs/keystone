@@ -76,3 +76,8 @@ export type AuthTokenRedemptionErrorCode =
   | 'TOKEN_MISMATCH'
   | 'TOKEN_EXPIRED'
   | 'TOKEN_REDEEMED';
+
+export type SecretFieldImpl = {
+  generateHash: (secret: string) => Promise<string>;
+  compare: (secret: string, hash: string) => Promise<string>;
+};

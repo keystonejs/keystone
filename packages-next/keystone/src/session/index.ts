@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { mergeSchemas } from '@graphql-tools/merge';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import {
@@ -9,11 +8,10 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  KeystoneContext,
+  schema,
 } from '@keystone-next/types';
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
-import { gql } from '../schema';
 
 function generateSessionId() {
   return uid(24);
@@ -192,22 +190,32 @@ export async function createSessionContext<T>(
 }
 
 export function sessionSchema(graphQLSchema: GraphQLSchema) {
-  return mergeSchemas({
-    schemas: [graphQLSchema],
-    typeDefs: gql`
-      type Mutation {
-        endSession: Boolean!
+  const schemaConfig = graphQLSchema.toConfig();
+  const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
+  const endSessionField = schema.field({
+    type: schema.nonNull(schema.Boolean),
+    async resolve(rootVal, args, context) {
+      if (context.endSession) {
+        await context.endSession();
       }
-    `,
-    resolvers: {
-      Mutation: {
-        async endSession(rootVal, args, context: KeystoneContext) {
-          if (context.endSession) {
-            await context.endSession();
-          }
-          return true;
-        },
-      },
+      return true;
     },
+  });
+  const mutationType = new GraphQLObjectType({
+    ...mutationTypeConfig,
+    fields: () => ({
+      ...(typeof mutationTypeConfig.fields === 'function'
+        ? mutationTypeConfig.fields()
+        : mutationTypeConfig.fields),
+      endSession: {
+        ...endSessionField,
+        type: endSessionField.type.graphQLType,
+      },
+    }),
+  });
+  return new GraphQLSchema({
+    ...schemaConfig,
+    types: schemaConfig.types.map(x => (x.name === 'Mutation' ? mutationType : x)),
+    mutation: mutationType,
   });
 }

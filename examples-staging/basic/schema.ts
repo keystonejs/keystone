@@ -12,7 +12,9 @@ import {
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
+import { KeystoneListsAPI, schema } from '@keystone-next/types';
 import { componentBlocks } from './admin/fieldViews/Content';
+import { KeystoneListsTypeInfo } from '.keystone/types';
 
 // TODO: Can we generate this type based on sessionData in the main config?
 type AccessArgs = {
@@ -82,10 +84,12 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
-        graphQLReturnType: 'Float',
-        resolver() {
-          return randomNumber();
-        },
+        field: schema.field({
+          type: schema.Float,
+          resolve() {
+            return randomNumber();
+          },
+        }),
       }),
     },
   }),
@@ -96,9 +100,12 @@ export const lists = createSchema({
     },
     fields: {
       label: virtual({
-        resolver(item) {
-          return `${item.type} - ${item.value}`;
-        },
+        field: schema.field({
+          type: schema.String,
+          resolve(item) {
+            return `${item.type} - ${item.value}`;
+          },
+        }),
         ui: {
           listView: {
             fieldMode: 'hidden',
@@ -205,7 +212,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         // TODO: add a way to verify access control here, e.g
         // await context.verifyAccessControl(userIsAdmin);
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-        return context.lists.Post.createMany({ data });
+        // note this usage of the type is important because it tests that the generated
+        // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
+        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
+        return lists.Post.createMany({ data });
       },
     },
     Query: {

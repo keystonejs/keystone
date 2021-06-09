@@ -1,4 +1,4 @@
-import { ProviderName } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider } from '@keystone-next/types';
 import { text } from '..';
 
 export const name = 'Text';
@@ -32,7 +32,7 @@ export const storedValues = () => [
   { name: 'g', testField: null },
 ];
 
-export const supportedFilters = (provider: ProviderName) => [
+export const supportedFilters = (provider: DatabaseProvider) => [
   'null_equality',
   'equality',
   provider !== 'sqlite' && 'equality_case_insensitive',

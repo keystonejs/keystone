@@ -1,4 +1,4 @@
-import { ProviderName } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider } from '@keystone-next/types';
 import { decimal } from '..';
 import { text } from '../../text';
 
@@ -37,7 +37,7 @@ export const storedValues = () => [
   { name: 'price7', price: null },
 ];
 
-export const supportedFilters = (provider: ProviderName) => [
+export const supportedFilters = (provider: DatabaseProvider) => [
   'null_equality',
   'equality',
   'ordering',

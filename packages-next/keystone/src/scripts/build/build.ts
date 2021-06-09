@@ -88,7 +88,7 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 export async function build(cwd: string) {
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const { keystone, graphQLSchema } = createSystem(config);
+  const { graphQLSchema, adminMeta } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, config, cwd);
 
@@ -101,7 +101,7 @@ export async function build(cwd: string) {
     console.log('✨ Skipping Admin UI code generation');
   } else {
     console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
+    await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
   }
 
   console.log('✨ Generating Keystone config code');

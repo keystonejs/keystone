@@ -13,7 +13,7 @@ model Todo {
   label        String?
   isComplete   Boolean?
   isPrivate    Boolean?
-  assignedTo   Person?  @relation("TodoassignedTo", fields: [assignedToId], references: [id])
+  assignedTo   Person?  @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId Int?     @map("assignedTo")
 
   @@index([assignedToId])
@@ -24,9 +24,9 @@ model Person {
   name     String?
   email    String?
   password String?
-  role     Role?   @relation("Personrole", fields: [roleId], references: [id])
+  role     Role?   @relation("Person_role", fields: [roleId], references: [id])
   roleId   Int?    @map("role")
-  tasks    Todo[]  @relation("TodoassignedTo")
+  tasks    Todo[]  @relation("Todo_assignedTo")
 
   @@index([roleId])
 }
@@ -40,5 +40,5 @@ model Role {
   canEditOtherPeople Boolean?
   canManagePeople    Boolean?
   canManageRoles     Boolean?
-  assignedTo         Person[] @relation("Personrole")
+  assignedTo         Person[] @relation("Person_role")
 }

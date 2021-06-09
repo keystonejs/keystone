@@ -1,17 +1,22 @@
-import type { KeystoneConfig, BaseKeystone, AdminMetaRootVal } from '@keystone-next/types';
+import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
+import { humanize } from '../../lib/utils';
+import { InitialisedList } from '../../lib/core/types-for-lists';
 
-export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
+export function createAdminMeta(
+  config: KeystoneConfig,
+  initialisedLists: Record<string, InitialisedList>
+) {
   const { ui, lists, session } = config;
   const adminMetaRoot: AdminMetaRootVal = {
     enableSessionItem: ui?.enableSessionItem || false,
     enableSignout: session !== undefined,
     listsByKey: {},
     lists: [],
+    views: [],
   };
 
-  Object.keys(lists).forEach(key => {
+  for (const [key, list] of Object.entries(initialisedLists)) {
     const listConfig = lists[key];
-    const list = keystone.lists[key];
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
       (listConfig.ui?.labelField as string | undefined) ??
@@ -33,8 +38,8 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       // unless it happened to be the labelField
       initialColumns = [
         labelField,
-        ...Object.keys(listConfig.fields)
-          .filter(fieldKey => listConfig.fields[fieldKey].config.access?.read !== false)
+        ...Object.keys(list.fields)
+          .filter(fieldKey => list.fields[fieldKey].access.read !== false)
           .filter(fieldKey => fieldKey !== labelField)
           .filter(fieldKey => fieldKey !== 'id'),
       ].slice(0, 3);
@@ -55,44 +60,38 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
-      itemQueryName: list.gqlNames.itemQueryName,
-      listQueryName: list.gqlNames.listQueryName.replace('all', ''),
+      // TODO: probably remove this from the GraphQL schema and here
+      itemQueryName: key,
+      listQueryName: list.pluralGraphQLName,
     };
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
-  });
-
+  }
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
-  const views: string[] = [];
   function getViewId(view: string) {
     if (stringViewsToIndex[view] !== undefined) {
       return stringViewsToIndex[view];
     }
     uniqueViewCount++;
     stringViewsToIndex[view] = uniqueViewCount;
-    views.push(view);
+    adminMetaRoot.views.push(view);
     return uniqueViewCount;
   }
   // Populate .fields array
-  Object.keys(lists).forEach(key => {
-    const listConfig = lists[key];
-    const list = keystone.lists[key];
-    for (const fieldKey of Object.keys(listConfig.fields).filter(
-      path => listConfig.fields[path].config.access?.read !== false
-    )) {
-      const field = listConfig.fields[fieldKey];
+  for (const [key, list] of Object.entries(initialisedLists)) {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
+      if (field.access.read === false) continue;
       adminMetaRoot.listsByKey[key].fields.push({
-        label: list.fieldsByPath[fieldKey].label,
+        label: field.label ?? humanize(fieldKey),
         viewsIndex: getViewId(field.views),
-        customViewsIndex:
-          field.config.ui?.views === undefined ? null : getViewId(field.config.ui.views),
-        fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMetaRoot) ?? null,
-        isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
+        customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
+        fieldMeta: field.getAdminMeta?.(adminMetaRoot) ?? null,
+        isOrderable: !!field.input?.orderBy,
         path: fieldKey,
         listKey: key,
       });
     }
-  });
+  }
 
   return adminMetaRoot;
 }

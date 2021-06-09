@@ -1,41 +1,18 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '@keystone-next/fields';
-import type { CacheHint } from 'apollo-cache-control';
-import { AdminMetaRootVal } from '../admin-meta';
-import type { BaseGeneratedListTypes, JSONValue } from '../utils';
-import type { CacheHintArgs } from '../base';
-import type { ListHooks } from './hooks';
-import type { FieldAccessControl } from './access-control';
-import type { MaybeSessionFunction, MaybeItemFunction } from './lists';
+import type { CacheHint } from '../next-fields';
+import { FieldTypeFunc } from '../next-fields';
+import type { BaseGeneratedListTypes } from '../utils';
+import { MaybeItemFunction, MaybeSessionFunction } from './lists';
+import { FieldHooks } from './hooks';
+import { FieldAccessControl } from './access-control';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  [key: string]: FieldType<TGeneratedListTypes>;
+  [key: string]: FieldTypeFunc;
 };
 
-export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  /**
-   * The real keystone type for the field
-   */
-  type: {
-    type: string;
-    implementation: typeof Implementation;
-    adapter: typeof PrismaFieldAdapter;
-    isRelationship?: boolean;
-  };
-  /**
-   * The config for the field
-   */
-  config: FieldConfig<TGeneratedListTypes>;
-  /**
-   * The resolved path to the views for the field type
-   */
-  views: string;
-  getAdminMeta?: (listKey: string, path: string, adminMeta: AdminMetaRootVal) => JSONValue;
-};
-
-export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   access?: FieldAccessControl<TGeneratedListTypes>;
-  hooks?: ListHooks<TGeneratedListTypes>; // really? ListHooks?
+  hooks?: FieldHooks<TGeneratedListTypes>;
   label?: string;
   ui?: {
     views?: string;
@@ -43,5 +20,5 @@ export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
     itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
   };
-  graphql?: { cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint };
+  graphql?: { cacheHint?: CacheHint };
 };

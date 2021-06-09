@@ -2,8 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { ProviderName } from '@keystone-next/test-utils-legacy';
-import type { KeystoneContext } from '@keystone-next/types';
+import type { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
 
@@ -82,7 +81,7 @@ const createReadData = async (context: KeystoneContext) => {
   );
 };
 
-const setupKeystone = (provider: ProviderName) =>
+const setupKeystone = (provider: DatabaseProvider) =>
   setupFromConfig({
     provider,
     config: testConfig({

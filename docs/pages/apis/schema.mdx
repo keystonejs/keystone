@@ -179,8 +179,7 @@ Options:
 
 - `description` (default: `undefined`): Sets the description of the associated GraphQL type in the generated GraphQL API documentation.
   Overrides the list-level `description` config option.
-- `itemQueryName` (default: List key, e.g `'User'`): Overrides the name used in singular mutations and queries (e.g. `User`, `updateUser`, etc).
-- `listQueryName`: (default: Pluralised list key, e.g. `'Users'`): Overrides the name used in multiple mutations and queries (e.g. `allUsers`, `updateUsers`, etc).
+- `plural`: (default: Pluralised list key, e.g. `'Users'`): Overrides the name used in multiple mutations and queries (e.g. `allUsers`, `updateUsers`, etc).
 - `queryLimits` (default: `undefined`): Allows you to limit the number of results returned from a query to this list in the GraphQL API.
   See also the global `graphql.queryLimits` option in the [System Configuration API](./config).
 - `cacheHint` (default: `undefined`): Allows you to specific the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this this list.

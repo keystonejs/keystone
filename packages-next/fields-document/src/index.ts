@@ -1,10 +1,18 @@
 import path from 'path';
-import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
-import { DocumentImplementation, PrismaDocumentInterface } from './Implementation';
+import {
+  BaseGeneratedListTypes,
+  CommonFieldConfig,
+  FieldTypeFunc,
+  jsonFieldTypePolyfilledForSQLite,
+  schema,
+  JSONValue,
+  FieldDefaultValue,
+} from '@keystone-next/types';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
+import { addRelationshipData } from './relationship-data';
 
 type RelationshipsConfig = Record<
   string,
@@ -60,13 +68,15 @@ type FormattingConfig = {
 };
 
 export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  FieldConfig<TGeneratedListTypes> & {
+  CommonFieldConfig<TGeneratedListTypes> & {
     relationships?: RelationshipsConfig;
     componentBlocks?: Record<string, ComponentBlock>;
     formatting?: true | FormattingConfig;
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
+    isRequired?: boolean;
+    defaultValue?: FieldDefaultValue<Record<string, any>[], TGeneratedListTypes>;
   };
 
 const views = path.join(
@@ -74,11 +84,93 @@ const views = path.join(
   'views'
 );
 
-export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: DocumentFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => {
+export const document =
+  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+    componentBlocks = {},
+    dividers,
+    formatting,
+    layouts,
+    relationships: configRelationships,
+    links,
+    isRequired,
+    defaultValue,
+    ...config
+  }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  meta => {
+    const documentFeatures = normaliseDocumentFeatures({
+      dividers,
+      formatting,
+      layouts,
+      links,
+    });
+    const relationships = normaliseRelationships(configRelationships);
+
+    const inputResolver = (data: JSONValue | null | undefined): any => {
+      if (data === null || data === undefined) {
+        return data;
+      }
+      return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
+    };
+
+    if ((config as any).isUnique) {
+      throw Error('isUnique is not a supported option for field type document');
+    }
+
+    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
+      ...config,
+      input: {
+        create: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
+        update: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
+      },
+      output: schema.field({
+        type: schema.object<{ document: JSONValue }>()({
+          name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
+          fields: {
+            document: schema.field({
+              args: {
+                hydrateRelationships: schema.arg({
+                  type: schema.nonNull(schema.Boolean),
+                  defaultValue: false,
+                }),
+              },
+              type: schema.nonNull(schema.JSON),
+              resolve({ document }, { hydrateRelationships }, context) {
+                return hydrateRelationships
+                  ? addRelationshipData(
+                      document as any,
+                      context.graphql,
+                      relationships,
+                      componentBlocks,
+                      context.gqlNames as any
+                    )
+                  : (document as any);
+              },
+            }),
+          },
+        }),
+        resolve({ value }) {
+          if (value === null) {
+            return null;
+          }
+          return { document: value };
+        },
+      }),
+      views,
+      getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+        return {
+          relationships,
+          documentFeatures,
+          componentBlocksPassedOnServer: Object.keys(componentBlocks),
+        };
+      },
+      __legacy: { isRequired, defaultValue },
+    });
+  };
+
+function normaliseRelationships(
+  configRelationships: DocumentFieldConfig<BaseGeneratedListTypes>['relationships']
+) {
   const relationships: Relationships = {};
-  const configRelationships = config.relationships;
   if (configRelationships) {
     Object.keys(configRelationships).forEach(key => {
       const relationship = configRelationships[key];
@@ -92,6 +184,15 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
             };
     });
   }
+  return relationships;
+}
+
+function normaliseDocumentFeatures(
+  config: Pick<
+    DocumentFieldConfig<BaseGeneratedListTypes>,
+    'formatting' | 'dividers' | 'layouts' | 'links'
+  >
+) {
   const formatting: FormattingConfig =
     config.formatting === true
       ? {
@@ -163,27 +264,5 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     ),
     dividers: !!config.dividers,
   };
-  const componentBlocks = config.componentBlocks || {};
-  return {
-    type: {
-      type: 'Document',
-      implementation: DocumentImplementation,
-      adapter: PrismaDocumentInterface,
-    },
-    config: {
-      ...config,
-      componentBlocks,
-      relationships,
-      ___validateAndNormalize: (data: unknown) =>
-        validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships),
-    } as any,
-    getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
-      return {
-        relationships,
-        documentFeatures,
-        componentBlocksPassedOnServer: Object.keys(componentBlocks),
-      };
-    },
-    views,
-  };
-};
+  return documentFeatures;
+}

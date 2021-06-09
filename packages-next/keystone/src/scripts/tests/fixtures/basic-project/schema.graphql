@@ -107,11 +107,6 @@ type Mutation {
   deleteTodos(ids: [ID!]): [Todo]
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
 type Query {
   """
    Search for all Todo items which match the where clause.
