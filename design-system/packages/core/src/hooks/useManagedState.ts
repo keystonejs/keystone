@@ -8,7 +8,7 @@ export function useManagedState<V, E = ChangeEvent>(
   controlledValue: V | undefined,
   defaultValue: V,
   onChange: ManagedChangeHandler<V, E> | undefined
-): [V | undefined, ManagedChangeHandler<V, E>] {
+): [V, ManagedChangeHandler<V, E>] {
   const { current: isControlled } = useRef(controlledValue !== undefined);
   const [internalValue, setInternalValue] = useState<V | undefined>(defaultValue);
 
