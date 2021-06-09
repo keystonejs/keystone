@@ -6,7 +6,7 @@ export type ManagedChangeHandler<V = string, E = ChangeEvent> = (value: V, event
 
 export function useManagedState<V, E = ChangeEvent>(
   controlledValue: V | undefined,
-  defaultValue: V | undefined,
+  defaultValue: V,
   onChange: ManagedChangeHandler<V, E> | undefined
 ): [V | undefined, ManagedChangeHandler<V, E>] {
   const { current: isControlled } = useRef(controlledValue !== undefined);

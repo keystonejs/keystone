@@ -36,7 +36,7 @@ import {
 
 import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
 
-type Index = number;
+type Index = number | undefined;
 
 // SegmentedControl
 // ------------------------------
@@ -94,7 +94,7 @@ export const SegmentedControl = ({
     console.log('SELECTEDINEX IS', selectedIndex);
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
-      let selected = selectedIndex && nodes[selectedIndex];
+      let selected = selectedIndex !== undefined && nodes[selectedIndex];
       console.log('selected node IS', selected);
       let rootRect;
       let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
@@ -147,7 +147,7 @@ export const SegmentedControl = ({
             </Item>
           );
         })}
-        {(selectedIndex !== undefined || selectedIndex! < 0) && animate ? (
+        {animate && (selectedIndex !== undefined || selectedIndex! < 0) ? (
           <SelectedIndicator size={size} style={selectedRect} />
         ) : null}
       </Root>
