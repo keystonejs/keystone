@@ -7,6 +7,8 @@ import {
   schema,
 } from '@keystone-next/types';
 import bcryptjs from 'bcryptjs';
+// @ts-ignore
+import dumbPasswords from 'dumb-passwords';
 import { resolveView } from '../../resolve-view';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -19,6 +21,7 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
      * @default 10
      */
     workFactor?: number;
+    rejectCommon?: boolean;
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
     defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
     isRequired?: boolean;
@@ -38,6 +41,7 @@ export const password =
     bcrypt = bcryptjs,
     minLength = 8,
     workFactor = 10,
+    rejectCommon = false,
     isRequired,
     defaultValue,
     ...config
@@ -58,7 +62,18 @@ export const password =
         return null;
       }
       if (typeof val === 'string') {
-        return bcrypt.hash(val, 10);
+        if (rejectCommon && dumbPasswords.check(val)) {
+          throw new Error(
+            `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`
+          );
+        }
+        if (val.length < minLength) {
+          throw new Error(
+            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
+          );
+        }
+
+        return bcrypt.hash(val, workFactor);
       }
       return val;
     }
