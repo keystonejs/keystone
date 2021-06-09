@@ -7,10 +7,9 @@ import {
   multiAdapterRunners,
   setupFromConfig,
   networkedGraphqlRequest,
-  ProviderName,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneContext, KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
 
 const initialData = {
   User: [
@@ -41,7 +40,7 @@ const auth = createAuth({
   sessionData: 'id',
 });
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: auth.withAuth(
