@@ -228,8 +228,14 @@ const Item = (props: ItemProps) => {
         textAlign: 'center',
         position: 'relative',
         zIndex: 2,
+        border: '1px solid transparent',
+        ':focus-within': {
+          boxShadow: '0 0 0 2px #bfdbfe;',
+          border: '1px solid #166bff;',
+        },
         ':hover': {
           color: !isSelected ? colors.linkHoverColor : undefined,
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
         },
         ':active': {
           backgroundColor: !isSelected ? fields.hover.inputBackground : undefined,
@@ -308,6 +314,6 @@ const useSelectedStyles = () => {
   const { colors, shadow } = useTheme();
   return {
     background: colors.background,
-    boxShadow: shadow.s100,
+    boxShadow: '0px 1px 4px rgba(45, 55, 72, 0.07);', // used to be s100
   };
 };
