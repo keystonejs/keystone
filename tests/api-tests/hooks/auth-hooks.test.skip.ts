@@ -1,17 +1,13 @@
 import { AddressInfo } from 'net';
-import {
-  ProviderName,
-  multiAdapterRunners,
-  testConfig,
-  setupFromConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, testConfig, setupFromConfig } from '@keystone-next/test-utils-legacy';
 // @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text, password } from '@keystone-next/fields';
+import { DatabaseProvider } from '@keystone-next/types';
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({
