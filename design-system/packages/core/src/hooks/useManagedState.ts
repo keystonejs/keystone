@@ -10,7 +10,7 @@ export function useManagedState<V, E = ChangeEvent>(
   onChange: ManagedChangeHandler<V, E> | undefined
 ): [V, ManagedChangeHandler<V, E>] {
   const { current: isControlled } = useRef(controlledValue !== undefined);
-  const [internalValue, setInternalValue] = useState<V | undefined>(defaultValue);
+  const [internalValue, setInternalValue] = useState<V>(defaultValue);
 
   // warn consumers when their component is switching from controlled to uncontrolled and vice versa
   devWarning(
