@@ -91,8 +91,6 @@ export const SegmentedControl = ({
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
       let selected = selectedIndex !== undefined && nodes[selectedIndex];
-      console.log(selectedIndex);
-      console.log(selected);
       let rootRect;
       let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
       let offsetLeft;
