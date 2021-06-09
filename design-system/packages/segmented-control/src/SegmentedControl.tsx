@@ -79,8 +79,6 @@ export const SegmentedControl = ({
     onChangeProp
   );
 
-  console.log('INITIAL SELECTED INDEX IS', selectedIndex);
-
   const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
     console.log('handleChange is called', index);
     setIndex(index, event);
@@ -91,11 +89,9 @@ export const SegmentedControl = ({
 
   // Animate the selected segment indicator
   useEffect(() => {
-    console.log('SELECTEDINEX IS', selectedIndex);
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
       let selected = selectedIndex !== undefined && nodes[selectedIndex];
-      console.log('selected node IS', selected);
       let rootRect;
       let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
       let offsetLeft;
@@ -122,13 +118,23 @@ export const SegmentedControl = ({
     <Box
       css={css`
         outline: 0;
-        &:focus > div {
-          box-shadow: 0px 0px 5px blue;
-        }
+        box-sizing: border-box;
       `}
       {...props}
     >
-      <Root fill={fill} size={size} ref={rootRef} width={width}>
+      <Root
+        css={css`
+          border: 1px solid #e1e5e9;
+          &:focus-within {
+            box-shadow: 0 0 0 2px #bfdbfe;
+            border: 1px solid #166bff;
+          }
+        `}
+        fill={fill}
+        size={size}
+        ref={rootRef}
+        width={width}
+      >
         {segments.map((label, idx) => {
           const isSelected = selectedIndex === idx;
 
@@ -208,6 +214,7 @@ const Item = (props: ItemProps) => {
   const { colors, fields, typography } = useTheme();
   const sizeStyles = useItemSize();
   const selectedStyles = useSelectedStyles();
+  const inputRef = useRef(null);
 
   return (
     <label
@@ -221,7 +228,6 @@ const Item = (props: ItemProps) => {
         textAlign: 'center',
         position: 'relative',
         zIndex: 2,
-
         ':hover': {
           color: !isSelected ? colors.linkHoverColor : undefined,
         },
@@ -231,6 +237,7 @@ const Item = (props: ItemProps) => {
       }}
     >
       <VisuallyHidden
+        ref={inputRef}
         as="input"
         type="radio"
         onChange={onChange}
