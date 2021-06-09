@@ -36,7 +36,7 @@ import {
 
 import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
 
-type Index = number | undefined;
+type Index = number;
 
 // SegmentedControl
 // ------------------------------
@@ -63,7 +63,7 @@ type SegmentedControlProps = {
 export const SegmentedControl = ({
   animate = false,
   fill = false,
-  initialIndex: initialIndexProp,
+  initialIndex: initialIndexProp = -1,
   onChange: onChangeProp,
   segments,
   size = 'medium',
@@ -80,7 +80,6 @@ export const SegmentedControl = ({
   );
 
   const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('handleChange is called', index);
     setIndex(index, event);
   };
 
@@ -92,6 +91,8 @@ export const SegmentedControl = ({
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
       let selected = selectedIndex !== undefined && nodes[selectedIndex];
+      console.log(selectedIndex);
+      console.log(selected);
       let rootRect;
       let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
       let offsetLeft;
@@ -153,7 +154,7 @@ export const SegmentedControl = ({
             </Item>
           );
         })}
-        {animate && (selectedIndex !== undefined || selectedIndex! < 0) ? (
+        {animate && selectedIndex! > -1 ? (
           <SelectedIndicator size={size} style={selectedRect} />
         ) : null}
       </Root>
@@ -311,9 +312,9 @@ const useItemSize = () => {
   };
 };
 const useSelectedStyles = () => {
-  const { colors, shadow } = useTheme();
+  const { colors } = useTheme();
   return {
     background: colors.background,
-    boxShadow: '0px 1px 4px rgba(45, 55, 72, 0.07);', // used to be s100
+    boxShadow: '0px 1px 4px rgba(45, 55, 72, 0.07);', // used to be shadow.s100
   };
 };

@@ -38,11 +38,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
           segments={field.options.map(x => x.label)}
           selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
           onChange={index => {
-            if (index !== undefined) {
-              onChange?.(field.options[index]);
-            } else {
-              onChange?.(null);
-            }
+            onChange?.(field.options[index]);
           }}
         />
       </Fragment>
