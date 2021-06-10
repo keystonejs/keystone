@@ -1,10 +1,9 @@
 import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
-import { ProviderName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createAuth } from '@keystone-next/auth';
-import { objMerge } from '@keystone-next/utils-legacy';
-import type { KeystoneConfig } from '@keystone-next/types';
+import type { DatabaseProvider, KeystoneConfig } from '@keystone-next/types';
 
 const FAKE_ID = { postgresql: 137, sqlite: 137 } as const;
 const FAKE_ID_2 = { postgresql: 138, sqlite: 138 } as const;
@@ -89,7 +88,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
     },
   }),
 });
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   const lists = createSchema({
     User: list({
       fields: {
@@ -104,17 +103,21 @@ function setupKeystone(provider: ProviderName) {
 
   listAccessVariations.forEach(access => {
     lists[getStaticListName(access)] = list({
-      fields: {
-        name: text(),
-        ...objMerge(fieldMatrix.map(variation => createFieldStatic(variation))),
-      },
+      fields: Object.assign(
+        {
+          name: text(),
+        },
+        ...fieldMatrix.map(variation => createFieldStatic(variation))
+      ),
       access,
     });
     lists[getImperativeListName(access)] = list({
-      fields: {
-        name: text(),
-        ...objMerge(fieldMatrix.map(variation => createFieldImperative(variation))),
-      },
+      fields: Object.assign(
+        {
+          name: text(),
+        },
+        ...fieldMatrix.map(variation => createFieldImperative(variation))
+      ),
       access: {
         create: () => access.create,
         read: () => access.read,

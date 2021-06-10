@@ -6,7 +6,6 @@ import {
 import { serializeError } from 'serialize-error';
 import StackUtils from 'stack-utils';
 import cuid from 'cuid';
-import { omit } from '@keystone-next/utils-legacy';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
@@ -32,7 +31,7 @@ const safeFormatError = (error: GraphQLError) => {
   return serializeError(cleanError(error));
 };
 
-const duplicateError = (error: any, ignoreKeys: string[] = []) => {
+const duplicateError = ({ errors, ...error }: any) => {
   const newError = new error.constructor(error.message);
   if (error.stack) {
     if (isApolloErrorInstance(error)) {
@@ -44,22 +43,20 @@ const duplicateError = (error: any, ignoreKeys: string[] = []) => {
   if (error.code) {
     newError.code = error.code;
   }
-  return Object.assign(newError, omit(error, ignoreKeys));
+  return Object.assign(newError, error);
 };
 
 const flattenNestedErrors = (error: any) =>
   (error.errors || []).reduce(
     (errors: any[], nestedError: Error) => [
       ...errors,
-      ...[duplicateError(nestedError, ['errors']), ...flattenNestedErrors(nestedError)].map(
-        flattenedError => {
-          // Ensure the path is complete
-          if (Array.isArray(error.path) && Array.isArray(flattenedError.path)) {
-            flattenedError.path = [...error.path, ...flattenedError.path];
-          }
-          return flattenedError;
+      ...[duplicateError(nestedError), ...flattenNestedErrors(nestedError)].map(flattenedError => {
+        // Ensure the path is complete
+        if (Array.isArray(error.path) && Array.isArray(flattenedError.path)) {
+          flattenedError.path = [...error.path, ...flattenedError.path];
         }
-      ),
+        return flattenedError;
+      }),
     ],
     []
   );

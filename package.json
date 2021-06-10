@@ -28,7 +28,7 @@
     "publish-changed": "yarn build && changeset publish --public",
     "version-packages": "changeset version",
     "build": "preconstruct build",
-    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide",
+    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && cd examples-staging/basic && yarn keystone-next postinstall",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",

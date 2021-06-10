@@ -5,12 +5,11 @@ import {
   setupFromConfig,
   networkedGraphqlRequest,
   testConfig,
-  ProviderName,
 } from '@keystone-next/test-utils-legacy';
 import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import { KeystoneContext } from '@keystone-next/types';
+import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({

@@ -1,11 +1,7 @@
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
+import { DatabaseProvider } from '@keystone-next/types';
 
 const falseFn: (...args: any) => boolean = () => false;
 
@@ -25,7 +21,7 @@ const withAccessCheck = <T, Args extends unknown[]>(
   };
 };
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({
