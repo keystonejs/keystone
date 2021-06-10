@@ -1,5 +1,5 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp, image } from '@keystone-next/fields';
+import { select, relationship, text, timestamp, image, file } from '@keystone-next/fields';
 
 export const lists = createSchema({
   Post: list({
@@ -16,6 +16,7 @@ export const lists = createSchema({
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
       hero: image(),
+      attachment: file(),
     },
   }),
   Author: list({
