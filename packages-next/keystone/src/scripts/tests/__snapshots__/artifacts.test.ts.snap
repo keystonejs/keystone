@@ -31,7 +31,7 @@ export type TodoWhereInput = {
 };
 
 export type TodoWhereUniqueInput = {
-  readonly id: Scalars['ID'];
+  readonly id?: Scalars['ID'] | null;
 };
 
 export type SortTodosBy = 'id_ASC' | 'id_DESC' | 'title_ASC' | 'title_DESC';
@@ -77,6 +77,7 @@ export type TodoListTypeInfo = {
   backing: import('.prisma/client').Todo;
   inputs: {
     where: TodoWhereInput;
+    uniqueWhere: TodoWhereUniqueInput;
     create: TodoCreateInput;
     update: TodoUpdateInput;
   };
