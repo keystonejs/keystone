@@ -9,7 +9,7 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { jsx, Inline, Stack } from '@keystone-ui/core';
+import { jsx, Inline, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
 import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
 import {
@@ -27,6 +27,7 @@ interface TimePickerProps extends TextInputProps {
 }
 
 const TimePicker = ({
+  id,
   autoFocus,
   onBlur,
   disabled,
@@ -36,6 +37,7 @@ const TimePicker = ({
 }: TimePickerProps) => {
   return (
     <TextInput
+      id={id}
       autoFocus={autoFocus}
       maxLength={format === '24hr' ? 5 : 7}
       disabled={disabled}
@@ -74,8 +76,8 @@ export const Field = ({
   };
 
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange ? (
         <Stack>
           <Inline gap="small">
@@ -93,7 +95,12 @@ export const Field = ({
               {showValidation && showDateError(value.dateValue)}
             </Stack>
             <Stack>
+              <VisuallyHidden
+                as="label"
+                htmlFor={`${field.path}--time-input`}
+              >{`${field.label} time field`}</VisuallyHidden>
               <TimePicker
+                id={`${field.path}--time-input`}
                 onBlur={() => setTouchedSecondInput(true)}
                 disabled={onChange === undefined}
                 format="24hr"
