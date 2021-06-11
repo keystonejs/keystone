@@ -7,6 +7,7 @@ import Head from 'next/head';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { getHeadings, Heading } from '../lib/getHeadings';
 import { Code, InlineCode } from '../components/Code';
+import { Announce } from '../components/Announce';
 import { useMediaQuery } from '../lib/media';
 import { TableOfContents } from './TableOfContents';
 import { Sidebar } from './Sidebar';
@@ -38,6 +39,23 @@ export function Page({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
+        <Announce>
+          Help us improve KeystoneJS! ✨
+          <a
+            href="https://306ucv95ugh.typeform.com/to/gLuRTJIM"
+            rel="noopener noreferrer"
+            target="_blank"
+            css={{
+              marginLeft: '0.25rem',
+              color: 'var(--blue-400)',
+              ':hover': {
+                color: 'var(--blue-200)',
+              },
+            }}
+          >
+            Click here to share your thoughts in a 5-minute survey 🙏
+          </a>
+        </Announce>
         <Header />
         <div
           css={mq({
