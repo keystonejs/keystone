@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { HTMLAttributes } from 'react'
+import { HTMLAttributes } from 'react';
 
 export function Announce(props: HTMLAttributes<HTMLElement>) {
   return (
