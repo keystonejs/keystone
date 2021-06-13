@@ -15,5 +15,5 @@
     "jsx": "preserve"
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/remark-plugins/hints.js"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
