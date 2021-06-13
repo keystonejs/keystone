@@ -92,13 +92,7 @@ export function DocsPage({
   );
 }
 
-export function Page({
-  title,
-  children,
-}: {
-  children: ReactNode;
-  title?: string;
-}) {
+export function Page({ title, children }: { children: ReactNode; title?: string }) {
   const metaTitle = title ? `${title} - Keystone Next` : `Keystone Next`;
 
   return (
