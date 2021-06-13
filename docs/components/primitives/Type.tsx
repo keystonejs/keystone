@@ -90,31 +90,37 @@ export const styleMap = {
     ...common.body,
     fontSize: '1rem',
     fontWeight: 400,
+    lineHeight: 1.7,
   },
   body16bold: {
     ...common.body,
     fontSize: '1rem',
     fontWeight: 600,
+    lineHeight: 1.7,
   },
   body18: {
     ...common.body,
     fontSize: '1.125rem',
     fontWeight: 400,
+    lineHeight: 1.7,
   },
   body18bold: {
     ...common.body,
     fontSize: '1.125rem',
     fontWeight: 600,
+    lineHeight: 1.7,
   },
   body20: {
     ...common.body,
     fontSize: '1.25rem',
     fontWeight: 400,
+    lineHeight: 1.7,
   },
   body20bold: {
     ...common.body,
     fontSize: '1.25rem',
     fontWeight: 600,
+    lineHeight: 1.7,
   },
   body24: {
     ...common.body,
