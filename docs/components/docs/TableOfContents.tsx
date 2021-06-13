@@ -13,7 +13,7 @@ function sortVisible(allIds: (string | null)[], targetId: string | null) {
 }
 
 const observerOptions = {
-  rootMargin: '0px',
+  rootMargin: '10px',
   threshold: 1.0,
 };
 
