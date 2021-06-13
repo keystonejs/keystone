@@ -2,6 +2,7 @@
 import { jsx } from '@keystone-ui/core';
 import Link from 'next/link';
 
+import { Highlight } from '../primitives/Highlight';
 import { Wrapper } from '../primitives/Wrapper';
 import { Twitter } from '../icons/Twitter';
 import { GitHub } from '../icons/GitHub';
@@ -24,12 +25,8 @@ export function DocsHeader() {
           <Link href="/" passHref>
             <a
               css={{
-                backgroundImage: 'linear-gradient(to right, var(--grad1-1), var(--grad1-2))',
-                backgroundClip: 'text',
-                fontWeight: 600,
                 fontSize: 'var(--font-medium)',
-                lineHeight: '1.75rem',
-                color: 'transparent',
+                fontWeight: 600,
                 verticalAlign: 'middle',
                 transition: 'color 0.3s ease',
               }}
@@ -43,7 +40,7 @@ export function DocsHeader() {
                   verticalAlign: 'middle',
                 }}
               />
-              Keystone Next
+              <Highlight>Keystone Next</Highlight>
             </a>
           </Link>
           <span

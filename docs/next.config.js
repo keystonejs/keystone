@@ -30,6 +30,9 @@ module.exports = withPlugins([
     nextConfig.env = {
       siteUrl: 'https://next.keystonejs.com',
     };
+    nextConfig.future = {
+      webpack5: true,
+    };
     nextConfig.typescript = {
       ...nextConfig.typescript,
       // we run TS elsewhere, Next runs against a different TS config which it insists on existing
