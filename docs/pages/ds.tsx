@@ -4,6 +4,7 @@ import { Fragment, useState } from 'react';
 
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
+import { styleMap, Type } from '../components/primitives/Type';
 import { InlineCode } from '../components/primitives/Code';
 import { Status } from '../components/primitives/Status';
 import { Button } from '../components/primitives/Button';
@@ -52,24 +53,48 @@ export default function DS() {
 
   return (
     <Page>
-      <h1>DS</h1>
-      <h2>Contents</h2>
+      <Type as="h1" look="heading110" margin={'var(--space-large) 0'}>
+        Design System
+      </Type>
+      <Type id="contents" as="h2" look="heading64" margin={'var(--space-large) 0'}>
+        Contents
+      </Type>
       <ul>
         <li>
-          <a href="#colors">Colors</a>
+          <Type as="a" look="text16" href="#colors">
+            Colors
+          </Type>
         </li>
         <li>
-          <a href="#font-sizes">Font sizes</a>
+          <Type as="a" look="text16" href="#font-sizes">
+            Font sizes
+          </Type>
         </li>
         <li>
-          <a href="#font-stacks">Font stacks</a>
+          <Type as="a" look="text16" href="#font-stacks">
+            Font stacks
+          </Type>
         </li>
         <li>
-          <a href="#space">Spaces</a>
+          <Type as="a" look="text16" href="#space">
+            Spaces
+          </Type>
+        </li>
+        <li>
+          <Type as="a" look="text16" href="#type">
+            Type
+          </Type>
+        </li>
+        <li>
+          <Type as="a" look="text16" href="#components">
+            Components
+          </Type>
         </li>
       </ul>
       <Divider />
-      <h2 id="colors">Colors</h2>
+      <Type id="colors" as="h2" look="heading64" margin={'var(--space-large) 0'}>
+        Colors
+      </Type>
       <div
         css={{
           display: 'grid',
@@ -103,9 +128,9 @@ export default function DS() {
         ))}
       </div>
       <Divider />
-      <h2 id="font-sizes" css={{ marginTop: 'var(--space-xxlarge)' }}>
+      <Type id="font-sizes" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Font sizes
-      </h2>
+      </Type>
       {Object.entries(TYPESCALE).map(([name]) => (
         <span
           key={name}
@@ -119,9 +144,9 @@ export default function DS() {
         </span>
       ))}
       <Divider />
-      <h2 id="font-stacks" css={{ marginTop: 'var(--space-xxlarge)' }}>
+      <Type id="font-stacks" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Font stacks
-      </h2>
+      </Type>
       {Object.entries(TYPE).map(([name, stack]) => (
         <span
           key={name}
@@ -138,9 +163,9 @@ export default function DS() {
         </span>
       ))}
       <Divider />
-      <h2 id="space" css={{ marginTop: 'var(--space-xxlarge)' }}>
+      <Type id="space" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Space
-      </h2>
+      </Type>
       {Object.entries(SPACE).map(([name, size]) => (
         <Fragment key={name}>
           {name} - {size}
@@ -155,12 +180,25 @@ export default function DS() {
         </Fragment>
       ))}
       <Divider />
-      <h2 id="status" css={{ marginTop: 'var(--space-xxlarge)' }}>
+      <Type id="type" as="h2" look="heading64" margin={'var(--space-large) 0'}>
+        Type
+      </Type>
+      {Object.keys(styleMap).map(style => (
+        <Type id="type" look={style} css={{ display: 'block' }}>
+          Type {style}
+        </Type>
+      ))}
+      <Divider />
+      <Type id="components" as="h2" look="heading64" margin={'var(--space-xxlarge) 0 0 0'}>
         Components
-      </h2>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>InlineCode</h3>
+      </Type>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        InlineCode
+      </Type>
       <InlineCode>this.is('code')</InlineCode>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Status</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Status
+      </Type>
       <div
         css={{
           display: 'inline-grid',
@@ -174,9 +212,13 @@ export default function DS() {
         <Status look="makingItHappen" />
         <Status look="cleaningUp" />
       </div>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Emoji</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Emoji
+      </Type>
       <Emoji symbol="❤️" alt="Love" />
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Stack</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Stack
+      </Type>
       <Stack>
         <Box />
         <Box />
@@ -188,7 +230,9 @@ export default function DS() {
         <Box />
         <Box />
       </Stack>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Button</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Button
+      </Type>
       <div css={{ margin: 'var(--space-medium) 0' }}>
         <Stack orientation="horizontal">
           <Button>Button</Button>
@@ -218,7 +262,9 @@ export default function DS() {
           </Button>
         </Stack>
       </div>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Icons</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Icons
+      </Type>
       Set icons to:
       <ul>
         <li>
@@ -303,7 +349,9 @@ export default function DS() {
           </div>
         ))}
       </div>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Badge</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Badge
+      </Type>
       <div
         css={{
           display: 'grid',
@@ -316,7 +364,9 @@ export default function DS() {
         <Badge look="warning">New</Badge>
         <Badge look="danger">New</Badge>
       </div>
-      <h3 css={{ margin: 'var(--space-large) 0' }}>Highlight</h3>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Highlight
+      </Type>
       <p
         css={{
           fontSize: '3rem',

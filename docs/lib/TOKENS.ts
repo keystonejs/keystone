@@ -9,6 +9,8 @@ export const SPACE = {
 };
 
 export const TYPE = {
+  '--font-brand':
+    '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
   '--font-body':
     'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
   '--font-mono': '"Space Mono", monospace',
@@ -19,9 +21,9 @@ export const TYPESCALE = {
   '--font-xsmall': '0.875rem',
   '--font-small': '1rem',
   '--font-medium': '1.25rem',
-  '--font-large': '1.4rem',
-  '--font-xlarge': '1.8rem',
-  '--font-xxlarge': '2.4rem',
+  '--font-large': '1.5rem',
+  '--font-xlarge': '1.875rem',
+  '--font-xxlarge': '2.625rem',
 };
 
 export const COLORS = {
