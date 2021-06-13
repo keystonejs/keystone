@@ -1,7 +1,7 @@
 const SIGNUP_ENDPOINT = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 describe('on successful submit', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000');
+    cy.visit('http://localhost:8000/docs');
     cy.server();
     cy.route('POST', SIGNUP_ENDPOINT, {
       success: true,
@@ -25,7 +25,7 @@ describe('on successful submit', () => {
 
 describe('on unsuccessful server side validation', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000');
+    cy.visit('http://localhost:8000/docs');
     cy.server();
     cy.route({
       method: 'POST',
@@ -52,7 +52,7 @@ describe('on unsuccessful server side validation', () => {
 
 describe('on unsuccessful client side validation', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000');
+    cy.visit('http://localhost:8000/docs');
     cy.get('input[type=text]').type('cc.le');
     cy.get('form button').click();
   });

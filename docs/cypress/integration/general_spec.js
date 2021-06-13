@@ -1,6 +1,6 @@
 describe('all pages', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000');
+    cy.visit('http://localhost:8000/docs');
   });
   it('should have basic markup', () => {
     return cy.get('nav a').each(navItem => {
