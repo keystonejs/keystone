@@ -1,0 +1,187 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Release
+
+## 2nd June 2021
+
+### What's New
+
+We have a new JSON field ✨, a bunch of new learning resources, and plenty of under the hood optimisations in this big release. 💪
+
+```typescript
+"@keystone-next/adapter-prisma-legacy": "8.0.0",
+"@keystone-next/admin-ui-utils": "5.0.1",
+"@keystone-next/auth": "26.0.0",
+"@keystone-next/cloudinary": "5.0.1",
+"@keystone-next/fields": "10.0.0",
+"@keystone-next/fields-document": "6.0.1",
+"@keystone-next/keystone": "19.0.0",
+"@keystone-next/test-utils-legacy": "20.0.0",
+"@keystone-next/types": "19.0.0",
+"@keystone-next/utils-legacy": "11.0.1",
+```
+
+### JSON Field 👩🏻‍💻
+
+Thanks to the new `json` field, you can now represent JSON blobs in your backend. Check out the [JSON example project](https://github.com/keystonejs/keystone/tree/master/examples/json) to learn more.
+
+```
+Package: list({
+  fields: {
+    pkgjson: json({ isRequired: true }),
+    isPrivate: checkbox(),
+    ownedBy: relationship({ ref: 'Person.packages', many: false }),
+  },
+}),
+```
+
+### More Learning Resources 🧑‍🏫
+
+In addition to the JSON one above, we added new examples for:
+
+- Setting [Default Values](https://github.com/keystonejs/keystone/tree/master/examples/default-values) for fields.
+- [Extending the GraphQL Schema](https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema) with custom queries and mutations.
+
+We also published a tutorial that shows you [how to embed Keystone and SQLite in a Next.js app](https://next.keystonejs.com/tutorials/embedded-mode-with-sqlite-nextjs). The end result is an app with a queryable GraphQL endpoint based on your Keystone schema that you can run live on Vercel – for free! 🚀
+
+### sortBy deprecated with improvements to orderBy 🤹‍♂️
+
+We deprecated the `sortBy` GraphQL filter and updated the `orderBy` GraphQL filter with an improved API.
+
+Previously a `User` list's `allUsers` query would have the argument:
+
+```graphql
+orderBy: String
+```
+
+The new API gives it the argument:
+
+```graphql
+orderBy: [UserOrderByInput!]! = []
+```
+
+where
+
+```graphql
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  score: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+```
+
+Rather than writing `allUsers(orderBy: "name_ASC")` you now write `allUsers(orderBy: { name: asc })`. You can also order by multiple fields, e.g. `allUsers(orderBy: [{ score: asc }, { name: asc }])`.
+
+Note: each `UserOrderByInput` must have exactly one key, or else an error will be returned.
+
+### withItemData replaced with sessionData 🔧
+
+We removed `withItemData` in favour of a `sessionData` option to the `createAuth()` function.
+
+Previously, `withItemData` would be used to wrap the `config.session` argument:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { statelessSessions, withAuthData } from '@keystone-next/keystone/session';
+import { text, password, checkbox } from '@keystone-next/fields';
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+});
+
+const session = statelessSessions({ secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --' });
+
+export default withAuth(
+  config({
+    lists: createSchema({
+
+        fields: {
+          email: text({ isUnique: true }),
+          password: password(),
+          isAdmin: checkbox(),
+        },
+      }),
+      session: withItemData(session, { User: 'id isAdmin' }),
+    }),
+  })
+);
+```
+
+Now, the fields to populate are configured on sessionData in createAuth, and withItemData is completely removed. 🧹
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { statelessSessions } from '@keystone-next/keystone/session';
+import { text, password, checkbox } from '@keystone-next/fields';
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id isAdmin',
+});
+
+const session = statelessSessions({ secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --' });
+
+export default withAuth(
+  config({
+    lists: createSchema({
+
+        fields: {
+          email: text({ isUnique: true }),
+          password: password(),
+          isAdmin: checkbox(),
+        },
+      }),
+      session,
+    }),
+  })
+);
+```
+
+### More consistent and predictable createItems, updateItems, and deleteItems mutations 🧘‍♀️
+
+We fixed the behaviour of `createItems`, `updateItems`, and `deleteItems` mutations to be consistent and predictable.
+
+Previously, these mutations could return items in an arbitrary order. They now return items in the same order they were provided to the mutation.
+
+Previously, if there was an error (e.g. validation) on one or more of the items – the return value would be `null` and a single top level error would be returned. The state of the database in this case was non-deterministic.
+
+The new behaviour is to return values for all items created, with `null` values for those that had errors. These errors are returned in the `errors` array and have paths which correctly point to the `null` values in the returned array. All the valid operations will be completed, leaving the database in a deterministic state.
+
+Previously, if items were filtered out by declarative access control, then no error would be returned, and only those accessible items would be returned. Now the returned data will contain `null` values for those items which couldn't accessed, and the `errors` array will contain errors with paths which correctly point to the `null` values in the returned array.
+
+Previously, if static access control denied access to the mutation, then `null` was returned, and a single `error` was returned. Now, an array of `null`s is returned, with a separate error for each object. This makes the behaviour of static and declarative access control consistent.
+
+### Counts Improved 🔢
+
+The GraphQL field `_all<path>Meta { count }` generated for `many` relationships has been deprecated in favour of a new field `<path>Count`, which directly returns the count.
+
+A `posts` relationship field would have the following field added to the API:
+
+```graphql
+postsCount(where: PostWhereInput! = {}): Int
+```
+
+### Prisma updated to 2.24.0 ⬆️
+
+We've updated our Prisma dependency from `2.22.1` to `2.24.0`! Check out the [Prisma release notes](https://github.com/prisma/prisma/releases) for more details.
+
+### Credits 🎉
+
+- Thanks [@jonowu](https://github.com/jonowu) for adding a `sameSite` option to the session options for cookies. Can be one of true, false, 'strict', 'lax' or 'none' as per Mozilla docs. See the [PR](https://github.com/keystonejs/keystone/pull/5774) for more details!
+
+- Thanks [@gabrielkuettel](https://github.com/gabrielkuettel) for fixing a typo [Database Items API](https://next.keystonejs.com/apis/db-items) page!
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-02) on GitHub.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

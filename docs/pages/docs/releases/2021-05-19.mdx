@@ -1,0 +1,38 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Release
+
+## 19th May 2021
+
+```typescript
+"@keystone-next/admin-ui": "15.0.0",
+"@keystone-next/admin-ui-utils": "5.0.0",
+"@keystone-next/adapter-prisma-legacy": "7.0.0",
+"@keystone-next/access-control-legacy": "11.0.0",
+"@keystone-next/auth": "25.0.0",
+"@keystone-next/cloudinary": "5.0.0",
+"@keystone-next/document-renderer": "3.0.0",
+"@keystone-next/fields": "9.0.0",
+"@keystone-next/fields-document": "6.0.0",
+"@keystone-next/keystone": "18.0.0",
+"@keystone-next/session-store-redis": "3.0.0",
+"@keystone-next/test-utils-legacy": "19.0.0",
+"@keystone-next/types": "18.0.0",
+"@keystone-next/utils-legacy": "11.0.0",
+```
+
+### Node updates 🚀
+
+Node.JS engines in our packages have been updated to `12.x` and `14.x` to keep up to date with the latest versions of our dependencies.
+
+### Admin UI package moved 🚚
+
+`@keystone-next/admin-ui` now lives inside `@keystone-next/keystone/admin-ui`.
+
+If you were directly importing from `@keystone-next/admin-ui` you can now import the same items from `@keystone-next/keystone/admin-ui`.
+
+⚠️ Please remove references to `@keystone-next/admin-ui` in your `package.json` files.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-19) on GitHub.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

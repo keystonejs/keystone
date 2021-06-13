@@ -1,0 +1,370 @@
+import { Markdown } from '../../../components/Markdown';
+
+# GraphQL API
+
+Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](./schema) definition provided in the system [config](./config).
+
+Consider the following system definition:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({ fields: { name: text() } }),
+  }),
+  /* ... */
+});
+```
+
+This system will generate the following GraphQL API.
+
+**Note:** The names and types of the generated queries and mutations are based on the names of the lists and fields in the system config.
+
+```graphql
+type Query {
+  """ Search for the User item with the matching ID. """
+  User(where: UserWhereUniqueInput!): User
+
+  """ Search for all User items which match the where clause. """
+  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
+
+  """ Perform a meta-query on all User items which match the where clause. """
+  _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
+}
+
+type Mutation {
+  """ Create a single User item. """
+  createUser(data: UserCreateInput): User
+
+  """ Create multiple User items. """
+  createUsers(data: [UsersCreateInput]): [User]
+
+  """ Update a single User item by ID. """
+  updateUser(id: ID!, data: UserUpdateInput): User
+
+  """ Update multiple User items by ID. """
+  updateUsers(data: [UsersUpdateInput]): [User]
+
+  """ Delete a single User item by ID. """
+  deleteUser(id: ID!): User
+
+  """ Delete multiple User items by ID. """
+  deleteUsers(ids: [ID!]): [User]
+}
+
+""" A keystone list """
+type User {
+  id: ID!
+  name: String
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input UserUpdateInput {
+  name: String
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserCreateInput {
+  name: String
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+type _QueryMeta {
+  count: Int
+}
+```
+
+## Queries
+
+### User
+
+```graphql
+type Query {
+  """ Search for the User item with the matching ID. """
+  User(where: UserWhereUniqueInput!): User
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### allUsers
+
+```graphql
+type Query {
+  """ Search for all User items which match the where clause. """
+  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+<!-- prettier-ignore -->
+### usersCount
+
+```graphql
+type Query {
+  usersCount(where: UserWhereInput! = {}): Int!
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type _QueryMeta {
+  count: Int
+}
+```
+
+## Mutations
+
+### createUser
+
+```graphql
+type Mutation {
+  """ Create a single User item. """
+  createUser(data: UserCreateInput): User
+}
+
+input UserCreateInput {
+  name: String
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### createUsers
+
+```graphql
+type Mutation {
+  """ Create multiple User items. """
+  createUsers(data: [UsersCreateInput]): [User]
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserCreateInput {
+  name: String
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### updateUser
+
+```graphql
+type Mutation {
+  """ Update a single User item by ID. """
+  updateUser(id: ID!, data: UserUpdateInput): User
+}
+
+input UserUpdateInput {
+  name: String
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### updateUsers
+
+```graphql
+type Mutation {
+  """ Update multiple User items by ID. """
+  updateUsers(data: [UsersUpdateInput]): [User]
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserUpdateInput {
+  name: String
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### deleteUser
+
+```graphql
+type Mutation {
+  """ Delete a single User item by ID. """
+  deleteUser(id: ID!): User
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+### deleteUsers
+
+```graphql
+type Mutation {
+  """ Delete multiple User items by ID. """
+  deleteUsers(ids: [ID!]): [User]
+}
+
+type User {
+  id: ID!
+  name: String
+}
+```
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

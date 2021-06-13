@@ -34,8 +34,12 @@ export default function App({ Component, pageProps }: AppProps) {
         *, ::before, ::after {
           box-sizing: border-box;
         }
+        html {
+          height: 100%;
+        }
         body {
           font-size: var(--font-small);
+          height: 100%;
         }
         blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
           margin: 0;
@@ -44,20 +48,36 @@ export default function App({ Component, pageProps }: AppProps) {
           text-decoration: none;
         }
         .hint {
-          border-radius: 0.375rem;
+          border-radius: 4px;
           padding: 1rem;
         }
         .hint.tip {
-          background: var(--blue-50);
-          border: 1px solid var(--blue-100);
+          background: var(--info-bg);
+          border-left: 6px solid var(--info);
         }
         .hint.warn {
-          background: var(--yellow-50);
-          border: 1px solid var(--yellow-100);
+          background: var(--warning-bg);
+          border-left: 6px solid var(--warning);
         }
         .hint.error {
-          background: var(--red-50);
-          border: 1px solid var(--red-100);
+          background: var(--error-bg);
+          border-left: 6px solid var(--error);
+        }
+        *:focus-visible, input:focus-visible, button:focus-visible, [type="submit"]:focus-visible {
+          outline: 1px dashed var(--focus);
+          outline-offset: 3px;
+        }
+        input:focus-visible {
+          outline-style: solid;
+          outline-width: 3px;
+          outline-offset: 0;
+        }
+        #__next {
+          min-height: 100%;
+          display: grid;
+          grid-template-rows: auto 1fr;
+          grid-template-areas: "header" "main" "footer";
+          grid-template-columns: minmax(0, 1fr);
         }
       `}
       />

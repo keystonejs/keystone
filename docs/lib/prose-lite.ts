@@ -1,12 +1,11 @@
 export const proseStyles = {
-  color: 'var(--gray-800)',
-  maxWidth: '65ch',
+  color: 'var(--code)',
   'img, video': {
     maxWidth: '100%',
     height: 'auto',
   },
   '[class~="lead"]': {
-    color: 'var(--gray-600)',
+    color: 'var(--code)',
     fontSize: 'var(--font-medium)',
     lineHeight: 1.6,
     marginTop: '1.2em',
@@ -16,12 +15,12 @@ export const proseStyles = {
     content: '""',
   },
   a: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     textDecoration: 'underline',
     fontWeight: 500,
   },
   strong: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     fontWeight: 600,
   },
   'ol[type="A"], ol[type="A" s]': {
@@ -47,13 +46,13 @@ export const proseStyles = {
     content: 'counter(list-item, var(--list-counter-style, decimal)) "."',
     position: 'absolute' as const,
     fontWeight: 400,
-    color: 'var(--gray-500)',
+    color: 'var(--text)',
     left: '0',
   },
   'ul > li::before': {
     content: '""',
     position: 'absolute' as const,
-    backgroundColor: 'var(--gray-300)',
+    backgroundColor: 'var(--muted)',
     borderRadius: '50%',
     width: '0.375em',
     height: '0.375em',
@@ -61,7 +60,7 @@ export const proseStyles = {
     left: '0.25em',
   },
   hr: {
-    borderColor: 'var(--gray-200)',
+    borderColor: 'var(--muted)',
     borderTopWidth: 1,
     marginTop: '3em',
     marginBottom: '3em',
@@ -69,16 +68,16 @@ export const proseStyles = {
   blockquote: {
     fontWeight: 500,
     fontStyle: 'italic',
-    color: 'var(--gray-900)',
+    color: 'var(--text)',
     borderLeftWidth: '0.25rem',
-    borderLeftColor: 'var(--gray-200)',
+    borderLeftColor: 'var(--border)',
     quotes: '"\\201C""\\201D""\\2018""\\2019"',
     marginTop: '1.6em',
     marginBottom: '1.6em',
     paddingLeft: '1em',
   },
   h1: {
-    color: 'var(--gray-900)',
+    color: 'var(--text)',
     fontWeight: 800,
     fontSize: 'var(--font-xxlarge)',
     marginTop: '0',
@@ -86,7 +85,7 @@ export const proseStyles = {
     lineHeight: 1.1111111,
   },
   h2: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     fontWeight: 700,
     fontSize: 'var(--font-large)',
     marginTop: '2em',
@@ -94,7 +93,7 @@ export const proseStyles = {
     lineHeight: 1.3333333,
   },
   h3: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     fontWeight: 600,
     fontSize: 'var(--font-medium)',
     marginTop: '1.6em',
@@ -102,30 +101,30 @@ export const proseStyles = {
     lineHeight: 1.6,
   },
   h4: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     fontWeight: 600,
     marginTop: '1.5em',
     marginBottom: '0.5em',
     lineHeight: 1.5,
   },
   'figure figcaption': {
-    color: 'var(--gray-500)',
+    color: 'var(--text-heading)',
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.4285714,
     marginTop: '0.8571428571em',
   },
   code: {
-    color: 'var(--gray-900)',
+    color: 'var(--text-heading)',
     fontWeight: 600,
   },
   'a code': {
-    color: 'var(--gray-900)',
+    color: 'var(--code)',
   },
   pre: {
     overflowX: 'auto' as const,
-    color: 'var(--gray-800)',
-    backgroundColor: 'var(--gray-50)',
-    border: `1px solid ${'var(--gray-100)'}`,
+    color: 'var(--code)',
+    backgroundColor: 'var(--code-bg)',
+    border: `1px solid ${'var(--border)'}`,
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.7142857,
     marginTop: '1.7142857143em',
@@ -160,10 +159,10 @@ export const proseStyles = {
     lineHeight: 1.7142857,
   },
   thead: {
-    color: 'var(--gray-900)',
+    color: 'var(--text)',
     fontWeight: 600,
     borderBottomWidth: '1px',
-    borderBottomColor: 'var(--gray-300)',
+    borderBottomColor: 'var(--border)',
   },
   'thead th': {
     verticalAlign: 'bottom',
@@ -173,7 +172,7 @@ export const proseStyles = {
   },
   'tbody tr': {
     borderBottomWidth: '1px',
-    borderBottomColor: 'var(--gray-200)',
+    borderBottomColor: 'var(--border)',
   },
   'tbody tr:last-child': {
     borderBottomWidth: '0',

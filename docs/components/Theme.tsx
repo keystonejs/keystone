@@ -12,7 +12,7 @@ export function Theme() {
           ...SPACE,
           ...TYPE,
           ...TYPESCALE,
-          '--wrapper-width': '67rem',
+          '--wrapper-width': '90rem',
         },
       }}
     />

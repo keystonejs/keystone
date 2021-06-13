@@ -1,17 +1,21 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { HTMLAttributes } from 'react';
 
-export function Announce(props: HTMLAttributes<HTMLElement>) {
+import { Wrapper } from './primitives/Wrapper';
+
+export function Announce({ children, ...props }) {
   return (
     <div
       css={{
-        background: 'var(--black)',
-        color: 'var(--white)',
-        padding: '0.7rem',
+        '--focus': '#fff',
+        background: 'var(--brand-bg)',
+        color: 'var(--brand-text)',
+        padding: '1rem',
         textAlign: 'center',
       }}
       {...props}
-    />
+    >
+      <Wrapper>{children}</Wrapper>
+    </div>
   );
 }

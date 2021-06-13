@@ -1,0 +1,26 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Release
+
+## 23rd March 2021
+
+```typescript
+"@keystone-next/admin-ui": "12.0.1",
+"@keystone-next/auth": "19.0.0",
+"@keystone-next/fields-document": "3.2.0",
+"@keystone-next/fields-legacy": "23.2.0",
+"@keystone-next/fields-cloudinary-image-legacy": "3.2.0",
+"@keystone-next/test-utils-legacy": "14.0.1",
+```
+
+### Added support for SQLite with Prisma 🎉
+
+You can now use SQLite to store your data via Prisma. The SQLite rollout also includes support for the `File` and `Cloudinary` field types.
+
+### Noteworthy bug-squashing 🐛
+
+Mitchell [solved a bug](https://github.com/keystonejs/keystone/pull/5168) where `withItemData` returned sessions that don't match an item, rather than treating them as invalid.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-23) on GitHub.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
