@@ -1,6 +1,6 @@
 describe('table of contents', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000/apis/config');
+    cy.visit('http://localhost:8000/docs/apis/config');
   });
   it('should scroll the selected heading to view', () => {
     cy.isNotInViewport('#extend-graphql-schema');
