@@ -184,7 +184,7 @@ export default function DS() {
         Type
       </Type>
       {Object.keys(styleMap).map(style => (
-        <Type id="type" look={style} css={{ display: 'block' }}>
+        <Type key={style} id="type" look={style} css={{ display: 'block' }}>
           Type {style}
         </Type>
       ))}
@@ -367,41 +367,26 @@ export default function DS() {
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
         Highlight
       </Type>
-      <p
-        css={{
-          fontSize: '3rem',
-          fontWeight: 900,
-        }}
-      >
+      <Type as="p" look="heading84">
         Highlighting a <Highlight>part of some text</Highlight>
-      </p>
-      <p
+      </Type>
+      <Type
+        as="p"
+        look="heading84"
         css={{
-          fontSize: '3rem',
-          fontWeight: 900,
-          maxWidth: '22ch',
-          lineHeight: 1.2,
+          maxWidth: '10em',
           textAlign: 'right',
+          margin: '0 0 0 auto',
         }}
       >
         Highlighting a <Highlight look="grad2">part of some text</Highlight>
-      </p>
-      <p
-        css={{
-          fontSize: '3rem',
-          fontWeight: 900,
-        }}
-      >
-        Highlighting a <Highlight look="grad3">part of some text</Highlight>
-      </p>
-      <p
-        css={{
-          fontSize: '3rem',
-          fontWeight: 900,
-        }}
-      >
+      </Type>
+      <Type as="p" look="heading110">
+        Highlighting <Highlight look="grad3">a part</Highlight>
+      </Type>
+      <Type as="p" look="heading84">
         Highlighting a <Highlight look="grad4">part of</Highlight> some text
-      </p>
+      </Type>
     </Page>
   );
 }
