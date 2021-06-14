@@ -9,9 +9,9 @@ type Post {
   content: String
   counts: PostCounts
   excerpt(length: Int! = 200): String
-  relatedPosts: [Post!]
   publishDate: String
   author: Author
+  authorName: String
 }
 
 enum PostStatusType {
@@ -155,6 +155,7 @@ type Author {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
+  latestPost: Post
 }
 
 type _QueryMeta {
