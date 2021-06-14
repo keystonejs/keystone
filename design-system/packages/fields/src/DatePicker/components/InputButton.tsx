@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon';
 import { useInputTokens, useInputStyles } from '../..';
@@ -77,6 +77,7 @@ const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       }}
       {...props}
     >
+      <VisuallyHidden as="span">clear date value</VisuallyHidden>
       <XIcon size="small" />
     </Adornment>
   );
