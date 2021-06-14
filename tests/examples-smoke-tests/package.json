@@ -14,7 +14,7 @@
     "@types/tough-cookie": "^4.0.0",
     "execa": "^5.1.1",
     "node-fetch": "^2.6.1",
-    "playwright": "^1.11.1",
+    "playwright": "^1.12.2",
     "tree-kill": "^1.2.2"
   }
 }
