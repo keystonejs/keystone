@@ -4,7 +4,7 @@
 '@keystone-next/types': major
 ---
 
-Added support for filtering uniquely by text and integer fields like this:
+Added support for filtering uniquely by text and integer fields that have `isUnique: true` like this:
 
 ```graphql
 query {
