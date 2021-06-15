@@ -5,8 +5,8 @@ import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
   req?: IncomingMessage;
-  db: { lists: KeystoneDbAPI<any> };
-  lists: KeystoneListsAPI<any>;
+  db: { lists: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>> };
+  lists: KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>;
   graphql: KeystoneGraphQLAPI<any>;
   sudo: () => KeystoneContext;
   exitSudo: () => KeystoneContext;
