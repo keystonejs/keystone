@@ -37,7 +37,7 @@ isPublished: virtual({
 
 ### `counts`
 
-The `counts` field shows using a GraphQL object rather than a scalar.
+The `counts` field shows how to return a GraphQL object rather than a scalar from a virtual field.
 
 ```ts
 counts: virtual({
