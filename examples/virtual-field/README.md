@@ -1,8 +1,7 @@
 ## Feature Example - virtual field
 
-This project implements a basic **Blog**, with `Posts` and `Authors`.
-
-You can use it as a starting place for learning how to use Keystone.
+This project demonstrates how to add virtual fields to a Keystone list
+It builds on the [Blog](../blog) starter project.
 
 ## Instructions
 
