@@ -14,8 +14,10 @@ export type BaseGeneratedListTypes = {
       readonly search?: string | null;
       readonly first?: number | null;
       readonly skip?: number | null;
-      readonly orderBy?: readonly Record<string, 'asc' | 'desc' | null>[];
-      readonly sortBy?: ReadonlyArray<string> | null;
+      readonly orderBy?:
+        | Record<string, 'asc' | 'desc' | null>
+        | readonly Record<string, 'asc' | 'desc' | null>[];
+      readonly sortBy?: string | ReadonlyArray<string> | null;
     };
   };
 };
