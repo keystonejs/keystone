@@ -9,7 +9,7 @@ type Post {
   content: String
   counts: PostCounts
   excerpt(length: Int! = 200): String
-  relatedPosts: [Post]
+  relatedPosts: [Post!]
   publishDate: String
   author: Author
 }
