@@ -3784,12 +3784,12 @@ apollo-tracing@^0.15.0:
     apollo-server-env "^3.1.0"
     apollo-server-plugin-base "^0.13.0"
 
-apollo-upload-client@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-15.0.0.tgz#02ad5a156c146c13f3a93b9658196e5d73a73fca"
-  integrity sha512-7kyBwflLTqRhfsNIIBc94z1Row3WVWOgLm77izAuG3YJEzUbpy8k4775G40j3xlToSey5c7CR/9NOdoDcQw/xg==
+apollo-upload-client@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-16.0.0.tgz#704c9bc21e12bd4687172876eb927cf756b2e524"
+  integrity sha512-aLhYucyA0T8aBEQ5g+p13qnR9RUyL8xqb8FSZ7e/Kw2KUOsotLUlFluLobqaE7JSUFwc6sKfXIcwB7y4yEjbZg==
   dependencies:
-    extract-files "^10.0.0"
+    extract-files "^11.0.0"
 
 apollo-utilities@^1.0.1, apollo-utilities@^1.3.0:
   version "1.3.4"
@@ -6474,10 +6474,10 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-extract-files@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-10.0.0.tgz#228b1da1d910971cf8d7f1ed259653c6001ba5ad"
-  integrity sha512-4KXYOSf8SlMlQCj94Ygy89xIZU2GTs0HU2Nz9mG2/F5TKsHyq/3sDWGjHgHmfw9RhXF3hO+pBKyC6JfIHD52bw==
+extract-files@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-11.0.0.tgz#b72d428712f787eef1f5193aff8ab5351ca8469a"
+  integrity sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==
 
 extract-zip@^1.7.0:
   version "1.7.0"
