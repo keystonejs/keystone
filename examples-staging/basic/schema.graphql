@@ -171,7 +171,8 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
-  id: ID!
+  id: ID
+  email: String
 }
 
 enum SortUsersBy {
@@ -299,7 +300,7 @@ input PhoneNumberWhereInput {
 }
 
 input PhoneNumberWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPhoneNumbersBy {
@@ -395,7 +396,7 @@ input PostWhereInput {
 }
 
 input PostWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPostsBy {

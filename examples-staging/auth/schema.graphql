@@ -42,7 +42,8 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
-  id: ID!
+  id: ID
+  email: String
 }
 
 enum SortUsersBy {

@@ -135,6 +135,7 @@ export type ${listTypeInfoName} = {
   backing: import(".prisma/client").${listKey};
   inputs: {
     where: ${gqlNames.whereInputName};
+    uniqueWhere: ${gqlNames.whereUniqueInputName};
     create: ${gqlNames.createInputName};
     update: ${gqlNames.updateInputName};
   };

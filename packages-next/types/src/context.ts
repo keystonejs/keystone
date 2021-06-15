@@ -34,7 +34,9 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGe
         args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
       ): Promise<readonly Record<string, any>[]>;
       findOne(
-        args: { readonly where: { readonly id: string } } & ResolveFields
+        args: {
+          readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+        } & ResolveFields
       ): Promise<Record<string, any>>;
       count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
       updateOne(
@@ -88,7 +90,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
       args?: KeystoneListsTypeInfo[Key]['args']['listQuery']
     ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
     findOne(args: {
-      readonly where: { readonly id: string };
+      readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
     }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
     updateOne(args: {
