@@ -11,7 +11,11 @@ export const subfieldName = 'isSet';
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
-export const getTestFields = () => ({ name: text(), password: password({ minLength: 4 }) });
+export const getTestFields = () => ({
+  name: text(),
+  password: password({ minLength: 4 }),
+  passwordRejectCommon: password({ rejectCommon: true }),
+});
 
 export const initItems = () => {
   return [
@@ -36,3 +40,36 @@ export const storedValues = () => [
 ];
 
 export const supportedFilters = () => ['isSet'];
+
+export const crudTests = (keystoneTestWrapper: any) => {
+  test(
+    'setting a password below the minLength fails',
+    keystoneTestWrapper(async ({ context }: { context: any }) => {
+      await expect(
+        context.lists.Test.createOne({
+          data: { password: '123' },
+        })
+      ).rejects.toMatchInlineSnapshot(
+        `[GraphQLError: [password:minLength:Test:password] Value must be at least 4 characters long.]`
+      );
+    })
+  );
+  test(
+    'setting a common password fails',
+    keystoneTestWrapper(async ({ context }: { context: any }) => {
+      await expect(
+        context.lists.Test.createOne({
+          data: { passwordRejectCommon: 'password' },
+          query: ``,
+        })
+      ).rejects.toMatchInlineSnapshot(
+        `[GraphQLError: [password:rejectCommon:Test:passwordRejectCommon] Common and frequently-used passwords are not allowed.]`
+      );
+      const data = await context.lists.Test.createOne({
+        data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
+        query: `passwordRejectCommon {isSet}`,
+      });
+      expect(data.passwordRejectCommon.isSet).toBe(true);
+    })
+  );
+};

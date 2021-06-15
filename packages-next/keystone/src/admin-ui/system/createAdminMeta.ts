@@ -1,5 +1,5 @@
 import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
-import { humanize } from '@keystone-next/utils-legacy';
+import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
 export function createAdminMeta(

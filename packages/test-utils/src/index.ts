@@ -13,37 +13,32 @@ import {
   requirePrismaClient,
   generateNodeModulesArtifacts,
 } from '@keystone-next/keystone/artifacts';
-import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
+import type { DatabaseProvider, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
-export type ProviderName = 'postgresql' | 'sqlite';
-
-const hashPrismaSchema = memoizeOne(prismaSchema =>
+const _hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 
 // Users should use testConfig({ ... }) in place of config({ ... }) when setting up
 // their system for test. We explicitly don't allow them to control the 'db' or 'ui'
 // properties as we're going to set that up as part of setupFromConfig.
-type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
+export type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
 export const testConfig = (config: TestKeystoneConfig) => config;
 
-const alreadyGeneratedProjects = new Set<string>();
+const _alreadyGeneratedProjects = new Set<string>();
 
-async function setupFromConfig({
+export async function setupFromConfig({
   provider,
   config: _config,
 }: {
-  provider: ProviderName;
+  provider: DatabaseProvider;
   config: TestKeystoneConfig;
 }) {
+  const enableLogging = false; // Turn this on if you need verbose debug info
   const config = initConfig({
     ..._config,
-    db: {
-      url: process.env.DATABASE_URL!,
-      provider,
-      enableLogging: false, // Turn this on if you need verbose debug info
-    },
+    db: { url: process.env.DATABASE_URL!, provider, enableLogging },
     ui: { isDisabled: true },
   });
 
@@ -51,13 +46,13 @@ async function setupFromConfig({
 
   const prismaClient = await (async () => {
     const artifacts = await getCommittedArtifacts(graphQLSchema, config);
-    const hash = hashPrismaSchema(artifacts.prisma);
+    const hash = _hashPrismaSchema(artifacts.prisma);
     if (provider === 'postgresql') {
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;
     }
     const cwd = path.resolve('.api-test-prisma-clients', hash);
-    if (!alreadyGeneratedProjects.has(hash)) {
-      alreadyGeneratedProjects.add(hash);
+    if (!_alreadyGeneratedProjects.has(hash)) {
+      _alreadyGeneratedProjects.add(hash);
       fs.mkdirSync(cwd, { recursive: true });
       await writeCommittedArtifacts(artifacts, cwd);
       await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
@@ -71,26 +66,15 @@ async function setupFromConfig({
     return requirePrismaClient(cwd);
   })();
 
-  const keystone = getKeystone(prismaClient);
+  const { connect, disconnect, createContext } = getKeystone(prismaClient);
 
-  const app = await createExpressServer(
-    config,
-    graphQLSchema,
-    keystone.createContext,
-    true,
-    '',
-    false
-  );
+  // (config, graphQLSchema, createContext, dev, projectAdminPath, isVerbose)
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
-  return {
-    connect: () => keystone.connect(),
-    disconnect: () => keystone.disconnect(),
-    context: keystone.createContext().sudo(),
-    app,
-  };
+  return { connect, disconnect, context: createContext().sudo(), app };
 }
 
-function networkedGraphqlRequest({
+export function networkedGraphqlRequest({
   app,
   query,
   variables = undefined,
@@ -115,21 +99,19 @@ function networkedGraphqlRequest({
       expect(res.statusCode).toBe(expectedStatusCode);
       return { ...JSON.parse(res.text), res };
     })
-    .catch((error: Error) => ({
-      errors: [error],
-    }));
+    .catch((error: Error) => ({ errors: [error] }));
 }
 
-type Setup = {
+export type Setup = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   context: KeystoneContext;
   app: express.Application;
 };
 
-function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise<void> | void) {
+function _keystoneRunner(provider: DatabaseProvider, tearDownFunction: () => Promise<void> | void) {
   return function (
-    setupKeystoneFn: (provider: ProviderName) => Promise<Setup>,
+    setupKeystoneFn: (provider: DatabaseProvider) => Promise<Setup>,
     testFn?: (setup: Setup) => Promise<void>
   ) {
     return async function () {
@@ -158,8 +140,8 @@ function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise
   };
 }
 
-function _before(provider: ProviderName) {
-  return async function (setupKeystone: (provider: ProviderName) => Promise<Setup>) {
+function _before(provider: DatabaseProvider) {
+  return async function (setupKeystone: (provider: DatabaseProvider) => Promise<Setup>) {
     const setup = await setupKeystone(provider);
     await setup.connect();
     return setup;
@@ -173,7 +155,7 @@ function _after(tearDownFunction: () => Promise<void> | void) {
   };
 }
 
-function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
+export function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   return (['postgresql', 'sqlite'] as const)
     .filter(provider => typeof only === 'undefined' || provider === only)
     .map(provider => ({
@@ -183,5 +165,3 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
       after: _after(() => {}),
     }));
 }
-
-export { setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };

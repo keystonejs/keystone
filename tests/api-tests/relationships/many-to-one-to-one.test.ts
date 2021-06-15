@@ -1,5 +1,5 @@
-import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+import { testConfig } from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
@@ -85,7 +85,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
   });
 };
 
-const setupKeystone = (provider: ProviderName) =>
+const setupKeystone = (provider: DatabaseProvider) =>
   setupFromConfig({
     provider,
     config: testConfig({

@@ -153,7 +153,7 @@ export type FileData = {
 };
 
 export type FilesContext = {
-  getSrc: (mode: AssetMode, filename: string) => string;
+  getSrc: (mode: AssetMode, filename: string) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };

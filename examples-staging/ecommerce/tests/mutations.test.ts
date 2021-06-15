@@ -1,13 +1,8 @@
-import { KeystoneContext } from '@keystone-next/types';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  ProviderName,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import config from '../keystone';
 
-function setupKeystone(provider: ProviderName) {
+function setupKeystone(provider: DatabaseProvider) {
   return setupFromConfig({
     provider,
     config: testConfig({
