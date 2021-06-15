@@ -16,8 +16,6 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-🚀 Congratulations, you're now up and running with Keystone!
-
 ## Features
 
 This project demonstrates how to use virtual fields.
