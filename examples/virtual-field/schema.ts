@@ -13,6 +13,7 @@ export const lists = createSchema({
           { label: 'Published', value: 'published' },
         ],
       }),
+      // A virtual field returning a value derived from the item data.
       isPublished: virtual({
         field: schema.field({
           type: schema.Boolean,
@@ -22,6 +23,7 @@ export const lists = createSchema({
         }),
       }),
       content: text({ ui: { displayMode: 'textarea' } }),
+      // A virtual field returning a custom GraphQL object type.
       counts: virtual({
         field: schema.field({
           type: schema.object<{ content: string }>()({
@@ -53,6 +55,7 @@ export const lists = createSchema({
         }),
         graphQLReturnFragment: '{ words sentences paragraphs }',
       }),
+      // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
         field: schema.field({
           type: schema.String,
@@ -67,6 +70,7 @@ export const lists = createSchema({
           },
         }),
       }),
+      // A virtual field which returns a type derived from a Keystone list.
       relatedPosts: virtual({
         field: lists =>
           schema.field({

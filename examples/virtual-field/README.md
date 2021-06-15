@@ -22,7 +22,7 @@ This project demonstrates how to use virtual fields.
 
 ### `isPublished`
 
-The `isPublished` field shows a basic way to use the `virtual` field to return some derived data.
+The `isPublished` field shows how to use the `virtual` field to return some derived data.
 
 ```ts
 isPublished: virtual({
@@ -75,7 +75,7 @@ counts: virtual({
 
 ### `excerpt`
 
-The `excerpt` field shows using GraphQL arguments.
+The `excerpt` field shows how to add GraphQL arguments to a virtual field.
 
 ```ts
 excerpt: virtual({
@@ -96,7 +96,7 @@ excerpt: virtual({
 
 ### `relatedPosts`
 
-The `relatedPosts` field shows using the GraphQL types of a list.
+The `relatedPosts` field shows how to use the GraphQL types defined by a Keystone list.
 
 ```ts
 relatedPosts: virtual({
