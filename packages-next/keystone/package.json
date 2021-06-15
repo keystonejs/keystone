@@ -57,7 +57,7 @@
     "@types/express": "^4.17.12",
     "@types/form-data": "2.5.0",
     "@types/fs-extra": "^9.0.11",
-    "@types/graphql-upload": "^8.0.5",
+    "@types/graphql-upload": "^8.0.4",
     "@types/node-fetch": "^2.5.10",
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.3.0",
