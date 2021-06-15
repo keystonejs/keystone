@@ -69,7 +69,7 @@
     "apollo-server-express": "^2.25.0",
     "apollo-server-micro": "^2.25.0",
     "apollo-server-types": "^0.9.0",
-    "apollo-upload-client": "^15.0.0",
+    "apollo-upload-client": "^16.0.0",
     "chalk": "^4.1.1",
     "clipboard-copy": "^4.0.1",
     "cookie": "^0.4.1",
