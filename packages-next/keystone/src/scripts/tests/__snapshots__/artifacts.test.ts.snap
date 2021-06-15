@@ -12,22 +12,38 @@ type Scalars = {
 };
 
 export type TodoWhereInput = {
-  readonly AND?: ReadonlyArray<TodoWhereInput> | null;
-  readonly OR?: ReadonlyArray<TodoWhereInput> | null;
+  readonly AND?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
+  readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
   readonly id_lt?: Scalars['ID'] | null;
   readonly id_lte?: Scalars['ID'] | null;
   readonly id_gt?: Scalars['ID'] | null;
   readonly id_gte?: Scalars['ID'] | null;
-  readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
-  readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
+  readonly id_in?:
+    | ReadonlyArray<Scalars['ID'] | null>
+    | Scalars['ID']
+    | null
+    | null;
+  readonly id_not_in?:
+    | ReadonlyArray<Scalars['ID'] | null>
+    | Scalars['ID']
+    | null
+    | null;
   readonly title?: Scalars['String'] | null;
   readonly title_not?: Scalars['String'] | null;
   readonly title_contains?: Scalars['String'] | null;
   readonly title_not_contains?: Scalars['String'] | null;
-  readonly title_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly title_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly title_in?:
+    | ReadonlyArray<Scalars['String'] | null>
+    | Scalars['String']
+    | null
+    | null;
+  readonly title_not_in?:
+    | ReadonlyArray<Scalars['String'] | null>
+    | Scalars['String']
+    | null
+    | null;
 };
 
 export type TodoWhereUniqueInput = {
@@ -84,8 +100,8 @@ export type TodoListTypeInfo = {
   args: {
     listQuery: {
       readonly where?: TodoWhereInput;
-      readonly sortBy?: ReadonlyArray<SortTodosBy> | null;
-      readonly orderBy?: ReadonlyArray<TodoOrderByInput>;
+      readonly sortBy?: ReadonlyArray<SortTodosBy> | SortTodosBy | null;
+      readonly orderBy?: ReadonlyArray<TodoOrderByInput> | TodoOrderByInput;
       readonly first?: Scalars['Int'] | null;
       readonly skip?: Scalars['Int'];
     };

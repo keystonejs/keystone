@@ -29,7 +29,7 @@ function printInputTypesFromSchema(
   let ast = parse(schema);
   let printTypeNodeWithoutNullable = (node: ListTypeNode | NamedTypeNode): string => {
     if (node.kind === 'ListType') {
-      return `ReadonlyArray<${printTypeNode(node.type)}>`;
+      return `ReadonlyArray<${printTypeNode(node.type)}> | ${printTypeNode(node.type)}`;
     }
     let name = node.name.value;
     if (schemaObj.getType(name) instanceof GraphQLScalarType) {
