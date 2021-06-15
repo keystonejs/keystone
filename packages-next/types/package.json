@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/types",
-  "version": "19.0.0",
+  "version": "20.0.0",
   "license": "MIT",
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@graphql-ts/schema": "0.1.1",
-    "@keystone-next/fields": "^10.0.0",
+    "@keystone-next/fields": "^11.0.0",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
     "decimal.js": "^10.2.1",
