@@ -29,7 +29,7 @@ After months of work deep in the codebase, it’ll be much easier for us to ship
 
 ## New Core 🤖
 
-The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage 🤖.
+The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage 🤖.
 
 ⚠️ If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` [package](https://github.com/keystonejs/keystone/tree/master/packages-next/fields) for inspiration on how to do this.
 
@@ -69,7 +69,7 @@ The name of one-to-one and one-to-many relationships has also changed to include
 
 ⚠️ Note that these changes do **not require a migration**, only your `schema.prisma` file will need to be updated with `keystone-next dev` or `keystone-next postinstall --fix`.
 
-## Text and integer filtering 🌈
+## Text and integer filtering 🪡
 
 A long awaited feature, you can now find an item by a unique field! Filtering now works for `text` and `integer` fields that have `isUnique: true` set, for example:
 
