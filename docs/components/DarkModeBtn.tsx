@@ -58,6 +58,7 @@ export function DarkModeBtn(props) {
           color: 'var(--muted)',
           cursor: 'pointer',
         }}
+        {...props}
       >
         <DarkMode css={{ height: 'var(--space-xlarge)' }} />
       </button>

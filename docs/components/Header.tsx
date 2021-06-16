@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { DarkModeBtn } from './DarkModeBtn';
-import { DarkMode } from './icons/DarkMode';
 import { Logo } from './Logo';
 
 export function Header() {
