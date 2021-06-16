@@ -203,15 +203,13 @@ export function sessionSchema(graphQLSchema: GraphQLSchema) {
   });
   const mutationType = new GraphQLObjectType({
     ...mutationTypeConfig,
-    fields: () => ({
-      ...(typeof mutationTypeConfig.fields === 'function'
-        ? mutationTypeConfig.fields()
-        : mutationTypeConfig.fields),
+    fields: {
+      ...mutationTypeConfig.fields,
       endSession: {
         ...endSessionField,
         type: endSessionField.type.graphQLType,
       },
-    }),
+    },
   });
   return new GraphQLSchema({
     ...schemaConfig,
