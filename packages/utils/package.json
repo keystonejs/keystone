@@ -12,7 +12,7 @@
     "node": "^12.20 || >= 14.13"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.0",
+    "@babel/runtime": "^7.14.6",
     "@keystone-next/types": "^20.0.0"
   }
 }
