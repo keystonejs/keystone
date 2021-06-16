@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Highlight } from '../primitives/Highlight';
 import { Wrapper } from '../primitives/Wrapper';
+import { DarkModeBtn } from '../DarkModeBtn';
 import { Twitter } from '../icons/Twitter';
 import { GitHub } from '../icons/GitHub';
 import { Slack } from '../icons/Slack';
@@ -63,7 +64,7 @@ export function DocsHeader() {
         <div
           css={{
             display: 'inline-grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr',
             gap: 'var(--space-large)',
             alignItems: 'center',
             marginLeft: 'auto',
@@ -136,6 +137,7 @@ export function DocsHeader() {
           >
             <Slack css={{ height: 'var(--space-xlarge)' }} />
           </a>
+          <DarkModeBtn />
         </div>
       </Wrapper>
     </header>

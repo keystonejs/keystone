@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
 import { Fragment, useState } from 'react';
+import { jsx } from '@keystone-ui/core';
 
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
@@ -93,16 +93,55 @@ export default function DS() {
       </ul>
       <Divider />
       <Type id="colors" as="h2" look="heading64" margin={'var(--space-large) 0'}>
-        Colors
+        Colors light
       </Type>
       <div
         css={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(8.75rem, 1fr))',
           gap: '0.5rem',
+          background: COLORS.light['--app-bg'],
+          padding: '2rem 0',
         }}
       >
-        {Object.entries(COLORS).map(([name, color]) => (
+        {Object.entries(COLORS.light).map(([name, color]) => (
+          <div key={name} css={{ textAlign: 'center' }}>
+            <div
+              css={{
+                display: 'inline-block',
+                width: '4rem',
+                height: '4rem',
+                margin: '0 auto',
+                border: '3px solid #fff',
+                borderRadius: '100%',
+                boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
+                background: color,
+              }}
+            />
+            <span
+              css={{
+                display: 'block',
+                padding: '0 0 1rem 0',
+              }}
+            >
+              <InlineCode>{name}</InlineCode>
+            </span>
+          </div>
+        ))}
+      </div>
+      <Type id="colors" as="h2" look="heading64" margin={'var(--space-large) 0'}>
+        Colors dark
+      </Type>
+      <div
+        css={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(8.75rem, 1fr))',
+          gap: '0.5rem',
+          background: COLORS.dark['--app-bg'],
+          padding: '2rem 0',
+        }}
+      >
+        {Object.entries(COLORS.dark).map(([name, color]) => (
           <div key={name} css={{ textAlign: 'center' }}>
             <div
               css={{

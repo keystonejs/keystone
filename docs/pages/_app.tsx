@@ -34,13 +34,14 @@ export default function App({ Component, pageProps }: AppProps) {
         *, ::before, ::after {
           box-sizing: border-box;
         }
-        html {
-          height: 100%;
-        }
         body {
           font-size: var(--font-small);
-          height: 100%;
         }
+        html, body {
+          background: var(--app-bg);
+          color: var(--text);
+          height: 100%;
+        },
         blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
           margin: 0;
         }
