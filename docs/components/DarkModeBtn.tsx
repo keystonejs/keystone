@@ -22,7 +22,6 @@ export function DarkModeBtn(props) {
 
     const changer = event => {
       const detectedTheme = event.matches ? 'dark' : 'light';
-      console.log('detectedTheme', detectedTheme);
       setTheme(detectedTheme);
       localStorage.setItem('theme', detectedTheme);
     };

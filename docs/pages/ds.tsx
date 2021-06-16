@@ -104,30 +104,32 @@ export default function DS() {
           padding: '2rem 0',
         }}
       >
-        {Object.entries(COLORS.light).map(([name, color]) => (
-          <div key={name} css={{ textAlign: 'center' }}>
-            <div
-              css={{
-                display: 'inline-block',
-                width: '4rem',
-                height: '4rem',
-                margin: '0 auto',
-                border: '3px solid #fff',
-                borderRadius: '100%',
-                boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
-                background: color,
-              }}
-            />
-            <span
-              css={{
-                display: 'block',
-                padding: '0 0 1rem 0',
-              }}
-            >
-              <InlineCode>{name}</InlineCode>
-            </span>
-          </div>
-        ))}
+        {Object.entries(COLORS.light)
+          .filter(([name]) => name !== '--theme')
+          .map(([name, color]) => (
+            <div key={name} css={{ textAlign: 'center' }}>
+              <div
+                css={{
+                  display: 'inline-block',
+                  width: '4rem',
+                  height: '4rem',
+                  margin: '0 auto',
+                  border: '3px solid #fff',
+                  borderRadius: '100%',
+                  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
+                  background: color,
+                }}
+              />
+              <span
+                css={{
+                  display: 'block',
+                  padding: '0 0 1rem 0',
+                }}
+              >
+                <InlineCode>{name}</InlineCode>
+              </span>
+            </div>
+          ))}
       </div>
       <Type id="colors" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Colors dark
@@ -141,30 +143,32 @@ export default function DS() {
           padding: '2rem 0',
         }}
       >
-        {Object.entries(COLORS.dark).map(([name, color]) => (
-          <div key={name} css={{ textAlign: 'center' }}>
-            <div
-              css={{
-                display: 'inline-block',
-                width: '4rem',
-                height: '4rem',
-                margin: '0 auto',
-                border: '3px solid #fff',
-                borderRadius: '100%',
-                boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
-                background: color,
-              }}
-            />
-            <span
-              css={{
-                display: 'block',
-                padding: '0 0 1rem 0',
-              }}
-            >
-              <InlineCode>{name}</InlineCode>
-            </span>
-          </div>
-        ))}
+        {Object.entries(COLORS.dark)
+          .filter(([name]) => name !== '--theme')
+          .map(([name, color]) => (
+            <div key={name} css={{ textAlign: 'center' }}>
+              <div
+                css={{
+                  display: 'inline-block',
+                  width: '4rem',
+                  height: '4rem',
+                  margin: '0 auto',
+                  border: '3px solid #fff',
+                  borderRadius: '100%',
+                  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
+                  background: color,
+                }}
+              />
+              <span
+                css={{
+                  display: 'block',
+                  padding: '0 0 1rem 0',
+                }}
+              >
+                <InlineCode>{name}</InlineCode>
+              </span>
+            </div>
+          ))}
       </div>
       <Divider />
       <Type id="font-sizes" as="h2" look="heading64" margin={'var(--space-large) 0'}>
