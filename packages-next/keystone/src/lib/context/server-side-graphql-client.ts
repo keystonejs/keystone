@@ -1,5 +1,5 @@
 import { DocumentNode } from 'graphql';
-import { KeystoneContext } from '@keystone-next/types';
+import { BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 
 const _runChunkedMutation = async ({
   query,
@@ -91,19 +91,19 @@ const createItems = async ({
 
 const getItem = async ({
   listKey,
-  itemId,
+  where,
   returnFields = `id`,
   context,
 }: {
   listKey: string;
-  itemId: number | string;
+  where: BaseGeneratedListTypes['inputs']['uniqueWhere'];
   returnFields?: string;
   context: KeystoneContext;
 }): Promise<Record<string, any>> => {
-  const { itemQueryName } = context.gqlNames(listKey);
+  const { itemQueryName, whereUniqueInputName } = context.gqlNames(listKey);
 
-  const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
-  const result = await context.graphql.run({ query, variables: { id: itemId } });
+  const query = `query ($where: ${whereUniqueInputName}!) { ${itemQueryName}(where: $where) { ${returnFields} }  }`;
+  const result = await context.graphql.run({ query, variables: { where } });
   return result[itemQueryName];
 };
 
@@ -120,8 +120,10 @@ const getItems = async ({
 }: {
   listKey: string;
   where?: Record<string, any> | null;
-  sortBy?: readonly string[] | null;
-  orderBy?: readonly Record<string, 'asc' | 'desc' | null>[];
+  sortBy?: string | readonly string[] | null;
+  orderBy?:
+    | Record<string, 'asc' | 'desc' | null>
+    | readonly Record<string, 'asc' | 'desc' | null>[];
   first?: number | null;
   skip?: number | null;
   pageSize?: number;

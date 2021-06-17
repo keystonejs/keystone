@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-ecommerce",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "private": true,
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
@@ -11,16 +11,16 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.14.3",
-    "@babel/preset-env": "^7.14.4",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
-    "@babel/runtime": "^7.14.0",
-    "@keystone-next/auth": "^26.0.0",
-    "@keystone-next/cloudinary": "^5.0.1",
-    "@keystone-next/fields": "^10.0.0",
-    "@keystone-next/keystone": "^19.0.0",
-    "@keystone-next/types": "^19.0.0",
+    "@babel/runtime": "^7.14.6",
+    "@keystone-next/auth": "^27.0.0",
+    "@keystone-next/cloudinary": "^6.0.0",
+    "@keystone-next/fields": "^11.0.0",
+    "@keystone-next/keystone": "^20.0.0",
+    "@keystone-next/types": "^20.0.0",
     "@types/nodemailer": "^6.4.2",
     "dotenv": "^10.0.0",
     "next": "^10.2.3",
@@ -30,8 +30,8 @@
     "stripe": "^8.154.0"
   },
   "devDependencies": {
-    "@keystone-next/test-utils-legacy": "^20.0.0",
-    "typescript": "^4.2.4"
+    "@keystone-next/test-utils-legacy": "^21.0.0",
+    "typescript": "^4.3.2"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

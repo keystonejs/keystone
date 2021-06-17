@@ -1,5 +1,14 @@
 # @keystone-next/website
 
+## 3.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`df7d7b6f6`](https://github.com/keystonejs/keystone/commit/df7d7b6f6f2830573393560f4a1ec35234889947), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79)]:
+  - @keystone-ui/fields@4.1.1
+  - @keystone-next/fields-document@7.0.0
+  - @keystone-ui/core@3.1.0
+
 ## 3.1.0
 
 ### Minor Changes

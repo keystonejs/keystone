@@ -181,9 +181,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
           });
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
-          expect(errors![0].message).toEqual(
-            'Variable "$data" got invalid value null at "data.product.connect.id"; Expected non-nullable type "ID!" not to be null.'
-          );
+          expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
         })
       );
 

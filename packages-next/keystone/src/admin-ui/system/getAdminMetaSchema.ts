@@ -289,17 +289,15 @@ export function getAdminMetaSchema({
     types: schemaConfig.types.filter(x => x.name !== 'Query'),
     query: new GraphQLObjectType({
       ...queryTypeConfig,
-      fields: () => ({
-        ...(typeof queryTypeConfig.fields === 'function'
-          ? queryTypeConfig.fields()
-          : queryTypeConfig.fields),
+      fields: {
+        ...queryTypeConfig.fields,
         keystone: {
           type: KeystoneMeta.graphQLType,
           resolve() {
             return {};
           },
         },
-      }),
+      },
     }),
   });
 }

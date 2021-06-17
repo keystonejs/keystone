@@ -40,4 +40,5 @@ export const supportedFilters = (provider: DatabaseProvider) => [
   'in_value',
   provider !== 'sqlite' && 'string',
   provider !== 'sqlite' && 'string_case_insensitive',
+  'unique_equality',
 ];
