@@ -80,9 +80,11 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   const storeableQueries = ['sortBy', 'fields'];
 
   const resetToDefaults = () => {
+    console.log('we are being called here', `keystone.list.${listKey}.list.page.info`);
+    console.log(localStorage.getItem(`keystone.list.${listKey}.list.page.info`));
     localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
     router.replace({
-      query: null,
+      pathname: router.pathname,
     });
   };
 
