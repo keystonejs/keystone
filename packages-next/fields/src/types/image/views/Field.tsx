@@ -7,12 +7,12 @@ import { Fragment, ReactNode, RefObject, useEffect, useMemo, useRef, useState } 
 import { jsx, Stack, useTheme, Text, VisuallyHidden } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { TextInput } from '@keystone-ui/fields';
-import { parseImageRef } from '@keystone-next/utils-legacy';
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
+import { parseImageRef } from '@keystone-next/keystone';
 import { ImageValue } from './index';
 
 function useObjectURL(fileData: File | undefined) {

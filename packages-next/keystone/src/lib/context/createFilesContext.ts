@@ -2,10 +2,9 @@ import path from 'path';
 import crypto from 'crypto';
 import { pipeline } from 'stream';
 import filenamify from 'filenamify';
-import { KeystoneConfig, FilesContext } from '@keystone-next/types';
+import { KeystoneConfig, FilesContext, AssetMode } from '@keystone-next/types';
 import fs from 'fs-extra';
 
-import { parseFileRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
 import slugify from '@sindresorhus/slugify';
 import {
   buildKeystoneCloudFileSrc,
@@ -15,6 +14,23 @@ import {
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
+
+const FILEREGEX = /^(local|keystone-cloud):file:([^\\\/:\n]+)/;
+
+export const parseFileRef = (ref: string) => {
+  const match = ref.match(FILEREGEX);
+  if (match) {
+    const [, mode, filename] = match;
+    return {
+      mode: mode as AssetMode,
+      filename: filename as string,
+    };
+  }
+  return undefined;
+};
+
+const isLocalAsset = (mode: AssetMode) => mode === 'local';
+const isKeystoneCloudAsset = (mode: AssetMode) => mode === 'keystone-cloud';
 
 const defaultTransformer = (str: string) => slugify(str);
 

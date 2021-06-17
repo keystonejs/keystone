@@ -1,10 +1,9 @@
 import path from 'path';
-import { KeystoneConfig, ImagesContext, ImageMetadata } from '@keystone-next/types';
+import { KeystoneConfig, ImagesContext, ImageMetadata, AssetMode } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-import { parseImageRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
 import {
   buildKeystoneCloudImageSrc,
   getImageMetadataFromKeystoneCloud,
@@ -13,6 +12,25 @@ import {
 
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
+
+const isLocalAsset = (mode: AssetMode) => mode === 'local';
+const isKeystoneCloudAsset = (mode: AssetMode) => mode === 'keystone-cloud';
+
+const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
+export const parseImageRef = (
+  ref: string
+): { mode: AssetMode; id: string; extension: ImageExtension } | undefined => {
+  const match = ref.match(IMAGEREGEX);
+  if (match) {
+    const [, mode, id, ext] = match;
+    return {
+      mode: mode as AssetMode,
+      id,
+      extension: ext as ImageExtension,
+    };
+  }
+  return undefined;
+};
 
 const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
   const filesize = buffer.length;

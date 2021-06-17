@@ -8,10 +8,10 @@ import { useToasts } from '@keystone-ui/toast';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 import { TextInput } from '@keystone-ui/fields';
-import { parseFileRef } from '@keystone-next/utils-legacy';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
+import { parseFileRef } from '@keystone-next/keystone';
 
 import { FileValue } from './index';
 

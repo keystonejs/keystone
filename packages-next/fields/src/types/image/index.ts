@@ -8,8 +8,8 @@ import {
   ImageExtension,
   KeystoneContext,
   schema,
+  AssetMode,
 } from '@keystone-next/types';
-import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 
@@ -18,6 +18,8 @@ export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
     defaultValue?: FieldDefaultValue<ImageFieldInputType, TGeneratedListTypes>;
     isRequired?: boolean;
   };
+
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 
 const ImageExtensionEnum = schema.enum({
   name: 'ImageExtension',
@@ -28,6 +30,9 @@ const ImageFieldInput = schema.inputObject({
   name: 'ImageFieldInput',
   fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
 });
+
+const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
+  `${mode}:image:${id}.${extension}`;
 
 const imageOutputFields = schema.fields<ImageData>()({
   id: schema.field({ type: schema.nonNull(schema.ID) }),

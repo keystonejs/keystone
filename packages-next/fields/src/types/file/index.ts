@@ -7,8 +7,8 @@ import {
   KeystoneContext,
   FileData,
   FieldDefaultValue,
+  AssetMode,
 } from '@keystone-next/types';
-import { getFileRef } from '@keystone-next/utils-legacy';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 
@@ -22,6 +22,8 @@ const FileFieldInput = schema.inputObject({
   name: 'FileFieldInput',
   fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
 });
+
+const getFileRef = (mode: AssetMode, name: string) => `${mode}:file:${name}`;
 
 type FileFieldInputType =
   | undefined
