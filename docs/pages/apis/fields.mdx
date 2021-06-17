@@ -561,6 +561,7 @@ Options:
 
 - `field` (required):
 - `graphQLReturnFragment` (default: `undefined` ):
+- `graphQLArgs` (default: `{}`):
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -576,10 +577,11 @@ export default config({
             type: schema.String,
             args: { something: schema.arg({ type: schema.Int }) },
             resolve(item, args, context, info) {
-
+              return (args.something || 0).toString();
             }
           })
           graphQLReturnFragment: '...',
+	  graphQLArgs: { something: 100 },
         }),
         /* ... */
       },

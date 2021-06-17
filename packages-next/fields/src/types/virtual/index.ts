@@ -6,6 +6,7 @@ import {
   FieldTypeFunc,
   fieldType,
   ListInfo,
+  JSONValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
@@ -18,11 +19,13 @@ export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
       | ((lists: Record<string, ListInfo>) => VirtualFieldGraphQLField);
     unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
     graphQLReturnFragment?: string;
+    graphQLArgs?: JSONValue;
   };
 
 export const virtual =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     graphQLReturnFragment = '',
+    graphQLArgs = {},
     field,
     ...config
   }: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
@@ -40,6 +43,6 @@ export const virtual =
         },
       }),
       views: resolveView('virtual/views'),
-      getAdminMeta: () => ({ graphQLReturnFragment }),
+      getAdminMeta: () => ({ graphQLReturnFragment, graphQLArgs }),
     });
   };

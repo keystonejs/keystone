@@ -66,9 +66,15 @@ export const lists = createSchema({
             if (!item.content) {
               return null;
             }
-            return (item.content as string).slice(0, length - 3) + '...';
+            const content = item.content as string;
+            if (content.length <= length) {
+              return content;
+            } else {
+              return content.slice(0, length - 3) + '...';
+            }
           },
         }),
+        graphQLArgs: { length: 10 },
       }),
       // A virtual field which returns a type derived from a Keystone list.
       relatedPosts: virtual({
