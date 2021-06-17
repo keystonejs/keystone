@@ -15,7 +15,9 @@ const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 export function SubscribeForm({
   autoFocus,
+  stacked,
   children,
+  ...props
 }: {
   autoFocus?: boolean;
   children: ReactNode;
@@ -74,23 +76,27 @@ export function SubscribeForm({
   return !formSubmitted ? (
     <Fragment>
       {children}
-      <form onSubmit={onSubmit}>
-        <Stack>
-          <Stack orientation="horizontal">
-            <Field
-              type="email"
-              autoComplete="off"
-              autoFocus={autoFocus}
-              placeholder="Your email address"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-            <Button loading={loading} type={'submit'}>
-              {error ? 'Try again' : 'Subscribe'}
-            </Button>
-          </Stack>
-          {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
+      <form onSubmit={onSubmit} {...props}>
+        <Stack
+          orientation={stacked ? 'vertical' : 'horizontal'}
+          block={stacked}
+          css={{
+            justifyItems: stacked ? 'baseline' : null,
+          }}
+        >
+          <Field
+            type="email"
+            autoComplete="off"
+            autoFocus={autoFocus}
+            placeholder="Your email address"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          <Button loading={loading} type={'submit'}>
+            {error ? 'Try again' : 'Subscribe'}
+          </Button>
         </Stack>
+        {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
       </form>
     </Fragment>
   ) : (

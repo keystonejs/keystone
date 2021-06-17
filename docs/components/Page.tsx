@@ -8,7 +8,6 @@ import { Announce } from '../components/Announce';
 import { useMediaQuery } from '../lib/media';
 import { TableOfContents } from './docs/TableOfContents';
 import { DocsHeader } from './docs/DocsHeader';
-import { DocsFooter } from './docs/DocsFooter';
 import { Wrapper } from './primitives/Wrapper';
 import { Sidebar } from './docs/Sidebar';
 import { Header } from './Header';
@@ -87,7 +86,7 @@ export function DocsPage({
           {!!headings.length && <TableOfContents container={contentRef} headings={headings} />}
         </Wrapper>
       </div>
-      <DocsFooter />
+      <Footer />
     </Fragment>
   );
 }

@@ -6,9 +6,8 @@ import { Highlight } from '../primitives/Highlight';
 import { Wrapper } from '../primitives/Wrapper';
 import { DarkModeBtn } from '../DarkModeBtn';
 import { Keystone } from '../icons/Keystone';
-import { Twitter } from '../icons/Twitter';
-import { GitHub } from '../icons/GitHub';
-import { Slack } from '../icons/Slack';
+import { Stack } from '../primitives/Stack';
+import { Socials } from '../Socials';
 
 export function DocsHeader() {
   return (
@@ -62,84 +61,16 @@ export function DocsHeader() {
             preview
           </span>
         </h2>
-        <div
+        <Stack
+          orientation="horizontal"
           css={{
-            display: 'inline-grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
+            justifySelf: 'end',
             gap: 'var(--space-large)',
-            alignItems: 'center',
-            marginLeft: 'auto',
           }}
         >
-          <a
-            href="https://github.com/keystonejs/keystone"
-            target="_blank"
-            rel="noopener noreferrer"
-            css={{
-              display: 'inline-flex',
-              padding: 0,
-              justifyContent: 'center',
-              borderRadius: '100%',
-              color: 'var(--muted)',
-              transition: 'color 0.3s ease',
-              ':hover': {
-                color: '#000',
-              },
-            }}
-          >
-            <GitHub css={{ height: 'var(--space-xlarge)' }} />
-          </a>
-
-          <a
-            href="https://twitter.com/keystonejs"
-            target="_blank"
-            rel="noopener noreferrer"
-            css={{
-              display: 'inline-flex',
-              padding: 0,
-              justifyContent: 'center',
-              borderRadius: '100%',
-              color: 'var(--muted)',
-              transition: 'color 0.3s ease',
-              ':hover': {
-                color: '#1da1f2',
-              },
-            }}
-          >
-            <Twitter css={{ height: 'var(--space-xlarge)' }} />
-          </a>
-
-          <a
-            href="https://community.keystonejs.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            css={{
-              display: 'inline-flex',
-              padding: 0,
-              justifyContent: 'center',
-              borderRadius: '100%',
-              '.slack-color': {
-                fill: 'var(--muted)',
-                transition: 'fill 0.3s ease',
-              },
-              '&:hover .slack-color1': {
-                fill: '#e01e5a',
-              },
-              '&:hover .slack-color2': {
-                fill: '#36c5f0',
-              },
-              '&:hover .slack-color3': {
-                fill: '#2eb67d',
-              },
-              '&:hover .slack-color4': {
-                fill: '#ecb22e',
-              },
-            }}
-          >
-            <Slack css={{ height: 'var(--space-xlarge)' }} />
-          </a>
+          <Socials css={{ color: 'var(--muted)' }} />
           <DarkModeBtn />
-        </div>
+        </Stack>
       </Wrapper>
     </header>
   );

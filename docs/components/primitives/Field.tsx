@@ -24,7 +24,8 @@ export const Field = forwardRef(({ disabled, type = 'text', ...props }, ref) => 
         lineHeight: 1,
         paddingBottom: 0,
         paddingTop: 0,
-        transition: 'all 0.1s ease',
+        boxShadow: '0 0 0 2px transparent',
+        transition: 'border 0.1s ease, box-shadow 0.1s ease',
         ':hover': {
           borderColor: 'var(--brand-bg)',
         },
