@@ -1,0 +1,478 @@
+"""
+ A keystone list
+"""
+type Author {
+  id: ID!
+  name: String
+  email: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+  bio: Author_bio_DocumentField
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Author_bio_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input AuthorWhereInput {
+  AND: [AuthorWhereInput!]
+  OR: [AuthorWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input AuthorWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+enum SortAuthorsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+input AuthorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input AuthorUpdateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+  bio: JSON
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input AuthorsUpdateInput {
+  id: ID!
+  data: AuthorUpdateInput
+}
+
+input AuthorCreateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+  bio: JSON
+}
+
+input AuthorsCreateInput {
+  data: AuthorCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Post {
+  id: ID!
+  title: String
+  slug: String
+  status: PostStatusType
+  content: Post_content_DocumentField
+  publishDate: String
+  author: Author
+}
+
+enum PostStatusType {
+  draft
+  published
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_in: [String]
+  title_not_in: [String]
+  slug: String
+  slug_not: String
+  slug_contains: String
+  slug_not_contains: String
+  slug_in: [String]
+  slug_not_in: [String]
+  status: PostStatusType
+  status_not: PostStatusType
+  status_in: [PostStatusType]
+  status_not_in: [PostStatusType]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
+  author: AuthorWhereInput
+  author_is_null: Boolean
+}
+
+input PostWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  slug_ASC
+  slug_DESC
+  status_ASC
+  status_DESC
+  publishDate_ASC
+  publishDate_DESC
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+}
+
+input PostUpdateInput {
+  title: String
+  slug: String
+  status: PostStatusType
+  content: JSON
+  publishDate: String
+  author: AuthorRelateToOneInput
+}
+
+input AuthorRelateToOneInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
+  disconnect: AuthorWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
+}
+
+input PostCreateInput {
+  title: String
+  slug: String
+  status: PostStatusType
+  content: JSON
+  publishDate: String
+  author: AuthorRelateToOneInput
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type Mutation {
+  """
+   Create a single Author item.
+  """
+  createAuthor(data: AuthorCreateInput): Author
+
+  """
+   Create multiple Author items.
+  """
+  createAuthors(data: [AuthorsCreateInput]): [Author]
+
+  """
+   Update a single Author item by ID.
+  """
+  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
+
+  """
+   Update multiple Author items by ID.
+  """
+  updateAuthors(data: [AuthorsUpdateInput]): [Author]
+
+  """
+   Delete a single Author item by ID.
+  """
+  deleteAuthor(id: ID!): Author
+
+  """
+   Delete multiple Author items by ID.
+  """
+  deleteAuthors(ids: [ID!]): [Author]
+
+  """
+   Create a single Post item.
+  """
+  createPost(data: PostCreateInput): Post
+
+  """
+   Create multiple Post items.
+  """
+  createPosts(data: [PostsCreateInput]): [Post]
+
+  """
+   Update a single Post item by ID.
+  """
+  updatePost(id: ID!, data: PostUpdateInput): Post
+
+  """
+   Update multiple Post items by ID.
+  """
+  updatePosts(data: [PostsUpdateInput]): [Post]
+
+  """
+   Delete a single Post item by ID.
+  """
+  deletePost(id: ID!): Post
+
+  """
+   Delete multiple Post items by ID.
+  """
+  deletePosts(ids: [ID!]): [Post]
+}
+
+type Query {
+  """
+   Search for all Author items which match the where clause.
+  """
+  allAuthors(
+    where: AuthorWhereInput! = {}
+    search: String
+    sortBy: [SortAuthorsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Author!]
+
+  """
+   Search for the Author item with the matching ID.
+  """
+  Author(where: AuthorWhereUniqueInput!): Author
+
+  """
+   Perform a meta-query on all Author items which match the where clause.
+  """
+  _allAuthorsMeta(
+    where: AuthorWhereInput! = {}
+    search: String
+    sortBy: [SortAuthorsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AuthorOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use authorsCount instead."
+    )
+  authorsCount(where: AuthorWhereInput! = {}): Int
+
+  """
+   Search for all Post items which match the where clause.
+  """
+  allPosts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+
+  """
+   Search for the Post item with the matching ID.
+  """
+  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

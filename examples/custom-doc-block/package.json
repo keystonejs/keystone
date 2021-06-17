@@ -1,0 +1,31 @@
+{
+  "name": "@keystone-next/example-custom-doc-block",
+  "version": "2.0.2",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "dev:site": "next dev -p 3001",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@keystone-next/document-renderer": "^3.0.0",
+    "@keystone-next/fields": "^11.0.0",
+    "@keystone-next/fields-document": "^7.0.0",
+    "@keystone-next/keystone": "^21.0.2",
+    "@keystone-ui/core": "^3.1.0",
+    "@keystone-ui/icons": "^4.0.0",
+    "@keystone-ui/tooltip": "^4.0.0",
+    "@preconstruct/next": "^3.0.0",
+    "next": "^10.2.3",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.4"
+  },
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/custom-doc-block"
+}

@@ -1,4 +1,4 @@
-## Feature Example - virtual field
+## Feature Example - Virtual Field
 
 This project demonstrates how to add virtual fields to a Keystone list
 It builds on the [Blog](../blog) starter project.
