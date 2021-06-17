@@ -37,11 +37,15 @@ export default auth.withAuth(
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
       // path: '/admin',
       // isAccessAllowed,
+      getAdditionalFiles: [
+        () => [{ mode: 'write', outputPath: 'next.config.js', src: 'module.exports =whatever' }],
+      ],
     },
     images: { upload: 'local' },
     files: { upload: 'local' },
     lists,
     extendGraphqlSchema,
+
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
     // TODO -- Create a separate example for stored/redis sessions
     // session: storedSessions({
