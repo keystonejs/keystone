@@ -2,6 +2,7 @@
 import { Fragment, useState } from 'react';
 import { jsx } from '@emotion/react';
 
+import { GitHubButton } from '../components/primitives/GitHubButton';
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
 import { styleMap, Type } from '../components/primitives/Type';
@@ -313,6 +314,10 @@ export default function DS() {
         <Field placeholder="Placeholder text" />
         <Field disabled defaultValue="Some disabled text" />
       </Stack>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        GitHubButton
+      </Type>
+      <GitHubButton repo="keystonejs/keystone" />
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
         Icons
       </Type>
