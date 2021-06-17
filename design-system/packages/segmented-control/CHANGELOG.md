@@ -1,5 +1,14 @@
 # @keystone-ui/segmented-control
 
+## 4.0.1
+
+### Patch Changes
+
+- [#5886](https://github.com/keystonejs/keystone/pull/5886) [`98482efa4`](https://github.com/keystonejs/keystone/commit/98482efa4f629fe513fddd6871be1ef5bdd8d2bd) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed issue with control looking selected when in neutral state. Added focus ring for better keyboard navigation experience.
+
+- Updated dependencies [[`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79)]:
+  - @keystone-ui/core@3.1.0
+
 ## 4.0.0
 
 ### Major Changes

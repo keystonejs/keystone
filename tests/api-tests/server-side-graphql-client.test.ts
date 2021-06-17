@@ -45,7 +45,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
-          const singleItem = await getItem({ context, listKey, returnFields, itemId: item.id });
+          const singleItem = await getItem({
+            context,
+            listKey,
+            returnFields,
+            where: { id: item.id },
+          });
 
           expect(singleItem).toEqual(testData[0].data);
         })
@@ -251,7 +256,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
-          const singleItem = await getItem({ context, listKey, returnFields, itemId: item.id });
+          const singleItem = await getItem({
+            context,
+            listKey,
+            returnFields,
+            where: { id: item.id },
+          });
 
           expect(singleItem).toEqual(testData[0].data);
         })

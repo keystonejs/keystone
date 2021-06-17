@@ -89,7 +89,7 @@ export const generateAdminUI = async (
   );
   await Promise.all(
     adminFiles
-      .filter(x => !uniqueFiles.has(Path.normalize(x.outputPath)))
+      .filter(x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath))))
       .map(file => writeAdminFile(file, projectAdminPath))
   );
 

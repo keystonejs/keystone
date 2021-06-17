@@ -1,5 +1,45 @@
 # @keystonejs/utils
 
+## 12.0.0
+
+### Major Changes
+
+- [#5874](https://github.com/keystonejs/keystone/pull/5874) [`4c90c0d3c`](https://github.com/keystonejs/keystone/commit/4c90c0d3c8e75c6a58910c4bd563b3b80e61e801) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed the following exports as they're no longer used by Keystone:
+
+  - `noop`
+  - `identity`
+  - `getType`
+  - `escapeRegExp`
+  - `mapKeys`
+  - `mapKeyNames`
+  - `resolveAllKeys`
+  - `unique`
+  - `intersection`
+  - `pick`
+  - `omitBy`
+  - `objMerge`
+  - `defaultObj`
+  - `filterValues`
+  - `arrayToObject`
+  - `flatten`
+  - `zipObj`
+  - `mergeWhereClause`
+  - `createLazyDeferred`
+  - `versionGreaterOrEqualTo`
+  - `upcase`
+  - `humanize`
+
+### Minor Changes
+
+- [#5854](https://github.com/keystonejs/keystone/pull/5854) [`7eabb4dee`](https://github.com/keystonejs/keystone/commit/7eabb4dee2552f7baf1e0024d82011b179d418d4) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Replaced the types `FileMode` and `ImageMode` with `AssetMode`.
+
+  Added internal experimental Keystone Cloud integration capabilities for images.
+
+### Patch Changes
+
+- Updated dependencies [[`7eabb4dee`](https://github.com/keystonejs/keystone/commit/7eabb4dee2552f7baf1e0024d82011b179d418d4), [`4995c682d`](https://github.com/keystonejs/keystone/commit/4995c682dbdcfac2100de9fab98ba1e0e08cbcc2), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`84a5e7f3b`](https://github.com/keystonejs/keystone/commit/84a5e7f3bc3a29ff31d642831e7aaadfc8534ba1), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`97fd5e05d`](https://github.com/keystonejs/keystone/commit/97fd5e05d8681bae86001e6b7e8e3f36ebd639b7)]:
+  - @keystone-next/types@20.0.0
+
 ## 11.0.1
 
 ### Patch Changes

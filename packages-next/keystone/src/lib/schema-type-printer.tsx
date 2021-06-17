@@ -29,7 +29,7 @@ function printInputTypesFromSchema(
   let ast = parse(schema);
   let printTypeNodeWithoutNullable = (node: ListTypeNode | NamedTypeNode): string => {
     if (node.kind === 'ListType') {
-      return `ReadonlyArray<${printTypeNode(node.type)}>`;
+      return `ReadonlyArray<${printTypeNode(node.type)}> | ${printTypeNode(node.type)}`;
     }
     let name = node.name.value;
     if (schemaObj.getType(name) instanceof GraphQLScalarType) {
@@ -135,6 +135,7 @@ export type ${listTypeInfoName} = {
   backing: import(".prisma/client").${listKey};
   inputs: {
     where: ${gqlNames.whereInputName};
+    uniqueWhere: ${gqlNames.whereUniqueInputName};
     create: ${gqlNames.createInputName};
     update: ${gqlNames.updateInputName};
   };

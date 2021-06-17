@@ -163,7 +163,7 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isUnique` (default: `false`): If `true` then all values of this field must be unique. This will also allow you to uniquely filter by this field in the GraphQL API.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -385,7 +385,7 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isUnique` (default: `false`): If `true` then all values of this field must be unique. This will also allow you to uniquely filter by this field in the GraphQL API.
 - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['input', 'textarea']`.
 

@@ -96,8 +96,14 @@ export function initialiseLists(
 
     const uniqueWhere = schema.inputObject({
       name: names.whereUniqueInputName,
-      fields: {
-        id: schema.arg({ type: schema.nonNull(schema.ID) }),
+      fields: () => {
+        const { fields } = lists[listKey];
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.uniqueWhere?.arg || field.access.read === false) return [];
+            return [[key, field.input.uniqueWhere.arg]] as const;
+          })
+        );
       },
     });
 

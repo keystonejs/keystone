@@ -1,5 +1,68 @@
 # @keystone-next/fields
 
+## 11.0.0
+
+### Major Changes
+
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The relationship field now returns a `[Item!]` instead of a `[Item!]!`, this is so that if an error occurs when resolving the related items, only the relationship field will be returned as null rather than the whole item being returned as null.
+
+* [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The API to configure `virtual` fields has changed to accept a `field` using the `schema` API exported from `@keystone-next/types` rather than GraphQL SDL.
+
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
+
+* [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `password` field type now adds a GraphQL type `PasswordState` to the GraphQL output type instead of adding `${fieldKey}_is_set`.
+
+  ```graphql
+  type User {
+    password: PasswordState
+  }
+
+  type PasswordState {
+    isSet: Boolean!
+  }
+  ```
+
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The way that the implementations of `generateHash` and `compare` are passed from the password field to auth has changed to be in the extensions object of the GraphQL output field. Unless you've written your own password field implementation or you're using mismatching versions of @keystone-next/auth and @keystone-next/fields, this won't affect you.
+
+* [#5891](https://github.com/keystonejs/keystone/pull/5891) [`97fd5e05d`](https://github.com/keystonejs/keystone/commit/97fd5e05d8681bae86001e6b7e8e3f36ebd639b7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added support for filtering uniquely by `text` and `integer` fields that have `isUnique: true` like this:
+
+  ```graphql
+  query {
+    Post(where: { slug: "something-something-something" }) {
+      id
+      title
+      content
+    }
+  }
+  ```
+
+### Minor Changes
+
+- [#5854](https://github.com/keystonejs/keystone/pull/5854) [`7eabb4dee`](https://github.com/keystonejs/keystone/commit/7eabb4dee2552f7baf1e0024d82011b179d418d4) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Replaced the types `FileMode` and `ImageMode` with `AssetMode`.
+
+  Added internal experimental Keystone Cloud integration capabilities for images.
+
+* [#5868](https://github.com/keystonejs/keystone/pull/5868) [`84a5e7f3b`](https://github.com/keystonejs/keystone/commit/84a5e7f3bc3a29ff31d642831e7aaadfc8534ba1) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Added experimental support for the integration with keystone cloud files
+
+### Patch Changes
+
+- [#5855](https://github.com/keystonejs/keystone/pull/5855) [`e4c19f808`](https://github.com/keystonejs/keystone/commit/e4c19f8086cc14f7f4a8ef390f1f4e1263004d40) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added assorted accessibility and layout fixes to the relationship field.
+
+* [#5857](https://github.com/keystonejs/keystone/pull/5857) [`881c9ffb7`](https://github.com/keystonejs/keystone/commit/881c9ffb7c5941e9fb214ed955148d8ea567e65f) Thanks [@bladey](https://github.com/bladey)! - Fixed image not displaying when rendered in card format.
+
+- [#5852](https://github.com/keystonejs/keystone/pull/5852) [`ef14e77ce`](https://github.com/keystonejs/keystone/commit/ef14e77cebc9420db8c7d29dfe61f02140f4a705) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed labels in `image` and `file` fields to be more screen reader friendly.
+
+* [#5893](https://github.com/keystonejs/keystone/pull/5893) [`df7d7b6f6`](https://github.com/keystonejs/keystone/commit/df7d7b6f6f2830573393560f4a1ec35234889947) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed labels in timestamp field for better screen reader experience.
+
+* Updated dependencies [[`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`7eabb4dee`](https://github.com/keystonejs/keystone/commit/7eabb4dee2552f7baf1e0024d82011b179d418d4), [`df7d7b6f6`](https://github.com/keystonejs/keystone/commit/df7d7b6f6f2830573393560f4a1ec35234889947), [`5227234a0`](https://github.com/keystonejs/keystone/commit/5227234a08edd99cd2795c8d888fbb3022810f54), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`98482efa4`](https://github.com/keystonejs/keystone/commit/98482efa4f629fe513fddd6871be1ef5bdd8d2bd), [`4995c682d`](https://github.com/keystonejs/keystone/commit/4995c682dbdcfac2100de9fab98ba1e0e08cbcc2), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`4c90c0d3c`](https://github.com/keystonejs/keystone/commit/4c90c0d3c8e75c6a58910c4bd563b3b80e61e801), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`84a5e7f3b`](https://github.com/keystonejs/keystone/commit/84a5e7f3bc3a29ff31d642831e7aaadfc8534ba1), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7), [`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79), [`97fd5e05d`](https://github.com/keystonejs/keystone/commit/97fd5e05d8681bae86001e6b7e8e3f36ebd639b7), [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7)]:
+  - @keystone-next/keystone@20.0.0
+  - @keystone-next/types@20.0.0
+  - @keystone-next/utils-legacy@12.0.0
+  - @keystone-ui/fields@4.1.1
+  - @keystone-ui/segmented-control@4.0.1
+  - @keystone-ui/core@3.1.0
+  - @keystone-next/admin-ui-utils@5.0.2
+
 ## 10.0.0
 
 ### Major Changes
