@@ -33,7 +33,7 @@ export const text =
   meta =>
     fieldType({
       kind: 'scalar',
-      mode: 'optional',
+      mode: isRequired ? 'required' : 'optional',
       scalar: 'String',
       index: getIndexType({ isIndexed, isUnique }),
     })({
