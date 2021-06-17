@@ -1,5 +1,11 @@
 import path from 'path';
-import { KeystoneConfig, ImagesContext, ImageMetadata, AssetMode, ImageExtension } from '@keystone-next/types';
+import {
+  KeystoneConfig,
+  ImagesContext,
+  ImageMetadata,
+  AssetMode,
+  ImageExtension,
+} from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
