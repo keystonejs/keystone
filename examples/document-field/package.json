@@ -1,0 +1,28 @@
+{
+  "name": "@keystone-next/example-document-field",
+  "version": "2.0.2",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@keystone-next/fields": "^11.0.0",
+    "@keystone-next/fields-document": "^7.0.0",
+    "@keystone-next/keystone": "^20.0.0",
+    "next": "^10.2.3",
+    "react": "^17.0.2",
+    "@keystone-ui/core": "^3.1.0",
+    "@keystone-ui/icons": "^4.0.0",
+    "@keystone-ui/tooltip": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2"
+  },
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+}
