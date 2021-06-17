@@ -23,6 +23,11 @@ export const styleMap = {
     fontSize: '1.25rem',
     fontWeight: 400,
   },
+  heading20bold: {
+    ...common.brand,
+    fontSize: '1.25rem',
+    fontWeight: 700,
+  },
   heading24: {
     ...common.brand,
     fontSize: '1.5rem',
@@ -80,6 +85,7 @@ export const styleMap = {
     ...common.body,
     fontSize: '0.875rem',
     fontWeight: 400,
+    lineHeight: 1.7,
   },
   body14bold: {
     ...common.body,
@@ -135,7 +141,7 @@ export const styleMap = {
 };
 
 export const Type = forwardRef(
-  ({ as: Tag = 'span', look, fontSize, margin, padding, ...props }, ref) => {
+  ({ as: Tag = 'span', look, fontSize, margin, padding, color, ...props }, ref) => {
     const mq = useMediaQuery();
 
     return (
@@ -143,6 +149,7 @@ export const Type = forwardRef(
         ref={ref}
         css={mq({
           ...styleMap[look],
+          ...(color ? { color } : {}),
           ...(fontSize ? { fontSize } : {}),
           ...(margin ? { margin } : {}),
           ...(padding ? { padding } : {}),
