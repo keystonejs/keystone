@@ -8,9 +8,38 @@ export default function IndexPage() {
   return (
     <Page>
       <h1>Welcome</h1>
-      <Link href="/docs">
-        <a>Docs pages</a>
-      </Link>
+      <ul>
+        <li>
+          <Link href="/docs">
+            <a>Docs pages</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/why-keystone">
+            <a>Why Keystone</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/whats-new">
+            <a>What's New</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/for-developers">
+            <a>For Developers</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/for-designers">
+            <a>For Designers</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/for-content-management">
+            <a>For Content Management</a>
+          </Link>
+        </li>
+      </ul>
     </Page>
   );
 }
