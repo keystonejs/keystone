@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, keyframes } from '@keystone-ui/core';
+import { jsx, keyframes } from '@emotion/react';
 
 const loading = keyframes({
   '0%, 80%, 100%': {

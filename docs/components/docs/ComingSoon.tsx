@@ -1,16 +1,18 @@
 /** @jsx jsx */
-import { jsx, Box, Stack } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
+import { jsx } from '@emotion/react';
 import Link from 'next/link';
+
+import { Button } from '../primitives/Button';
+import { Stack } from '../primitives/Stack';
 
 export function ComingSoon() {
   return (
-    <Box
-      padding="medium"
-      rounding="medium"
-      foreground="cyan900"
-      background="neutral100"
+    <div
       css={{
+        display: 'grid',
+        borderRadius: '8px',
+        border: '1px solid var(--border)',
+        padding: 'var(--space-medium)',
         borderWidth: '1px',
       }}
     >
@@ -19,9 +21,7 @@ export function ComingSoon() {
           width: '100%',
           justifyContent: 'space-between',
         }}
-        gap="small"
-        align="center"
-        across
+        orientation="horizontal"
       >
         <p
           css={{
@@ -30,19 +30,10 @@ export function ComingSoon() {
         >
           Coming Soon... Visit our roadmap for more information
         </p>
-        <Link href="/roadmap" passHref>
-          <Button
-            css={{
-              textDecoration: 'none !important',
-              color: '#2563eb !important',
-            }}
-            as="a"
-            tone="active"
-          >
-            Roadmap
-          </Button>
+        <Link href="/docs/roadmap" passHref>
+          <Button as="a">Roadmap</Button>
         </Link>
       </Stack>
-    </Box>
+    </div>
   );
 }

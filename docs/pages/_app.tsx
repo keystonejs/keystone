@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { jsx, Core, Global, css } from '@keystone-ui/core';
-import { ToastProvider } from '@keystone-ui/toast';
+import { ToastProvider } from 'react-toast-notifications';
+import { jsx, Global, css } from '@emotion/react';
+import { Fragment, useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import Head from 'next/head';
 
 import { handleRouteChange } from '../lib/analytics';
@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.events]);
 
   return (
-    <Core>
+    <Fragment>
       <Global
         styles={css`
         .prose {
@@ -41,12 +41,16 @@ export default function App({ Component, pageProps }: AppProps) {
           background: var(--app-bg);
           color: var(--text);
           height: 100%;
+          font-family: var(--font-body);
+          padding: 0;
+          margin: 0;
         },
         blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
           margin: 0;
         }
         a {
           text-decoration: none;
+          color: var(--link);
         }
         .hint {
           border-radius: 4px;
@@ -92,6 +96,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <ToastProvider>
         <Component {...pageProps} />
       </ToastProvider>
-    </Core>
+    </Fragment>
   );
 }

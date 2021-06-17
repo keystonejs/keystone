@@ -13,15 +13,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
+    "@emotion/react": "^11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^6.0.1",
-    "@keystone-ui/button": "^5.0.0",
-    "@keystone-ui/core": "^3.0.0",
-    "@keystone-ui/fields": "^4.1.0",
-    "@keystone-ui/icons": "^4.0.0",
-    "@keystone-ui/notice": "^4.0.0",
-    "@keystone-ui/toast": "^4.0.0",
-    "@keystone-ui/tooltip": "^4.0.0",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.2.3",
@@ -41,6 +35,7 @@
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-toast-notifications": "^2.4.4",
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {

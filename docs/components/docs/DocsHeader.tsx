@@ -1,14 +1,14 @@
 /** @jsx jsx  */
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { Highlight } from '../primitives/Highlight';
 import { Wrapper } from '../primitives/Wrapper';
 import { DarkModeBtn } from '../DarkModeBtn';
+import { Keystone } from '../icons/Keystone';
 import { Twitter } from '../icons/Twitter';
 import { GitHub } from '../icons/GitHub';
 import { Slack } from '../icons/Slack';
-import { Logo } from '../Logo';
 
 export function DocsHeader() {
   return (
@@ -32,7 +32,8 @@ export function DocsHeader() {
                 transition: 'color 0.3s ease',
               }}
             >
-              <Logo
+              <Keystone
+                grad="logo"
                 css={{
                   display: 'inline-block',
                   width: '2rem',

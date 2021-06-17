@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { useToasts } from '@keystone-ui/toast';
-import { jsx } from '@keystone-ui/core';
+import { useToasts } from 'react-toast-notifications';
+import { jsx } from '@emotion/react';
 import copy from 'copy-to-clipboard';
 
 import { Link } from '../icons/Link';
@@ -9,11 +9,19 @@ export function CopyToClipboard({ value }: { value: string }) {
   const { addToast } = useToasts();
 
   const onSuccess = () => {
-    addToast({ title: 'Copied to clipboard', tone: 'positive' });
+    addToast('Copied to clipboard', {
+      appearance: 'success',
+      autoDismiss: true,
+      autoDismissTimeout: 2000,
+    });
   };
 
   const onFailure = () => {
-    addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
+    addToast('Failed to copy to clipboard', {
+      appearance: 'error',
+      autoDismiss: true,
+      autoDismissTimeout: 2000,
+    });
   };
 
   const onClick = () => {

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Global } from '@keystone-ui/core';
+import { jsx, Global } from '@emotion/react';
 import { useState, useEffect } from 'react';
 
 import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS';

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
 

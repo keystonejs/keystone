@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import slugify from '@sindresorhus/slugify';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 import { useRef } from 'react';
 
 import { CopyToClipboard } from './CopyToClipboard';

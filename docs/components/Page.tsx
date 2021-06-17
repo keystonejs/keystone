@@ -1,6 +1,6 @@
 /** @jsx jsx  */
 import { useRef, Fragment, ReactNode } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 import Head from 'next/head';
 
 import { Emoji } from '../components/primitives/Emoji';

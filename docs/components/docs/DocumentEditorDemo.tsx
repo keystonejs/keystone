@@ -16,7 +16,7 @@ import {
   fields,
   InferRenderersForComponentBlocks,
 } from '@keystone-next/fields-document/component-blocks';
-import { Global, jsx } from '@keystone-ui/core';
+import { Global, jsx } from '@emotion/react';
 
 import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
 import { initialContent } from '../../lib/initialDocumentDemoContent';

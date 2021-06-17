@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
 export function Grad({ name }) {
   return (
@@ -19,6 +19,10 @@ export function Grad({ name }) {
       <linearGradient id={`${name}-grad4`} x1="0%" x2="50%" y1="0%" y2="71.9%">
         <stop offset="0%" stopColor="var(--grad4-1)" />
         <stop offset="100%" stopColor="var(--grad4-2)" />
+      </linearGradient>
+      <linearGradient id={`${name}-logo`} x1="0%" x2="50%" y1="0%" y2="71.9%">
+        <stop offset="0%" stopColor="var(--grad1-2)" />
+        <stop offset="100%" stopColor="var(--grad1-1)" />
       </linearGradient>
     </defs>
   );

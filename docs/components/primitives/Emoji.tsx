@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, keyframes } from '@keystone-ui/core';
+import { jsx, keyframes } from '@emotion/react';
 import React, { useRef, useState, useEffect } from 'react';
 
 const fadeInTop = keyframes`

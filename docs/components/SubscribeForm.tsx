@@ -1,8 +1,10 @@
 /** @jsx jsx */
 import { Fragment, useState, ReactNode, SyntheticEvent } from 'react';
-import { TextInput } from '@keystone-ui/fields';
-import { jsx, Stack } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
+import { jsx } from '@emotion/react';
+
+import { Button } from './primitives/Button';
+import { Field } from './primitives/Field';
+import { Stack } from './primitives/Stack';
 
 const validEmail = (email: string) =>
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
@@ -73,16 +75,17 @@ export function SubscribeForm({
     <Fragment>
       {children}
       <form onSubmit={onSubmit}>
-        <Stack gap="small">
-          <Stack across gap="small">
-            <TextInput
+        <Stack>
+          <Stack orientation="horizontal">
+            <Field
+              type="email"
               autoComplete="off"
               autoFocus={autoFocus}
               placeholder="Your email address"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
+            <Button loading={loading} type={'submit'}>
               {error ? 'Try again' : 'Subscribe'}
             </Button>
           </Stack>

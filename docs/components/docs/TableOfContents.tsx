@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
 import { SubHeading } from './Heading';

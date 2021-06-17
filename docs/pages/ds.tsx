@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Fragment, useState } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
@@ -11,6 +11,7 @@ import { Button } from '../components/primitives/Button';
 import { Badge } from '../components/primitives/Badge';
 import { Emoji } from '../components/primitives/Emoji';
 import { Stack } from '../components/primitives/Stack';
+import { Field } from '../components/primitives/Field';
 import * as allIcons from '../components/icons';
 import { Page } from '../components/Page';
 
@@ -305,6 +306,13 @@ export default function DS() {
           </Button>
         </Stack>
       </div>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Field
+      </Type>
+      <Stack block>
+        <Field placeholder="Placeholder text" />
+        <Field disabled defaultValue="Some disabled text" />
+      </Stack>
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
         Icons
       </Type>

@@ -1,11 +1,11 @@
 /** @jsx jsx  */
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { DarkModeBtn } from './DarkModeBtn';
-import { Logo } from './Logo';
+import { Keystone } from './icons/Keystone';
 
 export function Header() {
   return (
@@ -29,7 +29,8 @@ export function Header() {
                 transition: 'color 0.3s ease',
               }}
             >
-              <Logo
+              <Keystone
+                grad="logo"
                 css={{
                   display: 'inline-block',
                   width: '2rem',

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Fragment, useState, useEffect } from 'react';
-import { jsx, Global } from '@keystone-ui/core';
+import { jsx, Global } from '@emotion/react';
 
 import { COLORS } from '../lib/TOKENS';
 import { DarkMode } from './icons/DarkMode';

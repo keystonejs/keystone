@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { SubHeading } from './Heading';

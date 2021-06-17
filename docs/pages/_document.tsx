@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
 import { GA_TRACKING_ID } from '../lib/analytics';
 
