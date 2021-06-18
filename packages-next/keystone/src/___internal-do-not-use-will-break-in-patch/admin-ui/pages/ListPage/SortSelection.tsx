@@ -44,7 +44,7 @@ export function SortSelection({ list }: { list: ListMeta }) {
       </Button>
 
       <PopoverDialog
-        aria-label="Sort options dialog"
+        aria-label="Sort options"
         aria-description={`Dialog for selecting sort options for the ${list.key} list`}
         arrow={arrow}
         isVisible={isOpen}
