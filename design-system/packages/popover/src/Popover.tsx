@@ -218,6 +218,8 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
     return (
       <Portal>
         <div
+          role="dialog"
+          aria-modal="true"
           ref={consumerRef}
           css={{
             background: colors.background,
