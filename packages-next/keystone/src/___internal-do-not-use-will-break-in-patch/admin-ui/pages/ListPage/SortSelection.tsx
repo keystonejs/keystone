@@ -43,7 +43,14 @@ export function SortSelection({ list }: { list: ListMeta }) {
         </span>
       </Button>
 
-      <PopoverDialog arrow={arrow} isVisible={isOpen} {...dialog.props} ref={dialog.ref}>
+      <PopoverDialog
+        aria-label="Sort options dialog"
+        aria-description={`Dialog for selecting sort options for the ${list.key} list`}
+        arrow={arrow}
+        isVisible={isOpen}
+        {...dialog.props}
+        ref={dialog.ref}
+      >
         {isOpen && (
           <SortSelectionPopoverContent
             onClose={() => {
