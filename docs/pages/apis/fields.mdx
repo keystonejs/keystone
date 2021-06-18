@@ -554,13 +554,12 @@ export default config({
 ### virtual
 
 A `virtual` field represents a value which is computed a read time, rather than stored in the database.
-
-(coming soon)
+See the [virtual fields guide](../guides/virtual-fields) for details on how to use virtual fields.
 
 Options:
 
-- `field` (required):
-- `graphQLReturnFragment` (default: `undefined` ):
+- `field` (required): The GraphQL field that defines the type, resolver and arguments.
+- `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -579,7 +578,6 @@ export default config({
 
             }
           })
-          graphQLReturnFragment: '...',
         }),
         /* ... */
       },
