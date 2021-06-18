@@ -89,8 +89,7 @@ const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <Portal>
       <div
-        aria-live="assertive"
-        role="status"
+        role="alert"
         css={{
           position: 'fixed',
           right: spacing.medium,
