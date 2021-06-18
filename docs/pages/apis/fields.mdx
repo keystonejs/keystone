@@ -196,7 +196,7 @@ Currently the `json` field is non-orderable and non-filterable.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { cloudinaryImage } from '@keystone-next/cloudinary';
+import { json } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
