@@ -297,6 +297,8 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       .join('\n');
     return {
       selectedFields,
+      // Option 2: Here we must detect id field type for list and replace "ID!" to it,
+      // and same for all other places, where ID! is hard-coded.
       query: gql`
         query ItemPage($id: ID!, $listKey: String!) {
           item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {

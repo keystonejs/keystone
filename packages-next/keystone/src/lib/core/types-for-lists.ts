@@ -70,6 +70,8 @@ export function initialiseLists(
         return {
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([fieldPath, field]) => {
+              // Option 1: Somewhere here we must set the "ID" type of 'id' field
+              // in GraphQL schema to keep all id fields with same type.
               if (field.access.read === false) return [];
               return [
                 [fieldPath, field.output] as const,
