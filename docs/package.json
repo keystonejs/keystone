@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/website",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -12,12 +12,12 @@
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.0",
+    "@babel/runtime": "^7.14.6",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/fields-document": "^6.0.1",
+    "@keystone-next/fields-document": "^7.0.0",
     "@keystone-ui/button": "^5.0.0",
-    "@keystone-ui/core": "^3.0.0",
-    "@keystone-ui/fields": "^4.1.0",
+    "@keystone-ui/core": "^3.1.0",
+    "@keystone-ui/fields": "^4.1.1",
     "@keystone-ui/icons": "^4.0.0",
     "@keystone-ui/notice": "^4.0.0",
     "@keystone-ui/toast": "^4.0.0",
@@ -26,19 +26,19 @@
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.2.3",
     "@preconstruct/next": "^3.0.0",
-    "@primer/octicons-react": "^14.2.1",
+    "@primer/octicons-react": "^14.2.2",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.5",
     "@types/mdx-js__react": "^1.5.3",
-    "@types/react": "^17.0.9",
-    "@types/react-dom": "^17.0.6",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.7",
     "@types/webpack": "^4.41.29",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
     "facepaint": "^1.2.1",
     "next": "^10.2.3",
     "next-compose-plugins": "^2.2.1",
-    "next-images": "^1.7.0",
+    "next-images": "^1.8.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "start-server-and-test": "^1.12.5",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.2"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

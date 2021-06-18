@@ -33,7 +33,7 @@ input PackageWhereInput {
 }
 
 input PackageWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPackagesBy {
@@ -155,7 +155,7 @@ input PersonWhereInput {
 }
 
 input PersonWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPeopleBy {

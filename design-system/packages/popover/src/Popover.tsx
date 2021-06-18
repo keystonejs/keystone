@@ -232,14 +232,8 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           }}
           {...props}
         >
-          <div ref={focusTrapRef}>
-            {isVisible && (
-              <Fragment>
-                <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-                {children}
-              </Fragment>
-            )}
-          </div>
+          <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          <div ref={focusTrapRef}>{isVisible && children}</div>
         </div>
       </Portal>
     );

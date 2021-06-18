@@ -3,7 +3,12 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
-import ReactSelect, { OptionProps, components as reactSelectComponents, Props } from 'react-select';
+import ReactSelect, {
+  OptionProps,
+  components as reactSelectComponents,
+  Props,
+  NamedProps,
+} from 'react-select';
 
 export const CheckMark = ({
   isDisabled,
@@ -143,17 +148,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K;
-} extends { [_ in keyof T]: infer U }
-  ? U
-  : never;
-
-// this removes [key: string]: any from Props
-type OptionsProps = Pick<
-  Props<{ label: string; value: string; isDisabled?: boolean }, boolean>,
-  KnownKeys<Props>
->;
+type OptionsProps = NamedProps<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(

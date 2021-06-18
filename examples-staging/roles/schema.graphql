@@ -35,7 +35,7 @@ input TodoWhereInput {
 }
 
 input TodoWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortTodosBy {
@@ -176,7 +176,7 @@ input PersonWhereInput {
 }
 
 input PersonWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPeopleBy {
@@ -316,7 +316,7 @@ input RoleWhereInput {
 }
 
 input RoleWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortRolesBy {

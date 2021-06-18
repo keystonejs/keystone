@@ -1,21 +1,14 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props, OptionsType, mergeStyles } from 'react-select';
+import ReactSelect, { OptionsType, mergeStyles, NamedProps } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K;
-} extends { [_ in keyof T]: infer U }
-  ? U
-  : never;
-
 type Option = { label: string; value: string; isDisabled?: boolean };
 
-// this removes [key: string]: any from Props
-type BaseSelectProps = Pick<
-  Props<Option, boolean>,
-  Exclude<KnownKeys<Props>, 'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'>
+type BaseSelectProps = Omit<
+  NamedProps<Option, boolean>,
+  'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'
 > & { width?: WidthType };
 
 export { components as selectComponents } from 'react-select';
