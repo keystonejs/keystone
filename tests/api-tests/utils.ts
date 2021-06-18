@@ -12,7 +12,7 @@ export const apiTestConfig: (config: Omit<KeystoneConfig, 'db'>) => KeystoneConf
     url: process.env.DATABASE_URL as string,
   },
   testing: {
-    isolateRuns: true,
+    isolateRuns: false,
     artifactPath: '.keystone-tests',
   },
 });
