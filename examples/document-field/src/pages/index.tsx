@@ -7,7 +7,7 @@ export default function Index({ posts }: { posts: any[] }) {
     <ul>
       {posts.map(post => {
         return (
-          <li>
+          <li key={post.id}>
             <Link href={`/post/${post.slug}`}>
               <a>{post.title}</a>
             </Link>
@@ -21,7 +21,8 @@ export default function Index({ posts }: { posts: any[] }) {
 export async function getStaticProps() {
   const data = await fetchGraphQL(gql`
     query {
-      allPosts(where: { publishStatus: published }, orderBy: { publishDate: desc }) {
+      allPosts(where: { status: published }, orderBy: { publishDate: desc }) {
+        id
         slug
         title
       }

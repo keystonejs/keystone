@@ -4,8 +4,9 @@
 type Post {
   id: ID!
   title: String
+  slug: String
   status: PostStatusType
-  content: String
+  content: Post_content_DocumentField
   publishDate: String
   author: Author
 }
@@ -13,6 +14,10 @@ type Post {
 enum PostStatusType {
   draft
   published
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PostWhereInput {
@@ -32,16 +37,16 @@ input PostWhereInput {
   title_not_contains: String
   title_in: [String]
   title_not_in: [String]
+  slug: String
+  slug_not: String
+  slug_contains: String
+  slug_not_contains: String
+  slug_in: [String]
+  slug_not_in: [String]
   status: PostStatusType
   status_not: PostStatusType
   status_in: [PostStatusType]
   status_not_in: [PostStatusType]
-  content: String
-  content_not: String
-  content_contains: String
-  content_not_contains: String
-  content_in: [String]
-  content_not_in: [String]
   publishDate: String
   publishDate_not: String
   publishDate_lt: String
@@ -56,6 +61,7 @@ input PostWhereInput {
 
 input PostWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 enum SortPostsBy {
@@ -63,10 +69,10 @@ enum SortPostsBy {
   id_DESC
   title_ASC
   title_DESC
+  slug_ASC
+  slug_DESC
   status_ASC
   status_DESC
-  content_ASC
-  content_DESC
   publishDate_ASC
   publishDate_DESC
 }
@@ -74,8 +80,8 @@ enum SortPostsBy {
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
+  slug: OrderDirection
   status: OrderDirection
-  content: OrderDirection
   publishDate: OrderDirection
 }
 
@@ -86,8 +92,9 @@ enum OrderDirection {
 
 input PostUpdateInput {
   title: String
+  slug: String
   status: PostStatusType
-  content: String
+  content: JSON
   publishDate: String
   author: AuthorRelateToOneInput
 }
@@ -106,8 +113,9 @@ input PostsUpdateInput {
 
 input PostCreateInput {
   title: String
+  slug: String
   status: PostStatusType
-  content: String
+  content: JSON
   publishDate: String
   author: AuthorRelateToOneInput
 }

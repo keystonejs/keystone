@@ -11,6 +11,7 @@ generator client {
 model Post {
   id          Int       @id @default(autoincrement())
   title       String?
+  slug        String?   @unique
   status      String?
   content     String?
   publishDate DateTime?

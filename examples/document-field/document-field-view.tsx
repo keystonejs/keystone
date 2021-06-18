@@ -13,39 +13,39 @@ import {
   ToolbarSeparator,
 } from '@keystone-next/fields-document/primitives';
 
-const noticeIconMap = {
+const noticeIcons = {
   info: InfoIcon,
   error: AlertOctagonIcon,
   warning: AlertTriangleIcon,
   success: CheckCircleIcon,
 };
+
 export const componentBlocks = {
   notice: component({
     component: function Notice({ content, intent }) {
       const { palette, radii, spacing } = useTheme();
-      const intentMap = {
+      const intentConfig = {
         info: {
           background: palette.blue100,
           foreground: palette.blue700,
-          icon: noticeIconMap.info,
+          icon: noticeIcons.info,
         },
         error: {
           background: palette.red100,
           foreground: palette.red700,
-          icon: noticeIconMap.error,
+          icon: noticeIcons.error,
         },
         warning: {
           background: palette.yellow100,
           foreground: palette.yellow700,
-          icon: noticeIconMap.warning,
+          icon: noticeIcons.warning,
         },
         success: {
           background: palette.green100,
           foreground: palette.green700,
-          icon: noticeIconMap.success,
+          icon: noticeIcons.success,
         },
-      };
-      const intentConfig = intentMap[intent.value];
+      }[intent.value];
 
       return (
         <div
@@ -98,7 +98,7 @@ export const componentBlocks = {
       return (
         <ToolbarGroup>
           {props.intent.options.map(opt => {
-            const Icon = noticeIconMap[opt.value];
+            const Icon = noticeIcons[opt.value];
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
