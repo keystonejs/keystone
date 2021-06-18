@@ -59,7 +59,7 @@ input TodoWhereInput {
 }
 
 input TodoWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortTodosBy {
@@ -221,7 +221,7 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortUsersBy {

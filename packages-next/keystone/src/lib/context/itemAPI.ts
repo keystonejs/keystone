@@ -87,7 +87,7 @@ export function itemAPIForList(
     findOne({ query, resolveFields, ...args }) {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
-        return getItem({ listKey, context, returnFields, itemId: args.where.id });
+        return getItem({ listKey, context, returnFields, where: args.where });
       } else {
         return dbAPI.findOne(args);
       }
