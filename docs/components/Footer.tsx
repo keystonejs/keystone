@@ -170,31 +170,31 @@ export function Footer() {
               }}
             >
               <li>
-                <Link
+                <a
                   href="https://community.keystonejs.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <a>Join our Slack</a>
-                </Link>
+                  Join our Slack
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <a>Contribution Guide</a>
-                </Link>
+                  Contribution Guide
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="https://github.com/keystonejs/keystone/blob/master/code-of-conduct.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <a>Code of Conduct</a>
-                </Link>
+                  Code of Conduct
+                </a>
               </li>
             </ul>
           </div>
