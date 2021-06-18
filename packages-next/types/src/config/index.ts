@@ -181,7 +181,7 @@ export type ImagesConfig = {
 // config.testing
 
 export type TestingConfig = {
-  isolateRuns?: Boolean;
+  isolateRuns?: boolean;
   artifactPath?: string;
 };
 
