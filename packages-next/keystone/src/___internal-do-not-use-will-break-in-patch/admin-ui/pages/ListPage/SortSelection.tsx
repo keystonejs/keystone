@@ -45,7 +45,7 @@ export function SortSelection({ list }: { list: ListMeta }) {
 
       <PopoverDialog
         aria-label="Sort options"
-        aria-description={`Dialog for selecting sort options for the ${list.key} list`}
+        aria-description={`list of sorting parameters to apply to the ${list.key} list`}
         arrow={arrow}
         isVisible={isOpen}
         {...dialog.props}
