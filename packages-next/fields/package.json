@@ -5,14 +5,13 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
-    "@keystone-next/test-utils-legacy": "21.0.0",
     "@types/bytes": "^3.1.0",
     "fs-extra": "^10.0.0",
     "graphql": "^15.5.0",
     "mime": "^2.5.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.0",
+    "@babel/runtime": "^7.14.6",
     "@keystone-next/admin-ui-utils": "^5.0.2",
     "@keystone-next/keystone": "^20.0.0",
     "@keystone-next/types": "^20.0.0",
@@ -28,7 +27,7 @@
     "@keystone-ui/toast": "^4.0.0",
     "@keystone-ui/tooltip": "^4.0.0",
     "@types/bcryptjs": "^2.4.2",
-    "@types/react": "^17.0.9",
+    "@types/react": "^17.0.11",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
