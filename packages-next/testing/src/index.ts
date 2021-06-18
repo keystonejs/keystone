@@ -52,11 +52,12 @@ export async function setupTestEnv({
   const hash = _hashPrismaSchema(artifacts.prisma);
 
   if (isolateRuns) {
-    if (config.db.provider === 'postgresql') {
-      config.db.url = `${config.db.url}?schema=keystone-test-${hash.toString()}`;
-    }
-    artifactPath = path.resolve(artifactPath, hash);
+    // if (config.db.provider === 'postgresql') {
+    //   config.db.url = `${config.db.url}?schema=keystone-test-${hash.toString()}`;
+    // }
   }
+
+  artifactPath = path.resolve(artifactPath, hash);
 
   if (!_alreadyGeneratedProjects.has(hash)) {
     _alreadyGeneratedProjects.add(hash);
