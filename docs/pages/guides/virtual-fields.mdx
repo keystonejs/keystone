@@ -42,7 +42,7 @@ We can now run a GraphQL query and request the `hello` field on one of our `Exam
 
 ```graphql
 {
-  Example(id: "1") {
+  Example(where: { id: "1" }) {
     id
     hello
   }
