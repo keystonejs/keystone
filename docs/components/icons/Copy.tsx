@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function Copy({ grad, ...props }) {
+export function Copy({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function Copy({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="Copy" />
+      <Gradients name="Copy" />
       <path
         stroke={grad ? `url(#Copy-${grad})` : 'currentColor'}
         strokeWidth="2"

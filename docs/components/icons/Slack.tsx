@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function Slack({ grad, ...props }) {
+export function Slack({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,7 @@ export function Slack({ grad, ...props }) {
       role="img"
       {...props}
     >
-      <Grad name="Slack" />
+      <Gradients name="Slack" />
       <path
         className="slack-color slack-color1"
         fill={grad ? `url(#Slack-${grad})` : 'currentColor'}

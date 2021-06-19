@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function ArrowRLong({ grad, ...props }) {
+export function ArrowRLong({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function ArrowRLong({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="ArrowRLong" />
+      <Gradients name="ArrowRLong" />
       <path
         stroke={grad ? `url(#ArrowRLong-${grad})` : 'currentColor'}
         fill="none"

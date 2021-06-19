@@ -1,3 +1,5 @@
+export type { IconGradient } from './util';
+
 export { ArrowR } from './ArrowR';
 export { ArrowRLong } from './ArrowRLong';
 export { Copy } from './Copy';

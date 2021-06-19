@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function Search({ grad, ...props }) {
+export function Search({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function Search({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="Search" />
+      <Gradients name="Search" />
       <path
         fill={grad ? `url(#Copy-${grad})` : 'currentColor'}
         fillRule="evenodd"

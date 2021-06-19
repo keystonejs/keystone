@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function Keystone({ grad, ...props }) {
+export function Keystone({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function Keystone({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="Keystone" />
+      <Gradients name="Keystone" />
       <path
         fill={grad ? `url(#Keystone-${grad})` : 'currentColor'}
         fillRule="evenodd"
