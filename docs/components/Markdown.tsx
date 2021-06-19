@@ -18,12 +18,20 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export function Markdown({ children }: { children: ReactNode }) {
+export function Markdown({ children, ...props }: { children: ReactNode }) {
   const headings = getHeadings(children);
 
   return (
-    <DocsPage headings={headings} title={headings[0].label}>
+    <DocsPage headings={headings} title={headings[0].label} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );
+}
+
+export async function getStaticProps() {
+  return {
+    props: {
+      releases: ['one', 'two', 'three'],
+    },
+  };
 }

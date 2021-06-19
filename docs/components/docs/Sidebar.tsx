@@ -2,10 +2,11 @@
 import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
-import { Navigation } from './Navigation';
+import { DocsNavigation, UpdatesNavigation } from './Navigation';
 
-export function Sidebar() {
+export function Sidebar({ isUpdatesPage, releases }) {
   const mq = useMediaQuery();
+  const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation;
 
   return (
     <aside
@@ -20,7 +21,7 @@ export function Sidebar() {
           borderBottom: ['1px solid var(--muted)', null, 'none'],
         })}
       >
-        <Navigation />
+        <Navigation releases={releases} />
       </div>
     </aside>
   );

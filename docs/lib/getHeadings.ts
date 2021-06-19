@@ -16,7 +16,7 @@ export function getHeadings(children: ReactNode): Heading[] {
       const depth =
         (child.props?.mdxType && parseInt(child.props.mdxType.replace('h', ''), 0)) ?? 0;
       return {
-        id: depth > 1 ? `${slugify(child.props.children)}` : '',
+        id: depth > 0 ? `${slugify(child.props.children)}` : '',
         depth,
         label: child.props.children,
       };

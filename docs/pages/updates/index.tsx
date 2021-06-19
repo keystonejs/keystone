@@ -1,15 +1,39 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 
 import { Type } from '../../components/primitives/Type';
 import { Page } from '../../components/Page';
+import { getStaticProps } from '../../components/Markdown';
 
-export default function WhatsNew() {
+export default function WhatsNew({ test }) {
   return (
     <Page>
       <Type as="h1" look="heading48">
         What's New in Keystone 6
       </Type>
+      <ul>
+        <li>
+          <Link href="/updates/">
+            <a>What's New</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/updates/roadmap">
+            <a>Roadmap</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/releases">
+            <a>Releases</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/releases/2021-03-22">
+            <a>2021-03-22 {test}</a>
+          </Link>
+        </li>
+      </ul>
       Note: this page is a working draft, we have more to talk about! In this major update, we've
       focused on improving Keystone's **interfaces**, including the way you configure and run
       Keystone projects, and a whole new Admin UI. We're also adding powerful new features to make
@@ -42,3 +66,5 @@ export default function WhatsNew() {
     </Page>
   );
 }
+
+export { getStaticProps };

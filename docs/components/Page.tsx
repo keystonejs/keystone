@@ -1,5 +1,6 @@
 /** @jsx jsx  */
 import { useRef, Fragment, ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Head from 'next/head';
 
@@ -29,6 +30,7 @@ export function DocsPage({
   children,
   noRightNav,
   noProse,
+  releases,
 }: {
   headings?: Heading[];
   children: ReactNode;
@@ -37,6 +39,8 @@ export function DocsPage({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6`;
   const mq = useMediaQuery();
+  const { pathname } = useRouter();
+  const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
 
   return (
     <Fragment>
@@ -62,7 +66,7 @@ export function DocsPage({
             gap: 'calc(var(--space-large) * 3)',
           })}
         >
-          <Sidebar />
+          <Sidebar releases={releases} isUpdatesPage={isUpdatesPage} />
 
           <main ref={contentRef} className={noProse ? '' : 'prose'}>
             <Breadcrumbs />

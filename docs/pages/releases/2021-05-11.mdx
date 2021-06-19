@@ -1,4 +1,4 @@
-import { Markdown } from '../../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 
 # Release
 
@@ -21,4 +21,5 @@ A bunch of admin UI tweaks in this release 🖥️, among other minor fixes. We 
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-11) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getStaticProps }

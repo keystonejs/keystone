@@ -54,7 +54,7 @@ function NavItem({ href, isPlaceholder, children }: NavItemProps) {
   );
 }
 
-export function Navigation() {
+export function DocsNavigation() {
   return (
     <nav
       css={{
@@ -144,6 +144,29 @@ export function Navigation() {
         </Type>
         <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
+      </Section>
+    </nav>
+  );
+}
+
+export function UpdatesNavigation({ releases = [] }) {
+  return (
+    <nav
+      css={{
+        fontWeight: 500,
+      }}
+    >
+      <Section label="Updates">
+        <NavItem href="/updates/">What's New</NavItem>
+        <NavItem href="/updates/roadmap">Roadmap</NavItem>
+      </Section>
+      <Section label="Releases">
+        <NavItem href="/releases">Releases</NavItem>
+        {releases.map(name => (
+          <NavItem key={name} href={`/releases/${name}`}>
+            {name}
+          </NavItem>
+        ))}
       </Section>
     </nav>
   );

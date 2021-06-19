@@ -1,4 +1,4 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getStaticProps } from '../../components/Markdown';import { Markdown, getStaticProps } from '../../components/Page';
 
 # Release
 
@@ -93,4 +93,5 @@ We've updated our Prisma dependencies to `2.24.1`, check out the [Prisma release
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-15) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getStaticProps }

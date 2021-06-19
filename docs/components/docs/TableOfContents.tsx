@@ -52,7 +52,7 @@ export function TableOfContents({
         });
       }, observerOptions);
 
-      container.current.querySelectorAll('h2, h3').forEach((node: Element) => {
+      container.current.querySelectorAll('h1, h2, h3').forEach((node: Element) => {
         observer.observe(node);
       });
       return () => observer.disconnect();
@@ -63,62 +63,63 @@ export function TableOfContents({
   let activeId = visibleIds[0] || lastVisibleId;
 
   return (
-    <div
-      css={mq({
-        position: 'sticky',
-        display: ['none', null, null, 'block'],
-        boxSizing: 'border-box',
-        height: 'calc(100vh - 60px)',
-        overflowY: 'auto',
-        top: '3.75rem',
-        WebkitOverflowScrolling: 'touch',
+    <div>
+      <div
+        css={mq({
+          position: 'sticky',
+          display: ['none', null, null, 'block'],
+          boxSizing: 'border-box',
+          overflowY: 'auto',
+          top: '3.75rem',
+          WebkitOverflowScrolling: 'touch',
 
-        // [media.sm]: { display: 'block' },
-      })}
-    >
-      <Type
-        as="h4"
-        look="body14bold"
-        color="var(--text-heading)"
-        margin="0 0 0.5rem 0"
-        css={{ textTransform: 'uppercase' }}
-      >
-        On this page
-      </Type>
-      <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {headings.map((h: Heading, i: number) => {
-          let isActive = activeId === h.id;
-          const slug = `#${h.id}`;
-          return (
-            <li
-              key={h.label + i}
-              css={{
-                // increase specificity to element - avoid `!important` declaration
-                // override CSS targeting LI elements from `<Content/>`
-                'li&': { lineHeight: 1.4 },
-              }}
-            >
-              <a
-                css={{
-                  color: isActive ? 'var(--link-active)' : 'var(--text)',
-                  display: 'block',
-                  fontSize: 'var(--font-xsmall)',
-                  fontWeight: isActive ? 500 : 'normal',
-                  paddingLeft: h.depth === 3 ? '2ch' : undefined,
-                  paddingBottom: 'var(--space-small)',
-                  paddingTop: 'var(--space-small)',
-                  ':hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
-                href={slug}
-              >
-                {h.label}
-              </a>
-            </li>
-          );
+          // [media.sm]: { display: 'block' },
         })}
-      </ul>
+      >
+        <Type
+          as="h4"
+          look="body14bold"
+          color="var(--text-heading)"
+          margin="0 0 0.5rem 0"
+          css={{ textTransform: 'uppercase' }}
+        >
+          On this page
+        </Type>
+        <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          {headings.map((h: Heading, i: number) => {
+            let isActive = activeId === h.id;
+            const slug = `#${h.id}`;
+            return (
+              <li
+                key={h.label + i}
+                css={{
+                  // increase specificity to element - avoid `!important` declaration
+                  // override CSS targeting LI elements from `<Content/>`
+                  'li&': { lineHeight: 1.4 },
+                }}
+              >
+                <a
+                  css={{
+                    color: isActive ? 'var(--link-active)' : 'var(--text)',
+                    display: 'block',
+                    fontSize: 'var(--font-xsmall)',
+                    fontWeight: isActive ? 500 : 'normal',
+                    paddingLeft: h.depth === 3 ? '2ch' : undefined,
+                    paddingBottom: 'var(--space-small)',
+                    paddingTop: 'var(--space-small)',
+                    ':hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                  href={slug}
+                >
+                  {h.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

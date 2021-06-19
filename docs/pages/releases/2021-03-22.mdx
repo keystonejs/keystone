@@ -1,4 +1,4 @@
-import { Markdown } from '../../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 
 # Release
 
@@ -50,4 +50,5 @@ Now you can include negative values for `float`, `decimal` and `integer` fields.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-22) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getStaticProps }
