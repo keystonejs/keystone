@@ -13,7 +13,7 @@ function sortVisible(allIds: (string | null)[], targetId: string | null) {
 }
 
 const observerOptions = {
-  rootMargin: '10px',
+  rootMargin: '-10px',
   threshold: 1.0,
 };
 
@@ -70,7 +70,7 @@ export function TableOfContents({
           display: ['none', null, null, 'block'],
           boxSizing: 'border-box',
           overflowY: 'auto',
-          top: '3.75rem',
+          top: '1rem',
           WebkitOverflowScrolling: 'touch',
 
           // [media.sm]: { display: 'block' },

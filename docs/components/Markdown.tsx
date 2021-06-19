@@ -33,15 +33,14 @@ export async function getServerSideProps() {
   const { readdirSync } = require('fs');
   const { normalize } = require('path');
 
-  const releases = readdirSync(normalize(`${__dirname}/`), 'utf8').filter(
-    name => !name.startsWith('.') && !name.startsWith('index')
-  );
-
-  console.log(releases);
+  const releases = readdirSync(normalize(`${process.cwd()}/pages/releases`), 'utf8')
+    .filter(name => !name.startsWith('.') && !name.startsWith('index'))
+    .map(name => name.replace('.mdx', ''))
+    .reverse();
 
   return {
     props: {
-      releases: ['one', 'two', 'three'],
+      releases,
     },
   };
 }

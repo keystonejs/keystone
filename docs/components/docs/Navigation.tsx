@@ -1,6 +1,8 @@
 /** @jsx jsx */
+import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
+import format from 'date-fns/format';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
@@ -164,7 +166,7 @@ export function UpdatesNavigation({ releases = [] }) {
         <NavItem href="/releases">Summary</NavItem>
         {releases.map(name => (
           <NavItem key={name} href={`/releases/${name}`}>
-            {name}
+            {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}
       </Section>
