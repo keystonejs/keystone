@@ -14,7 +14,6 @@ export function Breadcrumbs() {
     if (router) {
       const linkPath = router.pathname.split('/');
       linkPath.shift();
-      console.log(linkPath);
 
       const pathArray = linkPath.map((path, i) => {
         return { title: path.replace(/-/g, ' '), href: '/' + linkPath.slice(0, i + 1).join('/') };
