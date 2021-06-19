@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { HTMLAttributes } from 'react';
 
 type AlertProps = {
-  look: 'neutral' | 'tip' | 'warn' | 'error';
+  look?: 'neutral' | 'tip' | 'warn' | 'error';
 } & HTMLAttributes<HTMLElement>;
 
 export function Alert({ look = 'neutral', className, ...props }: AlertProps) {

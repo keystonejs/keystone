@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { HTMLAttributes } from 'react';
 
 const styleMap = {
   success: {
@@ -20,7 +21,11 @@ const styleMap = {
   },
 };
 
-export function Badge({ look = 'warning', ...props }) {
+type BadgeProps = {
+  look?: keyof typeof styleMap;
+} & HTMLAttributes<HTMLElement>;
+
+export function Badge({ look = 'warning', ...props }: BadgeProps) {
   return (
     <span
       css={{

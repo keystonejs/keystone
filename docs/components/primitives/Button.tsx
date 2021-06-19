@@ -52,7 +52,7 @@ type ButtonProps = {
   disabled?: boolean;
   href?: string;
   loading?: boolean;
-  look: keyof typeof styleMap;
+  look?: keyof typeof styleMap;
 };
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
