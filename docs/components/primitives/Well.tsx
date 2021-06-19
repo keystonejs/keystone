@@ -17,6 +17,7 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }) {
           padding: '1.875rem 2.5rem',
           color: 'var(--text)',
           overflow: 'hidden',
+          transition: 'box-shadow 0.2s ease, transform  0.2s ease',
           ':before': {
             content: '""',
             position: 'absolute',
@@ -25,6 +26,10 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }) {
             bottom: 0,
             width: '0.5rem',
             backgroundImage: `linear-gradient(116.01deg, var(--${grad}-1), var(--${grad}-2))`,
+          },
+          '&:hover, &:focus': {
+            boxShadow: '0 7px 21px rgba(45, 55, 72, 0.07)',
+            transform: 'translateX(-2px) translateY(-2px)',
           },
         }}
         {...props}
