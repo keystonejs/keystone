@@ -161,7 +161,7 @@ export function UpdatesNavigation({ releases = [] }) {
         <NavItem href="/updates/roadmap">Roadmap</NavItem>
       </Section>
       <Section label="Releases">
-        <NavItem href="/releases">Releases</NavItem>
+        <NavItem href="/releases">Summary</NavItem>
         {releases.map(name => (
           <NavItem key={name} href={`/releases/${name}`}>
             {name}

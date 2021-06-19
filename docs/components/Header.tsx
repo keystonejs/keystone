@@ -15,14 +15,19 @@ import { Socials } from './Socials';
 
 function LinkItem({ name, link }) {
   const mq = useMediaQuery();
-  const router = useRouter();
+  const { pathname } = useRouter();
+
+  let isActive = pathname.startsWith(link);
+  if (link.startsWith('/updates') && pathname.startsWith('/releases')) {
+    isActive = true;
+  }
 
   return (
     <span
       css={mq({
         display: ['none', null, null, 'inline'],
         '& a': {
-          color: router.pathname === link ? 'var(--link)' : 'var(--muted)',
+          color: isActive ? 'var(--link)' : 'var(--muted)',
         },
       })}
     >
