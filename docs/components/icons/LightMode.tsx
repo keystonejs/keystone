@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function LightMode({ grad, ...props }) {
+export function LightMode({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function LightMode({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="LightMode" />
+      <Gradients name="LightMode" />
       <path
         stroke={grad ? `url(#LightMode-${grad})` : 'currentColor'}
         fill="none"

@@ -52,7 +52,13 @@ function Box() {
   );
 }
 
-function Swatch({ name, color, gradient }) {
+type SwatchProps = {
+  name?: string;
+  color?: string;
+  gradient?: any;
+};
+
+function Swatch({ name, color, gradient }: SwatchProps) {
   return (
     <div css={{ textAlign: 'center' }}>
       <div
@@ -95,32 +101,32 @@ export default function DS() {
       </Type>
       <ul>
         <li>
-          <Type as="a" look="text16" href="#colors">
+          <Type as="a" look="body16" href="#colors">
             Colors
           </Type>
         </li>
         <li>
-          <Type as="a" look="text16" href="#font-sizes">
+          <Type as="a" look="body16" href="#font-sizes">
             Font sizes
           </Type>
         </li>
         <li>
-          <Type as="a" look="text16" href="#font-stacks">
+          <Type as="a" look="body16" href="#font-stacks">
             Font stacks
           </Type>
         </li>
         <li>
-          <Type as="a" look="text16" href="#space">
+          <Type as="a" look="body16" href="#space">
             Spaces
           </Type>
         </li>
         <li>
-          <Type as="a" look="text16" href="#type">
+          <Type as="a" look="body16" href="#type">
             Type
           </Type>
         </li>
         <li>
-          <Type as="a" look="text16" href="#components">
+          <Type as="a" look="body16" href="#components">
             Components
           </Type>
         </li>
@@ -251,7 +257,7 @@ export default function DS() {
       <Type id="type" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Type
       </Type>
-      {Object.keys(styleMap).map(style => (
+      {Object.keys(styleMap).map((style: keyof typeof styleMap) => (
         <Type key={style} id="type" look={style} css={{ display: 'block' }}>
           Type {style}
         </Type>

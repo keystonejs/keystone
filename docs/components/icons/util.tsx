@@ -1,7 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { SVGAttributes } from 'react';
 
-export function Grad({ name }) {
+export type IconGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'logo';
+export type IconProps = { grad?: IconGradient } & SVGAttributes<SVGElement>;
+
+export function Gradients({ name }) {
   return (
     <defs>
       <linearGradient id={`${name}-grad1`} x1="0%" x2="50%" y1="0%" y2="71.9%">

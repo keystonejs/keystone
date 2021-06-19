@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { HTMLAttributes } from 'react';
 
 import { SPACE } from '../../lib/TOKENS';
 
@@ -8,7 +9,13 @@ Object.keys(SPACE).forEach((name, i) => {
   gapMap[i + 1] = `var(${name})`;
 });
 
-export function Stack({ gap = 4, orientation = 'vertical', block, ...props }) {
+type StackProps = {
+  block?: boolean;
+  gap?: number;
+  orientation?: 'vertical' | 'horizontal';
+} & HTMLAttributes<HTMLElement>;
+
+export function Stack({ gap = 4, orientation = 'vertical', block, ...props }: StackProps) {
   return (
     <div
       css={{

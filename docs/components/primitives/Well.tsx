@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
-import { ArrowRLong } from '../icons/ArrowRLong';
+import { ArrowRLong } from '../icons';
 import { Type } from './Type';
 
 export function Well({ grad = 'grad1', heading, href, children, ...props }) {

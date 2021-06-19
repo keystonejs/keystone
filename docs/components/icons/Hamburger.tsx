@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Grad } from './util';
+import { Gradients, IconProps } from './util';
 
-export function Hamburger({ grad, ...props }) {
+export function Hamburger({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export function Hamburger({ grad, ...props }) {
       fill="none"
       {...props}
     >
-      <Grad name="Hamburger" />
+      <Gradients name="Hamburger" />
       <path
         stroke={grad ? `url(#Hamburger-${grad})` : 'currentColor'}
         fill="none"
