@@ -74,8 +74,9 @@ export function Navigation() {
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">Query Filters</NavItem>
-        <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/hooks">Hooks</NavItem>
+        <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
@@ -84,9 +85,6 @@ export function Navigation() {
         </NavItem>
         <NavItem href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
-        </NavItem>
-        <NavItem href="/docs/guides/virtual-fields" isPlaceholder>
-          Virtual Fields
         </NavItem>
         <NavItem href="/docs/guides/internal-items" isPlaceholder>
           Internal Items
