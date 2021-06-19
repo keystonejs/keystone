@@ -33,7 +33,7 @@ export async function getServerSideProps() {
   const { readdirSync } = require('fs');
   const { normalize } = require('path');
 
-  const releases = readdirSync(normalize(`${process.cwd()}/pages/releases`), 'utf8')
+  const releases = readdirSync(normalize(`${__dirname}/../../../pages/releases`), 'utf8')
     .filter(name => !name.startsWith('.') && !name.startsWith('index'))
     .map(name => name.replace('.mdx', ''))
     .reverse();
