@@ -57,8 +57,8 @@ export function DocsPage({
           css={mq({
             display: ['block', null, 'grid'],
             gridTemplateColumns: noRightNav
-              ? '16.25rem minmax(0, auto)'
-              : '16.25rem minmax(0, auto) 16.25rem',
+              ? '15rem minmax(0, auto)'
+              : ['15rem minmax(0, auto)', null, null, '15rem minmax(0, auto) 15rem'],
             gap: 'calc(var(--space-large) * 3)',
           })}
         >

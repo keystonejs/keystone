@@ -66,8 +66,8 @@ export function TableOfContents({
     <div
       css={mq({
         position: 'sticky',
+        display: ['none', null, null, 'block'],
         boxSizing: 'border-box',
-        display: ['none', 'block'],
         height: 'calc(100vh - 60px)',
         overflowY: 'auto',
         top: '3.75rem',
