@@ -52,7 +52,7 @@ input TaskWhereInput {
 }
 
 input TaskWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortTasksBy {
@@ -182,7 +182,7 @@ input PersonWhereInput {
 }
 
 input PersonWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPeopleBy {

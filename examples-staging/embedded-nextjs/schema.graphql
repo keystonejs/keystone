@@ -40,7 +40,7 @@ input PostWhereInput {
 }
 
 input PostWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortPostsBy {

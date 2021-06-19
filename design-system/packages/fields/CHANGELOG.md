@@ -1,5 +1,14 @@
 # @keystone-ui/fields
 
+## 4.1.1
+
+### Patch Changes
+
+- [#5893](https://github.com/keystonejs/keystone/pull/5893) [`df7d7b6f6`](https://github.com/keystonejs/keystone/commit/df7d7b6f6f2830573393560f4a1ec35234889947) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Applied a11y fixes to DatePicker component.
+
+- Updated dependencies [[`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79)]:
+  - @keystone-ui/core@3.1.0
+
 ## 4.1.0
 
 ### Minor Changes

@@ -177,7 +177,8 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
-  id: ID!
+  id: ID
+  email: String
 }
 
 enum SortUsersBy {
@@ -324,7 +325,7 @@ input ProductWhereInput {
 }
 
 input ProductWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortProductsBy {
@@ -474,7 +475,7 @@ input ProductImageWhereInput {
 }
 
 input ProductImageWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortProductImagesBy {
@@ -558,7 +559,7 @@ input CartItemWhereInput {
 }
 
 input CartItemWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortCartItemsBy {
@@ -653,7 +654,7 @@ input OrderItemWhereInput {
 }
 
 input OrderItemWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortOrderItemsBy {
@@ -789,7 +790,7 @@ input OrderWhereInput {
 }
 
 input OrderWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortOrdersBy {
@@ -920,7 +921,7 @@ input RoleWhereInput {
 }
 
 input RoleWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortRolesBy {

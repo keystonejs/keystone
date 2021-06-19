@@ -1,5 +1,11 @@
 # @keystone-ui/core
 
+## 3.1.0
+
+### Minor Changes
+
+- [#5858](https://github.com/keystonejs/keystone/pull/5858) [`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added functionality to ensure that Stack elements that are 'ul' or 'ol' automaticaly wrap children in 'li' rather than 'div'.
+
 ## 3.0.0
 
 ### Major Changes

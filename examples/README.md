@@ -21,6 +21,7 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [`JSON field`](./json): Adds a JSON field to the Task Manager base.
 - [`defaultValue`](./default-values): Adds default values to the Blog base.
 - [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
+- [`virtual field`](./virtual-field): Adds virtual fields to the Blog base.
 
 ## Running examples
 

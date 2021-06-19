@@ -348,6 +348,50 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   )
                 );
               }
+              if (mod.supportedFilters(provider).includes('unique_equality')) {
+                test(
+                  'Unique equality',
+                  runner(
+                    () =>
+                      setupFromConfig({
+                        provider,
+                        config: testConfig({
+                          lists: createSchema({
+                            [listKey]: list({
+                              fields: {
+                                field: mod.typeFunction({ isUnique: true }),
+                              },
+                            }),
+                          }),
+                        }),
+                      }),
+                    async ({ context }) => {
+                      // Populate the database before running the tests
+                      // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
+                      for (const data of mod.initItems(matrixValue)) {
+                        await context.lists[listKey].createOne({
+                          data: { field: data[fieldName] },
+                        });
+                      }
+                      await Promise.all(
+                        storedValues.map(async (val: any) => {
+                          const promise = context.lists[listKey].findOne({
+                            where: { field: val[fieldName] },
+                            query: 'field',
+                          });
+                          if (val[fieldName] === null) {
+                            expect(await promise.catch(x => x.toString())).toMatch(
+                              'The unique value provided in a unique where input must not be null'
+                            );
+                          } else {
+                            expect(await promise).toEqual({ field: val[fieldName] });
+                          }
+                        })
+                      );
+                    }
+                  )
+                );
+              }
             });
           }
         });
