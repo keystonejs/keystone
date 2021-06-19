@@ -1,6 +1,7 @@
 /** @jsx jsx  */
 import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/react';
+import { ReactNode } from 'react';
 
 import { Code, InlineCode } from '../components/primitives/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/docs/Heading';
@@ -28,12 +29,13 @@ export function Markdown({ children, ...props }: { children: ReactNode }) {
   );
 }
 
-export async function getServerSideProps(thing) {
+export async function getServerSideProps() {
   const { readdirSync } = require('fs');
   const { normalize } = require('path');
 
-  const releases = readdirSync(normalize(`${__dirname}/`), 'utf8')
-    .filter((name) => !name.startsWith('.') && !name.startsWith('index'))
+  const releases = readdirSync(normalize(`${__dirname}/`), 'utf8').filter(
+    name => !name.startsWith('.') && !name.startsWith('index')
+  );
 
   console.log(releases);
 

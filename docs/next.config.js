@@ -47,6 +47,15 @@ module.exports = withPlugins([
       // + type checking slows down vercel deploys
       ignoreBuildErrors: true,
     };
+    const webpack = nextConfig.webpack;
+    nextConfig.webpack = (_config, args) => {
+      const config = webpack ? webpack(_config, args) : _config;
+      const { isServer } = args;
+      if (!isServer) {
+        config.resolve.fallback.fs = false;
+      }
+      return config;
+    };
     return nextConfig;
   },
   redirects,
