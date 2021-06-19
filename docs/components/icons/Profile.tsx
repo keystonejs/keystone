@@ -8,7 +8,7 @@ export function Profile({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      aria-label="Copy"
+      aria-label="Profile"
       role="img"
       fill="none"
       {...props}

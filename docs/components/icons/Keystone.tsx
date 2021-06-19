@@ -8,7 +8,7 @@ export function Keystone({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 35 34"
-      aria-label="Copy"
+      aria-label="Keystone"
       role="img"
       fill="none"
       {...props}

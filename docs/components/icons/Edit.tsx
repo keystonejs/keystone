@@ -8,7 +8,7 @@ export function Edit({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 12 12"
-      aria-label="Copy"
+      aria-label="Edit"
       role="img"
       fill="none"
       {...props}

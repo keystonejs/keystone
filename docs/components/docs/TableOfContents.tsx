@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
-import { SubHeading } from './Heading';
+import { Type } from '../primitives/Type';
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
@@ -70,14 +70,21 @@ export function TableOfContents({
         display: ['none', 'block'],
         height: 'calc(100vh - 60px)',
         overflowY: 'auto',
-        paddingTop: 'var(--space-xlarge)',
         top: '3.75rem',
         WebkitOverflowScrolling: 'touch',
 
         // [media.sm]: { display: 'block' },
       })}
     >
-      <SubHeading as="h4">On this page</SubHeading>
+      <Type
+        as="h4"
+        look="body14bold"
+        color="var(--text-heading)"
+        margin="0 0 0.5rem 0"
+        css={{ textTransform: 'uppercase' }}
+      >
+        On this page
+      </Type>
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {headings.map((h: Heading, i: number) => {
           let isActive = activeId === h.id;

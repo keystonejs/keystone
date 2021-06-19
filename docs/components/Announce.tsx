@@ -12,6 +12,10 @@ export function Announce({ children, ...props }) {
         color: 'var(--brand-text)',
         padding: '1rem',
         textAlign: 'center',
+        '& a': {
+          color: 'var(--brand-text)',
+          textDecoration: 'underline',
+        },
       }}
       {...props}
     >

@@ -8,7 +8,7 @@ export function Roadmap({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 18"
-      aria-label="Copy"
+      aria-label="Roadmap"
       role="img"
       fill="none"
       {...props}

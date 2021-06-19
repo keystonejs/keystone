@@ -3,19 +3,12 @@ import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { Button } from '../primitives/Button';
+import { Alert } from '../primitives/Alert';
 import { Stack } from '../primitives/Stack';
 
 export function ComingSoon() {
   return (
-    <div
-      css={{
-        display: 'grid',
-        borderRadius: '8px',
-        border: '1px solid var(--border)',
-        padding: 'var(--space-medium)',
-        borderWidth: '1px',
-      }}
-    >
+    <Alert look="tip">
       <Stack
         css={{
           width: '100%',
@@ -34,6 +27,6 @@ export function ComingSoon() {
           <Button as="a">Roadmap</Button>
         </Link>
       </Stack>
-    </div>
+    </Alert>
   );
 }

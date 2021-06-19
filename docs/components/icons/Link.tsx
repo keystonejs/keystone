@@ -6,7 +6,7 @@ import { Grad } from './util';
 export function Link({ grad, ...props }) {
   return (
     <svg
-      aria-hidden="true"
+      aria-label="Link"
       role="img"
       viewBox="0 0 16 16"
       fill={grad ? `url(#Link-${grad})` : 'currentColor'}

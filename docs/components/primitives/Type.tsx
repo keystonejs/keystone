@@ -14,6 +14,7 @@ const common = {
     fontFamily: 'var(--font-body)',
     color: 'var(--text)',
     lineHeight: 1.2,
+    maxWidth: '85ch',
   },
 };
 
@@ -64,9 +65,9 @@ export const styleMap = {
     fontWeight: 900,
     letterSpacing: '-0.05em',
   },
-  heading110: {
+  heading94: {
     ...common.brand,
-    fontSize: '6.875rem',
+    fontSize: '5.875rem',
     fontWeight: 900,
     letterSpacing: '-0.05em',
   },

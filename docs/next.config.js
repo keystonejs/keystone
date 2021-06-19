@@ -2,6 +2,7 @@ const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 const mdxHints = require('remark-hint');
+
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
@@ -25,7 +26,12 @@ const redirects = {
 module.exports = withPlugins([
   withPreconstruct,
   withImages,
-  [withMDX, { pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'] }],
+  [
+    withMDX,
+    {
+      pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    },
+  ],
   nextConfig => {
     nextConfig.env = {
       siteUrl: 'https://next.keystonejs.com',

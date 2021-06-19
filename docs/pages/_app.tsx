@@ -55,6 +55,11 @@ export default function App({ Component, pageProps }: AppProps) {
         .hint {
           border-radius: 4px;
           padding: 1rem;
+          color: var(--text-heading);
+        }
+        .hint.neutral {
+          background: var(--code-bg);
+          border-left: 6px solid var(--text);
         }
         .hint.tip {
           background: var(--info-bg);
@@ -65,8 +70,8 @@ export default function App({ Component, pageProps }: AppProps) {
           border-left: 6px solid var(--warning);
         }
         .hint.error {
-          background: var(--error-bg);
-          border-left: 6px solid var(--error);
+          background: var(--danger-bg);
+          border-left: 6px solid var(--danger);
         }
         *:focus-visible, input:focus-visible, button:focus-visible, [type="submit"]:focus-visible {
           outline: 1px dashed var(--focus);

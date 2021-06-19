@@ -2,14 +2,33 @@
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
+import { useMediaQuery } from '../lib/media';
 import { GitHubButton } from './primitives/GitHubButton';
 import { SubscribeForm } from './SubscribeForm';
 import { Wrapper } from './primitives/Wrapper';
-import { useMediaQuery } from '../lib/media';
 import { Keystone } from './icons/Keystone';
 import { Emoji } from './primitives/Emoji';
 import { Type } from './primitives/Type';
 import { Socials } from './Socials';
+
+function List(props) {
+  return (
+    <ul
+      css={{
+        listStyle: 'none',
+        margin: 0,
+        padding: 0,
+        '& li': {
+          margin: '0.75rem 0',
+        },
+        '& a': {
+          color: 'var(--muted)',
+        },
+      }}
+      {...props}
+    />
+  );
+}
 
 export function Footer() {
   const mq = useMediaQuery();
@@ -27,11 +46,11 @@ export function Footer() {
         <div
           css={mq({
             display: 'grid',
-            gridTemplateColumns: [null, '1fr 1fr', '1fr 1fr 1fr 1fr', '1fr 1fr 1fr 1fr 23rem'],
+            gridTemplateColumns: ['1fr', '1fr 1fr 1fr 1fr', null, '1fr 1fr 1fr 1fr 23rem'],
             gap: '1rem',
-            // borderTop: '1px solid var(--border)',
-            margin: [0, '0 4rem', 0],
-            paddingTop: ['var(--space-large)', 'var(--space-xlarge)', 'var(--space-xxlarge)'],
+            borderTop: '1px solid var(--border)',
+            margin: 0,
+            paddingTop: '3rem',
             textAlign: ['center', 'left'],
           })}
         >
@@ -39,19 +58,7 @@ export function Footer() {
             <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
               Product
             </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: 0,
-                padding: 0,
-                '& li': {
-                  margin: '0.75rem 0',
-                },
-                '& a': {
-                  color: 'var(--muted)',
-                },
-              }}
-            >
+            <List>
               <li>
                 <Link href="/why-keystone">
                   <a>Why Keystone</a>
@@ -72,25 +79,13 @@ export function Footer() {
                   <a>Solutions</a>
                 </Link>
               </li>
-            </ul>
+            </List>
           </div>
           <div>
             <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
               Keystone for
             </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: 0,
-                padding: 0,
-                '& li': {
-                  margin: '0.75rem 0',
-                },
-                '& a': {
-                  color: 'var(--muted)',
-                },
-              }}
-            >
+            <List>
               <li>
                 <Link href="/for-developers">
                   <a>Developers</a>
@@ -106,25 +101,13 @@ export function Footer() {
                   <a>Content management</a>
                 </Link>
               </li>
-            </ul>
+            </List>
           </div>
           <div>
             <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
               Resources
             </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: 0,
-                padding: 0,
-                '& li': {
-                  margin: '0.75rem 0',
-                },
-                '& a': {
-                  color: 'var(--muted)',
-                },
-              }}
-            >
+            <List>
               <li>
                 <Link href="/docs/tutorials/getting-started-with-create-keystone-app">
                   <a>Getting started</a>
@@ -150,25 +133,13 @@ export function Footer() {
                   <a>API reference</a>
                 </Link>
               </li>
-            </ul>
+            </List>
           </div>
           <div>
             <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
               Community
             </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: 0,
-                padding: 0,
-                '& li': {
-                  margin: '0.75rem 0',
-                },
-                '& a': {
-                  color: 'var(--muted)',
-                },
-              }}
-            >
+            <List>
               <li>
                 <a
                   href="https://community.keystonejs.com/"
@@ -196,13 +167,13 @@ export function Footer() {
                   Code of Conduct
                 </a>
               </li>
-            </ul>
+            </List>
           </div>
           <div
             css={mq({
               borderLeft: [null, null, null, '1px solid var(--border)'],
               paddingLeft: [null, null, null, '3rem'],
-              gridColumn: [null, '1 / 5', '1 / 7', 'inherit'],
+              gridColumn: [null, '1 / 5', null, 'inherit'],
             })}
           >
             <Keystone
@@ -221,7 +192,7 @@ export function Footer() {
               margin="0 0 2rem 0"
               css={{ display: 'inline-block' }}
             >
-              Keystone Next
+              Keystone 6
             </Type>
             <SubscribeForm
               stacked
@@ -245,7 +216,7 @@ export function Footer() {
             gap: '1rem',
             alignItems: 'center',
             justifyItems: ['center', 'end'],
-            margin: '2rem 0',
+            margin: '4.5rem 0 2rem 0',
             '& p': {
               display: 'inline-block',
               margin: ['0 auto', 0],

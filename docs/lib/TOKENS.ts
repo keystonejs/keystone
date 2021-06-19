@@ -13,7 +13,8 @@ export const TYPE = {
     '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
   '--font-body':
     'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-  '--font-mono': '"Space Mono", monospace',
+  '--font-mono':
+    'ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace',
 };
 
 export const TYPESCALE = {
@@ -44,7 +45,7 @@ export const COLORS = {
     '--text-heading': '#2d3748',
     '--text-disabled': '#cbd5e0',
     '--code': '#47546b',
-    '--code-bg': '#edf2f7',
+    '--code-bg': '#f6f7f9',
 
     '--info': '#0299e7',
     '--info-bg': 'rgba(2, 153, 231, 0.1)',
@@ -75,16 +76,16 @@ export const COLORS = {
     '--brand-bg--40': 'rgba(22, 107, 255, 0.6)',
 
     '--brand-text': '#fff',
-    '--link': '#5993F8',
-    '--link-active': '#89B3FA',
-    '--focus': '#8B5CF6',
-    '--border': '#2D3748',
-    '--muted': '#A0AEC0',
-    '--text': '#A0AEC0',
-    '--text-heading': '#F7F9FC',
-    '--text-disabled': '#2D3748',
-    '--code': '#CBD5E0',
-    '--code-bg': '#2D3748',
+    '--link': '#5993f8',
+    '--link-active': '#89b3fa',
+    '--focus': '#8b5cf6',
+    '--border': '#2d3748',
+    '--muted': '#a0aec0',
+    '--text': '#a0aec0',
+    '--text-heading': '#f7f9fc',
+    '--text-disabled': '#2d3748',
+    '--code': '#cbd5e0',
+    '--code-bg': '#2d3748',
 
     '--info': '#0299e7',
     '--info-bg': 'rgba(2, 153, 231, 0.05)',
@@ -101,10 +102,10 @@ export const COLORS = {
     '--grad1-1': '#fff',
     '--grad1-2': '#fff',
     '--grad2-1': '#334561',
-    '--grad2-2': '#7A869A',
+    '--grad2-2': '#7a869a',
     '--grad3-1': '#334561',
-    '--grad3-2': '#7A869A',
+    '--grad3-2': '#7a869a',
     '--grad4-1': '#334561',
-    '--grad4-2': '#7A869A',
+    '--grad4-2': '#7a869a',
   },
 };

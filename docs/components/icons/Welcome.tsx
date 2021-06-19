@@ -8,7 +8,7 @@ export function Welcome({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
-      aria-label="Copy"
+      aria-label="Welcome"
       role="img"
       fill="none"
       {...props}

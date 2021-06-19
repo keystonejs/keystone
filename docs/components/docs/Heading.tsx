@@ -114,20 +114,3 @@ export function H5(props: StringOnlyChildren) {
 export function H6(props: StringOnlyChildren) {
   return <Heading css={{ fontSize: 'var(--font-xsmall)' }} as="h6" {...props} />;
 }
-
-export function SubHeading({ as: Tag, children, ...props }: HeadingProps) {
-  return (
-    <Tag
-      css={{
-        color: 'var(--muted)',
-        fontSize: 'var(--font-xsmall)',
-        fontWeight: 700,
-        margin: '1rem 0 0.25rem 0',
-        textTransform: 'uppercase',
-      }}
-      {...props}
-    >
-      {children}
-    </Tag>
-  );
-}

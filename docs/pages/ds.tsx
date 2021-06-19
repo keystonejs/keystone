@@ -9,10 +9,12 @@ import { styleMap, Type } from '../components/primitives/Type';
 import { InlineCode } from '../components/primitives/Code';
 import { Status } from '../components/primitives/Status';
 import { Button } from '../components/primitives/Button';
+import { Alert } from '../components/primitives/Alert';
 import { Badge } from '../components/primitives/Badge';
 import { Emoji } from '../components/primitives/Emoji';
 import { Stack } from '../components/primitives/Stack';
 import { Field } from '../components/primitives/Field';
+import { Well } from '../components/primitives/Well';
 import * as allIcons from '../components/icons';
 import { Page } from '../components/Page';
 
@@ -50,12 +52,42 @@ function Box() {
   );
 }
 
+function Swatch({ name, color, gradient }) {
+  return (
+    <div css={{ textAlign: 'center' }}>
+      <div
+        css={{
+          display: 'inline-block',
+          width: '4rem',
+          height: '4rem',
+          margin: '0 auto',
+          border: '3px solid #fff',
+          borderRadius: '100%',
+          boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
+          background: gradient
+            ? `linear-gradient(135deg, ${gradient.grad1} 4.86%, ${gradient.grad2} 97.92%)`
+            : color,
+        }}
+      />
+      <span
+        css={{
+          display: 'block',
+          padding: '0 0 1rem 0',
+        }}
+      >
+        <InlineCode>{name}</InlineCode>
+      </span>
+    </div>
+  );
+}
+
 export default function DS() {
   const [icon, setIcon] = useState(null);
+  let firstGrad;
 
   return (
     <Page>
-      <Type as="h1" look="heading110" margin={'var(--space-large) 0'}>
+      <Type as="h1" look="heading94" margin={'var(--space-large) 0'}>
         Design System
       </Type>
       <Type id="contents" as="h2" look="heading64" margin={'var(--space-large) 0'}>
@@ -108,30 +140,26 @@ export default function DS() {
       >
         {Object.entries(COLORS.light)
           .filter(([name]) => name !== '--theme')
+          .filter(([name]) => !name.startsWith('--grad'))
           .map(([name, color]) => (
-            <div key={name} css={{ textAlign: 'center' }}>
-              <div
-                css={{
-                  display: 'inline-block',
-                  width: '4rem',
-                  height: '4rem',
-                  margin: '0 auto',
-                  border: '3px solid #fff',
-                  borderRadius: '100%',
-                  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
-                  background: color,
-                }}
-              />
-              <span
-                css={{
-                  display: 'block',
-                  padding: '0 0 1rem 0',
-                }}
-              >
-                <InlineCode>{name}</InlineCode>
-              </span>
-            </div>
+            <Swatch key={`light-${name}`} name={name} color={color} />
           ))}
+
+        {Object.entries(COLORS.light)
+          .filter(([name]) => name.startsWith('--grad'))
+          .map(([name, color]) => {
+            if (name.endsWith('-2')) {
+              return (
+                <Swatch
+                  key={`light-grad-${name}`}
+                  name={name.split('-')[2]}
+                  gradient={{ grad1: firstGrad, grad2: color }}
+                />
+              );
+            } else {
+              firstGrad = color;
+            }
+          })}
       </div>
       <Type id="colors" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Colors dark
@@ -147,30 +175,25 @@ export default function DS() {
       >
         {Object.entries(COLORS.dark)
           .filter(([name]) => name !== '--theme')
+          .filter(([name]) => !name.startsWith('--grad'))
           .map(([name, color]) => (
-            <div key={name} css={{ textAlign: 'center' }}>
-              <div
-                css={{
-                  display: 'inline-block',
-                  width: '4rem',
-                  height: '4rem',
-                  margin: '0 auto',
-                  border: '3px solid #fff',
-                  borderRadius: '100%',
-                  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
-                  background: color,
-                }}
-              />
-              <span
-                css={{
-                  display: 'block',
-                  padding: '0 0 1rem 0',
-                }}
-              >
-                <InlineCode>{name}</InlineCode>
-              </span>
-            </div>
+            <Swatch key={`dark-${name}`} name={name} color={color} />
           ))}
+        {Object.entries(COLORS.dark)
+          .filter(([name]) => name.startsWith('--grad'))
+          .map(([name, color]) => {
+            if (name.endsWith('-2')) {
+              return (
+                <Swatch
+                  key={`light-grad-${name}`}
+                  name={name.split('-')[2]}
+                  gradient={{ grad1: firstGrad, grad2: color }}
+                />
+              );
+            } else {
+              firstGrad = color;
+            }
+          })}
       </div>
       <Divider />
       <Type id="font-sizes" as="h2" look="heading64" margin={'var(--space-large) 0'}>
@@ -276,6 +299,58 @@ export default function DS() {
         <Box />
       </Stack>
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Alert
+      </Type>
+      <Stack block>
+        <Alert>Neutral alert</Alert>
+        <Alert look="tip">Warning alert</Alert>
+        <Alert look="warn">Warning alert</Alert>
+        <Alert look="error">Error alert</Alert>
+      </Stack>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
+        Well
+      </Type>
+      <Stack orientation="horizontal" block css={{ alignItems: 'stretch' }}>
+        <Well heading="Getting started with Keystone 6" href="/">
+          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
+          project folder.
+        </Well>
+        <Well heading="How to embed Keystone + SQLite in a Next.js app" href="/">
+          Learn how to run Keystone in the same folder as your frontend code and commit everything
+          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+        </Well>
+      </Stack>
+      <Stack orientation="horizontal" block css={{ alignItems: 'stretch', marginTop: '1rem' }}>
+        <Well grad="grad2" heading="Getting started with Keystone 6" href="/">
+          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
+          project folder.
+        </Well>
+        <Well grad="grad2" heading="How to embed Keystone + SQLite in a Next.js app" href="/">
+          Learn how to run Keystone in the same folder as your frontend code and commit everything
+          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+        </Well>
+      </Stack>
+      <Stack orientation="horizontal" block css={{ alignItems: 'stretch', marginTop: '1rem' }}>
+        <Well grad="grad3" heading="Getting started with Keystone 6" href="/">
+          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
+          project folder.
+        </Well>
+        <Well grad="grad3" heading="How to embed Keystone + SQLite in a Next.js app" href="/">
+          Learn how to run Keystone in the same folder as your frontend code and commit everything
+          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+        </Well>
+      </Stack>
+      <Stack orientation="horizontal" block css={{ alignItems: 'stretch', marginTop: '1rem' }}>
+        <Well grad="grad4" heading="Getting started with Keystone 6" href="/">
+          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
+          project folder.
+        </Well>
+        <Well grad="grad4" heading="How to embed Keystone + SQLite in a Next.js app" href="/">
+          Learn how to run Keystone in the same folder as your frontend code and commit everything
+          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+        </Well>
+      </Stack>
+      <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
         Button
       </Type>
       <div css={{ margin: 'var(--space-medium) 0' }}>
@@ -298,12 +373,36 @@ export default function DS() {
       </div>
       <div css={{ margin: 'var(--space-medium) 0' }}>
         <Stack orientation="horizontal">
+          <Button look="soft">Delete</Button>
+          <Button look="soft" disabled>
+            Delete
+          </Button>
+          <Button look="soft" loading>
+            Delete
+          </Button>
+        </Stack>
+      </div>
+      <div css={{ margin: 'var(--space-medium) 0' }}>
+        <Stack orientation="horizontal">
           <Button look="text">Logout</Button>
           <Button look="text" disabled>
             Logout
           </Button>
           <Button look="text" loading>
             Logout
+          </Button>
+        </Stack>
+      </div>
+      <div css={{ margin: 'var(--space-medium) 0' }}>
+        <Stack orientation="horizontal">
+          <Button as="a" href="/ds" look="soft">
+            Get Started
+          </Button>
+          <Button as="a" href="/docs" look="soft">
+            Get Started <allIcons.ArrowR />
+          </Button>
+          <Button as="a" href="/" look="soft">
+            Get Started
           </Button>
         </Stack>
       </div>
@@ -437,7 +536,7 @@ export default function DS() {
       >
         Highlighting a <Highlight look="grad2">part of some text</Highlight>
       </Type>
-      <Type as="p" look="heading110">
+      <Type as="p" look="heading94">
         Highlighting <Highlight look="grad3">a part</Highlight>
       </Type>
       <Type as="p" look="heading84">

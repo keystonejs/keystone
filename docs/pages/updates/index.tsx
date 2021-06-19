@@ -8,7 +8,7 @@ export default function WhatsNew() {
   return (
     <Page>
       <Type as="h1" look="heading48">
-        What's New in Keystone Next
+        What's New in Keystone 6
       </Type>
       Note: this page is a working draft, we have more to talk about! In this major update, we've
       focused on improving Keystone's **interfaces**, including the way you configure and run

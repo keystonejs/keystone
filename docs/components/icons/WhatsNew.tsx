@@ -8,7 +8,7 @@ export function WhatsNew({ grad, ...props }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 18 20"
-      aria-label="Copy"
+      aria-label="What's new"
       role="img"
       fill="none"
       {...props}

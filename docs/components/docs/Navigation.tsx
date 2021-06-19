@@ -1,26 +1,30 @@
 /** @jsx jsx */
-import { Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 
-import { SubHeading } from './Heading';
+import { Type } from '../primitives/Type';
 
 type SectionProps = { label: string; children: ReactNode };
 function Section({ label, children }: SectionProps) {
   return (
-    <Fragment>
-      <h3
-        css={{
-          textTransform: 'uppercase',
-          margin: 'var(--space-xlarge) 0 var(--space-medium) 0',
-          fontWeight: 700,
-        }}
+    <div
+      css={{
+        marginBottom: 'var(--space-xlarge)',
+      }}
+    >
+      <Type
+        as="h3"
+        look="body14bold"
+        margin="0 0 var(--space-large) 0"
+        color="var(--text-heading)"
+        css={{ textTransform: 'uppercase' }}
       >
         {label}
-      </h3>
+      </Type>
       {children}
-    </Fragment>
+    </div>
   );
 }
 
@@ -35,10 +39,13 @@ function NavItem({ href, isPlaceholder, children }: NavItemProps) {
         css={{
           display: 'block',
           textDecoration: 'none',
-          padding: 'var(--space-xsmall) 0',
+          padding: '0 0 var(--space-medium) 0',
           color: isSelected
-            ? 'var(--text)'
+            ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
+          ':hover': {
+            textDecoration: 'underline',
+          },
         }}
       >
         {children}
@@ -54,9 +61,6 @@ export function Navigation() {
         fontWeight: 500,
       }}
     >
-      <NavItem href="/docs">Docs</NavItem>
-      <NavItem href="/docs/releases">Releases</NavItem>
-      <NavItem href="/docs/roadmap">Roadmap</NavItem>
       <Section label="Tutorials">
         <NavItem href="/docs/tutorials/getting-started-with-create-keystone-app">
           Getting started
@@ -101,7 +105,15 @@ export function Navigation() {
         <NavItem href="/docs/examples">Examples</NavItem>
       </Section>
       <Section label="API">
-        <SubHeading as="h4">Config</SubHeading>
+        <Type
+          as="h4"
+          look="body14bold"
+          color="var(--muted)"
+          margin="1.5rem 0 1rem 0"
+          css={{ textTransform: 'uppercase' }}
+        >
+          Config
+        </Type>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
@@ -110,12 +122,28 @@ export function Navigation() {
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
-        <SubHeading as="h4">Context</SubHeading>
+        <Type
+          as="h4"
+          look="body14bold"
+          color="var(--muted)"
+          margin="1.5rem 0 1rem 0"
+          css={{ textTransform: 'uppercase' }}
+        >
+          Context
+        </Type>
         <NavItem href="/docs/apis/context">Context API</NavItem>
         <NavItem href="/docs/apis/list-items">List Item API</NavItem>
         <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
 
-        <SubHeading as="h4">GraphQL</SubHeading>
+        <Type
+          as="h4"
+          look="body14bold"
+          color="var(--muted)"
+          margin="1.5rem 0 1rem 0"
+          css={{ textTransform: 'uppercase' }}
+        >
+          GraphQL
+        </Type>
         <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
       </Section>

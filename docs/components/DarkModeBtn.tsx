@@ -3,6 +3,7 @@ import { Fragment, useState, useEffect } from 'react';
 import { jsx, Global } from '@emotion/react';
 
 import { COLORS } from '../lib/TOKENS';
+import { LightMode } from './icons/LightMode';
 import { DarkMode } from './icons/DarkMode';
 
 export function DarkModeBtn(props) {
@@ -56,10 +57,18 @@ export function DarkModeBtn(props) {
           margin: 0,
           color: 'var(--muted)',
           cursor: 'pointer',
+          transition: 'color 0.3s ease',
+          '&:hover, &:focus': {
+            color: 'var(--link)',
+          },
         }}
         {...props}
       >
-        <DarkMode css={{ height: 'var(--space-xlarge)' }} />
+        {theme === 'dark' ? (
+          <LightMode css={{ height: 'var(--space-xlarge)' }} />
+        ) : (
+          <DarkMode css={{ height: 'var(--space-xlarge)' }} />
+        )}
       </button>
     </Fragment>
   );

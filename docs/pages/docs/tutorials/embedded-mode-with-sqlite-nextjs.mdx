@@ -16,9 +16,9 @@ If you’re happy to write content in a local-only environment, and don't need a
 
 As a Headless CMS, by default Keystone works in **Standalone** mode. Where you host your Content API separately from your frontend(s). While this is great for scale, it complicates developing and deploying simple apps and websites.
 
-**Keystone Next** introduces a new **Embedded** mode, which brings a different approach to integrating Keystone. It lets you embed Keystone _inside_ another app, which can streamline the development and deployment of simple projects.
+**Keystone 6** introduces a new **Embedded** mode, which brings a different approach to integrating Keystone. It lets you embed Keystone _inside_ another app, which can streamline the development and deployment of simple projects.
 
-Keystone Next also introduces SQLite support – giving you the option to store your files and database content _within_ your local Keystone repo instead of an external host.
+Keystone 6 also introduces SQLite support – giving you the option to store your files and database content _within_ your local Keystone repo instead of an external host.
 
 !> **Note:** Modes is conceptual framework. It has no dedicated APIs, and there are no mentions of modes in the API docs.
 
@@ -45,7 +45,7 @@ yarn create next-app --typescript my-project
 cd my-project
 ```
 
-!> Keystone Next has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
+!> Keystone 6 has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
 
 Delete the `/pages/api` directory. We’ll add a GraphQL API later in the tutorial. Your `/pages` directory should now look like this:
 

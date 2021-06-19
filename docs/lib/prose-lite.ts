@@ -19,6 +19,9 @@ export const proseStyles = {
     textDecoration: 'underline',
     fontWeight: 500,
   },
+  'a:hover': {
+    color: 'var(--link)',
+  },
   strong: {
     color: 'var(--text-heading)',
     fontWeight: 600,
@@ -115,7 +118,6 @@ export const proseStyles = {
   },
   code: {
     color: 'var(--text-heading)',
-    fontWeight: 600,
   },
   'a code': {
     color: 'var(--code)',
@@ -153,26 +155,20 @@ export const proseStyles = {
     width: '100%',
     tableLayout: 'auto' as const,
     textAlign: 'left' as const,
-    marginTop: '2em',
-    marginBottom: '2em',
+    marginTop: '2rem',
+    marginBottom: '2rem',
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.7142857,
   },
   thead: {
     color: 'var(--text)',
     fontWeight: 600,
-    borderBottomWidth: '1px',
-    borderBottomColor: 'var(--border)',
   },
   'thead th': {
     verticalAlign: 'bottom',
     paddingRight: '0.5714285714em',
     paddingBottom: '0.5714285714em',
     paddingLeft: '0.5714285714em',
-  },
-  'tbody tr': {
-    borderBottomWidth: '1px',
-    borderBottomColor: 'var(--border)',
   },
   'tbody tr:last-child': {
     borderBottomWidth: '0',
@@ -228,12 +224,6 @@ export const proseStyles = {
   '> ul > li p': {
     marginTop: '0.75em',
     marginBottom: '0.75em',
-  },
-  '> ul > li > *:first-child, > ul > li > *:last-child': {
-    marginTop: '1.25em',
-  },
-  '> ol > li > *:first-child, > ol > li > *:last-child': {
-    marginTop: '1.25em',
   },
   'ul ul, ul ol, ol ul, ol ol': {
     marginTop: '0.75em',
