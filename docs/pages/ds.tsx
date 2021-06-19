@@ -55,7 +55,7 @@ function Box() {
 type SwatchProps = {
   name?: string;
   color?: string;
-  gradient?: any;
+  gradient?: { grad1: string; grad2: string };
 };
 
 function Swatch({ name, color, gradient }: SwatchProps) {
@@ -88,7 +88,7 @@ function Swatch({ name, color, gradient }: SwatchProps) {
 }
 
 export default function DS() {
-  const [icon, setIcon] = useState(null);
+  const [icon, setIcon] = useState<allIcons.IconGradient>(null);
   let firstGrad;
 
   return (

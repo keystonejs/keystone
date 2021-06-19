@@ -63,8 +63,8 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
       Tag = 'button';
     }
 
-    if (Tag === 'a') {
-      disabled = null;
+    if (Tag === 'a' && href) {
+      disabled = undefined;
       Wrapper = ({ children }) => (
         <Link href={href} passHref>
           {children}
