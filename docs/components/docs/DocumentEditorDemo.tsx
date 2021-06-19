@@ -309,7 +309,7 @@ export const DocumentEditorDemo = () => {
           marginTop: '1em',
           marginBottom: '1em',
         },
-        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold' },
+        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold', margin: 0 },
         h1: { fontSize: 'var(--font-xxlarge)' },
         h2: { fontSize: 'var(--font-large)' },
         h3: { fontSize: 'var(--font-medium)' },
