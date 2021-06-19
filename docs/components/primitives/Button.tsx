@@ -1,13 +1,63 @@
 /** @jsx jsx */
-import { Fragment, forwardRef } from 'react';
+import { Fragment, FunctionComponent, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs';
 import { Loading } from './Loading';
 
-export const Button = forwardRef(
+const styleMap = {
+  default: {},
+  danger: {
+    '--button-bg': 'var(--danger)',
+    '--button-bg-hover': 'var(--danger-90)',
+    '--button-bg-active': 'var(--danger-90)',
+    '--button-bg-disabled': 'var(--danger--40)',
+  },
+  soft: {
+    '--button-bg': 'var(--app-bg)',
+    '--button-bg-hover': 'var(--app-bg)',
+    '--button-bg-active': 'var(--app-bg)',
+    '--button-bg-disabled': 'var(--app-bg)',
+    '--button-color': 'var(--link)',
+    '--button-color-hover': 'var(--link)',
+    '--button-color-active': 'var(--link)',
+    '--button-color-disabled': 'var(--brand-bg--40)',
+    '--button-border': '2px solid var(--brand-bg)',
+    '--button-border-hover': '2px solid var(--brand-bg-90)',
+    '--button-border-active': '2px solid var(--brand-bg-90)',
+    '--button-border-disabled': '2px solid var(--brand-bg--40)',
+  },
+  text: {
+    '--button-bg': 'transparent',
+    '--button-bg-hover': 'transparent',
+    '--button-bg-active': 'transparent',
+    '--button-color': 'var(--brand)',
+    '--button-color-disabled': 'var(--disabled)',
+    '--button-decoration-hover': 'underline',
+    '--button-shadow': 'none',
+    '--button-shadow-hover': 'none',
+    '--button-shadow-active': 'none',
+    '--button-bg-disabled': 'transparent',
+    '--button-transform-active': 'none',
+    display: 'inline',
+    height: 'auto',
+    padding: 0,
+    borderRadius: 0,
+  },
+};
+
+type ButtonProps = {
+  children?: ReactNode;
+  disabled?: boolean;
+  href?: string;
+  loading?: boolean;
+  look: keyof typeof styleMap;
+};
+
+export const Button = forwardRefWithAs<'button', ButtonProps>(
   ({ as: Tag = 'button', href, look = 'default', disabled, loading, children, ...props }, ref) => {
-    let Wrapper = Fragment;
+    let Wrapper: FunctionComponent = Fragment;
 
     if (Tag === 'a' && !href) {
       Tag = 'button';
@@ -21,47 +71,6 @@ export const Button = forwardRef(
         </Link>
       );
     }
-
-    const styleMap = {
-      default: {},
-      danger: {
-        '--button-bg': 'var(--danger)',
-        '--button-bg-hover': 'var(--danger-90)',
-        '--button-bg-active': 'var(--danger-90)',
-        '--button-bg-disabled': 'var(--danger--40)',
-      },
-      soft: {
-        '--button-bg': 'var(--app-bg)',
-        '--button-bg-hover': 'var(--app-bg)',
-        '--button-bg-active': 'var(--app-bg)',
-        '--button-bg-disabled': 'var(--app-bg)',
-        '--button-color': 'var(--link)',
-        '--button-color-hover': 'var(--link)',
-        '--button-color-active': 'var(--link)',
-        '--button-color-disabled': 'var(--brand-bg--40)',
-        '--button-border': '2px solid var(--brand-bg)',
-        '--button-border-hover': '2px solid var(--brand-bg-90)',
-        '--button-border-active': '2px solid var(--brand-bg-90)',
-        '--button-border-disabled': '2px solid var(--brand-bg--40)',
-      },
-      text: {
-        '--button-bg': 'transparent',
-        '--button-bg-hover': 'transparent',
-        '--button-bg-active': 'transparent',
-        '--button-color': 'var(--brand)',
-        '--button-color-disabled': 'var(--disabled)',
-        '--button-decoration-hover': 'underline',
-        '--button-shadow': 'none',
-        '--button-shadow-hover': 'none',
-        '--button-shadow-active': 'none',
-        '--button-bg-disabled': 'transparent',
-        '--button-transform-active': 'none',
-        display: 'inline',
-        height: 'auto',
-        padding: 0,
-        borderRadius: 0,
-      },
-    };
 
     if (look === 'text') {
       disabled = loading ? true : disabled;

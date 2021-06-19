@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/react';
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, HTMLAttributes, ReactNode } from 'react';
 
 const fadeInTop = keyframes`
   from {
@@ -32,8 +32,14 @@ const fadeInBottom = keyframes`
  *
  * Read more here: https://adrianroselli.com/2016/12/accessible-emoji-tweaked.html
  */
-export function Emoji({ symbol, alt, ...props }) {
-  const posRef = useRef();
+
+type EmojiProps = {
+  symbol: ReactNode;
+  alt: string;
+} & HTMLAttributes<HTMLElement>;
+
+export function Emoji({ symbol, alt, ...props }: EmojiProps) {
+  const posRef = useRef<HTMLElement>();
   const [showOnTop, setShownTop] = useState(true);
 
   useEffect(() => {
@@ -47,7 +53,7 @@ export function Emoji({ symbol, alt, ...props }) {
       ref={posRef}
       role="img"
       aria-label={alt}
-      tabIndex="0"
+      tabIndex={0}
       css={{
         position: 'relative',
         ':focus:after,:hover:after': {
