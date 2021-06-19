@@ -62,7 +62,13 @@ export function DocsPage({
             display: ['block', null, 'grid'],
             gridTemplateColumns: noRightNav
               ? '15rem minmax(0, auto)'
-              : ['15rem minmax(0, auto)', null, null, '15rem minmax(0, auto) 15rem'],
+              : [
+                  '15rem minmax(0, auto)',
+                  null,
+                  null,
+                  '10rem minmax(0, auto) 10rem',
+                  '15rem minmax(0, auto) 15rem',
+                ],
             gap: 'calc(var(--space-large) * 3)',
           })}
         >
