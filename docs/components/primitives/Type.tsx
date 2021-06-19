@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { forwardRef } from 'react';
 
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs';
 import { useMediaQuery } from '../../lib/media';
 
 const common = {
@@ -141,7 +141,15 @@ export const styleMap = {
   },
 };
 
-export const Type = forwardRef(
+type TypeProps = {
+  look?: keyof typeof styleMap;
+  fontSize?: string;
+  margin?: string;
+  padding?: string;
+  color?: string;
+};
+
+export const Type = forwardRefWithAs<'span', TypeProps>(
   ({ as: Tag = 'span', look, fontSize, margin, padding, color, ...props }, ref) => {
     const mq = useMediaQuery();
 
