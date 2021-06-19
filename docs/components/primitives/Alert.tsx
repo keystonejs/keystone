@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import classnames from 'classnames';
 import { HTMLAttributes } from 'react';
 
 type AlertProps = {
@@ -7,5 +8,6 @@ type AlertProps = {
 } & HTMLAttributes<HTMLElement>;
 
 export function Alert({ look = 'neutral', className, ...props }: AlertProps) {
-  return <p className={`hint ${look} ${className}`} {...props} />;
+  const classes = classnames('hint', look, className);
+  return <p className={classes} {...props} />;
 }
