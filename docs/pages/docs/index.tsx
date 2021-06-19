@@ -32,8 +32,13 @@ export default function Docs() {
         >
           Need answers to Keystone questions? Get the help you need in the
         </span>
-        <Button as="a" href="/docs">
-          Get Started <ArrowR />
+        <Button
+          as="a"
+          href="https://community.keystonejs.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Community Slack <ArrowR />
         </Button>
       </Alert>
 
