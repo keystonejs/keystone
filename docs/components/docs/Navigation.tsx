@@ -157,7 +157,7 @@ export function UpdatesNavigation({ releases = [] }) {
       }}
     >
       <Section label="Updates">
-        <NavItem href="/updates/">What's New</NavItem>
+        <NavItem href="/updates">What's New</NavItem>
         <NavItem href="/updates/roadmap">Roadmap</NavItem>
       </Section>
       <Section label="Releases">

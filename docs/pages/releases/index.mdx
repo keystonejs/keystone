@@ -1,4 +1,4 @@
-import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
 import { Status } from '../../components/primitives/Status';
 
 # Releases
@@ -58,6 +58,4 @@ Prisma migrations 🚚, Noteworthy bug-squashing 🐛 — [read more](/docs/rele
 ?> 🔎 You can also find all **Keystone 6** releases on [GitHub](https://github.com/keystonejs/keystone/releases)!
 
 export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getStaticProps
-
-}
+export { getServerSideProps }

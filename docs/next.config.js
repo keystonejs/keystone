@@ -2,11 +2,12 @@ const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 const mdxHints = require('remark-hint');
+const gfm = require('remark-gfm');
 
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [mdxHints],
+    remarkPlugins: [mdxHints, gfm],
   },
 });
 

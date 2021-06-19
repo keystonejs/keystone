@@ -1,4 +1,4 @@
-import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 # Release
 
@@ -21,4 +21,4 @@ If you look closely you’ll see the core team working on example projects to sh
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-05) on GitHub.
 
 export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getStaticProps }
+export { getServerSideProps }

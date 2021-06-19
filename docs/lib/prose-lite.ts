@@ -63,10 +63,10 @@ export const proseStyles = {
     left: '0.25em',
   },
   hr: {
-    borderColor: 'var(--muted)',
-    borderTopWidth: 1,
-    marginTop: '3em',
-    marginBottom: '3em',
+    border: '0 none',
+    borderTop: '2px solid var(--border)',
+    margin: '3em auto',
+    width: '70%',
   },
   blockquote: {
     fontWeight: 500,

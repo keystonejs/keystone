@@ -28,7 +28,15 @@ export function Markdown({ children, ...props }: { children: ReactNode }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps(thing) {
+  const { readdirSync } = require('fs');
+  const { normalize } = require('path');
+
+  const releases = readdirSync(normalize(`${__dirname}/`), 'utf8')
+    .filter((name) => !name.startsWith('.') && !name.startsWith('index'))
+
+  console.log(releases);
+
   return {
     props: {
       releases: ['one', 'two', 'three'],

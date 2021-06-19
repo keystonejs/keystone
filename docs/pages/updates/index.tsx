@@ -2,13 +2,13 @@
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
+import { getServerSideProps } from '../../components/Markdown';
 import { Type } from '../../components/primitives/Type';
-import { Page } from '../../components/Page';
-import { getStaticProps } from '../../components/Markdown';
+import { DocsPage } from '../../components/Page';
 
-export default function WhatsNew({ test }) {
+export default function WhatsNew(props) {
   return (
-    <Page>
+    <DocsPage noRightNav {...props}>
       <Type as="h1" look="heading48">
         What's New in Keystone 6
       </Type>
@@ -30,7 +30,7 @@ export default function WhatsNew({ test }) {
         </li>
         <li>
           <Link href="/releases/2021-03-22">
-            <a>2021-03-22 {test}</a>
+            <a>2021-03-22</a>
           </Link>
         </li>
       </ul>
@@ -63,8 +63,8 @@ export default function WhatsNew({ test }) {
       anything from a simple blog to a complete e-Commerce app back-end. We also have new reference
       examples for how to use advanced features, like implementing your own roles-based access
       control system.
-    </Page>
+    </DocsPage>
   );
 }
 
-export { getStaticProps };
+export { getServerSideProps };

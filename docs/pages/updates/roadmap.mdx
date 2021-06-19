@@ -1,4 +1,4 @@
-import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
 import { SubscribeForm } from '../../components/SubscribeForm';
 import { Status } from '../../components/primitives/Status';
 
@@ -167,4 +167,4 @@ better authoring experience out of the box.
 We'd love to hear from you! If you’ve got feedback (or praise 🙌), send it our way at [@KeystoneJS](https://twitter.com/keystonejs) on Twitter, or start a discussion / ask a question / make some friends in our [KeystoneJS Slack community](http://community.keystonejs.com).
 
 export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getStaticProps }
+export { getServerSideProps }

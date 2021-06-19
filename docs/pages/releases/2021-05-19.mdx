@@ -1,4 +1,4 @@
-import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 # Release
 
@@ -36,4 +36,4 @@ If you were directly importing from `@keystone-next/admin-ui` you can now import
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-19) on GitHub.
 
 export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getStaticProps }
+export { getServerSideProps }
