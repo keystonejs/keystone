@@ -32,8 +32,11 @@ export function Markdown({ children, ...props }: { children: ReactNode }) {
 export async function getServerSideProps() {
   const { readdirSync } = require('fs');
   const { normalize } = require('path');
+  const dir = __dirname.endsWith('/server')
+    ? normalize(`${__dirname}/../../pages/releases`)
+    : normalize(`${__dirname}/../../../pages/releases`);
 
-  const releases = readdirSync(normalize(`${__dirname}/../../../pages/releases`), 'utf8')
+  const releases = readdirSync(dir, 'utf8')
     .filter(name => !name.startsWith('.') && !name.startsWith('index'))
     .map(name => name.replace('.mdx', ''))
     .reverse();

@@ -3,12 +3,100 @@ import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { getServerSideProps } from '../../components/Markdown';
+import { InlineCode } from '../../components/primitives/Code';
 import { Alert } from '../../components/primitives/Alert';
 import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
+import { useMediaQuery } from '../../lib/media';
+
+function Timeline({ date, isLatest, isFirst, ...props }) {
+  return (
+    <div
+      css={{
+        position: 'relative',
+        ...(!isFirst && {
+          ':after': {
+            content: '""',
+            position: 'absolute',
+            left: '0.625rem',
+            top: 0,
+            bottom: 0,
+            width: '1px',
+            background: 'var(--muted)',
+            zIndex: 2,
+          },
+        }),
+      }}
+      {...props}
+    >
+      <svg
+        viewBox="0 0 27 27"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        css={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '1.375rem',
+          zIndex: 3,
+        }}
+      >
+        {isLatest && (
+          <circle fill="#166BFF" cx="12.5" cy="12.5" r="12.5" stroke="#fff" strokeWidth="4" />
+        )}
+        <circle
+          fill={isLatest ? 'var(--brand)' : 'var(--muted)'}
+          cx="12.5"
+          cy="12.5"
+          r="7"
+          stroke="#fff"
+          strokeWidth="4"
+        />
+      </svg>
+      <Type
+        look="body14bold"
+        css={{
+          display: 'block',
+          textTransform: 'uppercase',
+          color: 'var(--muted)',
+          margin: '0.125rem 1rem 0 2rem',
+        }}
+      >
+        {date}
+      </Type>
+    </div>
+  );
+}
+
+function Box({ link, heading, children, ...props }) {
+  return (
+    <Type
+      as="div"
+      look="body16"
+      css={{
+        margin: '0 0 2rem 0',
+      }}
+      {...props}
+    >
+      {heading && (
+        <Type as="h3" look="heading20bold" margin="0 0 1rem 0">
+          {heading}
+        </Type>
+      )}
+      {children}
+      {link && (
+        <Link href={link} passHref>
+          <a css={{ display: 'block' }}>read more</a>
+        </Link>
+      )}
+    </Type>
+  );
+}
 
 export default function WhatsNew(props) {
+  const mq = useMediaQuery();
+
   return (
     <DocsPage noRightNav noProse {...props}>
       <Type as="h1" look="heading48">
@@ -29,7 +117,7 @@ export default function WhatsNew(props) {
         Milestones
       </Type>
 
-      <Alert look="neutral" css={{ margin: '1rem 0' }}>
+      <Alert look="neutral" css={{ margin: '3rem 0' }}>
         There’s much more to come too! Check out our{' '}
         <Link href="/updates/roadmap">
           <a>roadmap</a>
@@ -37,108 +125,76 @@ export default function WhatsNew(props) {
       </Alert>
 
       <div
-        css={{
+        css={mq({
           display: 'grid',
-          gridTemplateColumns: 'minmax(13.125rem, 8.125rem) auto',
+          gridTemplateColumns: ['8.25rem auto'],
           gap: 0,
-        }}
+        })}
       >
-        <div>15th June 2021</div>
-        <div>
+        <Timeline date="15th June 2021" isLatest />
+        <Box link="/releases/2021-06-15" heading="TODO">
           Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking many of the
-          features you’ve been waiting for! -
-          <Link href="/releases/2021-06-15">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>2nd June 2021</div>
-        <div>
+          features you’ve been waiting for!
+        </Box>
+        <Timeline date="2nd June 2021" />
+        <Box link="/releases/2021-06-02" heading="TODO">
           We have a new JSON field <Emoji symbol="✨" alt="Sparkle" />, a bunch of new learning
           resources, and plenty of under the hood optimisations in this big release.{' '}
-          <Emoji symbol="💪" alt="Strong" /> —
-          <Link href="/releases/2021-06-02">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>19th May 2021</div>
-        <div>
-          Node updates and Admin UI has moved! <Emoji symbol="🚚" alt="Truck" /> —
-          <Link href="/releases/2021-05-19">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>17th May 2021</div>
-        <div>
+          <Emoji symbol="💪" alt="Strong" />
+        </Box>
+        <Timeline date="19th May 2021" />
+        <Box link="/releases/2021-05-19" heading="TODO">
+          Node updates and Admin UI has moved! <Emoji symbol="🚚" alt="Truck" />
+        </Box>
+        <Timeline date="17th May 2021" />
+        <Box link="/releases/2021-05-17" heading="TODO">
           Apollo caching can now be configured for performance <Emoji symbol="🔥" alt="Fire" /> and
-          a basic authentication example to get your started <Emoji symbol="🔒" alt="Lock" /> —
-          <Link href="/releases/2021-05-17">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>11th May 2021</div>
-        <div>
+          a basic authentication example to get your started <Emoji symbol="🔒" alt="Lock" />
+        </Box>
+        <Timeline date="11th May 2021" />
+        <Box link="/releases/2021-05-11" heading="TODO">
           A bunch of admin UI tweaks in this release <Emoji symbol="🖥️" alt="Monitor" />, among
-          other minor fixes —
-          <Link href="/releases/2021-05-11">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>5th May 2021</div>
-        <div>
-          Aside from dependency updates <Emoji symbol="😴" alt="Tired" />, we added an `isIndexed`
-          config option to the `text`, `integer`, `float`, `select`, and `timestamp` field types —
-          <Link href="/releases/2021-05-05">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>3rd May 2021</div>
-        <div>
+          other minor fixes
+        </Box>
+        <Timeline date="5th May 2021" />
+        <Box link="/releases/2021-05-05" heading="TODO">
+          Aside from dependency updates <Emoji symbol="😴" alt="Tired" />, we added an{' '}
+          <InlineCode>isIndexed</InlineCode>
+          config option to the <InlineCode>text</InlineCode>, <InlineCode>integer</InlineCode>,{' '}
+          <InlineCode>float</InlineCode>, <InlineCode>select</InlineCode>, and{' '}
+          <InlineCode>timestamp</InlineCode> field types
+        </Box>
+        <Timeline date="3rd May 2021" />
+        <Box link="/releases/2021-05-03" heading="TODO">
           Files in Keystone 6 <Emoji symbol="📁" alt="Folder" />! This release involved a bunch of
-          busywork behind the scenes in Keystone 6 <Emoji symbol="🔧" alt="Working tools" /> —
-          <Link href="/releases/2021-05-03">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>20th April 2021</div>
-        <div>
-          Improvements to the Lists API, deprecating `resolveFields`{' '}
-          <Emoji symbol="🔧" alt="Working tool" /> —
-          <Link href="/releases/2021-04-20">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>6th April 2021</div>
-        <div>
+          busywork behind the scenes in Keystone 6 <Emoji symbol="🔧" alt="Working tools" />
+        </Box>
+        <Timeline date="20th April 2021" />
+        <Box link="/releases/2021-04-20" heading="TODO">
+          Improvements to the Lists API, deprecating <InlineCode>resolveFields</InlineCode>{' '}
+          <Emoji symbol="🔧" alt="Working tool" />
+        </Box>
+        <Timeline date="6th April 2021" />
+        <Box link="/releases/2021-04-06" heading="TODO">
           Controlled code demolition 🏗️ 👷‍♀️, Better pagination in Admin UI{' '}
-          <Emoji symbol="⏭️" alt="Fast forward" /> —
-          <Link href="/releases/2021-04-06">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>30th March 2021</div>
-        <div>
-          Goodbye legacy code 👋 🌇, Improved `select` field type{' '}
-          <Emoji symbol="🔽" alt="Selector" />, Squashed bugs <Emoji symbol="🐛" alt="Bug" /> —
-          <Link href="/releases/2021-03-30">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>23rd March 2021</div>
-        <div>
+          <Emoji symbol="⏭️" alt="Fast forward" />
+        </Box>
+        <Timeline date="30th March 2021" />
+        <Box link="/releases/2021-03-30" heading="TODO">
+          Goodbye legacy code <Emoji symbol="👋" alt="Waving" />{' '}
+          <Emoji symbol="🌇" alt="Postcard" />, Improved <InlineCode>select</InlineCode> field type{' '}
+          <Emoji symbol="🔽" alt="Selector" />, Squashed bugs <Emoji symbol="🐛" alt="Bug" />
+        </Box>
+        <Timeline date="23rd March 2021" />
+        <Box link="/releases/2021-03-23" heading="TODO">
           Added support for SQLite with Prisma <Emoji symbol="🎉" alt="Celebration" />, Noteworthy
-          bug-squashing <Emoji symbol="🐛" alt="Bug" /> —
-          <Link href="/releases/2021-03-23">
-            <a>read more</a>
-          </Link>
-        </div>
-        <div>22nd March 2021</div>
-        <div>
+          bug-squashing <Emoji symbol="🐛" alt="Bug" />
+        </Box>
+        <Timeline date="22nd March 2021" isFirst />
+        <Box link="/releases/2021-03-22" heading="TODO">
           Prisma migrations <Emoji symbol="🚚" alt="Truck" />, Noteworthy bug-squashing{' '}
-          <Emoji symbol="🐛" alt="Bug" /> —
-          <Link href="/releases/2021-03-22">
-            <a>read more</a>
-          </Link>
-        </div>
+          <Emoji symbol="🐛" alt="Bug" />
+        </Box>
       </div>
 
       <Alert look="tip" css={{ margin: '1rem 0' }}>

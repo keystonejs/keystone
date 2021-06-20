@@ -54,7 +54,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }
         .hint {
           border-radius: 4px;
-          padding: 1rem;
+          padding: 1rem 1rem 1rem 1.5rem;
           color: var(--text-heading);
         }
         .hint.neutral {
