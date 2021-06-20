@@ -19,7 +19,7 @@ export default function WhatsNew() {
         <div
           css={{
             background: '#fff',
-            width: '60vw',
+            width: '90vw',
             margin: '2rem auto',
             padding: '2rem',
             borderRadius: '2rem',
