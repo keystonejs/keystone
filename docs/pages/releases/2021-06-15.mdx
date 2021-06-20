@@ -1,4 +1,5 @@
 import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
 # Release
 
@@ -6,7 +7,7 @@ import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 ## What's New
 
-Keystone Next now has a new core 🤖, unblocking many of the features you’ve been waiting for!
+Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking many of the features you’ve been waiting for!
 
 After months of work deep in the codebase, it’ll be much easier for us to ship roadmap features like **custom field types**, **GraphQL Schema extensions**, and more.
 
@@ -27,9 +28,9 @@ After months of work deep in the codebase, it’ll be much easier for us to ship
 "@keystone-ui/segmented-control": "4.0.1",
 ```
 
-## New Core 🤖
+## New Core <Emoji symbol="🤖" alt="Robot" />
 
-The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage 🤖.
+The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage <Emoji symbol="🤖" alt="Robot" />.
 
 ⚠️ If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` [package](https://github.com/keystonejs/keystone/tree/master/packages-next/fields) for inspiration on how to do this.
 
