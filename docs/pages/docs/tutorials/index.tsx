@@ -1,8 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
+import { Button } from '../../../components/primitives/Button';
+import { Alert } from '../../../components/primitives/Alert';
 import { Type } from '../../../components/primitives/Type';
 import { Well } from '../../../components/primitives/Well';
+import { ArrowR } from '../../../components/icons/ArrowR';
 import { DocsPage } from '../../../components/Page';
 import { useMediaQuery } from '../../../lib/media';
 
@@ -11,21 +14,32 @@ export default function Docs() {
 
   return (
     <DocsPage noRightNav noProse>
-      <Type as="h1" look="heading64">
-        Keystone API
+      <Type as="h1" look="heading64" css={{ lineHeight: 1 }}>
+        Keystone Tutorials
       </Type>
 
-      <Type as="p" look="body18" margin="1.25rem 0 0 0">
-        Lead text
+      <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
+        Step-by-step instructions for getting things done with Keystone.
       </Type>
 
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-        Sub heading
-      </Type>
-
-      <Type as="p" look="body18" margin="0 0 1.5rem 0">
-        Intro text
-      </Type>
+      <Alert css={{ margin: '2rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 1rem 0.5rem 0',
+          }}
+        >
+          Need answers to Keystone questions? Get the help you need in the
+        </span>
+        <Button
+          as="a"
+          href="https://community.keystonejs.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Community Slack <ArrowR />
+        </Button>
+      </Alert>
 
       <div
         css={mq({
@@ -34,98 +48,19 @@ export default function Docs() {
           gap: 'var(--space-xlarge)',
         })}
       >
-        <Well heading="Your heading" href="/docs/apis/TODO">
-          Your text
+        <Well
+          heading="Getting started with Keystone 6"
+          href="/docs/tutorials/getting-started-with-create-keystone-app"
+        >
+          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
+          project folder.
         </Well>
-        <Well heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-      </div>
-
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-        Sub heading
-      </Type>
-
-      <Type as="p" look="body18" margin="0 0 1.5rem 0">
-        Intro text
-      </Type>
-
-      <div
-        css={mq({
-          display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
-          gap: 'var(--space-xlarge)',
-        })}
-      >
-        <Well grad="grad2" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad2" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad2" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad2" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-      </div>
-
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-        Sub heading
-      </Type>
-
-      <Type as="p" look="body18" margin="0 0 1.5rem 0">
-        Intro text
-      </Type>
-
-      <div
-        css={mq({
-          display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
-          gap: 'var(--space-xlarge)',
-        })}
-      >
-        <Well grad="grad3" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad3" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad3" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad3" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-      </div>
-
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-        Sub heading
-      </Type>
-
-      <Type as="p" look="body18" margin="0 0 1.5rem 0">
-        Intro text
-      </Type>
-
-      <div
-        css={mq({
-          display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
-          gap: 'var(--space-xlarge)',
-        })}
-      >
-        <Well grad="grad4" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad4" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad4" heading="Your heading" href="/docs/apis/TODO">
-          Your text
-        </Well>
-        <Well grad="grad4" heading="Your heading" href="/docs/apis/TODO">
-          Your text
+        <Well
+          heading="How to embed Keystone + SQLite in a Next.js app"
+          href="/docs/tutorials/embedded-mode-with-sqlite-nextjs"
+        >
+          Learn how to run Keystone in the same folder as your frontend code and commit everything
+          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
         </Well>
       </div>
     </DocsPage>
