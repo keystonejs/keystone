@@ -39,7 +39,7 @@ export function GitHubButton({ repo, ...props }) {
           color: 'var(--text)',
           verticalAlign: 'middle',
           padding: '0.275rem 0.5rem',
-          background: 'var(--border)',
+          background: 'var(--code-bg)',
         }}
         href={`https://github.com/${repo}`}
         target="_blank"
