@@ -120,6 +120,151 @@ export default function Docs() {
           with your own business logic.
         </Well>
       </div>
+
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
+        Example projects
+      </Type>
+
+      <Type as="p" look="body18" margin="0 0 1.5rem 0">
+        <a href="https://github.com/keystonejs/keystone/tree/master/examples" target="_blank">
+          View all &rarr;
+        </a>
+      </Type>
+
+      <Type as="p" look="body18" margin="0 0 1.5rem 0">
+        A growing collection of projects you can run locally to learn more about Keystone features.
+        Use these as a reference for best practice, and a jumping off point when adding features to
+        your own Keystone project.
+      </Type>
+
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gap: 'var(--space-xlarge)',
+        })}
+      >
+        <Well
+          grad="grad3"
+          heading="Blog"
+          href="https://github.com/keystonejs/keystone/blob/master/examples/blog"
+          target="_blank"
+        >
+          A basic Blog schema with Posts and Authors. Use this as a starting place for learning how
+          to use Keystone. It’s also a starter for other feature projects.
+        </Well>
+        <Well
+          grad="grad3"
+          heading="Task Manager"
+          href="https://github.com/keystonejs/keystone/blob/master/examples/task-manager"
+          target="_blank"
+        >
+          A basic Task Management app, with Tasks and People who can be assigned to tasks. Great for
+          learning how to use Keystone. It’s also a starter for other feature projects.
+        </Well>
+        <Well
+          grad="grad3"
+          heading="Extend GraphQL Schema"
+          href="https://github.com/keystonejs/keystone/blob/master/examples/extend-graphql-schema"
+          target="_blank"
+        >
+          Shows you how to extend the Keystone GraphQL API with custom queries and mutations. Builds
+          upon the Blog starter project.
+        </Well>
+        <Well
+          grad="grad3"
+          heading="Default Values"
+          href="https://github.com/keystonejs/keystone/blob/master/examples/default-values"
+          target="_blank"
+        >
+          This project demonstrates how to use default values for fields. Builds upon the Task
+          Manager starter project.
+        </Well>
+      </div>
+
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
+        API references
+      </Type>
+
+      <Type as="h3" look="heading24" margin="2rem 0 1rem 0">
+        Configuration
+      </Type>
+
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gap: 'var(--space-xlarge)',
+        })}
+      >
+        <Well grad="grad4" heading="System Configuration API" href="/docs/apis/config">
+          Keystone’s config function accepts an object representing all the configurable parts of
+          your backend system.
+        </Well>
+        <Well grad="grad4" heading="Schema API" href="/docs/apis/schema">
+          This is where you define the data model, or schema, of your Keystone system.
+        </Well>
+        <Well grad="grad4" heading="Fields API" href="/docs/apis/fields">
+          Defines the names, types, and configuration of the fields in a Keystone list.
+        </Well>
+        <Well grad="grad4" heading="Access Control" href="/docs/apis/access-control">
+          Configures who can read, create, update, and delete items in your Keystone system
+        </Well>
+        <Well grad="grad4" heading="Hooks" href="/docs/apis/hooks">
+          Let you execute code at different stages of the mutation lifecycle when performing create,
+          update, and delete operations.
+        </Well>
+        <Well grad="grad4" heading="Session" href="/docs/apis/session">
+          Lets you configure session management in your Keystone system.
+        </Well>
+        <Well grad="grad4" heading="Authentication" href="/docs/apis/auth">
+          Supports authentication against a password field, creating initial items, password resets,
+          and one-time authentication tokens.
+        </Well>
+      </div>
+
+      <Type as="h3" look="heading24" margin="2rem 0 1rem 0">
+        Context
+      </Type>
+
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gap: 'var(--space-xlarge)',
+        })}
+      >
+        <Well grad="grad4" heading="Context API" href="/docs/apis/context">
+          The primary API entry point for all of the run-time functionally of your Keystone system.
+        </Well>
+        <Well grad="grad4" heading="List Items API" href="/docs/apis/list-items">
+          A programmatic API for running CRUD operations against your GraphQL API.
+        </Well>
+        <Well grad="grad4" heading="Database Items API" href="/docs/apis/db-items">
+          A programmatic API for running CRUD operations against the internal GraphQL resolvers in
+          your system.
+        </Well>
+      </div>
+
+      <Type as="h3" look="heading24" margin="2rem 0 1rem 0">
+        GraphQL
+      </Type>
+
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gap: 'var(--space-xlarge)',
+        })}
+      >
+        <Well grad="grad4" heading="GraphQL API" href="/docs/apis/graphql">
+          Generates a CRUD (create, read, update, delete) GraphQL API based on the schema definition
+          provided in your system configuration.
+        </Well>
+        <Well grad="grad4" heading="Query filter API" href="/docs/apis/filters">
+          A list of the filters you can query against for each field type.
+        </Well>
+      </div>
     </DocsPage>
   );
 }
