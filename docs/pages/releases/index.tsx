@@ -43,14 +43,21 @@ function Timeline({ date, isLatest, isFirst, ...props }) {
         }}
       >
         {isLatest && (
-          <circle fill="#166BFF" cx="12.5" cy="12.5" r="12.5" stroke="#fff" strokeWidth="4" />
+          <circle
+            fill="#166BFF"
+            cx="12.5"
+            cy="12.5"
+            r="12.5"
+            stroke="var(--app-bg)"
+            strokeWidth="4"
+          />
         )}
         <circle
           fill={isLatest ? 'var(--brand)' : 'var(--muted)'}
           cx="12.5"
           cy="12.5"
           r="7"
-          stroke="#fff"
+          stroke="var(--app-bg)"
           strokeWidth="4"
         />
       </svg>
