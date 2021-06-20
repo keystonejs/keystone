@@ -40,6 +40,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
 
+          <script async src="/assets/resize-observer-polyfill.js" />
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{

@@ -23,7 +23,7 @@ export function ComingSoon() {
         >
           Coming Soon... Visit our roadmap for more information
         </p>
-        <Link href="/docs/roadmap" passHref>
+        <Link href="/updates/roadmap" passHref>
           <Button as="a">Roadmap</Button>
         </Link>
       </Stack>

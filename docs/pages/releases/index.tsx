@@ -84,7 +84,9 @@ function Box({ link, heading, children, ...props }) {
           {heading}
         </Type>
       )}
-      {children}
+      <Type as="p" look="body18">
+        {children}
+      </Type>
       {link && (
         <Link href={link} passHref>
           <a css={{ display: 'block' }}>read more</a>
@@ -127,7 +129,7 @@ export default function WhatsNew(props) {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['8.25rem auto'],
+          gridTemplateColumns: ['8.25rem auto', null, null, '12.5rem auto', '18rem auto'],
           gap: 0,
         })}
       >
