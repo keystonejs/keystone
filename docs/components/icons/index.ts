@@ -2,6 +2,7 @@ export type { IconGradient } from './util';
 
 export { ArrowR } from './ArrowR';
 export { ArrowRLong } from './ArrowRLong';
+export { Close } from './Close';
 export { Copy } from './Copy';
 export { DarkMode } from './DarkMode';
 export { Edit } from './Edit';

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Type } from '../primitives/Type';
 
 type SectionProps = { label: string; children: ReactNode };
-function Section({ label, children }: SectionProps) {
+export function Section({ label, children }: SectionProps) {
   return (
     <div
       css={{
@@ -30,10 +30,21 @@ function Section({ label, children }: SectionProps) {
   );
 }
 
-type NavItemProps = { href: string; isPlaceholder?: boolean; children: ReactNode };
-function NavItem({ href, isPlaceholder, children }: NavItemProps) {
-  const router = useRouter();
-  const isSelected = router.pathname === href;
+type NavItemProps = {
+  href: string;
+  isPlaceholder?: boolean;
+  children: ReactNode;
+  exactMatch?: boolean;
+};
+export function NavItem({ href, isPlaceholder, children, exactMatch }: NavItemProps) {
+  const { pathname } = useRouter();
+  let isActive = pathname === href;
+  if (href.startsWith('/updates') && pathname.startsWith('/releases') && !exactMatch) {
+    isActive = true;
+  }
+  if (href.startsWith('/docs') && !exactMatch) {
+    isActive = true;
+  }
 
   return (
     <Link href={href} passHref>
@@ -42,7 +53,7 @@ function NavItem({ href, isPlaceholder, children }: NavItemProps) {
           display: 'block',
           textDecoration: 'none',
           padding: '0 0 var(--space-medium) 0',
-          color: isSelected
+          color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
           ':hover': {
@@ -64,45 +75,61 @@ export function DocsNavigation() {
       }}
     >
       <Section label="Tutorials">
-        <NavItem href="/docs/tutorials/getting-started-with-create-keystone-app">
+        <NavItem exactMatch href="/docs/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
-        <NavItem href="/docs/tutorials/embedded-mode-with-sqlite-nextjs">
+        <NavItem exactMatch href="/docs/tutorials/embedded-mode-with-sqlite-nextjs">
           Embedding Keystone and SQLite in Next.js
         </NavItem>
       </Section>
       <Section label="Guides">
-        <NavItem href="/docs/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
-        <NavItem href="/docs/guides/cli">Command Line</NavItem>
-        <NavItem href="/docs/guides/relationships">Relationships</NavItem>
-        <NavItem href="/docs/guides/filters">Query Filters</NavItem>
-        <NavItem href="/docs/guides/hooks">Hooks</NavItem>
-        <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
-        <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
-        <NavItem href="/docs/guides/access-control" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/keystone-5-vs-keystone-next">
+          Keystone 5 vs Next
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/cli">
+          Command Line
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/relationships">
+          Relationships
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/filters">
+          Query Filters
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/hooks">
+          Hooks
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/document-fields">
+          Document Fields
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/virtual-fields">
+          Virtual Fields
+        </NavItem>
+        <NavItem exactMatch href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem href="/docs/guides/auth" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
-        <NavItem href="/docs/guides/schema-extension" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
-        <NavItem href="/docs/guides/internal-items" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/internal-items" isPlaceholder>
           Internal Items
         </NavItem>
-        <NavItem href="/docs/guides/testing" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/testing" isPlaceholder>
           Testing
         </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
           Custom Admin UI Pages
         </NavItem>
-        <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
+        <NavItem exactMatch href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views
         </NavItem>
       </Section>
       <Section label="Examples">
-        <NavItem href="/docs/examples">Examples</NavItem>
+        <NavItem exactMatch href="/docs/examples">
+          Examples
+        </NavItem>
       </Section>
       <Section label="API">
         <Type
@@ -114,13 +141,28 @@ export function DocsNavigation() {
         >
           Config
         </Type>
-        <NavItem href="/docs/apis/config">Config API</NavItem>
-        <NavItem href="/docs/apis/schema">Schema API</NavItem>
-        <NavItem href="/docs/apis/fields">Fields API</NavItem>
-        <NavItem href="/docs/apis/access-control">Access Control API</NavItem>
-        <NavItem href="/docs/apis/hooks"> Hooks API</NavItem>
-        <NavItem href="/docs/apis/session">Session API</NavItem>
-        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
+        <NavItem exactMatch href="/docs/apis/config">
+          Config API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/schema">
+          Schema API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/fields">
+          Fields API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/access-control">
+          Access Control API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/hooks">
+          {' '}
+          Hooks API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/session">
+          Session API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/auth">
+          Authentication API
+        </NavItem>
 
         <Type
           as="h4"
@@ -131,9 +173,15 @@ export function DocsNavigation() {
         >
           Context
         </Type>
-        <NavItem href="/docs/apis/context">Context API</NavItem>
-        <NavItem href="/docs/apis/list-items">List Item API</NavItem>
-        <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
+        <NavItem exactMatch href="/docs/apis/context">
+          Context API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/list-items">
+          List Item API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/db-items">
+          DB Item API
+        </NavItem>
 
         <Type
           as="h4"
@@ -144,8 +192,12 @@ export function DocsNavigation() {
         >
           GraphQL
         </Type>
-        <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
-        <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
+        <NavItem exactMatch href="/docs/apis/graphql">
+          GraphQL API
+        </NavItem>
+        <NavItem exactMatch href="/docs/apis/filters">
+          Query Filter API
+        </NavItem>
       </Section>
     </nav>
   );
@@ -159,17 +211,27 @@ export function UpdatesNavigation({ releases = [] }) {
       }}
     >
       <Section label="Updates">
-        <NavItem href="/updates">What's New</NavItem>
-        <NavItem href="/updates/roadmap">Roadmap</NavItem>
+        <NavItem href="/updates" exactMatch>
+          What's New
+        </NavItem>
+        <NavItem href="/updates/roadmap" exactMatch>
+          Roadmap
+        </NavItem>
       </Section>
       <Section label="Releases">
-        <NavItem href="/releases">Summary</NavItem>
+        <NavItem href="/releases" exactMatch>
+          Summary
+        </NavItem>
         {releases.map(name => (
-          <NavItem key={name} href={`/releases/${name}`}>
+          <NavItem key={name} href={`/releases/${name}`} exactMatch>
             {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}
       </Section>
     </nav>
   );
+}
+
+export function MarketingNavigation() {
+  return null;
 }

@@ -56,7 +56,7 @@ export function DocsPage({
         }}
       >
         <Announcement />
-        <Header />
+        <Header releases={releases} />
         <Wrapper
           css={mq({
             display: ['block', null, 'grid'],
@@ -69,7 +69,7 @@ export function DocsPage({
                   '10rem minmax(0, auto) 10rem',
                   '15rem minmax(0, auto) 15rem',
                 ],
-            gap: 'calc(var(--space-large) * 3)',
+            gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
           <Sidebar releases={releases} isUpdatesPage={isUpdatesPage} />

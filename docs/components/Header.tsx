@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { useRouter } from 'next/router';
+import { useState, useRef } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
@@ -9,40 +9,44 @@ import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
 import { Button } from './primitives/Button';
+import { NavItem } from './docs/Navigation';
 import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
+import { MobileMenu } from './MobileMenu';
 import { Socials } from './Socials';
 
-function LinkItem({ name, link }) {
+function LinkItem({ name, href }) {
   const mq = useMediaQuery();
-  const { pathname } = useRouter();
-
-  let isActive = pathname.startsWith(link);
-  if (link.startsWith('/updates') && pathname.startsWith('/releases')) {
-    isActive = true;
-  }
 
   return (
-    <span
-      css={mq({
-        display: ['none', null, null, 'inline'],
-        '& a': {
-          color: isActive ? 'var(--link)' : 'var(--muted)',
-        },
-      })}
-    >
-      <Link href={link}>
-        <a>{name}</a>
-      </Link>
+    <span css={mq({ display: ['none', null, null, 'inline'] })}>
+      <NavItem href={href}>{name}</NavItem>
     </span>
   );
 }
 
-export function Header() {
+export function Header({ releases }) {
   const mq = useMediaQuery();
+  // const [position, setPosition] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef();
+  const headerRef = useRef();
+
+  const handleOpen = () => {
+    // const pos = headerRef.current.offsetTop + headerRef.current.clientHeight;
+    // setPosition(pos)
+    setOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    document.body.style.overflow = 'auto';
+  };
 
   return (
     <header
+      ref={headerRef}
       css={{
         marginBottom: '2.5rem',
       }}
@@ -53,10 +57,11 @@ export function Header() {
           gridTemplateColumns: [
             'auto max-content max-content',
             'max-content auto max-content max-content max-content',
-            null,
-            'max-content auto max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content',
+            '10rem auto max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content max-content max-content max-content',
           ],
-          gap: '1rem',
+          gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           justifyItems: 'start',
           alignItems: 'center',
           paddingTop: 'var(--space-xlarge)',
@@ -119,9 +124,9 @@ export function Header() {
         >
           <SearchField />
         </div>
-        <LinkItem name="Why Keystone" link="/why-keystone" />
-        <LinkItem name="Updates" link="/updates" />
-        <LinkItem name="Docs" link="/docs" />
+        <LinkItem name="Why Keystone" href="/why-keystone" />
+        <LinkItem name="Updates" href="/updates" />
+        <LinkItem name="Docs" href="/docs" />
         <DarkModeBtn />
         <Button
           as="a"
@@ -139,20 +144,29 @@ export function Header() {
             display: ['none', null, 'inline-grid'],
           })}
         />
-        <button
-          css={mq({
-            display: ['inline-block', null, 'none'],
-            appearance: 'none',
-            border: '0 none',
-            boxShadow: 'none',
-            background: 'transparent',
-            padding: '0.25rem',
-            cursor: 'pointer',
-            color: 'var(--muted)',
-          })}
-        >
-          <Hamburger css={{ height: '1.25rem' }} />
-        </button>
+        <div ref={menuRef}>
+          <button
+            onClick={handleOpen}
+            css={mq({
+              display: ['inline-block', null, 'none'],
+              appearance: 'none',
+              border: '0 none',
+              boxShadow: 'none',
+              background: 'transparent',
+              padding: '0.25rem',
+              cursor: 'pointer',
+              color: 'var(--muted)',
+            })}
+          >
+            <Hamburger css={{ height: '1.25rem' }} />
+          </button>
+          <MobileMenu
+            isOpen={open}
+            releases={releases}
+            // position={position}
+            handleClose={handleClose}
+          />
+        </div>
       </Wrapper>
     </header>
   );
