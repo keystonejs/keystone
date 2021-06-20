@@ -126,15 +126,16 @@ export default function Docs() {
       </Type>
 
       <Type as="p" look="body18" margin="0 0 1.5rem 0">
-        <a href="https://github.com/keystonejs/keystone/tree/master/examples" target="_blank">
-          View all &rarr;
-        </a>
-      </Type>
-
-      <Type as="p" look="body18" margin="0 0 1.5rem 0">
         A growing collection of projects you can run locally to learn more about Keystone features.
         Use these as a reference for best practice, and a jumping off point when adding features to
-        your own Keystone project.
+        your own Keystone project.{' '}
+        <a
+          href="https://github.com/keystonejs/keystone/tree/master/examples"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View all &rarr;
+        </a>
       </Type>
 
       <div
@@ -149,6 +150,7 @@ export default function Docs() {
           heading="Blog"
           href="https://github.com/keystonejs/keystone/blob/master/examples/blog"
           target="_blank"
+          rel="noopener noreferrer"
         >
           A basic Blog schema with Posts and Authors. Use this as a starting place for learning how
           to use Keystone. It’s also a starter for other feature projects.
@@ -158,6 +160,7 @@ export default function Docs() {
           heading="Task Manager"
           href="https://github.com/keystonejs/keystone/blob/master/examples/task-manager"
           target="_blank"
+          rel="noopener noreferrer"
         >
           A basic Task Management app, with Tasks and People who can be assigned to tasks. Great for
           learning how to use Keystone. It’s also a starter for other feature projects.
@@ -167,6 +170,7 @@ export default function Docs() {
           heading="Extend GraphQL Schema"
           href="https://github.com/keystonejs/keystone/blob/master/examples/extend-graphql-schema"
           target="_blank"
+          rel="noopener noreferrer"
         >
           Shows you how to extend the Keystone GraphQL API with custom queries and mutations. Builds
           upon the Blog starter project.
@@ -176,6 +180,7 @@ export default function Docs() {
           heading="Default Values"
           href="https://github.com/keystonejs/keystone/blob/master/examples/default-values"
           target="_blank"
+          rel="noopener noreferrer"
         >
           This project demonstrates how to use default values for fields. Builds upon the Task
           Manager starter project.
