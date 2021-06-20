@@ -12,15 +12,38 @@ export default function WhatsNew() {
         css={{
           display: 'grid',
           justifyItems: 'center',
-          margin: '7rem 0',
+          margin: '2rem 0',
           textAlign: 'center',
         }}
       >
-        <Type as="h1" look="heading94" fontSize={['15vw', null, null, null, '15rem']}>
-          <Highlight look="grad4">Error 404</Highlight>
-        </Type>
-        <Type as="p" look="body18">
+        <div
+          css={{
+            background: '#fff',
+            width: '60vw',
+            margin: '2rem auto',
+            padding: '2rem',
+            borderRadius: '2rem',
+          }}
+        >
+          <img
+            src="/assets/404.svg"
+            alt="The Keystone logo under construction"
+            css={{
+              width: '100%',
+              paddingLeft: '10vw',
+            }}
+          />
+        </div>
+        <Type as="p" look="body18bold" margin="0">
           We're sorry but we were unable to find what you're looking for.
+        </Type>
+        <Type
+          as="h1"
+          look="heading94"
+          fontSize={['15vw', null, null, null, '15rem']}
+          css={{ lineHeight: 1 }}
+        >
+          <Highlight look="grad4">Error 404</Highlight>
         </Type>
       </div>
     </Page>
