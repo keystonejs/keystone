@@ -14,7 +14,7 @@ export default function Docs() {
 
   return (
     <DocsPage noRightNav noProse>
-      <Type as="h1" look="heading64" css={{ lineHeight: 1 }}>
+      <Type as="h1" look="heading64">
         Keystone Tutorials
       </Type>
 
