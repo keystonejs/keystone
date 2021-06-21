@@ -35,8 +35,15 @@ type NavItemProps = {
   isPlaceholder?: boolean;
   children: ReactNode;
   exactMatch?: boolean;
+  isOpen?: boolean;
 };
-export function NavItem({ href, isPlaceholder, children, exactMatch }: NavItemProps) {
+export function NavItem({
+  href,
+  isPlaceholder,
+  children,
+  exactMatch,
+  isOpen = false,
+}: NavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
   if (href.startsWith('/updates') && pathname.startsWith('/releases') && !exactMatch) {
@@ -66,6 +73,7 @@ export function NavItem({ href, isPlaceholder, children, exactMatch }: NavItemPr
   return (
     <Link href={href} passHref>
       <a
+        tabIndex={isOpen ? 0 : -1}
         css={{
           display: 'block',
           textDecoration: 'none',
@@ -84,7 +92,7 @@ export function NavItem({ href, isPlaceholder, children, exactMatch }: NavItemPr
   );
 }
 
-export function DocsNavigation() {
+export function DocsNavigation({ isOpen }) {
   return (
     <nav
       css={{
@@ -92,59 +100,63 @@ export function DocsNavigation() {
       }}
     >
       <Section label="Tutorials">
-        <NavItem exactMatch href="/docs/tutorials/getting-started-with-create-keystone-app">
+        <NavItem
+          isOpen={isOpen}
+          exactMatch
+          href="/docs/tutorials/getting-started-with-create-keystone-app"
+        >
           Getting started
         </NavItem>
-        <NavItem exactMatch href="/docs/tutorials/embedded-mode-with-sqlite-nextjs">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/tutorials/embedded-mode-with-sqlite-nextjs">
           Embedding Keystone and SQLite in Next.js
         </NavItem>
       </Section>
       <Section label="Guides">
-        <NavItem exactMatch href="/docs/guides/keystone-5-vs-keystone-next">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/keystone-5-vs-keystone-next">
           Keystone 5 vs Next
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/cli">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/cli">
           Command Line
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/relationships">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/relationships">
           Relationships
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/filters">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/filters">
           Query Filters
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/hooks">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/hooks">
           Hooks
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/document-fields">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/document-fields">
           Document Fields
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/virtual-fields">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/virtual-fields">
           Virtual Fields
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/access-control" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/auth" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/auth" isPlaceholder>
           Authentication
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/schema-extension" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/internal-items" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/internal-items" isPlaceholder>
           Internal Items
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/testing" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/testing" isPlaceholder>
           Testing
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
           Custom Admin UI Pages
         </NavItem>
-        <NavItem exactMatch href="/docs/guides/custom-field-views" isPlaceholder>
+        <NavItem isOpen={isOpen} exactMatch href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views
         </NavItem>
       </Section>
       <Section label="Examples">
-        <NavItem exactMatch href="/docs/examples">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/examples">
           Examples
         </NavItem>
       </Section>
@@ -158,26 +170,26 @@ export function DocsNavigation() {
         >
           Config
         </Type>
-        <NavItem exactMatch href="/docs/apis/config">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/config">
           Config API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/schema">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/schema">
           Schema API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/fields">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/fields">
           Fields API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/access-control">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/access-control">
           Access Control API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/hooks">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/hooks">
           {' '}
           Hooks API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/session">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/session">
           Session API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/auth">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/auth">
           Authentication API
         </NavItem>
 
@@ -190,13 +202,13 @@ export function DocsNavigation() {
         >
           Context
         </Type>
-        <NavItem exactMatch href="/docs/apis/context">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/context">
           Context API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/list-items">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/list-items">
           List Item API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/db-items">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/db-items">
           DB Item API
         </NavItem>
 
@@ -209,10 +221,10 @@ export function DocsNavigation() {
         >
           GraphQL
         </Type>
-        <NavItem exactMatch href="/docs/apis/graphql">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/graphql">
           GraphQL API
         </NavItem>
-        <NavItem exactMatch href="/docs/apis/filters">
+        <NavItem isOpen={isOpen} exactMatch href="/docs/apis/filters">
           Query Filter API
         </NavItem>
       </Section>
@@ -220,7 +232,7 @@ export function DocsNavigation() {
   );
 }
 
-export function UpdatesNavigation({ releases = [] }) {
+export function UpdatesNavigation({ releases = [], isOpen }) {
   return (
     <nav
       css={{
@@ -228,19 +240,19 @@ export function UpdatesNavigation({ releases = [] }) {
       }}
     >
       <Section label="Updates">
-        <NavItem href="/updates" exactMatch>
+        <NavItem isOpen={isOpen} href="/updates" exactMatch>
           What's New
         </NavItem>
-        <NavItem href="/updates/roadmap" exactMatch>
+        <NavItem isOpen={isOpen} href="/updates/roadmap" exactMatch>
           Roadmap
         </NavItem>
       </Section>
       <Section label="Releases">
-        <NavItem href="/releases" exactMatch>
+        <NavItem isOpen={isOpen} href="/releases" exactMatch>
           Summary
         </NavItem>
         {releases.map(name => (
-          <NavItem key={name} href={`/releases/${name}`} exactMatch>
+          <NavItem isOpen={isOpen} key={name} href={`/releases/${name}`} exactMatch>
             {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}

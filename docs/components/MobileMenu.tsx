@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import { Fragment } from 'react';
+import Link from 'next/link';
 
 import {
   Section,
@@ -17,7 +18,7 @@ export function MobileMenu({ isOpen, handleClose, position, releases, ...props }
   const { pathname } = useRouter();
   let ThisNav = MarketingNavigation;
   if (pathname.startsWith('/releases') || pathname.startsWith('/updates')) {
-    ThisNav = () => <UpdatesNavigation releases={releases} />;
+    ThisNav = props => <UpdatesNavigation releases={releases} {...props} />;
   }
   if (pathname.startsWith('/docs')) {
     ThisNav = DocsNavigation;
@@ -56,9 +57,14 @@ export function MobileMenu({ isOpen, handleClose, position, releases, ...props }
             alignItems: 'center',
           }}
         >
-          <Keystone grad="logo" css={{ height: '2rem' }} />
+          <Link href="/">
+            <a tabIndex={isOpen ? 0 : -1}>
+              <Keystone grad="logo" css={{ height: '2rem' }} />
+            </a>
+          </Link>
           <button
             onClick={handleClose}
+            tabIndex={isOpen ? 0 : -1}
             css={{
               appearance: 'none',
               border: '0 none',
@@ -79,11 +85,17 @@ export function MobileMenu({ isOpen, handleClose, position, releases, ...props }
           }}
         >
           <Section label="Tutorials">
-            <NavItem href="/why-keystone">Why Keystone</NavItem>
-            <NavItem href="/updates">Updates</NavItem>
-            <NavItem href="/docs">Docs</NavItem>
+            <NavItem href="/why-keystone" isOpen={isOpen}>
+              Why Keystone
+            </NavItem>
+            <NavItem href="/updates" isOpen={isOpen}>
+              Updates
+            </NavItem>
+            <NavItem href="/docs" isOpen={isOpen}>
+              Docs
+            </NavItem>
           </Section>
-          <ThisNav />
+          <ThisNav isOpen={isOpen} />
         </div>
       </nav>
       {isOpen && (
