@@ -62,7 +62,7 @@ import { lists } from './schema';
 //   }
 // });
 
-// N/A (playground uses defaults)
+// not specified at all (playground uses defaults)
 export default config({
   db: {
     provider: 'sqlite',
