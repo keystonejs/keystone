@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
+import { FieldContainer } from '@keystone-ui/fields';
 import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
@@ -39,9 +40,11 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
     type: string;
     value: any;
   }) => JSX.Element;
+  console.log(filter.field);
   return (
     <Fragment>
       <Pill
+        aria-label={`Filter item ${filter.field}`}
         onClick={() => {
           setOpen(true);
         }}
@@ -62,7 +65,14 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
           value={filter.value}
         />
       </Pill>
-      <PopoverDialog arrow={arrow} {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
+      <PopoverDialog
+        aria-label="filter item config"
+        aria-description={`dialog for configuring ${filter.field} filter`}
+        arrow={arrow}
+        {...dialog.props}
+        ref={dialog.ref}
+        isVisible={isOpen}
+      >
         <EditDialog
           onClose={() => {
             setOpen(false);
@@ -92,6 +102,7 @@ function EditDialog({
       as="form"
       padding="small"
       gap="small"
+      role="status"
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
         router.push({
