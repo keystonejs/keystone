@@ -1,8 +1,8 @@
 /** @jsx jsx  */
-import { useState, useRef, ReactNode } from 'react';
+import { useEffect, useState, useRef, ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 import { useMediaQuery } from '../lib/media';
 import { SearchField } from './primitives/SearchField';
@@ -98,6 +98,10 @@ export function Header({ releases }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+  }, []);
 
   const handleOpen = () => {
     setOpen(true);
