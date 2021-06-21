@@ -36,7 +36,7 @@ export async function getServerSideProps() {
     ? normalize(`${__dirname}/../../pages/releases`)
     : normalize(`${__dirname}/../../../pages/releases`);
 
-  const releases = readdirSync(dir, 'utf8')
+  const releases = (readdirSync(dir, 'utf8') as Array<string>)
     .filter(name => !name.startsWith('.') && !name.startsWith('index'))
     .map(name => name.replace('.mdx', ''))
     .reverse();

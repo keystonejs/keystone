@@ -1,13 +1,13 @@
 /** @jsx jsx */
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, HTMLAttributes } from 'react';
 import { jsx, Global } from '@emotion/react';
 
 import { COLORS } from '../lib/TOKENS';
 import { LightMode } from './icons/LightMode';
 import { DarkMode } from './icons/DarkMode';
 
-export function DarkModeBtn(props) {
-  const [theme, setTheme] = useState('light');
+export function DarkModeBtn(props: HTMLAttributes<HTMLButtonElement>) {
+  const [theme, setTheme] = useState<keyof typeof COLORS>('light');
 
   useEffect(() => {
     // first we check local storage, then fall back to system preferences until falling back to default 'light'
@@ -21,7 +21,7 @@ export function DarkModeBtn(props) {
     setTheme(detectedTheme);
     localStorage.setItem('theme', detectedTheme);
 
-    const changer = event => {
+    const changer = (event: { matches: boolean }) => {
       const detectedTheme = event.matches ? 'dark' : 'light';
       setTheme(detectedTheme);
       localStorage.setItem('theme', detectedTheme);

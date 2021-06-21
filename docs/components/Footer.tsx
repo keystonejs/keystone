@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import { HTMLAttributes } from 'react';
 
 import { useMediaQuery } from '../lib/media';
 import { GitHubButton } from './primitives/GitHubButton';
@@ -11,7 +12,7 @@ import { Emoji } from './primitives/Emoji';
 import { Type } from './primitives/Type';
 import { Socials } from './Socials';
 
-function List(props) {
+function List(props: HTMLAttributes<HTMLElement>) {
   return (
     <ul
       css={{
@@ -109,7 +110,7 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/docs/tutorials/getting-started-with-create-keystone-app">
+                <Link href="/docs/walkthroughs/getting-started-with-create-keystone-app">
                   <a>Getting started</a>
                 </Link>
               </li>

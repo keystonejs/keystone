@@ -6,8 +6,10 @@ import Link from 'next/link';
 
 import { Type } from './primitives/Type';
 
+type Path = { title: string; href: string };
+
 export function Breadcrumbs() {
-  const [breadcrumbs, setBreadcrumbs] = useState([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<Path[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export function Breadcrumbs() {
       const linkPath = router.pathname.split('/');
       linkPath.shift();
 
-      const pathArray = linkPath.map((path, i) => {
+      const pathArray = linkPath.map((path, i): Path => {
         return { title: path.replace(/-/g, ' '), href: '/' + linkPath.slice(0, i + 1).join('/') };
       });
 

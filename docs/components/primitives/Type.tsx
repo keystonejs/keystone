@@ -139,14 +139,14 @@ export const styleMap = {
     fontSize: '1.5rem',
     fontWeight: 600,
   },
-};
+} as const;
 
 type TypeProps = {
   look?: keyof typeof styleMap;
-  fontSize?: string;
-  margin?: string;
-  padding?: string;
-  color?: string;
+  fontSize?: string | Array<string | null>;
+  margin?: string | Array<string | null>;
+  padding?: string | Array<string | null>;
+  color?: string | Array<string | null>;
 };
 
 export const Type = forwardRefWithAs<'span', TypeProps>(
@@ -157,7 +157,7 @@ export const Type = forwardRefWithAs<'span', TypeProps>(
       <Tag
         ref={ref}
         css={mq({
-          ...styleMap[look],
+          ...(look ? styleMap[look] : {}),
           ...(color ? { color } : {}),
           ...(fontSize ? { fontSize } : {}),
           ...(margin ? { margin } : {}),

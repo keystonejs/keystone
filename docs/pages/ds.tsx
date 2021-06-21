@@ -88,7 +88,7 @@ function Swatch({ name, color, gradient }: SwatchProps) {
 }
 
 export default function DS() {
-  const [icon, setIcon] = useState<allIcons.IconGradient>(null);
+  const [icon, setIcon] = useState<allIcons.IconGradient | null>(null);
   let firstGrad: string;
 
   return (
@@ -257,7 +257,7 @@ export default function DS() {
       <Type id="type" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Type
       </Type>
-      {Object.keys(styleMap).map((style: keyof typeof styleMap) => (
+      {(Object.keys(styleMap) as Array<keyof typeof styleMap>).map(style => (
         <Type key={style} id="type" look={style} css={{ display: 'block' }}>
           Type {style}
         </Type>

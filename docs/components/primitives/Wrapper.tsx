@@ -1,9 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import type { ElementType, HTMLAttributes } from 'react';
 
 import { useMediaQuery } from '../../lib/media';
 
-export function Wrapper({ as: Tag = 'div', ...props }) {
+type WrapperProps = {
+  as?: ElementType;
+} & HTMLAttributes<HTMLElement>;
+
+export function Wrapper({ as: Tag = 'div', ...props }: WrapperProps) {
   const mq = useMediaQuery();
 
   return (

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS';
 
 export function Theme() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState<keyof typeof COLORS>('light');
 
   useEffect(() => {
     // we duplicate the logic of DarkModeBtn here so the flash is shorter

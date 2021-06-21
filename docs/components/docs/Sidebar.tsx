@@ -4,7 +4,12 @@ import { jsx } from '@emotion/react';
 import { useMediaQuery } from '../../lib/media';
 import { DocsNavigation, UpdatesNavigation } from './Navigation';
 
-export function Sidebar({ isUpdatesPage, releases }) {
+type SidebarProps = {
+  isUpdatesPage?: boolean;
+  releases?: any;
+};
+
+export function Sidebar({ isUpdatesPage, releases }: SidebarProps) {
   const mq = useMediaQuery();
   const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation;
 

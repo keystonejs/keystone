@@ -4,7 +4,7 @@ import { HTMLAttributes } from 'react';
 
 import { SPACE } from '../../lib/TOKENS';
 
-const gapMap = {};
+const gapMap: Record<number, string> = {};
 Object.keys(SPACE).forEach((name, i) => {
   gapMap[i + 1] = `var(${name})`;
 });

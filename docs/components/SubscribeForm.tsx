@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Fragment, useState, ReactNode, SyntheticEvent } from 'react';
+import { Fragment, useState, ReactNode, SyntheticEvent, HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
 
 import { Button } from './primitives/Button';
@@ -13,15 +13,13 @@ const validEmail = (email: string) =>
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
-export function SubscribeForm({
-  autoFocus,
-  stacked,
-  children,
-  ...props
-}: {
+type SubscriptFormProps = {
   autoFocus?: boolean;
   children: ReactNode;
-}) {
+  stacked?: boolean;
+} & HTMLAttributes<HTMLFormElement>;
+
+export function SubscribeForm({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +79,7 @@ export function SubscribeForm({
           orientation={stacked ? 'vertical' : 'horizontal'}
           block={stacked}
           css={{
-            justifyItems: stacked ? 'baseline' : null,
+            justifyItems: stacked ? 'baseline' : undefined,
           }}
         >
           <Field

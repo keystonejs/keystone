@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
-import { Fragment, ElementType } from 'react';
+import { Fragment, ElementType, HTMLAttributes, MouseEvent } from 'react';
 import Link from 'next/link';
 
 import {
@@ -14,7 +14,13 @@ import {
 import { Keystone } from './icons/Keystone';
 import { Close } from './icons/Close';
 
-export function MobileMenu({ isOpen, handleClose, releases, ...props }) {
+type MobileMenuProps = {
+  isOpen?: boolean;
+  handleClose?: (e: MouseEvent) => void;
+  releases?: any;
+} & HTMLAttributes<HTMLElement>;
+
+export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMenuProps) {
   const { pathname } = useRouter();
   let ThisNav: ElementType = MarketingNavigation;
   if (pathname.startsWith('/releases') || pathname.startsWith('/updates')) {

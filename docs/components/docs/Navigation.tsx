@@ -71,7 +71,7 @@ export function NavItem({
   );
 }
 
-export function DocsNavigation({ isOpen }) {
+export function DocsNavigation({ isOpen }: { isOpen?: boolean }) {
   return (
     <nav
       css={{
@@ -211,7 +211,13 @@ export function DocsNavigation({ isOpen }) {
   );
 }
 
-export function UpdatesNavigation({ releases = [], isOpen }) {
+export function UpdatesNavigation({
+  releases = [],
+  isOpen,
+}: {
+  releases: string[];
+  isOpen?: boolean;
+}) {
   return (
     <nav
       css={{

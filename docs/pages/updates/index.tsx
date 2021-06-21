@@ -1,7 +1,7 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
-import { HTMLAttributes, ReactNode } from 'react';
+import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
@@ -116,7 +116,7 @@ function Box({ link, heading, children, ...props }: BoxProps) {
   );
 }
 
-export default function WhatsNew(props) {
+export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
   const mq = useMediaQuery();
 
   return (

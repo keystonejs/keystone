@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { useState, useRef } from 'react';
+import { useState, useRef, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -69,13 +69,13 @@ function Logo() {
 
 function useCurrentSection() {
   const { pathname } = useRouter();
-  const check = candidate => pathname.startsWith(candidate);
+  const check = (candidate: string) => pathname.startsWith(candidate);
   if (['/updates', '/releases'].some(check)) return '/updates';
   if (['/why-keystone', '/for-'].some(check)) return '/why-keystone';
   if (['/docs'].some(check)) return '/docs';
 }
 
-function LinkItem({ children, href }) {
+function LinkItem({ children, href }: { children: ReactNode; href: string }) {
   const mq = useMediaQuery();
   const currentSection = useCurrentSection();
   const isActive = href === currentSection;
@@ -96,8 +96,8 @@ type HeaderProps = {
 export function Header({ releases }: HeaderProps) {
   const mq = useMediaQuery();
   const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>();
-  const headerRef = useRef<HTMLDivElement>();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   const handleOpen = () => {
     setOpen(true);
