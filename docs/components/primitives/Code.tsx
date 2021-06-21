@@ -47,6 +47,8 @@ export function InlineCode({ children }: { children: ReactNode }) {
         borderRadius: '5px',
         fontSize: '85%',
         fontFamily: 'var(--font-mono)',
+        maxWidth: '100%',
+        overflow: 'auto',
       }}
     >
       {children}
