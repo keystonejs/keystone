@@ -1,11 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { HTMLAttributes } from 'react';
 
 import { Twitter } from './icons/Twitter';
 import { GitHub } from './icons/GitHub';
 import { Slack } from './icons/Slack';
 
-export function Socials({ noGitHub, ...props }) {
+type SocialsProps = {
+  noGitHub?: boolean;
+} & HTMLAttributes<HTMLElement>;
+
+export function Socials({ noGitHub, ...props }: SocialsProps) {
   return (
     <div
       css={{

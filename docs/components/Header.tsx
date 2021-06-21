@@ -27,14 +27,11 @@ function LinkItem({ name, href }) {
 
 export function Header({ releases }) {
   const mq = useMediaQuery();
-  // const [position, setPosition] = useState(false);
   const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLElement>();
-  const headerRef = useRef<HTMLElement>();
+  const menuRef = useRef<HTMLDivElement>();
+  const headerRef = useRef<HTMLDivElement>();
 
   const handleOpen = () => {
-    // const pos = headerRef.current.offsetTop + headerRef.current.clientHeight;
-    // setPosition(pos)
     setOpen(true);
     document.body.style.overflow = 'hidden';
   };
@@ -160,12 +157,7 @@ export function Header({ releases }) {
           >
             <Hamburger css={{ height: '1.25rem' }} />
           </button>
-          <MobileMenu
-            isOpen={open}
-            releases={releases}
-            // position={position}
-            handleClose={handleClose}
-          />
+          <MobileMenu isOpen={open} releases={releases} handleClose={handleClose} />
         </div>
       </Wrapper>
     </header>

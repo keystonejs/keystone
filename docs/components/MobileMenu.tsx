@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
-import { Fragment } from 'react';
+import { Fragment, ElementType } from 'react';
 import Link from 'next/link';
 
 import {
@@ -14,9 +14,9 @@ import {
 import { Keystone } from './icons/Keystone';
 import { Close } from './icons/Close';
 
-export function MobileMenu({ isOpen, handleClose, position, releases, ...props }) {
+export function MobileMenu({ isOpen, handleClose, releases, ...props }) {
   const { pathname } = useRouter();
-  let ThisNav = MarketingNavigation;
+  let ThisNav: ElementType = MarketingNavigation;
   if (pathname.startsWith('/releases') || pathname.startsWith('/updates')) {
     ThisNav = props => <UpdatesNavigation releases={releases} {...props} />;
   }
