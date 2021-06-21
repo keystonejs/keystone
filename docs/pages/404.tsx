@@ -20,6 +20,7 @@ export default function WhatsNew() {
           css={{
             background: '#fff',
             width: '90vw',
+            maxWidth: '41.875rem',
             margin: '2rem auto',
             padding: '2rem',
             borderRadius: '2rem',
