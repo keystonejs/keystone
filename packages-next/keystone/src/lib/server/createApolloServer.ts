@@ -67,20 +67,20 @@ const _createApolloServerConfig = ({
   let playground: Config['playground'];
   const settings = { 'request.credentials': 'same-origin' };
 
-  // graphql.apolloConfig.playground === false (playground not accessible in all cases)
   if (typeof pp === 'boolean' && !pp) {
+    // graphql.apolloConfig.playground === false (playground not accessible in all cases)
     playground = false;
-    // graphql.apolloConfig.playground === true (playground accessible in all cases)
   } else if (typeof pp === 'boolean') {
+    // graphql.apolloConfig.playground === true (playground accessible in all cases)
     playground = { settings };
-    // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation - https://www.apollographql.com/docs/apollo-server/testing/graphql-playground)
   } else if (pp) {
+    // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation - https://www.apollographql.com/docs/apollo-server/testing/graphql-playground)
     playground = { ...pp, settings: { ...settings, ...pp.settings } };
-    // process.env.NODE_ENV === 'production' (playground not accessible in production)
   } else if (process.env.NODE_ENV === 'production') {
+    // process.env.NODE_ENV === 'production' (playground not accessible in production)
     playground = undefined;
-    // not specified at all (playground uses defaults)
   } else {
+    // not specified at all (playground uses defaults)
     playground = { settings };
   }
 
