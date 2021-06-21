@@ -19,6 +19,7 @@ We'll start with a list called `Example` and create a virtual field called `hell
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
 import { virtual } from '@keystone-next/fields';
+import { schema } from '@keystone-next/types';
 
 export default config({
   lists: createSchema({
