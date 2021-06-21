@@ -72,8 +72,7 @@ export async function setupTestEnv({
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 
-  const testArgs = { context: createContext(), config, graphQLRequest };
-  return { connect, disconnect, testArgs };
+  return { connect, disconnect, testArgs: { context: createContext(), graphQLRequest } };
 }
 
 export function setupTestRunner({ config }: { config: KeystoneConfig }) {
