@@ -21,7 +21,6 @@ export type GraphQLRequest = (arg: {
 
 export type TestArgs = {
   context: KeystoneContext;
-  config: KeystoneConfig;
   graphQLRequest: GraphQLRequest;
 };
 
