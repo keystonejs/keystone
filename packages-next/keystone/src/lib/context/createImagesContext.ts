@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-import { parseImageRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
+import { parseImageRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils';
 import {
   buildKeystoneCloudImageSrc,
   getImageMetadataFromKeystoneCloud,

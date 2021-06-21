@@ -1,7 +1,8 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/testing';
+import { KeystoneContext } from '@keystone-next/types';
+import { apiTestConfig } from '../utils';
 
 type IdType = any;
 
@@ -106,54 +107,48 @@ const createInitialData = async (context: KeystoneContext) => {
   });
 };
 
-const setupKeystone = (provider: DatabaseProvider) =>
-  setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        Employee: list({
-          fields: {
-            name: text(),
-            company: relationship({ ref: 'Company.employees', many: false }),
-            role: relationship({ ref: 'Role', many: false }),
-          },
-        }),
-        Company: list({
-          fields: {
-            name: text(),
-            employees: relationship({ ref: 'Employee.company', many: true }),
-          },
-        }),
-        Role: list({
-          fields: {
-            name: text(),
-            company: relationship({ ref: 'Company', many: false }),
-            employees: relationship({ ref: 'Employee', many: true }),
-          },
-        }),
-        Location: list({
-          fields: {
-            name: text(),
-            employees: relationship({ ref: 'Employee', many: true }),
-          },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      Employee: list({
+        fields: {
+          name: text(),
+          company: relationship({ ref: 'Company.employees', many: false }),
+          role: relationship({ ref: 'Role', many: false }),
+        },
+      }),
+      Company: list({
+        fields: {
+          name: text(),
+          employees: relationship({ ref: 'Employee.company', many: true }),
+        },
+      }),
+      Role: list({
+        fields: {
+          name: text(),
+          company: relationship({ ref: 'Company', many: false }),
+          employees: relationship({ ref: 'Employee', many: true }),
+        },
+      }),
+      Location: list({
+        fields: {
+          name: text(),
+          employees: relationship({ ref: 'Employee', many: true }),
+        },
       }),
     }),
-  });
+  }),
+});
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    test(
-      'Query',
-      runner(setupKeystone, async ({ context }) => {
-        await createInitialData(context);
-        const employees = await context.lists.Employee.findMany({
-          where: { company: { employees_some: { role: { name: 'RoleA' } } } },
-          query: 'id name',
-        });
-        expect(employees).toHaveLength(1);
-        expect(employees[0].name).toEqual('EmployeeA');
-      })
-    );
+test(
+  'Query',
+  runner(async ({ context }) => {
+    await createInitialData(context);
+    const employees = await context.lists.Employee.findMany({
+      where: { company: { employees_some: { role: { name: 'RoleA' } } } },
+      query: 'id name',
+    });
+    expect(employees).toHaveLength(1);
+    expect(employees[0].name).toEqual('EmployeeA');
   })
 );

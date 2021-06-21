@@ -1,67 +1,57 @@
 import { text, integer, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  networkedGraphqlRequest,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import { DatabaseProvider } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/testing';
+import { apiTestConfig } from '../utils';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
-function setupKeystone(provider: DatabaseProvider) {
-  return setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        Post: list({
-          fields: {
-            title: text(),
-            author: relationship({ ref: 'User.posts', many: true }),
-          },
-        }),
-        User: list({
-          fields: {
-            name: text(),
-            favNumber: integer(),
-            posts: relationship({ ref: 'Post.author', many: true }),
-          },
-          graphql: {
-            queryLimits: {
-              maxResults: 2,
-            },
-          },
-        }),
-      }),
-      graphql: {
-        queryLimits: { maxTotalResults: 6 },
-        apolloConfig: {
-          validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      Post: list({
+        fields: {
+          title: text(),
+          author: relationship({ ref: 'User.posts', many: true }),
         },
-      },
+      }),
+      User: list({
+        fields: {
+          name: text(),
+          favNumber: integer(),
+          posts: relationship({ ref: 'Post.author', many: true }),
+        },
+        graphql: {
+          queryLimits: {
+            maxResults: 2,
+          },
+        },
+      }),
     }),
-  });
-}
+    graphql: {
+      queryLimits: { maxTotalResults: 6 },
+      apolloConfig: {
+        validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+      },
+    },
+  }),
+});
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe('maxResults Limit', () => {
-      describe('Basic querying', () => {
-        test(
-          'users',
-          runner(setupKeystone, async ({ context }) => {
-            const users = await context.lists.User.createMany({
-              data: [
-                { data: { name: 'Jess', favNumber: 1 } },
-                { data: { name: 'Johanna', favNumber: 8 } },
-                { data: { name: 'Sam', favNumber: 5 } },
-                { data: { name: 'Theo', favNumber: 2 } },
-              ],
-            });
+describe('maxResults Limit', () => {
+  describe('Basic querying', () => {
+    test(
+      'users',
+      runner(async ({ context }) => {
+        const users = await context.lists.User.createMany({
+          data: [
+            { data: { name: 'Jess', favNumber: 1 } },
+            { data: { name: 'Johanna', favNumber: 8 } },
+            { data: { name: 'Sam', favNumber: 5 } },
+            { data: { name: 'Theo', favNumber: 2 } },
+          ],
+        });
 
-            // 2 results is okay
-            let data = await context.graphql.run({
-              query: `
+        // 2 results is okay
+        let data = await context.graphql.run({
+          query: `
           query {
             allUsers(
               where: { name_contains: "J" },
@@ -71,14 +61,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            });
+        });
 
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
+        expect(data).toHaveProperty('allUsers');
+        expect(data.allUsers).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
 
-            // No results is okay
-            data = await context.graphql.run({
-              query: `
+        // No results is okay
+        data = await context.graphql.run({
+          query: `
           query {
             allUsers(
               where: { name: "Nope" }
@@ -87,50 +77,50 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            });
+        });
 
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers.length).toEqual(0);
+        expect(data).toHaveProperty('allUsers');
+        expect(data.allUsers.length).toEqual(0);
 
-            // Count is still correct
-            data = await context.graphql.run({
-              query: `query { usersCount }`,
-            });
+        // Count is still correct
+        data = await context.graphql.run({
+          query: `query { usersCount }`,
+        });
 
-            expect(data).toHaveProperty('usersCount');
-            expect(data.usersCount).toBe(users.length);
+        expect(data).toHaveProperty('usersCount');
+        expect(data.usersCount).toBe(users.length);
 
-            // This query is only okay because of the "first" parameter
-            data = await context.graphql.run({
-              query: `
+        // This query is only okay because of the "first" parameter
+        data = await context.graphql.run({
+          query: `
           query {
             allUsers(first: 1) {
               name
             }
           }
       `,
-            });
+        });
 
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers.length).toEqual(1);
+        expect(data).toHaveProperty('allUsers');
+        expect(data.allUsers.length).toEqual(1);
 
-            // This query returns too many results
-            let errors;
-            ({ errors } = await context.graphql.raw({
-              query: `
+        // This query returns too many results
+        let errors;
+        ({ errors } = await context.graphql.raw({
+          query: `
           query {
             allUsers {
               name
             }
           }
       `,
-            }));
+        }));
 
-            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
-            // The query results don't break the limits, but the "first" parameter does
-            ({ errors } = await context.graphql.raw({
-              query: `
+        // The query results don't break the limits, but the "first" parameter does
+        ({ errors } = await context.graphql.raw({
+          query: `
           query {
             allUsers(
               where: { name: "Nope" },
@@ -140,74 +130,74 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            }));
+        }));
 
-            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
-          })
-        );
-      });
+        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+      })
+    );
+  });
 
-      describe('Relationship querying', () => {
-        test(
-          'posts by user',
-          runner(setupKeystone, async ({ context }) => {
-            const users = await context.lists.User.createMany({
-              data: [
-                { data: { name: 'Jess', favNumber: 1 } },
-                { data: { name: 'Johanna', favNumber: 8 } },
-                { data: { name: 'Sam', favNumber: 5 } },
-              ],
-            });
-            await context.lists.Post.createMany({
-              data: [
-                { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
-                {
-                  data: {
-                    author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
-                    title: 'Two authors',
-                  },
-                },
-                {
-                  data: {
-                    author: {
-                      connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
-                    },
-                    title: 'Three authors',
-                  },
-                },
-              ],
-            });
-            // Reset the count for each query
-            context.totalResults = 0;
-            // A basic query that should work
-            let posts = await context.lists.Post.findMany({
-              where: { title: 'One author' },
-              query: 'title author { name }',
-            });
-
-            expect(posts).toEqual([{ title: 'One author', author: [{ name: 'Jess' }] }]);
-
-            // Reset the count for each query
-            context.totalResults = 0;
-            // Each subquery is within the limit (even though the total isn't)
-            posts = await context.lists.Post.findMany({
-              where: {
-                OR: [{ title: 'One author' }, { title: 'Two authors' }],
+  describe('Relationship querying', () => {
+    test(
+      'posts by user',
+      runner(async ({ context }) => {
+        const users = await context.lists.User.createMany({
+          data: [
+            { data: { name: 'Jess', favNumber: 1 } },
+            { data: { name: 'Johanna', favNumber: 8 } },
+            { data: { name: 'Sam', favNumber: 5 } },
+          ],
+        });
+        await context.lists.Post.createMany({
+          data: [
+            { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
+            {
+              data: {
+                author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+                title: 'Two authors',
               },
-              orderBy: { title: 'asc' },
-              query: 'title author(orderBy: { name: asc }) { name }',
-            });
-            expect(posts).toEqual([
-              { title: 'One author', author: [{ name: 'Jess' }] },
-              { title: 'Two authors', author: [{ name: 'Jess' }, { name: 'Johanna' }] },
-            ]);
+            },
+            {
+              data: {
+                author: {
+                  connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
+                },
+                title: 'Three authors',
+              },
+            },
+          ],
+        });
+        // Reset the count for each query
+        context.totalResults = 0;
+        // A basic query that should work
+        let posts = await context.lists.Post.findMany({
+          where: { title: 'One author' },
+          query: 'title author { name }',
+        });
 
-            // Reset the count for each query
-            context.totalResults = 0;
-            // This post has too many authors
-            let errors;
-            ({ errors } = await context.graphql.raw({
-              query: `
+        expect(posts).toEqual([{ title: 'One author', author: [{ name: 'Jess' }] }]);
+
+        // Reset the count for each query
+        context.totalResults = 0;
+        // Each subquery is within the limit (even though the total isn't)
+        posts = await context.lists.Post.findMany({
+          where: {
+            OR: [{ title: 'One author' }, { title: 'Two authors' }],
+          },
+          orderBy: { title: 'asc' },
+          query: 'title author(orderBy: { name: asc }) { name }',
+        });
+        expect(posts).toEqual([
+          { title: 'One author', author: [{ name: 'Jess' }] },
+          { title: 'Two authors', author: [{ name: 'Jess' }, { name: 'Johanna' }] },
+        ]);
+
+        // Reset the count for each query
+        context.totalResults = 0;
+        // This post has too many authors
+        let errors;
+        ({ errors } = await context.graphql.raw({
+          query: `
           query {
             allPosts(
               where: { title: "Three authors" },
@@ -219,25 +209,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            }));
+        }));
 
-            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
-            // Requesting the too-many-authors post is okay as long as the authors aren't returned
-            // Reset the count for each query
-            context.totalResults = 0;
-            posts = await context.lists.Post.findMany({
-              where: { title: 'Three authors' },
-              query: 'title',
-            });
+        // Requesting the too-many-authors post is okay as long as the authors aren't returned
+        // Reset the count for each query
+        context.totalResults = 0;
+        posts = await context.lists.Post.findMany({
+          where: { title: 'Three authors' },
+          query: 'title',
+        });
 
-            expect(posts).toEqual([{ title: 'Three authors' }]);
+        expect(posts).toEqual([{ title: 'Three authors' }]);
 
-            // Some posts are okay, but one breaks the limit
-            // Reset the count for each query
-            context.totalResults = 0;
-            ({ errors } = await context.graphql.raw({
-              query: `
+        // Some posts are okay, but one breaks the limit
+        // Reset the count for each query
+        context.totalResults = 0;
+        ({ errors } = await context.graphql.raw({
+          query: `
           query {
             allPosts {
               title
@@ -247,15 +237,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            }));
+        }));
 
-            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
-            // All subqueries are within limits, but the total isn't
-            // Reset the count for each query
-            context.totalResults = 0;
-            ({ errors } = await context.graphql.raw({
-              query: `
+        // All subqueries are within limits, but the total isn't
+        // Reset the count for each query
+        context.totalResults = 0;
+        ({ errors } = await context.graphql.raw({
+          query: `
           query {
             allPosts(where: { title: "Two authors" }) {
               title
@@ -267,26 +257,24 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-            }));
+        }));
 
-            expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
-          })
-        );
-      });
-    });
+        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+      })
+    );
+  });
+});
 
-    // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
-    // (Low priority, but makes the API less surprising if rules work everywhere by default.)
+// FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
+// (Low priority, but makes the API less surprising if rules work everywhere by default.)
 
-    describe('maxDepth Limit', () => {
-      test(
-        'script kiddie',
-        runner(setupKeystone, async ({ app }) => {
-          // Block a script-kiddie attempt to DoS the server with nested queries
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+describe('maxDepth Limit', () => {
+  test(
+    'script kiddie',
+    runner(async ({ graphQLRequest }) => {
+      // Block a script-kiddie attempt to DoS the server with nested queries
+      const { body } = await graphQLRequest({
+        query: `
             query {
               allPosts {
                 author {
@@ -299,19 +287,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Operation has depth 5 (max: 3)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Operation has depth 5 (max: 3)' }]);
+    })
+  );
 
-      test(
-        'mutation script kiddie',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+  test(
+    'mutation script kiddie',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
             mutation {
               updatePost( title: "foo", data: { title: "bar" }) {
                 author {
@@ -324,26 +310,24 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          // This isn't the only error, but that's okay
-          expect(errors).toContainEqual({
-            message: 'Operation has depth 5 (max: 3)',
-            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-            name: 'ValidationError',
-            uid: expect.anything(),
-          });
-        })
-      );
+      // This isn't the only error, but that's okay
+      expect(body.errors).toContainEqual({
+        message: 'Operation has depth 5 (max: 3)',
+        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+        name: 'ValidationError',
+        uid: expect.anything(),
+      });
+    })
+  );
 
-      test(
-        'one fragment',
-        runner(setupKeystone, async ({ app }) => {
-          // Slightly sneakier depth violation using a fragment
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+  test(
+    'one fragment',
+    runner(async ({ graphQLRequest }) => {
+      // Slightly sneakier depth violation using a fragment
+      const { body } = await graphQLRequest({
+        query: `
             query nestingbomb {
               allPosts {
                 ...f
@@ -357,20 +341,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
             `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
+    })
+  );
 
-      test(
-        'multiple fragments',
-        runner(setupKeystone, async ({ app }) => {
-          // Sneakier violation using multiple fragments
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+  test(
+    'multiple fragments',
+    runner(async ({ graphQLRequest }) => {
+      // Sneakier violation using multiple fragments
+      const { body } = await graphQLRequest({
+        query: `
             query nestingbomb {
               allPosts {
                 ...f1
@@ -387,20 +369,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
             `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
+    })
+  );
 
-      test(
-        'mutual fragment reference',
-        runner(setupKeystone, async ({ app }) => {
-          // Infinite loop (illegal as GraphQL, but needs to be handled)
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+  test(
+    'mutual fragment reference',
+    runner(async ({ graphQLRequest }) => {
+      // Infinite loop (illegal as GraphQL, but needs to be handled)
+      const { body } = await graphQLRequest({
+        query: `
             query nestingbomb {
               allPosts {
                 ...f1
@@ -417,51 +397,47 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
             `,
-          });
+      }).expect(400);
 
-          // We don't get the error back because the GraphQL server errors for other reasons :/
-          // At least we get an error, not a hang or crash
-          expect(errors).toEqual(expect.anything());
-        })
-      );
+      // We don't get the error back because the GraphQL server errors for other reasons :/
+      // At least we get an error, not a hang or crash
+      expect(body.errors).toEqual(expect.anything());
+    })
+  );
 
-      test(
-        'undefined fragment',
-        runner(setupKeystone, async ({ app }) => {
-          // (also illegal as GraphQL, but needs to be handled)
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+  test(
+    'undefined fragment',
+    runner(async ({ graphQLRequest }) => {
+      // (also illegal as GraphQL, but needs to be handled)
+      const { body } = await graphQLRequest({
+        query: `
             query {
               allPosts {
                 ...nosuchfragment
               }
             }
             `,
-          });
+      }).expect(400);
 
-          // We also get an "internal server error" from other code that doesn't handle this case
-          expect(errors).toContainEqual({
-            message: 'Undefined fragment "nosuchfragment"',
-            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-            name: 'ValidationError',
-            uid: expect.anything(),
-          });
-        })
-      );
-    });
+      // We also get an "internal server error" from other code that doesn't handle this case
+      expect(body.errors).toContainEqual({
+        message: 'Undefined fragment "nosuchfragment"',
+        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+        name: 'ValidationError',
+        uid: expect.anything(),
+      });
+    })
+  );
+});
 
-    describe('maxDefinitions Limit', () => {
-      test(
-        'queries',
-        runner(setupKeystone, async ({ app }) => {
-          // Too many queries
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'a',
-            query: `
+describe('maxDefinitions Limit', () => {
+  test(
+    'queries',
+    runner(async ({ graphQLRequest }) => {
+      // Too many queries
+      const { body } = await graphQLRequest({
+        operationName: 'a',
+        query: `
             query a {
               allPosts {
                 title
@@ -483,20 +459,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
+    })
+  );
 
-      test(
-        'fragments',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'q1',
-            query: `
+  test(
+    'fragments',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        operationName: 'q1',
+        query: `
             fragment f1 on Post {
               title
             }
@@ -514,20 +488,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
+    })
+  );
 
-      test(
-        'mutations',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'm1',
-            query: `
+  test(
+    'mutations',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        operationName: 'm1',
+        query: `
             mutation m1 {
               updatePost(title: "foo", data: { title: "bar" }) {
                 title
@@ -549,27 +521,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          // This isn't the only error, but that's okay
-          expect(errors).toContainEqual({
-            message: 'Request contains 4 definitions (max: 3)',
-            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-            name: 'ValidationError',
-            uid: expect.anything(),
-          });
-        })
-      );
-    });
+      // This isn't the only error, but that's okay
+      expect(body.errors).toContainEqual({
+        message: 'Request contains 4 definitions (max: 3)',
+        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+        name: 'ValidationError',
+        uid: expect.anything(),
+      });
+    })
+  );
+});
 
-    describe('maxFields Limit', () => {
-      test(
-        'one operation',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            query: `
+describe('maxFields Limit', () => {
+  test(
+    'one operation',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
             query {
               allPosts {
                 title
@@ -587,20 +557,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
+    })
+  );
 
-      test(
-        'many operations',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'a',
-            query: `
+  test(
+    'many operations',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        operationName: 'a',
+        query: `
             query a {
               allPosts {
                 title
@@ -623,20 +591,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
+    })
+  );
 
-      test(
-        'fragments',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'a',
-            query: `
+  test(
+    'fragments',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        operationName: 'a',
+        query: `
             fragment f on User {
               name
               favNumber
@@ -656,20 +622,18 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          expect(errors).toMatchObject([{ message: 'Request contains 11 fields (max: 8)' }]);
-        })
-      );
+      expect(body.errors).toMatchObject([{ message: 'Request contains 11 fields (max: 8)' }]);
+    })
+  );
 
-      test(
-        'unused fragment',
-        runner(setupKeystone, async ({ app }) => {
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'a',
-            query: `
+  test(
+    'unused fragment',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        operationName: 'a',
+        query: `
             fragment unused on User {
               name
               favNumber
@@ -693,27 +657,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
               }
             }
           `,
-          });
+      }).expect(400);
 
-          // We also get an "internal server error" from other code that doesn't handle this case
-          expect(errors).toContainEqual({
-            message: 'Request contains 13 fields (max: 8)',
-            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-            name: 'ValidationError',
-            uid: expect.anything(),
-          });
-        })
-      );
+      // We also get an "internal server error" from other code that doesn't handle this case
+      expect(body.errors).toContainEqual({
+        message: 'Request contains 13 fields (max: 8)',
+        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+        name: 'ValidationError',
+        uid: expect.anything(),
+      });
+    })
+  );
 
-      test(
-        'billion laughs',
-        runner(setupKeystone, async ({ app }) => {
-          // https://en.wikipedia.org/wiki/Billion_laughs
-          const { errors } = await networkedGraphqlRequest({
-            app,
-            expectedStatusCode: 400,
-            operationName: 'a',
-            query: `
+  test(
+    'billion laughs',
+    runner(async ({ graphQLRequest }) => {
+      // https://en.wikipedia.org/wiki/Billion_laughs
+      const { body } = await graphQLRequest({
+        operationName: 'a',
+        query: `
             query a {
               u1: allUsers {
                 ...lol1
@@ -753,17 +715,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
               author
             }
           `,
-          });
+      }).expect(400);
 
-          // We also get an "internal server error" from other code that doesn't handle this case
-          expect(errors).toContainEqual({
-            message: 'Request contains 80 fields (max: 8)',
-            extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-            name: 'ValidationError',
-            uid: expect.anything(),
-          });
-        })
-      );
-    });
-  })
-);
+      // We also get an "internal server error" from other code that doesn't handle this case
+      expect(body.errors).toContainEqual({
+        message: 'Request contains 80 fields (max: 8)',
+        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+        name: 'ValidationError',
+        uid: expect.anything(),
+      });
+    })
+  );
+});

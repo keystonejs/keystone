@@ -89,6 +89,7 @@ const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <Portal>
       <div
+        role="alert"
         css={{
           position: 'fixed',
           right: spacing.medium,

@@ -143,8 +143,7 @@
     ],
     "transformIgnorePatterns": [
       "/node_modules/",
-      "\\.pnp\\.[^\\/]+$",
-      ".api-test-prisma-clients/"
+      "\\.pnp\\.[^\\/]+$"
     ],
     "collectCoverageFrom": [
       "packages{,-next}/**/*.{js,ts,tsx}",

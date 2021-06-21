@@ -1,8 +1,9 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/testing';
+import type { KeystoneContext } from '@keystone-next/types';
+import { apiTestConfig } from '../../utils';
 
 type IdType = any;
 
@@ -56,392 +57,384 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
   return data;
 };
 
-const setupKeystone = (provider: DatabaseProvider) =>
-  setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        User: list({
-          fields: {
-            name: text(),
-            friendOf: relationship({ ref: 'User.friend' }),
-            friend: relationship({ ref: 'User.friendOf' }),
-          },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      User: list({
+        fields: {
+          name: text(),
+          friendOf: relationship({ ref: 'User.friend' }),
+          friend: relationship({ ref: 'User.friendOf' }),
+        },
       }),
     }),
+  }),
+});
+
+describe(`One-to-one relationships`, () => {
+  describe('Read', () => {
+    test(
+      'Where - friend',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const { user, friend } = await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({
+          where: { friend: { name: friend.name } },
+        });
+        expect(users.length).toEqual(1);
+        expect(users[0].id).toEqual(user.id);
+      })
+    );
+
+    test(
+      'Where - friendOf',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const { user, friend } = await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({
+          where: { friendOf: { name: user.name } },
+        });
+        expect(users.length).toEqual(1);
+        expect(users[0].id).toEqual(friend.id);
+      })
+    );
+    test(
+      'Where friend: is_null: true',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+        expect(users.length).toEqual(4);
+      })
+    );
+    test(
+      'Where friendOf: is_null: true',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+        expect(users.length).toEqual(4);
+      })
+    );
+    test(
+      'Where friend: is_null: false',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
+        expect(users.length).toEqual(1);
+      })
+    );
+    test(
+      'Where friendOf: is_null: false',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+        expect(users.length).toEqual(1);
+      })
+    );
+
+    test(
+      'Count',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const count = await context.lists.User.count();
+        expect(count).toEqual(3);
+      })
+    );
+
+    test(
+      'Where with count - friend',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const { friend } = await createUserAndFriend(context);
+        const count = await context.lists.User.count({
+          where: { friend: { name: friend.name } },
+        });
+        expect(count).toEqual(1);
+      })
+    );
+
+    test(
+      'Where with count - friendOf',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const { user } = await createUserAndFriend(context);
+        const count = await context.lists.User.count({
+          where: { friendOf: { name: user.name } },
+        });
+        expect(count).toEqual(1);
+      })
+    );
+    test(
+      'Where null with count - friend',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const count = await context.lists.User.count({ where: { friend_is_null: true } });
+        expect(count).toEqual(4);
+      })
+    );
+
+    test(
+      'Where null with count - friendOf',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        await createUserAndFriend(context);
+        const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+        expect(count).toEqual(4);
+      })
+    );
   });
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe(`One-to-one relationships`, () => {
-      describe('Read', () => {
-        test(
-          'Where - friend',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const { user, friend } = await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({
-              where: { friend: { name: friend.name } },
-            });
-            expect(users.length).toEqual(1);
-            expect(users[0].id).toEqual(user.id);
-          })
-        );
+  describe('Create', () => {
+    test(
+      'With connect',
+      runner(async ({ context }) => {
+        const { users } = await createInitialData(context);
+        const user = users[0];
+        const _user = await context.lists.User.createOne({
+          data: { friend: { connect: { id: user.id } } },
+          query: 'id friend { id friendOf { id } }',
+        });
 
-        test(
-          'Where - friendOf',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const { user, friend } = await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({
-              where: { friendOf: { name: user.name } },
-            });
-            expect(users.length).toEqual(1);
-            expect(users[0].id).toEqual(friend.id);
-          })
-        );
-        test(
-          'Where friend: is_null: true',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
-            expect(users.length).toEqual(4);
-          })
-        );
-        test(
-          'Where friendOf: is_null: true',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
-            expect(users.length).toEqual(4);
-          })
-        );
-        test(
-          'Where friend: is_null: false',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
-            expect(users.length).toEqual(1);
-          })
-        );
-        test(
-          'Where friendOf: is_null: false',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
-            expect(users.length).toEqual(1);
-          })
-        );
+        expect(_user.friend.id.toString()).toEqual(user.id);
 
-        test(
-          'Count',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const count = await context.lists.User.count();
-            expect(count).toEqual(3);
-          })
-        );
+        const { User, Friend } = await getUserAndFriend(context, _user.id, user.id);
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+      })
+    );
 
-        test(
-          'Where with count - friend',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const { friend } = await createUserAndFriend(context);
-            const count = await context.lists.User.count({
-              where: { friend: { name: friend.name } },
-            });
-            expect(count).toEqual(1);
-          })
-        );
+    test(
+      'With create',
+      runner(async ({ context }) => {
+        const friendName = sampleOne(alphanumGenerator);
+        const user = await context.lists.User.createOne({
+          data: { friend: { create: { name: friendName } } },
+          query: 'id friend { id friendOf { id } }',
+        });
 
-        test(
-          'Where with count - friendOf',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const { user } = await createUserAndFriend(context);
-            const count = await context.lists.User.count({
-              where: { friendOf: { name: user.name } },
-            });
-            expect(count).toEqual(1);
-          })
-        );
-        test(
-          'Where null with count - friend',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const count = await context.lists.User.count({ where: { friend_is_null: true } });
-            expect(count).toEqual(4);
-          })
-        );
+        const { User, Friend } = await getUserAndFriend(context, user.id, user.friend.id);
 
-        test(
-          'Where null with count - friendOf',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            await createUserAndFriend(context);
-            const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
-            expect(count).toEqual(4);
-          })
-        );
-      });
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+      })
+    );
 
-      describe('Create', () => {
-        test(
-          'With connect',
-          runner(setupKeystone, async ({ context }) => {
-            const { users } = await createInitialData(context);
-            const user = users[0];
-            const _user = await context.lists.User.createOne({
-              data: { friend: { connect: { id: user.id } } },
-              query: 'id friend { id friendOf { id } }',
-            });
+    test(
+      'With nested connect',
+      runner(async ({ context }) => {
+        const { users } = await createInitialData(context);
+        const user = users[0];
+        const friendName = sampleOne(alphanumGenerator);
 
-            expect(_user.friend.id.toString()).toEqual(user.id);
+        const _user = await context.lists.User.createOne({
+          data: {
+            friend: { create: { name: friendName, friendOf: { connect: { id: user.id } } } },
+          },
+          query: 'id friend { id friendOf { id } }',
+        });
 
-            const { User, Friend } = await getUserAndFriend(context, _user.id, user.id);
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
-          })
-        );
+        const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-        test(
-          'With create',
-          runner(setupKeystone, async ({ context }) => {
-            const friendName = sampleOne(alphanumGenerator);
-            const user = await context.lists.User.createOne({
-              data: { friend: { create: { name: friendName } } },
-              query: 'id friend { id friendOf { id } }',
-            });
+        const _users = (await context.lists.User.findMany({
+          query: 'id friend { id friendOf { id } }',
+        })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[];
+        // The nested company should not have a location
+        expect(_users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id);
+        _users
+          .filter(({ id }) => id !== User.id)
+          .forEach(user => {
+            expect(user.friend).toBe(null);
+          });
+      })
+    );
 
-            const { User, Friend } = await getUserAndFriend(context, user.id, user.friend.id);
+    test(
+      'With nested create',
+      runner(async ({ context }) => {
+        const friendName = sampleOne(alphanumGenerator);
+        const friendOfName = sampleOne(alphanumGenerator);
 
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
-          })
-        );
+        const _user = await context.lists.User.createOne({
+          data: {
+            friend: {
+              create: { name: friendName, friendOf: { create: { name: friendOfName } } },
+            },
+          },
+          query: 'id friend { id friendOf { id } }',
+        });
 
-        test(
-          'With nested connect',
-          runner(setupKeystone, async ({ context }) => {
-            const { users } = await createInitialData(context);
-            const user = users[0];
-            const friendName = sampleOne(alphanumGenerator);
+        const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-            const _user = await context.lists.User.createOne({
-              data: {
-                friend: { create: { name: friendName, friendOf: { connect: { id: user.id } } } },
-              },
-              query: 'id friend { id friendOf { id } }',
-            });
+        // The nested company should not have a location
+        const users = (await context.lists.User.findMany({
+          query: 'id friend { id friendOf { id }}',
+        })) as {
+          id: IdType;
+          friend: { id: IdType; friendOf: { id: IdType } };
+        }[];
+        expect(users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id);
+        users
+          .filter(({ id }) => id !== User.id)
+          .forEach(user => {
+            expect(user.friend).toBe(null);
+          });
+      })
+    );
 
-            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+    test(
+      'With null',
+      runner(async ({ context }) => {
+        const _user = await context.lists.User.createOne({
+          data: { friend: null },
+          query: 'id friend { id  }',
+        });
 
-            const _users = (await context.lists.User.findMany({
-              query: 'id friend { id friendOf { id } }',
-            })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[];
-            // The nested company should not have a location
-            expect(_users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
-              User.id
-            );
-            _users
-              .filter(({ id }) => id !== User.id)
-              .forEach(user => {
-                expect(user.friend).toBe(null);
-              });
-          })
-        );
+        // Friend should be empty
+        expect(_user.friend).toBe(null);
+      })
+    );
+  });
 
-        test(
-          'With nested create',
-          runner(setupKeystone, async ({ context }) => {
-            const friendName = sampleOne(alphanumGenerator);
-            const friendOfName = sampleOne(alphanumGenerator);
+  describe('Update', () => {
+    test(
+      'With connect',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { user, friend } = await createUserAndFriend(context);
 
-            const _user = await context.lists.User.createOne({
-              data: {
-                friend: {
-                  create: { name: friendName, friendOf: { create: { name: friendOfName } } },
-                },
-              },
-              query: 'id friend { id friendOf { id } }',
-            });
+        // Sanity check the links don't yet exist
+        // `...not.toBe(expect.anything())` allows null and undefined values
+        expect(user.friend).not.toBe(expect.anything());
+        expect(friend.friendOf).not.toBe(expect.anything());
 
-            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friend.id);
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+        await context.lists.User.updateOne({
+          id: user.id,
+          data: { friend: { connect: { id: friend.id } } },
+          query: 'id friend { id }',
+        });
 
-            // The nested company should not have a location
-            const users = (await context.lists.User.findMany({
-              query: 'id friend { id friendOf { id }}',
-            })) as {
-              id: IdType;
-              friend: { id: IdType; friendOf: { id: IdType } };
-            }[];
-            expect(users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id);
-            users
-              .filter(({ id }) => id !== User.id)
-              .forEach(user => {
-                expect(user.friend).toBe(null);
-              });
-          })
-        );
+        const { User, Friend } = await getUserAndFriend(context, user.id, friend.id);
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+      })
+    );
 
-        test(
-          'With null',
-          runner(setupKeystone, async ({ context }) => {
-            const _user = await context.lists.User.createOne({
-              data: { friend: null },
-              query: 'id friend { id  }',
-            });
+    test(
+      'With create',
+      runner(async ({ context }) => {
+        const { users } = await createInitialData(context);
+        let user = users[0];
+        const friendName = sampleOne(alphanumGenerator);
+        const _user = await context.lists.User.updateOne({
+          id: user.id,
+          data: { friend: { create: { name: friendName } } },
+          query: 'id friend { id name }',
+        });
 
-            // Friend should be empty
-            expect(_user.friend).toBe(null);
-          })
-        );
-      });
+        const { User, Friend } = await getUserAndFriend(context, user.id, _user.friend.id);
 
-      describe('Update', () => {
-        test(
-          'With connect',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { user, friend } = await createUserAndFriend(context);
+        // Everything should now be connected
+        expect(User.friend.id.toString()).toBe(Friend.id.toString());
+        expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
+      })
+    );
 
-            // Sanity check the links don't yet exist
-            // `...not.toBe(expect.anything())` allows null and undefined values
-            expect(user.friend).not.toBe(expect.anything());
-            expect(friend.friendOf).not.toBe(expect.anything());
+    test(
+      'With disconnect',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { user, friend } = await createUserAndFriend(context);
 
-            await context.lists.User.updateOne({
-              id: user.id,
-              data: { friend: { connect: { id: friend.id } } },
-              query: 'id friend { id }',
-            });
+        // Run the query to disconnect the location from company
+        const _user = await context.lists.User.updateOne({
+          id: user.id,
+          data: { friend: { disconnect: { id: friend.id } } },
+          query: 'id friend { id name }',
+        });
 
-            const { User, Friend } = await getUserAndFriend(context, user.id, friend.id);
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
-          })
-        );
+        expect(_user.id).toEqual(user.id);
+        expect(_user.friend).toBe(null);
 
-        test(
-          'With create',
-          runner(setupKeystone, async ({ context }) => {
-            const { users } = await createInitialData(context);
-            let user = users[0];
-            const friendName = sampleOne(alphanumGenerator);
-            const _user = await context.lists.User.updateOne({
-              id: user.id,
-              data: { friend: { create: { name: friendName } } },
-              query: 'id friend { id name }',
-            });
+        // Check the link has been broken
+        const result = await getUserAndFriend(context, user.id, friend.id);
+        expect(result.User.friend).toBe(null);
+        expect(result.Friend.friendOf).toBe(null);
+      })
+    );
 
-            const { User, Friend } = await getUserAndFriend(context, user.id, _user.friend.id);
+    test(
+      'With disconnectAll',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { user, friend } = await createUserAndFriend(context);
 
-            // Everything should now be connected
-            expect(User.friend.id.toString()).toBe(Friend.id.toString());
-            expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
-          })
-        );
+        // Run the query to disconnect the location from company
+        const _user = await context.lists.User.updateOne({
+          id: user.id,
+          data: { friend: { disconnectAll: true } },
+          query: 'id friend { id name }',
+        });
 
-        test(
-          'With disconnect',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { user, friend } = await createUserAndFriend(context);
+        expect(_user.id).toEqual(user.id);
+        expect(_user.friend).toBe(null);
 
-            // Run the query to disconnect the location from company
-            const _user = await context.lists.User.updateOne({
-              id: user.id,
-              data: { friend: { disconnect: { id: friend.id } } },
-              query: 'id friend { id name }',
-            });
+        // Check the link has been broken
+        const result = await getUserAndFriend(context, user.id, friend.id);
+        expect(result.User.friend).toBe(null);
+        expect(result.Friend.friendOf).toBe(null);
+      })
+    );
 
-            expect(_user.id).toEqual(user.id);
-            expect(_user.friend).toBe(null);
+    test(
+      'With null',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { user, friend } = await createUserAndFriend(context);
 
-            // Check the link has been broken
-            const result = await getUserAndFriend(context, user.id, friend.id);
-            expect(result.User.friend).toBe(null);
-            expect(result.Friend.friendOf).toBe(null);
-          })
-        );
+        // Run the query with a null operation
+        const _user = await context.lists.User.updateOne({
+          id: user.id,
+          data: { friend: null },
+          query: 'id friend { id name }',
+        });
 
-        test(
-          'With disconnectAll',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { user, friend } = await createUserAndFriend(context);
+        // Check that the friend is still there
+        expect(_user.id).toEqual(user.id);
+        expect(_user.friend).not.toBe(null);
+        expect(_user.friend.id).toEqual(friend.id);
+      })
+    );
+  });
 
-            // Run the query to disconnect the location from company
-            const _user = await context.lists.User.updateOne({
-              id: user.id,
-              data: { friend: { disconnectAll: true } },
-              query: 'id friend { id name }',
-            });
+  describe('Delete', () => {
+    test(
+      'delete',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { user, friend } = await createUserAndFriend(context);
 
-            expect(_user.id).toEqual(user.id);
-            expect(_user.friend).toBe(null);
+        // Run the query to disconnect the location from company
+        const _user = await context.lists.User.deleteOne({ id: user.id });
+        expect(_user?.id).toBe(user.id);
 
-            // Check the link has been broken
-            const result = await getUserAndFriend(context, user.id, friend.id);
-            expect(result.User.friend).toBe(null);
-            expect(result.Friend.friendOf).toBe(null);
-          })
-        );
-
-        test(
-          'With null',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { user, friend } = await createUserAndFriend(context);
-
-            // Run the query with a null operation
-            const _user = await context.lists.User.updateOne({
-              id: user.id,
-              data: { friend: null },
-              query: 'id friend { id name }',
-            });
-
-            // Check that the friend is still there
-            expect(_user.id).toEqual(user.id);
-            expect(_user.friend).not.toBe(null);
-            expect(_user.friend.id).toEqual(friend.id);
-          })
-        );
-      });
-
-      describe('Delete', () => {
-        test(
-          'delete',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { user, friend } = await createUserAndFriend(context);
-
-            // Run the query to disconnect the location from company
-            const _user = await context.lists.User.deleteOne({ id: user.id });
-            expect(_user?.id).toBe(user.id);
-
-            // Check the link has been broken
-            const result = await getUserAndFriend(context, user.id, friend.id);
-            expect(result.User).toBe(null);
-            expect(result.Friend.friendOf).toBe(null);
-          })
-        );
-      });
-    });
-  })
-);
+        // Check the link has been broken
+        const result = await getUserAndFriend(context, user.id, friend.id);
+        expect(result.User).toBe(null);
+        expect(result.Friend.friendOf).toBe(null);
+      })
+    );
+  });
+});
