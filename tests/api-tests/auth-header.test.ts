@@ -1,15 +1,10 @@
-import express from 'express';
 import { text, timestamp, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  networkedGraphqlRequest,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import type { KeystoneContext, KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
+import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
+import { setupTestRunner, TestArgs } from '@keystone-next/testing';
+import { apiTestConfig } from './utils';
 
 const initialData = {
   User: [
@@ -40,41 +35,41 @@ const auth = createAuth({
   sessionData: 'id',
 });
 
-function setupKeystone(provider: DatabaseProvider) {
-  return setupFromConfig({
-    provider,
-    config: auth.withAuth(
-      testConfig({
-        lists: createSchema({
-          Post: list({
-            fields: {
-              title: text(),
-              postedAt: timestamp(),
-            },
-          }),
-          User: list({
-            fields: {
-              name: text(),
-              email: text(),
-              password: password(),
-            },
-            access: {
-              create: defaultAccess,
-              read: defaultAccess,
-              update: defaultAccess,
-              delete: defaultAccess,
-            },
-          }),
+const runner = setupTestRunner({
+  config: apiTestConfig(
+    auth.withAuth({
+      lists: createSchema({
+        Post: list({
+          fields: {
+            title: text(),
+            postedAt: timestamp(),
+          },
         }),
-        session: statelessSessions({ secret: COOKIE_SECRET }),
-      }) as KeystoneConfig
-    ),
-  });
-}
+        User: list({
+          fields: {
+            name: text(),
+            email: text(),
+            password: password(),
+          },
+          access: {
+            create: defaultAccess,
+            read: defaultAccess,
+            update: defaultAccess,
+            delete: defaultAccess,
+          },
+        }),
+      }),
+      session: statelessSessions({ secret: COOKIE_SECRET }),
+    } as KeystoneConfig)
+  ),
+});
 
-function login(app: express.Application, email: string, password: string) {
-  return networkedGraphqlRequest({
-    app,
+async function login(
+  graphQLRequest: TestArgs['graphQLRequest'],
+  email: string,
+  password: string
+): Promise<{ sessionToken: string; item: { id: any } }> {
+  const { body } = await graphQLRequest({
     query: `
       mutation($email: String!, $password: String!) {
         authenticateUserWithPassword(email: $email, password: $password) {
@@ -86,93 +81,74 @@ function login(app: express.Application, email: string, password: string) {
       }
     `,
     variables: { email, password },
-  }).then(
-    ({
-      data,
-    }: {
-      data?: { authenticateUserWithPassword?: { sessionToken: string; item: { id: any } } };
-    }) => {
-      return data?.authenticateUserWithPassword || {};
-    }
-  );
+  });
+  return body.data?.authenticateUserWithPassword || { sessionToken: '', item: { id: undefined } };
 }
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe('Auth testing', () => {
-      test(
-        'Gives access denied when not logged in',
-        runner(setupKeystone, async ({ context, app }) => {
-          // seed the db
-          for (const [listKey, data] of Object.entries(initialData)) {
-            await context.lists[listKey].createMany({ data });
-          }
-          const { data, errors } = await networkedGraphqlRequest({
-            app,
-            query: '{ allUsers { id } }',
-          });
-          expect(data).toEqual({ allUsers: null });
-          expect(errors).toMatchObject([{ name: 'AccessDeniedError' }]);
-        })
-      );
+describe('Auth testing', () => {
+  test(
+    'Gives access denied when not logged in',
+    runner(async ({ context, graphQLRequest }) => {
+      // seed the db
+      for (const [listKey, data] of Object.entries(initialData)) {
+        await context.sudo().lists[listKey].createMany({ data });
+      }
+      const { body } = await graphQLRequest({ query: '{ allUsers { id } }' });
+      const { data, errors } = body;
+      expect(data).toEqual({ allUsers: null });
+      expect(errors).toMatchObject([{ name: 'AccessDeniedError' }]);
+    })
+  );
 
-      describe('logged in', () => {
-        // eslint-disable-next-line jest/no-disabled-tests
-        test.skip(
-          'Allows access with bearer token',
-          runner(setupKeystone, async ({ context, app }) => {
-            for (const [listKey, data] of Object.entries(initialData)) {
-              await context.lists[listKey].createMany({ data });
-            }
-            const { sessionToken } = await login(
-              app,
-              initialData.User[0].data.email,
-              initialData.User[0].data.password
-            );
-
-            expect(sessionToken).toBeTruthy();
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              headers: {
-                Authorization: `Bearer ${sessionToken}`,
-              },
-              query: '{ allUsers { id } }',
-            });
-
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(initialData.User.length);
-            expect(errors).toBe(undefined);
-          })
+  describe('logged in', () => {
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip(
+      'Allows access with bearer token',
+      runner(async ({ context, graphQLRequest }) => {
+        for (const [listKey, data] of Object.entries(initialData)) {
+          await context.sudo().lists[listKey].createMany({ data });
+        }
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].data.email,
+          initialData.User[0].data.password
         );
 
-        test(
-          'Allows access with cookie',
-          runner(setupKeystone, async ({ context, app }) => {
-            for (const [listKey, data] of Object.entries(initialData)) {
-              await context.lists[listKey].createMany({ data });
-            }
-            const { sessionToken } = await login(
-              app,
-              initialData.User[0].data.email,
-              initialData.User[0].data.password
-            );
-
-            expect(sessionToken).toBeTruthy();
-
-            const { data, errors } = await networkedGraphqlRequest({
-              app,
-              headers: {
-                Cookie: `keystonejs-session=${sessionToken}`,
-              },
-              query: '{ allUsers { id } }',
-            });
-
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(initialData.User.length);
-            expect(errors).toBe(undefined);
-          })
+        expect(sessionToken).toBeTruthy();
+        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+          'Authorization',
+          `Bearer ${sessionToken}`
         );
-      });
-    });
-  })
-);
+        const { data, errors } = body;
+        expect(data).toHaveProperty('allUsers');
+        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(errors).toBe(undefined);
+      })
+    );
+
+    test(
+      'Allows access with cookie',
+      runner(async ({ context, graphQLRequest }) => {
+        for (const [listKey, data] of Object.entries(initialData)) {
+          await context.sudo().lists[listKey].createMany({ data });
+        }
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].data.email,
+          initialData.User[0].data.password
+        );
+
+        expect(sessionToken).toBeTruthy();
+
+        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+          'Cookie',
+          `keystonejs-session=${sessionToken}`
+        );
+        const { data, errors } = body;
+        expect(data).toHaveProperty('allUsers');
+        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(errors).toBe(undefined);
+      })
+    );
+  });
+});

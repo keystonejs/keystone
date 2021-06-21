@@ -1,30 +1,28 @@
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
+const { setupTestRunner } = require('@keystone-next/testing');
+const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
-function setupKeystone(provider) {
-  return setupFromConfig({
-    provider,
-    config: createSchema({
-      lists: {
-        User: list({
-          fields: {
-            name: text(),
-            posts: relationship({ ref: 'Post', many: true }),
-          },
-        }),
-        Post: list({
-          fields: {
-            title: text(),
-          },
-        }),
-      },
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      User: list({
+        fields: {
+          name: text(),
+          posts: relationship({ ref: 'Post', many: true }),
+        },
+      }),
+      Post: list({
+        fields: {
+          title: text(),
+        },
+      }),
     }),
-  });
-}
+  }),
+});
 
-const group = new FixtureGroup(setupKeystone);
+const group = new FixtureGroup(runner);
 
 group.add({
   fn: async ({ context, provider }) => {
