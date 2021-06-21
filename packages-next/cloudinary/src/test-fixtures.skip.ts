@@ -1,7 +1,6 @@
 import fs from 'fs';
 import mime from 'mime';
-// @ts-ignore
-import { Upload } from 'graphql-upload';
+import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
 import { text } from '@keystone-next/fields';
 import { DatabaseProvider } from '@keystone-next/types';
@@ -25,7 +24,7 @@ const prepareFile = (_filePath: string) => {
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   });
-  return upload;
+  return upload as Upload & { file: FileUpload };
 };
 
 // Configurations
