@@ -24,11 +24,8 @@ export const componentBlocks = {
   notice: component({
     // this will show up in the insert menu in the document editor toolbar/with the `/` shortcut
     label: 'Notice',
-    // this hides the chrome around the component block that is shown by default
-    chromeless: true,
-    // this configures
+    // this configures what data the component block stores
     props: {
-      // this will
       intent: fields.select({
         label: 'Intent',
         options: [
@@ -39,7 +36,8 @@ export const componentBlocks = {
         ] as const,
         defaultValue: 'info',
       }),
-      // fields.child gives you a react node which will be editable
+      // fields.child provides a react node in the preview component which will allow users of the Admin UI
+      // to edit the content within like any other part of the document
       content: fields.child({
         kind: 'block',
         placeholder: '',
@@ -101,6 +99,9 @@ export const componentBlocks = {
         </div>
       );
     },
+    // this hides the chrome around the component block that is shown by default
+    // which also means that the form so the toolbar/preview must provide all the ui for customising the component
+    chromeless: true,
     toolbar({ props, onRemove }) {
       return (
         <ToolbarGroup>
