@@ -24,14 +24,14 @@
     "@types/nodemailer": "^6.4.2",
     "dotenv": "^10.0.0",
     "next": "^10.2.3",
-    "nodemailer": "^6.6.1",
+    "nodemailer": "^6.6.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.154.0"
+    "stripe": "^8.156.0"
   },
   "devDependencies": {
     "@keystone-next/testing": "^0.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
