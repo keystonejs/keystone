@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "keystone-next dev",
+    "dev:site": "next dev -p 3001",
     "start": "keystone-next start",
     "build": "keystone-next build"
   },

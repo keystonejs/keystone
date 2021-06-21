@@ -8,6 +8,14 @@ generator client {
   output   = "node_modules/.prisma/client"
 }
 
+model Author {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String? @unique
+  posts Post[]  @relation("Post_author")
+  bio   String?
+}
+
 model Post {
   id          Int       @id @default(autoincrement())
   title       String?
@@ -19,11 +27,4 @@ model Post {
   authorId    Int?      @map("author")
 
   @@index([authorId])
-}
-
-model Author {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  email String? @unique
-  posts Post[]  @relation("Post_author")
 }

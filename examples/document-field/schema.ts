@@ -4,6 +4,15 @@ import { document } from '@keystone-next/fields-document';
 import { componentBlocks } from './document-field-view';
 
 export const lists = createSchema({
+  Author: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true, isUnique: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      // we only want to allow bios to have links and no other formatting things
+      bio: document({ links: true }),
+    },
+  }),
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -34,13 +43,6 @@ export const lists = createSchema({
       }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
-    },
-  }),
-  Author: list({
-    fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
-      posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
 });

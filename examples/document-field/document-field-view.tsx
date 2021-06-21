@@ -22,6 +22,35 @@ const noticeIcons = {
 
 export const componentBlocks = {
   notice: component({
+    // this will show up in the insert menu in the document editor toolbar/with the `/` shortcut
+    label: 'Notice',
+    // this hides the chrome around the component block that is shown by default
+    chromeless: true,
+    // this configures
+    props: {
+      // this will
+      intent: fields.select({
+        label: 'Intent',
+        options: [
+          { value: 'info', label: 'Info' },
+          { value: 'warning', label: 'Warning' },
+          { value: 'error', label: 'Error' },
+          { value: 'success', label: 'Success' },
+        ] as const,
+        defaultValue: 'info',
+      }),
+      // fields.child gives you a react node which will be editable
+      content: fields.child({
+        kind: 'block',
+        placeholder: '',
+        formatting: 'inherit',
+        dividers: 'inherit',
+        links: 'inherit',
+        relationships: 'inherit',
+      }),
+    },
+    // this component will be used as the preview in the document editor
+    // it accepts props that correspond to the `props` config above
     component: function Notice({ content, intent }) {
       const { palette, radii, spacing } = useTheme();
       const intentConfig = {
@@ -71,28 +100,6 @@ export const componentBlocks = {
           <div style={{ flex: 1 }}>{content}</div>
         </div>
       );
-    },
-    label: 'Notice',
-    chromeless: true,
-    props: {
-      intent: fields.select({
-        label: 'Intent',
-        options: [
-          { value: 'info', label: 'Info' },
-          { value: 'warning', label: 'Warning' },
-          { value: 'error', label: 'Error' },
-          { value: 'success', label: 'Success' },
-        ] as const,
-        defaultValue: 'info',
-      }),
-      content: fields.child({
-        kind: 'block',
-        placeholder: '',
-        formatting: 'inherit',
-        dividers: 'inherit',
-        links: 'inherit',
-        relationships: 'inherit',
-      }),
     },
     toolbar({ props, onRemove }) {
       return (

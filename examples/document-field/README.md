@@ -1,8 +1,7 @@
-## Feature Example - document field
+## Feature Example - virtual field
 
-This project implements a basic **Blog**, with `Posts` and `Authors`.
-
-You can use it as a starting place for learning how to use Keystone.
+This project demonstrates how to add a document field to a Keystone list with a component block and render it in a Next.js frontend.
+It builds on the [Blog](../blog) starter project.
 
 ## Instructions
 
@@ -17,14 +16,83 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-🚀 Congratulations, you're now up and running with Keystone!
+And in a separate terminal, run this to start the front-end dev server:
 
-## Next steps
+```
+yarn dev:site
+```
 
-This project is bare bones, and doesn't use any of Keystone's advanced features.
-We encourage you to experiment with the code here to see how Keystone works, become familiar with the Admin UI, and learn about the GraphQL Playground.
+This will start the front-end at [localhost:3001](http://localhost:3001).
 
-Once you've got the hang of using this project, you can check out the [feature examples](../).
-These projects build on this starter project and show you how to use Keystones advanced features to take your project to the next level.
+## Features
 
-When you've got the hang of the Blog app, try a [feature project](../) to learn Keystone's advanced features and take your knowledge to the next level.
+This project demonstrates how to use document fields and render document field data in a front-end.
+
+### The `Author.bio` field
+
+The `Author.bio` field shows using a document with only some options enabled to restrict what content the document field can contain. For example, this field won't allow headings, lists, etc.
+
+```ts
+bio: document({ links: true }),
+```
+
+### The `Post.content` field
+
+The `Post.content` field shows enabling all of the formatting features and using component blocks.
+
+```ts
+content: document({
+  formatting: true,
+  dividers: true,
+  links: true,
+  layouts: [
+    [1, 1],
+    [2, 1],
+  ],
+  componentBlocks,
+  ui: {
+    views: require.resolve('./document-field-view'),
+  },
+}),
+```
+
+### Using `componentBlocks`
+
+`document-field-view.tsx` shows using component blocks to build a Notice component.
+
+### The front-end
+
+In the `src` directory, there is a Next.js front-end which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
+
+```tsx
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import { componentBlocks } from '../../../document-field-view';
+
+const componentBlockRenderers: InferRenderersForComponentBlocks<typeof componentBlocks> = {
+  notice: function Notice(props) {
+    return (
+      <div style={{ border: '1px solid black' }}>
+        {props.intent}:{props.content}
+      </div>
+    );
+  },
+};
+
+const renderers: DocumentRendererProps['renderers'] = {
+  block: {
+    heading({ level, children, textAlign }) {
+      const Comp = `h${level}` as const;
+      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>;
+    },
+  },
+};
+
+<DocumentRenderer document={post.author.bio?.document || []} />
+
+<DocumentRenderer
+  document={post.content?.document || []}
+  renderers={renderers}
+  componentBlocks={componentBlockRenderers}
+/>
+```

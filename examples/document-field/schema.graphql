@@ -1,6 +1,141 @@
 """
  A keystone list
 """
+type Author {
+  id: ID!
+  name: String
+  email: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+  bio: Author_bio_DocumentField
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Author_bio_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input AuthorWhereInput {
+  AND: [AuthorWhereInput!]
+  OR: [AuthorWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_in: [String]
+  email_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input AuthorWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+enum SortAuthorsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+input AuthorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input AuthorUpdateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+  bio: JSON
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input AuthorsUpdateInput {
+  id: ID!
+  data: AuthorUpdateInput
+}
+
+input AuthorCreateInput {
+  name: String
+  email: String
+  posts: PostRelateToManyInput
+  bio: JSON
+}
+
+input AuthorsCreateInput {
+  data: AuthorCreateInput
+}
+
+"""
+ A keystone list
+"""
 type Post {
   id: ID!
   title: String
@@ -85,11 +220,6 @@ input PostOrderByInput {
   publishDate: OrderDirection
 }
 
-enum OrderDirection {
-  asc
-  desc
-}
-
 input PostUpdateInput {
   title: String
   slug: String
@@ -125,129 +255,6 @@ input PostsCreateInput {
 }
 
 """
- A keystone list
-"""
-type Author {
-  id: ID!
-  name: String
-  email: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-}
-
-type _QueryMeta {
-  count: Int
-}
-
-input AuthorWhereInput {
-  AND: [AuthorWhereInput!]
-  OR: [AuthorWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
-}
-
-input AuthorWhereUniqueInput {
-  id: ID
-  email: String
-}
-
-enum SortAuthorsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
-input AuthorOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-}
-
-input AuthorUpdateInput {
-  name: String
-  email: String
-  posts: PostRelateToManyInput
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input AuthorsUpdateInput {
-  id: ID!
-  data: AuthorUpdateInput
-}
-
-input AuthorCreateInput {
-  name: String
-  email: String
-  posts: PostRelateToManyInput
-}
-
-input AuthorsCreateInput {
-  data: AuthorCreateInput
-}
-
-"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -256,36 +263,6 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Post item.
-  """
-  createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
-  deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
-
   """
    Create a single Author item.
   """
@@ -315,44 +292,39 @@ type Mutation {
    Delete multiple Author items by ID.
   """
   deleteAuthors(ids: [ID!]): [Author]
+
+  """
+   Create a single Post item.
+  """
+  createPost(data: PostCreateInput): Post
+
+  """
+   Create multiple Post items.
+  """
+  createPosts(data: [PostsCreateInput]): [Post]
+
+  """
+   Update a single Post item by ID.
+  """
+  updatePost(id: ID!, data: PostUpdateInput): Post
+
+  """
+   Update multiple Post items by ID.
+  """
+  updatePosts(data: [PostsUpdateInput]): [Post]
+
+  """
+   Delete a single Post item by ID.
+  """
+  deletePost(id: ID!): Post
+
+  """
+   Delete multiple Post items by ID.
+  """
+  deletePosts(ids: [ID!]): [Post]
 }
 
 type Query {
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-
   """
    Search for all Author items which match the where clause.
   """
@@ -387,6 +359,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use authorsCount instead."
     )
   authorsCount(where: AuthorWhereInput! = {}): Int
+
+  """
+   Search for all Post items which match the where clause.
+  """
+  allPosts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+
+  """
+   Search for the Post item with the matching ID.
+  """
+  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
