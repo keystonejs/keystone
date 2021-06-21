@@ -3,8 +3,8 @@ import { Editor, Node, Path, Text, Range } from 'slate';
 import { ReactEditor, Slate } from 'slate-react';
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import jestDiff from 'jest-diff';
-import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
+import { diff } from 'jest-diff';
+import prettyFormat, { plugins, NewPlugin, Plugin } from 'pretty-format';
 import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
@@ -110,7 +110,7 @@ expect.extend({
           const formattedReceived = formatEditor(received);
           const formattedExpected = formatEditor(expected);
 
-          const diffString = jestDiff(formattedExpected, formattedReceived, {
+          const diffString = diff(formattedExpected, formattedReceived, {
             expand: this.expand,
           });
           return (
@@ -366,4 +366,4 @@ const editorSerializer: NewPlugin = {
   },
 };
 
-expect.addSnapshotSerializer(editorSerializer);
+expect.addSnapshotSerializer(editorSerializer as Plugin);
