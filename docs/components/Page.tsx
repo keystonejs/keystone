@@ -5,6 +5,7 @@ import { jsx } from '@emotion/react';
 import Head from 'next/head';
 
 import { useMediaQuery } from '../lib/media';
+import type { Heading } from '../lib/getHeadings';
 import { Announce } from '../components/Announce';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
@@ -25,15 +26,18 @@ function Announcement() {
 }
 
 export function DocsPage({
-  headings = [],
-  title,
   children,
-  noRightNav,
+  headings = [],
   noProse,
+  noRightNav,
   releases,
+  title,
 }: {
-  headings?: Heading[];
   children: ReactNode;
+  headings?: Heading[];
+  noProse?: boolean;
+  noRightNav?: boolean;
+  releases?: any;
   title?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);

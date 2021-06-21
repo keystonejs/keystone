@@ -15,7 +15,7 @@ export default function Docs() {
   return (
     <DocsPage noRightNav noProse>
       <Type as="h1" look="heading64">
-        Keystone Tutorials
+        Walkthroughs
       </Type>
 
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
@@ -29,7 +29,7 @@ export default function Docs() {
             margin: '0 1rem 0.5rem 0',
           }}
         >
-          Need answers to Keystone questions? Get the help you need in the
+          Need answers to Keystone questions? Get help in our
         </span>
         <Button
           as="a"
@@ -50,14 +50,14 @@ export default function Docs() {
       >
         <Well
           heading="Getting started with Keystone 6"
-          href="/docs/tutorials/getting-started-with-create-keystone-app"
+          href="/docs/walkthroughs/getting-started-with-create-keystone-app"
         >
           Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
           project folder.
         </Well>
         <Well
           heading="How to embed Keystone + SQLite in a Next.js app"
-          href="/docs/tutorials/embedded-mode-with-sqlite-nextjs"
+          href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
         >
           Learn how to run Keystone in the same folder as your frontend code and commit everything
           to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.

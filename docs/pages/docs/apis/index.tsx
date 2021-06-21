@@ -25,7 +25,7 @@ export default function Docs() {
             margin: '0 1rem 0.5rem 0',
           }}
         >
-          Need answers to Keystone questions? Get the help you need in the
+          Need answers to Keystone questions? Get help in our
         </span>
         <Button
           as="a"

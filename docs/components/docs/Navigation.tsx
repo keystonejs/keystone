@@ -78,15 +78,15 @@ export function DocsNavigation({ isOpen }) {
         fontWeight: 500,
       }}
     >
-      <Section label="Tutorials">
+      <Section label="Walkthroughs">
         <NavItem
           isOpen={isOpen}
           exactMatch
-          href="/docs/tutorials/getting-started-with-create-keystone-app"
+          href="/docs/walkthroughs/getting-started-with-create-keystone-app"
         >
           Getting started
         </NavItem>
-        <NavItem isOpen={isOpen} href="/docs/tutorials/embedded-mode-with-sqlite-nextjs">
+        <NavItem isOpen={isOpen} href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
           Embedding Keystone and SQLite in Next.js
         </NavItem>
       </Section>

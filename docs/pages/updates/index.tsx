@@ -121,7 +121,7 @@ export default function WhatsNew(props) {
 
   return (
     <DocsPage noRightNav noProse {...props}>
-      <Type as="h1" look="heading48">
+      <Type as="h1" look="heading64">
         Latest Updates
       </Type>
 

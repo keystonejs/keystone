@@ -1,11 +1,11 @@
 import { Children, ReactNode } from 'react';
 import slugify from '@sindresorhus/slugify';
 
-export interface Heading {
+export type Heading = {
   id: string;
   depth: number;
   label: string;
-}
+};
 
 export function getHeadings(children: ReactNode): Heading[] {
   return Children.toArray(children)

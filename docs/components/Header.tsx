@@ -89,7 +89,11 @@ function LinkItem({ children, href }) {
   );
 }
 
-export function Header({ releases }) {
+type HeaderProps = {
+  releases?: any;
+};
+
+export function Header({ releases }: HeaderProps) {
   const mq = useMediaQuery();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>();
