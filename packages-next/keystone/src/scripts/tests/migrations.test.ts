@@ -496,6 +496,10 @@ describe('useMigrations: true', () => {
       ⭐️ Dev Server Ready on http://localhost:3000
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
+
+      [+] Added tables
+        - Todo
+
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 
@@ -538,6 +542,10 @@ describe('useMigrations: true', () => {
       ⭐️ Dev Server Ready on http://localhost:3000
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
+
+      [+] Added tables
+        - Todo
+
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 

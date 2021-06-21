@@ -1,8 +1,9 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/testing';
+import type { KeystoneContext } from '@keystone-next/types';
+import { apiTestConfig } from '../../utils';
 
 type IdType = any;
 
@@ -91,463 +92,429 @@ const createReadData = async (context: KeystoneContext) => {
   );
 };
 
-const setupKeystone = (provider: DatabaseProvider) =>
-  setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        Company: list({
-          fields: {
-            name: text(),
-            locations: relationship({ ref: 'Location.companies', many: true }),
-          },
-        }),
-        Location: list({
-          fields: {
-            name: text(),
-            companies: relationship({ ref: 'Company.locations', many: true }),
-          },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      Company: list({
+        fields: {
+          name: text(),
+          locations: relationship({ ref: 'Location.companies', many: true }),
+        },
+      }),
+      Location: list({
+        fields: {
+          name: text(),
+          companies: relationship({ ref: 'Company.locations', many: true }),
+        },
       }),
     }),
+  }),
+});
+
+describe(`Many-to-many relationships`, () => {
+  describe('Read', () => {
+    test(
+      '_some',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 6],
+            ['B', 5],
+            ['C', 3],
+            ['D', 0],
+          ].map(async ([name, count]) => {
+            const companies = await context.lists.Company.findMany({
+              where: { locations_some: { name } },
+            });
+            expect(companies.length).toEqual(count);
+          })
+        );
+      })
+    );
+    test(
+      '_none',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 3],
+            ['B', 4],
+            ['C', 6],
+            ['D', 9],
+          ].map(async ([name, count]) => {
+            const companies = await context.lists.Company.findMany({
+              where: { locations_none: { name } },
+            });
+            expect(companies.length).toEqual(count);
+          })
+        );
+      })
+    );
+    test(
+      '_every',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 3],
+            ['B', 3],
+            ['C', 1],
+            ['D', 1],
+          ].map(async ([name, count]) => {
+            const companies = await context.lists.Company.findMany({
+              where: { locations_every: { name } },
+            });
+            expect(companies.length).toEqual(count);
+          })
+        );
+      })
+    );
   });
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe(`Many-to-many relationships`, () => {
-      describe('Read', () => {
-        test(
-          '_some',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 6],
-                ['B', 5],
-                ['C', 3],
-                ['D', 0],
-              ].map(async ([name, count]) => {
-                const companies = await context.lists.Company.findMany({
-                  where: { locations_some: { name } },
-                });
-                expect(companies.length).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_none',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 4],
-                ['C', 6],
-                ['D', 9],
-              ].map(async ([name, count]) => {
-                const companies = await context.lists.Company.findMany({
-                  where: { locations_none: { name } },
-                });
-                expect(companies.length).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_every',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 3],
-                ['C', 1],
-                ['D', 1],
-              ].map(async ([name, count]) => {
-                const companies = await context.lists.Company.findMany({
-                  where: { locations_every: { name } },
-                });
-                expect(companies.length).toEqual(count);
-              })
-            );
-          })
-        );
-      });
-
-      describe('Count', () => {
-        test(
-          'Count',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const companiesCount = await context.lists.Company.count();
-            const locationsCount = await context.lists.Location.count();
-            expect(companiesCount).toEqual(3);
-            expect(locationsCount).toEqual(3);
-          })
-        );
-        test(
-          '_some',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 6],
-                ['B', 5],
-                ['C', 3],
-                ['D', 0],
-              ].map(async ([name, count]) => {
-                const _count = await context.lists.Company.count({
-                  where: { locations_some: { name } },
-                });
-                expect(_count).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_none',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 4],
-                ['C', 6],
-                ['D', 9],
-              ].map(async ([name, count]) => {
-                const _count = await context.lists.Company.count({
-                  where: { locations_none: { name } },
-                });
-                expect(_count).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_every',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 3],
-                ['C', 1],
-                ['D', 1],
-              ].map(async ([name, count]) => {
-                const _count = await context.lists.Company.count({
-                  where: { locations_every: { name } },
-                });
-                expect(_count).toEqual(count);
-              })
-            );
-          })
-        );
-      });
-
-      describe('Create', () => {
-        test(
-          'With connect',
-          runner(setupKeystone, async ({ context }) => {
-            const { locations } = await createInitialData(context);
-            const location = locations[0];
-            const company = await context.lists.Company.createOne({
-              data: { locations: { connect: [{ id: location.id }] } },
-              query: 'id locations { id }',
+  describe('Count', () => {
+    test(
+      'Count',
+      runner(async ({ context }) => {
+        await createInitialData(context);
+        const companiesCount = await context.lists.Company.count();
+        const locationsCount = await context.lists.Location.count();
+        expect(companiesCount).toEqual(3);
+        expect(locationsCount).toEqual(3);
+      })
+    );
+    test(
+      '_some',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 6],
+            ['B', 5],
+            ['C', 3],
+            ['D', 0],
+          ].map(async ([name, count]) => {
+            const _count = await context.lists.Company.count({
+              where: { locations_some: { name } },
             });
-            expect(company.locations[0].id.toString()).toEqual(location.id);
-
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              company.id,
-              location.id
-            );
-
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.map(({ id }) => id.toString())).toEqual([
-              Company.id.toString(),
-            ]);
+            expect(_count).toEqual(count);
           })
         );
-
-        test(
-          'With create',
-          runner(setupKeystone, async ({ context }) => {
-            const locationName = sampleOne(alphanumGenerator);
-            const company = await context.lists.Company.createOne({
-              data: { locations: { create: [{ name: locationName }] } },
-              query: 'id locations { id }',
+      })
+    );
+    test(
+      '_none',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 3],
+            ['B', 4],
+            ['C', 6],
+            ['D', 9],
+          ].map(async ([name, count]) => {
+            const _count = await context.lists.Company.count({
+              where: { locations_none: { name } },
             });
-
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              company.id,
-              company.locations[0].id
-            );
-
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.map(({ id }) => id.toString())).toEqual([
-              Company.id.toString(),
-            ]);
+            expect(_count).toEqual(count);
           })
         );
-
-        test(
-          'With nested connect',
-          runner(setupKeystone, async ({ context }) => {
-            const { companies } = await createInitialData(context);
-            const company = companies[0];
-            const locationName = sampleOne(alphanumGenerator);
-
-            const _company = await context.lists.Company.createOne({
-              data: {
-                locations: {
-                  create: [{ name: locationName, companies: { connect: [{ id: company.id }] } }],
-                },
-              },
-              query: 'id locations { id companies { id } }',
+      })
+    );
+    test(
+      '_every',
+      runner(async ({ context }) => {
+        await createReadData(context);
+        await Promise.all(
+          [
+            ['A', 3],
+            ['B', 3],
+            ['C', 1],
+            ['D', 1],
+          ].map(async ([name, count]) => {
+            const _count = await context.lists.Company.count({
+              where: { locations_every: { name } },
             });
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              _company.id,
-              _company.locations[0].id
-            );
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.length).toEqual(2);
-
-            type T = {
-              id: IdType;
-              locations: { id: IdType; companies: { id: IdType }[] }[];
-            }[];
-
-            const _companies = (await context.lists.Company.findMany({
-              query: 'id locations { id companies { id } }',
-            })) as T;
-            // Both companies should have a location, and the location should have two companies
-            const linkedCompanies = _companies.filter(
-              ({ id }) => id === company.id || id === Company.id
-            );
-            linkedCompanies.forEach(({ locations }) => {
-              expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
-            });
-            expect(linkedCompanies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
-              [linkedCompanies[0].id, linkedCompanies[1].id].sort()
-            );
+            expect(_count).toEqual(count);
           })
         );
+      })
+    );
+  });
 
-        test(
-          'With nested create',
-          runner(setupKeystone, async ({ context }) => {
-            const locationName = sampleOne(alphanumGenerator);
-            const companyName = sampleOne(alphanumGenerator);
+  describe('Create', () => {
+    test(
+      'With connect',
+      runner(async ({ context }) => {
+        const { locations } = await createInitialData(context);
+        const location = locations[0];
+        const company = await context.lists.Company.createOne({
+          data: { locations: { connect: [{ id: location.id }] } },
+          query: 'id locations { id }',
+        });
+        expect(company.locations[0].id.toString()).toEqual(location.id);
 
-            const company = await context.lists.Company.createOne({
-              data: {
-                locations: {
-                  create: [{ name: locationName, companies: { create: [{ name: companyName }] } }],
-                },
-              },
-              query: 'id locations { id companies { id } }',
-            });
+        const { Company, Location } = await getCompanyAndLocation(context, company.id, location.id);
 
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              company.id,
-              company.locations[0].id
-            );
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.map(({ id }) => id.toString())).toEqual([Company.id.toString()]);
+      })
+    );
 
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.length).toEqual(2);
+    test(
+      'With create',
+      runner(async ({ context }) => {
+        const locationName = sampleOne(alphanumGenerator);
+        const company = await context.lists.Company.createOne({
+          data: { locations: { create: [{ name: locationName }] } },
+          query: 'id locations { id }',
+        });
 
-            // Both companies should have a location, and the location should have two companies
-            type T = {
-              id: IdType;
-              locations: { id: IdType; companies: { id: IdType }[] }[];
-            }[];
-
-            const _companies = (await context.lists.Company.findMany({
-              query: 'id locations { id companies { id } }',
-            })) as T;
-            _companies.forEach(({ locations }) => {
-              expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
-            });
-            expect(_companies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
-              [_companies[0].id, _companies[1].id].sort()
-            );
-          })
+        const { Company, Location } = await getCompanyAndLocation(
+          context,
+          company.id,
+          company.locations[0].id
         );
 
-        test(
-          'With null',
-          runner(setupKeystone, async ({ context }) => {
-            const company = await context.lists.Company.createOne({
-              data: { locations: null },
-              query: 'id locations { id }',
-            });
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.map(({ id }) => id.toString())).toEqual([Company.id.toString()]);
+      })
+    );
 
-            // Locations should be empty
-            expect(company.locations).toHaveLength(0);
-          })
+    test(
+      'With nested connect',
+      runner(async ({ context }) => {
+        const { companies } = await createInitialData(context);
+        const company = companies[0];
+        const locationName = sampleOne(alphanumGenerator);
+
+        const _company = await context.lists.Company.createOne({
+          data: {
+            locations: {
+              create: [{ name: locationName, companies: { connect: [{ id: company.id }] } }],
+            },
+          },
+          query: 'id locations { id companies { id } }',
+        });
+        const { Company, Location } = await getCompanyAndLocation(
+          context,
+          _company.id,
+          _company.locations[0].id
         );
-      });
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.length).toEqual(2);
 
-      describe('Update', () => {
-        test(
-          'With connect',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { location, company } = await createCompanyAndLocation(context);
+        type T = {
+          id: IdType;
+          locations: { id: IdType; companies: { id: IdType }[] }[];
+        }[];
 
-            // Sanity check the links don't yet exist
-            // `...not.toBe(expect.anything())` allows null and undefined values
-            expect(company.locations).not.toBe(expect.anything());
-            expect(location.companies).not.toBe(expect.anything());
-
-            await context.lists.Company.updateOne({
-              id: company.id,
-              data: { locations: { connect: [{ id: location.id }] } },
-              query: 'id locations { id }',
-            });
-
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              company.id,
-              location.id
-            );
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.map(({ id }) => id.toString())).toEqual([
-              Company.id.toString(),
-            ]);
-          })
+        const _companies = (await context.lists.Company.findMany({
+          query: 'id locations { id companies { id } }',
+        })) as T;
+        // Both companies should have a location, and the location should have two companies
+        const linkedCompanies = _companies.filter(
+          ({ id }) => id === company.id || id === Company.id
         );
+        linkedCompanies.forEach(({ locations }) => {
+          expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
+        });
+        expect(linkedCompanies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
+          [linkedCompanies[0].id, linkedCompanies[1].id].sort()
+        );
+      })
+    );
 
-        test(
-          'With create',
-          runner(setupKeystone, async ({ context }) => {
-            const { companies } = await createInitialData(context);
-            let company = companies[0];
-            const locationName = sampleOne(alphanumGenerator);
-            const _company = await context.lists.Company.updateOne({
-              id: company.id,
-              data: { locations: { create: [{ name: locationName }] } },
-              query: 'id locations { id name }',
-            });
+    test(
+      'With nested create',
+      runner(async ({ context }) => {
+        const locationName = sampleOne(alphanumGenerator);
+        const companyName = sampleOne(alphanumGenerator);
 
-            const { Company, Location } = await getCompanyAndLocation(
-              context,
-              company.id,
-              _company.locations[0].id
-            );
+        const company = await context.lists.Company.createOne({
+          data: {
+            locations: {
+              create: [{ name: locationName, companies: { create: [{ name: companyName }] } }],
+            },
+          },
+          query: 'id locations { id companies { id } }',
+        });
 
-            // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
-            ]);
-            expect(Location.companies.map(({ id }) => id.toString())).toEqual([
-              Company.id.toString(),
-            ]);
-          })
+        const { Company, Location } = await getCompanyAndLocation(
+          context,
+          company.id,
+          company.locations[0].id
         );
 
-        test(
-          'With disconnect',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { location, company } = await createCompanyAndLocation(context);
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.length).toEqual(2);
 
-            // Run the query to disconnect the location from company
-            const _company = await context.lists.Company.updateOne({
-              id: company.id,
-              data: { locations: { disconnect: [{ id: location.id }] } },
-              query: 'id locations { id name }',
-            });
-            expect(_company.id).toEqual(company.id);
-            expect(_company.locations).toEqual([]);
+        // Both companies should have a location, and the location should have two companies
+        type T = {
+          id: IdType;
+          locations: { id: IdType; companies: { id: IdType }[] }[];
+        }[];
 
-            // Check the link has been broken
-            const result = await getCompanyAndLocation(context, company.id, location.id);
-            expect(result.Company.locations).toEqual([]);
-            expect(result.Location.companies).toEqual([]);
-          })
+        const _companies = (await context.lists.Company.findMany({
+          query: 'id locations { id companies { id } }',
+        })) as T;
+        _companies.forEach(({ locations }) => {
+          expect(locations.map(({ id }) => id)).toEqual([Location.id.toString()]);
+        });
+        expect(_companies[0].locations[0].companies.map(({ id }) => id).sort()).toEqual(
+          [_companies[0].id, _companies[1].id].sort()
+        );
+      })
+    );
+
+    test(
+      'With null',
+      runner(async ({ context }) => {
+        const company = await context.lists.Company.createOne({
+          data: { locations: null },
+          query: 'id locations { id }',
+        });
+
+        // Locations should be empty
+        expect(company.locations).toHaveLength(0);
+      })
+    );
+  });
+
+  describe('Update', () => {
+    test(
+      'With connect',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { location, company } = await createCompanyAndLocation(context);
+
+        // Sanity check the links don't yet exist
+        // `...not.toBe(expect.anything())` allows null and undefined values
+        expect(company.locations).not.toBe(expect.anything());
+        expect(location.companies).not.toBe(expect.anything());
+
+        await context.lists.Company.updateOne({
+          id: company.id,
+          data: { locations: { connect: [{ id: location.id }] } },
+          query: 'id locations { id }',
+        });
+
+        const { Company, Location } = await getCompanyAndLocation(context, company.id, location.id);
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.map(({ id }) => id.toString())).toEqual([Company.id.toString()]);
+      })
+    );
+
+    test(
+      'With create',
+      runner(async ({ context }) => {
+        const { companies } = await createInitialData(context);
+        let company = companies[0];
+        const locationName = sampleOne(alphanumGenerator);
+        const _company = await context.lists.Company.updateOne({
+          id: company.id,
+          data: { locations: { create: [{ name: locationName }] } },
+          query: 'id locations { id name }',
+        });
+
+        const { Company, Location } = await getCompanyAndLocation(
+          context,
+          company.id,
+          _company.locations[0].id
         );
 
-        test(
-          'With disconnectAll',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { location, company } = await createCompanyAndLocation(context);
+        // Everything should now be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.companies.map(({ id }) => id.toString())).toEqual([Company.id.toString()]);
+      })
+    );
 
-            // Run the query to disconnect the location from company
-            const _company = await context.lists.Company.updateOne({
-              id: company.id,
-              data: { locations: { disconnectAll: true } },
-              query: 'id locations { id name }',
-            });
-            expect(_company.id).toEqual(company.id);
-            expect(_company.locations).toEqual([]);
+    test(
+      'With disconnect',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { location, company } = await createCompanyAndLocation(context);
 
-            // Check the link has been broken
-            const result = await getCompanyAndLocation(context, company.id, location.id);
-            expect(result.Company.locations).toEqual([]);
-            expect(result.Location.companies).toEqual([]);
-          })
-        );
+        // Run the query to disconnect the location from company
+        const _company = await context.lists.Company.updateOne({
+          id: company.id,
+          data: { locations: { disconnect: [{ id: location.id }] } },
+          query: 'id locations { id name }',
+        });
+        expect(_company.id).toEqual(company.id);
+        expect(_company.locations).toEqual([]);
 
-        test(
-          'With null',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { location, company } = await createCompanyAndLocation(context);
+        // Check the link has been broken
+        const result = await getCompanyAndLocation(context, company.id, location.id);
+        expect(result.Company.locations).toEqual([]);
+        expect(result.Location.companies).toEqual([]);
+      })
+    );
 
-            // Run the query with a null operation
-            const _company = await context.lists.Company.updateOne({
-              id: company.id,
-              data: { locations: null },
-              query: 'id locations { id name }',
-            });
+    test(
+      'With disconnectAll',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { location, company } = await createCompanyAndLocation(context);
 
-            // Check that the locations are still there
-            expect(_company.id).toEqual(company.id);
-            expect(_company.locations).toHaveLength(1);
-            expect(_company.locations[0].id).toEqual(location.id);
-          })
-        );
-      });
+        // Run the query to disconnect the location from company
+        const _company = await context.lists.Company.updateOne({
+          id: company.id,
+          data: { locations: { disconnectAll: true } },
+          query: 'id locations { id name }',
+        });
+        expect(_company.id).toEqual(company.id);
+        expect(_company.locations).toEqual([]);
 
-      describe('Delete', () => {
-        test(
-          'delete',
-          runner(setupKeystone, async ({ context }) => {
-            // Manually setup a connected Company <-> Location
-            const { location, company } = await createCompanyAndLocation(context);
+        // Check the link has been broken
+        const result = await getCompanyAndLocation(context, company.id, location.id);
+        expect(result.Company.locations).toEqual([]);
+        expect(result.Location.companies).toEqual([]);
+      })
+    );
 
-            // Run the query to disconnect the location from company
-            const _company = await context.lists.Company.deleteOne({ id: company.id });
-            expect(_company?.id).toBe(company.id);
+    test(
+      'With null',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { location, company } = await createCompanyAndLocation(context);
 
-            // Check the link has been broken
-            const result = await getCompanyAndLocation(context, company.id, location.id);
-            expect(result.Company).toBe(null);
-            expect(result.Location.companies).toEqual([]);
-          })
-        );
-      });
-    });
-  })
-);
+        // Run the query with a null operation
+        const _company = await context.lists.Company.updateOne({
+          id: company.id,
+          data: { locations: null },
+          query: 'id locations { id name }',
+        });
+
+        // Check that the locations are still there
+        expect(_company.id).toEqual(company.id);
+        expect(_company.locations).toHaveLength(1);
+        expect(_company.locations[0].id).toEqual(location.id);
+      })
+    );
+  });
+
+  describe('Delete', () => {
+    test(
+      'delete',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { location, company } = await createCompanyAndLocation(context);
+
+        // Run the query to disconnect the location from company
+        const _company = await context.lists.Company.deleteOne({ id: company.id });
+        expect(_company?.id).toBe(company.id);
+
+        // Check the link has been broken
+        const result = await getCompanyAndLocation(context, company.id, location.id);
+        expect(result.Company).toBe(null);
+        expect(result.Location.companies).toEqual([]);
+      })
+    );
+  });
+});

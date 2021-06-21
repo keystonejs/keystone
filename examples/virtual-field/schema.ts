@@ -78,7 +78,7 @@ export const lists = createSchema({
           type: schema.String,
           async resolve(item, args, context) {
             const { author } = await context.lists.Post.findOne({
-              where: { id: item.id },
+              where: { id: item.id.toString() },
               query: 'author { name }',
             });
             return author && author.name;
@@ -99,7 +99,7 @@ export const lists = createSchema({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.lists.Author.findOne({
-                where: { id: item.id },
+                where: { id: item.id.toString() },
                 query: `posts(
                     orderBy: { publishDate: desc }
                     first: 1

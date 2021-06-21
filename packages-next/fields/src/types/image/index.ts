@@ -9,7 +9,7 @@ import {
   KeystoneContext,
   schema,
 } from '@keystone-next/types';
-import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
+import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
 
