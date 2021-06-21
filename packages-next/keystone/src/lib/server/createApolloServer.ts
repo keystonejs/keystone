@@ -65,7 +65,6 @@ const _createApolloServerConfig = ({
   // Playground config, is /api/graphql available?
   const pp = apolloConfig?.playground;
   let playground: Config['playground'];
-
   const settings = { 'request.credentials': 'same-origin' };
 
   // graphql.apolloConfig.playground === false (playground not accessible in all cases)
@@ -84,8 +83,6 @@ const _createApolloServerConfig = ({
   } else {
     playground = { settings };
   }
-
-  // console.log('playground (final)', playground);
 
   return {
     uploads: false,
