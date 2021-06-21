@@ -33,7 +33,7 @@
     "@keystone-next/admin-ui-utils": "^5.0.2",
     "@keystone-next/fields": "^11.0.0",
     "@keystone-next/types": "^20.0.0",
-    "@keystone-next/utils-legacy": "^12.0.0",
+    "@keystone-next/utils": "^0.0.0",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.0",
     "@keystone-ui/fields": "^4.1.1",
@@ -103,7 +103,7 @@
     "serialize-error": "^8.1.0",
     "source-map-support": "^0.5.19",
     "stack-utils": "^2.0.3",
-    "typescript": "^4.2.4",
+    "typescript": "^4.3.2",
     "uid-safe": "^2.1.5",
     "uuid": "^8.3.2"
   },
