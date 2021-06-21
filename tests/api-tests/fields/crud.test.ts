@@ -29,12 +29,12 @@ testModules
         }),
       });
       const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
-        runner(async ({ context, config, ...rest }) => {
+        runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
           for (const data of mod.initItems(matrixValue)) {
             await context.lists[listKey].createOne({ data });
           }
-          return testFn({ context, listKey, provider: config.db.provider!, config, ...rest });
+          return testFn({ context, listKey, provider: process.env.TEST_ADAPTER, ...rest });
         });
 
       if (mod.crudTests) {

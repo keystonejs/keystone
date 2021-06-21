@@ -78,7 +78,7 @@ describe('Authed', () => {
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
-    provider = testEnv.testArgs.config.db.provider!;
+    provider = config.db.provider!;
 
     await testEnv.connect();
 
