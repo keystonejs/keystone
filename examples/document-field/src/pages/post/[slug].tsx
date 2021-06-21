@@ -2,6 +2,7 @@ import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import React from 'react';
 import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
 import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import Link from 'next/link';
 import { fetchGraphQL, gql } from '../../utils';
 import { componentBlocks } from '../../../document-field-view';
 
@@ -38,8 +39,10 @@ export default function Post({ post }: { post: any }) {
       <h1>{post.title}</h1>
       {post.author?.name && (
         <address>
-          By {post.author.name}
-          <DocumentRenderer document={post.author.bio?.document || []} />
+          By{' '}
+          <Link href={`/author/${post.author.id}`}>
+            <a>{post.author.name}</a>
+          </Link>
         </address>
       )}
       {post.publishDate && (
@@ -61,10 +64,6 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     query {
       allPosts {
         slug
-        publishDate
-        author {
-          name
-        }
       }
     }
   `);
@@ -87,10 +86,8 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
           }
           publishDate
           author {
+            id
             name
-            bio {
-              document
-            }
           }
         }
       }
