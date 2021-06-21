@@ -1,4 +1,4 @@
-## Feature Example - virtual field
+## Feature Example - document field
 
 This project demonstrates how to add a document field to a Keystone list with a component block and render it in a Next.js frontend.
 It builds on the [Blog](../blog) starter project.
