@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
+import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
 
 type SectionProps = { label: string; children: ReactNode };
@@ -131,7 +132,7 @@ export function DocsNavigation({ isOpen }) {
           Document Fields
         </NavItem>
         <NavItem isOpen={isOpen} exactMatch href="/docs/guides/virtual-fields">
-          Virtual Fields
+          Virtual Fields <Badge look="success">New</Badge>
         </NavItem>
         <NavItem isOpen={isOpen} exactMatch href="/docs/guides/access-control" isPlaceholder>
           Access Control
