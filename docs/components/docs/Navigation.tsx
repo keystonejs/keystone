@@ -242,21 +242,24 @@ export function UpdatesNavigation({ releases = [], isOpen }) {
     >
       <Section label="Updates">
         <NavItem isOpen={isOpen} href="/updates" exactMatch>
-          What's New
+          Latest Updates
+        </NavItem>
+        <NavItem isOpen={isOpen} href="/updates/whats-new-in-keystone-6" exactMatch>
+          What's New in v6
         </NavItem>
         <NavItem isOpen={isOpen} href="/updates/roadmap" exactMatch>
           Roadmap
         </NavItem>
       </Section>
       <Section label="Releases">
-        <NavItem isOpen={isOpen} href="/releases" exactMatch>
-          Summary
-        </NavItem>
         {releases.map(name => (
           <NavItem isOpen={isOpen} key={name} href={`/releases/${name}`} exactMatch>
             {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}
+        <NavItem isOpen={isOpen} href="/releases" exactMatch>
+          More
+        </NavItem>
       </Section>
     </nav>
   );
