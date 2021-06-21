@@ -1,11 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { HTMLAttributes } from 'react';
 
 import { SearchKeys } from '../icons/SearchKeys';
 import { Search } from '../icons/Search';
 import { Field } from './Field';
 
-export function SearchField(props) {
+type SearchFieldProps = HTMLAttributes<HTMLElement>;
+
+export function SearchField(props: SearchFieldProps) {
   return (
     <span
       css={{

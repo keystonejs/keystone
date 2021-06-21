@@ -43,7 +43,7 @@ export function Emoji({ symbol, alt, ...props }: EmojiProps) {
   const [showOnTop, setShownTop] = useState(true);
 
   useEffect(() => {
-    if (posRef.current.offsetTop - window.pageYOffset < 50) {
+    if (posRef.current && posRef.current.offsetTop - window.pageYOffset < 50) {
       setShownTop(false);
     }
   });

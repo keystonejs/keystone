@@ -1,9 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import { HTMLAttributes, ReactNode } from 'react';
 
 import { Wrapper } from './primitives/Wrapper';
 
-export function Announce({ children, ...props }) {
+type AnnounceProps = {
+  children: ReactNode;
+} & HTMLAttributes<HTMLElement>;
+
+export function Announce({ children, ...props }: AnnounceProps) {
   return (
     <div
       css={{

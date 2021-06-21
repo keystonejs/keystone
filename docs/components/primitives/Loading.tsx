@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/react';
+import { HTMLAttributes } from 'react';
 
 const loading = keyframes({
   '0%, 80%, 100%': {
@@ -19,7 +20,9 @@ const commonStyles = {
   animation: `${loading} 1s linear infinite`,
 };
 
-export function Loading(props) {
+type LoadingProps = HTMLAttributes<HTMLElement>;
+
+export function Loading(props: LoadingProps) {
   return (
     <div
       aria-live="polite"

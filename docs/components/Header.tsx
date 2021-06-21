@@ -29,8 +29,8 @@ export function Header({ releases }) {
   const mq = useMediaQuery();
   // const [position, setPosition] = useState(false);
   const [open, setOpen] = useState(false);
-  const menuRef = useRef();
-  const headerRef = useRef();
+  const menuRef = useRef<HTMLElement>();
+  const headerRef = useRef<HTMLElement>();
 
   const handleOpen = () => {
     // const pos = headerRef.current.offsetTop + headerRef.current.clientHeight;

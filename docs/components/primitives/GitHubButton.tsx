@@ -1,12 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, HTMLAttributes } from 'react';
 
 import { Loading } from './Loading';
 import { Type } from './Type';
 
-export function GitHubButton({ repo, ...props }) {
-  const [count, setCount] = useState(null);
+type GitHubButtonProps = {
+  repo: string;
+} & HTMLAttributes<HTMLElement>;
+
+export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
+  const [count, setCount] = useState(0);
   repo = repo.replace('https://github.com/', '');
 
   useEffect(() => {

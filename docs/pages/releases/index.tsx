@@ -1,6 +1,7 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import { HTMLAttributes, ReactNode } from 'react';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
@@ -10,7 +11,13 @@ import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
-function Timeline({ date, isLatest, isFirst, ...props }) {
+type TimelineProps = {
+  date: string;
+  isLatest?: boolean;
+  isFirst?: boolean;
+} & HTMLAttributes<HTMLElement>;
+
+function Timeline({ date, isLatest, isFirst, ...props }: TimelineProps) {
   return (
     <div
       css={{
@@ -76,7 +83,13 @@ function Timeline({ date, isLatest, isFirst, ...props }) {
   );
 }
 
-function Box({ link, heading, children, ...props }) {
+type BoxProps = {
+  link?: string;
+  heading?: ReactNode;
+  children: ReactNode;
+} & HTMLAttributes<HTMLElement>;
+
+function Box({ link, heading, children, ...props }: BoxProps) {
   return (
     <Type
       as="div"

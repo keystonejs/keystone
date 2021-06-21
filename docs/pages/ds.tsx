@@ -89,7 +89,7 @@ function Swatch({ name, color, gradient }: SwatchProps) {
 
 export default function DS() {
   const [icon, setIcon] = useState<allIcons.IconGradient>(null);
-  let firstGrad;
+  let firstGrad: string;
 
   return (
     <Page>
