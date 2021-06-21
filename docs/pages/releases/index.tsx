@@ -91,12 +91,12 @@ function Box({ link, heading, children, ...props }) {
           {heading}
         </Type>
       )}
-      <Type as="p" look="body18">
+      <Type as="p" look="body18" css={{ display: 'block' }}>
         {children}
       </Type>
       {link && (
         <Link href={link} passHref>
-          <a css={{ display: 'block' }}>read more</a>
+          <a>read more</a>
         </Link>
       )}
     </Type>
@@ -141,7 +141,7 @@ export default function WhatsNew(props) {
         })}
       >
         <Timeline date="15th June 2021" isLatest />
-        <Box link="/releases/2021-06-15" heading="TODO">
+        <Box link="/releases/2021-06-15">
           Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking many of the
           features you’ve been waiting for!
         </Box>
@@ -185,7 +185,8 @@ export default function WhatsNew(props) {
         </Box>
         <Timeline date="6th April 2021" />
         <Box link="/releases/2021-04-06" heading="TODO">
-          Controlled code demolition 🏗️ 👷‍♀️, Better pagination in Admin UI{' '}
+          Controlled code demolition <Emoji symbol="🏗️" alt="Construction" />{' '}
+          <Emoji symbol="👷‍♀️" alt="Working" />, Better pagination in Admin UI{' '}
           <Emoji symbol="⏭️" alt="Fast forward" />
         </Box>
         <Timeline date="30th March 2021" />

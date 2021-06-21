@@ -42,7 +42,24 @@ export function NavItem({ href, isPlaceholder, children, exactMatch }: NavItemPr
   if (href.startsWith('/updates') && pathname.startsWith('/releases') && !exactMatch) {
     isActive = true;
   }
-  if (href.startsWith('/docs') && !exactMatch) {
+  if (href.startsWith('/docs') && pathname.startsWith('/docs') && !exactMatch) {
+    isActive = true;
+  }
+  if (href.startsWith('/why-keystone') && pathname.startsWith('/for-developers') && !exactMatch) {
+    isActive = true;
+  }
+  if (
+    href.startsWith('/why-keystone') &&
+    pathname.startsWith('/for-organisations') &&
+    !exactMatch
+  ) {
+    isActive = true;
+  }
+  if (
+    href.startsWith('/why-keystone') &&
+    pathname.startsWith('/for-content-management') &&
+    !exactMatch
+  ) {
     isActive = true;
   }
 

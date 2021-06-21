@@ -5,6 +5,10 @@ import { useRef } from 'react';
 
 import { CopyToClipboard } from './CopyToClipboard';
 
+/*
+ * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
+ */
+
 function getAnchor(text: string) {
   if (typeof text === 'string') {
     return slugify(text);
