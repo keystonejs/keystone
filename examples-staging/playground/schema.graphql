@@ -26,7 +26,7 @@ input NoteWhereInput {
 }
 
 input NoteWhereUniqueInput {
-  id: ID!
+  id: ID
 }
 
 enum SortNotesBy {
@@ -106,11 +106,6 @@ type Mutation {
   """
   deleteNotes(ids: [ID!]): [Note]
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 type Query {
   """
