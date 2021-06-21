@@ -17,8 +17,8 @@
     "@keystone-next/keystone": "*",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
-    "globby": "^11.0.3",
-    "graphql": "^15.5.0",
+    "globby": "^11.0.4",
+    "graphql": "^15.5.1",
     "memoize-one": "^5.2.1",
     "superagent": "^6.1.0",
     "testcheck": "^1.0.0-rc.2"
