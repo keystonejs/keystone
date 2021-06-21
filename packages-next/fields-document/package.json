@@ -56,8 +56,8 @@
   "devDependencies": {
     "@testing-library/react": "^11.2.7",
     "array.prototype.flat": "^1.2.4",
-    "jest-diff": "^26.6.2",
-    "pretty-format": "^26.6.2",
+    "jest-diff": "^27.0.2",
+    "pretty-format": "^27.0.2",
     "slate-hyperscript": "^0.60.8"
   },
   "engines": {
