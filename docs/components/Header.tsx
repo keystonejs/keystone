@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { useMediaQuery } from '../lib/media';
 import { SearchField } from './primitives/SearchField';
@@ -15,12 +16,75 @@ import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { Socials } from './Socials';
 
-function LinkItem({ name, href }) {
+function Logo() {
   const mq = useMediaQuery();
 
   return (
+    <div
+      css={mq({
+        marginRight: [0, null, null, null, '2rem'],
+      })}
+    >
+      <Link href="/" passHref>
+        <a
+          css={{
+            fontSize: 'var(--font-medium)',
+            fontWeight: 600,
+            verticalAlign: 'middle',
+            transition: 'color 0.3s ease',
+          }}
+        >
+          <Keystone
+            grad="logo"
+            css={{
+              display: 'inline-block',
+              width: '2rem',
+              height: '2rem',
+              margin: '0 var(--space-medium) var(--space-xsmall) 0',
+              verticalAlign: 'middle',
+            }}
+          />
+          <Highlight>Keystone 6</Highlight>
+        </a>
+      </Link>
+      <span
+        css={{
+          display: 'inline-block',
+          padding: '0 var(--space-xsmall)',
+          borderRadius: '0.25rem',
+          background: 'var(--code-bg)',
+          color: 'var(--code)',
+          border: '1px solid var(--border)',
+          fontSize: 'var(--font-xxsmall)',
+          fontWeight: 400,
+          lineHeight: '1rem',
+          marginLeft: 'var(--space-medium)',
+        }}
+      >
+        preview
+      </span>
+    </div>
+  );
+}
+
+function useCurrentSection() {
+  const { pathname } = useRouter();
+  const check = candidate => pathname.startsWith(candidate);
+  if (['/updates', '/releases'].some(check)) return '/updates';
+  if (['/why-keystone', '/for-'].some(check)) return '/why-keystone';
+  if (['/docs'].some(check)) return '/docs';
+}
+
+function LinkItem({ children, href }) {
+  const mq = useMediaQuery();
+  const currentSection = useCurrentSection();
+  const isActive = href === currentSection;
+
+  return (
     <span css={mq({ display: ['none', null, null, 'inline'] })}>
-      <NavItem href={href}>{name}</NavItem>
+      <NavItem isActive={isActive} href={href}>
+        {children}
+      </NavItem>
     </span>
   );
 }
@@ -69,50 +133,7 @@ export function Header({ releases }) {
           },
         })}
       >
-        <div
-          css={mq({
-            marginRight: [0, null, null, null, '2rem'],
-          })}
-        >
-          <Link href="/" passHref>
-            <a
-              css={{
-                fontSize: 'var(--font-medium)',
-                fontWeight: 600,
-                verticalAlign: 'middle',
-                transition: 'color 0.3s ease',
-              }}
-            >
-              <Keystone
-                grad="logo"
-                css={{
-                  display: 'inline-block',
-                  width: '2rem',
-                  height: '2rem',
-                  margin: '0 var(--space-medium) var(--space-xsmall) 0',
-                  verticalAlign: 'middle',
-                }}
-              />
-              <Highlight>Keystone 6</Highlight>
-            </a>
-          </Link>
-          <span
-            css={{
-              display: 'inline-block',
-              padding: '0 var(--space-xsmall)',
-              borderRadius: '0.25rem',
-              background: 'var(--code-bg)',
-              color: 'var(--code)',
-              border: '1px solid var(--border)',
-              fontSize: 'var(--font-xxsmall)',
-              fontWeight: 400,
-              lineHeight: '1rem',
-              marginLeft: 'var(--space-medium)',
-            }}
-          >
-            preview
-          </span>
-        </div>
+        <Logo />
         <div
           css={mq({
             display: ['none', 'block'],
@@ -121,9 +142,9 @@ export function Header({ releases }) {
         >
           <SearchField />
         </div>
-        <LinkItem name="Why Keystone" href="/why-keystone" />
-        <LinkItem name="Updates" href="/updates" />
-        <LinkItem name="Docs" href="/docs" />
+        <LinkItem href="/why-keystone">Why Keystone</LinkItem>
+        <LinkItem href="/updates">Updates</LinkItem>
+        <LinkItem href="/docs">Docs</LinkItem>
         <DarkModeBtn />
         <Button
           as="a"
