@@ -43,7 +43,7 @@ export function NavItem({
   isPlaceholder,
   children,
   exactMatch,
-  isOpen = false,
+  isOpen = true,
 }: NavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
