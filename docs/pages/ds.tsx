@@ -576,7 +576,7 @@ export default function DS() {
           Some code...
           <br />
         </CodeWindow>
-        <CodeWindow lines={8}>
+        <CodeWindow lines={18}>
           <WindowWrapper>
             <WindowL>
               {`{
