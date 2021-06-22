@@ -1,8 +1,10 @@
 /** @jsx jsx */
+import { Fragment, ElementType, HTMLAttributes, MouseEvent } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
-import { Fragment, ElementType, HTMLAttributes, MouseEvent } from 'react';
 import Link from 'next/link';
+
+import { useHeaderContext } from './Header';
 
 import {
   Section,
@@ -15,12 +17,12 @@ import { Keystone } from './icons/Keystone';
 import { Close } from './icons/Close';
 
 type MobileMenuProps = {
-  isOpen?: boolean;
   handleClose?: (e: MouseEvent) => void;
   releases?: any;
 } & HTMLAttributes<HTMLElement>;
 
-export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMenuProps) {
+export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps) {
+  const { open } = useHeaderContext();
   const { pathname } = useRouter();
   let ThisNav: ElementType = MarketingNavigation;
   if (pathname.startsWith('/releases') || pathname.startsWith('/updates')) {
@@ -33,6 +35,7 @@ export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMe
   return (
     <Fragment>
       <nav
+        tabIndex={open ? 0 : -1}
         css={{
           position: 'fixed',
           top: 0,
@@ -41,14 +44,14 @@ export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMe
           width: '100%',
           background: 'var(--app-bg)',
           overflow: 'auto',
-          transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+          transform: open ? 'translateX(0)' : 'translateX(100%)',
           zIndex: 100,
           transition: 'transform 0.5s ease',
           '@media (min-width: 22.5rem)': {
             width: '22.5rem',
           },
         }}
-        aria-hidden={!isOpen}
+        aria-hidden={!open}
         {...props}
       >
         <div
@@ -64,13 +67,13 @@ export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMe
           }}
         >
           <Link href="/">
-            <a tabIndex={isOpen ? 0 : -1}>
+            <a tabIndex={open ? 0 : -1}>
               <Keystone grad="logo" css={{ height: '2rem' }} />
             </a>
           </Link>
           <button
             onClick={handleClose}
-            tabIndex={isOpen ? 0 : -1}
+            tabIndex={open ? 0 : -1}
             css={{
               appearance: 'none',
               border: '0 none',
@@ -91,20 +94,14 @@ export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMe
           }}
         >
           <Section label="Keystone">
-            <NavItem href="/why-keystone" isOpen={isOpen}>
-              Why Keystone
-            </NavItem>
-            <NavItem href="/updates" isOpen={isOpen}>
-              Updates
-            </NavItem>
-            <NavItem href="/docs" isOpen={isOpen}>
-              Docs
-            </NavItem>
+            <NavItem href="/why-keystone">Why Keystone</NavItem>
+            <NavItem href="/updates">Updates</NavItem>
+            <NavItem href="/docs">Docs</NavItem>
           </Section>
-          <ThisNav isOpen={isOpen} />
+          <ThisNav />
         </div>
       </nav>
-      {isOpen && (
+      {open && (
         <div
           onClick={handleClose}
           css={{

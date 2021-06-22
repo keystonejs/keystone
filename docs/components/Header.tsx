@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { useEffect, useState, useRef, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -15,6 +15,9 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { Socials } from './Socials';
+
+const HeaderContext = createContext();
+export const useHeaderContext = () => useContext(HeaderContext);
 
 function Logo() {
   const mq = useMediaQuery();
@@ -170,24 +173,26 @@ export function Header({ releases }: HeaderProps) {
             display: ['none', null, 'inline-grid'],
           })}
         />
-        <div ref={menuRef}>
-          <button
-            onClick={handleOpen}
-            css={mq({
-              display: ['inline-block', null, 'none'],
-              appearance: 'none',
-              border: '0 none',
-              boxShadow: 'none',
-              background: 'transparent',
-              padding: '0.25rem',
-              cursor: 'pointer',
-              color: 'var(--muted)',
-            })}
-          >
-            <Hamburger css={{ height: '1.25rem' }} />
-          </button>
-          <MobileMenu isOpen={open} releases={releases} handleClose={handleClose} />
-        </div>
+        <HeaderContext.Provider value={{ open }}>
+          <div ref={menuRef}>
+            <button
+              onClick={handleOpen}
+              css={mq({
+                display: ['inline-block', null, 'none'],
+                appearance: 'none',
+                border: '0 none',
+                boxShadow: 'none',
+                background: 'transparent',
+                padding: '0.25rem',
+                cursor: 'pointer',
+                color: 'var(--muted)',
+              })}
+            >
+              <Hamburger css={{ height: '1.25rem' }} />
+            </button>
+            <MobileMenu releases={releases} handleClose={handleClose} />
+          </div>
+        </HeaderContext.Provider>
       </Wrapper>
     </header>
   );
