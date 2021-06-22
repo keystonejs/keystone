@@ -3,19 +3,19 @@ import { jsx } from '@emotion/react';
 
 import { Gradients, IconProps } from './util';
 
-export function WhatsNew({ grad, ...props }: IconProps) {
+export function Updates({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 18 20"
-      aria-label="What's new"
+      aria-label="Updates"
       role="img"
       fill="none"
       {...props}
     >
-      <Gradients name="WhatsNew" />
+      <Gradients name="Updates" />
       <path
-        stroke={grad ? `url(#WhatsNew-${grad})` : 'currentColor'}
+        stroke={grad ? `url(#Updates-${grad})` : 'currentColor'}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

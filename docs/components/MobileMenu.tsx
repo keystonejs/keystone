@@ -8,14 +8,15 @@ import Link from 'next/link';
 import { useHeaderContext } from './Header';
 
 import {
-  Section,
-  NavItem,
   DocsNavigation,
   UpdatesNavigation,
   MarketingNavigation,
 } from './docs/Navigation';
+import { WhyKeystone } from './icons/WhyKeystone';
 import { Keystone } from './icons/Keystone';
+import { Updates } from './icons/Updates';
 import { Close } from './icons/Close';
+import { Docs } from './icons/Docs';
 
 type MobileMenuProps = {
   handleClose?: (e: MouseEvent) => void;
@@ -110,11 +111,69 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
               padding: '2rem',
             }}
           >
-            <Section label="Keystone">
-              <NavItem href="/why-keystone">Why Keystone</NavItem>
-              <NavItem href="/updates">Updates</NavItem>
-              <NavItem href="/docs">Docs</NavItem>
-            </Section>
+            <Link href="/why-keystone" passHref>
+              <a
+                css={{
+                  display: 'flex',
+                  fontSize: '1rem',
+                  color: 'var(--text-heading)',
+                  marginBottom: '1rem',
+                  alignItems: 'center',
+                  fontWeight: '700',
+                }}
+              >
+                <WhyKeystone
+                  grad="grad3"
+                  css={{
+                    height: '1.5rem',
+                    marginRight: '1rem',
+                  }}
+                />
+                Why Keystone
+              </a>
+            </Link>
+            <Link href="/updates" passHref>
+              <a
+                css={{
+                  display: 'flex',
+                  fontSize: '1rem',
+                  color: 'var(--text-heading)',
+                  marginBottom: '1rem',
+                  alignItems: 'center',
+                  fontWeight: '700',
+                }}
+              >
+                <Updates
+                  grad="grad1"
+                  css={{
+                    height: '1.5rem',
+                    marginRight: '1rem',
+                  }}
+                />
+                Updates
+              </a>
+            </Link>
+            <Link href="/docs" passHref>
+              <a
+                css={{
+                  display: 'flex',
+                  fontSize: '1rem',
+                  color: 'var(--text-heading)',
+                  marginBottom: '2rem',
+                  alignItems: 'center',
+                  fontWeight: '700',
+                }}
+              >
+                <Docs
+                  grad="grad4"
+                  css={{
+                    height: '1.5rem',
+                    marginRight: '1rem',
+                  }}
+                />
+                Docs
+              </a>
+            </Link>
             <ThisNav />
           </div>
         </nav>
