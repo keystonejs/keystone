@@ -248,10 +248,24 @@ export default function IndexPage() {
               </Type>
             </li>
           </ul>
-
           <Button as="a" href="/why-keystone#features" look="soft" css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
+        </div>
+
+        <div
+          css={{
+            marginTop: '9rem',
+          }}
+        >
+          <Type as="h2" look="heading48">
+            How it works
+          </Type>
+          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+            Enable a content culture that’s productive, collaborative, and fun.
+            <br />
+            Open, flexible, and natural. A tool your team can grow with.
+          </Type>
         </div>
       </MWrapper>
     </Page>
