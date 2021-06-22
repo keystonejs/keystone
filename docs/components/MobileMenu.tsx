@@ -90,7 +90,7 @@ export function MobileMenu({ isOpen, handleClose, releases, ...props }: MobileMe
             padding: '2rem',
           }}
         >
-          <Section label="Tutorials">
+          <Section label="Keystone">
             <NavItem href="/why-keystone" isOpen={isOpen}>
               Why Keystone
             </NavItem>
