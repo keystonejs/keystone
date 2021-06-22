@@ -1,6 +1,5 @@
 import type { CacheHint } from '../next-fields';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
-import { FieldTypeFunc } from '../next-fields';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields } from './fields';
@@ -9,6 +8,18 @@ export type ListSchemaConfig = Record<
   string,
   ListConfig<BaseGeneratedListTypes, BaseFields<BaseGeneratedListTypes>>
 >;
+
+export type IdFieldConfig =
+  | {
+      kind: 'uuid';
+      /**
+       * This enables the native uuid type on Postgres. When this is enables and not on postgres, an error will be thrown
+       */
+      useNativeType?: boolean;
+    }
+  | {
+      kind: 'cuid' | 'autoincrement';
+    };
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
@@ -22,7 +33,7 @@ export type ListConfig<
     */
   fields: Fields;
 
-  idField?: FieldTypeFunc;
+  idField?: IdFieldConfig;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change

@@ -41,6 +41,7 @@ export const lists = createSchema({
         initialColumns: ['name', 'posts', 'avatar'],
       },
     },
+    idField: { kind: 'cuid' },
     fields: {
       /** The user's first and last name. */
       name: text({ isRequired: true }),
@@ -98,6 +99,7 @@ export const lists = createSchema({
       isHidden: true,
       // parentRelationship: 'user',
     },
+    idField: { kind: 'cuid' },
     fields: {
       label: virtual({
         field: schema.field({
@@ -130,6 +132,7 @@ export const lists = createSchema({
     },
   }),
   Post: list({
+    idField: { kind: 'cuid' },
     fields: {
       title: text(),
       // TODO: expand this out into a proper example project

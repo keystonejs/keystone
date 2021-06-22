@@ -201,4 +201,4 @@ export type {
   UpdateListAccessControl,
 } from './access-control';
 export type { CommonFieldConfig } from './fields';
-export type { CacheHintArgs } from './lists';
+export type { CacheHintArgs, IdFieldConfig } from './lists';
