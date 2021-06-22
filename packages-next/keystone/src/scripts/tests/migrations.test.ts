@@ -86,7 +86,7 @@ async function setupInitialProjectWithoutMigrations() {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
+  id    String  @id
   title String?
 }
 `);
@@ -154,7 +154,7 @@ describe('useMigrations: false', () => {
       }
 
       model Todo {
-        id Int @id @default(autoincrement())
+        id String @id
       }
       "
     `);
@@ -202,7 +202,7 @@ describe('useMigrations: false', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -267,7 +267,7 @@ async function setupInitialProjectWithMigrations() {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
+  id    String  @id
   title String?
 }
 `);
@@ -335,7 +335,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id         Int      @id @default(autoincrement())
+        id         String   @id
         title      String?
         isComplete Boolean?
       }
@@ -395,7 +395,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id Int @id @default(autoincrement())
+        id String @id
       }
       "
     `);
@@ -470,7 +470,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -583,7 +583,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -631,7 +631,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
