@@ -2,8 +2,8 @@
 import { Fragment, useState } from 'react';
 import { jsx } from '@emotion/react';
 
+import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
 import { GitHubButton } from '../components/primitives/GitHubButton';
-import { CodeWindow } from '../components/marketing/CodeWindow';
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
 import { styleMap, Type } from '../components/primitives/Type';
@@ -575,6 +575,40 @@ export default function DS() {
           <br />
           Some code...
           <br />
+        </CodeWindow>
+        <CodeWindow lines={8}>
+          <WindowWrapper>
+            <WindowL>
+              {`{
+  allPosts (first: 2, where: { title_contains: "content" }) {
+    title
+    author {
+      name
+    }
+  }
+}`}
+            </WindowL>
+            <WindowR>
+              {`{
+  "data": {
+    "allPosts": [
+      {
+        "title": "Why structured content content  benefits of structured",
+        "author": {
+          "name": "Tim"
+        }
+      },   
+      {
+        "title": "Content Management for the Design System generation",
+        "author": {
+          "name": "Lauren"
+        }
+      }
+    ]
+  }
+}`}
+            </WindowR>
+          </WindowWrapper>
         </CodeWindow>
       </Stack>
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>

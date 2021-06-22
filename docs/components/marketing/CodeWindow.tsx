@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import type { ElementType, HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
@@ -20,11 +20,50 @@ function MenuBtn(props) {
   );
 }
 
+export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
+  return (
+    <div
+      css={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '1rem',
+      }}
+      {...props}
+    />
+  );
+}
+
+export function WindowL(props: HTMLAttributes<HTMLElement>) {
+  return (
+    <pre
+      css={{
+        overflow: 'auto',
+        padding: '1rem',
+      }}
+      {...props}
+    />
+  );
+}
+
+export function WindowR(props: HTMLAttributes<HTMLElement>) {
+  return (
+    <pre
+      css={{
+        overflow: 'auto',
+        background: 'var(--code-bg)',
+        borderLeft: '1px solid var(--border)',
+        padding: '1rem',
+      }}
+      {...props}
+    />
+  );
+}
+
 type CodeWindowProps = {
   lines: number;
 } & HTMLAttributes<HTMLElement>;
 
-export function CodeWindow({ lines = 1, children, ...props }: HTMLAttributes<HTMLElement>) {
+export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
   const mq = useMediaQuery();
 
   return (
@@ -49,7 +88,6 @@ export function CodeWindow({ lines = 1, children, ...props }: HTMLAttributes<HTM
       <div
         css={{
           position: 'relative',
-          padding: '1rem',
           fontFamily: 'var(--font-mono)',
           whiteSpace: 'nowrap',
           paddingLeft: '4rem',
@@ -87,6 +125,8 @@ export function CodeWindow({ lines = 1, children, ...props }: HTMLAttributes<HTM
         <div
           css={{
             overflow: 'auto',
+            position: 'relative',
+            padding: 0,
           }}
         >
           {children}
