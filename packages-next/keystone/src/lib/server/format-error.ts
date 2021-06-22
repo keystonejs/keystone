@@ -63,9 +63,7 @@ const flattenNestedErrors = (error: any) =>
 
 export const formatError = (error: GraphQLError) => {
   const { originalError }: { originalError: any } = error;
-  if (originalError && !originalError.path) {
-    originalError.path = error.path;
-  }
+
   // For correlating user error reports with logs
   // @ts-ignore
   error.uid = cuid();
