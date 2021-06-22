@@ -2,6 +2,7 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
 import { jsx } from '@emotion/react';
 
+import { SkipLinks } from '../components/SkipLinks';
 import { GA_TRACKING_ID } from '../lib/analytics';
 
 class MyDocument extends Document {
@@ -60,6 +61,7 @@ class MyDocument extends Document {
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
+          <SkipLinks />
           <Main />
           <NextScript />
         </body>

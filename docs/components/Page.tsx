@@ -78,7 +78,12 @@ export function DocsPage({
         >
           <Sidebar releases={releases} isUpdatesPage={isUpdatesPage} />
 
-          <main ref={contentRef} className={noProse ? '' : 'prose'}>
+          <main
+            id="skip-link-content"
+            tabIndex="0"
+            ref={contentRef}
+            className={noProse ? '' : 'prose'}
+          >
             <Breadcrumbs />
             {children}
           </main>
@@ -110,7 +115,9 @@ export function Page({ title, children }: { children: ReactNode; title?: string 
       >
         <Announcement />
         <Header />
-        <Wrapper as="main">{children}</Wrapper>
+        <Wrapper as="main" id="skip-link-content" tabIndex="0">
+          {children}
+        </Wrapper>
       </div>
       <Footer />
     </Fragment>

@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { Fragment, ElementType, HTMLAttributes, MouseEvent } from 'react';
+import { Fragment, useEffect, ElementType, HTMLAttributes, MouseEvent } from 'react';
+import FocusLock from 'react-focus-lock';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -32,75 +33,92 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
     ThisNav = DocsNavigation;
   }
 
+  useEffect(() => {
+    const handleEsc = ({ keyCode }) => {
+      if (keyCode === 27 && open) {
+        handleClose();
+      }
+    };
+
+    document.body.addEventListener('keydown', handleEsc);
+    return () => {
+      document.body.removeEventListener('keydown', handleEsc);
+    };
+  });
+
   return (
     <Fragment>
-      <nav
-        tabIndex={open ? 0 : -1}
-        css={{
-          position: 'fixed',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          width: '100%',
-          background: 'var(--app-bg)',
-          overflow: 'auto',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
-          zIndex: 100,
-          transition: 'transform 0.5s ease',
-          '@media (min-width: 22.5rem)': {
-            width: '22.5rem',
-          },
-        }}
-        aria-hidden={!open}
-        {...props}
-      >
-        <div
+      <FocusLock disabled={!open}>
+        <nav
+          id={open ? 'skip-link-navigation' : ''}
+          tabIndex={open ? 0 : -1}
           css={{
-            position: 'sticky',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            position: 'fixed',
             top: 0,
-            padding: '0.5rem 2rem',
-            borderBottom: '1px solid var(--border)',
+            bottom: 0,
+            right: 0,
+            width: '100%',
             background: 'var(--app-bg)',
-            alignItems: 'center',
+            overflow: 'auto',
+            transform: open ? 'translateX(0)' : 'translateX(100%)',
+            zIndex: 100,
+            transition: 'transform 0.5s ease',
+            '@media (min-width: 22.5rem)': {
+              width: '22.5rem',
+            },
           }}
+          aria-hidden={!open}
+          {...props}
         >
-          <Link href="/">
-            <a tabIndex={open ? 0 : -1}>
-              <Keystone grad="logo" css={{ height: '2rem' }} />
-            </a>
-          </Link>
-          <button
-            onClick={handleClose}
-            tabIndex={open ? 0 : -1}
+          <div
             css={{
-              appearance: 'none',
-              border: '0 none',
-              boxShadow: 'none',
-              background: 'transparent',
-              padding: 'var(--space-large)',
-              cursor: 'pointer',
-              color: 'var(--muted)',
-              justifySelf: 'end',
+              position: 'sticky',
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              top: 0,
+              padding: '0.5rem 2rem',
+              borderBottom: '1px solid var(--border)',
+              background: 'var(--app-bg)',
+              alignItems: 'center',
             }}
           >
-            <Close css={{ height: '1rem' }} />
-          </button>
-        </div>
-        <div
-          css={{
-            padding: '2rem',
-          }}
-        >
-          <Section label="Keystone">
-            <NavItem href="/why-keystone">Why Keystone</NavItem>
-            <NavItem href="/updates">Updates</NavItem>
-            <NavItem href="/docs">Docs</NavItem>
-          </Section>
-          <ThisNav />
-        </div>
-      </nav>
+            <Link href="/">
+              <a tabIndex={open ? 0 : -1}>
+                <Keystone grad="logo" css={{ height: '2rem' }} />
+              </a>
+            </Link>
+            <button
+              id="mobile-menu-close-btn"
+              onClick={handleClose}
+              tabIndex={open ? 0 : -1}
+              css={{
+                appearance: 'none',
+                border: '0 none',
+                boxShadow: 'none',
+                background: 'transparent',
+                padding: 'var(--space-large)',
+                cursor: 'pointer',
+                color: 'var(--muted)',
+                justifySelf: 'end',
+              }}
+            >
+              <Close css={{ height: '1rem' }} />
+            </button>
+          </div>
+          <div
+            css={{
+              padding: '2rem',
+            }}
+          >
+            <Section label="Keystone">
+              <NavItem href="/why-keystone">Why Keystone</NavItem>
+              <NavItem href="/updates">Updates</NavItem>
+              <NavItem href="/docs">Docs</NavItem>
+            </Section>
+            <ThisNav />
+          </div>
+        </nav>
+      </FocusLock>
       {open && (
         <div
           onClick={handleClose}

@@ -20,6 +20,8 @@ export function Sidebar({ isUpdatesPage, releases }: SidebarProps) {
       })}
     >
       <div
+        id="skip-link-navigation"
+        tabIndex="0"
         css={mq({
           display: ['none', null, 'block'],
           padding: ['0 0 var(--space-large) var(--space-large)', null, 0],

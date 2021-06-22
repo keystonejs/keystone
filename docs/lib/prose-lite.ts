@@ -121,6 +121,7 @@ export const proseStyles = {
   },
   'a code': {
     color: 'var(--code)',
+    textDecoration: 'underline',
   },
   pre: {
     overflowX: 'auto' as const,

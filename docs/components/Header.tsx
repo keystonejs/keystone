@@ -109,11 +109,13 @@ export function Header({ releases }: HeaderProps) {
   const handleOpen = () => {
     setOpen(true);
     document.body.style.overflow = 'hidden';
+    document.getElementById('mobile-menu-close-btn').focus();
   };
 
   const handleClose = () => {
     setOpen(false);
     document.body.style.overflow = 'auto';
+    document.getElementById('skip-link-navigation-btn').focus();
   };
 
   return (
@@ -177,6 +179,8 @@ export function Header({ releases }: HeaderProps) {
           <div ref={menuRef}>
             <button
               onClick={handleOpen}
+              id="skip-link-navigation-btn"
+              tabIndex="0"
               css={mq({
                 display: ['inline-block', null, 'none'],
                 appearance: 'none',
