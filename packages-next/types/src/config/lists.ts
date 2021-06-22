@@ -13,7 +13,7 @@ export type IdFieldConfig =
   | {
       kind: 'uuid';
       /**
-       * This enables the native uuid type on Postgres. When this is enables and not on postgres, an error will be thrown
+       * This enables the native uuid type on Postgres. When this is enabled and not on postgres, an error will be thrown
        */
       useNativeType?: boolean;
     }
