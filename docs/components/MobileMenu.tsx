@@ -7,11 +7,7 @@ import Link from 'next/link';
 
 import { useHeaderContext } from './Header';
 
-import {
-  DocsNavigation,
-  UpdatesNavigation,
-  MarketingNavigation,
-} from './docs/Navigation';
+import { DocsNavigation, UpdatesNavigation, MarketingNavigation } from './docs/Navigation';
 import { WhyKeystone } from './icons/WhyKeystone';
 import { Keystone } from './icons/Keystone';
 import { Updates } from './icons/Updates';
