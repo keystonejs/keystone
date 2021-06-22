@@ -4,15 +4,25 @@ import { jsx } from '@emotion/react';
 import { useMediaQuery } from '../lib/media';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
 import { Highlight } from '../components/primitives/Highlight';
+import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/marketing/MWrapper';
+import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/marketing/TweetBox';
 import { InlineCode } from '../components/primitives/Code';
+import { Automated } from '../components/icons/Automated';
 import { Thinkmill } from '../components/icons/Thinkmill';
 import { CodeBox } from '../components/marketing/CodeBox';
+import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
 import { Emoji } from '../components/primitives/Emoji';
+import { Updates } from '../components/icons/Updates';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
+import { Custom } from '../components/icons/Custom';
+import { Filter } from '../components/icons/Filter';
+import { Shield } from '../components/icons/Shield';
+import { Watch } from '../components/icons/Watch';
+import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
 export default function IndexPage() {
@@ -147,6 +157,101 @@ export default function IndexPage() {
             feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
             <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
+        </div>
+
+        <div
+          css={{
+            marginTop: '9rem',
+          }}
+        >
+          <Type as="h2" look="heading48">
+            Batteries included. <Highlight look="grad5">No limitations.</Highlight>
+          </Type>
+          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+            Ship a backend easily without surrendering control.
+            <br />
+            Keystone has all you need to start fast and scale on your terms.
+          </Type>
+          <ul
+            css={mq({
+              listStyle: 'none',
+              margin: '4rem 0 0 0',
+              padding: 0,
+              display: 'grid',
+              gridTemplateColumns: ['repeat(auto-fit, minmax(7.5rem, 1fr))', '1fr 1fr 1fr 1fr 1fr'],
+              gap: '2rem',
+              gridRowGap: '4rem',
+              '& svg': {
+                height: '2.25rem',
+                marginBottom: '0.5rem',
+              },
+            })}
+          >
+            <li>
+              <WhyKeystone grad="grad5" />
+              <Type as="p" look="body18">
+                All the field types
+              </Type>
+            </li>
+            <li>
+              <Shield grad="grad5" />
+              <Type as="p" look="body18">
+                Access Control
+              </Type>
+            </li>
+            <li>
+              <Watch grad="grad5" />
+              <Type as="p" look="body18">
+                Session Management
+              </Type>
+            </li>
+            <li>
+              <Custom grad="grad5" />
+              <Type as="p" look="body18">
+                Custom Schema
+              </Type>
+            </li>
+            <li>
+              <Migration grad="grad5" />
+              <Type as="p" look="body18">
+                Database Migrations
+              </Type>
+            </li>
+            <li>
+              <Lab grad="grad5" />
+              <Type as="p" look="body18">
+                TypeScript Support
+              </Type>
+            </li>
+            <li>
+              <Filter grad="grad5" />
+              <Type as="p" look="body18">
+                Powerful Filters
+              </Type>
+            </li>
+            <li>
+              <Relational grad="grad5" />
+              <Type as="p" look="body18">
+                Relational Data
+              </Type>
+            </li>
+            <li>
+              <Automated grad="grad5" />
+              <Type as="p" look="body18">
+                Automated CRUD
+              </Type>
+            </li>
+            <li>
+              <Updates grad="grad5" />
+              <Type as="p" look="body18">
+                Event Hooks
+              </Type>
+            </li>
+          </ul>
+
+          <Button as="a" href="/why-keystone#features" look="soft" css={{ marginTop: '4rem' }}>
+            See all features <ArrowR />
+          </Button>
         </div>
       </MWrapper>
     </Page>
