@@ -40,7 +40,7 @@ export default function WhatsNew() {
         </Type>
         <Type
           as="h1"
-          look="heading94"
+          look="heading92"
           fontSize={['15vw', null, null, null, '15rem']}
           css={{ lineHeight: 1 }}
         >

@@ -93,7 +93,7 @@ export default function DS() {
 
   return (
     <Page>
-      <Type as="h1" look="heading94" margin={'var(--space-large) 0'}>
+      <Type as="h1" look="heading92" margin={'var(--space-large) 0'}>
         Design System
       </Type>
       <Type id="contents" as="h2" look="heading64" margin={'var(--space-large) 0'}>
@@ -542,7 +542,7 @@ export default function DS() {
       >
         Highlighting a <Highlight look="grad2">part of some text</Highlight>
       </Type>
-      <Type as="p" look="heading94">
+      <Type as="p" look="heading92">
         Highlighting <Highlight look="grad3">a part</Highlight>
       </Type>
       <Type as="p" look="heading84">

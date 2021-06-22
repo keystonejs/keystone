@@ -239,7 +239,6 @@ export function Footer() {
             <Emoji symbol="❤️" alt="Love" /> by the awesome Keystone community.
           </Type>
           <Socials
-            noGitHub
             css={mq({
               fontSize: '0.75rem',
               gap: '0.5rem',

@@ -3,46 +3,20 @@ import { jsx } from '@emotion/react';
 import { HTMLAttributes } from 'react';
 
 import { Twitter } from './icons/Twitter';
-import { GitHub } from './icons/GitHub';
 import { Slack } from './icons/Slack';
 
-type SocialsProps = {
-  noGitHub?: boolean;
-} & HTMLAttributes<HTMLElement>;
-
-export function Socials({ noGitHub, ...props }: SocialsProps) {
+export function Socials(props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       css={{
         display: 'inline-grid',
-        gridTemplateColumns: noGitHub ? '1fr 1fr' : '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr',
         gap: 'var(--space-large)',
         alignItems: 'center',
         marginLeft: 'auto',
       }}
       {...props}
     >
-      {!noGitHub && (
-        <a
-          href="https://github.com/keystonejs/keystone"
-          target="_blank"
-          rel="noopener noreferrer"
-          css={{
-            display: 'inline-flex',
-            padding: 0,
-            justifyContent: 'center',
-            borderRadius: '100%',
-            color: 'currentColor',
-            transition: 'color 0.3s ease',
-            ':hover': {
-              color: '#000',
-            },
-          }}
-        >
-          <GitHub css={{ height: '1.5em' }} />
-        </a>
-      )}
-
       <a
         href="https://twitter.com/keystonejs"
         target="_blank"

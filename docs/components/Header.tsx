@@ -14,7 +14,8 @@ import { NavItem } from './docs/Navigation';
 import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
-import { Socials } from './Socials';
+import { GitHub } from './icons/GitHub';
+import { Search } from './icons/Search';
 
 const HeaderContext = createContext();
 export const useHeaderContext = () => useContext(HeaderContext);
@@ -129,10 +130,9 @@ export function Header({ releases }: HeaderProps) {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            'auto max-content max-content',
+            'auto max-content max-content max-content',
             'max-content auto max-content max-content max-content',
             '15rem auto max-content max-content max-content',
-            '10rem auto max-content max-content max-content max-content max-content max-content',
             '15rem auto max-content max-content max-content max-content max-content max-content',
           ],
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
@@ -158,6 +158,20 @@ export function Header({ releases }: HeaderProps) {
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
+        <button
+          css={mq({
+            display: ['inline-block', 'none'],
+            appearance: 'none',
+            border: '0 none',
+            boxShadow: 'none',
+            background: 'transparent',
+            padding: '0.25rem',
+            cursor: 'pointer',
+            color: 'var(--muted)',
+          })}
+        >
+          <Search css={{ height: '1.25rem' }} />
+        </button>
         <DarkModeBtn />
         <Button
           as="a"
@@ -170,11 +184,24 @@ export function Header({ releases }: HeaderProps) {
         >
           Get Started
         </Button>
-        <Socials
+        <a
+          href="https://github.com/keystonejs/keystone"
+          target="_blank"
+          rel="noopener noreferrer"
           css={mq({
-            display: ['none', null, 'inline-grid'],
+            display: ['none', null, 'inline-flex'],
+            padding: 0,
+            justifyContent: 'center',
+            borderRadius: '100%',
+            color: 'currentColor',
+            transition: 'color 0.3s ease',
+            ':hover': {
+              color: '#000',
+            },
           })}
-        />
+        >
+          <GitHub css={{ height: '1.5em' }} />
+        </a>
         <HeaderContext.Provider value={{ open }}>
           <div ref={menuRef}>
             <button
