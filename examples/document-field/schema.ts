@@ -10,7 +10,12 @@ export const lists = createSchema({
       email: text({ isRequired: true, isUnique: true }),
       posts: relationship({ ref: 'Post.author', many: true }),
       // we only want to allow bios to have links and no other formatting things
-      bio: document({ links: true }),
+      bio: document({
+        formatting: undefined,
+        dividers: undefined,
+        links: true,
+        layouts: undefined,
+      }),
     },
   }),
   Post: list({

@@ -47,8 +47,9 @@ export const componentBlocks = {
         relationships: 'inherit',
       }),
     },
-    // this component will be used as the preview in the document editor
-    // it accepts props that correspond to the `props` config above
+    // This component will be used to present the block in the document editor
+    // it accepts props that correspond to the `props` config above, and uses
+    // the
     component: function Notice({ content, intent }) {
       const { palette, radii, spacing } = useTheme();
       const intentConfig = {
@@ -102,6 +103,9 @@ export const componentBlocks = {
     // this hides the chrome around the component block that is shown by default
     // which also means that the form so the toolbar/preview must provide all the ui for customising the component
     chromeless: true,
+    // This defines the inline toolbar shown at the bottom of the component block while editting it.
+    // This is where we provide UI to select the intent of the notice. We set the intent value using
+    // props.intent.onChange(). We also provide a
     toolbar({ props, onRemove }) {
       return (
         <ToolbarGroup>
