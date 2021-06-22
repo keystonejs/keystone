@@ -4,8 +4,6 @@ const withImages = require('next-images');
 const mdxHints = require('remark-hint');
 const gfm = require('remark-gfm');
 
-const redirectRoutes = require('./redirects.js');
-
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
@@ -13,6 +11,7 @@ const withMDX = require('@next/mdx')({
   },
 });
 
+const redirectRoutes = require('./redirects.js');
 const redirects = {
   async redirects() {
     return redirectRoutes;
