@@ -483,6 +483,17 @@ export default function DS() {
             />
           </label>
         </li>
+        <li>
+          <label>
+            Gradient 5{' '}
+            <input
+              type="radio"
+              name="icon"
+              checked={icon === 'grad5'}
+              onChange={() => setIcon('grad5')}
+            />
+          </label>
+        </li>
       </ul>
       <div
         css={{
@@ -547,6 +558,9 @@ export default function DS() {
       </Type>
       <Type as="p" look="heading84">
         Highlighting a <Highlight look="grad4">part of</Highlight> some text
+      </Type>
+      <Type as="p" look="heading84">
+        Highlighting a <Highlight look="grad5">part of</Highlight> some text
       </Type>
     </Page>
   );

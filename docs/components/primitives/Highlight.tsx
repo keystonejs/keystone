@@ -19,6 +19,10 @@ const styleMap = {
     '--grad-1': 'var(--grad4-1)',
     '--grad-2': 'var(--grad4-2)',
   },
+  grad5: {
+    '--grad-1': 'var(--grad5-1)',
+    '--grad-2': 'var(--grad5-2)',
+  },
 };
 
 type HighlightProps = {

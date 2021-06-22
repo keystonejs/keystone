@@ -24,6 +24,10 @@ export function Gradients({ name }: { name: string }) {
         <stop offset="0%" stopColor="var(--grad4-1)" />
         <stop offset="100%" stopColor="var(--grad4-2)" />
       </linearGradient>
+      <linearGradient id={`${name}-grad5`} x1="0%" x2="50%" y1="0%" y2="71.9%">
+        <stop offset="0%" stopColor="var(--grad5-2)" />
+        <stop offset="100%" stopColor="var(--grad5-1)" />
+      </linearGradient>
       <linearGradient id={`${name}-logo`} x1="0%" x2="50%" y1="0%" y2="71.9%">
         <stop offset="0%" stopColor="var(--grad1-2)" />
         <stop offset="100%" stopColor="var(--grad1-1)" />
