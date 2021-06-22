@@ -4,6 +4,8 @@ const withImages = require('next-images');
 const mdxHints = require('remark-hint');
 const gfm = require('remark-gfm');
 
+const redirectRoutes = require('./redirects.js');
+
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
@@ -13,14 +15,7 @@ const withMDX = require('@next/mdx')({
 
 const redirects = {
   async redirects() {
-    // if this array becomes bigger than 3 entries, please make it a separate file
-    return [
-      {
-        source: '/faqs',
-        destination: '/',
-        permanent: true,
-      },
-    ];
+    return redirectRoutes;
   },
 };
 
