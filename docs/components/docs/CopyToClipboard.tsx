@@ -8,30 +8,19 @@ import { Link } from '../icons/Link';
 export function CopyToClipboard({ value }: { value: string }) {
   const { addToast } = useToasts();
 
-  const onSuccess = () => {
-    addToast('Copied to clipboard', {
-      appearance: 'success',
-      autoDismiss: true,
-      autoDismissTimeout: 2000,
-    });
-  };
-
-  const onFailure = () => {
-    addToast('Failed to copy to clipboard', {
-      appearance: 'error',
-      autoDismiss: true,
-      autoDismissTimeout: 2000,
-    });
-  };
-
-  const onClick = () => {
+  const handleCopy = () => {
     if (typeof value !== 'string' || typeof window === 'undefined') return;
+
+    const toastOpt = { autoDismiss: true, autoDismissTimeout: 2000 };
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const text = `${url}#${value}`;
 
     if (navigator) {
       // use the new navigator.clipboard API if it exists
-      navigator.clipboard.writeText(text).then(onSuccess, onFailure);
+      navigator.clipboard.writeText(text).then(
+        () => addToast('Copied to clipboard', { appearance: 'success', ...toastOpt }),
+        () => addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt })
+      );
       return;
     } else {
       // Fallback to a library that leverages document.execCommand
@@ -40,7 +29,7 @@ export function CopyToClipboard({ value }: { value: string }) {
       try {
         copy(text);
       } catch (e) {
-        addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
+        addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt });
       }
 
       return;
@@ -72,7 +61,7 @@ export function CopyToClipboard({ value }: { value: string }) {
           color: 'var(--link)',
         },
       }}
-      onClick={onClick}
+      onClick={handleCopy}
     >
       <Link />
     </a>
