@@ -134,11 +134,13 @@ export const styleMap = {
     ...common.body,
     fontSize: '1.5rem',
     fontWeight: 400,
+    lineHeight: 1.7,
   },
   body24bold: {
     ...common.body,
     fontSize: '1.5rem',
     fontWeight: 600,
+    lineHeight: 1.7,
   },
 } as const;
 

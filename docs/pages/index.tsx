@@ -58,7 +58,7 @@ export default function IndexPage() {
           </IntroLead>
         </IntroWrapper>
 
-        <div
+        <section
           css={mq({
             display: ['grid', 'inline-grid'],
             gridTemplateColumns: ['1fr', 'auto 1fr'],
@@ -75,9 +75,9 @@ export default function IndexPage() {
           >
             Read the docs <ArrowR />
           </Button>
-        </div>
+        </section>
 
-        <div
+        <section
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '0.85fr 1.15fr'],
@@ -145,9 +145,9 @@ export default function IndexPage() {
               </li>
             </ul>
           </div>
-        </div>
+        </section>
 
-        <div
+        <section
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '1fr 1fr 1fr'],
@@ -172,9 +172,9 @@ export default function IndexPage() {
             feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
             <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
-        </div>
+        </section>
 
-        <div
+        <section
           css={{
             marginTop: '9rem',
           }}
@@ -266,7 +266,7 @@ export default function IndexPage() {
           <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
-        </div>
+        </section>
 
         <div
           css={{

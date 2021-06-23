@@ -21,7 +21,7 @@ export function WhyKeystone({ grad, ...props }: IconProps) {
         fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="2"
+        strokeWidth="1.7"
         d="M2 0v4M0 2h4M3 14v4m-2-2h4m5-16l2.3 6.9L18 9l-5.7 2.1L10 18l-2.3-6.9L2 9l5.7-2.1L10 0z"
       />
     </svg>
