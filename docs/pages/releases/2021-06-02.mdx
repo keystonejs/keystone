@@ -5,7 +5,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 ## What's New
 
-We have a new JSON field <Emoji symbol="✨" alt="sparkle"/>, a bunch of new learning resources, and plenty of under the hood optimisations in this big release. <Emoji symbol="💪" alt="muscle"/>
+We have a new JSON field <Emoji symbol="✨" alt="Sparkle"/>, a bunch of new learning resources, and plenty of under the hood optimisations in this big release. <Emoji symbol="💪" alt="Muscle"/>
 
 ```typescript
 "@keystone-next/adapter-prisma-legacy": "8.0.0",
@@ -20,7 +20,7 @@ We have a new JSON field <Emoji symbol="✨" alt="sparkle"/>, a bunch of new lea
 "@keystone-next/utils-legacy": "11.0.1",
 ```
 
-### JSON Field <Emoji symbol="👩🏻‍💻" alt="person at laptop"/>
+### JSON Field <Emoji symbol="👩🏻‍💻" alt="Person at laptop"/>
 
 Thanks to the new `json` field, you can now represent JSON blobs in your backend. Check out the [JSON example project](https://github.com/keystonejs/keystone/tree/master/examples/json) to learn more.
 
@@ -34,14 +34,14 @@ Package: list({
 }),
 ```
 
-### More Learning Resources <Emoji symbol="🧑‍🏫" alt="student at blackboard"/>
+### More Learning Resources <Emoji symbol="🧑‍🏫" alt="Student at blackboard"/>
 
 In addition to the JSON one above, we added new examples for:
 
 - Setting [Default Values](https://github.com/keystonejs/keystone/tree/master/examples/default-values) for fields.
 - [Extending the GraphQL Schema](https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema) with custom queries and mutations.
 
-We also published a tutorial that shows you [how to embed Keystone and SQLite in a Next.js app](https://next.keystonejs.com/tutorials/embedded-mode-with-sqlite-nextjs). The end result is an app with a queryable GraphQL endpoint based on your Keystone schema that you can run live on Vercel – for free! <Emoji symbol="🚀" alt="rocket"/>
+We also published a tutorial that shows you [how to embed Keystone and SQLite in a Next.js app](https://next.keystonejs.com/tutorials/embedded-mode-with-sqlite-nextjs). The end result is an app with a queryable GraphQL endpoint based on your Keystone schema that you can run live on Vercel – for free! <Emoji symbol="🚀" alt="Rocket"/>
 
 ### sortBy deprecated with improvements to orderBy
 
@@ -78,7 +78,7 @@ Rather than writing `allUsers(orderBy: "name_ASC")` you now write `allUsers(orde
 
 Note: each `UserOrderByInput` must have exactly one key, or else an error will be returned.
 
-### withItemData replaced with sessionData <Emoji symbol="🔧" alt="wrench"/>
+### withItemData replaced with sessionData <Emoji symbol="🔧" alt="Wrench"/>
 
 We removed `withItemData` in favour of a `sessionData` option to the `createAuth()` function.
 
@@ -147,7 +147,7 @@ export default withAuth(
 );
 ```
 
-### More consistent and predictable createItems, updateItems, and deleteItems mutations <Emoji symbol="🧘‍♀️" alt="meditator"/>
+### More consistent and predictable createItems, updateItems, and deleteItems mutations <Emoji symbol="🧘‍♀️" alt="Meditator"/>
 
 We fixed the behaviour of `createItems`, `updateItems`, and `deleteItems` mutations to be consistent and predictable.
 
@@ -171,11 +171,11 @@ A `posts` relationship field would have the following field added to the API:
 postsCount(where: PostWhereInput! = {}): Int
 ```
 
-### Prisma updated to 2.24.0 <Emoji symbol="⬆️" alt="up arrow"/>
+### Prisma updated to 2.24.0 <Emoji symbol="⬆️" alt="Up arrow"/>
 
 We've updated our Prisma dependency from `2.22.1` to `2.24.0`! Check out the [Prisma release notes](https://github.com/prisma/prisma/releases) for more details.
 
-### Credits <Emoji symbol="🎉" alt="party popper"/>
+### Credits <Emoji symbol="Party popper"/>
 
 - Thanks [@jonowu](https://github.com/jonowu) for adding a `sameSite` option to the session options for cookies. Can be one of true, false, 'strict', 'lax' or 'none' as per Mozilla docs. See the [PR](https://github.com/keystonejs/keystone/pull/5774) for more details!
 
