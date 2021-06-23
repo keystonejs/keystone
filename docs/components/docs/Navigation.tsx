@@ -39,7 +39,13 @@ type NavItemProps = {
   children: ReactNode;
   exactMatch?: boolean;
 };
-export function NavItem({ href, isActive: _isActive, isPlaceholder, children }: NavItemProps) {
+export function NavItem({
+  href,
+  isActive: _isActive,
+  isPlaceholder,
+  children,
+  ...props
+}: NavItemProps) {
   const { pathname } = useRouter();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
@@ -60,6 +66,7 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, children }: 
             textDecoration: 'underline',
           },
         }}
+        {...props}
       >
         {children}
       </a>
