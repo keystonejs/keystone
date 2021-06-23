@@ -7,6 +7,7 @@ export function Thinkmill({ grad, ...props }: IconProps) {
   return (
     <svg aria-label="Thinkmill" role="img" viewBox="0 0 62 61" {...props}>
       <Gradients name="Thinkmill" />
+      <circle fill="#fff" cx="30.9596" cy="30.5" r="28" />
       <path
         fill={grad ? `url(#Thinkmill-${grad})` : '#ff3838'}
         fillRule="evenodd"

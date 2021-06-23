@@ -10,6 +10,7 @@ export { DarkMode } from './DarkMode';
 export { Docs } from './Docs';
 export { Edit } from './Edit';
 export { Filter } from './Filter';
+export { FrontEndLogos } from './FrontEndLogos';
 export { GitHub } from './GitHub';
 export { Hamburger } from './Hamburger';
 export { Keystone } from './Keystone';

@@ -46,6 +46,7 @@ export const COLORS = {
     '--text-disabled': '#cbd5e0',
     '--code': '#47546b',
     '--code-bg': '#f6f7f9',
+    '--shadow': 'rgba(22, 107, 255, 0.1)',
 
     '--info': '#0299e7',
     '--info-bg': 'rgba(2, 153, 231, 0.1)',
@@ -88,6 +89,7 @@ export const COLORS = {
     '--text-disabled': '#2d3748',
     '--code': '#cbd5e0',
     '--code-bg': '#2d3748',
+    '--shadow': '#000',
 
     '--info': '#0299e7',
     '--info-bg': 'rgba(2, 153, 231, 0.05)',
@@ -101,8 +103,8 @@ export const COLORS = {
     '--danger--40': 'rgba(220, 38, 38, 0.6)',
     '--alert-text': 'rgba(247, 250, 252, 0.8)',
 
-    '--grad1-1': '#fff',
-    '--grad1-2': '#fff',
+    '--grad1-1': '#334561',
+    '--grad1-2': '#7a869a',
     '--grad2-1': '#334561',
     '--grad2-2': '#7a869a',
     '--grad3-1': '#334561',

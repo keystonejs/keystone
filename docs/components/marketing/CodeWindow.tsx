@@ -72,13 +72,14 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         border: '1px solid var(--border)',
         borderRadius: '1rem',
         overflow: 'hidden',
+        background: 'var(--app-bg)',
       })}
       {...props}
     >
       <div
         css={{
           borderBottom: '1px solid var(--border)',
-          padding: '1rem',
+          padding: '0.625rem 1.75rem',
         }}
       >
         <MenuBtn />
@@ -87,20 +88,14 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
       </div>
       <div
         css={{
-          position: 'relative',
+          display: 'grid',
+          gridTemplateColumns: '3.5rem auto',
           fontFamily: 'var(--font-mono)',
-          whiteSpace: 'nowrap',
-          paddingLeft: '4rem',
+          gap: '0.5rem',
         }}
       >
         <div
           css={{
-            position: 'absolute',
-            whiteSpace: 'pre',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: '3.5rem',
             padding: '1rem 0.5rem',
             background: 'var(--code-bg)',
             color: 'var(--muted)',

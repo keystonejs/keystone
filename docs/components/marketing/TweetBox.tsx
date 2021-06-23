@@ -19,7 +19,7 @@ export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps)
         padding: '2rem',
         border: '1px solid var(--border)',
         borderRadius: '1rem',
-        boxShadow: '0 23px 45px -8px rgba(22, 107, 255, 0.1)',
+        boxShadow: '0 23px 45px -8px var(--shadow)',
         maxWidth: '22.5rem',
         margin: '0 auto',
       }}

@@ -35,7 +35,7 @@ export function Highlight({ look = 'grad1', as: Tag = 'span', ...props }: Highli
     <Tag
       css={{
         ...styleMap[look],
-        backgroundImage: 'linear-gradient(to right, var(--grad-1), var(--grad-2))',
+        backgroundImage: 'linear-gradient(135deg, var(--grad-1), var(--grad-2))',
         backgroundClip: 'text',
         color: 'transparent',
       }}
