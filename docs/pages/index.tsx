@@ -1,11 +1,13 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
 import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
+import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/marketing/MWrapper';
@@ -18,6 +20,7 @@ import { CodeBox } from '../components/marketing/CodeBox';
 import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
 import { Emoji } from '../components/primitives/Emoji';
+import { Content } from '../components/icons/Content';
 import { Updates } from '../components/icons/Updates';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
@@ -25,6 +28,7 @@ import { Custom } from '../components/icons/Custom';
 import { Filter } from '../components/icons/Filter';
 import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
+import { Code } from '../components/icons/Code';
 import { Tick } from '../components/icons/Tick';
 import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
@@ -257,7 +261,7 @@ export default function IndexPage() {
               </Type>
             </li>
           </ul>
-          <Button as="a" href="/why-keystone#features" look="soft" css={{ marginTop: '4rem' }}>
+          <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
         </div>
@@ -667,17 +671,17 @@ export const lists = createSchema({
               </Button>
             </li>
             <li>
-              <Button as="a" href="/TODO" look="soft">
+              <Button as="a" href="/why-keystone#websites" look="soft">
                 Websites <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/TODO" look="soft">
+              <Button as="a" href="/why-keystone#ecommerce" look="soft">
                 eCommerce <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/TODO" look="soft">
+              <Button as="a" href="/why-keystone#multichannel" look="soft">
                 Multichannel <ArrowR />
               </Button>
             </li>
@@ -715,6 +719,78 @@ export const lists = createSchema({
               height={719}
             />
           </div>
+        </section>
+
+        <section
+          css={{
+            marginTop: '6.25rem',
+          }}
+        >
+          <Type as="h2" look="heading48">
+            Unify your <Highlight look="grad3">team dynamic</Highlight>
+          </Type>
+          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
+            Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
+            natural. A tool your team can grow with.
+          </Type>
+          <ul
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
+              gap: '1.5rem',
+              listStyle: 'none',
+              padding: 0,
+              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
+              maxWidth: ['20rem', 'none'],
+              '& svg': {
+                height: '2rem',
+              },
+              '& svg, & h3, & p': {
+                marginBottom: '1rem',
+              },
+            })}
+          >
+            <li>
+              <Code grad="grad3" />
+              <Type as="h3" look="heading24">
+                Developers
+              </Type>
+              <Type as="p" look="body18">
+                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
+                at home with the tools you know and love.
+              </Type>
+              <Link href="/for-developers">
+                <a>Keystone for Developers →</a>
+              </Link>
+            </li>
+            <li>
+              <Content grad="grad3" />
+              <Type as="h3" look="heading24">
+                Content people
+              </Type>
+              <Type as="p" look="body18">
+                Get the fields, forms, and workflows you need to do your best work. Tell the full
+                story with a rich text editor that can be configured for any content need.
+              </Type>
+              <Link href="/for-developers">
+                <a>Keystone for editors →</a>
+              </Link>
+            </li>
+            <li>
+              <Organization grad="grad3" />
+              <Type as="h3" look="heading24">
+                Organisations
+              </Type>
+              <Type as="p" look="body18">
+                Realise your vision with a backend you can shape to fit your logic. Own your data,
+                cultivate a productive content culture, send your message anywhere, and scale on
+                your terms.
+              </Type>
+              <Link href="/for-developers">
+                <a>Keystone for organisations →</a>
+              </Link>
+            </li>
+          </ul>
         </section>
       </MWrapper>
     </Page>
