@@ -97,10 +97,12 @@ export default function IndexPage() {
               }}
             >
               <Thinkmill css={{ height: '3.75rem' }} />
-              <Type as="p" look="body18" colod="var(--muted)">
+              <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. Keystone is the platform we've always
-                wanted to use, so we're building it in the open.
+                big products at scale for names you know. <br />
+                <Link href="/why-keystone">
+                  <a>Why we built Keystone</a>
+                </Link>
               </Type>
             </div>
           </div>
@@ -121,7 +123,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad5">1st</Highlight>
                 </Type>
-                <Type as="p" look="body18" colod="var(--muted)">
+                <Type as="p" look="body18" color="var(--muted)">
                   NodeJS CMS
                 </Type>
               </li>
@@ -129,7 +131,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad5">900k+</Highlight>
                 </Type>
-                <Type as="p" look="body18" colod="var(--muted)">
+                <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> installs
                 </Type>
               </li>
@@ -137,7 +139,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad5">160+</Highlight>
                 </Type>
-                <Type as="p" look="body18" colod="var(--muted)">
+                <Type as="p" look="body18" color="var(--muted)">
                   contributors
                 </Type>
               </li>
@@ -773,7 +775,7 @@ export const lists = createSchema({
                 story with a rich text editor that can be configured for any content need.
               </Type>
               <Link href="/for-developers">
-                <a>Keystone for editors →</a>
+                <a>Keystone for Content Management →</a>
               </Link>
             </li>
             <li>
@@ -787,7 +789,7 @@ export const lists = createSchema({
                 your terms.
               </Type>
               <Link href="/for-developers">
-                <a>Keystone for organisations →</a>
+                <a>Keystone for Organisations →</a>
               </Link>
             </li>
           </ul>
