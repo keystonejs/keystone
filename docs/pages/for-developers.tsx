@@ -1,5 +1,6 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
@@ -19,7 +20,10 @@ import { Nextjs } from '../components/icons/Nextjs';
 import { Prisma } from '../components/icons/Prisma';
 import { ArrowR } from '../components/icons/ArrowR';
 import { Pill } from '../components/marketing/Pill';
+import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
+
+// import contentEditorMockui from '../public/assets/content-editor-mockui.png';
 
 export default function ForDevelopers() {
   const mq = useMediaQuery();
@@ -164,9 +168,101 @@ export default function ForDevelopers() {
           </div>
         </Section>
 
-        <Section>text [picture]</Section>
+        <Section
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
+            gap: '2rem',
+            alignItems: 'center',
+          })}
+        >
+          <div>
+            <Type as="h2" look="heading48">
+              A content studio your storytellers will{' '}
+              <Highlight look="grad3">rally around.</Highlight>
+            </Type>
+            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+              Give your editors what they need without changing tools. Keystone has a highly
+              configurable CMS built in. Program with JavaScript, store changes in version control,
+              and integrate with your preferred CI tools.
+            </Type>
+            <Link href="/for-content-management">
+              <a>Keystone for content management →</a>
+            </Link>
+          </div>
+          <div>
+            TODO
+            {/*<Image
+              src={contentEditorMockui}
+              alt="Content Editor Mock UI"
+              width={2109}
+              height={1591}
+            />*/}
+          </div>
+        </Section>
 
-        <Section>[picture] text</Section>
+        <Section
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
+            gap: '2rem',
+            alignItems: 'center',
+          })}
+        >
+          <div>
+            TODO
+            {/*<Image
+              src={contentEditorMockui}
+              alt="Content Editor Mock UI"
+              width={2109}
+              height={1591}
+            />*/}
+          </div>
+          <div>
+            <Type as="h2" look="heading48">
+              A Rich Text editor for the{' '}
+              <Highlight look="grad3">design system generation.</Highlight>
+            </Type>
+            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+              Keystone’s Document field is the first of its kind: intuitive, customisable, and works
+              with your design system components. Make it as lean or full-featured as you like. It‘s
+              up to you.
+            </Type>
+            <ul
+              css={{
+                listStyle: 'none',
+                margin: '1rem 0',
+                padding: 0,
+                '& svg': {
+                  height: '1rem',
+                  marginRight: '0.75rem',
+                },
+              }}
+            >
+              <li>
+                <Tick grad="grad3" />
+                <Type look="body18" color="var(--muted)">
+                  Configurable interface
+                </Type>
+              </li>
+              <li>
+                <Tick grad="grad3" />
+                <Type look="body18" color="var(--muted)">
+                  BYO custom React components
+                </Type>
+              </li>
+              <li>
+                <Tick grad="grad3" />
+                <Type look="body18" color="var(--muted)">
+                  Structured JSON output
+                </Type>
+              </li>
+            </ul>
+            <Link href="/docs/guides/document-fields">
+              <a>Try the demo →</a>
+            </Link>
+          </div>
+        </Section>
 
         <Section>
           <Type as="h2" look="heading30">
