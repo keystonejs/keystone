@@ -71,15 +71,6 @@ We render the `Author.bio` field using the default document renderer.
 ```tsx
 import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
 
-const renderers: DocumentRendererProps['renderers'] = {
-  block: {
-    heading({ level, children, textAlign }) {
-      const Comp = `h${level}` as const;
-      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>;
-    },
-  },
-};
-
 <DocumentRenderer document={post.author.bio?.document || []} />;
 ```
 
