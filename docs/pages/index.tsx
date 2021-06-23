@@ -273,7 +273,7 @@ export default function IndexPage() {
             marginTop: '9rem',
           }}
         >
-          <Type as="h2" look="heading48">
+          <Type as="h2" look="heading48" id="how-id-works">
             How it works
           </Type>
           <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
