@@ -16,10 +16,12 @@ import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/marketing/TweetBox';
 import { InlineCode } from '../components/primitives/Code';
 import { Automated } from '../components/icons/Automated';
+import { Section } from '../components/marketing/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
 import { CodeBox } from '../components/marketing/CodeBox';
 import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
+import { EndCta } from '../components/marketing/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
 import { Content } from '../components/icons/Content';
 import { Updates } from '../components/icons/Updates';
@@ -58,7 +60,7 @@ export default function IndexPage() {
           </IntroLead>
         </IntroWrapper>
 
-        <section
+        <div
           css={mq({
             display: ['grid', 'inline-grid'],
             gridTemplateColumns: ['1fr', 'auto 1fr'],
@@ -75,14 +77,13 @@ export default function IndexPage() {
           >
             Read the docs <ArrowR />
           </Button>
-        </section>
+        </div>
 
-        <section
+        <Section
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '0.85fr 1.15fr'],
             gap: ['1rem', '2rem', '4rem'],
-            marginTop: '10rem',
           })}
         >
           <div>
@@ -145,15 +146,14 @@ export default function IndexPage() {
               </li>
             </ul>
           </div>
-        </section>
+        </Section>
 
-        <section
+        <Section
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '1fr 1fr 1fr'],
             alignItems: 'flex-start',
             gap: '3rem',
-            marginTop: '5rem',
           })}
         >
           <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad2">
@@ -172,13 +172,9 @@ export default function IndexPage() {
             feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
             <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
-        </section>
+        </Section>
 
-        <section
-          css={{
-            marginTop: '9rem',
-          }}
-        >
+        <Section>
           <Type as="h2" look="heading48">
             Batteries included. <Highlight look="grad5">No limitations.</Highlight>
           </Type>
@@ -266,13 +262,9 @@ export default function IndexPage() {
           <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
-        </section>
+        </Section>
 
-        <div
-          css={{
-            marginTop: '9rem',
-          }}
-        >
+        <Section>
           <Type as="h2" look="heading48" id="how-it-works">
             How it works
           </Type>
@@ -281,7 +273,7 @@ export default function IndexPage() {
             <br />
             Open, flexible, and natural. A tool your team can grow with.
           </Type>
-        </div>
+        </Section>
 
         <ol
           css={mq({
@@ -618,9 +610,8 @@ export const lists = createSchema({
           </li>
         </ol>
 
-        <section
+        <Section
           css={{
-            marginTop: '6.25rem',
             textAlign: 'center',
           }}
         >
@@ -688,11 +679,10 @@ export const lists = createSchema({
               </Button>
             </li>
           </ul>
-        </section>
+        </Section>
 
-        <section
+        <Section
           css={{
-            marginTop: '6.25rem',
             textAlign: 'center',
           }}
         >
@@ -721,13 +711,9 @@ export const lists = createSchema({
               height={719}
             />
           </div>
-        </section>
+        </Section>
 
-        <section
-          css={{
-            marginTop: '6.25rem',
-          }}
-        >
+        <Section>
           <Type as="h2" look="heading48">
             Unify your <Highlight look="grad3">team dynamic</Highlight>
           </Type>
@@ -793,71 +779,11 @@ export const lists = createSchema({
               </Link>
             </li>
           </ul>
-        </section>
+        </Section>
 
         <CommunityCta />
 
-        <section
-          css={{
-            marginTop: '12.5rem',
-            textAlign: 'center',
-          }}
-        >
-          <Type as="h2" look="heading64" margin="0 auto">
-            Start building <Highlight look="grad4">today.</Highlight>
-          </Type>
-          <ul
-            css={{
-              listStyle: 'none',
-              margin: '1rem 0 0 0',
-              padding: 0,
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
-              gap: '1rem',
-              flexWrap: 'wrap',
-              '& > li': {
-                display: 'inline-block',
-                padding: 0,
-              },
-              '& svg': {
-                height: '1rem',
-                marginRight: '1rem',
-              },
-            }}
-          >
-            <li>
-              <Tick grad="grad4" />
-              <Type look="body18" color="var(--muted)">
-                5 minute starters
-              </Type>
-            </li>
-            <li>
-              <Tick grad="grad4" />
-              <Type look="body18" color="var(--muted)">
-                Example projects
-              </Type>
-            </li>
-            <li>
-              <Tick grad="grad4" />
-              <Type look="body18" color="var(--muted)">
-                Free forever
-              </Type>
-            </li>
-            <li>
-              <Tick grad="grad4" />
-              <Type look="body18" color="var(--muted)">
-                No lock-in
-              </Type>
-            </li>
-          </ul>
-          <CodeBox code="yarn create keystone-app" css={{ margin: '2rem 0' }} />
-          <div>
-            <Button as="a" href="/docs">
-              Get started <ArrowR />
-            </Button>
-          </div>
-        </section>
+        <EndCta grad="grad4" />
       </MWrapper>
     </Page>
   );

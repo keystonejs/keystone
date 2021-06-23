@@ -73,6 +73,9 @@ export default function App({ Component, pageProps }: AppProps) {
           background: var(--danger-bg);
           border-left: 6px solid var(--danger);
         }
+        .js-focus-visible :focus:not(.focus-visible) {
+          outline: none;
+        }
         *:focus-visible, input:focus-visible, button:focus-visible, [type="submit"]:focus-visible {
           outline: 1px dashed var(--focus);
           outline-offset: 3px;

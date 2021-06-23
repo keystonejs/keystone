@@ -3,24 +3,24 @@ import type { HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
 import Image from 'next/image';
 
+import communityMap from '../../public/assets/community-map.png';
+
 import { useMediaQuery } from '../../lib/media';
 import { Button } from '../primitives/Button';
 import { Type } from '../primitives/Type';
 import { ArrowR } from '../icons/ArrowR';
 import { Tick } from '../icons/Tick';
-
-import communityMap from '../../public/assets/community-map.png';
+import { Section } from './Section';
 
 export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery();
 
   return (
-    <section
+    <Section
       css={mq({
         display: 'grid',
         gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.2fr 0.8fr'],
         gap: '1rem',
-        marginTop: '6.25rem',
         border: '1px solid var(--border)',
         borderRadius: '1rem',
         padding: '2rem',
@@ -87,6 +87,6 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           </li>
         </ul>
       </div>
-    </section>
+    </Section>
   );
 }

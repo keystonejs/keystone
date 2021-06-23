@@ -79,7 +79,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
               alignItems: 'center',
             }}
           >
-            <Link href="/">
+            <Link href="/" passHref>
               <a tabIndex={open ? 0 : -1}>
                 <Keystone grad="logo" css={{ height: '2rem' }} />
               </a>
@@ -109,6 +109,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
           >
             <Link href="/why-keystone" passHref>
               <a
+                tabIndex={open ? 0 : -1}
                 css={{
                   display: 'flex',
                   fontSize: '1rem',
@@ -130,6 +131,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
             </Link>
             <Link href="/updates" passHref>
               <a
+                tabIndex={open ? 0 : -1}
                 css={{
                   display: 'flex',
                   fontSize: '1rem',
@@ -151,6 +153,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
             </Link>
             <Link href="/docs" passHref>
               <a
+                tabIndex={open ? 0 : -1}
                 css={{
                   display: 'flex',
                   fontSize: '1rem',

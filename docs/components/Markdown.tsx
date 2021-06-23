@@ -3,8 +3,8 @@ import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 
-import { Code, InlineCode } from '../components/primitives/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/docs/Heading';
+import { Code, InlineCode } from '../components/primitives/Code';
 import { getHeadings } from '../lib/getHeadings';
 import { DocsPage } from '../components/Page';
 

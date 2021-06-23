@@ -63,7 +63,7 @@ export function CopyToClipboard({ value }: { value: string }) {
       }}
       onClick={handleCopy}
     >
-      <Link />
+      <Link css={{ height: '1rem' }} />
     </a>
   );
 }

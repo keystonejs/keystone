@@ -40,7 +40,10 @@ export function FrontEndLogos({ grad, ...props }: IconProps) {
           fill={grad ? `url(#FrontEndLogos-${grad})` : 'currentColor'}
           d="M101.5.6l-5.2 9.2L91 .6H73.6l22.7 39.8L119 .6h-17.5z"
         />
-        <path fill="var(--muted)" d="M101.5.6l-5.2 9.2L91 .6h-8.3l13.6 23.9L109.9.6h-8.4z" />
+        <path
+          fill="var(--text-disabled)"
+          d="M101.5.6l-5.2 9.2L91 .6h-8.3l13.6 23.9L109.9.6h-8.4z"
+        />
       </g>
       <path
         fill={grad ? `url(#FrontEndLogos-${grad})` : 'currentColor'}
@@ -63,7 +66,7 @@ export function FrontEndLogos({ grad, ...props }: IconProps) {
         clip-rule="evenodd"
       />
       <path
-        fill="var(--muted)"
+        fill="var(--text-disabled)"
         d="M285.1 43.3V43l.2-.3c.1-.4.3-1 .1-1.4l-.6-1.6-13.1-23.1-1.9-3.5h-.1l-2 3.5-13.2 23-.5 1.7a3 3 0 00.3 1.9c.5.7 1.3 1.4 3 1.4H282c.5 0 2.4 0 3.2-1.4zm-15.4-23.1l12 21.2h-24l12-21.2z"
       />
       <path
