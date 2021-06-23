@@ -48,7 +48,7 @@ export default function IndexPage() {
       <MWrapper>
         <IntroWrapper>
           <IntroHeading>
-            The <Highlight grad="grad1">superpowered</Highlight> CMS for developers
+            The <Highlight look="grad1">superpowered</Highlight> CMS for developers
           </IntroHeading>
           <IntroLead>
             Describe your schema, and Keystone gives you a powerful GraphQL API with a beautiful
@@ -650,7 +650,6 @@ export const lists = createSchema({
               display: 'flex',
               gap: '1rem',
               justifyContent: 'center',
-              gap: '1rem',
               flexWrap: 'wrap',
               '& > li': {
                 display: 'inline-block',

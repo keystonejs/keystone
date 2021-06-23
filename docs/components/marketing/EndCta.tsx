@@ -33,7 +33,6 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
           display: 'flex',
           gap: '1rem',
           justifyContent: 'center',
-          gap: '1rem',
           flexWrap: 'wrap',
           '& > li': {
             display: 'inline-block',

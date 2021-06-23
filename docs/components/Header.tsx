@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
+import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
 import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
@@ -17,7 +18,8 @@ import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
 import { Search } from './icons/Search';
 
-const HeaderContext = createContext();
+type HeaderContextType = { open: boolean };
+const HeaderContext = createContext<HeaderContextType>({ open: false });
 export const useHeaderContext = () => useContext(HeaderContext);
 
 function Logo() {
@@ -107,17 +109,23 @@ export function Header({ releases }: HeaderProps) {
     document.body.style.overflow = 'auto';
   }, []);
 
-  const handleOpen = () => {
-    setOpen(true);
-    document.body.style.overflow = 'hidden';
-    document.getElementById('mobile-menu-close-btn').focus();
-  };
+  const handleOpen = useCallback(
+    () => () => {
+      setOpen(true);
+      document.body.style.overflow = 'hidden';
+      document.getElementById('mobile-menu-close-btn')?.focus();
+    },
+    []
+  );
 
-  const handleClose = () => {
-    setOpen(false);
-    document.body.style.overflow = 'auto';
-    document.getElementById('skip-link-navigation-btn').focus();
-  };
+  const handleClose = useCallback(
+    () => () => {
+      setOpen(false);
+      document.body.style.overflow = 'auto';
+      document.getElementById('skip-link-navigation-btn')?.focus();
+    },
+    []
+  );
 
   return (
     <header
@@ -207,7 +215,7 @@ export function Header({ releases }: HeaderProps) {
             <button
               onClick={handleOpen}
               id="skip-link-navigation-btn"
-              tabIndex="0"
+              tabIndex={0}
               css={mq({
                 display: ['inline-block', null, 'none'],
                 appearance: 'none',

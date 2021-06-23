@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { Fragment } from 'react';
+import { AnchorHTMLAttributes, Fragment, useCallback } from 'react';
 
 import { useMediaQuery } from '../lib/media';
 
-function SkipLink({ href, children, ...props }) {
+function SkipLink(props: AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
     <a
-      href={href}
       css={{
         display: 'block',
         position: 'fixed',
@@ -24,21 +23,27 @@ function SkipLink({ href, children, ...props }) {
         },
       }}
       {...props}
-    >
-      {children}
-    </a>
+    />
   );
 }
 
 export function SkipLinks() {
   const mq = useMediaQuery();
 
+  const skip = useCallback(
+    () => () => {
+      const skipTarget = document.getElementById('skip-link-navigation-btn');
+      skipTarget?.focus();
+    },
+    []
+  );
+
   return (
     <Fragment>
       <SkipLink
         href="#skip-link-navigation"
         css={{
-          display: ['none', null, 'block'],
+          display: ['none', undefined, 'block'],
         }}
       >
         Skip to Page Navigation
@@ -46,14 +51,9 @@ export function SkipLinks() {
       <SkipLink
         href="#skip-link-navigation-btn"
         css={mq({
-          display: ['block', null, 'none'],
+          display: ['block', undefined, 'none'],
         })}
-        onClick={
-          () =>
-            document
-              .getElementById('skip-link-navigation-btn')
-              .focus() /* don't judge me! I'm tired */
-        }
+        onClick={skip}
       >
         Skip to Page Navigation
       </SkipLink>

@@ -15,7 +15,7 @@ import { Close } from './icons/Close';
 import { Docs } from './icons/Docs';
 
 type MobileMenuProps = {
-  handleClose?: (e: MouseEvent) => void;
+  handleClose: (e?: MouseEvent) => void;
   releases?: any;
 } & HTMLAttributes<HTMLElement>;
 
@@ -31,7 +31,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
   }
 
   useEffect(() => {
-    const handleEsc = ({ keyCode }) => {
+    const handleEsc = ({ keyCode }: KeyboardEvent) => {
       if (keyCode === 27 && open) {
         handleClose();
       }
@@ -116,7 +116,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
                   color: 'var(--text-heading)',
                   marginBottom: '1rem',
                   alignItems: 'center',
-                  fontWeight: '700',
+                  fontWeight: 700,
                 }}
               >
                 <WhyKeystone
@@ -138,7 +138,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
                   color: 'var(--text-heading)',
                   marginBottom: '1rem',
                   alignItems: 'center',
-                  fontWeight: '700',
+                  fontWeight: 700,
                 }}
               >
                 <Updates
@@ -160,7 +160,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
                   color: 'var(--text-heading)',
                   marginBottom: '2rem',
                   alignItems: 'center',
-                  fontWeight: '700',
+                  fontWeight: 700,
                 }}
               >
                 <Docs

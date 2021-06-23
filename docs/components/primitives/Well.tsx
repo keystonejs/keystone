@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
-import { HTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, ReactNode } from 'react';
 
 import { ArrowRLong } from '../icons';
 import { Type } from './Type';
@@ -13,9 +13,7 @@ type WellProps = {
   heading?: ReactNode;
   href: string;
   children: ReactNode;
-  target?: string;
-  rel?: string;
-} & HTMLAttributes<HTMLAnchorElement>;
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export function Well({ grad = 'grad1', heading, href, children, ...props }: WellProps) {
   return (

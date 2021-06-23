@@ -80,7 +80,7 @@ export function DocsPage({
 
           <main
             id="skip-link-content"
-            tabIndex="0"
+            tabIndex={0}
             ref={contentRef}
             className={noProse ? '' : 'prose'}
           >
@@ -115,7 +115,7 @@ export function Page({ title, children }: { children: ReactNode; title?: string 
       >
         <Announcement />
         <Header />
-        <Wrapper as="main" id="skip-link-content" tabIndex="0">
+        <Wrapper as="main" id="skip-link-content" tabIndex={0}>
           {children}
         </Wrapper>
       </div>
