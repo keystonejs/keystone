@@ -775,7 +775,7 @@ export const lists = createSchema({
                 story with a rich text editor that can be configured for any content need.
               </Type>
               <Link href="/for-developers">
-                <a>Keystone for editors →</a>
+                <a>Keystone for Content Management →</a>
               </Link>
             </li>
             <li>
@@ -789,7 +789,7 @@ export const lists = createSchema({
                 your terms.
               </Type>
               <Link href="/for-developers">
-                <a>Keystone for organisations →</a>
+                <a>Keystone for Organisations →</a>
               </Link>
             </li>
           </ul>
