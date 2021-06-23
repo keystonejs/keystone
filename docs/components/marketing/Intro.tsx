@@ -9,7 +9,7 @@ export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
     <div
       css={{
         'p + p': {
-          margin: '1rem 0 2.5rem 0',
+          margin: '1rem 0 0 0',
         },
       }}
       {...props}

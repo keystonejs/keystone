@@ -48,7 +48,7 @@ export default function IndexPage() {
       <MWrapper>
         <IntroWrapper>
           <IntroHeading>
-            The <Highlight grad="grad1">superpowered</Highlight> CMS for developers
+            The <Highlight look="grad1">superpowered</Highlight> CMS for developers
           </IntroHeading>
           <IntroLead>
             Describe your schema, and Keystone gives you a powerful GraphQL API with a beautiful
@@ -66,6 +66,7 @@ export default function IndexPage() {
             gridTemplateColumns: ['1fr', 'auto 1fr'],
             alignItems: 'stretch',
             gap: '1rem',
+            marginTop: '2.5rem',
           })}
         >
           <CodeBox code="yarn create keystone-app" />
