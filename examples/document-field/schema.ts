@@ -1,23 +1,8 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { select, relationship, text, timestamp } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
-import { componentBlocks } from './document-field-view';
 
 export const lists = createSchema({
-  Author: list({
-    fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
-      posts: relationship({ ref: 'Post.author', many: true }),
-      // we only want to allow bios to have links and no other formatting things
-      bio: document({
-        formatting: undefined,
-        dividers: undefined,
-        links: true,
-        layouts: undefined,
-      }),
-    },
-  }),
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -30,24 +15,39 @@ export const lists = createSchema({
         ],
       }),
       content: document({
-        // we're enabling all of the formatting abilities
-        // we could provide an object here to only enable some specific formatting features
+        // We want to have support a fully featured document editor for our
+        // authors, so we're enabling all of the formatting abilities and
+        // providing 1, 2 or 3 column layouts.
         formatting: true,
         dividers: true,
         links: true,
         layouts: [
           [1, 1],
-          [2, 1],
+          [1, 1, 1],
         ],
-        // we need to provide the component blocks here as well as in the seperate file
-        // that's loaded in the front-end because Keystone runs validation from component blocks on the server
-        componentBlocks,
-        ui: {
-          views: require.resolve('./document-field-view'),
-        },
       }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
+    },
+  }),
+  Author: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true, isUnique: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      // We want to constrain the formatting in Author bios to a limited set of options.
+      // We will allow bold, italics, unordered lists, and links.
+      // See the document field guide for a complete list of configurable options
+      bio: document({
+        formatting: {
+          inlineMarks: {
+            bold: true,
+            italic: true,
+          },
+          listTypes: { unordered: true },
+        },
+        links: true,
+      }),
     },
   }),
 });
