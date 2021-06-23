@@ -52,9 +52,9 @@ const flattenNestedErrors = (error: any) =>
       ...errors,
       ...[duplicateError(nestedError), ...flattenNestedErrors(nestedError)].map(flattenedError => {
         // Ensure the path is complete
-        if (Array.isArray(error.path) && Array.isArray(flattenedError.path)) {
-          flattenedError.path = [...error.path, ...flattenedError.path];
-        }
+        // if (Array.isArray(error.path) && Array.isArray(flattenedError.path)) {
+        //   flattenedError.path = [...error.path, ...flattenedError.path];
+        // }
         return flattenedError;
       }),
     ],

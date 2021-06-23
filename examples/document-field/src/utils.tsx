@@ -4,9 +4,7 @@ export async function fetchGraphQL(query: string, variables?: Record<string, any
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
   })
     .then(x => x.json())
     .then(({ data, errors }) => {

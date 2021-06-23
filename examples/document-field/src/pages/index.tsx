@@ -2,18 +2,30 @@ import Link from 'next/link';
 import React from 'react';
 import { fetchGraphQL, gql } from '../utils';
 
-export default function Index({ posts }: { posts: any[] }) {
+type Author = { id: string; name: string; posts: { id: string; slug: string; title: string }[] };
+
+export default function Index({ authors }: { authors: Author[] }) {
+  <h1>Keystone Blog Project - Home</h1>;
   return (
     <ul>
-      {posts.map(post => {
-        return (
-          <li key={post.id}>
-            <Link href={`/post/${post.slug}`}>
-              <a>{post.title}</a>
+      {authors.map(author => (
+        <li key={author.id}>
+          <h2>
+            <Link href={`/author/${author.id}`}>
+              <a>{author.name}</a>
             </Link>
-          </li>
-        );
-      })}
+          </h2>
+          <ul>
+            {author.posts.map(post => (
+              <li key={post.id}>
+                <Link href={`/post/${post.slug}`}>
+                  <a>{post.title}</a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
     </ul>
   );
 }
@@ -21,17 +33,16 @@ export default function Index({ posts }: { posts: any[] }) {
 export async function getStaticProps() {
   const data = await fetchGraphQL(gql`
     query {
-      allPosts(where: { status: published }, orderBy: { publishDate: desc }) {
+      allAuthors {
         id
-        slug
-        title
+        name
+        posts(where: { status: published }, orderBy: { publishDate: desc }) {
+          id
+          slug
+          title
+        }
       }
     }
   `);
-  return {
-    props: {
-      posts: data.allPosts,
-    },
-    revalidate: 30,
-  };
+  return { props: { authors: data.allAuthors }, revalidate: 30 };
 }

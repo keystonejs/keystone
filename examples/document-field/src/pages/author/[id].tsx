@@ -1,25 +1,25 @@
 import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
+import Link from 'next/link';
 import React from 'react';
 import { DocumentRenderer } from '@keystone-next/document-renderer';
-import Link from 'next/link';
 import { fetchGraphQL, gql } from '../../utils';
 
 export default function Post({ author }: { author: any }) {
   return (
     <article>
       <h1>{author.name}</h1>
+
       <h2>Bio</h2>
       <DocumentRenderer document={author.bio?.document || []} />
+
       <h2>Posts</h2>
-      {author.posts.map((post: any) => {
-        return (
-          <li key={post.id}>
-            <Link href={`/post/${post.slug}`}>
-              <a>{post.title}</a>
-            </Link>
-          </li>
-        );
-      })}
+      {author.posts.map((post: any) => (
+        <li key={post.id}>
+          <Link href={`/post/${post.slug}`}>
+            <a>{post.title}</a>
+          </Link>
+        </li>
+      ))}
     </article>
   );
 }
@@ -33,9 +33,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     }
   `);
   return {
-    paths: data.allAuthors.map((post: any) => ({
-      params: { id: post.id },
-    })),
+    paths: data.allAuthors.map((post: any) => ({ params: { id: post.id } })),
     fallback: 'blocking',
   };
 }
@@ -59,10 +57,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     `,
     { id: params!.id }
   );
-  return {
-    props: {
-      author: data.Author,
-    },
-    revalidate: 60,
-  };
+  return { props: { author: data.Author }, revalidate: 60 };
 }
