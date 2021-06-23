@@ -17,6 +17,7 @@ export function Pill({ grad = 'grad1', ...props }: PillProps) {
         padding: '0.25rem 0.5rem',
         textTransform: 'uppercase',
         color: `var(--${grad}-1)`,
+        zIndex: 2,
         ':after': {
           content: '""',
           position: 'absolute',
@@ -26,7 +27,7 @@ export function Pill({ grad = 'grad1', ...props }: PillProps) {
           left: 0,
           background: `linear-gradient(135deg, var(--${grad}-1), var(--${grad}-2))`,
           opacity: 0.1,
-          zIndex: -1,
+          zIndex: 1,
           borderRadius: '4rem',
         },
       }}

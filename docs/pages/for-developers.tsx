@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react';
 import { useMediaQuery } from '../lib/media';
 // import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
-// import { CommunityCta } from '../components/marketing/CommunityCta';
+import { CommunityCta } from '../components/marketing/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 // import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
@@ -27,6 +27,7 @@ import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
 // import { Custom } from '../components/icons/Custom';
 // import { Filter } from '../components/icons/Filter';
+import { Pill } from '../components/marketing/Pill';
 // import { Shield } from '../components/icons/Shield';
 // import { Watch } from '../components/icons/Watch';
 // import { Code } from '../components/icons/Code';
@@ -40,6 +41,7 @@ export default function ForDevelopers() {
   return (
     <Page>
       <MWrapper>
+        <Pill grad="grad3">Keystone for developers</Pill>
         <IntroWrapper>
           <IntroHeading>
             The <Highlight look="grad3">ideal backend </Highlight> for your favourite frontend
@@ -84,6 +86,30 @@ export default function ForDevelopers() {
           </Type>
           [logo] [logo] [logo] [logo] [logo]
         </Section>
+
+        <Section>[picture] text</Section>
+
+        <Section>text [picture]</Section>
+
+        <Section>[picture] text</Section>
+
+        <Section>
+          <Type as="h2" look="heading30">
+            Start learning today
+          </Type>
+          [logo] [logo] [logo] [logo] [logo]
+        </Section>
+
+        <Section>
+          <Type as="h2" look="heading36">
+            Built with the best of the modern web
+          </Type>
+          buttons buttons buttons
+        </Section>
+
+        <CommunityCta />
+
+        <Section>TweetBox TweetBox TweetBox TweetBox</Section>
       </MWrapper>
     </Page>
   );
