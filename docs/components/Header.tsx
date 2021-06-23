@@ -88,7 +88,7 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
 
   return (
     <span css={mq({ display: ['none', null, null, 'inline'] })}>
-      <NavItem isActive={isActive} href={href}>
+      <NavItem isActive={isActive} href={href} css={{ padding: 0 }}>
         {children}
       </NavItem>
     </span>
