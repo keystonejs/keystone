@@ -1,6 +1,7 @@
-## Feature Example - Document Field
+## Example - Document Field
 
-This project demonstrates how to add a document field to a Keystone list and render it in a Next.js frontend.
+This project demonstrates how to configure [document fields](https://next.keystonejs.com/guides/document-fields) in your Keystone system and render their data in a frontend application.
+
 It builds on the [Blog](../blog) starter project.
 
 ## Instructions
@@ -26,11 +27,11 @@ This will start the frontend at [localhost:3001](http://localhost:3001).
 
 ## Features
 
-This project demonstrates how to configure [document fields](https://next.keystonejs.com/guides/document-fields) in your Keystone system and render their data in a frontend application.
+### Backend Fields
 
-### The `Post.content` field
+#### The `Post.content` field
 
-The `Post.content` field uses the full complement of formatting and editor options, including multi-column layouts.
+Uses the full complement of formatting and editor options, including multi-column layouts.
 
 ```ts
 content: document({
@@ -44,9 +45,9 @@ content: document({
 }),
 ```
 
-### The `Author.bio` field
+#### The `Author.bio` field
 
-The `Author.bio` field demonstrates how to use the how to use fine-grained configuration options to customise which formatting options are supported.
+Demonstrates how to use the how to use fine-grained configuration options to customise which formatting options are supported.
 In this case we only want to allow bold and italics text, unordered lists, and linked text.
 
 ```ts
