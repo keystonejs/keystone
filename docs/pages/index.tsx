@@ -99,8 +99,10 @@ export default function IndexPage() {
               <Thinkmill css={{ height: '3.75rem' }} />
               <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. Keystone is the platform we've always
-                wanted to use, so we're building it in the open.
+                big products at scale for names you know. <br />
+                <Link href="/why-keystone">
+                  <a>Why we built Keystone</a>
+                </Link>
               </Type>
             </div>
           </div>
