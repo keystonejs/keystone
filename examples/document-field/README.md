@@ -46,7 +46,7 @@ content: document({
 
 ### The `Author.bio` field
 
-The `Author.bio` field demonstrates how to use the how to use the fine-grained configuration options to customise which formatting options are supported.
+The `Author.bio` field demonstrates how to use the how to use fine-grained configuration options to customise which formatting options are supported.
 In this case we only want to allow bold and italics text, unordered lists, and linked text.
 
 ```ts
@@ -66,7 +66,7 @@ bio: document({
 
 In the `src` directory, there is a Next.js frontend which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
 
-We render the `Author.bio` field using the default document renderer.
+We render the `Author.bio` field using the default document renderer. This renders the content with minimal styling
 
 ```tsx
 import { DocumentRenderer } from '@keystone-next/document-renderer';
@@ -74,7 +74,8 @@ import { DocumentRenderer } from '@keystone-next/document-renderer';
 <DocumentRenderer document={author.bio.document} />;
 ```
 
-For the `Post.content` field we provide a custom renderer for headings, which transforms them to always be `uppercase`.
+For the `Post.content` field we provide a custom renderer for headings, which allows us to add our own styling.
+In this case we apply `textTransform: 'uppercase'` to all of our headings, while using the default styling for all other elements.
 
 ```tsx
 import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
