@@ -605,8 +605,8 @@ export const lists = createSchema({
               <Image
                 src={deployTargets}
                 alt="Deploy targets for Keystone are any and all services you've heard of like Digital Ocean, Render, Heroku, Vercel, Google Cloud, AWS, Azure etc"
-                width={1897}
-                height={1249}
+                width={1896}
+                height={1339}
               />
             </div>
           </li>
