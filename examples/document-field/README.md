@@ -16,17 +16,17 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-In a separate terminal, start the front-end dev server:
+In a separate terminal, start the frontend dev server:
 
 ```
 yarn dev:site
 ```
 
-This will start the front-end at [localhost:3001](http://localhost:3001).
+This will start the frontend at [localhost:3001](http://localhost:3001).
 
 ## Features
 
-This project demonstrates how to configure [document fields](https://next.keystonejs.com/guides/document-fields) in your Keystone system and render their data in a front-end application.
+This project demonstrates how to configure [document fields](https://next.keystonejs.com/guides/document-fields) in your Keystone system and render their data in a frontend application.
 
 ### The `Post.content` field
 
@@ -64,7 +64,7 @@ bio: document({
 
 ### Frontend Rendering
 
-In the `src` directory, there is a Next.js front-end which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
+In the `src` directory, there is a Next.js frontend which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
 
 We render the `Author.bio` field using the default document renderer.
 
