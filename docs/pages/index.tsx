@@ -792,6 +792,141 @@ export const lists = createSchema({
             </li>
           </ul>
         </section>
+
+        <section
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.2fr 0.8fr'],
+            gap: '1rem',
+            marginTop: '6.25rem',
+            border: '1px solid var(--border)',
+            borderRadius: '1rem',
+            padding: '2rem',
+            boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
+          })}
+        >
+          <div
+            css={{
+              display: 'grid',
+              '& > div': {
+                display: 'inline-grid !important',
+                justifyContent: 'center',
+                alignSelf: 'center',
+              },
+            }}
+          >
+            <Image
+              src={communityMap}
+              alt="A map of our awesome contributors"
+              width={1518}
+              height={928}
+            />
+          </div>
+          <div>
+            <Type as="h2" look="heading36">
+              Learn with others in a supportive community
+            </Type>
+            <Type as="p" look="body18" margin="2rem 0">
+              Share your work and get the help you need in the Keystone community Slack: an
+              inclusive space to share ideas and explore what‘s possible.
+            </Type>
+            <Button
+              as="a"
+              href="https://community.keystonejs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join the community Slack <ArrowR />
+            </Button>
+            <ul
+              css={{
+                listStyle: 'none',
+                margin: '2rem 0 0 0',
+                padding: 0,
+                display: 'inline-block',
+                '& li': {
+                  display: 'inline-block',
+                  marginRight: '1rem',
+                },
+                '& svg': {
+                  height: '1rem',
+                  marginRight: '0.5rem',
+                },
+              }}
+            >
+              <li>
+                <Tick grad="grad1" />
+                <Type look="body18">1900+ members</Type>
+              </li>
+              <li>
+                <Tick grad="grad1" />
+                <Type look="body18">Personalized support</Type>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section
+          css={{
+            marginTop: '12.5rem',
+            textAlign: 'center',
+          }}
+        >
+          <Type as="h2" look="heading64" margin="0 auto">
+            Start building <Highlight look="grad4">today.</Highlight>
+          </Type>
+          <ul
+            css={{
+              listStyle: 'none',
+              margin: '1rem 0 0 0',
+              padding: 0,
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center',
+              gap: '1rem',
+              flexWrap: 'wrap',
+              '& > li': {
+                display: 'inline-block',
+                padding: 0,
+              },
+              '& svg': {
+                height: '1rem',
+                marginRight: '1rem',
+              },
+            }}
+          >
+            <li>
+              <Tick grad="grad4" />
+              <Type look="body18" color="var(--muted)">
+                5 minute starters
+              </Type>
+            </li>
+            <li>
+              <Tick grad="grad4" />
+              <Type look="body18" color="var(--muted)">
+                Example projects
+              </Type>
+            </li>
+            <li>
+              <Tick grad="grad4" />
+              <Type look="body18" color="var(--muted)">
+                Free forever
+              </Type>
+            </li>
+            <li>
+              <Tick grad="grad4" />
+              <Type look="body18" color="var(--muted)">
+                No lock-in
+              </Type>
+            </li>
+          </ul>
+          <CodeBox code="yarn create keystone-app" css={{ margin: '2rem 0' }} />
+          <div>
+            <Button as="a" href="/docs">
+              Get started <ArrowR />
+            </Button>
+          </div>
+        </section>
       </MWrapper>
     </Page>
   );

@@ -8,7 +8,7 @@ const common = {
   brand: {
     fontFamily: 'var(--font-brand)',
     color: 'var(--text-heading)',
-    lineHeight: 1.428,
+    lineHeight: 1.3,
   },
   body: {
     fontFamily: 'var(--font-body)',
