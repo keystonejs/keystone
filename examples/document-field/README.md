@@ -69,9 +69,9 @@ In the `src` directory, there is a Next.js front-end which uses the `DocumentRen
 We render the `Author.bio` field using the default document renderer.
 
 ```tsx
-import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+import { DocumentRenderer } from '@keystone-next/document-renderer';
 
-<DocumentRenderer document={post.author.bio?.document || []} />;
+<DocumentRenderer document={author.bio.document} />;
 ```
 
 For the `Post.content` field we provide a custom renderer for headings, which transforms them to always be `uppercase`.
@@ -88,5 +88,5 @@ const renderers: DocumentRendererProps['renderers'] = {
   },
 };
 
-<DocumentRenderer document={post.content?.document || []} renderers={renderers} />
+<DocumentRenderer document={post.content.document} renderers={renderers} />;
 ```

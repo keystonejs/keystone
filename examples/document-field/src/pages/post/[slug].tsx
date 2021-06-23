@@ -32,7 +32,9 @@ export default function Post({ post }: { post: any }) {
           on <time dateTime={post.publishDate}>{post.publishDate}</time>
         </span>
       )}
-      <DocumentRenderer document={post.content?.document || []} renderers={renderers} />
+      {post.content?.document && (
+        <DocumentRenderer document={post.content.document} renderers={renderers} />
+      )}
     </article>
   );
 }

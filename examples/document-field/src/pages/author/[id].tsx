@@ -10,7 +10,7 @@ export default function Post({ author }: { author: any }) {
       <h1>{author.name}</h1>
 
       <h2>Bio</h2>
-      <DocumentRenderer document={author.bio?.document || []} />
+      {author.bio?.document && <DocumentRenderer document={author.bio.document} />}
 
       <h2>Posts</h2>
       {author.posts.map((post: any) => (
