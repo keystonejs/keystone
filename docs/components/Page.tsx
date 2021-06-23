@@ -5,6 +5,9 @@ import { jsx } from '@emotion/react';
 import Head from 'next/head';
 import Link from 'next/link';
 
+import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
+import { getHeadings, Heading } from '../lib/getHeadings';
+import { Code, InlineCode } from '../components/Code';
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
 import { Announce } from '../components/Announce';
@@ -61,7 +64,6 @@ export function DocsPage({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
-        <Announcement />
         <Header />
         <Wrapper
           css={mq({
