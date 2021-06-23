@@ -1,8 +1,7 @@
 import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 3rd May 2021
+# Release: 3rd May 2021
 
 ```typescript
 "@keystone-next/adapter-prisma-legacy": "6.0.1",
@@ -23,7 +22,7 @@ import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 This release involved a bunch of busywork behind the scenes in Keystone 6. Stripping away all the things we don't need now that we're using [Prisma](https://www.prisma.io/) exclusively. The end of the cleanup is in sight, and we're getting closer to the point where we can start working on some great new features.
 
-**Files in Keystone 6 📁**. Now you can use Admin UI to upload local files to your repo using SQLite. We also added a `maxFileSize` property for easier project config.
+**Files in Keystone 6 <Emoji symbol="📁" alt="file folder"/>**. Now you can use Admin UI to upload local files to your repo using SQLite. We also added a `maxFileSize` property for easier project config.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-03) on GitHub.
 

@@ -1,8 +1,7 @@
 import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 6th April 2021
+# Release: 6th April 2021
 
 ```typescript
 "@keystone-next/adapter-prisma-legacy": "5.0.0",
@@ -23,7 +22,7 @@ import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 ## What's New
 
-### Controlled code demolition 🏗️ 👷‍♀️
+### Controlled code demolition <Emoji symbol="🏗️" alt="construction crane"/> <Emoji symbol="👷‍♀️" alt="female with work hat"/>
 
 We pruned a lot of code from the Keystone garden – cutting out the dead wood to make way for a more efficient and productive core in Keystone 6. Notable changes include:
 
@@ -32,7 +31,7 @@ We pruned a lot of code from the Keystone garden – cutting out the dead wood 
 - Exchanged `deploy`, `reset` and `generate` commands for `keystone-next prisma` e.g:
   - `keystone-next deploy` -> `keystone-next prisma migrate deploy`
 
-### Better pagination in Admin UI ⏭️ ✨
+### Better pagination in Admin UI <Emoji symbol="✨" alt="sparkle"/>
 
 Pagination in the Admin UI has fresh styles and is easier to use.
 

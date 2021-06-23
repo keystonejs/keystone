@@ -1,8 +1,7 @@
 import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 30th March 2021
+# Release: 30th March 2021
 
 ```typescript
 "@keystone-next/access-control-legacy": "9.0.1",
@@ -26,7 +25,7 @@ import { Markdown, getServerSideProps } from '../../components/Markdown';
 
 ## What's New
 
-### Goodbye legacy code 👋 🌇
+### Goodbye legacy code <Emoji symbol="👋" alt="wave"/> <Emoji symbol="🌇" alt="sunset"/>
 
 We removed a few legacy items including:
 
@@ -34,11 +33,11 @@ We removed a few legacy items including:
 - Arguments `cookieSecret`, `cookie`, and `sessionStore` from the Keystone constructor.
 - Arguments `schemaName`, `schemaNames`, `keystoneOptions`, and `graphqlOptions` were unused and have been removed from the `setupServer()` function (which we also removed).
 
-### Improved select field type 🔽
+### Improved select field type <Emoji symbol="🔽" alt="down arrow"/>
 
 It now uses the correct underlying type, which lets you make use of `{ dataType: 'enum' }` and `{ dataType: 'integer' }`.
 
-### Squashed bugs 🐛
+### Squashed bugs <Emoji symbol="🐛" alt="bug"/>
 
 We fixed a bug that existed in `updateMany` on lists with declarative access control.
 
