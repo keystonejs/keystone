@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useMediaQuery } from '../lib/media';
 import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
+import { CommunityCta } from '../components/marketing/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
@@ -36,7 +37,6 @@ import { Page } from '../components/Page';
 import contentEditorMockui from '../public/assets/content-editor-mockui.png';
 import docEditorHome from '../public/assets/doc-editor-home.png';
 import deployTargets from '../public/assets/deploy-targets.png';
-import communityMap from '../public/assets/community-map.png';
 
 export default function IndexPage() {
   const mq = useMediaQuery();
@@ -795,78 +795,7 @@ export const lists = createSchema({
           </ul>
         </section>
 
-        <section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.2fr 0.8fr'],
-            gap: '1rem',
-            marginTop: '6.25rem',
-            border: '1px solid var(--border)',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
-          })}
-        >
-          <div
-            css={{
-              display: 'grid',
-              '& > div': {
-                display: 'inline-grid !important',
-                justifyContent: 'center',
-                alignSelf: 'center',
-              },
-            }}
-          >
-            <Image
-              src={communityMap}
-              alt="A map of our awesome contributors"
-              width={1518}
-              height={928}
-            />
-          </div>
-          <div>
-            <Type as="h2" look="heading36">
-              Learn with others in a supportive community
-            </Type>
-            <Type as="p" look="body18" margin="2rem 0">
-              Share your work and get the help you need in the Keystone community Slack: an
-              inclusive space to share ideas and explore what‘s possible.
-            </Type>
-            <Button
-              as="a"
-              href="https://community.keystonejs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Join the community Slack <ArrowR />
-            </Button>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: '2rem 0 0 0',
-                padding: 0,
-                display: 'inline-block',
-                '& li': {
-                  display: 'inline-block',
-                  marginRight: '1rem',
-                },
-                '& svg': {
-                  height: '1rem',
-                  marginRight: '0.5rem',
-                },
-              }}
-            >
-              <li>
-                <Tick grad="grad1" />
-                <Type look="body18">1900+ members</Type>
-              </li>
-              <li>
-                <Tick grad="grad1" />
-                <Type look="body18">Personalized support</Type>
-              </li>
-            </ul>
-          </div>
-        </section>
+        <CommunityCta />
 
         <section
           css={{
