@@ -66,6 +66,7 @@ export default function IndexPage() {
             gridTemplateColumns: ['1fr', 'auto 1fr'],
             alignItems: 'stretch',
             gap: '1rem',
+            marginTop: '2.5rem',
           })}
         >
           <CodeBox code="yarn create keystone-app" />
@@ -125,7 +126,7 @@ export default function IndexPage() {
                   <Highlight look="grad5">1st</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
-                  NodeJS CMS
+                  Node.js CMS
                 </Type>
               </li>
               <li>
@@ -133,7 +134,7 @@ export default function IndexPage() {
                   <Highlight look="grad5">900k+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
-                  <InlineCode>npm</InlineCode> installs
+                  <InlineCode>npm</InlineCode> Installs
                 </Type>
               </li>
               <li>
@@ -141,7 +142,7 @@ export default function IndexPage() {
                   <Highlight look="grad5">160+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
-                  contributors
+                  Contributors
                 </Type>
               </li>
             </ul>

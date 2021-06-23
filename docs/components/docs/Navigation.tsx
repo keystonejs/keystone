@@ -189,5 +189,18 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
 }
 
 export function MarketingNavigation() {
-  return <span>TODO</span>;
+  return (
+    <nav
+      css={{
+        fontWeight: 500,
+      }}
+    >
+      <Section label="Keystone">
+        <NavItem href="/why-keystone">Why Keystone</NavItem>
+        <NavItem href="/for-developers">For Developers</NavItem>
+        <NavItem href="/for-organisations">For Organisations</NavItem>
+        <NavItem href="/for-content-management">For Content Management</NavItem>
+      </Section>
+    </nav>
+  );
 }
