@@ -1,6 +1,6 @@
-## Feature Example - document field
+## Feature Example - Document Field
 
-This project demonstrates how to add a document field to a Keystone list with a component block and render it in a Next.js frontend.
+This project demonstrates how to add a document field to a Keystone list and render it in a Next.js frontend.
 It builds on the [Blog](../blog) starter project.
 
 ## Instructions
@@ -16,7 +16,7 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-And in a separate terminal, run this to start the front-end dev server:
+In a separate terminal, start the front-end dev server:
 
 ```
 yarn dev:site
@@ -27,14 +27,6 @@ This will start the front-end at [localhost:3001](http://localhost:3001).
 ## Features
 
 This project demonstrates how to use document fields and render document field data in a front-end.
-
-### The `Author.bio` field
-
-The `Author.bio` field shows using a document with only some options enabled to restrict what content the document field can contain. For example, this field won't allow headings, lists, etc.
-
-```ts
-bio: document({ links: true }),
-```
 
 ### The `Post.content` field
 
@@ -47,37 +39,36 @@ content: document({
   links: true,
   layouts: [
     [1, 1],
-    [2, 1],
+    [1, 1, 1],
   ],
-  componentBlocks,
-  ui: {
-    views: require.resolve('./document-field-view'),
-  },
 }),
 ```
 
-### Using `componentBlocks`
+### The `Author.bio` field
 
-`document-field-view.tsx` shows using component blocks to build a Notice component.
+The `Author.bio` field shows using a document with only some options enabled to restrict what content the document field can contain. For example, this field won't allow headings, lists, etc.
 
-### The front-end
+```ts
+bio: document({
+  formatting: {
+    inlineMarks: {
+      bold: true,
+      italic: true,
+    },
+    listTypes: { unordered: true },
+  },
+  links: true,
+}),
+```
+
+### Rendering
 
 In the `src` directory, there is a Next.js front-end which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
 
+We render the `Author.bio` field using the default document renderer.
+
 ```tsx
 import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
-import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
-import { componentBlocks } from '../../../document-field-view';
-
-const componentBlockRenderers: InferRenderersForComponentBlocks<typeof componentBlocks> = {
-  notice: function Notice(props) {
-    return (
-      <div style={{ border: '1px solid black' }}>
-        {props.intent}:{props.content}
-      </div>
-    );
-  },
-};
 
 const renderers: DocumentRendererProps['renderers'] = {
   block: {
@@ -88,11 +79,22 @@ const renderers: DocumentRendererProps['renderers'] = {
   },
 };
 
-<DocumentRenderer document={post.author.bio?.document || []} />
+<DocumentRenderer document={post.author.bio?.document || []} />;
+```
 
-<DocumentRenderer
-  document={post.content?.document || []}
-  renderers={renderers}
-  componentBlocks={componentBlockRenderers}
-/>
+For the `Post.content` field we provide a custom renderer for headings, which transforms them to always be `uppercase`.
+
+```tsx
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+
+const renderers: DocumentRendererProps['renderers'] = {
+  block: {
+    heading({ level, children, textAlign }) {
+      const Comp = `h${level}` as const;
+      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>;
+    },
+  },
+};
+
+<DocumentRenderer document={post.content?.document || []} renderers={renderers} />
 ```

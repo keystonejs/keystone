@@ -35,10 +35,10 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      // We want to constrain the formatting in Author bios to a limited set of options.
-      // We will allow bold, italics, unordered lists, and links.
-      // See the document field guide for a complete list of configurable options
       bio: document({
+        // We want to constrain the formatting in Author bios to a limited set of options.
+        // We will allow bold, italics, unordered lists, and links.
+        // See the document field guide for a complete list of configurable options
         formatting: {
           inlineMarks: {
             bold: true,
