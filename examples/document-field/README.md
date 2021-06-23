@@ -30,7 +30,7 @@ This project demonstrates how to use document fields and render document field d
 
 ### The `Post.content` field
 
-The `Post.content` field shows enabling all of the formatting features and using component blocks.
+The `Post.content` field uses the full complement of formatting and editor options, including multi-column layouts.
 
 ```ts
 content: document({
@@ -46,7 +46,8 @@ content: document({
 
 ### The `Author.bio` field
 
-The `Author.bio` field shows using a document with only some options enabled to restrict what content the document field can contain. For example, this field won't allow headings, lists, etc.
+The `Author.bio` field demonstrates how to use the how to use the fine-grained configuration options to customise which formatting options are supported.
+In this case we only want to allow bold and italics text, unordered lists, and linked text.
 
 ```ts
 bio: document({
