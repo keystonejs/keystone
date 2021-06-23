@@ -26,7 +26,7 @@ This will start the front-end at [localhost:3001](http://localhost:3001).
 
 ## Features
 
-This project demonstrates how to use document fields and render document field data in a front-end.
+This project demonstrates how to configure [document fields](https://next.keystonejs.com/guides/document-fields) in your Keystone system and render their data in a front-end application.
 
 ### The `Post.content` field
 
@@ -62,7 +62,7 @@ bio: document({
 }),
 ```
 
-### Rendering
+### Frontend Rendering
 
 In the `src` directory, there is a Next.js front-end which uses the `DocumentRenderer` component from `@keystone-next/document-renderer` to render the document data.
 
