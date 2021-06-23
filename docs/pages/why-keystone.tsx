@@ -136,7 +136,7 @@ export default function WhyKeystonePage() {
             marginTop: '3rem',
           }}
         >
-          <Button as="a" href="/docs" look="soft">
+          <Button as="a" href="/#how-it-works" look="soft">
             Discover how Keystone works <ArrowR />
           </Button>
         </div>
