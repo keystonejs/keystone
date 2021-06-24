@@ -46,7 +46,7 @@ export function Heading({ as: Tag, children, ...props }: HeadingProps) {
       {...props}
     >
       <span
-        tabIndex="1"
+        tabIndex={1}
         ref={headingRef}
         css={{
           display: 'block',

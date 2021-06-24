@@ -652,7 +652,6 @@ export const lists = createSchema({
               display: 'flex',
               gap: '1rem',
               justifyContent: 'center',
-              gap: '1rem',
               flexWrap: 'wrap',
               '& > li': {
                 display: 'inline-block',

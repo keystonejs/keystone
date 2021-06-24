@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
 
-function MenuBtn(props) {
+function MenuBtn(props: HTMLAttributes<HTMLElement>) {
   return (
     <span
       css={{
