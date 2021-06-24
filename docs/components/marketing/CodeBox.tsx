@@ -41,6 +41,7 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
     <div
       css={{
         display: 'inline-flex',
+        alignItems: 'center',
         border: '1px solid var(--border)',
         borderRadius: '8px',
         background: 'var(--code-bg)',
@@ -70,9 +71,10 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
           marginLeft: '1rem',
           cursor: 'pointer',
           color: 'var(--muted)',
+          alignItems: 'center',
         }}
       >
-        <Copy css={{ height: '1rem' }} />
+        <Copy css={{ height: '1.5rem' }} />
       </button>
     </div>
   );

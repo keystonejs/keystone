@@ -31,16 +31,16 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
           margin: '1rem 0 0 0',
           padding: 0,
           display: 'flex',
-          gap: '1rem',
+          gap: '1.5rem',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          '& > li': {
-            display: 'inline-block',
-            padding: 0,
+          '& li': {
+            display: 'flex',
+            alignItems: 'center',
           },
           '& svg': {
-            height: '1rem',
-            marginRight: '1rem',
+            height: '1.25rem',
+            margin: '0.25rem 0.5rem 0 0',
           },
         }}
       >

@@ -195,7 +195,7 @@ export default function IndexPage() {
               gap: '2rem',
               gridRowGap: '4rem',
               '& svg': {
-                height: '2.25rem',
+                height: '3rem',
                 marginBottom: '0.5rem',
               },
             })}
@@ -367,8 +367,12 @@ export default function IndexPage() {
                   listStyle: 'none',
                   margin: '1rem 0 0 0',
                   padding: 0,
+                  '& li': {
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
                   '& svg': {
-                    height: '1rem',
+                    height: '1.25rem',
                     marginRight: '0.75rem',
                   },
                 }}
@@ -443,8 +447,12 @@ export const lists = createSchema({
                   listStyle: 'none',
                   margin: '1rem 0 0 0',
                   padding: 0,
+                  '& li': {
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
                   '& svg': {
-                    height: '1rem',
+                    height: '1.25rem',
                     marginRight: '0.75rem',
                   },
                 }}
@@ -500,8 +508,12 @@ export const lists = createSchema({
                   listStyle: 'none',
                   margin: '1rem 0 0 0',
                   padding: 0,
+                  '& li': {
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
                   '& svg': {
-                    height: '1rem',
+                    height: '1.25rem',
                     marginRight: '0.75rem',
                   },
                 }}
@@ -728,7 +740,7 @@ export const lists = createSchema({
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],
               maxWidth: ['20rem', 'none'],
               '& svg': {
-                height: '2rem',
+                height: '3rem',
               },
               '& svg, & h3, & p': {
                 marginBottom: '1rem',
@@ -757,7 +769,7 @@ export const lists = createSchema({
                 Get the fields, forms, and workflows you need to do your best work. Tell the full
                 story with a rich text editor that can be configured for any content need.
               </Type>
-              <Link href="/for-developers">
+              <Link href="/for-content-management">
                 <a>Keystone for Content Management →</a>
               </Link>
             </li>
@@ -771,7 +783,7 @@ export const lists = createSchema({
                 cultivate a productive content culture, send your message anywhere, and scale on
                 your terms.
               </Type>
-              <Link href="/for-developers">
+              <Link href="/for-organisations">
                 <a>Keystone for Organisations →</a>
               </Link>
             </li>

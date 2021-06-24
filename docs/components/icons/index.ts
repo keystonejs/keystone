@@ -3,6 +3,7 @@ export type { IconGradient } from './util';
 export { ArrowR } from './ArrowR';
 export { Automated } from './Automated';
 export { Cli } from './Cli';
+export { ClientLogos } from './ClientLogos';
 export { Close } from './Close';
 export { Code } from './Code';
 export { Content } from './Content';

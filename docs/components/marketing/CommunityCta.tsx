@@ -68,12 +68,13 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
             padding: 0,
             display: 'inline-block',
             '& li': {
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
               marginRight: '1rem',
             },
             '& svg': {
-              height: '1rem',
-              marginRight: '0.5rem',
+              height: '1.25rem',
+              margin: '0.25rem 0.5rem 0 0',
             },
           }}
         >

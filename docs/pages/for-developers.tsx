@@ -239,8 +239,12 @@ export default function ForDevelopers() {
                 listStyle: 'none',
                 margin: '1rem 0',
                 padding: 0,
+                '& li': {
+                  display: 'flex',
+                  alignItems: 'center',
+                },
                 '& svg': {
-                  height: '1rem',
+                  height: '1.25rem',
                   marginRight: '0.75rem',
                 },
               }}
@@ -284,7 +288,7 @@ export default function ForDevelopers() {
               margin: '3rem 0 0 0',
               padding: 0,
               '& svg': {
-                height: '2rem',
+                height: '3rem',
                 color: 'var(--muted)',
               },
               '& li': {
