@@ -20,6 +20,7 @@ import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
 import editor from '../public/assets/editor.png';
+import { EndCta } from '../components/content/EndCta';
 
 export default function ForOrganisations() {
   const mq = useMediaQuery();
@@ -194,7 +195,7 @@ export default function ForOrganisations() {
               }}
             />
           </div>
-          <Type as="h2" look="heading48" margin="1rem auto">
+          <Type as="h2" look="heading48" margin="3rem auto 1rem">
             Made by people who <Highlight look="grad4">know business.</Highlight>
           </Type>
           <Type
@@ -312,10 +313,11 @@ export default function ForOrganisations() {
               </Type>
             </div>
           </div>
-          <Button as="a" href="/why-keystone" css={{ marginTop: '2rem' }}>
+          {/* <Button as="a" href="/why-keystone" css={{ marginTop: '2rem' }}>
             Why we built Keystone <ArrowR />
-          </Button>
+          </Button> */}
         </Section>
+        <EndCta grad="grad4" />
       </MWrapper>
     </Page>
   );

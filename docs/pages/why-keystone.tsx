@@ -40,6 +40,38 @@ export default function WhyKeystonePage() {
         <Type as="h1" look="heading92">
           Why <Highlight look="grad2">Keystone</Highlight>
         </Type>
+
+        <div css={{ marginTop: '3rem' }}>
+          <ul
+            css={{
+              listStyle: 'none',
+              margin: 0,
+              padding: 0,
+              display: 'inline-grid',
+              gridTemplateColumns: 'max-content max-content max-content',
+              gap: '1rem',
+            }}
+          >
+            <li>
+              <Button as="a" href="/for-developers" look="text">
+                For Developers
+                <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button as="a" href="/for-organisations" look="text">
+                For Organisations
+                <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button as="a" href="/for-content-management" look="text">
+                For Content Management
+                <ArrowR />
+              </Button>
+            </li>
+          </ul>
+        </div>
         <div
           css={{
             display: 'grid',
