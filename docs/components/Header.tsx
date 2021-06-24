@@ -18,8 +18,8 @@ import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
 import { Search } from './icons/Search';
 
-type HeaderContextType = { open: boolean };
-const HeaderContext = createContext<HeaderContextType>({ open: false });
+type HeaderContextType = { mobileNavIsOpen: boolean };
+const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
 export const useHeaderContext = () => useContext(HeaderContext);
 
 function Logo() {
@@ -29,6 +29,7 @@ function Logo() {
     <div
       css={mq({
         marginRight: [0, null, null, null, '2rem'],
+        marginTop: '0.1rem',
       })}
     >
       <Link href="/" passHref>
@@ -87,21 +88,18 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
   const isActive = href === currentSection;
 
   return (
-    <span css={mq({ display: ['none', null, null, 'inline'], fontWeight: 600 })}>
-      <NavItem isActive={isActive} href={href} css={{ padding: 0 }}>
+    <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
+      <NavItem isActive={isActive} href={href} css={mq({ padding: ['0', null, '0 0.2rem'] })}>
         {children}
       </NavItem>
     </span>
   );
 }
 
-type HeaderProps = {
-  releases?: any;
-};
-
-export function Header({ releases }: HeaderProps) {
+export function Header() {
   const mq = useMediaQuery();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
 
@@ -110,16 +108,23 @@ export function Header({ releases }: HeaderProps) {
   }, []);
 
   const handleOpen = useCallback(() => {
-    setOpen(true);
+    setMobileNavIsOpen(true);
     document.body.style.overflow = 'hidden';
     document.getElementById('mobile-menu-close-btn')?.focus();
   }, []);
 
   const handleClose = useCallback(() => {
-    setOpen(false);
+    setMobileNavIsOpen(false);
     document.body.style.overflow = 'auto';
     document.getElementById('skip-link-navigation-btn')?.focus();
   }, []);
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', handleClose);
+    return () => {
+      router.events.off('routeChangeComplete', handleClose);
+    };
+  }, [router.events, handleClose]);
 
   return (
     <header
@@ -133,8 +138,9 @@ export function Header({ releases }: HeaderProps) {
           display: 'grid',
           gridTemplateColumns: [
             'auto max-content max-content max-content',
-            'max-content auto max-content max-content max-content',
-            '15rem auto max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content max-content',
+            'max-content auto max-content max-content max-content max-content max-content',
+            'max-content auto max-content max-content max-content max-content max-content max-content',
             '15rem auto max-content max-content max-content max-content max-content max-content',
           ],
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
@@ -153,7 +159,7 @@ export function Header({ releases }: HeaderProps) {
         </div>
         <div
           css={mq({
-            display: ['none', 'block'],
+            display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
           })}
         >
@@ -164,7 +170,7 @@ export function Header({ releases }: HeaderProps) {
         <LinkItem href="/docs">Docs</LinkItem>
         <button
           css={mq({
-            display: ['inline-block', 'none'],
+            display: ['inline-block', 'inline-block', 'none'],
             appearance: 'none',
             border: '0 none',
             boxShadow: 'none',
@@ -174,7 +180,7 @@ export function Header({ releases }: HeaderProps) {
             color: 'var(--muted)',
           })}
         >
-          <Search css={{ height: '1.25rem' }} />
+          <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
         </button>
         <DarkModeBtn />
         <Button
@@ -182,7 +188,7 @@ export function Header({ releases }: HeaderProps) {
           href="/docs"
           css={mq({
             '&&': {
-              display: ['none', 'inline-flex'],
+              display: ['none', null, null, 'inline-flex'],
             },
           })}
         >
@@ -206,7 +212,7 @@ export function Header({ releases }: HeaderProps) {
         >
           <GitHub css={{ height: '1.5em' }} />
         </a>
-        <HeaderContext.Provider value={{ open }}>
+        <HeaderContext.Provider value={{ mobileNavIsOpen }}>
           <div ref={menuRef}>
             <button
               onClick={handleOpen}
@@ -225,7 +231,7 @@ export function Header({ releases }: HeaderProps) {
             >
               <Hamburger css={{ height: '1.25rem' }} />
             </button>
-            <MobileMenu releases={releases} handleClose={handleClose} />
+            <MobileMenu handleClose={handleClose} />
           </div>
         </HeaderContext.Provider>
       </Wrapper>

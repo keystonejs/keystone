@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCta';
+import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA';
 import { Type } from '../../../components/primitives/Type';
 import { Well } from '../../../components/primitives/Well';
 import { DocsPage } from '../../../components/Page';

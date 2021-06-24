@@ -24,6 +24,7 @@ export function Section({ label, children }: SectionProps) {
         as="h3"
         look="body14bold"
         margin="0 0 var(--space-large) 0"
+        // color="var(--muted)"
         color="var(--text-heading)"
         css={{ textTransform: 'uppercase' }}
       >
@@ -44,7 +45,7 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
   const { pathname } = useRouter();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
-  const isOpen = ctx ? ctx.open : true;
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
 
   return (
     <Link href={href} passHref>
@@ -72,7 +73,7 @@ type PrimaryNavItemProps = {
   children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
+export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
   return (
@@ -183,30 +184,13 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
     >
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-      <Section label="Release Notes">
-        <NavItem href="/releases">Summary</NavItem>
+      <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
+      <Section label="Recent Releases">
         {releases.map(name => (
           <NavItem key={name} href={`/releases/${name}`}>
             {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}
-      </Section>
-    </nav>
-  );
-}
-
-export function MarketingNavigation() {
-  return (
-    <nav
-      css={{
-        fontWeight: 500,
-      }}
-    >
-      <Section label="Keystone">
-        <NavItem href="/why-keystone">Why Keystone</NavItem>
-        <NavItem href="/for-developers">For Developers</NavItem>
-        <NavItem href="/for-organisations">For Organisations</NavItem>
-        <NavItem href="/for-content-management">For Content Management</NavItem>
       </Section>
     </nav>
   );

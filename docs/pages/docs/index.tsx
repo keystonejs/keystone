@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCta';
+import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
 import { Examples } from '../../components/docs/ExamplesList';
 import { Walkthroughs } from '../../components/docs/WalkthroughsList';
 import { Type } from '../../components/primitives/Type';

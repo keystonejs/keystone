@@ -60,7 +60,7 @@ export function DocsPage({
         }}
       >
         <Announcement />
-        <Header releases={releases} />
+        <Header />
         <Wrapper
           css={mq({
             display: ['block', null, 'grid'],
