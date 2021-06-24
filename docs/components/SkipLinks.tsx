@@ -42,16 +42,16 @@ export function SkipLinks() {
     <Fragment>
       <SkipLink
         href="#skip-link-navigation"
-        css={{
-          display: ['none', undefined, 'block'],
-        }}
+        css={mq({
+          display: ['none', null, 'block'],
+        })}
       >
         Skip to Page Navigation
       </SkipLink>
       <SkipLink
         href="#skip-link-navigation-btn"
         css={mq({
-          display: ['block', undefined, 'none'],
+          display: ['block', null, 'none'],
         })}
         onClick={skip}
       >
