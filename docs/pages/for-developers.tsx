@@ -442,7 +442,7 @@ export default function ForDevelopers() {
             Don’t just take <Highlight look="grad3">our word for it.</Highlight>
           </Type>
           <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-            We’re honored some of the most talented creatives out there build with Keystone.
+            People on the internet say some really nice things about KeystoneJS
           </Type>
           <div
             css={mq({
@@ -465,7 +465,7 @@ export default function ForDevelopers() {
               works like a charm. As a frontend dev with skills in node and elastic search, Keystone
               + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
             </TweetBox>
-            <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
+            <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad3">
               As someone who lives on the frontend, I love how Keystone lets me define content
               models and gives me the backend I need. I get a sweet GraphQL API, and can stay
               focused on building the UI <Emoji symbol="😍" alt="Love" />
@@ -481,11 +481,6 @@ export default function ForDevelopers() {
             <TweetBox user="mattiloh" img="/assets/mattiloh.jpg" grad="grad3">
               Keystone‘s new customisable Document field is really powerful and quite a unique
               selling proposition. Great job team Keystone <Emoji symbol="👏🏼" alt="Hand clapping" />
-            </TweetBox>
-            <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad2">
-              I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that
-              works like a charm. As a frontend dev with skills in node and elastic search, Keystone
-              + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
             </TweetBox>
             <TweetBox user="BenAPatton" img="/assets/benapatton.jpg" grad="grad3">
               My mind is being blown today! Combining{' '}
