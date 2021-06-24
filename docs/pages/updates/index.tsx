@@ -1,15 +1,15 @@
 /** @jsx jsx  */
+import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
-import { Button } from '../../components/primitives/Button';
-import { ArrowR } from '../../components/icons/ArrowR';
-import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
+import { Button } from '../../components/primitives/Button';
 import { Alert } from '../../components/primitives/Alert';
 import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
+import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
@@ -137,7 +137,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         <Link href="/updates/roadmap">
           <a>Check out our roadmap</a>
         </Link>{' '}
-        <Emoji symbol="🗺" alt="map" /> <Emoji symbol="🔮" alt="crystal ball" />
+        <Emoji symbol="🗺" alt="Map" /> <Emoji symbol="🔮" alt="Crystal ball" />
       </Alert>
 
       <div
