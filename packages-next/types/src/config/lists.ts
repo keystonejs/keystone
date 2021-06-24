@@ -9,17 +9,9 @@ export type ListSchemaConfig = Record<
   ListConfig<BaseGeneratedListTypes, BaseFields<BaseGeneratedListTypes>>
 >;
 
-export type IdFieldConfig =
-  | {
-      kind: 'uuid';
-      /**
-       * This enables the native uuid type on Postgres. When this is enabled and not on postgres, an error will be thrown
-       */
-      useNativeType?: boolean;
-    }
-  | {
-      kind: 'cuid' | 'autoincrement';
-    };
+export type IdFieldConfig = {
+  kind: 'cuid' | 'uuid' | 'autoincrement';
+};
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
@@ -32,8 +24,6 @@ export type ListConfig<
       Note from Mitchell: The above is incorrect based on Keystone's current implementation.
     */
   fields: Fields;
-
-  idField?: IdFieldConfig;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
@@ -208,4 +198,9 @@ export type ListDBConfig = {
    * @default "name""
    */
   searchField?: string;
+  /**
+   * The kind of id to use.
+   * @default { kind: "cuid" }
+   */
+  idField?: IdFieldConfig;
 };

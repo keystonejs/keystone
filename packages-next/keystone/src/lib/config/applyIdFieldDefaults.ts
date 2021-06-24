@@ -13,7 +13,7 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    const idFieldConfig = config.lists[key].idField ?? { kind: 'cuid' };
+    const idFieldConfig = config.lists[key].db?.idField ?? { kind: 'cuid' };
     const actualIdField = (args: FieldData): NextFieldType => {
       const idField = idFieldType(idFieldConfig)(args);
       return {

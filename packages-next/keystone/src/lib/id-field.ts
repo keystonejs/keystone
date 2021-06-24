@@ -7,12 +7,40 @@ import {
   ScalarDBField,
   schema,
 } from '@keystone-next/types';
+import { validate } from 'uuid';
+import { isCuid } from 'cuid';
+
+const idParsers = {
+  autoincrement(val: string | null) {
+    if (val === null) {
+      throw new Error('An integer must be passed to id filters');
+    }
+    const parsed = parseInt(val);
+    if (Number.isInteger(parsed)) {
+      return parsed;
+    }
+    throw new Error('An integer must be passed to id filters');
+  },
+  cuid(val: string | null) {
+    // isCuid is just "it's a string and it starts with c"
+    // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
+    if (typeof val === 'string' && isCuid(val)) {
+      return val.toLowerCase();
+    }
+    throw new Error('A cuid must be passed to id filters');
+  },
+  uuid(val: string | null) {
+    if (typeof val === 'string' && validate(val)) {
+      return val.toLowerCase();
+    }
+    throw new Error('A uuid must be passed to id filters');
+  },
+};
 
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
-    const parseVal =
-      config.kind === 'autoincrement' ? (x: any) => parseInt(x) || -1 : (x: any) => x;
+    const parseVal = idParsers[config.kind];
     const __legacy = {
       filters: {
         fields: {
@@ -34,14 +62,8 @@ export const idFieldType =
       kind: 'scalar',
       mode: 'required',
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
-      nativeType:
-        meta.provider === 'postgresql' && config.kind === 'uuid' && config.useNativeType
-          ? 'Uuid'
-          : undefined,
-      default:
-        meta.provider === 'postgresql' && config.kind === 'uuid'
-          ? { kind: 'dbgenerated', value: 'gen_random_uuid()' }
-          : { kind: config.kind },
+      nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
+      default: { kind: config.kind },
     })({
       input: {
         uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
@@ -58,22 +80,30 @@ export const idFieldType =
     });
   };
 
-function equalityConditions<T>(fieldKey: string, f: (a: any) => any = x => x) {
+function equalityConditions(fieldKey: string, f: (a: string | null) => any) {
   return {
-    [fieldKey]: (value: T) => ({ [fieldKey]: f(value) }),
-    [`${fieldKey}_not`]: (value: T) => ({ NOT: { [fieldKey]: f(value) } }),
+    [fieldKey]: (value: string | null) => ({ [fieldKey]: f(value) }),
+    [`${fieldKey}_not`]: (value: string | null) => ({ NOT: { [fieldKey]: f(value) } }),
   };
 }
 
-function inConditions<T>(fieldKey: string, f: (a: any) => any = x => x) {
+function inConditions(fieldKey: string, f: (a: string | null) => any) {
   return {
-    [`${fieldKey}_in`]: (value: (T | null)[]) =>
-      value.includes(null)
-        ? { [fieldKey]: { in: f(value.filter(x => x !== null)) } }
-        : { [fieldKey]: { in: f(value) } },
-    [`${fieldKey}_not_in`]: (value: (T | null)[]) =>
-      value.includes(null)
-        ? { AND: [{ NOT: { [fieldKey]: { in: f(value.filter(x => x !== null)) } } }] }
-        : { NOT: { [fieldKey]: { in: f(value) } } },
+    [`${fieldKey}_in`]: (value: (string | null)[] | null) => {
+      if (value === null) {
+        throw new Error(`null cannot be passed to ${fieldKey}_in filters`);
+      }
+      return {
+        [fieldKey]: { in: value.map(x => f(x)) },
+      };
+    },
+    [`${fieldKey}_not_in`]: (value: (string | null)[] | null) => {
+      if (value === null) {
+        throw new Error(`null cannot be passed to ${fieldKey}_not_in filters`);
+      }
+      return {
+        NOT: { [fieldKey]: { in: value.map(x => f(x)) } },
+      };
+    },
   };
 }
