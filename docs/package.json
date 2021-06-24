@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next -p 8000",
     "build": "next build",
+    "postbuild": "next-sitemap",
     "start": "next start -p 8000",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
@@ -43,6 +44,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
+    "next-sitemap": "^1.6.124",
     "start-server-and-test": "^1.12.5",
     "typescript": "^4.3.4"
   },
