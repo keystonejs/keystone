@@ -1,7 +1,7 @@
 /** @jsx jsx  */
+import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
-import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
