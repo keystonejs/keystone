@@ -107,6 +107,7 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
             .fill('')
             .map((_, i) => (
               <span
+                key={`line-${i}`}
                 css={{
                   display: 'block',
                   textAlign: 'right',

@@ -12,7 +12,6 @@ import { MWrapper } from '../components/marketing/MWrapper';
 import { Section } from '../components/marketing/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
 import { Button } from '../components/primitives/Button';
-import { GraphQl } from '../components/icons/GraphQl';
 import { Quote } from '../components/marketing/Quote';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
