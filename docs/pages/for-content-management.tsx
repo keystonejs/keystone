@@ -17,6 +17,7 @@ import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
 import dsGeneration from '../public/assets/ds-generation.png';
+import { EndCta } from '../components/content/EndCta';
 
 export default function ForOrganisations() {
   const mq = useMediaQuery();
@@ -361,6 +362,8 @@ export default function ForOrganisations() {
             </Link>*/}
           </div>
         </Section>
+
+        <EndCta grad="grad5" />
       </MWrapper>
     </Page>
   );

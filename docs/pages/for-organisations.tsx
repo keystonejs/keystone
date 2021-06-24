@@ -206,9 +206,12 @@ export default function ForOrganisations() {
               margin: '1rem auto',
             }}
           >
-            Built by Thinkmill, an internationally recognised design & development consultancy.
-            Keystone is proven in the field of business, and designed to fit the needs of
-            organisations that scale.
+            Built by{' '}
+            <a href="https://www.thinkmill.com.au" target="_blank">
+              Thinkmill
+            </a>
+            , an internationally recognised design & development consultancy. Keystone is proven in
+            the field of business, and designed to fit the needs of organisations that scale.
           </Type>
         </Section>
 

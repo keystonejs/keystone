@@ -77,7 +77,7 @@ export default function WhyKeystonePage() {
 
         <div
           css={{
-            margin: '6.25rem 0 1rem 0',
+            margin: '1rem 0',
           }}
         >
           <Image src={adminUi} alt="TODO" width={3710} height={2195} />
@@ -153,7 +153,7 @@ export default function WhyKeystonePage() {
         >
           I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that works
           like a charm. As a frontend dev with skills in node and elastic search, Keystone + GraphQL
-          just feels so right to me <Emoji symbol="♥️" alt="Love" />
+          just feels so right to me <Emoji symbol="❤️" alt="Love" />
         </Quote>
 
         <Section>
@@ -368,7 +368,7 @@ export default function WhyKeystonePage() {
             })}
           >
             <li>
-              <Type as="h3" look="heading24">
+              <Type as="h3" look="heading36">
                 Apps
               </Type>
               <Type as="p" look="body18">
@@ -389,7 +389,7 @@ export default function WhyKeystonePage() {
               </a>
             </li>
             <li>
-              <Type as="h3" look="heading24">
+              <Type as="h3" look="heading36">
                 Websites
               </Type>
               <Type as="p" look="body18">
@@ -410,7 +410,7 @@ export default function WhyKeystonePage() {
               </a>
             </li>
             <li>
-              <Type as="h3" look="heading24">
+              <Type as="h3" look="heading36">
                 eCommerce
               </Type>
               <Type as="p" look="body18">
@@ -430,7 +430,7 @@ export default function WhyKeystonePage() {
           </ul>
         </Section>
 
-        <Section>WESBOS SHOUT OUT...</Section>
+        {/* <Section>TODO: WES BOS COURSE LINK...</Section> */}
 
         <Section
           css={mq({
@@ -440,7 +440,7 @@ export default function WhyKeystonePage() {
           })}
         >
           <div>
-            <Type as="h2" look="heading48" id="multichannel">
+            <Type as="h3" look="heading36" id="multichannel">
               Multichannel
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0 0 0">

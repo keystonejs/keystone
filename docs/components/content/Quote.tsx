@@ -26,7 +26,7 @@ export function Quote({ name, title, img, grad, children, ...props }: QuoteProps
           alignItems: 'center',
           gap: '4rem',
           margin: 0,
-          padding: '4.5rem 0',
+          padding: '3rem 0',
           borderTop: '1px solid var(--border)',
           borderBottom: '1px solid var(--border)',
         })}

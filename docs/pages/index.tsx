@@ -287,7 +287,7 @@ export default function IndexPage() {
               gridTemplateColumns: ['1fr', null, '0.8fr 1.2fr'],
               position: 'relative',
               gap: '2rem',
-              paddingTop: ['3rem', '5rem', null, '12.5rem'],
+              paddingTop: ['3rem', '5rem'],
               ':after': {
                 content: '""',
                 position: 'absolute',
