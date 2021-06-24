@@ -14,8 +14,8 @@ export function SearchField(props: SearchFieldProps) {
   useEffect(() => {
     if (window.docsearch) {
       window.docsearch({
-        apiKey: 'd91c65680fa7a2c65c4347bb58ca69a7',
-        indexName: 'next-keystone',
+        apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+        indexName: 'keystonejs',
         inputSelector: '#search-field',
         debug: true,
       });
