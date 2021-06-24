@@ -213,7 +213,7 @@ export function Footer() {
         <div
           css={mq({
             display: 'grid',
-            gridTemplateColumns: ['1fr', '8.5rem 1fr 4.375rem auto'],
+            gridTemplateColumns: ['1fr', '1fr 4.375rem auto'],
             gap: '1rem',
             alignItems: 'center',
             justifyItems: ['center', 'end'],
@@ -225,18 +225,21 @@ export function Footer() {
             },
           })}
         >
-          <Type
+          {/* <Type
             look="body14"
             as="p"
             css={{
               justifySelf: 'start',
             }}
           >
-            Keystone &copy; 2021
-          </Type>
-          <Type look="body14" as="p" css={{ justifySelf: 'center' }}>
-            Made in <Emoji symbol="🇦🇺" alt="Australia" /> by Thinkmill. Supported with{' '}
-            <Emoji symbol="❤️" alt="Love" /> by the awesome Keystone community.
+            Keystone &copy; Thinkmill Labs Pty Ltd 2021
+          </Type> */}
+          <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
+            Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
+            <a href="https://www.thinkmill.com.au" target="_blank">
+              Thinkmill
+            </a>
+            . Contributed to around the world <Emoji symbol="🌏" alt="Globe" />
           </Type>
           <Socials
             css={mq({
