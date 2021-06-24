@@ -22,6 +22,7 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [`defaultValue`](./default-values): Adds default values to the Blog base.
 - [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
 - [`virtual field`](./virtual-field): Adds virtual fields to the Blog base.
+- [Testing](./testing): Adds tests with `@keystone-next/testing` to the `withAuth()` example.
 
 ## Running examples
 
