@@ -44,6 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: var(--font-body);
           padding: 0;
           margin: 0;
+          -webkit-text-size-adjust: none;
         },
         blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
           margin: 0;
@@ -51,6 +52,10 @@ export default function App({ Component, pageProps }: AppProps) {
         a {
           text-decoration: none;
           color: var(--link);
+        }
+        pre {
+          line-height: 1.4;
+          font-size: 16px;
         }
         .hint {
           border-radius: 4px;

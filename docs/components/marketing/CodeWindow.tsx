@@ -101,6 +101,7 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
             color: 'var(--muted)',
             borderRight: '1px solid var(--border)',
             pointerEvents: 'none',
+            lineHeight: 1.4,
           }}
         >
           {Array(lines)

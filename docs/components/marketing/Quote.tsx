@@ -9,7 +9,7 @@ import { Section } from './Section';
 
 type QuoteProps = {
   name: string;
-  title: string;
+  title?: string;
   img: any;
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
 } & HTMLAttributes<HTMLElement>;
@@ -61,9 +61,11 @@ export function Quote({ name, title, img, grad, children, ...props }: QuoteProps
           <Type as="p" look="heading20bold" margin="1rem 0 0.5rem 0">
             {name}
           </Type>
-          <Type as="p" look="body14" color="var(--muted)">
-            {title}
-          </Type>
+          {title && (
+            <Type as="p" look="body14" color="var(--muted)">
+              {title}
+            </Type>
+          )}
         </div>
       </div>
     </Section>
