@@ -8,19 +8,24 @@ import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/I
 import { CommunityCta } from '../components/marketing/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Highlight } from '../components/primitives/Highlight';
+import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/marketing/TweetBox';
 import { MWrapper } from '../components/marketing/MWrapper';
 import { Section } from '../components/marketing/Section';
 import { CodeBox } from '../components/marketing/CodeBox';
 import { Button } from '../components/primitives/Button';
+import { EndCta } from '../components/marketing/EndCta';
 import { Postgres } from '../components/icons/Postgres';
 import { GraphQl } from '../components/icons/GraphQl';
 import { Type } from '../components/primitives/Type';
-import { Nextjs } from '../components/icons/Nextjs';
-import { Prisma } from '../components/icons/Prisma';
 import { ArrowR } from '../components/icons/ArrowR';
+import { Nextjs } from '../components/icons/Nextjs';
+import { Shield } from '../components/icons/Shield';
+import { Prisma } from '../components/icons/Prisma';
 import { Pill } from '../components/marketing/Pill';
 import { Tick } from '../components/icons/Tick';
+import { Cli } from '../components/icons/Cli';
+import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
 // import contentEditorMockui from '../public/assets/content-editor-mockui.png';
@@ -149,9 +154,9 @@ export default function ForDevelopers() {
             alignItems: 'center',
           })}
         >
-          <TweetBox user="TODO" img="/assets/_kud.jpg" grad="grad3">
-            Working with Keystone is such a pleasant experience. After hand-rolling a few GraphQL
-            APIs, this is lightning fast!
+          <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad3">
+            Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
+            APIs this is lightning fast!
           </TweetBox>
           <div>
             <Type as="h2" look="heading48">
@@ -265,10 +270,77 @@ export default function ForDevelopers() {
         </Section>
 
         <Section>
-          <Type as="h2" look="heading30">
-            Start learning today
+          <Type as="h2" look="heading48" css={{ maxWidth: '41.875rem' }}>
+            The features you need to{' '}
+            <Highlight look="grad3">start fast and scale sustainably.</Highlight>
           </Type>
-          [logo] [logo] [logo] [logo] [logo]
+          <ul
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr', '1fr 1fr 1fr 1fr'],
+              gap: '2rem',
+              listStyle: 'none',
+              margin: '3rem 0 0 0',
+              padding: 0,
+              '& svg': {
+                height: '2rem',
+                color: 'var(--muted)',
+              },
+              '& li': {
+                maxWidth: '13.75rem',
+                margin: '0 auto',
+              },
+            })}
+          >
+            <li>
+              <Shield grad="grad3" />
+              <Type as="h3" look="body18bold" margin="1rem 0">
+                Custom roles & access
+              </Type>
+              <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+                Build your own roles-based access controls. No limits on the amount and kind of
+                roles you can configure.
+              </Type>
+              <Link href="/docs/apis/access-control">
+                <a>Access control API →</a>
+              </Link>
+            </li>
+            <li>
+              <Relational grad="grad3" />
+              <Type as="h3" look="body18bold" margin="1rem 0">
+                Flexible relationships
+              </Type>
+              <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+                One to one. One to many. Many to many. Self referential. It's all there.
+              </Type>
+              <Link href="/docs/guides/relationships">
+                <a>Relationships guide →</a>
+              </Link>
+            </li>
+            <li>
+              <Cli grad="grad3" />
+              <Type as="h3" look="body18bold" margin="1rem 0">
+                Intuitive CLI
+              </Type>
+              <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+                Kickstart new projects and try examples on for size from the comfort of your
+                terminal.
+              </Type>
+              <Link href="/docs/guides/cli">
+                <a>CLI guide →</a>
+              </Link>
+            </li>
+            <li>
+              <Lab grad="grad3" />
+              <Type as="h3" look="body18bold" margin="1rem 0">
+                100% Typescript
+              </Type>
+              <Type as="p" look="body18" color="var(--muted)">
+                Ship fewer bugs with a statically typed workflow. Get Keystone type definitions as
+                you write.
+              </Type>
+            </li>
+          </ul>
         </Section>
 
         <Section>
@@ -281,6 +353,8 @@ export default function ForDevelopers() {
         <CommunityCta />
 
         <Section>TweetBox TweetBox TweetBox TweetBox</Section>
+
+        <EndCta grad="grad3" />
       </MWrapper>
     </Page>
   );
