@@ -10,7 +10,7 @@ import { algoliaStyles } from '../../lib/algoliaStyles';
 
 type SearchFieldProps = HTMLAttributes<HTMLElement>;
 
-export function SearchField(props: SearchFieldProps) {
+export function SearchField(props: SearchFieldProps, window: any) {
   useEffect(() => {
     if (window.docsearch) {
       window.docsearch({
