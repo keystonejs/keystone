@@ -112,7 +112,7 @@ export default function ForOrganisations() {
             </Link>
           </div>
           <div>
-            <Image src={editor} alt="Content Editor Mock UI" width={1956} height={1845} />
+            <Image src={editor} alt="TODO" width={1956} height={1845} />
           </div>
         </Section>
 
@@ -153,8 +153,6 @@ export default function ForOrganisations() {
             APIs this is lightning fast!
           </TweetBox>
         </Section>
-
-        <Section></Section>
 
         <Section
           css={{
@@ -267,7 +265,7 @@ export default function ForOrganisations() {
             </ul>
           </div>
           <div>
-            <Image src={editor} alt="Content Editor Mock UI" width={1956} height={1845} />
+            <Image src={editor} alt="TODO" width={1956} height={1845} />
           </div>
         </Section>
 

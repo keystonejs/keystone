@@ -1,6 +1,6 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
@@ -29,7 +29,8 @@ import { Cli } from '../components/icons/Cli';
 import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
-// import contentEditorMockui from '../public/assets/content-editor-mockui.png';
+import editorStorytelling from '../public/assets/editor-storytelling.png';
+import richTextEditor from '../public/assets/rich-text-editor.png';
 
 export default function ForDevelopers() {
   const mq = useMediaQuery();
@@ -197,13 +198,7 @@ export default function ForDevelopers() {
             </Link>
           </div>
           <div>
-            TODO
-            {/*<Image
-              src={contentEditorMockui}
-              alt="Content Editor Mock UI"
-              width={2109}
-              height={1591}
-            />*/}
+            <Image src={editorStorytelling} alt="TODO" width={1975} height={1572} />
           </div>
         </Section>
 
@@ -216,13 +211,7 @@ export default function ForDevelopers() {
           })}
         >
           <div>
-            TODO
-            {/*<Image
-              src={contentEditorMockui}
-              alt="Content Editor Mock UI"
-              width={2109}
-              height={1591}
-            />*/}
+            <Image src={richTextEditor} alt="TODO" width={2109} height={1591} />
           </div>
           <div>
             <Type as="h2" look="heading48">

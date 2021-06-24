@@ -478,12 +478,7 @@ export const lists = createSchema({
               </ul>
             </div>
             <div>
-              <Image
-                src={contentEditorMockui}
-                alt="Content Editor Mock UI"
-                width={2109}
-                height={1591}
-              />
+              <Image src={contentEditorMockui} alt="TODO" width={2109} height={1591} />
             </div>
           </li>
           <li>
@@ -713,12 +708,7 @@ export const lists = createSchema({
               },
             }}
           >
-            <Image
-              src={docEditorHome}
-              alt="Deploy targets for Keystone are any and all services you've heard of like Digital Ocean, Render, Heroku, Vercel, Google Cloud, AWS, Azure etc"
-              width={2718}
-              height={719}
-            />
+            <Image src={docEditorHome} alt="TODO" width={3183} height={731} />
           </div>
         </Section>
 

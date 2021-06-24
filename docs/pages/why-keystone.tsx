@@ -80,7 +80,7 @@ export default function WhyKeystonePage() {
             margin: '6.25rem 0 1rem 0',
           }}
         >
-          <Image src={adminUi} alt="Content Editor Mock UI" width={3750} height={2179} />
+          <Image src={adminUi} alt="TODO" width={3710} height={2195} />
         </div>
 
         <ul
