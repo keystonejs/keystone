@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { useEffect, HTMLAttributes } from 'react';
 
 import { SearchKeys } from '../icons/SearchKeys';
 import { Search } from '../icons/Search';
@@ -9,6 +9,18 @@ import { Field } from './Field';
 type SearchFieldProps = HTMLAttributes<HTMLElement>;
 
 export function SearchField(props: SearchFieldProps) {
+  useEffect(() => {
+    if (window.docsearch) {
+      window.docsearch({
+        apiKey: 'd91c65680fa7a2c65c4347bb58ca69a7',
+        indexName: 'next-keystone',
+        inputSelector: '#search-field',
+        debug: true,
+      });
+    } else {
+      console.warn('Search has failed to load');
+    }
+  }, []);
   return (
     <span
       css={{
