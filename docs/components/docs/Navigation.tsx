@@ -3,7 +3,7 @@ import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
 import { AnchorHTMLAttributes } from 'react';
@@ -17,6 +17,7 @@ export function Section({ label, children }: SectionProps) {
     <div
       css={{
         marginBottom: 'var(--space-xlarge)',
+        marginTop: 'var(--space-xlarge)',
       }}
     >
       <Type
@@ -37,16 +38,9 @@ type NavItemProps = {
   href: string;
   isActive?: boolean;
   isPlaceholder?: boolean;
-  children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function NavItem({
-  href,
-  isActive: _isActive,
-  isPlaceholder,
-  children,
-  ...props
-}: NavItemProps) {
+export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
   const { pathname } = useRouter();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
@@ -65,10 +59,47 @@ export function NavItem({
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
         }}
         {...props}
+      />
+    </Link>
+  );
+}
+
+type PrimaryNavItemProps = {
+  href: string;
+  children: ReactNode;
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
+
+function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
+  const { pathname } = useRouter();
+  let isActive = pathname === href;
+  return (
+    <Link href={href} passHref>
+      <a
+        css={{
+          display: 'block',
+          fontSize: '1rem',
+          color: isActive ? 'var(--link)' : 'var(--text-heading)',
+          marginBottom: '1rem',
+          alignItems: 'center',
+          fontWeight: 700,
+        }}
       >
         {children}
       </a>
     </Link>
+  );
+}
+
+function SubHeading(props: HTMLAttributes<HTMLElement>) {
+  return (
+    <Type
+      as="h4"
+      look="body14bold"
+      color="var(--muted)"
+      margin="1.5rem 0 1rem 0"
+      css={{ textTransform: 'uppercase' }}
+      {...props}
+    />
   );
 }
 
@@ -79,14 +110,9 @@ export function DocsNavigation() {
         fontWeight: 500,
       }}
     >
-      <Section label="Walkthroughs">
-        <NavItem href="/docs/walkthroughs/getting-started-with-create-keystone-app">
-          Getting started
-        </NavItem>
-        <NavItem href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
-          Embedding Keystone and SQLite in Next.js
-        </NavItem>
-      </Section>
+      <PrimaryNavItem href="/docs">Docs Home</PrimaryNavItem>
+      <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
+      <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
         <NavItem href="/docs/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
@@ -119,19 +145,8 @@ export function DocsNavigation() {
           Custom Field Views
         </NavItem>
       </Section>
-      <Section label="Examples">
-        <NavItem href="/docs/examples">Examples</NavItem>
-      </Section>
       <Section label="API">
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          Config
-        </Type>
+        <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
@@ -140,28 +155,12 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          Context
-        </Type>
+        <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>
         <NavItem href="/docs/apis/list-items">List Item API</NavItem>
         <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
 
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          GraphQL
-        </Type>
+        <SubHeading>GraphQL</SubHeading>
         <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
       </Section>
@@ -176,12 +175,9 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         fontWeight: 500,
       }}
     >
-      <Section label="Updates">
-        <NavItem href="/updates">Latest Updates</NavItem>
-        <NavItem href="/updates/whats-new-in-v6">What's New in v6</NavItem>
-        <NavItem href="/updates/roadmap">Roadmap</NavItem>
-      </Section>
-      <Section label="Releases">
+      <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
+      <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
+      <Section label="Release Notes">
         <NavItem href="/releases">Summary</NavItem>
         {releases.map(name => (
           <NavItem key={name} href={`/releases/${name}`}>

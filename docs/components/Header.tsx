@@ -87,7 +87,7 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
   const isActive = href === currentSection;
 
   return (
-    <span css={mq({ display: ['none', null, null, 'inline'] })}>
+    <span css={mq({ display: ['none', null, null, 'inline'], fontWeight: 600 })}>
       <NavItem isActive={isActive} href={href} css={{ padding: 0 }}>
         {children}
       </NavItem>
@@ -125,7 +125,7 @@ export function Header({ releases }: HeaderProps) {
     <header
       ref={headerRef}
       css={{
-        marginBottom: '2.5rem',
+        marginBottom: '1.5rem',
       }}
     >
       <Wrapper
