@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
+import { AnchorHTMLAttributes } from 'react';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
@@ -37,7 +38,8 @@ type NavItemProps = {
   isActive?: boolean;
   isPlaceholder?: boolean;
   children: ReactNode;
-};
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
+
 export function NavItem({
   href,
   isActive: _isActive,

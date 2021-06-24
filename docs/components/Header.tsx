@@ -109,23 +109,17 @@ export function Header({ releases }: HeaderProps) {
     document.body.style.overflow = 'auto';
   }, []);
 
-  const handleOpen = useCallback(
-    () => () => {
-      setOpen(true);
-      document.body.style.overflow = 'hidden';
-      document.getElementById('mobile-menu-close-btn')?.focus();
-    },
-    []
-  );
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+    document.body.style.overflow = 'hidden';
+    document.getElementById('mobile-menu-close-btn')?.focus();
+  }, []);
 
-  const handleClose = useCallback(
-    () => () => {
-      setOpen(false);
-      document.body.style.overflow = 'auto';
-      document.getElementById('skip-link-navigation-btn')?.focus();
-    },
-    []
-  );
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    document.body.style.overflow = 'auto';
+    document.getElementById('skip-link-navigation-btn')?.focus();
+  }, []);
 
   return (
     <header
@@ -154,7 +148,9 @@ export function Header({ releases }: HeaderProps) {
           },
         })}
       >
-        <Logo />
+        <div>
+          <Logo />
+        </div>
         <div
           css={mq({
             display: ['none', 'block'],
