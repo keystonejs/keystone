@@ -653,10 +653,6 @@ export const lists = createSchema({
               gap: '1rem',
               justifyContent: 'center',
               flexWrap: 'wrap',
-              '& > li': {
-                display: 'inline-block',
-                padding: 0,
-              },
             }}
           >
             <li>

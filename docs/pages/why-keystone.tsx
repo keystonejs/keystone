@@ -200,7 +200,11 @@ export default function WhyKeystonePage() {
                 Extend the CRUD API for more control over what you do. Customize it to your frontend
                 needs.
               </Type>
-              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema">
+              <Link
+                href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <a>Try the example →</a>
               </Link>
             </li>
@@ -376,7 +380,11 @@ export default function WhyKeystonePage() {
                 You can control data input exclusively from your frontend, or use Keystone’s
                 intuitive and customizable CMS when you need it.
               </Type>
-              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager">
+              <Link
+                href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <a>Try the Task Manager example →</a>
               </Link>
             </li>
@@ -393,7 +401,11 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18">
                 Give your content people the tools they need to do their best work.
               </Type>
-              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/blog">
+              <Link
+                href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <a>Try the Blog example →</a>
               </Link>
             </li>
@@ -407,7 +419,11 @@ export default function WhyKeystonePage() {
                 get things done. API first, make Keystone a key player in your eCommerce content
                 mesh.
               </Type>
-              <Link href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce">
+              <Link
+                href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <a>Try the eCommerce example →</a>
               </Link>
             </li>

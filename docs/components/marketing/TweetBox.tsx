@@ -42,7 +42,7 @@ export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps)
         css={{
           display: 'flex',
           alignItems: 'center',
-          marginTop: '1rem',
+          marginTop: '1.5rem',
           fontWeight: 700,
         }}
       >

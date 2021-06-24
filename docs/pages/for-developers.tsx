@@ -1,6 +1,6 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
@@ -16,6 +16,7 @@ import { CodeBox } from '../components/marketing/CodeBox';
 import { Button } from '../components/primitives/Button';
 import { EndCta } from '../components/marketing/EndCta';
 import { Postgres } from '../components/icons/Postgres';
+import { Emoji } from '../components/primitives/Emoji';
 import { GraphQl } from '../components/icons/GraphQl';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
@@ -344,15 +345,166 @@ export default function ForDevelopers() {
         </Section>
 
         <Section>
-          <Type as="h2" look="heading36">
-            Built with the best of the modern web
+          <Type as="h2" look="heading30">
+            Start learning today
           </Type>
-          buttons buttons buttons
+          <Type as="h3" look="heading20bold" margin="1.5rem 0 1rem 0">
+            Keystone foundations
+          </Type>
+          <ul
+            css={{
+              listStyle: 'none',
+              margin: 0,
+              padding: 0,
+              display: 'inline-grid',
+              gridTemplateColumns: 'max-content max-content max-content',
+              gap: '1rem',
+            }}
+          >
+            <li>
+              <Button as="a" href="/docs" look="soft">
+                Docs <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button
+                as="a"
+                href="/docs/walkthroughs/getting-started-with-create-keystone-app"
+                look="soft"
+              >
+                Getting started <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button as="a" href="/docs/apis" look="soft">
+                API reference <ArrowR />
+              </Button>
+            </li>
+          </ul>
+          <Type as="h3" look="heading20bold" margin="2rem 0 1rem 0">
+            Best practice examples
+          </Type>
+          <ul
+            css={{
+              listStyle: 'none',
+              margin: '1rem 0 0 0',
+              padding: 0,
+              display: 'flex',
+              gap: '1rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            <li>
+              <Button
+                as="a"
+                href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+                target="_blank"
+                rel="noopener noreferrer"
+                look="soft"
+              >
+                Blog <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button
+                as="a"
+                href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+                target="_blank"
+                rel="noopener noreferrer"
+                look="soft"
+              >
+                Task Manager app <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button
+                as="a"
+                href="https://github.com/keystonejs/keystone/tree/master/examples/default-values"
+                target="_blank"
+                rel="noopener noreferrer"
+                look="soft"
+              >
+                Default field values <ArrowR />
+              </Button>
+            </li>
+            <li>
+              <Button
+                as="a"
+                href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
+                target="_blank"
+                rel="noopener noreferrer"
+                look="soft"
+              >
+                Extend GraphQL schema <ArrowR />
+              </Button>
+            </li>
+          </ul>
         </Section>
 
         <CommunityCta />
 
-        <Section>TweetBox TweetBox TweetBox TweetBox</Section>
+        <Section>
+          <Type as="h2" look="heading48">
+            Don’t just take <Highlight look="grad3">our word for it.</Highlight>
+          </Type>
+          <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+            We’re honored some of the most talented creatives out there build with Keystone.
+          </Type>
+          <div
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
+              gap: ['1rem', '2rem'],
+              marginTop: '2.5rem',
+              alignItems: 'baseline',
+              gridTemplateRows: 'masonry', // experimental and hopefully supported soon
+            })}
+          >
+            <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad3">
+              Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
+              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev
+              experience feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
+              <Emoji symbol="🚀" alt="Rocket ship" />
+            </TweetBox>
+            <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
+              I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that
+              works like a charm. As a frontend dev with skills in node and elastic search, Keystone
+              + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
+            </TweetBox>
+            <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
+              As someone who lives on the frontend, I love how Keystone lets me define content
+              models and gives me the backend I need. I get a sweet GraphQL API, and can stay
+              focused on building the UI <Emoji symbol="😍" alt="Love" />
+            </TweetBox>
+            <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad3">
+              The new{' '}
+              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                <a>@KeystoneJS</a>
+              </Link>{' '}
+              rich text editor has incredible inline React component support, including editing
+              props and everything!
+            </TweetBox>
+            <TweetBox user="mattiloh" img="/assets/mattiloh.jpg" grad="grad3">
+              Keystone‘s new customisable Document field is really powerful and quite a unique
+              selling proposition. Great job team Keystone <Emoji symbol="👏🏼" alt="Hand clapping" />
+            </TweetBox>
+            <TweetBox user="BenAPatton" img="/assets/benapatton.jpg" grad="grad3">
+              My mind is being blown today! Combining{' '}
+              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                <a>@KeystoneJS</a>
+              </Link>{' '}
+              with{' '}
+              <Link
+                href="https://twitter.com/supabase_io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <a>@supabase_io</a>
+              </Link>{' '}
+              and the experience is just magical.
+            </TweetBox>
+          </div>
+        </Section>
 
         <EndCta grad="grad3" />
       </MWrapper>
