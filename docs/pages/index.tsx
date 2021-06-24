@@ -551,7 +551,7 @@ export const lists = createSchema({
   "data": {
     "allPosts": [
       {
-        "title": "Why structured content content  benefits of structured",
+        "title": "How structured content gives you superpowers",
         "author": {
           "name": "Tim"
         }
