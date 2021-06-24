@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Button } from '../../components/primitives/Button';
-import { Alert } from '../../components/primitives/Alert';
+import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
+import { Examples } from '../../components/docs/ExamplesList';
+import { Walkthroughs } from '../../components/docs/WalkthroughsList';
 import { Type } from '../../components/primitives/Type';
 import { Well } from '../../components/primitives/Well';
-import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
@@ -23,24 +23,7 @@ export default function Docs() {
         development workflows and evolution.
       </Type>
 
-      <Alert css={{ margin: '2rem 0' }}>
-        <span
-          css={{
-            display: 'inline-block',
-            margin: '0 1rem 0.5rem 0',
-          }}
-        >
-          Need answers to Keystone questions? Get help in our
-        </span>
-        <Button
-          as="a"
-          href="https://community.keystonejs.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Community Slack <ArrowR />
-        </Button>
-      </Alert>
+      <CommunitySlackCTA />
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Walkthroughs
@@ -50,28 +33,7 @@ export default function Docs() {
         Step-by-step instructions for getting things done with Keystone.
       </Type>
 
-      <div
-        css={mq({
-          display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
-          gap: 'var(--space-xlarge)',
-        })}
-      >
-        <Well
-          heading="Getting started with Keystone 6"
-          href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-        >
-          Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
-          project folder.
-        </Well>
-        <Well
-          heading="How to embed Keystone + SQLite in a Next.js app"
-          href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
-        >
-          Learn how to run Keystone in the same folder as your frontend code and commit everything
-          to Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
-        </Well>
-      </div>
+      <Walkthroughs />
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Guides
@@ -95,8 +57,8 @@ export default function Docs() {
           heading="Keystone 5 vs Next. Which should you use?"
           href="/docs/guides/keystone-5-vs-keystone-next"
         >
-          We’re transitioning to Keystone 6 soon. If you’re wondering which version to start a new
-          project with today, this guide is for you.
+          We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
+          with today, this guide is for you.
         </Well>
         <Well grad="grad2" heading="Command line foundations" href="/docs/guides/cli">
           Keystone’s CLI helps you develop, build, and deploy projects. This guide explains all you
@@ -138,54 +100,7 @@ export default function Docs() {
         </a>
       </Type>
 
-      <div
-        css={mq({
-          display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
-          gap: 'var(--space-xlarge)',
-        })}
-      >
-        <Well
-          grad="grad3"
-          heading="Blog"
-          href="https://github.com/keystonejs/keystone/blob/master/examples/blog"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          A basic Blog schema with Posts and Authors. Use this as a starting place for learning how
-          to use Keystone. It’s also a starter for other feature projects.
-        </Well>
-        <Well
-          grad="grad3"
-          heading="Task Manager"
-          href="https://github.com/keystonejs/keystone/blob/master/examples/task-manager"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          A basic Task Management app, with Tasks and People who can be assigned to tasks. Great for
-          learning how to use Keystone. It’s also a starter for other feature projects.
-        </Well>
-        <Well
-          grad="grad3"
-          heading="Extend GraphQL Schema"
-          href="https://github.com/keystonejs/keystone/blob/master/examples/extend-graphql-schema"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Shows you how to extend the Keystone GraphQL API with custom queries and mutations. Builds
-          upon the Blog starter project.
-        </Well>
-        <Well
-          grad="grad3"
-          heading="Default Values"
-          href="https://github.com/keystonejs/keystone/blob/master/examples/default-values"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          This project demonstrates how to use default values for fields. Builds upon the Task
-          Manager starter project.
-        </Well>
-      </div>
+      <Examples />
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         API references

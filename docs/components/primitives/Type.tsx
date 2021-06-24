@@ -171,5 +171,4 @@ export const Type = forwardRefWithAs<'span', TypeProps>(
     );
   }
 );
-
 Type.displayName = 'Type';

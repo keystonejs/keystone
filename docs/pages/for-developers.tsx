@@ -12,7 +12,7 @@ import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/content/TweetBox';
 import { MWrapper } from '../components/content/MWrapper';
 import { Typescript } from '../components/icons/Typescript';
-import { Section } from '../components/content/Section';
+import { Section, SideBySideSection } from '../components/content/Section';
 import { CodeBox } from '../components/content/CodeBox';
 import { Button } from '../components/primitives/Button';
 import { EndCta } from '../components/content/EndCta';
@@ -149,18 +149,7 @@ export default function ForDevelopers() {
           </ul>
         </Section>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
-          <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad3">
-            Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
-            APIs this is lightning fast!
-          </TweetBox>
+        <SideBySideSection reverse>
           <div>
             <Type as="h2" look="heading48">
               The APIs you want. <Highlight look="grad3">Because you made them.</Highlight>
@@ -174,16 +163,13 @@ export default function ForDevelopers() {
               <a>Schema API reference →</a>
             </Link>
           </div>
-        </Section>
+          <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad3">
+            Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
+            APIs this is lightning fast!
+          </TweetBox>
+        </SideBySideSection>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
+        <SideBySideSection>
           <div>
             <Type as="h2" look="heading48">
               A content studio your storytellers will{' '}
@@ -199,21 +185,16 @@ export default function ForDevelopers() {
             </Link>
           </div>
           <div>
-            <Image src={editorStorytelling} alt="TODO" width={1975} height={1572} />
+            <Image
+              src={editorStorytelling}
+              alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: extensive field options; flexible relationships; powerful sort & filtering."
+              width={1975}
+              height={1572}
+            />
           </div>
-        </Section>
+        </SideBySideSection>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
-          <div>
-            <Image src={richTextEditor} alt="TODO" width={1901} height={1629} />
-          </div>
+        <SideBySideSection reverse>
           <div>
             <Type as="h2" look="heading48">
               A Rich Text editor for the{' '}
@@ -262,7 +243,15 @@ export default function ForDevelopers() {
               <a>Try the demo →</a>
             </Link>
           </div>
-        </Section>
+          <div>
+            <Image
+              src={richTextEditor}
+              alt="Keystone Document field containing Rich Text content including Twitter embed component, and syntax highlighted code block."
+              width={1901}
+              height={1629}
+            />
+          </div>
+        </SideBySideSection>
 
         <Section>
           <Type as="h2" look="heading48" css={{ maxWidth: '41.875rem' }}>

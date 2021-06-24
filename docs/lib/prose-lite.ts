@@ -4,13 +4,6 @@ export const proseStyles = {
     maxWidth: '100%',
     height: 'auto',
   },
-  '[class~="lead"]': {
-    color: 'var(--code)',
-    fontSize: 'var(--font-medium)',
-    lineHeight: 1.6,
-    marginTop: '1.2em',
-    marginBottom: '1.2em',
-  },
   'blockquote p:first-of-type::before, blockquote p:last-of-type::after': {
     content: '""',
   },
@@ -79,14 +72,14 @@ export const proseStyles = {
     marginBottom: '1.6em',
     paddingLeft: '1em',
   },
-  h1: {
-    color: 'var(--text)',
-    fontWeight: 800,
-    fontSize: 'var(--font-xxlarge)',
-    marginTop: '0',
-    marginBottom: '0.8888888889em',
-    lineHeight: 1.1111111,
-  },
+  // h1: {
+  //   color: 'var(--text)',
+  //   fontWeight: 800,
+  //   fontSize: 'var(--font-xxlarge)',
+  //   marginTop: '0',
+  //   marginBottom: '0.8888888889em',
+  //   lineHeight: 1.1111111,
+  // },
   h2: {
     color: 'var(--text-heading)',
     fontWeight: 700,

@@ -11,15 +11,14 @@ import { TweetBox } from '../components/content/TweetBox';
 import { MWrapper } from '../components/content/MWrapper';
 import { Section } from '../components/content/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
-import { Button } from '../components/primitives/Button';
 import { Quote } from '../components/content/Quote';
 import { Type } from '../components/primitives/Type';
-import { ArrowR } from '../components/icons/ArrowR';
 import { Pill } from '../components/content/Pill';
 import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
 import editor from '../public/assets/editor.png';
+import dataIntegrity from '../public/assets/data-integrity.png';
 import { EndCta } from '../components/content/EndCta';
 
 export default function ForOrganisations() {
@@ -113,7 +112,12 @@ export default function ForOrganisations() {
             </Link>
           </div>
           <div>
-            <Image src={editor} alt="TODO" width={1956} height={1845} />
+            <Image
+              src={editor}
+              alt="Two application windows. One shows an IDE with Keystone schema code to configure fields. The other shows content fields in Keystone Admin UI"
+              width={1956}
+              height={1845}
+            />
           </div>
         </Section>
 
@@ -269,7 +273,12 @@ export default function ForOrganisations() {
             </ul>
           </div>
           <div>
-            <Image src={editor} alt="TODO" width={1956} height={1845} />
+            <Image
+              src={dataIntegrity}
+              alt="2 application panes. One displays a database configuration app with DB columns and rows containing content. The other displays the same column and row content in Keystone Admin UI."
+              width={2044}
+              height={1557}
+            />
           </div>
         </Section>
 

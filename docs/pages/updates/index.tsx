@@ -9,6 +9,7 @@ import { Alert } from '../../components/primitives/Alert';
 import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
+import { ArrowR } from '../../components/icons/ArrowR';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -109,7 +110,9 @@ function Box({ link, heading, children, ...props }: BoxProps) {
       </Type>
       {link && (
         <Link href={link} passHref>
-          <a>read more</a>
+          <a css={{ display: 'inline-flex', alignItems: 'center', marginTop: '0.5rem' }}>
+            Read more <ArrowR css={{ height: '1.2rem' }} />
+          </a>
         </Link>
       )}
     </Type>
@@ -156,27 +159,27 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           features you’ve been waiting for!
         </Box>
         <Timeline date="2nd June 2021" />
-        <Box link="/releases/2021-06-02" heading="TODO">
+        <Box link="/releases/2021-06-02">
           We have a new JSON field <Emoji symbol="✨" alt="Sparkle" />, a bunch of new learning
           resources, and plenty of under the hood optimisations in this big release.{' '}
           <Emoji symbol="💪" alt="Strong" />
         </Box>
         <Timeline date="19th May 2021" />
-        <Box link="/releases/2021-05-19" heading="TODO">
+        <Box link="/releases/2021-05-19">
           Node updates and Admin UI has moved! <Emoji symbol="🚚" alt="Truck" />
         </Box>
         <Timeline date="17th May 2021" />
-        <Box link="/releases/2021-05-17" heading="TODO">
+        <Box link="/releases/2021-05-17">
           Apollo caching can now be configured for performance <Emoji symbol="🔥" alt="Fire" /> and
           a basic authentication example to get your started <Emoji symbol="🔒" alt="Lock" />
         </Box>
         <Timeline date="11th May 2021" />
-        <Box link="/releases/2021-05-11" heading="TODO">
+        <Box link="/releases/2021-05-11">
           A bunch of admin UI tweaks in this release <Emoji symbol="🖥️" alt="Monitor" />, among
           other minor fixes
         </Box>
         <Timeline date="5th May 2021" />
-        <Box link="/releases/2021-05-05" heading="TODO">
+        <Box link="/releases/2021-05-05">
           Aside from dependency updates <Emoji symbol="😴" alt="Tired" />, we added an{' '}
           <InlineCode>isIndexed</InlineCode>
           config option to the <InlineCode>text</InlineCode>, <InlineCode>integer</InlineCode>,{' '}
@@ -184,34 +187,34 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           <InlineCode>timestamp</InlineCode> field types
         </Box>
         <Timeline date="3rd May 2021" />
-        <Box link="/releases/2021-05-03" heading="TODO">
+        <Box link="/releases/2021-05-03">
           Files in Keystone 6 <Emoji symbol="📁" alt="Folder" />! This release involved a bunch of
-          busywork behind the scenes in Keystone 6 <Emoji symbol="🔧" alt="Working tools" />
+          busywork behind the scenes in Keystone 6
         </Box>
         <Timeline date="20th April 2021" />
-        <Box link="/releases/2021-04-20" heading="TODO">
+        <Box link="/releases/2021-04-20">
           Improvements to the Lists API, deprecating <InlineCode>resolveFields</InlineCode>{' '}
           <Emoji symbol="🔧" alt="Working tool" />
         </Box>
         <Timeline date="6th April 2021" />
-        <Box link="/releases/2021-04-06" heading="TODO">
+        <Box link="/releases/2021-04-06">
           Controlled code demolition <Emoji symbol="🏗️" alt="Construction" />{' '}
           <Emoji symbol="👷‍♀️" alt="Working" />, Better pagination in Admin UI{' '}
           <Emoji symbol="⏭️" alt="Fast forward" />
         </Box>
         <Timeline date="30th March 2021" />
-        <Box link="/releases/2021-03-30" heading="TODO">
+        <Box link="/releases/2021-03-30">
           Goodbye legacy code <Emoji symbol="👋" alt="Waving" />{' '}
           <Emoji symbol="🌇" alt="Postcard" />, Improved <InlineCode>select</InlineCode> field type{' '}
           <Emoji symbol="🔽" alt="Selector" />, Squashed bugs <Emoji symbol="🐛" alt="Bug" />
         </Box>
         <Timeline date="23rd March 2021" />
-        <Box link="/releases/2021-03-23" heading="TODO">
+        <Box link="/releases/2021-03-23">
           Added support for SQLite with Prisma <Emoji symbol="🎉" alt="Celebration" />, Noteworthy
           bug-squashing <Emoji symbol="🐛" alt="Bug" />
         </Box>
         <Timeline date="22nd March 2021" isFirst />
-        <Box link="/releases/2021-03-22" heading="TODO">
+        <Box link="/releases/2021-03-22">
           Prisma migrations <Emoji symbol="🚚" alt="Truck" />, Noteworthy bug-squashing{' '}
           <Emoji symbol="🐛" alt="Bug" />
         </Box>

@@ -7,7 +7,7 @@ import { useMediaQuery } from '../lib/media';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
 import { Highlight } from '../components/primitives/Highlight';
 import { MWrapper } from '../components/content/MWrapper';
-import { Section } from '../components/content/Section';
+import { Section, SideBySideSection } from '../components/content/Section';
 import { Button } from '../components/primitives/Button';
 import { Quote } from '../components/content/Quote';
 import { Type } from '../components/primitives/Type';
@@ -17,6 +17,10 @@ import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
 import dsGeneration from '../public/assets/ds-generation.png';
+import contentManagement1 from '../public/assets/content-management-1.png';
+import contentManagement2 from '../public/assets/content-management-2.png';
+import contentManagement3 from '../public/assets/content-management-3.png';
+import contentManagement4 from '../public/assets/content-management-4.png';
 import { EndCta } from '../components/content/EndCta';
 
 export default function ForOrganisations() {
@@ -31,23 +35,15 @@ export default function ForOrganisations() {
             The content interface <Highlight look="grad5">for your codebase</Highlight>
           </IntroHeading>
           <IntroLead>
-            Control the story without changing lanes: Admin UI is a natural extension of how you
-            work in code, and has the flexibility you need to enable content creatives.
+            Control the story without changing lanes: Keystone's Admin UI is a natural extension of
+            how you work in code, and has the flexibility you need to enable content creatives.
           </IntroLead>
         </IntroWrapper>
         <Button as="a" href="/docs/guides/document-fields" css={{ marginTop: '2rem' }}>
           Try the Rich Text demo <ArrowR />
         </Button>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
-          <div>TODO{/*<Image src={editor} alt="TODO" width={1956} height={1845} />*/}</div>
+        <SideBySideSection reverse>
           <div>
             <Type as="h2" look="heading48">
               Permissions you can <Highlight look="grad5">make your own.</Highlight>
@@ -94,16 +90,17 @@ export default function ForOrganisations() {
               <a>Access control API →</a>
             </Link>
           </div>
-        </Section>
+          <div>
+            <Image
+              src={contentManagement1}
+              alt="Dropdown selector from Keystone’s Admin UI showing different user roles: Administrator, Editor, Content Manager, Author"
+              width={1884}
+              height={1161}
+            />
+          </div>
+        </SideBySideSection>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
+        <SideBySideSection>
           <div>
             <Type as="h2" look="heading48">
               Fields fit for <Highlight look="grad5">purpose.</Highlight>
@@ -150,8 +147,15 @@ export default function ForOrganisations() {
               <a>Fields API →</a>
             </Link>
           </div>
-          <div>TODO{/*<Image src={editor} alt="TODO" width={1956} height={1845} />*/}</div>
-        </Section>
+          <div>
+            <Image
+              src={contentManagement2}
+              alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom and virtual fields; flexible relationships; powerful sort & filtering."
+              width={1878}
+              height={1561}
+            />
+          </div>
+        </SideBySideSection>
 
         <Section>
           <div
@@ -184,7 +188,12 @@ export default function ForOrganisations() {
               </Link>
             </div>
             <div>
-              <Image src={dsGeneration} alt="TODO" width={1854} height={1535} />
+              <Image
+                src={dsGeneration}
+                alt="Keystone Document field containing Rich Text content including Twitter embed components, and syntax highlighted code block"
+                width={1854}
+                height={1535}
+              />
             </div>
           </div>
           <ul
@@ -246,14 +255,7 @@ export default function ForOrganisations() {
           including editing props and everything!
         </Quote>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
+        <SideBySideSection>
           <div>
             <Type as="h2" look="heading48">
               Relate while <Highlight look="grad5">you create.</Highlight>
@@ -303,25 +305,26 @@ export default function ForOrganisations() {
               <a>Relationships guide →</a>
             </Link>
           </div>
-          <div>{/*<Image src={editor} alt="TODO" width={1956} height={1845} />*/}</div>
-        </Section>
+          <div>
+            <Image
+              src={contentManagement3}
+              alt="2 Admin UI panes showing creation of relationships in place. Author window opens up a Create Post window where Post categories can be selected."
+              width={2006}
+              height={1726}
+            />
+          </div>
+        </SideBySideSection>
 
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '2rem',
-            alignItems: 'center',
-          })}
-        >
-          <div>{/*<Image src={editor} alt="TODO" width={1956} height={1845} />*/}</div>
+        <SideBySideSection reverse>
           <div>
             <Type as="h2" look="heading48">
-              Manage complexity <Highlight look="grad5">on your terms.</Highlight>
+              Manage complexity
+              <br /> {/* This <br /> needs to be there to fix a horrible safari bug, sadface */}
+              <Highlight look="grad5">on your terms.</Highlight>
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              Admin UI has great tooling for managing complex sets of content, so editors can
-              intuitively understand the data they're editing.
+              The Keystone Admin UI has great tooling for managing complex sets of content, so
+              editors can intuitively understand the data they're editing.
             </Type>
             <ul
               css={{
@@ -357,11 +360,16 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            {/*<Link href="/TODO">
-              <a>Keystone for apps →</a>
-            </Link>*/}
           </div>
-        </Section>
+          <div>
+            <Image
+              src={contentManagement4}
+              alt="Admin UI browser window showing a tabular a list of Articles with filtration applied to the list. Filter by published status."
+              width={1827}
+              height={1516}
+            />
+          </div>
+        </SideBySideSection>
 
         <EndCta grad="grad5" />
       </MWrapper>

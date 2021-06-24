@@ -371,7 +371,7 @@ export default function WhyKeystonePage() {
         >
           With Keystone I could create a new data type, custom queries and mutations, and access it
           all in a GraphQL playground in less than 15 mins. It’s so satisfying to make server-side
-          changes without having to spend time on the database. Keystone is magical and I love it.
+          changes without having to spend time on the database. Keystone is magical and I love it!
         </Quote>
 
         <Section>

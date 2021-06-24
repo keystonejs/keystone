@@ -3,9 +3,10 @@ import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
+import { AnchorHTMLAttributes } from 'react';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
@@ -16,12 +17,14 @@ export function Section({ label, children }: SectionProps) {
     <div
       css={{
         marginBottom: 'var(--space-xlarge)',
+        marginTop: 'var(--space-xlarge)',
       }}
     >
       <Type
         as="h3"
         look="body14bold"
         margin="0 0 var(--space-large) 0"
+        // color="var(--muted)"
         color="var(--text-heading)"
         css={{ textTransform: 'uppercase' }}
       >
@@ -36,19 +39,13 @@ type NavItemProps = {
   href: string;
   isActive?: boolean;
   isPlaceholder?: boolean;
-  children: ReactNode;
-};
-export function NavItem({
-  href,
-  isActive: _isActive,
-  isPlaceholder,
-  children,
-  ...props
-}: NavItemProps) {
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
+
+export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
   const { pathname } = useRouter();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
-  const isOpen = ctx ? ctx.open : true;
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
 
   return (
     <Link href={href} passHref>
@@ -62,14 +59,54 @@ export function NavItem({
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
           ':hover': {
-            textDecoration: 'underline',
+            color: 'var(--link)',
           },
         }}
         {...props}
+      />
+    </Link>
+  );
+}
+
+type PrimaryNavItemProps = {
+  href: string;
+  children: ReactNode;
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
+
+export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
+  const { pathname } = useRouter();
+  let isActive = pathname === href;
+  return (
+    <Link href={href} passHref>
+      <a
+        css={{
+          display: 'block',
+          fontSize: '1rem',
+          color: isActive ? 'var(--link)' : 'var(--text-heading)',
+          marginBottom: '1rem',
+          alignItems: 'center',
+          fontWeight: 700,
+          ':hover': {
+            color: 'var(--link)',
+          },
+        }}
       >
         {children}
       </a>
     </Link>
+  );
+}
+
+function SubHeading(props: HTMLAttributes<HTMLElement>) {
+  return (
+    <Type
+      as="h4"
+      look="body14bold"
+      color="var(--muted)"
+      margin="1.5rem 0 1rem 0"
+      css={{ textTransform: 'uppercase' }}
+      {...props}
+    />
   );
 }
 
@@ -80,14 +117,9 @@ export function DocsNavigation() {
         fontWeight: 500,
       }}
     >
-      <Section label="Walkthroughs">
-        <NavItem href="/docs/walkthroughs/getting-started-with-create-keystone-app">
-          Getting started
-        </NavItem>
-        <NavItem href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
-          Embedding Keystone and SQLite in Next.js
-        </NavItem>
-      </Section>
+      <PrimaryNavItem href="/docs">Docs Home</PrimaryNavItem>
+      <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
+      <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
         <NavItem href="/docs/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
@@ -120,19 +152,8 @@ export function DocsNavigation() {
           Custom Field Views
         </NavItem>
       </Section>
-      <Section label="Examples">
-        <NavItem href="/docs/examples">Examples</NavItem>
-      </Section>
       <Section label="API">
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          Config
-        </Type>
+        <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
@@ -141,28 +162,12 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          Context
-        </Type>
+        <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>
         <NavItem href="/docs/apis/list-items">List Item API</NavItem>
         <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
 
-        <Type
-          as="h4"
-          look="body14bold"
-          color="var(--muted)"
-          margin="1.5rem 0 1rem 0"
-          css={{ textTransform: 'uppercase' }}
-        >
-          GraphQL
-        </Type>
+        <SubHeading>GraphQL</SubHeading>
         <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
       </Section>
@@ -177,35 +182,15 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         fontWeight: 500,
       }}
     >
-      <Section label="Updates">
-        <NavItem href="/updates">Latest Updates</NavItem>
-        <NavItem href="/updates/whats-new-in-v6">What's New in v6</NavItem>
-        <NavItem href="/updates/roadmap">Roadmap</NavItem>
-      </Section>
-      <Section label="Releases">
-        <NavItem href="/releases">Summary</NavItem>
+      <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
+      <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
+      <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
+      <Section label="Recent Releases">
         {releases.map(name => (
           <NavItem key={name} href={`/releases/${name}`}>
             {format(parseISO(name), 'do LLL yyyy')}
           </NavItem>
         ))}
-      </Section>
-    </nav>
-  );
-}
-
-export function MarketingNavigation() {
-  return (
-    <nav
-      css={{
-        fontWeight: 500,
-      }}
-    >
-      <Section label="Keystone">
-        <NavItem href="/why-keystone">Why Keystone</NavItem>
-        <NavItem href="/for-developers">For Developers</NavItem>
-        <NavItem href="/for-organisations">For Organisations</NavItem>
-        <NavItem href="/for-content-management">For Content Management</NavItem>
       </Section>
     </nav>
   );

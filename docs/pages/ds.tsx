@@ -19,6 +19,8 @@ import { Well } from '../components/primitives/Well';
 import * as allIcons from '../components/icons';
 import { Page } from '../components/Page';
 
+const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos'];
+
 function Divider() {
   return (
     <hr
@@ -503,24 +505,26 @@ export default function DS() {
           gap: '0.5rem',
         }}
       >
-        {Object.entries(allIcons).map(([key, Icon]) => (
-          <div
-            key={key}
-            css={{
-              textAlign: 'center',
-            }}
-          >
-            <Icon
+        {Object.entries(allIcons)
+          .filter(([i]) => !EXCEPT_ICONS.includes(i))
+          .map(([key, Icon]) => (
+            <div
+              key={key}
               css={{
-                display: 'block',
-                height: '2rem',
-                margin: '0 auto',
+                textAlign: 'center',
               }}
-              grad={icon}
-            />
-            <InlineCode>{key}</InlineCode>
-          </div>
-        ))}
+            >
+              <Icon
+                css={{
+                  display: 'block',
+                  height: '2rem',
+                  margin: '0 auto',
+                }}
+                grad={icon}
+              />
+              <InlineCode>{key}</InlineCode>
+            </div>
+          ))}
       </div>
       <Type as="h3" look="heading24" margin={'var(--space-large) 0'}>
         Badge

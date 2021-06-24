@@ -1,11 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Button } from '../../../components/primitives/Button';
-import { Alert } from '../../../components/primitives/Alert';
+import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA';
 import { Type } from '../../../components/primitives/Type';
 import { Well } from '../../../components/primitives/Well';
-import { ArrowR } from '../../../components/icons/ArrowR';
 import { DocsPage } from '../../../components/Page';
 import { useMediaQuery } from '../../../lib/media';
 
@@ -24,24 +22,7 @@ export default function Docs() {
         feature.
       </Type>
 
-      <Alert css={{ margin: '2rem 0' }}>
-        <span
-          css={{
-            display: 'inline-block',
-            margin: '0 1rem 0.5rem 0',
-          }}
-        >
-          Need answers to Keystone questions? Get help in our
-        </span>
-        <Button
-          as="a"
-          href="https://community.keystonejs.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Community Slack <ArrowR />
-        </Button>
-      </Alert>
+      <CommunitySlackCTA />
 
       <div
         css={mq({
