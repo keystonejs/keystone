@@ -36,9 +36,12 @@ import { Code } from '../components/icons/Code';
 import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
-import contentEditorMockui from '../public/assets/content-editor-mockui.png';
-import docEditorHome from '../public/assets/doc-editor-home.png';
-import deployTargets from '../public/assets/deploy-targets.png';
+// import contentEditorMockui from '../public/assets/content-editor-mockui.png';
+// import docEditorHome from '../public/assets/doc-editor-home.png';
+// import deployTargets from '../public/assets/deploy-targets.png';
+import homePageImg1 from '../public/assets/homepage-img-1.svg';
+import homePageImg2 from '../public/assets/homepage-img-2.svg';
+import homePageImg3 from '../public/assets/homepage-img-3.svg';
 
 export default function IndexPage() {
   const mq = useMediaQuery();
@@ -479,7 +482,7 @@ export const lists = createSchema({
             </div>
             <div>
               <Image
-                src={contentEditorMockui}
+                src={homePageImg1}
                 alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom & virtual fields; flexible relationships; powerful sort & filtering."
                 width={2109}
                 height={1591}
@@ -615,7 +618,7 @@ export const lists = createSchema({
             </div>
             <div>
               <Image
-                src={deployTargets}
+                src={homePageImg2}
                 alt="Deploy targets for Keystone are any and all services you've heard of like Digital Ocean, Render, Heroku, Vercel, Google Cloud, AWS, Azure etc"
                 width={1896}
                 height={1339}
@@ -715,7 +718,7 @@ export const lists = createSchema({
             }}
           >
             <Image
-              src={docEditorHome}
+              src={homePageImg3}
               alt="Browser window of the Keystone Document Field showing demo text explaining how the field can be used."
               width={3183}
               height={731}
