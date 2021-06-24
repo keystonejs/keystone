@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next -p 8000",
-    "build": "next build",
-    "postbuild": "next-sitemap",
+    "build": "next build && next-sitemap",
     "start": "next start -p 8000",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
