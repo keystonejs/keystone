@@ -34,7 +34,7 @@ export function Quote({ name, title, img, grad, children, ...props }: QuoteProps
       >
         <div>
           <QuoteIcon grad={grad} css={{ height: '3rem' }} />
-          <Type as="p" look="body24" color="var(--muted)" margin="1rem 0 0 0">
+          <Type as="p" look="body24" color="var(--muted)" margin="1rem 3rem 0 0">
             {children}
           </Type>
         </div>
