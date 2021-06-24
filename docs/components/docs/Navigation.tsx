@@ -63,9 +63,6 @@ export function NavItem({
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
-          ':hover': {
-            textDecoration: 'underline',
-          },
         }}
         {...props}
       >

@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import { Fragment, useEffect, ElementType, HTMLAttributes, MouseEvent } from 'react';
-import FocusLock from 'react-focus-lock';
-import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, ElementType, HTMLAttributes, MouseEvent } from 'react';
+import FocusLock from 'react-focus-lock';
 
 import { useHeaderContext } from './Header';
+import { Highlight } from './primitives/Highlight';
 
 import { DocsNavigation, UpdatesNavigation, MarketingNavigation } from './docs/Navigation';
 import { WhyKeystone } from './icons/WhyKeystone';
@@ -41,7 +42,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
     return () => {
       document.body.removeEventListener('keydown', handleEsc);
     };
-  });
+  }, []);
 
   return (
     <Fragment>
@@ -59,7 +60,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
             overflow: 'auto',
             transform: open ? 'translateX(0)' : 'translateX(100%)',
             zIndex: 100,
-            transition: 'transform 0.5s ease',
+            transition: 'transform 0.25s ease',
             '@media (min-width: 22.5rem)': {
               width: '22.5rem',
             },
@@ -71,7 +72,7 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
             css={{
               position: 'sticky',
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              gridTemplateColumns: '2fr 1fr',
               top: 0,
               padding: '0.5rem 2rem',
               borderBottom: '1px solid var(--border)',
@@ -80,8 +81,18 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
             }}
           >
             <Link href="/" passHref>
-              <a tabIndex={open ? 0 : -1}>
-                <Keystone grad="logo" css={{ height: '2rem' }} />
+              <a
+                tabIndex={open ? 0 : -1}
+                css={{
+                  fontSize: 'var(--font-medium)',
+                  fontWeight: 600,
+                  transition: 'color 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Keystone grad="logo" css={{ height: '2rem', marginRight: '0.4em' }} />
+                <Highlight>Keystone 6</Highlight>
               </a>
             </Link>
             <button
@@ -177,20 +188,33 @@ export function MobileMenu({ handleClose, releases, ...props }: MobileMenuProps)
           </div>
         </nav>
       </FocusLock>
-      {open && (
-        <div
-          onClick={handleClose}
-          css={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            background: 'rgba(0, 0, 0, 0.85)',
-            zIndex: 99,
-          }}
-        />
-      )}
+
+      <div
+        onClick={handleClose}
+        css={
+          open
+            ? {
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                background: 'black',
+                opacity: '0.8',
+                transition: 'opacity 0.25s ease',
+                zIndex: 99,
+              }
+            : {
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                overflow: 'hidden',
+                opacity: 0,
+              }
+        }
+      />
     </Fragment>
   );
 }
