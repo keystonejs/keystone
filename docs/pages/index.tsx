@@ -478,7 +478,12 @@ export const lists = createSchema({
               </ul>
             </div>
             <div>
-              <Image src={contentEditorMockui} alt="TODO" width={2109} height={1591} />
+              <Image
+                src={contentEditorMockui}
+                alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom & virtual fields; flexible relationships; powerful sort & filtering."
+                width={2109}
+                height={1591}
+              />
             </div>
           </li>
           <li>
@@ -709,7 +714,12 @@ export const lists = createSchema({
               },
             }}
           >
-            <Image src={docEditorHome} alt="TODO" width={3183} height={731} />
+            <Image
+              src={docEditorHome}
+              alt="Browser window of the Keystone Document Field showing demo text explaining how the field can be used."
+              width={3183}
+              height={731}
+            />
           </div>
         </Section>
 

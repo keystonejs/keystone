@@ -199,7 +199,12 @@ export default function ForDevelopers() {
             </Link>
           </div>
           <div>
-            <Image src={editorStorytelling} alt="TODO" width={1975} height={1572} />
+            <Image
+              src={editorStorytelling}
+              alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: extensive field options; flexible relationships; powerful sort & filtering."
+              width={1975}
+              height={1572}
+            />
           </div>
         </Section>
 
@@ -212,7 +217,12 @@ export default function ForDevelopers() {
           })}
         >
           <div>
-            <Image src={richTextEditor} alt="TODO" width={1901} height={1629} />
+            <Image
+              src={richTextEditor}
+              alt="Keystone Document field containing Rich Text content including Twitter embed component, and syntax highlighted code block."
+              width={1901}
+              height={1629}
+            />
           </div>
           <div>
             <Type as="h2" look="heading48">
