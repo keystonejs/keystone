@@ -7,23 +7,23 @@ import { useMediaQuery } from '../lib/media';
 import { Highlight } from '../components/primitives/Highlight';
 import { Relationship } from '../components/icons/Relationship';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
-import { MWrapper } from '../components/marketing/MWrapper';
-import { TweetBox } from '../components/marketing/TweetBox';
+import { MWrapper } from '../components/content/MWrapper';
+import { TweetBox } from '../components/content/TweetBox';
 import { Typescript } from '../components/icons/Typescript';
 import { Automated } from '../components/icons/Automated';
 import { Migration } from '../components/icons/Migration';
-import { Section } from '../components/marketing/Section';
+import { Section } from '../components/content/Section';
 import { Button } from '../components/primitives/Button';
-import { EndCta } from '../components/marketing/EndCta';
+import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
 import { Updates } from '../components/icons/Updates';
-import { Quote } from '../components/marketing/Quote';
+import { Quote } from '../components/content/Quote';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
 import { Custom } from '../components/icons/Custom';
 import { Editor } from '../components/icons/Editor';
 import { Filter } from '../components/icons/Filter';
-import { Pill } from '../components/marketing/Pill';
+import { Pill } from '../components/content/Pill';
 import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
 import { Cli } from '../components/icons/Cli';
@@ -200,13 +200,13 @@ export default function WhyKeystonePage() {
                 Extend the CRUD API for more control over what you do. Customize it to your frontend
                 needs.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the example →</a>
-              </Link>
+                Try the example →
+              </a>
             </li>
             <li>
               <Editor grad="grad2" />
@@ -380,13 +380,13 @@ export default function WhyKeystonePage() {
                 You can control data input exclusively from your frontend, or use Keystone’s
                 intuitive and customizable CMS when you need it.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the Task Manager example →</a>
-              </Link>
+                Try the Task Manager example →
+              </a>
             </li>
             <li>
               <Type as="h3" look="heading24">
@@ -401,13 +401,13 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18">
                 Give your content people the tools they need to do their best work.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the Blog example →</a>
-              </Link>
+                Try the Blog example →
+              </a>
             </li>
             <li>
               <Type as="h3" look="heading24">
@@ -419,13 +419,13 @@ export default function WhyKeystonePage() {
                 get things done. API first, make Keystone a key player in your eCommerce content
                 mesh.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the eCommerce example →</a>
-              </Link>
+                Try the eCommerce example →
+              </a>
             </li>
           </ul>
         </Section>

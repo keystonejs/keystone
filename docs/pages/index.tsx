@@ -4,25 +4,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
-import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
-import { CommunityCta } from '../components/marketing/CommunityCta';
+import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
+import { CommunityCta } from '../components/content/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
-import { MWrapper } from '../components/marketing/MWrapper';
+import { MWrapper } from '../components/content/MWrapper';
 import { Relational } from '../components/icons/Relational';
-import { TweetBox } from '../components/marketing/TweetBox';
+import { TweetBox } from '../components/content/TweetBox';
 import { Typescript } from '../components/icons/Typescript';
 import { InlineCode } from '../components/primitives/Code';
 import { Automated } from '../components/icons/Automated';
-import { Section } from '../components/marketing/Section';
+import { Section } from '../components/content/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
-import { CodeBox } from '../components/marketing/CodeBox';
+import { CodeBox } from '../components/content/CodeBox';
 import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
-import { EndCta } from '../components/marketing/EndCta';
+import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
 import { Content } from '../components/icons/Content';
 import { Updates } from '../components/icons/Updates';
@@ -158,10 +158,10 @@ export default function IndexPage() {
             gap: '3rem',
           })}
         >
-          <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad2">
-            I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that works
-            like a charm. As a frontend dev with skills in node and elastic search, Keystone +
-            GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
+          <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad2">
+            When I'm building an app or site, Keystone is the backend I'd use ten times out of ten.
+            So impressive what the team have done in version 6! ...and it works perfectly with
+            GraphCDN, just use it already!
           </TweetBox>
           <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
             As someone who lives on the frontend, I love how Keystone lets me define content models

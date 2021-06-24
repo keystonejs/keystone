@@ -4,15 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
 import { Highlight } from '../components/primitives/Highlight';
-import { MWrapper } from '../components/marketing/MWrapper';
-import { Section } from '../components/marketing/Section';
+import { MWrapper } from '../components/content/MWrapper';
+import { Section } from '../components/content/Section';
 import { Button } from '../components/primitives/Button';
-import { Quote } from '../components/marketing/Quote';
+import { Quote } from '../components/content/Quote';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
-import { Pill } from '../components/marketing/Pill';
+import { Pill } from '../components/content/Pill';
 import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 

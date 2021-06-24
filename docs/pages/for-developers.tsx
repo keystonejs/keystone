@@ -4,18 +4,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/marketing/Intro';
-import { CommunityCta } from '../components/marketing/CommunityCta';
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
+import { CommunityCta } from '../components/content/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Highlight } from '../components/primitives/Highlight';
 import { Relational } from '../components/icons/Relational';
-import { TweetBox } from '../components/marketing/TweetBox';
-import { MWrapper } from '../components/marketing/MWrapper';
+import { TweetBox } from '../components/content/TweetBox';
+import { MWrapper } from '../components/content/MWrapper';
 import { Typescript } from '../components/icons/Typescript';
-import { Section } from '../components/marketing/Section';
-import { CodeBox } from '../components/marketing/CodeBox';
+import { Section } from '../components/content/Section';
+import { CodeBox } from '../components/content/CodeBox';
 import { Button } from '../components/primitives/Button';
-import { EndCta } from '../components/marketing/EndCta';
+import { EndCta } from '../components/content/EndCta';
 import { Postgres } from '../components/icons/Postgres';
 import { Emoji } from '../components/primitives/Emoji';
 import { GraphQl } from '../components/icons/GraphQl';
@@ -24,7 +24,7 @@ import { ArrowR } from '../components/icons/ArrowR';
 import { Nextjs } from '../components/icons/Nextjs';
 import { Shield } from '../components/icons/Shield';
 import { Prisma } from '../components/icons/Prisma';
-import { Pill } from '../components/marketing/Pill';
+import { Pill } from '../components/content/Pill';
 import { Tick } from '../components/icons/Tick';
 import { Cli } from '../components/icons/Cli';
 import { Page } from '../components/Page';
@@ -472,9 +472,9 @@ export default function ForDevelopers() {
             </TweetBox>
             <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad3">
               The new{' '}
-              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
-                <a>@KeystoneJS</a>
-              </Link>{' '}
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
               rich text editor has incredible inline React component support, including editing
               props and everything!
             </TweetBox>
@@ -482,19 +482,20 @@ export default function ForDevelopers() {
               Keystone‘s new customisable Document field is really powerful and quite a unique
               selling proposition. Great job team Keystone <Emoji symbol="👏🏼" alt="Hand clapping" />
             </TweetBox>
+            <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad2">
+              I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that
+              works like a charm. As a frontend dev with skills in node and elastic search, Keystone
+              + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
+            </TweetBox>
             <TweetBox user="BenAPatton" img="/assets/benapatton.jpg" grad="grad3">
               My mind is being blown today! Combining{' '}
-              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
-                <a>@KeystoneJS</a>
-              </Link>{' '}
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
               with{' '}
-              <Link
-                href="https://twitter.com/supabase_io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <a>@supabase_io</a>
-              </Link>{' '}
+              <a href="https://twitter.com/supabase_io" target="_blank" rel="noopener noreferrer">
+                @supabase_io
+              </a>{' '}
               and the experience is just magical.
             </TweetBox>
           </div>

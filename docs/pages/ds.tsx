@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import { jsx } from '@emotion/react';
 
-import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/marketing/CodeWindow';
+import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
 import { GitHubButton } from '../components/primitives/GitHubButton';
 import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
 import { Highlight } from '../components/primitives/Highlight';
