@@ -14,6 +14,7 @@ import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/marketing/MWrapper';
 import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/marketing/TweetBox';
+import { Typescript } from '../components/icons/Typescript';
 import { InlineCode } from '../components/primitives/Code';
 import { Automated } from '../components/icons/Automated';
 import { Section } from '../components/marketing/Section';
@@ -33,7 +34,6 @@ import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
 import { Code } from '../components/icons/Code';
 import { Tick } from '../components/icons/Tick';
-import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
 import contentEditorMockui from '../public/assets/content-editor-mockui.png';
@@ -231,7 +231,7 @@ export default function IndexPage() {
               </Type>
             </li>
             <li>
-              <Lab grad="grad5" />
+              <Typescript grad="grad5" />
               <Type as="p" look="body18">
                 TypeScript Support
               </Type>

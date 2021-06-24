@@ -39,6 +39,7 @@ export { Slack } from './Slack';
 export { Thinkmill } from './Thinkmill';
 export { Tick } from './Tick';
 export { Twitter } from './Twitter';
+export { Typescript } from './Typescript';
 export { Updates } from './Updates';
 export { Watch } from './Watch';
 export { Welcome } from './Welcome';

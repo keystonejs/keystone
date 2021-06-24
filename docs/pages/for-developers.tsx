@@ -11,6 +11,7 @@ import { Highlight } from '../components/primitives/Highlight';
 import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/marketing/TweetBox';
 import { MWrapper } from '../components/marketing/MWrapper';
+import { Typescript } from '../components/icons/Typescript';
 import { Section } from '../components/marketing/Section';
 import { CodeBox } from '../components/marketing/CodeBox';
 import { Button } from '../components/primitives/Button';
@@ -26,7 +27,6 @@ import { Prisma } from '../components/icons/Prisma';
 import { Pill } from '../components/marketing/Pill';
 import { Tick } from '../components/icons/Tick';
 import { Cli } from '../components/icons/Cli';
-import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
 import editorStorytelling from '../public/assets/editor-storytelling.png';
@@ -211,7 +211,7 @@ export default function ForDevelopers() {
           })}
         >
           <div>
-            <Image src={richTextEditor} alt="TODO" width={2109} height={1591} />
+            <Image src={richTextEditor} alt="TODO" width={1901} height={1629} />
           </div>
           <div>
             <Type as="h2" look="heading48">
@@ -325,7 +325,7 @@ export default function ForDevelopers() {
               </Link>
             </li>
             <li>
-              <Lab grad="grad3" />
+              <Typescript grad="grad3" />
               <Type as="h3" look="body18bold" margin="1rem 0">
                 100% Typescript
               </Type>

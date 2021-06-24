@@ -9,6 +9,7 @@ import { Relationship } from '../components/icons/Relationship';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/marketing/MWrapper';
 import { TweetBox } from '../components/marketing/TweetBox';
+import { Typescript } from '../components/icons/Typescript';
 import { Automated } from '../components/icons/Automated';
 import { Migration } from '../components/icons/Migration';
 import { Section } from '../components/marketing/Section';
@@ -26,7 +27,6 @@ import { Pill } from '../components/marketing/Pill';
 import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
 import { Cli } from '../components/icons/Cli';
-import { Lab } from '../components/icons/Lab';
 import { Page } from '../components/Page';
 
 import adminUi from '../public/assets/admin-ui.png';
@@ -234,7 +234,7 @@ export default function WhyKeystonePage() {
               </Link>
             </li>
             <li>
-              <Lab grad="grad2" />
+              <Typescript grad="grad2" />
               <Type as="h3" look="heading20bold">
                 100% Typescript
               </Type>
