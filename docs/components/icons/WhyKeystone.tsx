@@ -7,22 +7,19 @@ export function WhyKeystone({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
+      viewBox="0 0 24 24"
       aria-label="Why Keystone"
       role="img"
       fill="none"
+      stroke={grad ? `url(#WhyKeystone-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="WhyKeystone" />
       <path
-        stroke={grad ? `url(#WhyKeystone-${grad})` : 'currentColor'}
-        fill="none"
-        transform="translate(1 1)"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="1.7"
-        d="M2 0v4M0 2h4M3 14v4m-2-2h4m5-16l2.3 6.9L18 9l-5.7 2.1L10 18l-2.3-6.9L2 9l5.7-2.1L10 0z"
+        strokeWidth={2}
+        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
       />
     </svg>
   );

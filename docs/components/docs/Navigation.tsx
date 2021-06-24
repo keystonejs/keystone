@@ -37,7 +37,6 @@ type NavItemProps = {
   isActive?: boolean;
   isPlaceholder?: boolean;
   children: ReactNode;
-  exactMatch?: boolean;
 };
 export function NavItem({
   href,
@@ -82,7 +81,7 @@ export function DocsNavigation() {
       }}
     >
       <Section label="Walkthroughs">
-        <NavItem exactMatch href="/docs/walkthroughs/getting-started-with-create-keystone-app">
+        <NavItem href="/docs/walkthroughs/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
         <NavItem href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">

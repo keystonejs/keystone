@@ -1,7 +1,6 @@
 export type { IconGradient } from './util';
 
 export { ArrowR } from './ArrowR';
-export { ArrowRLong } from './ArrowRLong';
 export { Automated } from './Automated';
 export { Cli } from './Cli';
 export { Close } from './Close';

@@ -7,22 +7,15 @@ export function ArrowR({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 7 12"
+      viewBox="0 0 24 24"
       aria-label="Arrow right"
       role="img"
       fill="none"
+      stroke={grad ? `url(#ArrowR-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="ArrowR" />
-      <path
-        stroke={grad ? `url(#ArrowR-${grad})` : 'currentColor'}
-        fill="none"
-        fillRule="evenodd"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M1 1.3L5.7 6 1 10.7"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
     </svg>
   );
 }

@@ -7,22 +7,19 @@ export function Automated({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 35 40"
+      viewBox="0 0 24 24"
       aria-label="Automated"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Automated-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Automated" />
       <path
-        transform="translate(1 1)"
-        fill="none"
-        fillRule="evenodd"
-        stroke={grad ? `url(#Automated-${grad})` : 'currentColor'}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M20.5 14.8l-4 2m0 0l-4-2m4 2v5m16-13l-4 2m4-2l-4-2m4 2v5m-12-11l-4-2-4 2m-12 6l4-2m-4 2l4 2m-4-2v5m16 23l-4-2m4 2l4-2m-4 2v-5m-12-1l-4-2v-5m28 7l4-2v-5"
+        strokeWidth={2}
+        d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"
       />
     </svg>
   );

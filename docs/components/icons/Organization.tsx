@@ -7,22 +7,19 @@ export function Organization({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 44 35"
+      viewBox="0 0 24 24"
       aria-label="Organization"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Organization-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Organization" />
       <path
-        stroke={grad ? `url(#Organization-${grad})` : 'currentColor'}
-        transform="translate(2 1.5)"
-        fill="none"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M32 42.4V5.1c0-2.6-1.8-4.7-4-4.7H8c-2.2 0-4 2-4 4.7v37.3m28 0h4m-4 0H22m-18 0H0m4 0h10M12 9.7h2m-2 9.4h2m8-9.4h2m-2 9.4h2M14 42.4V30.7c0-1.3.9-2.3 2-2.3h4c1.1 0 2 1 2 2.3v11.7m-8 0h8"
+        strokeWidth={2}
+        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
       />
     </svg>
   );

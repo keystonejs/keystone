@@ -7,21 +7,19 @@ export function Hamburger({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 18"
+      viewBox="0 0 24 24"
       aria-label="Hamburger"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Hamburger-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Hamburger" />
       <path
-        stroke={grad ? `url(#Hamburger-${grad})` : 'currentColor'}
-        fill="none"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="2"
-        d="M1.3 1h21.4M1.3 9h21.4M1.3 17h21.4"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
       />
     </svg>
   );

@@ -7,22 +7,19 @@ export function Editor({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
+      viewBox="0 0 24 24"
       aria-label="Editor"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Editor-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Editor" />
       <path
-        stroke={grad ? `url(#Editor-${grad})` : 'currentColor'}
-        transform="translate(1 1)"
-        fill="none"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M12.3 3.9H4A3.3 3.3 0 00.7 7.2v18.4c0 1.8 1.5 3.3 3.3 3.3h18.3c1.9 0 3.4-1.5 3.4-3.3v-8.4M23.3 1.5A3.3 3.3 0 1128 6.3L13.7 20.6H9v-4.7L23.3 1.5z"
+        strokeWidth={2}
+        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
       />
     </svg>
   );

@@ -7,22 +7,19 @@ export function Relationship({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 34 33"
+      viewBox="0 0 24 24"
       aria-label="Relationship"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Relationship-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Relationship" />
       <path
-        stroke={grad ? `url(#Relationship-${grad})` : 'currentColor'}
-        transform="translate(2 1)"
-        fill="none"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M15 2.8a6.7 6.7 0 0111.7 4.4A6.7 6.7 0 0115 11.6m5 19H0v-1.7a10 10 0 1120 0v1.7zm0 0h10v-1.7a10 10 0 00-15-8.7m1.7-13a6.7 6.7 0 11-13.4 0 6.7 6.7 0 0113.4 0z"
+        strokeWidth={2}
+        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
       />
     </svg>
   );

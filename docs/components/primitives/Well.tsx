@@ -3,7 +3,6 @@ import { jsx } from '@emotion/react';
 import Link from 'next/link';
 import { AnchorHTMLAttributes, ReactNode } from 'react';
 
-import { ArrowRLong } from '../icons';
 import { Type } from './Type';
 
 export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
@@ -52,13 +51,7 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }: Well
             paddingRight: '2rem',
           }}
         >
-          {heading}
-          <ArrowRLong
-            css={{
-              height: '0.75em',
-              marginLeft: '0.5rem',
-            }}
-          />
+          {heading} →
         </Type>
         <Type as="p" look="body16">
           {children}

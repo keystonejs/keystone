@@ -152,7 +152,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               },
               '& svg': {
                 display: 'inline-block',
-                height: '0.8em',
+                height: '1.2em',
                 width: 'auto',
                 verticalAlign: 'middle',
                 marginLeft: '0.5rem',

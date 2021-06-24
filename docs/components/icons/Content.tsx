@@ -7,22 +7,19 @@ export function Content({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 40 36"
+      viewBox="0 0 24 24"
       aria-label="Content"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Content-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Content" />
       <path
-        stroke={grad ? `url(#Content-${grad})` : 'currentColor'}
-        transform="translate(2 .5)"
-        fill="none"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M32 33.4H4a4 4 0 01-4-4v-24a4 4 0 014-4h20a4 4 0 014 4v2m4 26a4 4 0 01-4-4v-22m4 26a4 4 0 004-4v-18a4 4 0 00-4-4h-4m-8-6h-8m-4 24h12M8 9.4h12v8H8v-8z"
+        strokeWidth={2}
+        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
       />
     </svg>
   );

@@ -7,22 +7,19 @@ export function Shield({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 39 39"
+      viewBox="0 0 24 24"
       aria-label="Shield"
       role="img"
       fill="none"
+      stroke={grad ? `url(#Shield-${grad})` : 'currentColor'}
       {...props}
     >
       <Gradients name="Shield" />
       <path
-        stroke={grad ? `url(#Shield-${grad})` : 'currentColor'}
-        fill="none"
-        transform="translate(1 1)"
-        fillRule="evenodd"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
-        d="M12.5 18.8l4 4 8-8m11.2-8A24.4 24.4 0 0118.5.7a24 24 0 01-17.2 6 24 24 0 0017.2 29.4A24 24 0 0035.7 6.8z"
+        strokeWidth={2}
+        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
       />
     </svg>
   );

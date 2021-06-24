@@ -174,7 +174,7 @@ export default function WhyKeystonePage() {
               gap: '2rem',
               gridRowGap: '4rem',
               '& svg': {
-                height: '2.25rem',
+                height: '2.5rem',
                 marginBottom: '0.5rem',
               },
             })}
