@@ -624,14 +624,6 @@ export const lists = createSchema({
             textAlign: 'center',
           }}
         >
-          <FrontEndLogos
-            css={{
-              display: 'inline-block',
-              height: '2rem',
-              opacity: 0.5,
-              margin: '1rem 0',
-            }}
-          />
           <Type as="h2" look="heading48" margin="0 auto">
             Built for the <Highlight look="grad2">modern ecosystem</Highlight>
           </Type>
@@ -648,6 +640,15 @@ export const lists = createSchema({
             sites, dynamic apps, commerce experiences and more for web and mobile with the tools you
             find most productive.
           </Type>
+          <FrontEndLogos
+            css={{
+              display: 'inline-block',
+              maxWidth: '48.125rem',
+              opacity: 0.5,
+              color: 'var(--muted)',
+              margin: '2rem 0',
+            }}
+          />
           <Type as="h3" look="body18bold" margin="1rem auto">
             Keystone for:
           </Type>

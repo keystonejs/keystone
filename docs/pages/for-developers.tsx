@@ -70,8 +70,9 @@ export default function ForDevelopers() {
           </Button>
           <FrontEndLogos
             css={{
-              height: '2rem',
               color: 'var(--muted)',
+              opacity: 0.5,
+              maxWidth: '48.125rem',
               marginTop: '2rem',
             }}
           />
