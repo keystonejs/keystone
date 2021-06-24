@@ -130,7 +130,7 @@ export const Pill = forwardRef<HTMLDivElement, PillProps>(
           {children}
         </PillButton>
         {onRemove ? (
-          <PillButton weight={weight} tone={tone} onClick={onRemove}>
+          <PillButton aria-label="remove pill" weight={weight} tone={tone} onClick={onRemove}>
             <XIcon css={{ height: 14, width: 14 }} />
           </PillButton>
         ) : null}
