@@ -581,7 +581,7 @@ export const lists = createSchema({
                 content: '""',
                 position: 'absolute',
                 top: 0,
-                height: ['7rem', '9rem', null, '16.5rem'],
+                height: ['7rem', '9rem', null, null],
                 left: '1.55rem',
                 width: '2px',
                 background: 'var(--border)',
