@@ -55,9 +55,6 @@ export const idFieldType =
         },
       },
     };
-    if (meta.provider !== 'postgresql' && config.kind === 'uuid') {
-      throw new Error('useNativeType for uuid id fields is only supported on postgresql');
-    }
     return fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
       kind: 'scalar',
       mode: 'required',
