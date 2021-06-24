@@ -57,49 +57,27 @@ export function Footer() {
         >
           <div>
             <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
-              Product
+              About Keystone
             </Type>
             <List>
               <li>
                 <Link href="/why-keystone">
-                  <a>Why Keystone</a>
+                  <a>Our Story</a>
                 </Link>
               </li>
-              <li>
-                <Link href="/#how-it-works">
-                  <a>How it works</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/why-keystone#features">
-                  <a>Features</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/why-keystone#solutions">
-                  <a>Solutions</a>
-                </Link>
-              </li>
-            </List>
-          </div>
-          <div>
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
-              Keystone for
-            </Type>
-            <List>
               <li>
                 <Link href="/for-developers">
-                  <a>Developers</a>
+                  <a>For Developers</a>
                 </Link>
               </li>
               <li>
                 <Link href="/for-organisations">
-                  <a>Organisations</a>
+                  <a>For Organisations</a>
                 </Link>
               </li>
               <li>
                 <Link href="/for-content-management">
-                  <a>Content management</a>
+                  <a>For Content management</a>
                 </Link>
               </li>
             </List>
@@ -125,11 +103,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/docs/examples">
-                  <a>Examples</a>
-                </Link>
-              </li>
-              <li>
                 <Link href="/docs/apis/config">
                   <a>API reference</a>
                 </Link>
@@ -141,6 +114,15 @@ export function Footer() {
               Community
             </Type>
             <List>
+              <li>
+                <a
+                  href="https://github.com/keystonejs/keystone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Keystone on GitHub
+                </a>
+              </li>
               <li>
                 <a
                   href="https://community.keystonejs.com/"
@@ -167,6 +149,28 @@ export function Footer() {
                 >
                   Code of Conduct
                 </a>
+              </li>
+            </List>
+          </div>
+          <div>
+            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
+              Updates
+            </Type>
+            <List>
+              <li>
+                <Link href="/updates">
+                  <a>Latest News</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/for-developers">
+                  <a>Roadmap</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/for-organisations">
+                  <a>Release Notes</a>
+                </Link>
               </li>
             </List>
           </div>
