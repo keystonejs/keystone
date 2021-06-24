@@ -200,13 +200,13 @@ export default function WhyKeystonePage() {
                 Extend the CRUD API for more control over what you do. Customize it to your frontend
                 needs.
               </Type>
-              <Link
+              <animateMotion
                 href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the example →</a>
-              </Link>
+                Try the example →
+              </a>
             </li>
             <li>
               <Editor grad="grad2" />
@@ -380,13 +380,13 @@ export default function WhyKeystonePage() {
                 You can control data input exclusively from your frontend, or use Keystone’s
                 intuitive and customizable CMS when you need it.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the Task Manager example →</a>
-              </Link>
+                Try the Task Manager example →
+              </a>
             </li>
             <li>
               <Type as="h3" look="heading24">
@@ -401,13 +401,13 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18">
                 Give your content people the tools they need to do their best work.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the Blog example →</a>
-              </Link>
+                Try the Blog example →
+              </a>
             </li>
             <li>
               <Type as="h3" look="heading24">
@@ -419,13 +419,13 @@ export default function WhyKeystonePage() {
                 get things done. API first, make Keystone a key player in your eCommerce content
                 mesh.
               </Type>
-              <Link
+              <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <a>Try the eCommerce example →</a>
-              </Link>
+                Try the eCommerce example →
+              </a>
             </li>
           </ul>
         </Section>

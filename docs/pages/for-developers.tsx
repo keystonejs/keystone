@@ -472,9 +472,9 @@ export default function ForDevelopers() {
             </TweetBox>
             <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad3">
               The new{' '}
-              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
-                <a>@KeystoneJS</a>
-              </Link>{' '}
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
               rich text editor has incredible inline React component support, including editing
               props and everything!
             </TweetBox>
@@ -482,19 +482,20 @@ export default function ForDevelopers() {
               Keystone‘s new customisable Document field is really powerful and quite a unique
               selling proposition. Great job team Keystone <Emoji symbol="👏🏼" alt="Hand clapping" />
             </TweetBox>
+            <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad2">
+              I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that
+              works like a charm. As a frontend dev with skills in node and elastic search, Keystone
+              + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
+            </TweetBox>
             <TweetBox user="BenAPatton" img="/assets/benapatton.jpg" grad="grad3">
               My mind is being blown today! Combining{' '}
-              <Link href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
-                <a>@KeystoneJS</a>
-              </Link>{' '}
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
               with{' '}
-              <Link
-                href="https://twitter.com/supabase_io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <a>@supabase_io</a>
-              </Link>{' '}
+              <a href="https://twitter.com/supabase_io" target="_blank" rel="noopener noreferrer">
+                @supabase_io
+              </a>{' '}
               and the experience is just magical.
             </TweetBox>
           </div>
