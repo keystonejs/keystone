@@ -68,9 +68,9 @@ export default function WhyKeystonePage() {
               view.
             </Type>
             <Type as="p" look="body18" color="var(--muted)">
-              That's why we built something that’s more than a backend framework, and more than a
+              That’s why we built something that’s more than a backend framework, and more than a
               Headless CMS.{' '}
-              <strong>It's a platform for next-gen development workflows and evolution.</strong>
+              <strong>It’s a platform for next-gen development workflows and evolution.</strong>
             </Type>
           </div>
         </div>
@@ -158,7 +158,7 @@ export default function WhyKeystonePage() {
 
         <Section>
           <Type as="h2" look="heading48">
-            What's in <Highlight look="grad2">the box?</Highlight>
+            What’s in <Highlight look="grad2">the box?</Highlight>
           </Type>
           <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '45rem' }}>
             Everything you need to start fast and scale sustainably. We’ve done the heavy lifting so
@@ -200,8 +200,8 @@ export default function WhyKeystonePage() {
                 Extend the CRUD API for more control over what you do. Customize it to your frontend
                 needs.
               </Type>
-              <Link href="/todo">
-                <a>TODO: Try the example →</a>
+              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema">
+                <a>Try the example →</a>
               </Link>
             </li>
             <li>
@@ -213,7 +213,7 @@ export default function WhyKeystonePage() {
                 Highly configurable. Design systems friendly. BYO custom React components.
                 Structured JSON output.
               </Type>
-              <Link href="/docs/guides/document-fields">
+              <Link href="/docs/guides/document-fields#try-the-demo">
                 <a>Try the editor →</a>
               </Link>
             </li>
@@ -248,8 +248,8 @@ export default function WhyKeystonePage() {
                 Build your own roles-based access controls. No limits on the amount and kind of
                 roles you can configure.
               </Type>
-              <Link href="/todo">
-                <a>TODO: Learn more →</a>
+              <Link href="/docs/apis/access-control">
+                <a>Access Control API →</a>
               </Link>
             </li>
             <li>
@@ -258,10 +258,10 @@ export default function WhyKeystonePage() {
                 Flexible relationships
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                One to one. One to many. Many to many. Self referential. It's all there.
+                One to one. One to many. Many to many. Self referential. It’s all there.
               </Type>
-              <Link href="/todo">
-                <a>TODO: Try the example →</a>
+              <Link href="/docs/guides/relationships">
+                <a>Relationships guide →</a>
               </Link>
             </li>
             <li>
@@ -272,8 +272,8 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 Find what you need when you need it with intuitive filters.
               </Type>
-              <Link href="/todo">
-                <a>TODO: Filters guide →</a>
+              <Link href="/docs/guides/filters">
+                <a>Query Filters guide →</a>
               </Link>
             </li>
             <li>
@@ -305,7 +305,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 Put custom logic in your data ops. Modify data, trigger events, validate inputs –
-                it's up to you.
+                it’s up to you.
               </Type>
               <Link href="/docs/guides/hooks">
                 <a>Hooks guide →</a>
@@ -325,9 +325,6 @@ export default function WhyKeystonePage() {
               </Link>
             </li>
           </ul>
-          <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
-            See all features <ArrowR />
-          </Button>
         </Section>
 
         <Quote
@@ -347,7 +344,7 @@ export default function WhyKeystonePage() {
             What will you <Highlight look="grad2">build?</Highlight>
           </Type>
           <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
-            Naturally, it's up to you. Here’s some things we've used Keystone for:
+            Naturally, it’s up to you. Here’s some things we've used Keystone for:
           </Type>
           <ul
             css={mq({
@@ -372,14 +369,14 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 A programmable backend you can rely on for Web and Native apps of all sizes. Start
-                with Keystone's built-in features then add your own, and integrate 3rd-party systems
+                with Keystone’s built-in features then add your own, and integrate 3rd-party systems
                 or microservices.
               </Type>
               <Type as="p" look="body18">
                 You can control data input exclusively from your frontend, or use Keystone’s
                 intuitive and customizable CMS when you need it.
               </Type>
-              <Link href="/for-developers">
+              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager">
                 <a>Try the Task Manager example →</a>
               </Link>
             </li>
@@ -389,14 +386,14 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 From simple blog, to complex multi-brand site networks, Keystone’s the backend fit
-                for modern web experiences. It's a CMS that ships with no hard opinions, so you can
+                for modern web experiences. It’s a CMS that ships with no hard opinions, so you can
                 build the fields and types you actually need. And a WYSIWIG you can plug custom
                 components into, that outputs structured JSON.
               </Type>
               <Type as="p" look="body18">
                 Give your content people the tools they need to do their best work.
               </Type>
-              <Link href="/for-developers">
+              <Link href="https://github.com/keystonejs/keystone/tree/master/examples/blog">
                 <a>Try the Blog example →</a>
               </Link>
             </li>
@@ -410,7 +407,7 @@ export default function WhyKeystonePage() {
                 get things done. API first, make Keystone a key player in your eCommerce content
                 mesh.
               </Type>
-              <Link href="/for-developers">
+              <Link href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce">
                 <a>Try the eCommerce example →</a>
               </Link>
             </li>

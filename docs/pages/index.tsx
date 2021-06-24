@@ -51,12 +51,13 @@ export default function IndexPage() {
             The <Highlight look="grad1">superpowered</Highlight> CMS for developers
           </IntroHeading>
           <IntroLead>
-            Describe your schema, and Keystone gives you a powerful GraphQL API with a beautiful
-            Admin UI for content authoring and data management.
+            Keystone helps you build faster and scale further than any other CMS or App Framework.
+            Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for
+            content and data.
           </IntroLead>
           <IntroLead>
-            Focus on shipping the code that matters to you without sacrificing the flexibility or
-            power of a bespoke back-end.
+            No boilerplate or bootstrapping – just elegant APIs to help you ship the code that
+            matters without sacrificing the flexibility or power of a bespoke back-end.
           </IntroLead>
         </IntroWrapper>
 
