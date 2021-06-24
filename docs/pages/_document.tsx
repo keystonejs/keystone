@@ -40,10 +40,6 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap"
             rel="stylesheet"
           />
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
-          />
 
           <script async src="/assets/resize-observer-polyfill.js" />
           <script async src="/assets/focus-visible-polyfill.js" />
