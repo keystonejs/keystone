@@ -1,32 +1,18 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import Link from 'next/link';
 
-import { Button } from '../primitives/Button';
 import { Alert } from '../primitives/Alert';
-import { Stack } from '../primitives/Stack';
 
 export function ComingSoon() {
   return (
-    <Alert look="tip">
-      <Stack
+    <Alert>
+      <p
         css={{
-          width: '100%',
-          justifyContent: 'space-between',
+          margin: '0 !important',
         }}
-        orientation="horizontal"
       >
-        <p
-          css={{
-            margin: '0 !important',
-          }}
-        >
-          Coming Soon... Visit our roadmap for more information
-        </p>
-        <Link href="/updates/roadmap" passHref>
-          <Button as="a">Roadmap</Button>
-        </Link>
-      </Stack>
+        We've planned this page but not had a chance to write it yet.
+      </p>
     </Alert>
   );
 }

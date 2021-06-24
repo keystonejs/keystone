@@ -68,7 +68,7 @@ export function H1(props: StringOnlyChildren) {
     <Heading
       css={{
         fontSize: 'var(--font-xxlarge)',
-        fontWeight: 500,
+        fontWeight: 700,
         letterSpacing: '-0.025em',
         marginTop: 0,
       }}

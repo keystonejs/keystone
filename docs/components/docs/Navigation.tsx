@@ -57,6 +57,9 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
+          ':hover': {
+            color: 'var(--link)',
+          },
         }}
         {...props}
       />
@@ -82,6 +85,9 @@ function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
           marginBottom: '1rem',
           alignItems: 'center',
           fontWeight: 700,
+          ':hover': {
+            color: 'var(--link)',
+          },
         }}
       >
         {children}
