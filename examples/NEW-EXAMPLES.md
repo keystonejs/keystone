@@ -27,6 +27,7 @@ There are three types of example project:
 7. Make sure your base example runs. `cd <example-name>; yarn dev`.
 8. Add a changeset with the initial major version of the example. `cd ../..; yarn changeset - major “Initial version of the <example-name> example.”`
 9. [Draw the rest of the owl](https://knowyourmeme.com/memes/how-to-draw-an-owl). Write and test your example, making sure that it's clearly commented.
-10. Add a smoke test to ensure your example is executed on CI.
+10. Add a smoke test to ensure your example is executed on CI. You will need to edit the `examples_smoke_tests` block in `tests.yml`
 11. Update the `examples/README.md` with a link to your new example.
 12. Submit a PR for review.
+13. Once your PR is merged, update the branch protection rules on `master` to require the new smoke test.
