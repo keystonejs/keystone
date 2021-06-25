@@ -40,22 +40,21 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
     type: string;
     value: any;
   }) => JSX.Element;
-  console.log(filter.field);
   return (
     <Fragment>
       <Pill
-        aria-label={`Filter item ${filter.field}`}
-        onClick={() => {
-          setOpen(true);
+        containerProps={{
+          'aria-label': `Filter item ${filter.field}`,
         }}
+        aria-description={'Press to edit filter'}
         {...trigger.props}
         ref={trigger.ref}
+        onClick={() => setOpen(true)}
         weight="light"
         tone="passive"
         onRemove={() => {
           const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query;
-
-          router.push({ query: queryToKeep });
+          router.push({ pathname: router.pathname, query: queryToKeep });
         }}
       >
         {field.label}{' '}
@@ -70,16 +69,18 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         aria-description={`dialog for configuring ${filter.field} filter`}
         arrow={arrow}
         {...dialog.props}
-        ref={dialog.ref}
         isVisible={isOpen}
+        ref={dialog.ref}
       >
-        <EditDialog
-          onClose={() => {
-            setOpen(false);
-          }}
-          field={field}
-          filter={filter}
-        />
+        {isOpen && (
+          <EditDialog
+            onClose={() => {
+              setOpen(false);
+            }}
+            field={field}
+            filter={filter}
+          />
+        )}
       </PopoverDialog>
     </Fragment>
   );
@@ -102,7 +103,6 @@ function EditDialog({
       as="form"
       padding="small"
       gap="small"
-      role="status"
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
         router.push({
@@ -114,7 +114,7 @@ function EditDialog({
         onClose();
       }}
     >
-      <Filter autoFocus type={filter.type} value={value} onChange={setValue} />
+      <Filter type={filter.type} value={value} onChange={setValue} />
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button type="submit">Save</Button>
