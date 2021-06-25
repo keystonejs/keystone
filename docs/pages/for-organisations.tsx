@@ -299,8 +299,8 @@ export default function ForOrganisations() {
               <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
                 When you're <strong>growing a project</strong>, solving for repetitive tasks can
                 mean the difference between success and failure. You can choose tools with strong
-                opinions to solve the what you know today, but you <strong>risk</strong> binding
-                your future to tools that <strong>can't adapt as you grow</strong>.
+                opinions to solve what you know today, but you <strong>risk</strong> binding your
+                future to tools that <strong>can't adapt as you grow</strong>.
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
                 Keystone bridges this gap. You get to <strong>work fast</strong> with features that
@@ -316,8 +316,8 @@ export default function ForOrganisations() {
                 software – you can.
               </Type>
               <Type as="p" look="body18" color="var(--muted)">
-                When your success demands you need to go 100% bespoke, Keystone engineers it's own
-                redundancy so you can move to your own thing gracefully,{' '}
+                When your success demands you need to go 100% bespoke, Keystone engineers its own
+                redundancy, so you can move to your own thing gracefully,{' '}
                 <strong>on your terms</strong>.
               </Type>
             </div>
