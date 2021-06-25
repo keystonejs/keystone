@@ -144,7 +144,7 @@ export default function WhyKeystonePage() {
             marginTop: '3rem',
           }}
         >
-          <Button as="a" href="/#how-it-works" look="soft">
+          <Button as="a" href="/#how-it-works" look="soft" shadow>
             Discover how Keystone works <ArrowR />
           </Button>
         </div>
