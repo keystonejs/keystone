@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
-import { FieldContainer } from '@keystone-ui/fields';
 import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
