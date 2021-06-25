@@ -1,8 +1,7 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 22nd March 2021
+# Release: 22nd March 2021
 
 ```typescript
 "@keystone-next/access-control-legacy": "9.0.0",
@@ -35,7 +34,7 @@ import { Markdown } from '../../components/Page';
 "@keystone-next/types": "15.0.0",
 ```
 
-### Prisma migrations 🚚
+## Prisma migrations <Emoji symbol="🚚" alt="Moving truck"/>
 
 - We updated `keystone-next dev` with the Prisma adapter so that it interactively prompts for creating and applying migrations.
 - `createKeystone` and `createSystem` also accept a migration mode now instead of a script.
@@ -44,10 +43,11 @@ import { Markdown } from '../../components/Page';
   - `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
   - `--allow-empty` to create an empty migration when there are no changes to the schema.
 
-### Noteworthy bug-squashing 🐛
+## Noteworthy bug-squashing <Emoji symbol="🐛" alt="Bug"/>
 
-Now you can include negative values for `float`, `decimal` and `integer` fields. 🎉
+Now you can include negative values for `float`, `decimal` and `integer` fields. <Emoji symbol="🎉" alt="Party popper"/>
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-22) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }

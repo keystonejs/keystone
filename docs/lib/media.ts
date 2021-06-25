@@ -8,7 +8,7 @@ type BREAKPOINTSTYPE = {
   lg: number;
 };
 
-export const BREAK_POINTS: BREAKPOINTSTYPE = { xs: 576, sm: 768, md: 992, lg: 1200 };
+export const BREAK_POINTS: BREAKPOINTSTYPE = { xs: 586, sm: 768, md: 992, lg: 1200 };
 
 const minWidth = (width: number, m: boolean = true) =>
   `${m ? '@media ' : ''}(min-width: ${width}px)`;
