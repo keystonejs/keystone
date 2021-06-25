@@ -437,7 +437,7 @@ export const lists = createSchema({
               }}
             >
               <Type as="h3" look="heading24">
-                Customize your content story
+                Customise your content story
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 A flexible and intuitive editing environent that does what your schema says:
@@ -502,7 +502,7 @@ export const lists = createSchema({
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Get what you need, fast. Keystone's GraphQL API gives you session management, access
-                control, pagination, sorting, and filtering out of the box. Customize it without
+                control, pagination, sorting, and filtering out of the box. Customise it without
                 losing the bits that work for you.
               </Type>
               <ul
@@ -567,7 +567,7 @@ export const lists = createSchema({
         "author": {
           "name": "Tim"
         }
-      },   
+      },
       {
         "title": "Content Management for the Design System generation",
         "author": {
