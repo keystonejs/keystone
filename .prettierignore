@@ -6,4 +6,5 @@ coverage
 **/dist
 **/.next
 **/.keystone
+docs/public/assets/
 .keystone/tests

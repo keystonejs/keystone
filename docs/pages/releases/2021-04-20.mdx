@@ -1,8 +1,6 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
 
-# Release
-
-## 20th April 2021
+# Release: 20th April 2021
 
 ```typescript
 "@keystone-next/admin-ui": "14.0.0",
@@ -29,7 +27,7 @@ import { Markdown } from '../../components/Page';
 
 To make the [Lists API](https://next.keystonejs.com/apis/schema) (i.e `context.lists.{List}`) more intuitive to use, we **deprecated the `resolveFields` option** in favour of two new methods:
 
-#### 1. Specify a string of fields to return with the **new `query` option**:
+### 1. Specify a string of fields to return with the **new `query` option**:
 
 Use this when you want to query for resolved field values (including querying relationships and virtual fields). This replaces the `resolveFields: false` use case. Now you can query a Post like so:
 
@@ -47,7 +45,7 @@ const [post] = await context.lists.Post.findMany({
 });
 ```
 
-#### 2. Return the unresolved item data with read hooks
+### 2. Return the unresolved item data with read hooks
 
 This **replaces the `resolveFields: boolean` use case**. We now have a new set of APIs on `context.db.lists.{List}` which return unresolved item data from your database (but with read hooks applied). They can be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers.
 
@@ -61,4 +59,5 @@ const [post] = await context.db.lists.Post.findMany({
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-04-20) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }
