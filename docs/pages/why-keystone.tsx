@@ -189,7 +189,8 @@ export default function WhyKeystonePage() {
         </Quote>
 
         <Section>
-          <Type as="h2" look="heading48">
+          <Pill grad="grad2" id="features">Features</Pill>
+          <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What’s in <Highlight look="grad2">the box?</Highlight>
           </Type>
           <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '45rem' }}>
@@ -375,7 +376,7 @@ export default function WhyKeystonePage() {
         </Quote>
 
         <Section>
-          <Pill grad="grad2">Solutions</Pill>
+          <Pill grad="grad2" id="solutions">Solutions</Pill>
           <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What will you <Highlight look="grad2">build?</Highlight>
           </Type>
@@ -400,7 +401,7 @@ export default function WhyKeystonePage() {
             })}
           >
             <li>
-              <Type as="h3" look="heading36">
+              <Type as="h3" look="heading36" id="apps">
                 Apps
               </Type>
               <Type as="p" look="body18">
@@ -421,7 +422,7 @@ export default function WhyKeystonePage() {
               </a>
             </li>
             <li>
-              <Type as="h3" look="heading36">
+              <Type as="h3" look="heading36" id="websites">
                 Websites
               </Type>
               <Type as="p" look="body18">
@@ -442,7 +443,7 @@ export default function WhyKeystonePage() {
               </a>
             </li>
             <li>
-              <Type as="h3" look="heading36">
+              <Type as="h3" look="heading36" id="ecommerce">
                 eCommerce
               </Type>
               <Type as="p" look="body18">

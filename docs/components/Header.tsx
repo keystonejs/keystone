@@ -6,7 +6,10 @@ import Link from 'next/link';
 
 import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
-import { SearchField } from './primitives/SearchField';
+
+/* SEARCH COMING SOON */
+/* import { SearchField } from './primitives/SearchField'; */
+
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
@@ -16,7 +19,9 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
-import { Search } from './icons/Search';
+
+/* SEARCH COMING SOON */
+/* import { Search } from './icons/Search'; */
 
 type HeaderContextType = { mobileNavIsOpen: boolean };
 const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
@@ -137,11 +142,17 @@ export function Header() {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            'auto max-content max-content max-content',
+            /* SEARCH COMING SOON */
+            /* 'auto max-content max-content max-content',
             'auto max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
-            '15rem auto max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content max-content max-content max-content', */
+            'auto max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content max-content',
           ],
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           justifyItems: 'start',
@@ -157,18 +168,23 @@ export function Header() {
         <div>
           <Logo />
         </div>
-        <div
+
+        {/* SEARCH COMING SOON */}
+        {/* <div
           css={mq({
             display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
           })}
         >
           <SearchField />
-        </div>
+        </div> */}
+
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
-        <button
+
+        {/* SEARCH COMING SOON */}
+        {/* <button
           css={mq({
             display: ['inline-block', 'inline-block', 'none'],
             appearance: 'none',
@@ -181,7 +197,8 @@ export function Header() {
           })}
         >
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
-        </button>
+        </button> */}
+
         <DarkModeBtn />
         <Button
           as="a"
