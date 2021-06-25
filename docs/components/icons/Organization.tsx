@@ -8,13 +8,13 @@ export function Organization({ grad, ...props }: IconProps) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      aria-label="Organisation"
+      aria-label="Organization"
       role="img"
       fill="none"
-      stroke={grad ? `url(#Organisation-${grad})` : 'currentColor'}
+      stroke={grad ? `url(#Organization-${grad})` : 'currentColor'}
       {...props}
     >
-      <Gradients name="Organisation" />
+      <Gradients name="Organization" />
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -5,9 +5,6 @@ import { jsx } from '@emotion/react';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
-import { getHeadings, Heading } from '../lib/getHeadings';
-import { Code, InlineCode } from '../components/Code';
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
 import { Announce } from '../components/Announce';
@@ -21,8 +18,7 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      Keystone 6 is in Community Preview! What does that mean? see our{' '}
-      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
+      This is the new version of Keystone! If you're looking for the Keystone 5 docs, check out{' '}
       <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
         v5.keystonejs.com
       </a>
@@ -46,7 +42,7 @@ export function DocsPage({
   title?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6`;
   const mq = useMediaQuery();
   const { pathname } = useRouter();
   const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
@@ -64,6 +60,7 @@ export function DocsPage({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
+        <Announcement />
         <Header />
         <Wrapper
           css={mq({

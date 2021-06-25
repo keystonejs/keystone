@@ -1,6 +1,14 @@
-import { Markdown } from '../../../components/Markdown';
-
-# How To Use Document Fields
+import { MDXProvider } from '@mdx-js/react';
+import { components } from '../../../components/Markdown';
+import { getHeadings } from '../../../lib/getHeadings';
+import { H1 } from '../../../components/docs/Heading';
+import { DocsPage } from '../../../components/Page';
+import {
+  DocumentEditorDemo,
+  DocumentFeaturesFormAndCode,
+  DocumentFeaturesProvider,
+} from '../../../components/docs/DocumentEditorDemo';
+import Intro from './_doc-field-intro.mdx';
 
 The [`document`](../apis/fields#document) field type is a highly customizable rich text editor that lets content creators quickly and easily edit content in your system.
 
@@ -676,4 +684,35 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 <DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => {
+  const headings = getHeadings(children);
+  return (
+    <DocsPage
+      title={'How To Use Document Fields'}
+      headings={[
+        {
+          label: 'How To Use Document Fields',
+          id: 'how-to-use-document-fields',
+          depth: 1,
+        },
+        {
+          label: 'Try the demo',
+          id: 'try-the-demo',
+          depth: 2,
+        },
+        ...headings,
+      ]}
+    >
+      <DocumentFeaturesProvider>
+        <div className="prose">
+          <H1>How To Use Document Fields</H1>
+          <MDXProvider components={components}><Intro /></MDXProvider>
+        </div>
+        <DocumentEditorDemo />
+        <div className="prose">
+          <MDXProvider components={components}>{children}</MDXProvider>
+        </div>
+      </DocumentFeaturesProvider>
+    </DocsPage>
+  );
+};

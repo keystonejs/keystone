@@ -27,7 +27,7 @@ export default function ForOrganisations() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="KeystoneJS for Content Management">
+    <Page>
       <MWrapper>
         <Pill grad="grad5">Keystone for content management</Pill>
         <IntroWrapper>
@@ -39,13 +39,7 @@ export default function ForOrganisations() {
             how you work in code, and has the flexibility you need to enable content creatives.
           </IntroLead>
         </IntroWrapper>
-        <Button
-          as="a"
-          href="/docs/guides/document-fields"
-          css={{ marginTop: '2rem' }}
-          size="large"
-          shadow
-        >
+        <Button as="a" href="/docs/guides/document-fields" css={{ marginTop: '2rem' }}>
           Try the Rich Text demo <ArrowR />
         </Button>
 
@@ -219,7 +213,7 @@ export default function ForOrganisations() {
           >
             <li>
               <Type as="h2" look="heading20bold">
-                Customisable interface
+                Customizable interface
               </Type>
               <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
                 Every rich text field instance is what you make it. Control what's possible

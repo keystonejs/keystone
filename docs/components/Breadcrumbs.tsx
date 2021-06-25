@@ -79,7 +79,6 @@ export function Breadcrumbs() {
                   look="body12"
                   css={{
                     textTransform: 'uppercase',
-                    color: 'var(--muted)',
                   }}
                 >
                   {title}

@@ -7,7 +7,7 @@ import { DocsPage } from '../../../components/Page';
 
 export default function Docs() {
   return (
-    <DocsPage noRightNav noProse title="Walkthroughs">
+    <DocsPage noRightNav noProse>
       <Type as="h1" look="heading64">
         Walkthroughs
       </Type>

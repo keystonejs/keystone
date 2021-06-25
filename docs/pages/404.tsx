@@ -1,41 +1,13 @@
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
-import { useRouter } from 'next/router';
 
 import { Highlight } from '../components/primitives/Highlight';
 import { Type } from '../components/primitives/Type';
 import { Page } from '../components/Page';
 
-function ConstructionIllustration() {
+export default function WhatsNew() {
   return (
-    <div
-      css={{
-        background: '#fff',
-        width: '100%',
-        maxWidth: '30rem',
-        margin: '2rem auto 0',
-        padding: '2rem',
-        borderRadius: '2rem',
-      }}
-    >
-      <img
-        src="/assets/404.svg"
-        alt="The Keystone logo under construction"
-        css={{
-          width: '100%',
-        }}
-      />
-    </div>
-  );
-}
-
-const v5PathList = ['/tutorials', '/guides', '/keystonejs', '/api', '/discussions'];
-
-export default function NotFoundPage() {
-  const { asPath } = useRouter();
-  const tryV5Link = v5PathList.some(i => asPath.startsWith(i));
-  return (
-    <Page title="Page Not Found (404)">
+    <Page>
       <div
         css={{
           display: 'grid',
@@ -44,19 +16,36 @@ export default function NotFoundPage() {
           textAlign: 'center',
         }}
       >
-        <Type as="h1" look="heading48" fontSize={['8vw', null, null, '5rem']}>
-          <Highlight look="grad4">404</Highlight> <Type color="var(--muted)">Page Not Found</Type>
+        <div
+          css={{
+            background: '#fff',
+            width: '90vw',
+            maxWidth: '41.875rem',
+            margin: '2rem auto',
+            padding: '2rem',
+            borderRadius: '2rem',
+          }}
+        >
+          <img
+            src="/assets/404.svg"
+            alt="The Keystone logo under construction"
+            css={{
+              width: '100%',
+              paddingLeft: '10vw',
+            }}
+          />
+        </div>
+        <Type as="p" look="body18bold" margin="0">
+          We're sorry but we were unable to find what you're looking for.
         </Type>
-        <Type as="p" look="body18bold" margin="2rem 0 0">
-          We're sorry but we couldn't find what you're looking for.
+        <Type
+          as="h1"
+          look="heading92"
+          fontSize={['15vw', null, null, null, '15rem']}
+          css={{ lineHeight: 1 }}
+        >
+          <Highlight look="grad4">Error 404</Highlight>
         </Type>
-        {tryV5Link ? (
-          <Type as="p" look="body18bold" margin="2rem 0 0">
-            If you were looking for a page in the Keystone 5 docs, try{' '}
-            <a href="https://v5.keystonejs.com">v5.keystonejs.com{asPath}</a>.
-          </Type>
-        ) : null}
-        <ConstructionIllustration />
       </div>
     </Page>
   );

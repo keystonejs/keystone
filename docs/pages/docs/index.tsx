@@ -18,7 +18,7 @@ export default function Docs() {
         Keystone Docs
       </Type>
 
-      <Type as="p" look="body18" margin="1.25rem 0 0">
+      <Type as="p" look="body18" margin="1.25rem 0 0 0">
         More than a backend framework. More than a Headless CMS. Keystone is a platform for next-gen
         development workflows and evolution.
       </Type>
@@ -73,7 +73,7 @@ export default function Docs() {
           show you how to use filters to get the data you need from your system.
         </Well>
         <Well grad="grad2" heading="How To Use Document Fields" href="/docs/guides/document-fields">
-          Keystone’s document field is a highly customisable rich text editor that stores content as
+          Keystone’s document field is a highly customizable rich text editor that stores content as
           structured JSON. Learn how to configure it and incorporate your own custom React
           components.
         </Well>
@@ -96,7 +96,7 @@ export default function Docs() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          View on Github &rarr;
+          View all &rarr;
         </a>
       </Type>
 

@@ -1,9 +1,6 @@
 /** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
-import React from 'react';
-import { jsx, CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import createEmotionServer, { EmotionCriticalToChunks } from '@emotion/server/create-instance';
+import { jsx } from '@emotion/react';
 
 import { SkipLinks } from '../components/SkipLinks';
 import { GA_TRACKING_ID } from '../lib/analytics';

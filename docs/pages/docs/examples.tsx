@@ -8,7 +8,7 @@ import { DocsPage } from '../../components/Page';
 
 export default function Docs() {
   return (
-    <DocsPage noRightNav noProse title="Examples">
+    <DocsPage noRightNav noProse>
       <Type as="h1" look="heading64">
         Examples
       </Type>

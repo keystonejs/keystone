@@ -75,8 +75,6 @@ export default function IndexPage() {
             as="a"
             href="/docs"
             look="soft"
-            size="large"
-            shadow
             css={mq({ height: ['3.125rem !important', 'auto !important'] })}
           >
             Read the docs <ArrowR />
@@ -126,7 +124,15 @@ export default function IndexPage() {
             >
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">1m+</Highlight>
+                  <Highlight look="grad5">1st</Highlight>
+                </Type>
+                <Type as="p" look="body18" color="var(--muted)">
+                  Node.js CMS
+                </Type>
+              </li>
+              <li>
+                <Type as="h3" look="heading48">
+                  <Highlight look="grad5">900k+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> Installs
@@ -138,14 +144,6 @@ export default function IndexPage() {
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   Contributors
-                </Type>
-              </li>
-              <li>
-                <Type as="h3" look="heading48">
-                  <Highlight look="grad5">2013</Highlight>
-                </Type>
-                <Type as="p" look="body18" color="var(--muted)">
-                  First Commit
                 </Type>
               </li>
             </ul>
@@ -263,7 +261,7 @@ export default function IndexPage() {
               </Type>
             </li>
           </ul>
-          <Button as="a" href="/why-keystone#features" shadow css={{ marginTop: '4rem' }}>
+          <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
         </Section>
@@ -309,7 +307,7 @@ export default function IndexPage() {
                 content: '"1"',
                 position: 'absolute',
                 left: '-4.75rem',
-                top: '-.85rem',
+                top: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -327,7 +325,7 @@ export default function IndexPage() {
                 content: '""',
                 position: 'absolute',
                 left: '-4.75rem',
-                top: '-.85rem',
+                top: 0,
                 width: '2.625rem',
                 height: '2.625rem',
                 margin: '0.25rem',
@@ -439,10 +437,10 @@ export const lists = createSchema({
               }}
             >
               <Type as="h3" look="heading24">
-                Customise your content story
+                Customize your content story
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
-                A flexible and intuitive editing environment that does what your schema says:
+                A flexible and intuitive editing environent that does what your schema says:
                 Keystone’s Admin UI understands your access control, so you can shape it to your
                 unique needs.
               </Type>
@@ -504,7 +502,7 @@ export const lists = createSchema({
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Get what you need, fast. Keystone's GraphQL API gives you session management, access
-                control, pagination, sorting, and filtering out of the box. Customise it without
+                control, pagination, sorting, and filtering out of the box. Customize it without
                 losing the bits that work for you.
               </Type>
               <ul
@@ -531,7 +529,7 @@ export const lists = createSchema({
                 <li>
                   <Tick grad="grad5" />
                   <Type look="body18" color="var(--muted)">
-                    Evolve with bespoke logic for your app
+                    Evolve with bespoke logic for your ap
                   </Type>
                 </li>
                 <li>
@@ -679,22 +677,22 @@ export const lists = createSchema({
             }}
           >
             <li>
-              <Button as="a" href="/why-keystone#apps" look="soft" size="large" shadow>
+              <Button as="a" href="/why-keystone#apps" look="soft">
                 Apps <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#websites" look="soft" size="large" shadow>
+              <Button as="a" href="/why-keystone#websites" look="soft">
                 Websites <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#ecommerce" look="soft" size="large" shadow>
+              <Button as="a" href="/why-keystone#ecommerce" look="soft">
                 eCommerce <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#multichannel" look="soft" size="large" shadow>
+              <Button as="a" href="/why-keystone#multichannel" look="soft">
                 Multichannel <ArrowR />
               </Button>
             </li>
@@ -709,7 +707,7 @@ export const lists = createSchema({
           <Type as="h2" look="heading30" margin="2rem auto" css={{ maxWidth: '41.875rem' }}>
             What makes Keystone a CMS for the Design System generation?
           </Type>
-          <Button as="a" href="/docs/guides/document-field-demo" shadow>
+          <Button as="a" href="/docs/guides/document-fields#try-the-demo">
             See our new document editor <ArrowR />
           </Button>
           <div
@@ -721,10 +719,6 @@ export const lists = createSchema({
                 lineHeight: 1,
                 padding: 0,
                 margin: 0,
-              },
-              img: {
-                // TODO: crop the bottom border out of the image, then remove this
-                bottom: '-5px !important',
               },
             }}
           >

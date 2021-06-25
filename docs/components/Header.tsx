@@ -132,7 +132,12 @@ export function Header() {
   }, [router.events, handleClose]);
 
   return (
-    <header ref={headerRef}>
+    <header
+      ref={headerRef}
+      css={{
+        marginBottom: '1.5rem',
+      }}
+    >
       <Wrapper
         css={mq({
           display: 'grid',
@@ -198,7 +203,6 @@ export function Header() {
         <Button
           as="a"
           href="/docs"
-          shadow
           css={mq({
             '&&': {
               display: ['none', null, null, 'inline-flex'],

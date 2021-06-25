@@ -26,6 +26,7 @@ export function Code({ children, className }: { children: string; className?: st
                     if (token.content === 'document' && token.types[0] === 'imports') {
                       token.types = ['imports'];
                     }
+                    console.log(token);
                     return <span key={key} {...getTokenProps({ token, key })} />;
                   })}
                 </div>
