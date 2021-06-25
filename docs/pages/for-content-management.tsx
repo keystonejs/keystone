@@ -213,7 +213,7 @@ export default function ForOrganisations() {
           >
             <li>
               <Type as="h2" look="heading20bold">
-                Customizable interface
+                Customisable interface
               </Type>
               <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
                 Every rich text field instance is what you make it. Control what's possible

@@ -55,7 +55,7 @@
 			<tspan x="226" y="5294" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="5544" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Next steps:</tspan>
 			<tspan x="226" y="5794" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
-			<tspan x="226" y="6044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Edit my-app/keystone.ts to customize your app.</tspan>
+			<tspan x="226" y="6044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Edit my-app/keystone.ts to customise your app.</tspan>
 			<tspan x="226" y="6294" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Open the Admin UI (​http://localhost:3000​)</tspan>
 			<tspan x="226" y="6544" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Read the docs (​https://next.keystonejs.com​)</tspan>
 			<tspan x="226" y="6794" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Star Keystone on GitHub (​https://github.com/keystonejs/keystone​)</tspan>
