@@ -4,6 +4,12 @@ import { jsx } from '@emotion/react';
 
 import { useMediaQuery } from '../../lib/media';
 
+const codeFontStyle = {
+  fontSize: 13,
+  lineHeight: 1.6,
+  fontFamily: 'var(--font-mono)',
+};
+
 function MenuBtn(props: HTMLAttributes<HTMLElement>) {
   return (
     <span
@@ -38,7 +44,8 @@ export function WindowL(props: HTMLAttributes<HTMLElement>) {
     <pre
       css={{
         overflow: 'auto',
-        padding: '1rem',
+        padding: '0.5rem 1rem 1rem',
+        ...codeFontStyle,
       }}
       {...props}
     />
@@ -52,7 +59,8 @@ export function WindowR(props: HTMLAttributes<HTMLElement>) {
         overflow: 'auto',
         background: 'var(--code-bg)',
         borderLeft: '1px solid var(--border)',
-        padding: '1rem',
+        padding: '0.5rem 1rem 1rem',
+        ...codeFontStyle,
       }}
       {...props}
     />
@@ -72,8 +80,9 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         border: '1px solid var(--border)',
         borderRadius: '1rem',
         overflow: 'hidden',
+        marginTop: '1rem',
         background: 'var(--app-bg)',
-        boxShadow: '0px 20px 38px -7px rgb(22 107 255 / 10%)'
+        boxShadow: '0px 20px 38px -7px rgb(22 107 255 / 10%)',
       })}
       {...props}
     >
@@ -91,18 +100,17 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         css={{
           display: 'grid',
           gridTemplateColumns: '3.5rem auto',
-          fontFamily: 'var(--font-mono)',
           gap: '0.5rem',
         }}
       >
         <div
           css={{
-            padding: '1rem 0.5rem',
+            padding: '0.5rem 0.5rem 1rem',
             background: 'var(--code-bg)',
             color: 'var(--muted)',
             borderRight: '1px solid var(--border)',
             pointerEvents: 'none',
-            lineHeight: 1.4,
+            ...codeFontStyle,
           }}
         >
           {Array(lines)
