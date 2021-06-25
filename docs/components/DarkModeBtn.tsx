@@ -8,7 +8,7 @@ import { DarkMode } from './icons/DarkMode';
 
 // NOTE: We are disabling auto-detect dark mode while we make some design tweaks and are happy
 // to ship it by default for "system is dark mode" users. IT WILL RETURN
-const AUTO_DETECT = false;
+const AUTO_DETECT = true;
 
 export function DarkModeBtn(props: HTMLAttributes<HTMLButtonElement>) {
   const [theme, setTheme] = useState<keyof typeof COLORS>('light');
