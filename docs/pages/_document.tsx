@@ -33,6 +33,7 @@ class MyDocument extends Document {
           <meta property="og:type" content="website" />
           <meta property="og:locale" content="en" />
 
+<<<<<<< Updated upstream
           <meta name="twitter:title" content="The superpowered CMS for developers" />
           <meta
             name="twitter:description"
@@ -40,6 +41,10 @@ class MyDocument extends Document {
           />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:image" content={`${siteUrl}/og-image-square.png`} />
+=======
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:image" content={`${siteUrl}/og-image-landscape.png`} />
+>>>>>>> Stashed changes
 
           <meta name="msapplication-TileColor" content="#2684FF" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
