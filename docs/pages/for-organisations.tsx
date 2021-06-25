@@ -32,7 +32,7 @@ export default function ForOrganisations() {
           <IntroHeading>
             Flexibility <Highlight look="grad4">by design</Highlight>
           </IntroHeading>
-          <Type as="h2" look="heading24" margin="1rem 0">
+          <Type as="h2" look="heading24" margin="0 0 1rem">
             The content backend you can shape to fit any business logic.
           </Type>
           <IntroLead>

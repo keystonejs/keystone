@@ -23,7 +23,7 @@ export function IntroHeading(props: HTMLAttributes<HTMLElement>) {
       as="h1"
       look="heading92"
       fontSize={['2.85rem', '4rem', null, '5.75rem']}
-      margin={['0 0 1rem 0', null, null, '0 0 1rem 0']}
+      margin={['1rem 0 2rem 0', null, null, '1rem 0 2rem 0']}
       css={{
         maxWidth: '64rem',
       }}
