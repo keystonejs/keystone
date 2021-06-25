@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { KeystoneContext } from '@keystone-next/types';
+import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/testing';
 import {
   FAKE_ID,
@@ -31,6 +31,7 @@ type IdType = any;
 describe(`Not authed`, () => {
   let testEnv: TestEnv, context: KeystoneContext;
   let items: Record<string, { id: IdType; name: string }[]>;
+  let provider = config.db.provider!;
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
@@ -288,7 +289,7 @@ describe(`Not authed`, () => {
           .forEach(access => {
             test(`denies: ${JSON.stringify(access)}`, async () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
-              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`;
+              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[provider]}", data: { name: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, updateMutationName);
             });
@@ -364,14 +365,14 @@ describe(`Not authed`, () => {
           .forEach(access => {
             test(`single denied: ${JSON.stringify(access)}`, async () => {
               const deleteMutationName = `delete${nameFn[mode](access)}`;
-              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`;
+              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, deleteMutationName);
             });
 
             test(`multi denied: ${JSON.stringify(access)}`, async () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}"]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
 
               expect(data?.[multiDeleteMutationName]).toEqual([null]);
