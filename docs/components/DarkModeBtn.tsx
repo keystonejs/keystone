@@ -6,6 +6,10 @@ import { COLORS } from '../lib/TOKENS';
 import { LightMode } from './icons/LightMode';
 import { DarkMode } from './icons/DarkMode';
 
+// NOTE: We are disabling auto-detect dark mode while we make some design tweaks and are happy
+// to ship it by default for "system is dark mode" users. IT WILL RETURN
+const AUTO_DETECT = false;
+
 export function DarkModeBtn(props: HTMLAttributes<HTMLButtonElement>) {
   const [theme, setTheme] = useState<keyof typeof COLORS>('light');
 
@@ -14,7 +18,7 @@ export function DarkModeBtn(props: HTMLAttributes<HTMLButtonElement>) {
     // in the end we sanitize the strings as who knows what systems give us what...
     const detectedTheme =
       (localStorage.getItem('theme') ||
-        window.matchMedia('(prefers-color-scheme: dark)').matches ||
+        (AUTO_DETECT && window.matchMedia('(prefers-color-scheme: dark)').matches) ||
         'light') === 'dark'
         ? 'dark'
         : 'light';
@@ -27,8 +31,10 @@ export function DarkModeBtn(props: HTMLAttributes<HTMLButtonElement>) {
       localStorage.setItem('theme', detectedTheme);
     };
 
-    window.matchMedia('(prefers-color-scheme: dark)').addListener(changer);
-    return () => window.matchMedia('(prefers-color-scheme: dark)').removeListener(changer);
+    if (AUTO_DETECT) window.matchMedia('(prefers-color-scheme: dark)').addListener(changer);
+    return () => {
+      if (AUTO_DETECT) window.matchMedia('(prefers-color-scheme: dark)').removeListener(changer);
+    };
   }, [setTheme]);
 
   const handleThemeChange = () => {
