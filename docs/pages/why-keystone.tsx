@@ -40,17 +40,17 @@ export default function WhyKeystonePage() {
   return (
     <Page>
       <MWrapper>
-        <Type as="h1" look="heading92">
+        <Type as="h1" look="heading92" fontSize={['4rem', '5.75rem']}>
           Why <Highlight look="grad2">Keystone</Highlight>
         </Type>
 
         <div
-          css={{
+          css={mq({
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: ['1fr', '1fr 1fr'],
             gap: '2rem',
             marginTop: '3.75rem',
-          }}
+          })}
         >
           <div>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
