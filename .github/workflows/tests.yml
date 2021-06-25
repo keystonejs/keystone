@@ -251,6 +251,7 @@ jobs:
             'auth.test.ts',
             'basic.test.ts',
             'blog.test.ts',
+            'document-field.test.ts',
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
             'json.test.ts',
