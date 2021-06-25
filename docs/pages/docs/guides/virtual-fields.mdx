@@ -309,7 +309,7 @@ Virtual fields provide a powerful way to extend your GraphQL API, however there 
 
 The virtual field executes its resolver every time the field is requested.
 For trivial calculations this isn't a problem, but for more complex calculations this can lead to performance issues.
-In this case you can consider memoizing the value to avoid recalculating it for each query.
+In this case you can consider memoising the value to avoid recalculating it for each query.
 Another way to address this is to use a [scalar field](../apis/fields#scalar-types) and to populate its value each time the item is updated using a [hook](./hooks).
 
 The other main consideration is that it is not possible to filter on a virtual field, as each item calcutes its value dynamically, rather than having it stored in the database.
