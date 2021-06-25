@@ -107,7 +107,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
               Save time on the repetitive stuff. You don't have to reinvent the wheel (or learn how)
-              every time you standup a new project.
+              every time you stand up a new project.
             </Type>
           </li>
           <li>
@@ -115,7 +115,7 @@ export default function WhyKeystonePage() {
               Control in the places you need it most
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-              When it’s time to customize for business logic, everything you need is at your
+              When it’s time to customise for business logic, everything you need is at your
               fingertips. What’s not built-in won’t block you from moving forward.
             </Type>
           </li>
@@ -124,8 +124,8 @@ export default function WhyKeystonePage() {
               Escape hatches where you need them
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-              Like React, Keystone is engineered with escape hatches in mind. So your not locked in
-              to Keystone’s way of thinking, except when it works for you.
+              Like React, Keystone is engineered with escape hatches in mind. So you’re not locked
+              in to Keystone’s way of thinking, except when it works for you.
             </Type>
           </li>
           <li>
@@ -155,7 +155,7 @@ export default function WhyKeystonePage() {
           img="/assets/_kud.jpg"
           grad="grad2"
         >
-          I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that works
+          I think I'm in love. Keystone’s just what I needed: a Dashboard & Graphql API that works
           like a charm. As a frontend dev with skills in node and elastic search, Keystone + GraphQL
           just feels so right to me <Emoji symbol="❤️" alt="Love" />
         </Quote>
@@ -204,7 +204,7 @@ export default function WhyKeystonePage() {
                 Extensible GraphQL API
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                Extend the CRUD API for more control over what you do. Customize it to your frontend
+                Extend the CRUD API for more control over what you do. Customise it to your frontend
                 needs.
               </Type>
               <a
@@ -387,7 +387,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 You can control data input exclusively from your frontend, or use Keystone’s
-                intuitive and customizable CMS when you need it.
+                intuitive and customisable CMS when you need it.
               </Type>
               <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
