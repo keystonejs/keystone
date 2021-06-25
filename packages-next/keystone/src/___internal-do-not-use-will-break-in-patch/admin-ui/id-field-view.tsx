@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
 } from '@keystone-next/types';
-import { CellLink, CellContainer } from '../../../admin-ui/components/dist/keystone.cjs';
+import { CellLink, CellContainer } from '../../admin-ui/components';
 
 export const Field = () => null;
 

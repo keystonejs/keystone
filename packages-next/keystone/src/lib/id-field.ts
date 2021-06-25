@@ -78,7 +78,10 @@ export const idFieldType =
           fields: {
             ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.ID),
             ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.ID),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.ID),
+            [`${meta.fieldKey}_in`]: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
+            [`${meta.fieldKey}_not_in`]: schema.arg({
+              type: schema.list(schema.nonNull(schema.ID)),
+            }),
           },
           impls: {
             ...equalityConditions(meta.fieldKey, parseVal),
@@ -99,7 +102,7 @@ function equalityConditions(fieldKey: string, f: (a: string | null) => any) {
 
 function inConditions(fieldKey: string, f: (a: string | null) => any) {
   return {
-    [`${fieldKey}_in`]: (value: (string | null)[] | null) => {
+    [`${fieldKey}_in`]: (value: string[] | null) => {
       if (value === null) {
         throw new Error(`null cannot be passed to ${fieldKey}_in filters`);
       }
@@ -107,7 +110,7 @@ function inConditions(fieldKey: string, f: (a: string | null) => any) {
         [fieldKey]: { in: value.map(x => f(x)) },
       };
     },
-    [`${fieldKey}_not_in`]: (value: (string | null)[] | null) => {
+    [`${fieldKey}_not_in`]: (value: string[] | null) => {
       if (value === null) {
         throw new Error(`null cannot be passed to ${fieldKey}_not_in filters`);
       }

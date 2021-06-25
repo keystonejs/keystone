@@ -11,6 +11,7 @@ import type {
   ListConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
+  IdFieldConfig,
 } from './lists';
 import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
@@ -57,6 +58,7 @@ export type DatabaseConfig = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
+  idField?: IdFieldConfig;
 } & (
   | (
       | {
