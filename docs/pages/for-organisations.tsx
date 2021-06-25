@@ -288,12 +288,12 @@ export default function ForOrganisations() {
             <Highlight look="grad4">We just make it easier to get there.</Highlight>
           </Type>
           <div
-            css={{
+            css={mq({
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              gridTemplateColumns: ['1fr', '1fr 1fr'],
               gap: '2rem',
               marginTop: '3.75rem',
-            }}
+            })}
           >
             <div>
               <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
