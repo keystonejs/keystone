@@ -7,7 +7,7 @@
     "dev": "next -p 8000",
     "build": "next build && yarn sitemap",
     "start": "next start -p 8000",
-    "sitemap": "yarn next-sitemap --config sitemap.ts",
+    "sitemap": "yarn next-sitemap --config sitemap.js",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
