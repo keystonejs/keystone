@@ -276,7 +276,7 @@ model Todo {
 
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT
 );
 `);
@@ -416,7 +416,7 @@ describe('useMigrations: true', () => {
       -- RedefineTables
       PRAGMA foreign_keys=OFF;
       CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+          \\"id\\" TEXT NOT NULL PRIMARY KEY
       );
       INSERT INTO \\"new_Todo\\" (\\"id\\") SELECT \\"id\\" FROM \\"Todo\\";
       DROP TABLE \\"Todo\\";
@@ -481,7 +481,7 @@ describe('useMigrations: true', () => {
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
       CREATE TABLE \\"Todo\\" (
-          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
           \\"title\\" TEXT
       );
       "

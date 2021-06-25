@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/testing';
 import {
   FAKE_ID,

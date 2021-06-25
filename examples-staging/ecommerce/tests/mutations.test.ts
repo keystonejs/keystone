@@ -2,9 +2,9 @@ import { KeystoneContext } from '@keystone-next/types';
 import { setupTestRunner } from '@keystone-next/testing';
 import config from '../keystone';
 
-const FAKE_ID = 12345;
+const FAKE_ID = 'cinjfgbkjnfg';
 
-const asUser = (context: KeystoneContext, itemId?: number) =>
+const asUser = (context: KeystoneContext, itemId?: string) =>
   context.withSession({ itemId, data: {} });
 
 const runner = setupTestRunner({ config });
