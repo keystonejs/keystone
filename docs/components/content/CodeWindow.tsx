@@ -73,6 +73,7 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         borderRadius: '1rem',
         overflow: 'hidden',
         background: 'var(--app-bg)',
+        boxShadow: '0px 20px 38px -7px rgb(22 107 255 / 10%)'
       })}
       {...props}
     >
