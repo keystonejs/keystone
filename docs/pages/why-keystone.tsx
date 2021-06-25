@@ -31,6 +31,7 @@ import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
 import { Cli } from '../components/icons/Cli';
 import { Page } from '../components/Page';
+import { IntroHeading } from '../components/content/Intro';
 
 import adminUi from '../public/assets/admin-ui.png';
 
@@ -40,10 +41,9 @@ export default function WhyKeystonePage() {
   return (
     <Page>
       <MWrapper>
-        <Type as="h1" look="heading92" fontSize={['4rem', '5.75rem']}>
+        <IntroHeading>
           Why <Highlight look="grad2">Keystone</Highlight>
-        </Type>
-
+        </IntroHeading>
         <div
           css={mq({
             display: 'grid',
