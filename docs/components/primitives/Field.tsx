@@ -14,7 +14,7 @@ export const Field = forwardRef<Ref, InputHTMLAttributes<HTMLInputElement>>(
           appearance: 'none',
           backgroundColor: 'var(--app-bg)',
           border: '1px solid var(--border)',
-          borderRadius: '8px',
+          borderRadius: '6px',
           color: 'var(--text)',
           fontSize: '1rem',
           fontWeight: 400,
