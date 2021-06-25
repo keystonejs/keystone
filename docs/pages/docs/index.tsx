@@ -73,7 +73,7 @@ export default function Docs() {
           show you how to use filters to get the data you need from your system.
         </Well>
         <Well grad="grad2" heading="How To Use Document Fields" href="/docs/guides/document-fields">
-          Keystone’s document field is a highly customizable rich text editor that stores content as
+          Keystone’s document field is a highly customisable rich text editor that stores content as
           structured JSON. Learn how to configure it and incorporate your own custom React
           components.
         </Well>

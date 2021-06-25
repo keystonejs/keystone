@@ -115,7 +115,7 @@ export default function WhyKeystonePage() {
               Control in the places you need it most
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-              When it’s time to customize for business logic, everything you need is at your
+              When it’s time to customise for business logic, everything you need is at your
               fingertips. What’s not built-in won’t block you from moving forward.
             </Type>
           </li>
@@ -204,7 +204,7 @@ export default function WhyKeystonePage() {
                 Extensible GraphQL API
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                Extend the CRUD API for more control over what you do. Customize it to your frontend
+                Extend the CRUD API for more control over what you do. Customise it to your frontend
                 needs.
               </Type>
               <a
@@ -387,7 +387,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 You can control data input exclusively from your frontend, or use Keystone’s
-                intuitive and customizable CMS when you need it.
+                intuitive and customisable CMS when you need it.
               </Type>
               <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
