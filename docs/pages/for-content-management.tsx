@@ -39,7 +39,13 @@ export default function ForOrganisations() {
             how you work in code, and has the flexibility you need to enable content creatives.
           </IntroLead>
         </IntroWrapper>
-        <Button as="a" href="/docs/guides/document-fields" css={{ marginTop: '2rem' }}>
+        <Button
+          as="a"
+          href="/docs/guides/document-fields"
+          css={{ marginTop: '2rem' }}
+          size="large"
+          shadow
+        >
           Try the Rich Text demo <ArrowR />
         </Button>
 
