@@ -6,7 +6,10 @@ import Link from 'next/link';
 
 import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
-import { SearchField } from './primitives/SearchField';
+
+/* SEARCH COMING SOON */
+/* import { SearchField } from './primitives/SearchField'; */
+
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
@@ -16,7 +19,9 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
-import { Search } from './icons/Search';
+
+/* SEARCH COMING SOON */
+/* import { Search } from './icons/Search'; */
 
 type HeaderContextType = { mobileNavIsOpen: boolean };
 const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
