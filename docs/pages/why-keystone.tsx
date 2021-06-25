@@ -484,7 +484,7 @@ export default function WhyKeystonePage() {
             css={mq({
               display: 'grid',
               gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '1.5rem',
+              gap: '3rem',
               listStyle: 'none',
               padding: 0,
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],

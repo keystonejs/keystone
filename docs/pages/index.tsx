@@ -286,7 +286,7 @@ export default function IndexPage() {
               display: 'grid',
               gridTemplateColumns: ['1fr', null, '0.8fr 1.2fr'],
               position: 'relative',
-              gap: '2rem',
+              gap: '3rem',
               paddingTop: ['3rem', '5rem'],
               ':after': {
                 content: '""',
@@ -743,7 +743,7 @@ export const lists = createSchema({
             css={mq({
               display: 'grid',
               gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '1.5rem',
+              gap: '3rem',
               listStyle: 'none',
               padding: 0,
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],
