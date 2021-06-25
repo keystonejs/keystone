@@ -38,6 +38,9 @@ export function Highlight({ look = 'grad1', as: Tag = 'span', ...props }: Highli
         backgroundImage: 'linear-gradient(135deg, var(--grad-1), var(--grad-2))',
         backgroundClip: 'text',
         color: 'transparent',
+        // Fixes the "gradient text gets clipped when wrapping across lines" bug in Safari
+        // Thanks to https://forum.webflow.com/t/multi-line-gradient-text-safari-ios-fix-i-e-prevent-disappearing-text/135029
+        '-webkit-box-decoration-break': 'clone',
       }}
       {...props}
     />
