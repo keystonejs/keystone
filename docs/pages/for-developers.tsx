@@ -451,7 +451,7 @@ export default function ForDevelopers() {
               <Emoji symbol="🚀" alt="Rocket ship" />
             </TweetBox>
             <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
-              I think I'm in love. Keystone‘s just what I needed: a Dashboard & Graphql API that
+              I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that
               works like a charm. As a frontend dev with skills in node and elastic search, Keystone
               + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
             </TweetBox>
