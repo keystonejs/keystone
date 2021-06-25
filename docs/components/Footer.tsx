@@ -98,12 +98,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/docs/guides/keystone-5-vs-keystone-next">
+                <Link href="/docs/guides">
                   <a>Guides</a>
                 </Link>
               </li>
               <li>
-                <Link href="/docs/apis/config">
+                <Link href="/docs/apis">
                   <a>API reference</a>
                 </Link>
               </li>
@@ -163,12 +163,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/for-developers">
+                <Link href="/updates/roadmap">
                   <a>Roadmap</a>
                 </Link>
               </li>
               <li>
-                <Link href="/for-organisations">
+                <Link href="/releases">
                   <a>Release Notes</a>
                 </Link>
               </li>
