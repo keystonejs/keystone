@@ -127,7 +127,7 @@ export const Pill = forwardRef<HTMLButtonElement, PillProps>(
     ref
   ) => {
     return (
-      <div tabIndex={-1} css={{ display: 'flex' }} {...containerProps}>
+      <div css={{ display: 'flex' }} {...containerProps}>
         <PillButton ref={ref} weight={weight} tone={tone} onClick={onClick} {...props}>
           {children}
         </PillButton>
