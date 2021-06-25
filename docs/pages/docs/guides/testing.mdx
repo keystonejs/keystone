@@ -1,8 +1,198 @@
-import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
 
 # Testing
 
-<ComingSoon/>
+When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
+In this guide we'll show you how to use the `@keystone-next/testing` package and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
+
+## Test runner
+
+The first step to writing a test for your Keystone system is to setup a test runner with `setupTestRunner`.
+You can then use this runner to wrap your test functions.
+
+```typescript
+import { setupTestRunner } from '@keystone-next/testing';
+import { config } from './keystone';
+
+const runner = setupTestRunner({ config });
+
+test(
+  'Keystone test',
+  runner(() => {
+    // Write your test here
+  })
+);
+```
+
+The test runner does a number of things for you here.
+It starts by creating a connection to the database and dropping all the data.
+This ensures that all tests are run in a known state.
+
+The test runner then sets up a partial Keystone system for you, including an Apollo server to handle GraphQL requests.
+The system does not include an Admin UI, and does not open a network port to listen for requests.
+
+Finally, the runner sets up two APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
+The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library
+
+x> The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
+
+## Writing tests
+
+In general you will want to run tests which check the behaviour of any custom code that you write as part of your Keystone system.
+This includes things like access control, hooks, virtual fields, and GraphQL API extensions.
+
+### Context API
+
+The [context API](../apis/context) lets you easily manipulate data in your system.
+We can use the [list items API](../apis/list-items) to ensure that we can do basic CRUD operations.
+
+```typescript
+runner(async ({ context }) => {
+  const person = await context.lists.Person.createOne({
+    data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+    query: 'id name email password { isSet }',
+  });
+  expect(person.name).toEqual('Alice');
+  expect(person.email).toEqual('alice@example.com');
+  expect(person.password.isSet).toEqual(true);
+})
+```
+
+This API works well when we expect an operation to succeed.
+If we expect an operation to fail we can use the `context.graphql.raw` operation to check that both the `data` and `errors` returned by a query are what we expect.
+
+```typescript
+runner(async ({ context }) => {
+  // Create user without the required `name` field
+  const { data, errors } = await context.graphql.raw({
+    query: `mutation {
+      createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
+        id name email password { isSet }
+      }
+    }`,
+  });
+  expect(data.createPerson).toBe(null);
+  expect(errors).toHaveLength(1);
+  expect(errors[0].path).toEqual(['createPerson']);
+  expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
+})
+```
+
+The `context.withSession()` function can be used to run queries as if you were logged in as a particular user.
+This can be useful for testing the behaviour of your access control rules.
+In the example below, the access control only allows users to update their own tasks.
+
+```
+runner(async ({ context }) => {
+  // Create some users
+  const [alice, bob] = await context.lists.Person.createMany({
+    data: [
+      { data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' } },
+      { data: { name: 'Bob', email: 'bob@example.com', password: 'super-secret' } },
+    ],
+  });
+
+  // Create a task assigned to Alice
+  const task = await context.lists.Task.createOne({
+    data: {
+      label: 'Experiment with Keystone',
+      priority: 'high',
+      isComplete: false,
+      assignedTo: { connect: { id: alice.id } },
+    },
+  });
+
+  // Check that we can't update the task when logged in as Bob
+  const { data, errors } = await context
+    .withSession({ itemId: bob.id, data: {} })
+    .graphql.raw({
+      query: `mutation update($id: ID!) {
+        updateTask(id: $id data: { isComplete: true }) {
+          id
+        }
+      }`,
+      variables: { id: task.id },
+    });
+  expect(data!.updateTask).toBe(null);
+  expect(errors).toHaveLength(1);
+  expect(errors![0].path).toEqual(['updateTask']);
+  expect(errors![0].message).toEqual('You do not have access to this resource');
+})
+```
+
+### graphQLRequest API
+
+While the `context` API will cover most use cases, if you need to test specific HTTP related behaviour, you can use the `graphQLRequest` API.
+This API lets you control details such as the HTTP headers sent with your request, and returns the full HTTP response, including return codes.
+The function `graphQLRequest` accepts an object `{ query, variables, operationName }` and returns a `supertest` test object.
+
+```
+runner(async ({ graphQLRequest }) => {
+  const response = await graphQLRequest({
+    query: `mutation {
+      createPerson(data: { name: "Alice", email: "alice@example.com", password: "super-secret" }) {
+        id name email password { isSet }
+      }
+    }`,
+  })
+    .set('X-Example-Header', 'header-value')
+    .expect(200);
+
+  const person = response.body.data.createPerson;
+  expect(person.name).toEqual('Alice');
+  expect(person.email).toEqual('alice@example.com');
+  expect(person.password.isSet).toEqual(true);
+})
+```
+
+See the [`supertest`](https://github.com/visionmedia/supertest) docs for full details on the methods available with `graphQLRequest`.
+
+## Test environment
+
+The test runner function resets the database to a clean state for every test.
+This ensures that changes to the state of the data in one test won't interfere with any other tests.
+
+Resetting the database for every test can become expensive if you need to do a large amount of data-seeding for every test.
+In these cases you will want to run multiple tests which share database state, without resetting it between each test.
+This can be achieved with `setupTestEnv`.
+
+The function `setupTestEnv` will initialise your system, drop all the data from the database, and then return an object which allows you to control how your tests are run.
+The returned value contains `connect` and `disconnect` functions, which you will generally call in the `beforeAll` and `afterAll` blocks of your test group.
+It also returns `testArgs`, which contains the same arguments provided to tests by the test runner function.
+
+The context API can be used after calling `connect()` in the `beforeAll()` block to initialise the database into a state which will then be used by all the tests in the test block.
+
+x> Be careful of sharing database state across tests. Avoid relying on changes of state from one test in subsequent tests.
+
+```
+import { setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { KeystoneContext } from '@keystone-next/types';
+
+describe('Example tests using test environment', () => {
+  let testEnv: TestEnv;
+  let context: KeystoneContext;
+
+  beforeAll(async () => {
+    testEnv = await setupTestEnv({ config });
+    context = testEnv.testArgs.context;
+
+    await testEnv.connect();
+
+    // Initialise database state here
+  });
+
+  afterAll(async () => {
+    await testEnv.disconnect();
+  });
+
+  test('Test 1', async () => {
+    ...
+  });
+
+  test('Test 2', async () => {
+    ...
+  });
+});
+```
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
