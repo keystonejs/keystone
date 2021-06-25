@@ -1,4 +1,4 @@
-import type { FieldData, KeystoneConfig, NextFieldType } from '@keystone-next/types';
+import type { KeystoneConfig } from '@keystone-next/types';
 import { idFieldType } from '../id-field';
 
 /* Validate lists config and default the id field */
@@ -13,20 +13,9 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    const idFieldConfig = config.lists[key].db?.idField ?? { kind: 'cuid' };
-    const actualIdField = (args: FieldData): NextFieldType => {
-      const idField = idFieldType(idFieldConfig)(args);
-      return {
-        ...idField,
-        ui: {
-          createView: { fieldMode: 'hidden', ...idField.ui?.createView },
-          itemView: { fieldMode: 'hidden', ...idField.ui?.itemView },
-          ...idField.ui,
-        },
-      };
-    };
+    const idField = idFieldType(config.lists[key].db?.idField ?? { kind: 'cuid' });
 
-    const fields = { id: actualIdField, ...listConfig.fields };
+    const fields = { id: idField, ...listConfig.fields };
     lists[key] = { ...listConfig, fields };
   });
   return lists;

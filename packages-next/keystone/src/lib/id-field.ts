@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   fieldType,
   FieldTypeFunc,
@@ -10,16 +11,21 @@ import {
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 
+const views = path.join(
+  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
+);
+
 const idParsers = {
   autoincrement(val: string | null) {
     if (val === null) {
-      throw new Error('An integer must be passed to id filters');
+      throw new Error('Only an integer can be passed to id filters');
     }
     const parsed = parseInt(val);
     if (Number.isInteger(parsed)) {
       return parsed;
     }
-    throw new Error('An integer must be passed to id filters');
+    throw new Error('Only an integer can be passed to id filters');
   },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
@@ -27,13 +33,13 @@ const idParsers = {
     if (typeof val === 'string' && isCuid(val)) {
       return val.toLowerCase();
     }
-    throw new Error('A cuid must be passed to id filters');
+    throw new Error('Only a cuid can be passed to id filters');
   },
   uuid(val: string | null) {
     if (typeof val === 'string' && validate(val)) {
       return val.toLowerCase();
     }
-    throw new Error('A uuid must be passed to id filters');
+    throw new Error('Only a uuid can be passed to id filters');
   },
 };
 
@@ -41,20 +47,6 @@ export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
     const parseVal = idParsers[config.kind];
-    const __legacy = {
-      filters: {
-        fields: {
-          ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.ID),
-          ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.ID),
-          ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.ID),
-        },
-        impls: {
-          ...equalityConditions(meta.fieldKey, parseVal),
-          ...legacyFilters.impls.orderingConditions(meta.fieldKey, parseVal),
-          ...inConditions(meta.fieldKey, parseVal),
-        },
-      },
-    };
     return fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
       kind: 'scalar',
       mode: 'required',
@@ -72,8 +64,29 @@ export const idFieldType =
           return value.toString();
         },
       }),
-      views: '@keystone-next/fields/types/integer/views',
-      __legacy,
+      views,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      __legacy: {
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.ID),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.ID),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.ID),
+          },
+          impls: {
+            ...equalityConditions(meta.fieldKey, parseVal),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey, parseVal),
+            ...inConditions(meta.fieldKey, parseVal),
+          },
+        },
+      },
     });
   };
 
