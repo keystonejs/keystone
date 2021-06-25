@@ -115,7 +115,7 @@ function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
         display: 'grid',
         gridTemplateColumns: 'auto max-content',
         top: 0,
-        padding: '0.5rem 1rem 0.5rem 2rem',
+        padding: '0.65rem 0.75rem 0.5rem 2rem',
         marginBottom: '0.5rem',
         borderBottom: '1px solid var(--border)',
         background: 'var(--app-bg)',
@@ -152,7 +152,7 @@ function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
           justifySelf: 'end',
         }}
       >
-        <Close css={{ height: '1rem' }} />
+        <Close css={{ height: '1.4rem' }} />
       </button>
     </div>
   );

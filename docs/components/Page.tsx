@@ -59,6 +59,7 @@ export function DocsPage({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
+        <Announcement />
         <Header />
         <Wrapper
           css={mq({
