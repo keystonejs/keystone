@@ -5,8 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "next -p 8000",
-    "build": "next build",
+    "build": "next build && yarn sitemap",
     "start": "next start -p 8000",
+    "sitemap": "yarn next-sitemap --config lib/next-sitemap.ts",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
@@ -43,6 +44,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
+    "next-sitemap": "^1.6.124",
     "start-server-and-test": "^1.12.5",
     "typescript": "^4.3.4"
   },

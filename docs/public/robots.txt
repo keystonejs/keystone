@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://next.keystonejs.com
+
+# Sitemaps
+Sitemap: https://next.keystonejs.com/sitemap.xml
