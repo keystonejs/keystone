@@ -107,7 +107,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
               Save time on the repetitive stuff. You don't have to reinvent the wheel (or learn how)
-              every time you standup a new project.
+              every time you stand up a new project.
             </Type>
           </li>
           <li>
@@ -124,8 +124,8 @@ export default function WhyKeystonePage() {
               Escape hatches where you need them
             </Type>
             <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-              Like React, Keystone is engineered with escape hatches in mind. So your not locked in
-              to Keystone’s way of thinking, except when it works for you.
+              Like React, Keystone is engineered with escape hatches in mind. So you’re not locked
+              in to Keystone’s way of thinking, except when it works for you.
             </Type>
           </li>
           <li>
@@ -155,7 +155,7 @@ export default function WhyKeystonePage() {
           img="/assets/_kud.jpg"
           grad="grad2"
         >
-          I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that
+          I think I'm in love. Keystone’s just what I needed: a dashboard &amp; GraphQL API that
           works like a charm. As a frontend dev with skills in node and elastic search, Keystone +
           GraphQL just feels so right to me <Emoji symbol="❤️" alt="Love" />
         </Quote>
