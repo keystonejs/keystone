@@ -1,8 +1,10 @@
 /** @jsx jsx */
-import { Fragment, useState, ReactNode, SyntheticEvent } from 'react';
-import { TextInput } from '@keystone-ui/fields';
-import { jsx, Stack } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
+import { Fragment, useState, ReactNode, SyntheticEvent, HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react';
+
+import { Button } from './primitives/Button';
+import { Field } from './primitives/Field';
+import { Stack } from './primitives/Stack';
 
 const validEmail = (email: string) =>
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
@@ -11,13 +13,13 @@ const validEmail = (email: string) =>
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
-export function SubscribeForm({
-  autoFocus,
-  children,
-}: {
+type SubscriptFormProps = {
   autoFocus?: boolean;
   children: ReactNode;
-}) {
+  stacked?: boolean;
+} & HTMLAttributes<HTMLFormElement>;
+
+export function SubscribeForm({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,22 +74,27 @@ export function SubscribeForm({
   return !formSubmitted ? (
     <Fragment>
       {children}
-      <form onSubmit={onSubmit}>
-        <Stack gap="small">
-          <Stack across gap="small">
-            <TextInput
-              autoComplete="off"
-              autoFocus={autoFocus}
-              placeholder="Your email address"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-            <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
-              {error ? 'Try again' : 'Subscribe'}
-            </Button>
-          </Stack>
-          {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
+      <form onSubmit={onSubmit} {...props}>
+        <Stack
+          orientation={stacked ? 'vertical' : 'horizontal'}
+          block={stacked}
+          css={{
+            justifyItems: stacked ? 'baseline' : undefined,
+          }}
+        >
+          <Field
+            type="email"
+            autoComplete="off"
+            autoFocus={autoFocus}
+            placeholder="Your email address"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          <Button loading={loading} type={'submit'}>
+            {error ? 'Try again' : 'Subscribe'}
+          </Button>
         </Stack>
+        {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
       </form>
     </Fragment>
   ) : (

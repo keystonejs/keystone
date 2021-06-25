@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@emotion/react';
 
+import { SkipLinks } from '../components/SkipLinks';
 import { GA_TRACKING_ID } from '../lib/analytics';
 
 class MyDocument extends Document {
@@ -34,11 +35,14 @@ class MyDocument extends Document {
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="theme-color" content="#ffffff" />
 
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
-            href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap"
             rel="stylesheet"
           />
 
+          <script async src="/assets/resize-observer-polyfill.js" />
+          <script async src="/assets/focus-visible-polyfill.js" />
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
@@ -58,6 +62,7 @@ class MyDocument extends Document {
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
+          <SkipLinks />
           <Main />
           <NextScript />
         </body>

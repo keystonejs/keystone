@@ -2,3 +2,4 @@ node_modules
 coverage
 dist
 reports
+docs/public/assets/

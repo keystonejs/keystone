@@ -2,14 +2,14 @@ import type { PrismTheme } from 'prism-react-renderer';
 
 const theme: PrismTheme = {
   plain: {
-    color: '#27272A',
-    backgroundColor: 'var(--gray-50)',
+    color: 'var(--text-heading)',
+    backgroundColor: '#f6f7f9',
   },
   styles: [
     {
       types: ['comment', 'prolog', 'doctype', 'cdata'],
       style: {
-        color: '#64748B',
+        color: 'var(--text)',
       },
     },
     {
@@ -56,7 +56,7 @@ const theme: PrismTheme = {
     {
       types: ['function', 'deleted', 'tag'],
       style: {
-        color: '#3730A3',
+        color: 'var(--focus)',
       },
     },
     {

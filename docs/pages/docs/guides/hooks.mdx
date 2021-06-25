@@ -1,0 +1,225 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Hooks
+
+Keystone provides a powerful CRUD GraphQL API which lets you perform basic operations on your data.
+As your system evolves you'll find that you need to include business logic alongside these operations.
+
+In this guide we'll show you how to use `hooks` to enhance the core operations in different ways.
+For full details of the function signatures, please check out the [Hooks API](../apis/hooks).
+
+## What is a hook?
+
+A hook is a function you define as part of your [schema configuration](../apis/schema) which is executed when a GraphQL operation is performed.
+Let's look at a basic example to log a message to the console whenever a new user is created.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        email: text(),
+       },
+      hooks: {
+        afterChange: ({ operation, updatedItem }) => {
+          if (operation === 'create') {
+            console.log('New user created. Name: ${updatedItem.name}, Email: ${updatedItem.email});
+          }
+        }
+      },
+    }),
+  }),
+});
+```
+
+This function will be triggered whenever we execute one of `createUser`, `createUsers`, `updateUser`, or `updateUsers` in our GraphQL API.
+It will be executed once for each item either created or updated.
+Because we only want to log when a user is created, we check the value of the `operation` argument.
+We then use the `updatedItem` argument to get the value of the newly created user.
+
+Now that we've got a sense of what a hook is, let's look at how we can use hooks to solve some common problems you'll hit when creating your system.
+
+## Modifying incoming data
+
+When a `create` or `update` operation is called, you might want to apply some pre-processing to the data before saving it to your database.
+For example, if you have a blog post, you might want to ensure that the `title` field always starts with an upper-case letter.
+The `resolveInput` hook lets us take the data which has been provided to the GraphQL mutation and modify it before it is saved.
+
+Let's write a hook which takes the data for a blog post and converts the first letter to upper-case.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    Post: list({
+      fields: {
+        title: text({ isRequired: true }),
+        content: text({ isRequired: true }),
+       },
+      hooks: {
+        resolveInput: ({ resolvedData }) => {
+          const { title } = resolvedData;
+          if (title) {
+            // Ensure the first letter of the title is capitalised
+            resolvedData.title = title[0].toUpperCase() + title.slice(1)
+          }
+          // We always return resolvedData from the resolveInput hook
+          return resolvedData;
+        }
+      },
+    }),
+  }),
+});
+```
+
+!> We must always return the modified `resolvedData` value from our hook, even if we didn't end up changing it.
+
+The `resolveInput` hook is called whenever we update or create an item.
+The value of `resolvedData` will contain the input provided to the mutation itself, along with any `defaultValues` applied on fields.
+If you just want to see what the original input before default values was, you can use the `originalInput` argument.
+
+If you're performing an update operation, you might also want to access the current value of the item stored in the database.
+This is available as the `existingItem` argument.
+
+Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../apis/context).
+
+?> The `resolveInput` hook shouldn't be used to set default values. This is handled by the `defaultValue` field config option.
+
+## Validating inputs
+
+Before writing the resolved data to the database you will often want to check that it conforms to certain rules, depending on your application's needs.
+For example, you might want to ensure that blog posts don't have a blank title.
+An empty string, `""`, is a perfectly valid `String` value to pass into GraphQL.
+Let's use a validation hook to ensure that this value doesn't make it into our database.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    Post: list({
+      fields: {
+        title: text({ isRequired: true }),
+        content: text({ isRequired: true }),
+       },
+      hooks: {
+        validateInput: ({ resolvedData, addValidationError }) => {
+          const { title } = resolvedData;
+          if (title === '') {
+            // We call addValidationError to indicate an invalid value.
+            addValidationError('The title of a blog post cannot be the empty string');
+          }
+        }
+      },
+    }),
+  }),
+});
+```
+
+The `validateInput` hook is passed the `resolvedData` value after all defaults and `resolveInput` hooks have been completed.
+This is the value which will be written into the database if no validation errors are found.
+
+We can check the values on this object and if there's a problem we call the function `addValidationError` with an error message.
+There might be multiple problems with the input, so you can call `addValidationError` multiple times to capture of all the different problems.
+
+Keystone will abort the operation and convert these error messages into GraphQL errors which will be returned to the caller.
+
+The `validateInput` hook also receives the `operation`, `originalInput`, `existingItem` and `context` arguments if you want to perform more advanced checks.
+
+?> Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
+
+## Triggering side-effects
+
+When data is changed in our system we might want to trigger some external side-effect.
+For example, we might want to send a welcome email to a user when they first create their account.
+We can use the `beforeChange` and `afterChange` hooks to do this.
+Let's send an email after a user is created.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+// Keystone leaves it up to you to decide how best to implement email in your system
+import { sendWelcomeEmail } from './lib/welcomeEmail';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        email: text(),
+       },
+      hooks: {
+        afterChange: ({ operation, updatedItem }) => {
+          if (operation === 'create) {
+            sendWelcomeEmail(updatedItem.name, updatedItem.email);
+          }
+        }
+      },
+    }),
+  }),
+});
+```
+
+The `beforeChange` and `afterChange` hooks are very similar, but serve slightly different purposes.
+The `beforeChange` hook receives a `resolvedData` argument, which contains the data we're about to write to the database, whereas `afterChange` recieves `updatedItem`, which contains the data that was written to the database.
+
+If the `beforeChange` hook throws an exception then the operation will return an error, and the data will not be saved to the database.
+If the `afterChange` hook throws an exception then the data will remain in the database. As such, `afterChange` hooks should be used where a failure to execute isn't a critical problem.
+
+## Delete hooks
+
+The hooks discussed above all relate to the `create` and `update` operations.
+There are also hooks which can be defined for the `delete` operation.
+
+The `delete` operation hooks are `validateDelete`, `beforeDelete`, and `afterDelete`.
+
+The `validateDelete` is used to verify that deleting an item won't cause a problem in your system.
+For example, deleting a user might leave a collection of blog posts without authors, which might be something you want to avoid.
+
+Similary, the `beforeDelete` and `afterDelete` hooks can be used to trigger side-effects related to the delete operation.
+
+## List hooks vs field hooks
+
+All of the examples above have involved hooks associated with a particular list.
+Keystone also supports setting of hooks associated with a particular field.
+All the same hooks are available, and they receive all the same arguments, along with an extra `fieldPath` argument.
+
+Field hooks can be useful if you want to have field specific rules.
+For example, you might have an email validation function which want to use in your system.
+You could always write this as a list hook, but it will make your code more clear if you write this as a field hook.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        email: text({
+          hooks: {
+            validateInput: ({ addValidationError, resolvedData, fieldPath }) => {
+              const email = resolvedData[fieldPath];
+              if (email !== undefined && email !== null && !email.includes('@')) {
+                addValidationError('The email address ${email} provided for the field ${fieldPath} must contain an '@' character);
+              }
+            },
+          },
+        }),
+       },
+    }),
+  }),
+});
+```
+
+See the [fields API](../apis/hooks) for the details of all the arguments available for all the different hook functions.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
