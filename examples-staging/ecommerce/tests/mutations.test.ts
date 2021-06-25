@@ -171,7 +171,7 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual('Only a cuid can be passed to id filters');
       })
     );
 
