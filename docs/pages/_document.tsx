@@ -22,13 +22,23 @@ class MyDocument extends Document {
           <link rel="mask-icon" color="#2684FF" href="/safari-pinned-tab.svg" />
           <link rel="shortcut icon" href="/favicon.ico" />
 
+          <meta property="og:title" content="The superpowered CMS for developers" />
+          <meta
+            property="og:description"
+            content="Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data."
+          />
           <meta property="og:image" content={`${siteUrl}/og-image-landscape.png`} />
           <meta property="og:image:width" content="761" />
           <meta property="og:image:height" content="410" />
           <meta property="og:type" content="website" />
           <meta property="og:locale" content="en" />
 
-          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content="The superpowered CMS for developers" />
+          <meta
+            name="twitter:description"
+            content="Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data."
+          />
+          <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:image" content={`${siteUrl}/og-image-square.png`} />
 
           <meta name="msapplication-TileColor" content="#2684FF" />
