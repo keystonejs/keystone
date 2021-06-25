@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to add authentication to a Keystone system.
-It uses the [`@keystone-next/auth`](https://next.keystonejs.com/apis/auth) package, along with Keystone's [session management API](https://next.keystonejs.com/apis/session), to add the following features to the Task Manager base:
+It uses the [`@keystone-next/auth`](https://next.keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://next.keystonejs.com/docs/apis/session), to add the following features to the Task Manager base:
 
 - Configure which fields to use for signin
 - Set up stateless session handling to keep track of the signed in user

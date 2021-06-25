@@ -3,7 +3,7 @@
 See:
 
 - The current [hooks API ref](https://www.keystonejs.com/api/hooks#authentication-hooks)
-- The current [hooks guide](https://www.keystonejs.com/guides/hooks)
+- The current [hooks guide](https://www.keystonejs.com/docs/guides/hooks)
 - The [PR that added auth hooks](https://github.com/keystonejs/keystone/pull/2039) (I thought there'd be more relevant discussion in here but there isn't really)
 
 Currently:
@@ -36,7 +36,7 @@ We now have **more potential auth-related operations**:
 - `sendMagicAuthLink`
 - `redeemMagicAuthLink`
 
-(See [existing operations](https://www.keystonejs.com/guides/hooks#operation).)
+(See [existing operations](https://www.keystonejs.com/docs/guides/hooks#operation).)
 
 ## Opinions
 

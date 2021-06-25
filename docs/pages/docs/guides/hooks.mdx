@@ -6,11 +6,11 @@ Keystone provides a powerful CRUD GraphQL API which lets you perform basic opera
 As your system evolves you'll find that you need to include business logic alongside these operations.
 
 In this guide we'll show you how to use `hooks` to enhance the core operations in different ways.
-For full details of the function signatures, please check out the [Hooks API](../apis/hooks).
+For full details of the function signatures, please check out the [Hooks API](../docs/apis/hooks).
 
 ## What is a hook?
 
-A hook is a function you define as part of your [schema configuration](../apis/schema) which is executed when a GraphQL operation is performed.
+A hook is a function you define as part of your [schema configuration](../docs/apis/schema) which is executed when a GraphQL operation is performed.
 Let's look at a basic example to log a message to the console whenever a new user is created.
 
 ```typescript
@@ -87,7 +87,7 @@ If you just want to see what the original input before default values was, you c
 If you're performing an update operation, you might also want to access the current value of the item stored in the database.
 This is available as the `existingItem` argument.
 
-Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../apis/context).
+Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../docs/apis/context).
 
 ?> The `resolveInput` hook shouldn't be used to set default values. This is handled by the `defaultValue` field config option.
 
@@ -220,6 +220,6 @@ export default config({
 });
 ```
 
-See the [fields API](../apis/hooks) for the details of all the arguments available for all the different hook functions.
+See the [fields API](../docs/apis/hooks) for the details of all the arguments available for all the different hook functions.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;

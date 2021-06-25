@@ -60,14 +60,14 @@ All options are optional.
 
 Options:
 
-- `access`: Defines the [Access Control](../guides/access-control) rules for the field.
+- `access`: Defines the [Access Control](../docs/guides/access-control) rules for the field.
   See the [Access Control API](./access-control) for full details on the available access control options.
-- `hooks`: The `hooks` option defines [hook](../guides/hooks) functions for the field.
+- `hooks`: The `hooks` option defines [hook](../docs/guides/hooks) functions for the field.
   Hooks allow you to execute code at different stages of the mutation lifecycle.
   See the [Hooks API](./hooks) for full details on the available hook options.
 - `label`: The label displayed for this field in the Admin UI. Defaults to a human readable version of the field name.
 - `ui`: Controls how the field is displayed in the Admin UI.
-  - `views`: A [resolved](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) path to a module containing code to replace or extend the default Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
+  - `views`: A [resolved](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) path to a module containing code to replace or extend the default Admin UI components for this field. See the [Custom Field Views](../docs/guides/custom-field-views) guide for details on how to use this option.
   - `createView` (default: `'edit'`): Controls the create view page of the Admin UI.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
     Defaults to the list's `ui.createView.defaultFieldMode` config if defined.
@@ -454,7 +454,7 @@ export default config({
 
 A `relationship` field represents a relationship between two lists.
 
-Read our [relationships guide](../guides/relationships) for details on Keystone’s relationship model and how to configure them in your project.
+Read our [relationships guide](../docs/guides/relationships) for details on Keystone’s relationship model and how to configure them in your project.
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldPath>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
@@ -554,7 +554,7 @@ export default config({
 ### virtual
 
 A `virtual` field represents a value which is computed a read time, rather than stored in the database.
-See the [virtual fields guide](../guides/virtual-fields) for details on how to use virtual fields.
+See the [virtual fields guide](../docs/guides/virtual-fields) for details on how to use virtual fields.
 
 Options:
 

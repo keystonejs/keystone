@@ -18,7 +18,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-Keystone provides a testing library in the package [`@keystone-next/testing`](https://next.keystonejs.com/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
+Keystone provides a testing library in the package [`@keystone-next/testing`](https://next.keystonejs.com/docs/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
 This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example.test.ts](./example.test.ts)
 
 ### Test runner
@@ -45,7 +45,7 @@ For each test, the runner will connect to the database and drop all the data so 
 
 #### `context`
 
-The test runner provides the test function with a [`KeystoneContext`](https://next.keystonejs.com/apis/context) argument called `context`. This is the main API for interacting with the Keystone system. It can be used to read and write data to the system and verify that the system is behaving as expected.
+The test runner provides the test function with a [`KeystoneContext`](https://next.keystonejs.com/docs/apis/context) argument called `context`. This is the main API for interacting with the Keystone system. It can be used to read and write data to the system and verify that the system is behaving as expected.
 
 ```typescript
 test(

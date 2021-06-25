@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to use default values for fields.
-Default values are set using the [`defaultValue`](https://next.keystonejs.com/apis/fields#scalar-types) argument on fields.
+Default values are set using the [`defaultValue`](https://next.keystonejs.com/docs/apis/fields#scalar-types) argument on fields.
 They are applied by Keystone when an object is created and no value is supplied for the field.
 There are two types of default values in Keystone; `static`, and `dynamic`.
 
@@ -59,7 +59,7 @@ We use `originalInput`, which contains the input passed to the GraphQL create mu
       }),
 ```
 
-We use [`context`](https://next.keystonejs.com/apis/context) along with the [list items API](https://next.keystonejs.com/apis/list-items) to set the default assignee of a task to be a user named `"Anonymous"`.
+We use [`context`](https://next.keystonejs.com/docs/apis/context) along with the [list items API](https://next.keystonejs.com/docs/apis/list-items) to set the default assignee of a task to be a user named `"Anonymous"`.
 
 ```typescript
       assignedTo: relationship({

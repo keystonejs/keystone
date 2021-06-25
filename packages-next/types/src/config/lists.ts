@@ -27,7 +27,7 @@ export type ListConfig<
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
    * @default true
-   * @see https://www.keystonejs.com/guides/access-control
+   * @see https://www.keystonejs.com/docs/guides/access-control
    */
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
 
@@ -36,7 +36,7 @@ export type ListConfig<
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
-   * @see https://www.keystonejs.com/guides/hooks
+   * @see https://www.keystonejs.com/docs/guides/hooks
    */
   hooks?: ListHooks<TGeneratedListTypes>;
 
