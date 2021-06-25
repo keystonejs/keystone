@@ -69,13 +69,13 @@ export default function ForDevelopers() {
             Read the docs <ArrowR />
           </Button>
           <FrontEndLogos
-            css={{
+            css={mq({
               color: 'var(--muted)',
               // opacity: 0.75,
               maxWidth: '48.125rem',
               marginTop: '2rem',
-              gridColumn: '1 / 3',
-            }}
+              gridColumn: ['1', '1 / 3'],
+            })}
           />
         </div>
 
@@ -109,7 +109,7 @@ export default function ForDevelopers() {
               <Type as="p" look="body18" color="var(--muted)">
                 With Prisma.io
                 <br />
-                100% Javascript
+                100% JavaScript
                 <br />
                 Version controllable
               </Type>
@@ -203,7 +203,7 @@ export default function ForDevelopers() {
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
               Keystone’s Document field is the first of its kind: intuitive, customisable, and works
-              with your design system components. Make it as lean or full-featured as you like. It‘s
+              with your design system components. Make it as lean or full-featured as you like. It’s
               up to you.
             </Type>
             <ul
@@ -296,7 +296,7 @@ export default function ForDevelopers() {
                 Flexible relationships
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                One to one. One to many. Many to many. Self referential. It's all there.
+                One to one. One to many. Many to many. Self-referential. It's all there.
               </Type>
               <Link href="/docs/guides/relationships">
                 <a>Relationships guide →</a>
@@ -308,7 +308,7 @@ export default function ForDevelopers() {
                 Intuitive CLI
               </Type>
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                Kickstart new projects and try examples on for size from the comfort of your
+                Kick start new projects and try examples on for size from the comfort of your
                 terminal.
               </Type>
               <Link href="/docs/guides/cli">
@@ -340,9 +340,9 @@ export default function ForDevelopers() {
               listStyle: 'none',
               margin: 0,
               padding: 0,
-              display: 'inline-grid',
-              gridTemplateColumns: 'max-content max-content max-content',
+              display: 'flex',
               gap: '1rem',
+              flexWrap: 'wrap',
             }}
           >
             <li>
