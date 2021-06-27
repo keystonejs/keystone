@@ -25,7 +25,6 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    // ts-ignore
     db: { useMigrations: false, provider: 'mongodb', url: 'mongodb://localhost/keystone-basic-mongo-prisma', },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {

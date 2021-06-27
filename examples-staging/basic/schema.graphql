@@ -121,12 +121,36 @@ input UserWhereInput {
   name_not: String
   name_contains: String
   name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
   email: String
   email_not: String
   email_contains: String
   email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  email_i: String
+  email_not_i: String
+  email_contains_i: String
+  email_not_contains_i: String
+  email_starts_with_i: String
+  email_not_starts_with_i: String
+  email_ends_with_i: String
+  email_not_ends_with_i: String
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
@@ -136,6 +160,18 @@ input UserWhereInput {
   roles_not: String
   roles_contains: String
   roles_not_contains: String
+  roles_starts_with: String
+  roles_not_starts_with: String
+  roles_ends_with: String
+  roles_not_ends_with: String
+  roles_i: String
+  roles_not_i: String
+  roles_contains_i: String
+  roles_not_contains_i: String
+  roles_starts_with_i: String
+  roles_not_starts_with_i: String
+  roles_ends_with_i: String
+  roles_not_ends_with_i: String
   roles_in: [String]
   roles_not_in: [String]
 
@@ -295,6 +331,18 @@ input PhoneNumberWhereInput {
   value_not: String
   value_contains: String
   value_not_contains: String
+  value_starts_with: String
+  value_not_starts_with: String
+  value_ends_with: String
+  value_not_ends_with: String
+  value_i: String
+  value_not_i: String
+  value_contains_i: String
+  value_not_contains_i: String
+  value_starts_with_i: String
+  value_not_starts_with_i: String
+  value_ends_with_i: String
+  value_not_ends_with_i: String
   value_in: [String]
   value_not_in: [String]
 }
@@ -377,6 +425,18 @@ input PostWhereInput {
   title_not: String
   title_contains: String
   title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  title_i: String
+  title_not_i: String
+  title_contains_i: String
+  title_not_contains_i: String
+  title_starts_with_i: String
+  title_not_starts_with_i: String
+  title_ends_with_i: String
+  title_not_ends_with_i: String
   title_in: [String]
   title_not_in: [String]
   status: String

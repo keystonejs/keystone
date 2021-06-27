@@ -1,26 +1,27 @@
-datasource sqlite {
+datasource mongodb {
   url      = env("DATABASE_URL")
-  provider = "sqlite"
+  provider = "mongodb"
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongodb"]
+  output          = "node_modules/.prisma/client"
 }
 
 model Package {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(dbgenerated()) @map("_id") @mongodb.ObjectId
   label     String?
-  pkgjson   String?
+  pkgjson   Json?
   isPrivate Boolean?
-  ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
-  ownedById Int?     @map("ownedBy")
+  ownedBy   Person?  @relation("PackageownedBy", fields: [ownedById], references: [id])
+  ownedById String?  @map("ownedBy") @mongodb.ObjectId
 
   @@index([ownedById])
 }
 
 model Person {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(dbgenerated()) @map("_id") @mongodb.ObjectId
   name     String?
   packages Package[] @relation("Package_ownedBy")
 }
