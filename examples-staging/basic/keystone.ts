@@ -25,10 +25,8 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    db: {
-      provider: 'sqlite',
-      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    },
+    // ts-ignore
+    db: { useMigrations: false, provider: 'mongodb', url: 'mongodb://localhost/keystone-basic-mongo-prisma', },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',

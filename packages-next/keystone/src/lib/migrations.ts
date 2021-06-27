@@ -52,7 +52,7 @@ export async function pushPrismaSchemaToDatabase(
   shouldDropDatabase = false
 ) {
   let before = Date.now();
-
+  return;
   let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.engine.reset());

@@ -11,4 +11,5 @@ export { relationship } from './types/relationship';
 export { select } from './types/select';
 export { text } from './types/text';
 export { timestamp } from './types/timestamp';
+export { mongoId } from './types/mongoId';
 export { virtual } from './types/virtual';
