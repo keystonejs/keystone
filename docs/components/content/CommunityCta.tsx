@@ -46,11 +46,10 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           height={928}
         />
       </div>
-      <div 
+      <div
         css={{
           paddingRight: '.3rem',
         }}
-      
       >
         <Type as="h2" look="heading30">
           Learn with others in a supportive community
@@ -65,7 +64,7 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           target="_blank"
           rel="noopener noreferrer"
           css={{
-            marginTop:'1rem',
+            marginTop: '1rem',
           }}
         >
           Join the community Slack <ArrowR />
