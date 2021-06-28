@@ -26,6 +26,12 @@ const KEYSTONE_5 = [
     destination: '/updates/roadmap',
     permanent: true,
   },
+  // Linked to from google results (2021-06-28) and possibly elsewhere?
+  {
+    source: '/documentation',
+    destination: '/docs',
+    permanent: false,
+  },
 ];
 
 /* URLs from the original next.keystonejs.com website */
