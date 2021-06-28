@@ -1,4 +1,4 @@
 module.exports = {
-  siteUrl: 'https://next.keystonejs.com',
+  siteUrl: 'https://keystonejs.com',
   generateRobotsTxt: true,
 };
