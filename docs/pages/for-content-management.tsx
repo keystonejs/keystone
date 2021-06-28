@@ -27,7 +27,7 @@ export default function ForOrganisations() {
   const mq = useMediaQuery();
 
   return (
-    <Page>
+    <Page title="KeystoneJS for Content Management">
       <MWrapper>
         <Pill grad="grad5">Keystone for content management</Pill>
         <IntroWrapper>

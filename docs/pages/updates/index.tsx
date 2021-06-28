@@ -123,7 +123,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse {...props}>
+    <DocsPage noRightNav noProse title="Latest News" {...props}>
       <Type as="h1" look="heading64">
         Latest News
       </Type>
