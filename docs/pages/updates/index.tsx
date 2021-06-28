@@ -5,8 +5,8 @@ import Link from 'next/link';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
+import { Button } from '../../components/primitives/Button';
 import { Alert } from '../../components/primitives/Alert';
-import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
@@ -125,27 +125,31 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
   return (
     <DocsPage noRightNav noProse {...props}>
       <Type as="h1" look="heading64">
-        Latest Updates
+        Latest News
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        In Keystone 6, we've focused on improving Keystone's <strong>interfaces</strong>, including
-        the way you configure and run Keystone projects, our GraphQL backend, and a whole new Admin
-        UI. See <Link href="/updates/whats-new-in-v6">Whats New in v6</Link> to learn more.
-      </Type>
-      <Type as="p" look="body18" margin="1rem 0">
-        We're also adding powerful new features to make Keystone the best headless content
-        management system around, especially when you're using a component-based front-end like
-        React and Vue.
-      </Type>
-
-      <Alert css={{ margin: '3rem 0 4rem 0' }}>
-        There’s much more to come too! Check out{' '}
-        <Link href="/updates/roadmap" passHref>
-          <a>
-            <span>our Roadmap</span>
-          </a>
+        A snapshot of improvements we've landed recently in Keystone.
+        <br />
+        For more detail see our{' '}
+        <Link href="/releases">
+          <a>release notes</a>
         </Link>
+        , and subscribe to notifications on
+        <a href="https://github.com/keystonejs/keystone"> GitHub</a>.
+      </Type>
+      <Alert look="tip" css={{ margin: '2rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 0.8rem 0.5rem 0',
+          }}
+        >
+          Want to see what we're working on next? Check out our
+        </span>
+        <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
+          Roadmap <ArrowR />
+        </Button>
       </Alert>
 
       <div
@@ -155,83 +159,148 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           gap: 0,
         })}
       >
-        <Timeline date="15th June 2021" isLatest />
-        <Box link="/releases/2021-06-15">
-          Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking many of the
-          features you’ve been waiting for!
+        <Timeline date="29th June 2021" isLatest />
+        <Box heading="New Website">
+          We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
+          and background on <a href="/why-keystone">why Keystone</a> is built for projects that need
+          to scale on their own terms. Navigating the docs is easier with breadcrumbs, index pages
+          for <a href="/docs/walkthroughs">Walkthroughs</a>, <a href="/docs/guides">Guides</a>, and{' '}
+          <a href="/docs/apis">APIs</a>, and a better mobile experience. We hope you like it ❤️
+        </Box>
+        <Timeline date="21st June 2021" />
+        <Box heading="New guides">
+          In our contuing efforts to improve the developer documentation for Keystone 6, we’ve
+          written the following guides:
+          <ul>
+            <li>
+              <a href="/docs/guides/virtual-fields">Virtual fields</a>
+            </li>
+            <li>
+              <a href="/docs/guides/relationships">Relationships</a>
+            </li>
+            <li>
+              <a href="/docs/guides/hooks">Hooks</a>
+            </li>
+            <li>
+              <a href="/docs/guides/filters">Query Filters</a>
+            </li>
+            <li>
+              <a href="/docs/guides/testing">Testing</a>
+            </li>
+          </ul>
+        </Box>
+        <Timeline date="15th June 2021" />
+        <Box link="/releases/2021-06-15" heading="New core">
+          After months of work deep in the codebase, Keystone 6 now has a new core. This unblocks a
+          bunch of roadmap features like custom field types, GraphQL Schema extensions, and more.
+          The new core does bring some minor behavioural changes to Keystone’s APIs. See the release
+          notes for more information.
+        </Box>
+        <Timeline date="15th June 2021" />
+        <Box heading="Improved accessibility (a11y) in the Admin UI">
+          We’ve made accessibility updates to <InlineCode>DatePicker</InlineCode> labels,{' '}
+          <InlineCode>relationship</InlineCode> fields, as well as visual improvements to segment
+          control (when no value is selected), and more.
+        </Box>
+        <Timeline date="15th June 2021" />
+        <Box heading="Unique Text and Integer field filtering">
+          A long awaited feature: you can now find an item by unique fields in your schema. It works
+          for{' '}
+          <InlineCode>
+            <a href="/docs/apis/fields#text">text</a>
+          </InlineCode>{' '}
+          and{' '}
+          <InlineCode>
+            <a href="/docs/apis/fields#integer">integer</a>
+          </InlineCode>{' '}
+          fields that have <InlineCode>isUnique: true</InlineCode> set.
         </Box>
         <Timeline date="2nd June 2021" />
-        <Box link="/releases/2021-06-02">
-          We have a new JSON field <Emoji symbol="✨" alt="Sparkle" />, a bunch of new learning
-          resources, and plenty of under the hood optimisations in this big release.{' '}
-          <Emoji symbol="💪" alt="Strong" />
+        <Box heading="New JSON field">
+          You can now use JSON blobs in your backend, and provide your own React UI components to
+          edit them. Try it out in this{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/master/examples/json">
+            example project
+          </a>
+          . It accepts any valid JSON node including:
+          <ul>
+            <li>
+              <InlineCode>string</InlineCode>
+            </li>
+            <li>
+              <InlineCode>number</InlineCode>
+            </li>
+            <li>
+              <InlineCode>array</InlineCode>
+            </li>
+            <li>
+              <InlineCode>object</InlineCode>
+            </li>
+          </ul>
         </Box>
-        <Timeline date="19th May 2021" />
-        <Box link="/releases/2021-05-19">
-          Node updates and Admin UI has moved! <Emoji symbol="🚚" alt="Truck" />
+        <Timeline date="1st June 2021" />
+        <Box heading="Example projects collection">
+          We now have a{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/master/examples">
+            collection of example projects
+          </a>{' '}
+          you can run locally to learn more about a particular feature of Keystone. Each project
+          comes with explainers on the how and why. Use them as a reference for best practice, and
+          as a jumping off point when adding features to your own Keystone project.
         </Box>
-        <Timeline date="17th May 2021" />
-        <Box link="/releases/2021-05-17">
-          Apollo caching can now be configured for performance <Emoji symbol="🔥" alt="Fire" /> and
-          a basic authentication example to get your started <Emoji symbol="🔒" alt="Lock" />
-        </Box>
-        <Timeline date="11th May 2021" />
-        <Box link="/releases/2021-05-11">
-          A bunch of admin UI tweaks in this release <Emoji symbol="🖥️" alt="Monitor" />, among
-          other minor fixes
-        </Box>
-        <Timeline date="5th May 2021" />
-        <Box link="/releases/2021-05-05">
-          Aside from dependency updates <Emoji symbol="😴" alt="Tired" />, we added an{' '}
-          <InlineCode>isIndexed</InlineCode>
-          config option to the <InlineCode>text</InlineCode>, <InlineCode>integer</InlineCode>,{' '}
-          <InlineCode>float</InlineCode>, <InlineCode>select</InlineCode>, and{' '}
-          <InlineCode>timestamp</InlineCode> field types
-        </Box>
-        <Timeline date="3rd May 2021" />
-        <Box link="/releases/2021-05-03">
-          Files in Keystone 6 <Emoji symbol="📁" alt="Folder" />! This release involved a bunch of
-          busywork behind the scenes in Keystone 6
-        </Box>
-        <Timeline date="20th April 2021" />
-        <Box link="/releases/2021-04-20">
-          Improvements to the Lists API, deprecating <InlineCode>resolveFields</InlineCode>{' '}
-          <Emoji symbol="🔧" alt="Working tool" />
+        <Timeline date="22nd May 2021" />
+        <Box heading="SQLite support with Prisma">
+          You can now use SQLite to store data via Prisma. It includes support for the{' '}
+          <InlineCode>file</InlineCode> and <InlineCode>cloudinary</InlineCode> field types, and
+          lets you{' '}
+          <a href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
+            embed Keystone inside a Next.js frontend app
+          </a>
+          .
         </Box>
         <Timeline date="6th April 2021" />
-        <Box link="/releases/2021-04-06">
-          Controlled code demolition <Emoji symbol="🏗️" alt="Construction" />{' '}
-          <Emoji symbol="👷‍♀️" alt="Working" />, Better pagination in Admin UI{' '}
-          <Emoji symbol="⏭️" alt="Fast forward" />
+        <Box link="/releases/2021-04-06" heading="Controlled code demolition">
+          We’ve pruned a lot of code to make way for a more efficient and productive core in
+          Keystone 6. Changes include:
+          <ul>
+            <li>
+              Removed DB adapters and many redundant methods and arguments (now that Keystone 6 uses
+              Prisma under the hood).
+            </li>
+            <li>
+              Exchanged <InlineCode>deploy</InlineCode>, <InlineCode>reset</InlineCode> and{' '}
+              <InlineCode>generate</InlineCode> commands for{' '}
+              <InlineCode>keystone-next prisma</InlineCode> commands.
+            </li>
+          </ul>
         </Box>
-        <Timeline date="30th March 2021" />
-        <Box link="/releases/2021-03-30">
-          Goodbye legacy code <Emoji symbol="👋" alt="Waving" />{' '}
-          <Emoji symbol="🌇" alt="Postcard" />, Improved <InlineCode>select</InlineCode> field type{' '}
-          <Emoji symbol="🔽" alt="Selector" />, Squashed bugs <Emoji symbol="🐛" alt="Bug" />
-        </Box>
-        <Timeline date="23rd March 2021" />
-        <Box link="/releases/2021-03-23">
-          Added support for SQLite with Prisma <Emoji symbol="🎉" alt="Celebration" />, Noteworthy
-          bug-squashing <Emoji symbol="🐛" alt="Bug" />
-        </Box>
-        <Timeline date="22nd March 2021" isFirst />
-        <Box link="/releases/2021-03-22">
-          Prisma migrations <Emoji symbol="🚚" alt="Truck" />, Noteworthy bug-squashing{' '}
-          <Emoji symbol="🐛" alt="Bug" />
+        <Timeline date="19th March 2021" isFirst />
+        <Box
+          link="/docs/guides/keystone-5-vs-keystone-next"
+          heading="Guidance on using Keystone 5 vs Keystone 6 "
+        >
+          Keystone 5 is now in maintenance mode while we focus all our efforts on building Keystone
+          6. If you’re wondering which version to start your next project with, this guide is for
+          you.
         </Box>
       </div>
-
-      <Alert look="tip" css={{ margin: '1rem 0' }}>
-        <Emoji symbol="🔎" alt="Magnifying Glass" /> You can also find all{' '}
-        <strong>Keystone 6</strong> releases on{' '}
-        <a
-          href="https://github.com/keystonejs/keystone/releases"
+      <Alert look="tip" css={{ margin: '2rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 1rem 0.5rem 0',
+          }}
+        >
+          Need answers to Keystone questions? Get help in our
+        </span>
+        <Button
+          as="a"
+          href="https://community.keystonejs.com/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          GitHub
-        </a>
+          Community Slack <ArrowR />
+        </Button>
       </Alert>
     </DocsPage>
   );
