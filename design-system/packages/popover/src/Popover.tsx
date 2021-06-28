@@ -219,6 +219,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
       <Portal>
         <div
           role="dialog"
+          aria-hidden={isVisible ? 'false' : 'true'}
           aria-modal="true"
           ref={consumerRef}
           css={{
@@ -233,7 +234,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           {...props}
         >
           <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-          <div ref={focusTrapRef}>{isVisible && children}</div>
+          <div ref={focusTrapRef}>{isVisible ? children : null}</div>
         </div>
       </Portal>
     );
