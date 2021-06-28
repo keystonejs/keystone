@@ -43,7 +43,7 @@ export function DocsPage({
   title?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6`;
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
   const mq = useMediaQuery();
   const { pathname } = useRouter();
   const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
