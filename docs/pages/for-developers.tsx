@@ -64,6 +64,8 @@ export default function ForDevelopers() {
             as="a"
             href="/docs"
             look="soft"
+            size="large"
+            shadow
             css={mq({ height: ['3.125rem !important', 'auto !important'] })}
           >
             Read the docs <ArrowR />

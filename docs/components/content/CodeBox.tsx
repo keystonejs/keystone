@@ -43,7 +43,7 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
         display: 'inline-flex',
         alignItems: 'center',
         border: '1px solid var(--border)',
-        borderRadius: '8px',
+        borderRadius: '6px',
         background: 'var(--code-bg)',
         fontSize: '1.125rem',
         fontFamily: 'var(--font-mono)',

@@ -16,17 +16,17 @@ const styleMap = {
   },
   soft: {
     '--button-bg': 'var(--app-bg)',
-    '--button-bg-hover': 'var(--app-bg)',
-    '--button-bg-active': 'var(--app-bg)',
+    '--button-bg-hover': 'var(--link)',
+    '--button-bg-active': 'var(--link)',
     '--button-bg-disabled': 'var(--app-bg)',
     '--button-color': 'var(--link)',
-    '--button-color-hover': 'var(--link)',
-    '--button-color-active': 'var(--link)',
+    '--button-color-hover': 'var(--app-bg)',
+    '--button-color-active': 'var(--app-bg)',
     '--button-color-disabled': 'var(--brand-bg--40)',
-    '--button-border': '2px solid var(--brand-bg)',
-    '--button-border-hover': '2px solid var(--brand-bg-90)',
-    '--button-border-active': '2px solid var(--brand-bg-90)',
-    '--button-border-disabled': '2px solid var(--brand-bg--40)',
+    '--button-border': '1px solid var(--border)',
+    '--button-border-hover': '1px solid var(--brand-bg-90)',
+    '--button-border-active': '1px solid var(--brand-bg-90)',
+    '--button-border-disabled': '1px solid var(--brand-bg--40)',
   },
   text: {
     '--button-bg': 'transparent',
@@ -35,9 +35,6 @@ const styleMap = {
     '--button-color': 'var(--brand)',
     '--button-color-disabled': 'var(--disabled)',
     '--button-decoration-hover': 'underline',
-    '--button-shadow': 'none',
-    '--button-shadow-hover': 'none',
-    '--button-shadow-active': 'none',
     '--button-bg-disabled': 'transparent',
     '--button-transform-active': 'none',
     display: 'inline',
@@ -47,16 +44,63 @@ const styleMap = {
   },
 };
 
+const shadowMap: Record<keyof typeof styleMap, any> = {
+  default: {
+    '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 36%)',
+    '--button-shadow-hover': '0 4px 14px 0 rgb(0 118 255 / 30%)',
+  },
+  danger: {
+    '--button-shadow': '0 4px 14px 0 rgb(220 38 255 / 20%)',
+    '--button-shadow-hover': '0 3px 14px 0 rgb(220 38 255 / 24%)',
+  },
+  soft: {
+    '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 10%)',
+    '--button-shadow-hover': '0 3px 14px 0 rgb(0 118 255 / 10%)',
+    '--button-shadow-active': '0 3px 14px 0 rgb(0 118 255 / 08%)',
+  },
+  text: {},
+};
+
+const sizeMap = {
+  default: {
+    fontSize: '1rem',
+    borderRadius: '6px',
+    height: '2.4rem',
+    padding: '0 var(--space-large)',
+  },
+  large: {
+    fontSize: '1.125rem',
+    borderRadius: '6px',
+    height: '3rem',
+    padding: '0 var(--space-xlarge)',
+  },
+};
+
 type ButtonProps = {
   children?: ReactNode;
   disabled?: boolean;
   href?: string;
   loading?: boolean;
   look?: keyof typeof styleMap;
+  shadow?: boolean;
+  size?: keyof typeof sizeMap;
 };
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
-  ({ as: Tag = 'button', href, look = 'default', disabled, loading, children, ...props }, ref) => {
+  (
+    {
+      as: Tag = 'button',
+      href,
+      look = 'default',
+      size = 'default',
+      shadow,
+      disabled,
+      loading,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     let Wrapper: FunctionComponent = Fragment;
 
     if (Tag === 'a' && !href) {
@@ -92,32 +136,29 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               '--button-border-hover': 'var(--button-border)',
               '--button-border-active': 'var(--button-border)',
               '--button-border-disabled': 'var(--button-border)',
-              '--button-color': '#fff',
+              '--button-color': 'var(--button-text)',
               '--button-color-hover': 'var(--button-color)',
               '--button-color-active': 'var(--button-color)',
               '--button-color-disabled': 'var(--button-color)',
               '--button-decoration-hover': 'none',
-              '--button-shadow': 'rgba(0, 0, 0, 0.2) 0 1px 2px',
-              '--button-shadow-hover': 'rgba(0, 0, 0, 0.4) 0 1px 2px',
-              '--button-shadow-active': 'rgba(0, 0, 0, 0.2) 0 1px 2px',
+              '--button-shadow': 'none',
+              '--button-shadow-hover': 'none',
+              '--button-shadow-active': 'none',
               '--button-transform-active': 'translateY(1px)',
               position: 'relative',
               display: 'inline-flex',
               flexShrink: '0',
-              fontSize: 'var(--font2)',
+              letterSpacing: '-.2px',
               color: 'var(--button-color)',
               mozBoxAlign: 'center',
               alignItems: 'center',
               boxShadow: 'var(--button-shadow)',
               background: 'var(--button-bg)',
               border: 'var(--button-border)',
-              borderRadius: '8px',
               fontWeight: '600',
-              height: '2.5rem',
               mozBoxPack: 'center',
               justifyContent: 'center',
               outline: 'currentcolor none 0',
-              padding: '0 var(--space-large)',
               textDecoration: 'none',
               userSelect: 'none',
               whiteSpace: 'nowrap',
@@ -152,12 +193,14 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               },
               '& svg': {
                 display: 'inline-block',
-                height: '1.2em',
+                height: '1em',
                 width: 'auto',
                 verticalAlign: 'middle',
-                marginLeft: '0.5rem',
+                marginLeft: '0',
               },
               ...styleMap[look],
+              ...sizeMap[size],
+              ...(shadow ? shadowMap[look] : {}),
             },
           }}
           aria-disabled={disabled ? true : undefined}
