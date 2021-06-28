@@ -43,6 +43,8 @@ For more information please read our [Keystone 5 and beyond](https://github.com/
 
 Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonejs.com/docs). API Docs are complete, and we're furiously working to expand on our guides and walkthroughs.
 
+Join our [Community Slack](https://community.keystonejs.com/) to get help, share ideas, and explore what's possible in this new release.
+
 ## Examples
 
 The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
