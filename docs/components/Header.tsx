@@ -180,7 +180,7 @@ export function Header() {
         </div> */}
 
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
-        <LinkItem href="/updates">Updates</LinkItem>
+        <LinkItem href="/releases">Releases</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
 
         {/* SEARCH COMING SOON */}

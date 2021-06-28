@@ -182,7 +182,8 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         fontWeight: 500,
       }}
     >
-      <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
+      {/* UPDATES COMING SOON */}
+      {/* <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem> */}
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
       <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
       <Section label="Recent Releases">

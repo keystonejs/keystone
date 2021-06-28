@@ -157,11 +157,12 @@ export function Footer() {
               Updates
             </Type>
             <List>
-              <li>
+              {/* UPDATES COMING SOON */}
+              {/* <li>
                 <Link href="/updates">
                   <a>Latest News</a>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/updates/roadmap">
                   <a>Roadmap</a>

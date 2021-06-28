@@ -55,7 +55,8 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
               borderBottom: '1px solid var(--border)',
             }}
           >
-            <PrimaryNavItem href="/updates">Updates</PrimaryNavItem>
+            {/* UPDATES COMING SOON */}
+            {/* <PrimaryNavItem href="/updates">Updates</PrimaryNavItem> */}
             <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
             <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
           </div>
