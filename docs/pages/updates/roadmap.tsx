@@ -1,14 +1,15 @@
 /** @jsx jsx  */
 import { ComponentProps, Fragment, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
-import Link from 'next/link';
 
 import { getServerSideProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
+import { Button } from '../../components/primitives/Button';
 import { Highlight } from '../../components/primitives/Highlight';
 import { Gradient } from '../../components/primitives/Gradient';
 import { Alert } from '../../components/primitives/Alert';
 import { Type } from '../../components/primitives/Type';
+import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
@@ -161,21 +162,25 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        Keystone 6 is currently in the final stages of{' '}
+        After a year of development, Keystone 6 is in the final stages of{' '}
         {/* <Highlight look="grad5" css={{ fontWeight: 700 }}>
           Community Preview
         </Highlight> */}
-        <strong>Community Preview</strong>. This means we're still getting feedback before
-        finalising our change from v5 to v6, documenting everything, and publishing packages under
-        the <InlineCode>@keystone-next</InlineCode> scope on npm.
+        <strong>Community Preview</strong>.
+      </Type>
+
+      <Type as="p" look="body18" margin="1rem 0">
+        This means we're integrating feedback and tweaking our APIs before finalising our move from
+        v5 to v6, and publishing packages under the <InlineCode>@keystone-next</InlineCode> scope on
+        npm.
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
         In <strong>Q3 2019</strong> we'll be moving Keystone 6 to{' '}
         {/* <Highlight css={{ fontWeight: 700 }}>General Availability</Highlight> */}
         <strong>General Availability</strong>, graduating to the{' '}
-        <InlineCode>@keystone-6</InlineCode> namespace on npm, and commit to a stable set of APIs
-        for you to build on confidently.
+        <InlineCode>@keystone-6</InlineCode> namespace on npm, and will commit to a stable set of
+        APIs for you to build on confidently.
       </Type>
 
       <div
@@ -190,7 +195,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
           <TimelineMarker look="grad2" />
           <TimelineContent title="Research" look="grad2">
             We started looking at what the next generation of cms platforms could look like, and how
-            we could dramatically improve Keystone's developer experience
+            to dramatically improve Keystone's developer experience
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
@@ -218,11 +223,25 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
         </TimelineItem>
       </div>
 
-      <Alert css={{ margin: '2rem 0 4rem' }}>
+      {/* <Alert css={{ margin: '2rem 0 4rem' }}>
         If you're assessing whether to start a project today on Keystone 5 or 6, check our{' '}
         <Link href="/docs/guides/keystone-5-vs-keystone-next">
           <a>Comparison Page</a>
         </Link>
+      </Alert> */}
+
+      <Alert look="tip" css={{ margin: '4rem 0 4rem' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 0.8rem 0.5rem 0',
+          }}
+        >
+          Ready to get started with Keystone 6?
+        </span>
+        <Button as="a" href="/docs">
+          Read the Docs <ArrowR />
+        </Button>
       </Alert>
 
       <Type as="h2" look="heading48">
@@ -230,9 +249,10 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        Here are the upcoming technical foundations and features we're planning to focus on once
-        Keystone 6 is in general availability. We've included status markers so you can get an idea
-        of what we're up to with each of them.
+        Here are the upcoming technical foundations and features we're planning to focus on. Changes
+        that impact API stability are being prioritised ahead of Keystone 6 reaching general
+        availability. We've included status markers so you can get an idea of what we're up to with
+        each of them.
       </Type>
 
       <RoadmapItem status="making it happen" title="More guides and walkthroughs">
