@@ -39,7 +39,13 @@ export default function ForOrganisations() {
             how you work in code, and has the flexibility you need to enable content creatives.
           </IntroLead>
         </IntroWrapper>
-        <Button as="a" href="/docs/guides/document-fields" css={{ marginTop: '2rem' }}>
+        <Button
+          as="a"
+          href="/docs/guides/document-fields"
+          css={{ marginTop: '2rem' }}
+          size="large"
+          shadow
+        >
           Try the Rich Text demo <ArrowR />
         </Button>
 
@@ -213,7 +219,7 @@ export default function ForOrganisations() {
           >
             <li>
               <Type as="h2" look="heading20bold">
-                Customizable interface
+                Customisable interface
               </Type>
               <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
                 Every rich text field instance is what you make it. Control what's possible

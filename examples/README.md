@@ -18,10 +18,11 @@ They have very simple schemas and none of the bells or whistles you'd expect in 
 Each project below demonstrates a Keystone feature you can learn about and experiment with.
 
 - [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
-- [`JSON field`](./json): Adds a JSON field to the Task Manager base.
+- [JSON field](./json): Adds a JSON field to the Task Manager base.
 - [`defaultValue`](./default-values): Adds default values to the Blog base.
 - [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
-- [`virtual field`](./virtual-field): Adds virtual fields to the Blog base.
+- [Virtual field](./virtual-field): Adds virtual fields to the Blog base.
+- [Document field](./document-field): Adds document fields to the Blog base.
 - [Testing](./testing): Adds tests with `@keystone-next/testing` to the `withAuth()` example.
 
 ## Running examples

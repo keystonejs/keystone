@@ -19,8 +19,9 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
     <Section
       css={mq({
         display: 'grid',
-        gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.2fr 0.8fr'],
-        gap: '1rem',
+        gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.1fr 0.9fr'],
+        gap: '3rem',
+        alignItems: 'center',
         border: '1px solid var(--border)',
         borderRadius: '1rem',
         padding: '2rem',
@@ -45,11 +46,15 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           height={928}
         />
       </div>
-      <div>
-        <Type as="h2" look="heading36">
+      <div
+        css={{
+          paddingRight: '.3rem',
+        }}
+      >
+        <Type as="h2" look="heading30">
           Learn with others in a supportive community
         </Type>
-        <Type as="p" look="body18" margin="2rem 0">
+        <Type as="p" look="body18" margin="1rem 0">
           Share your work and get the help you need in the Keystone community Slack: an inclusive
           space to share ideas and explore what‘s possible.
         </Type>
@@ -58,6 +63,9 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           href="https://community.keystonejs.com"
           target="_blank"
           rel="noopener noreferrer"
+          css={{
+            marginTop: '1rem',
+          }}
         >
           Join the community Slack <ArrowR />
         </Button>
@@ -79,12 +87,12 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           }}
         >
           <li>
-            <Tick grad="grad1" />
-            <Type look="body18">1900+ members</Type>
+            <Tick grad="grad4" />
+            <Type look="body16">1900+ members</Type>
           </li>
           <li>
-            <Tick grad="grad1" />
-            <Type look="body18">Personalized support</Type>
+            <Tick grad="grad4" />
+            <Type look="body16">Personalised support</Type>
           </li>
         </ul>
       </div>

@@ -75,6 +75,8 @@ export default function IndexPage() {
             as="a"
             href="/docs"
             look="soft"
+            size="large"
+            shadow
             css={mq({ height: ['3.125rem !important', 'auto !important'] })}
           >
             Read the docs <ArrowR />
@@ -261,7 +263,7 @@ export default function IndexPage() {
               </Type>
             </li>
           </ul>
-          <Button as="a" href="/why-keystone#features" css={{ marginTop: '4rem' }}>
+          <Button as="a" href="/why-keystone#features" shadow css={{ marginTop: '4rem' }}>
             See all features <ArrowR />
           </Button>
         </Section>
@@ -307,7 +309,7 @@ export default function IndexPage() {
                 content: '"1"',
                 position: 'absolute',
                 left: '-4.75rem',
-                top: 0,
+                top: '-.85rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -325,7 +327,7 @@ export default function IndexPage() {
                 content: '""',
                 position: 'absolute',
                 left: '-4.75rem',
-                top: 0,
+                top: '-.85rem',
                 width: '2.625rem',
                 height: '2.625rem',
                 margin: '0.25rem',
@@ -437,7 +439,7 @@ export const lists = createSchema({
               }}
             >
               <Type as="h3" look="heading24">
-                Customize your content story
+                Customise your content story
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 A flexible and intuitive editing environent that does what your schema says:
@@ -502,7 +504,7 @@ export const lists = createSchema({
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Get what you need, fast. Keystone's GraphQL API gives you session management, access
-                control, pagination, sorting, and filtering out of the box. Customize it without
+                control, pagination, sorting, and filtering out of the box. Customise it without
                 losing the bits that work for you.
               </Type>
               <ul
@@ -567,7 +569,7 @@ export const lists = createSchema({
         "author": {
           "name": "Tim"
         }
-      },   
+      },
       {
         "title": "Content Management for the Design System generation",
         "author": {
@@ -677,22 +679,22 @@ export const lists = createSchema({
             }}
           >
             <li>
-              <Button as="a" href="/why-keystone#apps" look="soft">
+              <Button as="a" href="/why-keystone#apps" look="soft" size="large" shadow>
                 Apps <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#websites" look="soft">
+              <Button as="a" href="/why-keystone#websites" look="soft" size="large" shadow>
                 Websites <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#ecommerce" look="soft">
+              <Button as="a" href="/why-keystone#ecommerce" look="soft" size="large" shadow>
                 eCommerce <ArrowR />
               </Button>
             </li>
             <li>
-              <Button as="a" href="/why-keystone#multichannel" look="soft">
+              <Button as="a" href="/why-keystone#multichannel" look="soft" size="large" shadow>
                 Multichannel <ArrowR />
               </Button>
             </li>
@@ -707,7 +709,7 @@ export const lists = createSchema({
           <Type as="h2" look="heading30" margin="2rem auto" css={{ maxWidth: '41.875rem' }}>
             What makes Keystone a CMS for the Design System generation?
           </Type>
-          <Button as="a" href="/docs/guides/document-fields#try-the-demo">
+          <Button as="a" href="/docs/guides/document-fields#try-the-demo" shadow>
             See our new document editor <ArrowR />
           </Button>
           <div

@@ -71,7 +71,7 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
       </ul>
       <CodeBox code="yarn create keystone-app" css={{ margin: '2rem 0' }} />
       <div>
-        <Button as="a" href="/docs">
+        <Button as="a" href="/docs" size="large" shadow>
           Get started <ArrowR />
         </Button>
       </div>
