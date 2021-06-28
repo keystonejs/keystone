@@ -59,7 +59,7 @@ export const initialContent = [
               },
               {
                 type: 'link',
-                href: 'https://next.keystonejs.com/',
+                href: 'https://keystonejs.com/',
                 children: [
                   {
                     text: 'links',
