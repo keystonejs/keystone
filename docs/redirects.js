@@ -1,66 +1,53 @@
-module.exports = [
+/* URLs from v5.keystonejs.com */
+const KEYSTONE_5 = [
+  {
+    source: '/quick-start',
+    destination: 'https://v5.keystonejs.com/quick-start/',
+    permanent: true,
+  },
+  {
+    source: '/quick-start/adapters',
+    destination: 'https://v5.keystonejs.com/quick-start/adapters',
+    permanent: true,
+  },
+  {
+    source: '/blog/:slug*',
+    destination: 'https://v5.keystonejs.com/blog/:slug*',
+    permanent: true,
+  },
+  {
+    source: '/discussions/:slug*',
+    destination: 'https://v5.keystonejs.com/discussions/:slug*',
+    permanent: true,
+  },
+  // Old roadmap URL just redirects to the new roadmap
+  {
+    source: '/guides/road-map',
+    destination: '/updates/roadmap',
+    permanent: true,
+  },
+];
+
+/* URLs from the original next.keystonejs.com website */
+const ORIGINAL_NEXT = [
   {
     source: '/faqs',
     destination: '/',
     permanent: true,
   },
-  { source: '/apis/access-control', destination: '/docs/apis/access-control', permanent: true },
-  { source: '/apis/auth', destination: '/docs/apis/auth', permanent: true },
-  { source: '/apis/config', destination: '/docs/apis/config', permanent: true },
-  { source: '/apis/context', destination: '/docs/apis/context', permanent: true },
-  { source: '/apis/db-items', destination: '/docs/apis/db-items', permanent: true },
-  { source: '/apis/fields', destination: '/docs/apis/fields', permanent: true },
-  { source: '/apis/filters', destination: '/docs/apis/filters', permanent: true },
-  { source: '/apis/graphql', destination: '/docs/apis/graphql', permanent: true },
-  { source: '/apis/hooks', destination: '/docs/apis/hooks', permanent: true },
-  { source: '/apis/list-items', destination: '/docs/apis/list-items', permanent: true },
-  { source: '/apis/schema', destination: '/docs/apis/schema', permanent: true },
-  { source: '/apis/session', destination: '/docs/apis/session', permanent: true },
+  { source: '/apis/:path*', destination: '/docs/apis/:path*', permanent: true },
   { source: '/examples', destination: '/docs/examples', permanent: true },
   {
     source: '/guides/_doc-field-intro',
-    destination: '/docs/guides/guides/document-fields',
-    permanent: true,
-  },
-  {
-    source: '/guides/guides/_doc-field-intro',
-    destination: '/docs/guides/guides/document-fields',
-    permanent: true,
-  },
-  { source: '/guides/access-control', destination: '/docs/guides/access-control', permanent: true },
-  { source: '/guides/auth', destination: '/docs/guides/auth', permanent: true },
-  { source: '/guides/cli', destination: '/docs/guides/cli', permanent: true },
-  {
-    source: '/guides/custom-admin-ui-pa',
-    destination: '/docs/guides/custom-admin-ui-pages',
-    permanent: true,
-  },
-  {
-    source: '/guides/custom-field-views',
-    destination: '/docs/guides/custom-field-views',
-    permanent: true,
-  },
-  {
-    source: '/guides/document-fields',
     destination: '/docs/guides/document-fields',
     permanent: true,
   },
-  { source: '/guides/filters', destination: '/docs/guides/filters', permanent: true },
-  { source: '/guides/hooks', destination: '/docs/guides/hooks', permanent: true },
-  { source: '/guides/internal-items', destination: '/docs/guides/internal-items', permanent: true },
   {
-    source: '/guides/keystone-5-vs-keys',
-    destination: '/docs/guides/keystone-5-vs-keystone-next',
+    source: '/docs/guides/_doc-field-intro',
+    destination: '/docs/guides/document-fields',
     permanent: true,
   },
-  { source: '/guides/relationships', destination: '/docs/guides/relationships', permanent: true },
-  {
-    source: '/guides/schema-extension',
-    destination: '/docs/guides/schema-extension',
-    permanent: true,
-  },
-  { source: '/guides/testing', destination: '/docs/guides/testing', permanent: true },
-  { source: '/guides/virtual-fields', destination: '/docs/guides/virtual-fields', permanent: true },
+  { source: '/guides/:path*', destination: '/docs/guides/:path*', permanent: true },
   {
     source: '/tutorials/embedded-mode-with-sqlite-nextjs',
     destination: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
@@ -74,3 +61,5 @@ module.exports = [
   { source: '/roadmap', destination: '/updates/roadmap', permanent: true },
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
+
+module.exports = [...ORIGINAL_NEXT, ...KEYSTONE_5];
