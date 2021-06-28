@@ -202,7 +202,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
           <TimelineMarker look="grad2" />
           <TimelineContent title="Development" look="grad2">
             Confident about our approach and the benefits, we started building the new interfaces
-            around Keystone 5's core with Prima and TypeScript
+            around Keystone 5's core with Prisma and TypeScript
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
