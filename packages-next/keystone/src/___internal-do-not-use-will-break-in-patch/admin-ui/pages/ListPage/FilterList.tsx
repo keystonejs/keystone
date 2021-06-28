@@ -42,17 +42,18 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   return (
     <Fragment>
       <Pill
-        onClick={() => {
-          setOpen(true);
+        containerProps={{
+          'aria-label': `Filter item ${filter.field}`,
         }}
+        aria-description={'Press to edit filter'}
         {...trigger.props}
         ref={trigger.ref}
+        onClick={() => setOpen(true)}
         weight="light"
         tone="passive"
         onRemove={() => {
           const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query;
-
-          router.push({ query: queryToKeep });
+          router.push({ pathname: router.pathname, query: queryToKeep });
         }}
       >
         {field.label}{' '}
@@ -62,14 +63,23 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
           value={filter.value}
         />
       </Pill>
-      <PopoverDialog arrow={arrow} {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
-        <EditDialog
-          onClose={() => {
-            setOpen(false);
-          }}
-          field={field}
-          filter={filter}
-        />
+      <PopoverDialog
+        aria-label="filter item config"
+        aria-description={`dialog for configuring ${filter.field} filter`}
+        arrow={arrow}
+        {...dialog.props}
+        isVisible={isOpen}
+        ref={dialog.ref}
+      >
+        {isOpen && (
+          <EditDialog
+            onClose={() => {
+              setOpen(false);
+            }}
+            field={field}
+            filter={filter}
+          />
+        )}
       </PopoverDialog>
     </Fragment>
   );
@@ -103,7 +113,7 @@ function EditDialog({
         onClose();
       }}
     >
-      <Filter autoFocus type={filter.type} value={value} onChange={setValue} />
+      <Filter type={filter.type} value={value} onChange={setValue} />
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button type="submit">Save</Button>
