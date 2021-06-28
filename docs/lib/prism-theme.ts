@@ -21,7 +21,7 @@ const theme: PrismTheme = {
     {
       types: ['string', 'attr-value'],
       style: {
-        color: '#F43F5E',
+        color: '#eC1337',
       },
     },
     {
@@ -44,13 +44,13 @@ const theme: PrismTheme = {
         'inserted',
       ],
       style: {
-        color: '#059669',
+        color: '#04865d',
       },
     },
     {
       types: ['atrule', 'keyword', 'attr-name', 'selector'],
       style: {
-        color: '#00a4db',
+        color: '#0080A8',
       },
     },
     {
@@ -62,13 +62,13 @@ const theme: PrismTheme = {
     {
       types: ['function-variable'],
       style: {
-        color: '#6f42c1',
+        color: '#7f54e0',
       },
     },
     {
       types: ['tag', 'selector', 'keyword'],
       style: {
-        color: '#0284C7',
+        color: '#037dbb',
       },
     },
   ],

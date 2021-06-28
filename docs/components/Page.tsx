@@ -3,6 +3,7 @@ import { useRef, Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Head from 'next/head';
+import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
@@ -17,7 +18,8 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      This is the new version of Keystone! If you're looking for the Keystone 5 docs, check out{' '}
+      Keystone 6 is in Community Preview! What does that mean? see our{' '}
+      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
       <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
         v5.keystonejs.com
       </a>
@@ -41,7 +43,7 @@ export function DocsPage({
   title?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6`;
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
   const mq = useMediaQuery();
   const { pathname } = useRouter();
   const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
