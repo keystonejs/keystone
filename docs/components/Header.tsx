@@ -203,6 +203,7 @@ export function Header() {
         <Button
           as="a"
           href="/docs"
+          shadow
           css={mq({
             '&&': {
               display: ['none', null, null, 'inline-flex'],
