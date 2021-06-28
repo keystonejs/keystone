@@ -13,9 +13,9 @@ class MyDocument extends Document {
 
   render() {
     const siteUrl = process.env.siteUrl;
-    const metaTitle = 'The superpowered CMS for developers';
+    const metaTitle = 'KeystoneJS: The superpowered Node.js Headless CMS for developers';
     const metaDescription =
-      'Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data.';
+      'Build faster and scale further with the programmable GraphQL API back-end for structured content  projects. Ship better Apps, Websites, eCommerce, & more…';
     return (
       <Html>
         <Head>
