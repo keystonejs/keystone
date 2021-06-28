@@ -157,9 +157,9 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
       >
         <Timeline date="28th June 2021" isLatest />
         <Box link="/releases/2021-06-28">
-          An assortment of good things in this release! A new package to help test the behaviour of
-          your GraphQL API, a document field example, better error messages, accessibility updates
-          and another Prisma update!
+          An assortment of good things in this release! <Emoji symbol="🍱" alt="Bento box" /> A new
+          package to help test the behaviour of your GraphQL API, a document field example, better
+          error messages, accessibility updates and another Prisma update!
         </Box>
         <Timeline date="15th June 2021" />
         <Box link="/releases/2021-06-15">
