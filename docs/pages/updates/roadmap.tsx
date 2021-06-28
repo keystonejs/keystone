@@ -14,7 +14,15 @@ import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
 function TimelineItem({ children }: { children: ReactNode }) {
-  return <div css={{ position: 'relative' }}>{children}</div>;
+  return (
+    <div
+      css={{
+        position: 'relative',
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
@@ -25,6 +33,7 @@ function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>)
         gridTemplateColumns: 'max-content auto',
         alignItems: 'center',
         gap: '0.5em',
+        height: '1em',
       }}
     >
       <Gradient
@@ -49,31 +58,32 @@ function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>)
 
 function TimelineWeAreHere() {
   const arrowSize = '0.4rem';
+  const mq = useMediaQuery();
   return (
     <span
-      css={{
+      css={mq({
+        position: ['relative', null, null, 'absolute'],
+        margin: ['1rem 0', null, null, '-3rem 0 0'],
+        right: ['0.6rem', null, null, '1rem'],
         display: 'inline-block',
-        position: 'absolute',
         borderRadius: '0.4rem',
         backgroundColor: 'var(--text)',
         color: 'var(--app-bg)',
         padding: '0.4rem 0.6rem',
-        marginTop: '-3rem',
-        right: '1rem',
         fontSize: '0.9rem',
         fontWeight: 'bold',
-      }}
+      })}
     >
       <span
-        css={{
+        css={mq({
           position: 'absolute',
           border: `${arrowSize} solid var(--text)`,
           borderColor: 'var(--text) transparent transparent transparent',
           top: '100%',
-          right: '1rem',
+          right: [undefined, null, null, '1rem'],
           height: arrowSize,
           width: arrowSize,
-        }}
+        })}
       />
       We are here! 👋
     </span>
@@ -86,14 +96,14 @@ type TimelineContentProps = {
 } & Pick<ComponentProps<typeof Highlight>, 'look'>;
 function TimelineContent({ title, look, children }: TimelineContentProps) {
   return (
-    <Fragment>
+    <div css={{ height: '100%' }}>
       <Type as="h3" look="heading20bold" margin="1rem 0">
         <Highlight look={look}>{title}</Highlight>
       </Type>
       <Type as="p" look="body16" css={{ display: 'block', marginRight: '1rem' }}>
         {children}
       </Type>
-    </Fragment>
+    </div>
   );
 }
 
@@ -187,7 +197,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
         css={mq({
           marginTop: '4em',
           display: 'grid',
-          gridTemplateColumns: ['1fr', null, null, '1fr 1fr 1fr 1fr', '1fr 1fr 1fr 1fr'],
+          gridTemplateColumns: ['1fr', null, null, '1fr 1fr 1fr 1fr'],
           gap: '1rem',
         })}
       >
