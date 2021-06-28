@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.14.5",
-    "@babel/preset-env": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
     "@babel/runtime": "^7.14.6",
@@ -27,7 +27,7 @@
     "nodemailer": "^6.6.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.156.0"
+    "stripe": "^8.157.0"
   },
   "devDependencies": {
     "@keystone-next/testing": "^0.0.0",
