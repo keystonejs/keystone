@@ -531,7 +531,7 @@ export const lists = createSchema({
                 <li>
                   <Tick grad="grad5" />
                   <Type look="body18" color="var(--muted)">
-                    Evolve with bespoke logic for your ap
+                    Evolve with bespoke logic for your app
                   </Type>
                 </li>
                 <li>
