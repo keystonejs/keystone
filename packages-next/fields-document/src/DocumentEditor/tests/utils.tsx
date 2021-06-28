@@ -4,7 +4,7 @@ import { ReactEditor, Slate } from 'slate-react';
 import React from 'react';
 import { act, render } from '@testing-library/react';
 import { diff } from 'jest-diff';
-import prettyFormat, { plugins, NewPlugin, Plugin } from 'pretty-format';
+import prettyFormat, { plugins, Plugin } from 'pretty-format';
 import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
@@ -51,7 +51,7 @@ console.error = (...stuff: any[]) => {
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
-    plugins: [plugins.ReactElement, editorSerializer],
+    plugins: [plugins.ReactElement, editorSerializer as Plugin],
   });
 }
 
@@ -351,7 +351,7 @@ function nodeToReactElement(
   return createElement('element', { ...node, ...computedData, children });
 }
 
-const editorSerializer: NewPlugin = {
+const editorSerializer: Parameters<typeof expect.addSnapshotSerializer>[0] = {
   test(val) {
     return Editor.isEditor(val);
   },
@@ -366,4 +366,4 @@ const editorSerializer: NewPlugin = {
   },
 };
 
-expect.addSnapshotSerializer(editorSerializer as Plugin);
+expect.addSnapshotSerializer(editorSerializer);
