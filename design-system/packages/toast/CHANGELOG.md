@@ -1,5 +1,11 @@
 # @keystone-ui/toast
 
+## 4.0.1
+
+### Patch Changes
+
+- [#5930](https://github.com/keystonejs/keystone/pull/5930) [`40a44d20d`](https://github.com/keystonejs/keystone/commit/40a44d20d2eda2bcfb311fc3ce05936623230205) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added role="alert" to Toast container element for better screen reader experience.
+
 ## 4.0.0
 
 ### Major Changes
