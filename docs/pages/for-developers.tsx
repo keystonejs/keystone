@@ -36,7 +36,7 @@ export default function ForDevelopers() {
   const mq = useMediaQuery();
 
   return (
-    <Page>
+    <Page title="KeystoneJS for Developers">
       <MWrapper>
         <Pill grad="grad3">Keystone for developers</Pill>
         <IntroWrapper>
