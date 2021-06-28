@@ -2,7 +2,7 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "11.0.2",
+  "version": "11.0.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -24,9 +24,9 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/testing": "^0.0.0",
-    "@keystone-next/types": "^20.0.0",
-    "@keystone-next/utils": "^0.0.0",
+    "@keystone-next/testing": "^1.0.0",
+    "@keystone-next/types": "^20.0.1",
+    "@keystone-next/utils": "^1.0.0",
     "apollo-cache-control": "^0.14.0",
     "express": "^4.17.1"
   }
