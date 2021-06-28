@@ -42,7 +42,7 @@ export default function WhyKeystonePage() {
     <Page>
       <MWrapper>
         <IntroHeading>
-          Why <Highlight look="grad2">Keystone</Highlight>
+          Why <Highlight look="grad1">Keystone</Highlight>
         </IntroHeading>
         <div
           css={mq({
