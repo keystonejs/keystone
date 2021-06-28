@@ -166,7 +166,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse {...props}>
+    <DocsPage noRightNav noProse title="Roadmap" {...props}>
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
