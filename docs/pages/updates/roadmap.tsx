@@ -186,7 +186,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        In <strong>Q3 2019</strong> we'll be moving Keystone 6 to{' '}
+        In <strong>Q3 2021</strong> we'll be moving Keystone 6 to{' '}
         {/* <Highlight css={{ fontWeight: 700 }}>General Availability</Highlight> */}
         <strong>General Availability</strong>, graduating to the{' '}
         <InlineCode>@keystone-6</InlineCode> namespace on npm, and will commit to a stable set of
