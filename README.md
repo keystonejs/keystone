@@ -4,7 +4,7 @@
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
   <br>
-  <p>Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless content management system around.</p>
+  <p>Keystone Next is a preview of the upcoming release of KeystoneJS, the most powerful headless content management system around.</p>
   <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
   <br>
 </div>
@@ -25,15 +25,13 @@
 
 ## What's new?
 
-[Keystone Next](http://next.keystonejs.com) is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+[Keystone 6](http://keystonejs.com) is the new major version of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
-To learn more, check out our [What's next for KeystoneJS](https://github.com/keystonejs/keystone/issues/4962) announcement post.
-
-You can learn more about the next version, which is now [in preview](https://next.keystonejs.com/roadmap).
+It's currently in the final stages of preview release, and published on npm under the `@keystone-next` namespace. To learn more, check out our [Roadmap page](https://keystonejs.com/updates/roadmap).
 
 ## Keystone 5
 
-The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in active maintenance mode and now lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
+The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
 
 For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
@@ -43,9 +41,7 @@ For more information please read our [Keystone 5 and beyond](https://github.com/
 
 ## Documentation
 
-The [Keystone Next](https://next.keystonejs.com/whats-new) website contains a documentation preview.
-
-In the next month you'll see a new project starter and getting started guide, as well as a new set of example projects demoing how to use Keystone Next features.
+Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonejs.com/docs). API Docs are complete, and we're furiously working to expand on our guides and walkthroughs.
 
 ## Examples
 
@@ -53,7 +49,7 @@ The [examples](./examples) directory contains a number of complete projects whic
 
 ## Feedback
 
-We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) and [subscribe](https://next.keystonejs.com/roadmap#project-status) to be notified of our progress.
+We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our Slack.
 
 <!-- ## Version control -->
 
