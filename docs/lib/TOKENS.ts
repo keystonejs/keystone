@@ -40,7 +40,7 @@ export const COLORS = {
     '--link-active': '#0b55d5',
     '--focus': '#8b5cf6',
     '--border': '#e2e8f0',
-    '--muted': '#627693',
+    '--muted': '#5F718C',
     '--text': '#47546b',
     '--text-heading': '#2d3748',
     '--text-disabled': '#a0aec0',
