@@ -1,5 +1,14 @@
 # @keystone-ui/options
 
+## 4.0.1
+
+### Patch Changes
+
+- [#5848](https://github.com/keystonejs/keystone/pull/5848) [`4e5634b86`](https://github.com/keystonejs/keystone/commit/4e5634b86a26819cecec5b10c18f9d231b5434e2) Thanks [@renovate](https://github.com/apps/renovate)! - Updated TypeScript to 4.3.2
+
+- Updated dependencies [[`4e5634b86`](https://github.com/keystonejs/keystone/commit/4e5634b86a26819cecec5b10c18f9d231b5434e2)]:
+  - @keystone-ui/fields@4.1.2
+
 ## 4.0.0
 
 ### Major Changes
