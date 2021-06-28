@@ -71,9 +71,10 @@ export default function ForDevelopers() {
           <FrontEndLogos
             css={{
               color: 'var(--muted)',
-              opacity: 0.5,
+              // opacity: 0.75,
               maxWidth: '48.125rem',
               marginTop: '2rem',
+              gridColumn: '1 / 3',
             }}
           />
         </div>

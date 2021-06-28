@@ -20,6 +20,9 @@ import { Updates } from '../components/icons/Updates';
 import { Quote } from '../components/content/Quote';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
+import { Code } from '../components/icons/Code';
+import { Content } from '../components/icons/Content';
+import { Organization } from '../components/icons/Organization';
 import { Custom } from '../components/icons/Custom';
 import { Editor } from '../components/icons/Editor';
 import { Filter } from '../components/icons/Filter';
@@ -41,37 +44,6 @@ export default function WhyKeystonePage() {
           Why <Highlight look="grad2">Keystone</Highlight>
         </Type>
 
-        <div css={{ marginTop: '3rem' }}>
-          <ul
-            css={{
-              listStyle: 'none',
-              margin: 0,
-              padding: 0,
-              display: 'inline-grid',
-              gridTemplateColumns: 'max-content max-content max-content',
-              gap: '1rem',
-            }}
-          >
-            <li>
-              <Button as="a" href="/for-developers" look="text">
-                For Developers
-                <ArrowR />
-              </Button>
-            </li>
-            <li>
-              <Button as="a" href="/for-organisations" look="text">
-                For Organisations
-                <ArrowR />
-              </Button>
-            </li>
-            <li>
-              <Button as="a" href="/for-content-management" look="text">
-                For Content Management
-                <ArrowR />
-              </Button>
-            </li>
-          </ul>
-        </div>
         <div
           css={{
             display: 'grid',
@@ -83,9 +55,9 @@ export default function WhyKeystonePage() {
           <div>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
               Keystone is a Thinkmill product. We’ve spent years shipping sophisticated solutions
-              for large companies like Atlassian, Samsung, and Breville. We’ve also helped startups
-              get off the ground in a way that lets them deliver immediate value and change as they
-              learn.
+              for large companies like Atlassian, Samsung, Qantas, Breville, and the Australian
+              Government. We’ve also helped startups get off the ground in a way that lets them
+              deliver immediate value and change as they learn.
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
               Keystone solves for this spectrum of needs in a way that other backend tools and
@@ -189,7 +161,9 @@ export default function WhyKeystonePage() {
         </Quote>
 
         <Section>
-          <Pill grad="grad2" id="features">Features</Pill>
+          <Pill grad="grad2" id="features">
+            Features
+          </Pill>
           <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What’s in <Highlight look="grad2">the box?</Highlight>
           </Type>
@@ -376,7 +350,9 @@ export default function WhyKeystonePage() {
         </Quote>
 
         <Section>
-          <Pill grad="grad2" id="solutions">Solutions</Pill>
+          <Pill grad="grad2" id="solutions">
+            Solutions
+          </Pill>
           <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What will you <Highlight look="grad2">build?</Highlight>
           </Type>
@@ -495,6 +471,73 @@ export default function WhyKeystonePage() {
             easy it was to turn a series of connected prototypes into a stable final build. The
             perfect balance of reliability and flexibility for backend work.
           </TweetBox>
+        </Section>
+
+        <Section>
+          <Type as="h2" look="heading48">
+            We made this <Highlight look="grad2">for you</Highlight>
+          </Type>
+          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
+            Learn more about why Keystone is a great fit for your entire team:
+          </Type>
+          <ul
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
+              gap: '3rem',
+              listStyle: 'none',
+              padding: 0,
+              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
+              maxWidth: ['20rem', 'none'],
+              '& svg': {
+                height: '3rem',
+              },
+              '& svg, & h3, & p': {
+                marginBottom: '1rem',
+              },
+            })}
+          >
+            <li>
+              <Code grad="grad2" />
+              <Type as="h3" look="heading24">
+                Developers
+              </Type>
+              <Type as="p" look="body18">
+                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
+                at home with the tools you know and love.
+              </Type>
+              <Link href="/for-developers">
+                <a>Keystone for Developers →</a>
+              </Link>
+            </li>
+            <li>
+              <Content grad="grad2" />
+              <Type as="h3" look="heading24">
+                Content people
+              </Type>
+              <Type as="p" look="body18">
+                Get the fields, forms, and workflows you need to do your best work. Tell the full
+                story with a rich text editor that can be configured for any content need.
+              </Type>
+              <Link href="/for-content-management">
+                <a>Keystone for Content Management →</a>
+              </Link>
+            </li>
+            <li>
+              <Organization grad="grad2" />
+              <Type as="h3" look="heading24">
+                Organisations
+              </Type>
+              <Type as="p" look="body18">
+                Realise your vision with a backend you can shape to fit your logic. Own your data,
+                cultivate a productive content culture, send your message anywhere, and scale on
+                your terms.
+              </Type>
+              <Link href="/for-organisations">
+                <a>Keystone for Organisations →</a>
+              </Link>
+            </li>
+          </ul>
         </Section>
 
         <EndCta grad="grad2" />

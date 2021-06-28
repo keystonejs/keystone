@@ -139,10 +139,12 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         React and Vue.
       </Type>
 
-      <Alert look="neutral" css={{ margin: '1rem 0 3rem 0' }}>
-        There’s much more to come too! Check out our{' '}
-        <Link href="/updates/roadmap">
-          <a>roadmap</a>
+      <Alert css={{ margin: '3rem 0 4rem 0' }}>
+        There’s much more to come too! Check out{' '}
+        <Link href="/updates/roadmap" passHref>
+          <a>
+            <span>our Roadmap</span>
+          </a>
         </Link>
       </Alert>
 

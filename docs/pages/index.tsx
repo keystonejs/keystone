@@ -15,7 +15,7 @@ import { MWrapper } from '../components/content/MWrapper';
 import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/content/TweetBox';
 import { Typescript } from '../components/icons/Typescript';
-import { InlineCode } from '../components/primitives/Code';
+import { Code as SourceCode, InlineCode } from '../components/primitives/Code';
 import { Automated } from '../components/icons/Automated';
 import { Section } from '../components/content/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
@@ -286,7 +286,7 @@ export default function IndexPage() {
               display: 'grid',
               gridTemplateColumns: ['1fr', null, '0.8fr 1.2fr'],
               position: 'relative',
-              gap: '2rem',
+              gap: '3rem',
               paddingTop: ['3rem', '5rem'],
               ':after': {
                 content: '""',
@@ -302,7 +302,7 @@ export default function IndexPage() {
             '& > li > div:first-of-type': {
               position: 'relative',
               marginLeft: '4.75rem',
-              marginTop: '4rem',
+              marginTop: '3rem',
               ':before': {
                 content: '"1"',
                 position: 'absolute',
@@ -400,14 +400,15 @@ export default function IndexPage() {
             <div>
               <CodeWindow lines={21}>
                 <WindowL>
-                  {`import { createSchema, list } from '@keystone-next/keystone/schema';
-import { relationship, text, timestamp, password } from '@keystone-next/fields';
+                  <SourceCode>
+                    {`import { createSchema, list } from '@keystone-next/keystone/schema';
+import { document, text, timestamp, password, relationship } from '@keystone-next/fields';
 
 export const lists = createSchema({
   Post: list({
     fields: {
       title: text({ isRequired: true }),
-      content: text(),
+      content: document(),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
     },
@@ -421,6 +422,7 @@ export const lists = createSchema({
     },
   }),
 });`}
+                  </SourceCode>
                 </WindowL>
               </CodeWindow>
             </div>
@@ -542,17 +544,22 @@ export const lists = createSchema({
               <CodeWindow lines={18}>
                 <WindowWrapper>
                   <WindowL>
-                    {`{
-  allPosts (first: 2, where: { title_contains: "content" }) {
+                    <SourceCode>
+                      {`{
+  allPosts (first: 2, where: {
+    title_contains: "content"
+  }) {
     title
     author {
       name
     }
   }
 }`}
+                    </SourceCode>
                   </WindowL>
                   <WindowR>
-                    {`{
+                    <SourceCode>
+                      {`{
   "data": {
     "allPosts": [
       {
@@ -570,6 +577,7 @@ export const lists = createSchema({
     ]
   }
 }`}
+                    </SourceCode>
                   </WindowR>
                 </WindowWrapper>
               </CodeWindow>
@@ -735,7 +743,7 @@ export const lists = createSchema({
             css={mq({
               display: 'grid',
               gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '1.5rem',
+              gap: '3rem',
               listStyle: 'none',
               padding: 0,
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],

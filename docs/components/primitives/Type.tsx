@@ -8,7 +8,7 @@ const common = {
   brand: {
     fontFamily: 'var(--font-brand)',
     color: 'var(--text-heading)',
-    lineHeight: 1.3,
+    lineHeight: 1.1,
   },
   body: {
     fontFamily: 'var(--font-body)',
@@ -70,7 +70,7 @@ export const styleMap = {
     fontSize: '5.75rem',
     fontWeight: 900,
     letterSpacing: '-0.025em',
-    lineHeight: 1.3,
+    lineHeight: 1.1,
   },
 
   body12: {
