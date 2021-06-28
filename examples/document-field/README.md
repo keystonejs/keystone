@@ -24,7 +24,6 @@ yarn dev:site
 
 This will start the frontend at [localhost:3001](http://localhost:3001).
 
-
 ## Configuring fields
 
 The project contains two `document` fields which show how to use the field configuration options to customise the document editor in the Admin UI.
