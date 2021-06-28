@@ -133,19 +133,18 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         the way you configure and run Keystone projects, our GraphQL backend, and a whole new Admin
         UI. See <Link href="/updates/whats-new-in-v6">Whats New in v6</Link> to learn more.
       </Type>
-      <Type as="p" look="body18" margin="1rem 0">
-        We're also adding powerful new features to make Keystone the best headless content
-        management system around, especially when you're using a component-based front-end like
-        React and Vue.
-      </Type>
-
-      <Alert css={{ margin: '3rem 0 4rem 0' }}>
-        There’s much more to come too! Check out{' '}
-        <Link href="/updates/roadmap" passHref>
-          <a>
-            <span>our Roadmap</span>
-          </a>
-        </Link>
+      <Alert look="tip" css={{ margin: '2rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 0.8rem 0.5rem 0',
+          }}
+        >
+          Where are we up to, and what we're working on next? Check out our
+        </span>
+        <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
+          Roadmap <ArrowR />
+        </Button>
       </Alert>
 
       <div

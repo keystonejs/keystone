@@ -166,7 +166,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Roadmap" {...props}>
+    <DocsPage noRightNav noProse {...props}>
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
@@ -186,7 +186,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        In <strong>Q3 2021</strong> we'll be moving Keystone 6 to{' '}
+        In <strong>Q3 2019</strong> we'll be moving Keystone 6 to{' '}
         {/* <Highlight css={{ fontWeight: 700 }}>General Availability</Highlight> */}
         <strong>General Availability</strong>, graduating to the{' '}
         <InlineCode>@keystone-6</InlineCode> namespace on npm, and will commit to a stable set of
@@ -319,7 +319,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
           into native cloud hosting support as well.
         </p>
       </RoadmapItem>
-      <RoadmapItem status="making it happen" title="Better Admin UI Accessibility (a11y)">
+      <RoadmapItem status="making it happen" title="Better Admin UI Accessibility (i18n)">
         <p>
           As web developers, we all know how important accessibility is, but very few CMS UIs are
           truly accessible. We're changing that by baking first class accessibility into Keystone's

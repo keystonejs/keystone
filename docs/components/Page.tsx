@@ -18,7 +18,8 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      This is the new version of Keystone! If you're looking for the Keystone 5 docs, check out{' '}
+      Keystone 6 is in Community Preview! What does that mean? see our{' '}
+      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
       <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
         v5.keystonejs.com
       </a>
