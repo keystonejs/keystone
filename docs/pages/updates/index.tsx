@@ -145,7 +145,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
             margin: '0 0.8rem 0.5rem 0',
           }}
         >
-          Want to see what we're working on next? Check out our
+          Where are we up to, and what we're working on next? Check out our
         </span>
         <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
           Roadmap <ArrowR />
