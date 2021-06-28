@@ -66,3 +66,50 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     })
   );
 });
+
+{
+  const runner = setupTestRunner({
+    config: apiTestConfig({
+      db: { idField: { kind: 'uuid' } },
+      lists: createSchema({
+        User: list({ fields: { name: text() } }),
+      }),
+    }),
+  });
+  test(
+    'searching for uppercased uuid works',
+    runner(async ({ context }) => {
+      const { id } = (await context.lists.User.createOne({
+        data: { name: 'something' },
+      })) as { id: string };
+      const { id: fromFound } = await context.lists.User.findOne({
+        where: { id: id.toUpperCase() },
+      });
+      // it returns lower-cased
+      expect(fromFound).toBe(id);
+    })
+  );
+}
+
+{
+  const runner = setupTestRunner({
+    config: apiTestConfig({
+      db: { idField: { kind: 'cuid' } },
+      lists: createSchema({
+        User: list({ fields: { name: text() } }),
+      }),
+    }),
+  });
+  test(
+    'searching for uppercased cuid does not work',
+    runner(async ({ context }) => {
+      const { id } = (await context.lists.User.createOne({
+        data: { name: 'something' },
+      })) as { id: string };
+
+      await expect(
+        context.lists.User.findOne({ where: { id: id.toUpperCase() } })
+      ).rejects.toMatchInlineSnapshot(`[GraphQLError: Only a cuid can be passed to id filters]`);
+    })
+  );
+}

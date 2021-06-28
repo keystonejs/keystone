@@ -31,7 +31,7 @@ const idParsers = {
     // isCuid is just "it's a string and it starts with c"
     // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
     if (typeof val === 'string' && isCuid(val)) {
-      return val.toLowerCase();
+      return val;
     }
     throw new Error('Only a cuid can be passed to id filters');
   },
