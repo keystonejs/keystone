@@ -126,15 +126,7 @@ export default function IndexPage() {
             >
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">1st</Highlight>
-                </Type>
-                <Type as="p" look="body18" color="var(--muted)">
-                  Node.js CMS
-                </Type>
-              </li>
-              <li>
-                <Type as="h3" look="heading48">
-                  <Highlight look="grad5">900k+</Highlight>
+                  <Highlight look="grad5">1m+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> Installs
@@ -146,6 +138,14 @@ export default function IndexPage() {
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   Contributors
+                </Type>
+              </li>
+              <li>
+                <Type as="h3" look="heading48">
+                  <Highlight look="grad5">2013</Highlight>
+                </Type>
+                <Type as="p" look="body18" color="var(--muted)">
+                  First Commit
                 </Type>
               </li>
             </ul>
@@ -721,6 +721,10 @@ export const lists = createSchema({
                 lineHeight: 1,
                 padding: 0,
                 margin: 0,
+              },
+              img: {
+                // TODO: crop the bottom border out of the image, then remove this
+                bottom: '-5px !important',
               },
             }}
           >
