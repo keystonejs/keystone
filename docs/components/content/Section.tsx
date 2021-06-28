@@ -10,7 +10,7 @@ export function Section(props: HTMLAttributes<HTMLElement>) {
   return (
     <section
       css={mq({
-        marginTop: ['5rem', '9.5rem'],
+        marginTop: ['5rem', '6.5rem'],
       })}
       {...props}
     />
