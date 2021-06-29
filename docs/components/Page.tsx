@@ -1,32 +1,52 @@
 /** @jsx jsx  */
 import { useRef, Fragment, ReactNode } from 'react';
-import { MDXProvider } from '@mdx-js/react';
-import { jsx } from '@keystone-ui/core';
+import { useRouter } from 'next/router';
+import { jsx } from '@emotion/react';
 import Head from 'next/head';
+import Link from 'next/link';
 
-import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
-import { getHeadings, Heading } from '../lib/getHeadings';
-import { Code, InlineCode } from '../components/Code';
-import { Announce } from '../components/Announce';
 import { useMediaQuery } from '../lib/media';
-import { TableOfContents } from './TableOfContents';
-import { Sidebar } from './Sidebar';
+import type { Heading } from '../lib/getHeadings';
+import { Announce } from '../components/Announce';
+import { TableOfContents } from './docs/TableOfContents';
+import { Wrapper } from './primitives/Wrapper';
+import { Breadcrumbs } from './Breadcrumbs';
+import { Sidebar } from './docs/Sidebar';
 import { Header } from './Header';
+import { Footer } from './Footer';
 
-export function Page({
-  headings = [],
-  title,
+function Announcement() {
+  return (
+    <Announce>
+      Keystone 6 is in Community Preview! What does that mean? see our{' '}
+      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
+      <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
+        v5.keystonejs.com
+      </a>
+    </Announce>
+  );
+}
+
+export function DocsPage({
   children,
-  isProse,
+  headings = [],
+  noProse,
+  noRightNav,
+  releases,
+  title,
 }: {
-  headings?: Heading[];
   children: ReactNode;
+  headings?: Heading[];
+  noProse?: boolean;
+  noRightNav?: boolean;
+  releases?: any;
   title?: string;
-  isProse?: boolean;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `${title} - Keystone Next Documentation` : `Keystone Next`;
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
   const mq = useMediaQuery();
+  const { pathname } = useRouter();
+  const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
 
   return (
     <Fragment>
@@ -36,73 +56,72 @@ export function Page({
       </Head>
       <div
         css={{
+          gridArea: 'main',
+          position: 'relative',
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
-        <Announce>
-          Help us improve KeystoneJS! ✨
-          <a
-            href="https://306ucv95ugh.typeform.com/to/gLuRTJIM"
-            rel="noopener noreferrer"
-            target="_blank"
-            css={{
-              marginLeft: '0.25rem',
-              color: 'var(--blue-400)',
-              ':hover': {
-                color: 'var(--blue-200)',
-              },
-            }}
-          >
-            Click here to share your thoughts in a 5-minute survey 🙏
-          </a>
-        </Announce>
+        <Announcement />
         <Header />
-        <div
+        <Wrapper
           css={mq({
             display: ['block', null, 'grid'],
-            gridTemplateColumns: '9rem minmax(0, auto) 12rem',
-            maxWidth: 'calc(var(--wrapper-width) - 1rem)',
-            margin: '0 auto',
-            gap: 'calc(var(--space-large) * 3)',
-            padding: ['0', null, '0 var(--space-large)'],
+            gridTemplateColumns: noRightNav
+              ? '15rem minmax(0, auto)'
+              : [
+                  '15rem minmax(0, auto)',
+                  null,
+                  null,
+                  '10rem minmax(0, auto) 10rem',
+                  '15rem minmax(0, auto) 15rem',
+                ],
+            gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
-          <Sidebar />
+          <Sidebar releases={releases} isUpdatesPage={isUpdatesPage} />
 
           <main
+            id="skip-link-content"
+            tabIndex={0}
             ref={contentRef}
-            className={isProse ? 'prose' : ''}
-            css={mq({
-              marginTop: 'var(--space-xlarge)',
-              padding: ['0 var(--space-large)', null, '0'],
-            })}
+            className={noProse ? '' : 'prose'}
           >
+            <Breadcrumbs />
             {children}
           </main>
-          {!!headings.length && <TableOfContents container={contentRef} headings={headings} />}
-        </div>
+          {!!headings.length && !noRightNav && (
+            <TableOfContents container={contentRef} headings={headings} />
+          )}
+        </Wrapper>
       </div>
+      <Footer />
     </Fragment>
   );
 }
 
-export const components = {
-  code: Code,
-  h1: H1,
-  h2: H2,
-  h3: H3,
-  h4: H4,
-  h5: H5,
-  h6: H6,
-  inlineCode: InlineCode,
-};
-
-export function Markdown({ children }: { children: ReactNode }) {
-  const headings = getHeadings(children);
+export function Page({ title, children }: { children: ReactNode; title?: string }) {
+  const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`;
 
   return (
-    <Page headings={headings} isProse title={headings[0].label}>
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </Page>
+    <Fragment>
+      <Head>
+        <meta key="og:site_name" property="og:site_name" content={metaTitle} />
+        <title>{metaTitle}</title>
+      </Head>
+      <div
+        css={{
+          gridArea: 'main',
+          position: 'relative',
+          paddingBottom: 'var(--space-xxlarge)',
+        }}
+      >
+        <Announcement />
+        <Header />
+        <Wrapper as="main" id="skip-link-content" tabIndex={0}>
+          {children}
+        </Wrapper>
+      </div>
+      <Footer />
+    </Fragment>
   );
 }

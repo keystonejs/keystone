@@ -207,7 +207,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       migrate.evaluateDataLoss()
     );
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
-    if (evaluateDataLossResult.migrationSteps.length) {
+    if (evaluateDataLossResult.migrationSteps) {
       console.log('✨ There has been a change to your Keystone schema that requires a migration');
       let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
       // see the link below for what "unexecutable steps" are

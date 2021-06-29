@@ -2,33 +2,37 @@ const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 const mdxHints = require('remark-hint');
+const gfm = require('remark-gfm');
+
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [mdxHints],
+    remarkPlugins: [mdxHints, gfm],
   },
 });
 
+const redirectRoutes = require('./redirects.js');
 const redirects = {
   async redirects() {
-    // if this array becomes bigger than 3 entries, please make it a separate file
-    return [
-      {
-        source: '/faqs',
-        destination: '/',
-        permanent: true,
-      },
-    ];
+    return redirectRoutes;
   },
 };
 
 module.exports = withPlugins([
   withPreconstruct,
   withImages,
-  [withMDX, { pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'] }],
+  [
+    withMDX,
+    {
+      pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    },
+  ],
   nextConfig => {
     nextConfig.env = {
-      siteUrl: 'https://next.keystonejs.com',
+      siteUrl: 'https://keystonejs.com',
+    };
+    nextConfig.future = {
+      webpack5: true,
     };
     nextConfig.typescript = {
       ...nextConfig.typescript,
@@ -36,6 +40,15 @@ module.exports = withPlugins([
       // this is easier than making this the local TS config correct
       // + type checking slows down vercel deploys
       ignoreBuildErrors: true,
+    };
+    const webpack = nextConfig.webpack;
+    nextConfig.webpack = (_config, args) => {
+      const config = webpack ? webpack(_config, args) : _config;
+      const { isServer } = args;
+      if (!isServer) {
+        config.resolve.fallback.fs = false;
+      }
+      return config;
     };
     return nextConfig;
   },

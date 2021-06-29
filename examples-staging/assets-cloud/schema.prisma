@@ -9,13 +9,13 @@ generator client {
 }
 
 model Post {
-  id                  Int       @id @default(autoincrement())
+  id                  String    @id @default(cuid())
   title               String?
   status              String?
   content             String?
   publishDate         DateTime?
   author              Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId            Int?      @map("author")
+  authorId            String?   @map("author")
   hero_filesize       Int?
   hero_extension      String?
   hero_width          Int?
@@ -30,7 +30,7 @@ model Post {
 }
 
 model Author {
-  id    Int     @id @default(autoincrement())
+  id    String  @id @default(cuid())
   name  String?
   email String? @unique
   posts Post[]  @relation("Post_author")

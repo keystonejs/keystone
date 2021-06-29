@@ -1,6 +1,5 @@
 import type { CacheHint } from '../next-fields';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
-import { FieldTypeFunc } from '../next-fields';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields } from './fields';
@@ -9,6 +8,10 @@ export type ListSchemaConfig = Record<
   string,
   ListConfig<BaseGeneratedListTypes, BaseFields<BaseGeneratedListTypes>>
 >;
+
+export type IdFieldConfig = {
+  kind: 'cuid' | 'uuid' | 'autoincrement';
+};
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
@@ -21,8 +24,6 @@ export type ListConfig<
       Note from Mitchell: The above is incorrect based on Keystone's current implementation.
     */
   fields: Fields;
-
-  idField?: FieldTypeFunc;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
@@ -197,4 +198,9 @@ export type ListDBConfig = {
    * @default "name""
    */
   searchField?: string;
+  /**
+   * The kind of id to use.
+   * @default { kind: "cuid" }
+   */
+  idField?: IdFieldConfig;
 };

@@ -9,7 +9,7 @@ generator client {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(cuid())
   name     String?
   email    String? @unique
   password String?
@@ -17,20 +17,20 @@ model User {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(cuid())
   title       String?
   status      String?
   content     Json?
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
-  authorId    Int?      @map("author")
+  authorId    String?   @map("author")
   tags        Tag[]     @relation("Post_tags_Tag_posts")
 
   @@index([authorId])
 }
 
 model Tag {
-  id    Int     @id @default(autoincrement())
+  id    String  @id @default(cuid())
   name  String?
   posts Post[]  @relation("Post_tags_Tag_posts")
 }

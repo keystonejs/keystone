@@ -1,16 +1,15 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 15th June 2021
+# Release: 15th June 2021
 
 ## What's New
 
-Keystone Next now has a new core 🤖, unblocking many of the features you’ve been waiting for!
+Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking many of the features you’ve been waiting for!
 
 After months of work deep in the codebase, it’ll be much easier for us to ship roadmap features like **custom field types**, **GraphQL Schema extensions**, and more.
 
-⚠️ This release does come with some minor behavioural changes to Keystone’s APIs, read on below.
+<Emoji symbol="⚠️" alt="Warning" /> This release does come with some minor behavioural changes to Keystone’s APIs, read on below.
 
 ```sh
 "@keystone-next/admin-ui-utils": "5.0.2",
@@ -27,13 +26,13 @@ After months of work deep in the codebase, it’ll be much easier for us to ship
 "@keystone-ui/segmented-control": "4.0.1",
 ```
 
-## New Core 🤖
+## New Core <Emoji symbol="🤖" alt="Robot" />
 
-The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage 🤖.
+The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage <Emoji symbol="🤖" alt="Robot" />.
 
 ⚠️ If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` [package](https://github.com/keystonejs/keystone/tree/master/packages-next/fields) for inspiration on how to do this.
 
-### Password tweaks 🔒
+### Password tweaks <Emoji symbol="🔒" alt="Padlock" />
 
 The `password` field type now adds a GraphQL type `PasswordState` to the GraphQL output type instead of adding `${fieldKey}_is_set`, exposing a `isSet` boolean.
 
@@ -47,7 +46,7 @@ type PasswordState {
 }
 ```
 
-### Access control operations 👑
+### Access control operations
 
 List level `create`, `update` and `delete` access control is now called for each operation in a many operation rather than on all of the operations as a whole.
 
@@ -57,11 +56,11 @@ This means that rather than receiving `originalInput` as an array with `itemIds`
 
 In addition, filters returned from access control now go through GraphQL validation and coercion like filters that you pass in through the GraphQL API, this will produce better errors when you return invalid values.
 
-### Virtual field input 🔣
+### Virtual field input
 
 The API to configure `virtual` fields has changed to accept a `field` using the `schema` API exported from `@keystone-next/types` rather than GraphQL SDL.
 
-### Schema reorder 🍡
+### Schema reorder
 
 The ordering of relationships fields in the generated Prisma schema has changed so that it aligns with the order specified in the list config with the opposites to one-sided relationships added at the end.
 
@@ -69,7 +68,7 @@ The name of one-to-one and one-to-many relationships has also changed to include
 
 ⚠️ Note that these changes do **not require a migration**, only your `schema.prisma` file will need to be updated with `keystone-next dev` or `keystone-next postinstall --fix`.
 
-## Text and integer filtering 🪡
+## Text and integer filtering
 
 A long awaited feature, you can now find an item by a unique field! Filtering now works for `text` and `integer` fields that have `isUnique: true` set, for example:
 
@@ -83,14 +82,15 @@ query {
 }
 ```
 
-## UI Accessibility 🏷️
+## UI Accessibility
 
 A number of updates have been made in this release to improve accessibility in the Admin UI — updates to the `DatePicker` labels, relationship fields and more, including visual updates to the segment control (when no value is selected).
 
-## Prisma update ⬆️
+## Prisma update
 
 We've updated our Prisma dependencies to `2.24.1`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.24.1) for more information.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-15) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }

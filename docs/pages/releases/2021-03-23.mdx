@@ -1,8 +1,7 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 23rd March 2021
+# Release: 23rd March 2021
 
 ```typescript
 "@keystone-next/admin-ui": "12.0.1",
@@ -13,14 +12,15 @@ import { Markdown } from '../../components/Page';
 "@keystone-next/test-utils-legacy": "14.0.1",
 ```
 
-### Added support for SQLite with Prisma 🎉
+## Added support for SQLite with Prisma <Emoji symbol="🎉" alt="Party popper"/>
 
 You can now use SQLite to store your data via Prisma. The SQLite rollout also includes support for the `File` and `Cloudinary` field types.
 
-### Noteworthy bug-squashing 🐛
+## Noteworthy bug-squashing <Emoji symbol="🐛" alt="Bug"/>
 
 Mitchell [solved a bug](https://github.com/keystonejs/keystone/pull/5168) where `withItemData` returned sessions that don't match an item, rather than treating them as invalid.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-23) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }

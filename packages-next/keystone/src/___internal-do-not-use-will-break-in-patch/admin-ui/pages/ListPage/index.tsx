@@ -82,7 +82,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   const resetToDefaults = () => {
     localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
     router.replace({
-      query: null,
+      pathname: router.pathname,
     });
   };
 

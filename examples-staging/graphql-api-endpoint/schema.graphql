@@ -47,8 +47,8 @@ input UserWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String
@@ -205,8 +205,8 @@ input PostWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   title: String
   title_not: String
   title_contains: String
@@ -358,8 +358,8 @@ input TagWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String

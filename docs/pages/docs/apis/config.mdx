@@ -1,0 +1,361 @@
+import { Markdown } from '../../../components/Markdown';
+
+# System Configuration API
+
+The `keystone-next` [CLI](../guides/cli) expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
+
+```typescript filename=keystone.ts
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({ /* ... */ });
+```
+
+The `config` function accepts an object representing all the configurable parts of the system:
+
+```typescript
+export default config({
+  lists: { /* ... */ },
+  db: { /* ... */ },
+  ui: { /* ... */ },
+  server: { /* ... */ },
+  session: { /* ... */ },
+  graphql: { /* ... */ },
+  extendGraphqlSchema: { /* ... */ },
+  images: { /* ... */ },
+  experimental: { /* ... */ },
+});
+```
+
+We will cover each of these options below.
+
+The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/types`.
+This type definition should be considered the source of truth for the available configuration options.
+
+## lists
+
+The `lists` config option is where you define the data model, or schema, of the Keystone system.
+It has a TypeScript type of `ListSchemaConfig`.
+This is where you define and configure the `lists` and their `fields` of the data model.
+In general you will use the `createSchema()` function to create this configuration option.
+See the [Schema API](./schema) docs for details on how to use this function.
+
+```typescript
+import type { ListSchemaConfig } from '@keystone-next/types';
+import { config, createSchema } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({ /* ... */ }),
+  /* ... */
+});
+```
+
+## db
+
+```
+import type { DatabaseConfig } from '@keystone-next/types';
+```
+
+The `db` config option configures the database used to store data in your Keystone system.
+It has a TypeScript type of `DatabaseConfig`.
+Keystone supports the database types **PostgreSQL** and **SQLite**.
+These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
+
+All database providers require the `url` argument, which defines the connection URL for your database.
+They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
+
+As well as these common options, each provider supports a number of optional advanced configuration options.
+
+### postgresql
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
+
+```typescript
+export default config({
+  db: {
+    provider: 'postgresql',
+    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    onConnect: async context => { /* ... */ },
+    // Optional advanced configuration
+    enableLogging: true,
+    useMigrations: true,
+    idField: { kind: 'uuid' },
+  },
+  /* ... */
+});
+```
+
+### sqlite
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
+
+```typescript
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+    onConnect: async context => { /* ... */ },
+    // Optional advanced configuration
+    enableLogging: true,
+    useMigrations: true,
+    idField: { kind: 'uuid' },
+  },
+  /* ... */
+});
+```
+
+#### Limitations
+
+The `sqlite` provider is not intended to be used in production systems, and has certain limitations:
+
+- `decimal`: The `decimal` field type is not supported.
+- `timestamp`: The `timestamp` field type only supports times within the range `1970 - 2038`.
+- `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.
+- `autoIncrement`: The `autoIncrement` field type can only be used as an `id` field.
+- `select`: Using the `dataType: 'enum'` will use a GraphQL `String` type, rather than an `Enum` type.
+
+## ui
+
+```
+import type { AdminUIConfig } from '@keystone-next/types';
+```
+
+The `ui` config option configures the Admin UI which is provided by Keystone.
+It has a TypeScript type of `AdminUIConfig`.
+This config option is for top level configuration of the Admin UI.
+Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Schema API](./schema) for more details).
+
+Options:
+
+- `isDisabled` (default: `false`): If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
+- `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
+  It takes a [`KeystoneContext`](./context) object as an argument.
+
+Advanced configuration:
+
+- `publicPages` (default: `[]`): An array of page routes that can be accessed without passing the `isAccessAllowed` check.
+- `getAdditionalFiles` (default: `[]`): An async function returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
+  If the `mode` is `'write'`, then the code to be written to the file should be provided as the `src` argument.
+  If the `mode` is `'copy'` then an `inputPath` value should be provided.
+  The `outputPath` indicates where the file should be written or copied to
+  **Note**: This API is designed for use by plugins, such as the [`@keystone-next/auth`](./auth) package.
+  See the [Custom Admin UI Pages](../guides/custom-admin-ui-pages) guide for details on simpler ways to customise your Admin UI.
+
+```typescript
+export default config({
+  ui: {
+    isDisabled: false,
+    isAccessAllowed: async context => true,
+    // Optional advanced configuration
+    publicPages: ['/welcome'],
+    getAdditionalFiles: [
+      async (config: KeystoneConfig) => [
+        {
+          mode: 'write',
+          src: `
+            /* @jsx jsx */
+            import { jsx } from '@keystone-ui/core';
+            export default function Welcome() {
+              return (<h1>Welcome to my Keystone system</h1>);
+            }`,
+          outputPath: 'pages/welcome.js',
+        },
+        {
+          mode: 'copy',
+          inputPath: '...',
+          outputPath: 'pages/farewell.js',
+        }
+      ],
+    ],
+  },
+  /* ... */
+});
+```
+
+## server
+
+```
+import type { ServerConfig } from '@keystone-next/types';
+```
+
+The `dev` and `start` commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
+This server is configured via the `server` configuration option.
+
+Options:
+
+- `cors` (default: `undefined`): Allows you to configure the [cors middleware](https://www.npmjs.com/package/cors#configuration-options) for your Express server.
+  If left undefined `cors` will not be used.
+- `port` (default: `3000` ): The port your Express server will listen on.
+- `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
+
+```typescript
+export default config({
+  server: {
+    cors: { origin: ['http://localhost:7777'], credentials: true }:
+    port: 3000
+    maxFileSize: 200 * 1024 * 1024
+  },
+  /* ... */
+});
+```
+
+## session
+
+```
+import type { SessionStrategy } from '@keystone-next/types';
+```
+
+The `session` config option allows you to configure session management of your Keystone system.
+It has a TypeScript type of `SessionStrategy<any>`.
+
+In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
+
+```typescript
+import { statelessSessions } from '@keystone-next/keystone/session';
+
+export default config({
+  session: statelessSessions({ /* ... */ }),
+  /* ... */
+});
+```
+
+See the [Session API](./session) for more details on how to configure session management in Keystone.
+
+## graphql
+
+```
+import type { GraphQLConfig } from '@keystone-next/types';
+```
+
+The `graphql` config option allows you to configures certain aspects of your GraphQL API.
+It has a TypeScript type of `GraphQLConfig`.
+
+Options:
+
+- `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
+  See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
+- `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
+  See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for supported options.
+
+```typescript
+export default config({
+  graphql: {
+    queryLimits: { maxTotalResults: 100 },
+    apolloConfig: { /* ... */ },
+  },
+  /* ... */
+});
+```
+
+## extendGraphqlSchema
+
+```
+import type { ExtendGraphqlSchema } from '@keystone-next/types';
+```
+
+The `extendGraphqlSchema` config option allows you to extend the GraphQL API which is generated by Keystone based on your schema definition.
+It has a TypeScript type of `ExtendGraphqlSchema`.
+
+In general you will use the function `graphQLSchemaExtension({ typeDefs, resolvers })` to create your schema extension.
+
+```typescript
+import { config, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+
+export default config({
+  extendGraphqlSchema: graphQLSchemaExtension({ typeDefs, resolvers }),
+  /* ... */
+});
+```
+
+See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
+
+## files
+
+Keystone supports file handling via the [`file`](./fields#file) field type.
+In order to use this field type you need to configure Keystone with information about where your files will be stored and served from.
+At the moment Keystone supports storing files on the local filesystem, and is agnostic about how files are served.
+
+```typescript
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({
+  files: {
+    upload: 'local',
+    local: {
+      storagePath: 'public/files',
+      baseUrl: '/files',
+    },
+  }
+  /* ... */
+});
+```
+
+Options:
+
+- `upload`: The storage target when uploading files. Currently only `local` is supported.
+- `local`: Configuration options when using the `local` storage target.
+  - `storagePath`: The path local files are uploaded to.
+  - `baseUrl`: The base of the URL local files will be served from, outside of keystone.
+
+## images
+
+Keystone supports image handling via the [`image`](./fields#image) field type.
+In order to use this field type you need to configure Keystone with information about where your images will be stored and served from.
+At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
+
+```typescript
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({
+  images: {
+    upload: 'local',
+    local: {
+      storagePath: 'public/images',
+      baseUrl: '/images',
+    },
+  }
+  /* ... */
+});
+```
+
+Options:
+
+- `upload`: The storage target when uploading images. Currently only `local` is supported.
+- `local`: Configuration options when using the `local` storage target.
+  - `storagePath`: The path local images are uploaded to.
+  - `baseUrl`: The base of the URL local images will be served from, outside of keystone.
+
+## experimental
+
+The following flags allow you to enable features which are still in preview.
+These features are not guaranteed to work, and should be used with caution.
+
+```typescript
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({
+  experimental: {
+    enableNextJsGraphqlApiEndpoint: true,
+    generateNextGraphqlAPI: true,
+    generateNodeAPI: true,
+  }
+  /* ... */
+});
+```
+
+Options:
+
+- `enableNextJsGraphqlApiEndpoint`: (coming soon)
+- `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
+- `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

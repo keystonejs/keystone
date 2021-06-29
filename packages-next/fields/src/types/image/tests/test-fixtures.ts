@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-// @ts-ignore
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { KeystoneContext } from '@keystone-next/types';

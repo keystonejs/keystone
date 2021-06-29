@@ -2,14 +2,14 @@ import type { PrismTheme } from 'prism-react-renderer';
 
 const theme: PrismTheme = {
   plain: {
-    color: '#27272A',
-    backgroundColor: 'var(--gray-50)',
+    color: 'var(--text-heading)',
+    backgroundColor: '#f6f7f9',
   },
   styles: [
     {
       types: ['comment', 'prolog', 'doctype', 'cdata'],
       style: {
-        color: '#64748B',
+        color: 'var(--text)',
       },
     },
     {
@@ -21,7 +21,7 @@ const theme: PrismTheme = {
     {
       types: ['string', 'attr-value'],
       style: {
-        color: '#F43F5E',
+        color: '#eC1337',
       },
     },
     {
@@ -44,31 +44,31 @@ const theme: PrismTheme = {
         'inserted',
       ],
       style: {
-        color: '#059669',
+        color: '#04865d',
       },
     },
     {
       types: ['atrule', 'keyword', 'attr-name', 'selector'],
       style: {
-        color: '#00a4db',
+        color: '#0080A8',
       },
     },
     {
       types: ['function', 'deleted', 'tag'],
       style: {
-        color: '#3730A3',
+        color: 'var(--focus)',
       },
     },
     {
       types: ['function-variable'],
       style: {
-        color: '#6f42c1',
+        color: '#7f54e0',
       },
     },
     {
       types: ['tag', 'selector', 'keyword'],
       style: {
-        color: '#0284C7',
+        color: '#037dbb',
       },
     },
   ],

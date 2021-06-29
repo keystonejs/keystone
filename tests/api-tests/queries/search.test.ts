@@ -1,50 +1,44 @@
 import { text, integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { DatabaseProvider } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/testing';
+import { apiTestConfig } from '../utils';
 
-function setupKeystone(provider: DatabaseProvider) {
-  return setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        Test: list({
-          fields: {
-            name: text(),
-          },
-        }),
-        Number: list({
-          fields: {
-            name: integer(),
-          },
-        }),
-        Custom: list({
-          fields: {
-            other: text(),
-          },
-          db: { searchField: 'other' },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: createSchema({
+      Test: list({
+        fields: {
+          name: text(),
+        },
+      }),
+      Number: list({
+        fields: {
+          name: integer(),
+        },
+      }),
+      Custom: list({
+        fields: {
+          other: text(),
+        },
+        db: { searchField: 'other' },
       }),
     }),
-  });
-}
+  }),
+});
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    test(
-      'users',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'users',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               search: "one",
@@ -53,26 +47,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([{ name: 'one' }]);
-      })
-    );
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([{ name: 'one' }]);
+  })
+);
 
-    test(
-      'users - case sensitive',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'users - case sensitive',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               search: "ONE",
@@ -81,26 +74,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([{ name: 'one' }]);
-      })
-    );
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([{ name: 'one' }]);
+  })
+);
 
-    test(
-      'users - partial case sensitive',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'users - partial case sensitive',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               search: "N",
@@ -109,26 +101,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([{ name: 'one' }]);
-      })
-    );
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([{ name: 'one' }]);
+  })
+);
 
-    test(
-      'users - like escapes',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'users - like escapes',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               search: ${JSON.stringify(`%islikelike%`)},
@@ -137,27 +128,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([{ name: '%islikelike%' }]);
-      })
-    );
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([{ name: '%islikelike%' }]);
+  })
+);
 
-    test(
-      'users - regex',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+test(
+  'users - regex',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
 
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               search: ${JSON.stringify(`/thr(.*)/`)},
@@ -166,26 +156,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([]); // No results
-      })
-    );
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([]); // No results
+  })
+);
 
-    test(
-      'users - numbers',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'users - numbers',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allNumbers(
               search: "12345",
@@ -194,26 +183,25 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allNumbers');
-        expect(data.allNumbers).toEqual([]); // No results
-      })
-    );
+    });
+    expect(data).toHaveProperty('allNumbers');
+    expect(data.allNumbers).toEqual([]); // No results
+  })
+);
 
-    test(
-      'empty string',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-        ]);
+test(
+  'empty string',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allTests(
               orderBy: { name: asc },
@@ -223,31 +211,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allTests');
-        expect(data.allTests).toEqual([
-          { name: '%islikelike%' },
-          { name: 'one' },
-          { name: 'three' },
-        ]); // All results
-      })
-    );
-    test(
-      'custom',
-      runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
-        await Promise.all([
-          create('Test', { name: 'one' }),
-          create('Test', { name: '%islikelike%' }),
-          create('Test', { name: 'three' }),
-          create('Number', { name: 12345 }),
-          create('Custom', { other: 'one' }),
-          create('Custom', { other: 'two' }),
-        ]);
+    });
+    expect(data).toHaveProperty('allTests');
+    expect(data.allTests).toEqual([{ name: '%islikelike%' }, { name: 'one' }, { name: 'three' }]); // All results
+  })
+);
+test(
+  'custom',
+  runner(async ({ context }) => {
+    const create = async (listKey: string, data: any) => context.lists[listKey].createOne({ data });
+    await Promise.all([
+      create('Test', { name: 'one' }),
+      create('Test', { name: '%islikelike%' }),
+      create('Test', { name: 'three' }),
+      create('Number', { name: 12345 }),
+      create('Custom', { other: 'one' }),
+      create('Custom', { other: 'two' }),
+    ]);
 
-        const data = await context.graphql.run({
-          query: `
+    const data = await context.graphql.run({
+      query: `
           query {
             allCustoms(
               search: "one",
@@ -256,10 +239,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }
           }
       `,
-        });
-        expect(data).toHaveProperty('allCustoms');
-        expect(data.allCustoms).toEqual([{ other: 'one' }]);
-      })
-    );
+    });
+    expect(data).toHaveProperty('allCustoms');
+    expect(data.allCustoms).toEqual([{ other: 'one' }]);
   })
 );

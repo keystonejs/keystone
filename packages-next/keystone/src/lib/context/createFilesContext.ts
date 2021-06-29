@@ -5,7 +5,7 @@ import filenamify from 'filenamify';
 import { KeystoneConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 
-import { parseFileRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils-legacy';
+import { parseFileRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils';
 import slugify from '@sindresorhus/slugify';
 import {
   buildKeystoneCloudFileSrc,

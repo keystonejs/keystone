@@ -62,16 +62,26 @@ const _createApolloServerConfig = ({
   graphQLSchema: GraphQLSchema;
   apolloConfig?: Config;
 }) => {
-  // Playground config
+  // Playground config, is /api/graphql available?
   const pp = apolloConfig?.playground;
   let playground: Config['playground'];
   const settings = { 'request.credentials': 'same-origin' };
+
   if (typeof pp === 'boolean' && !pp) {
-    playground = undefined;
-  } else if (typeof pp === 'undefined' || typeof pp === 'boolean') {
+    // graphql.apolloConfig.playground === false (playground not accessible in all cases)
+    playground = false;
+  } else if (typeof pp === 'boolean') {
+    // graphql.apolloConfig.playground === true (playground accessible in all cases)
     playground = { settings };
-  } else {
+  } else if (pp) {
+    // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation - https://www.apollographql.com/docs/apollo-server/testing/graphql-playground)
     playground = { ...pp, settings: { ...settings, ...pp.settings } };
+  } else if (process.env.NODE_ENV === 'production') {
+    // process.env.NODE_ENV === 'production' (playground not accessible in production)
+    playground = undefined;
+  } else {
+    // not specified at all (playground uses defaults)
+    playground = { settings };
   }
 
   return {

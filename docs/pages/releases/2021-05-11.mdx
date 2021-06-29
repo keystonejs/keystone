@@ -1,8 +1,7 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
-
-## 11th May 2021
+# Release: 11th May 2021
 
 ```typescript
 "@keystone-next/admin-ui": "14.1.2",
@@ -17,8 +16,9 @@ import { Markdown } from '../../components/Page';
 
 ## What's New
 
-A bunch of admin UI tweaks in this release 🖥️, among other minor fixes. We also have the initial stages of a new blog example and a sweet new admin UI logo.
+A bunch of admin UI tweaks in this release, among other minor fixes. We also have the initial stages of a new blog example and a sweet new admin UI logo.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-11) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }
