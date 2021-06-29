@@ -7,9 +7,7 @@ import Link from 'next/link';
 import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
 
-/* SEARCH COMING SOON */
-/* import { SearchField } from './primitives/SearchField'; */
-
+import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
@@ -19,9 +17,7 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
-
-/* SEARCH COMING SOON */
-/* import { Search } from './icons/Search'; */
+import { Search } from './icons/Search';
 
 type HeaderContextType = { mobileNavIsOpen: boolean };
 const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
@@ -112,6 +108,19 @@ export function Header() {
     document.body.style.overflow = 'auto';
   }, []);
 
+  useEffect(() => {
+    if (window.docsearch) {
+      window.docsearch({
+        apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+        indexName: 'keystonejs',
+        inputSelector: '#search-field',
+        debug: true,
+      });
+    } else {
+      console.warn('Search has failed to load');
+    }
+  }, []);
+
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
     document.body.style.overflow = 'hidden';
@@ -137,17 +146,11 @@ export function Header() {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            /* SEARCH COMING SOON */
-            /* 'auto max-content max-content max-content',
+            'auto max-content max-content max-content',
             'auto max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
-            '15rem auto max-content max-content max-content max-content max-content max-content', */
-            'auto max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content max-content max-content max-content',
           ],
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           justifyItems: 'start',
@@ -164,22 +167,20 @@ export function Header() {
           <Logo />
         </div>
 
-        {/* SEARCH COMING SOON */}
-        {/* <div
+        <div
           css={mq({
             display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
           })}
         >
           <SearchField />
-        </div> */}
+        </div>
 
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
 
-        {/* SEARCH COMING SOON */}
-        {/* <button
+        <button
           css={mq({
             display: ['inline-block', 'inline-block', 'none'],
             appearance: 'none',
@@ -192,7 +193,7 @@ export function Header() {
           })}
         >
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
-        </button> */}
+        </button>
 
         <DarkModeBtn />
         <Button

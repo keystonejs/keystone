@@ -50,6 +50,10 @@ class MyDocument extends Document {
 
           <script async src="/assets/resize-observer-polyfill.js" />
           <script async src="/assets/focus-visible-polyfill.js" />
+          <script
+            async
+            src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
+          />
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{

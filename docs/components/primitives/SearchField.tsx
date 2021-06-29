@@ -1,63 +1,72 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx, Global, css } from '@emotion/react';
+import { Fragment, HTMLAttributes } from 'react';
 
 import { SearchKeys } from '../icons/SearchKeys';
 import { Search } from '../icons/Search';
 import { Field } from './Field';
 
+import { algoliaStyles } from '../../lib/algoliaStyles';
+
 type SearchFieldProps = HTMLAttributes<HTMLElement>;
 
 export function SearchField(props: SearchFieldProps) {
   return (
-    <span
-      css={{
-        position: 'relative',
-        display: 'block',
-        color: 'var(--muted)',
-      }}
-    >
-      <label
-        htmlFor="search-field"
-        css={{
-          position: 'absolute',
-          display: 'flex',
-          alignItems: 'center',
-          top: 0,
-          bottom: 0,
-          left: '1rem',
-        }}
-      >
-        <Search css={{ width: '1.25rem' }} />
-      </label>
-      <Field
-        placeholder="Search the docs"
-        id="search-field"
-        css={{
-          padding: '0 3.5rem 0 2.8rem',
-        }}
-        {...props}
+    <Fragment>
+      <Global
+        styles={css`
+          ${algoliaStyles}
+        `}
       />
-      <label
-        htmlFor="search-field"
+      <span
         css={{
-          position: 'absolute',
-          display: 'flex',
-          alignItems: 'center',
-          top: 0,
-          bottom: 0,
-          right: '1rem',
+          position: 'relative',
+          display: 'block',
+          color: 'var(--muted)',
         }}
       >
-        <SearchKeys
+        <label
+          htmlFor="search-field"
           css={{
-            height: '1.5rem',
-            border: '1px solid var(--border)',
-            borderRadius: '3px',
-            padding: '0.325rem',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            top: 0,
+            bottom: 0,
+            left: '1rem',
           }}
+        >
+          <Search css={{ width: '1.25rem', zIndex: 1 }} />
+        </label>
+        <Field
+          placeholder="Search the docs"
+          id="search-field"
+          css={{
+            padding: '0 3.5rem 0 2.8rem',
+          }}
+          {...props}
         />
-      </label>
-    </span>
+        <label
+          htmlFor="search-field"
+          css={{
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            top: 0,
+            bottom: 0,
+            right: '1rem',
+          }}
+        >
+          <SearchKeys
+            css={{
+              height: '1.5rem',
+              border: '1px solid var(--border)',
+              borderRadius: '3px',
+              padding: '0.325rem',
+            }}
+          />
+        </label>
+      </span>
+    </Fragment>
   );
 }
