@@ -1290,6 +1290,11 @@
     human-id "^1.0.2"
     prettier "^1.19.1"
 
+"@corex/deepmerge@^2.6.20":
+  version "2.6.20"
+  resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-2.6.20.tgz#a72d1cb5a101fd11160815b96f499a588362ba5b"
+  integrity sha512-oZZxwDtV0bf8VPcSIhZPvdBFUkVIC8zRblUjrrVAsbGRiqUuZJfoXw2M6NDiIXWcUCfOqbkFND6Yf3b9ej9AjA==
+
 "@cypress/listr-verbose-renderer@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@cypress/listr-verbose-renderer/-/listr-verbose-renderer-0.4.1.tgz#a77492f4b11dcc7c446a34b3e28721afd33c642a"
@@ -9184,6 +9189,13 @@ match-sorter@^6.3.0:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
 
+matcher@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/matcher/-/matcher-4.0.0.tgz#a42a05a09aaed92e2d241eb91fddac689461ea51"
+  integrity sha512-S6x5wmcDmsDRRU/c2dkccDwQPXoFczc5+HpQ2lON8pnvHlnvHAHj5WlLVvw6n6vNyHuVugYrFohYxbS+pvFpKQ==
+  dependencies:
+    escape-string-regexp "^4.0.0"
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
@@ -9828,6 +9840,15 @@ next-images@^1.8.1:
   dependencies:
     file-loader "^6.2.0"
     url-loader "^4.1.0"
+
+next-sitemap@^1.6.124:
+  version "1.6.124"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-1.6.124.tgz#d811fbeb7fbed9910865ee651e40fd8c1738ecc9"
+  integrity sha512-Q8hZZcC11zPUZyAPB4npClSrHzZwddzWSVMMqehRKXBblhT/cQPsKf7zxh2UwgVW18EfS6oRhca4lhGjFfyAEw==
+  dependencies:
+    "@corex/deepmerge" "^2.6.20"
+    matcher "^4.0.0"
+    minimist "^1.2.5"
 
 next@^10.2.3:
   version "10.2.3"
