@@ -29,7 +29,7 @@ module.exports = withPlugins([
   ],
   nextConfig => {
     nextConfig.env = {
-      siteUrl: 'https://next.keystonejs.com',
+      siteUrl: 'https://keystonejs.com',
     };
     nextConfig.future = {
       webpack5: true,

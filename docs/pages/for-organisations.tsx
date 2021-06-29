@@ -25,7 +25,7 @@ export default function ForOrganisations() {
   const mq = useMediaQuery();
 
   return (
-    <Page>
+    <Page title="KeystoneJS for Organisations">
       <MWrapper>
         <Pill grad="grad4">Keystone for organisations</Pill>
         <IntroWrapper>

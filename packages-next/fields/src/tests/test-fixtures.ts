@@ -107,7 +107,7 @@ export const filterTests = (withKeystone: any) => {
   test(
     'Filter: id_in - missing id',
     withKeystone(({ context }: { context: KeystoneContext }) => {
-      const fakeID = 1000;
+      const fakeID = 'cdafasdfasd';
       return match(context, { id_in: [fakeID] }, []);
     })
   );
@@ -142,7 +142,7 @@ export const filterTests = (withKeystone: any) => {
     'Filter: id_not_in - missing id',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
-      const fakeID = 1000;
+      const fakeID = 'cdafasdfasd';
       return match(context, { id_not_in: [fakeID] }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },

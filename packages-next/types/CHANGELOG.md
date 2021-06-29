@@ -1,5 +1,18 @@
 # @keystone-next/types
 
+## 21.0.0
+
+### Major Changes
+
+- [#5947](https://github.com/keystonejs/keystone/pull/5947) [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced the `idField` list configuration option with a more constrained option, `db.idField`, that accepts an object with a `kind` property with a value of `cuid`, `uuid` or `autoincrement`. `db.idField` can be set on either the top level `config` object, or on individual lists.
+
+  The default behaviour has changed from using `autoincrement` to using cuids. To keep the current behaviour, you should set `{ kind: 'autoincrement' }` at `db.idField` in your top level config.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-next/fields@11.0.2
+
 ## 20.0.1
 
 ### Patch Changes
