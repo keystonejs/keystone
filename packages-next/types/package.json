@@ -12,7 +12,7 @@
     "@keystone-next/fields": "^11.0.2",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
-    "decimal.js": "10.2.1",
+    "decimal.js": "10.3.1",
     "graphql": "^15.5.1",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^12.0.0"
