@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 21.0.1
+
+### Patch Changes
+
+- [#6022](https://github.com/keystonejs/keystone/pull/6022) [`475307e0e`](https://github.com/keystonejs/keystone/commit/475307e0ef99e3ce137e976ecf7671e536facd91) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed error when loading the Admin UI due to the id field changes.
+
 ## 21.0.0
 
 ### Major Changes
