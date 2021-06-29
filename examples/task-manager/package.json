@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-task-manager",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/fields": "^11.0.0",
-    "@keystone-next/keystone": "^20.0.0"
+    "@keystone-next/fields": "^11.0.2",
+    "@keystone-next/keystone": "^21.0.0"
   },
   "devDependencies": {
     "typescript": "^4.3.4"

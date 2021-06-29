@@ -1,5 +1,15 @@
 # @keystone-next/fields
 
+## 11.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b), [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b)]:
+  - @keystone-next/keystone@21.0.0
+  - @keystone-next/types@21.0.0
+  - @keystone-next/admin-ui-utils@5.0.3
+  - @keystone-next/utils@1.0.1
+
 ## 11.0.1
 
 ### Patch Changes
