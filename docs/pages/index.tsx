@@ -442,7 +442,7 @@ export const lists = createSchema({
                 Customise your content story
               </Type>
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
-                A flexible and intuitive editing environent that does what your schema says:
+                A flexible and intuitive editing environment that does what your schema says:
                 Keystone’s Admin UI understands your access control, so you can shape it to your
                 unique needs.
               </Type>
