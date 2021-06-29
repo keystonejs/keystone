@@ -319,7 +319,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
           into native cloud hosting support as well.
         </p>
       </RoadmapItem>
-      <RoadmapItem status="making it happen" title="Better Admin UI Accessibility (i18n)">
+      <RoadmapItem status="making it happen" title="Better Admin UI Accessibility (a11y)">
         <p>
           As web developers, we all know how important accessibility is, but very few CMS UIs are
           truly accessible. We're changing that by baking first class accessibility into Keystone's
