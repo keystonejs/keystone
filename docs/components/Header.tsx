@@ -114,7 +114,7 @@ export function Header() {
         debug: true,
       });
     } else {
-      console.warn('Search has failed to load');
+      document.getElementById('search-field-container').style.visibility = 'hidden';
     }
   }, []);
   const handleOpen = useCallback(() => {
@@ -164,6 +164,7 @@ export function Header() {
         </div>
 
         <div
+          id="search-field-container"
           css={mq({
             display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
