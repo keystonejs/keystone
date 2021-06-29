@@ -71,6 +71,8 @@ Advanced configuration:
 
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
 
 ```typescript
 export default config({
@@ -81,6 +83,7 @@ export default config({
     // Optional advanced configuration
     enableLogging: true,
     useMigrations: true,
+    idField: { kind: 'uuid' },
   },
   /* ... */
 });
@@ -92,6 +95,8 @@ Advanced configuration:
 
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
 
 ```typescript
 export default config({
@@ -102,6 +107,7 @@ export default config({
     // Optional advanced configuration
     enableLogging: true,
     useMigrations: true,
+    idField: { kind: 'uuid' },
   },
   /* ... */
 });

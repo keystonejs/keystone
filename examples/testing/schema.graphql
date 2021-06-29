@@ -25,8 +25,8 @@ input TaskWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   label: String
   label_not: String
   label_contains: String
@@ -162,8 +162,8 @@ input PersonWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String

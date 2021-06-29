@@ -86,7 +86,7 @@ async function setupInitialProjectWithoutMigrations() {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
+  id    String  @id
   title String?
 }
 `);
@@ -154,7 +154,7 @@ describe('useMigrations: false', () => {
       }
 
       model Todo {
-        id Int @id @default(autoincrement())
+        id String @id
       }
       "
     `);
@@ -202,7 +202,7 @@ describe('useMigrations: false', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -267,7 +267,7 @@ async function setupInitialProjectWithMigrations() {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
+  id    String  @id
   title String?
 }
 `);
@@ -276,7 +276,7 @@ model Todo {
 
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT
 );
 `);
@@ -335,7 +335,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id         Int      @id @default(autoincrement())
+        id         String   @id
         title      String?
         isComplete Boolean?
       }
@@ -395,7 +395,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id Int @id @default(autoincrement())
+        id String @id
       }
       "
     `);
@@ -416,7 +416,7 @@ describe('useMigrations: true', () => {
       -- RedefineTables
       PRAGMA foreign_keys=OFF;
       CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+          \\"id\\" TEXT NOT NULL PRIMARY KEY
       );
       INSERT INTO \\"new_Todo\\" (\\"id\\") SELECT \\"id\\" FROM \\"Todo\\";
       DROP TABLE \\"Todo\\";
@@ -470,7 +470,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -481,7 +481,7 @@ describe('useMigrations: true', () => {
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
       CREATE TABLE \\"Todo\\" (
-          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
           \\"title\\" TEXT
       );
       "
@@ -583,7 +583,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "
@@ -631,7 +631,7 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
+        id    String  @id
         title String?
       }
       "

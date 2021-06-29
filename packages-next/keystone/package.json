@@ -125,7 +125,7 @@
       "next.ts",
       "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql}.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
-      "___internal-do-not-use-will-break-in-patch/admin-ui/next-config.ts",
+      "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
       "artifacts.ts",
       "migrations.ts",
       "schema/index.ts",
