@@ -2,9 +2,6 @@ import { config } from '@keystone-next/keystone/schema';
 import { lists } from './schema';
 
 export default config({
-  db: {
-    provider: 'sqlite',
-    url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-  },
+  db: { useMigrations: false, provider: 'mongodb', url: 'mongodb://localhost/keystone-json-mongo-prisma', },
   lists,
 });

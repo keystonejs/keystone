@@ -82,7 +82,19 @@ export type DatabaseConfig = {
           provider: 'sqlite';
         }
     )
-);
+    | (
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+          adapter: 'prisma_mongodb';
+          provider?: undefined;
+        }
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'mongodb' }` */
+          adapter?: undefined;
+          provider: 'mongodb';
+        }
+    )
+  );
 
 // config.ui
 

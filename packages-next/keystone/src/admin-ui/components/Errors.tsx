@@ -17,6 +17,7 @@ type ErrorBoundaryState = {
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false, isReloading: false };
   static getDerivedStateFromError(error: any) {
+    console.log(error);
     return { error, hasError: true };
   }
   reloadPage = () => {
