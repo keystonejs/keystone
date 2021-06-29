@@ -2,9 +2,9 @@ import { KeystoneContext } from '@keystone-next/types';
 import { setupTestRunner } from '@keystone-next/testing';
 import config from '../keystone';
 
-const FAKE_ID = 12345;
+const FAKE_ID = 'cinjfgbkjnfg';
 
-const asUser = (context: KeystoneContext, itemId?: number) =>
+const asUser = (context: KeystoneContext, itemId?: string) =>
   context.withSession({ itemId, data: {} });
 
 const runner = setupTestRunner({ config });
@@ -171,7 +171,7 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual('Only a cuid can be passed to id filters');
       })
     );
 

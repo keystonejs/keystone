@@ -11,6 +11,7 @@ import type {
   ListConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
+  IdFieldConfig,
 } from './lists';
 import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
@@ -57,7 +58,11 @@ export type DatabaseConfig = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
+<<<<<<< HEAD
   prismaPreviewFeatures?: string[];
+=======
+  idField?: IdFieldConfig;
+>>>>>>> 03f535ba6 (New id fields (#5947))
 } & (
   | (
       | {
@@ -202,4 +207,4 @@ export type {
   UpdateListAccessControl,
 } from './access-control';
 export type { CommonFieldConfig } from './fields';
-export type { CacheHintArgs } from './lists';
+export type { CacheHintArgs, IdFieldConfig } from './lists';

@@ -21,7 +21,8 @@
     "graphql": "^15.5.1",
     "memoize-one": "^5.2.1",
     "superagent": "^6.1.0",
-    "testcheck": "^1.0.0-rc.2"
+    "testcheck": "^1.0.0-rc.2",
+    "uuid": "^8.3.2"
   },
   "dependencies": {
     "@keystone-next/testing": "^1.0.0",

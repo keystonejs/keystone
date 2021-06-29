@@ -13,7 +13,6 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: { /* ... */ },
-      idField: { /* ... */ },
       access: { /* ... */ },
       ui: { /* ... */ },
       hooks: { /* ... */ },
@@ -53,39 +52,6 @@ export default config({
 ```
 
 For full details on the available field types and their configuration options please see the [Fields API](./fields).
-
-## idField
-
-The `idField` option lets you override the default ID field used by Keystone.
-By default the `autoIncrement` field type is used as an ID field type.
-The default configuration (e.g. when `idField: undefined` ) is equivalent to:
-
-```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { autoIncrement } from '@keystone-next/fields';
-
-export default config({
-  lists: createSchema({
-    ListName: list({
-      fields: { /* ... */ },
-      idField: autoIncrement({
-        ui: {
-          createView: { fieldMode: 'hidden' },
-          itemView: { fieldMode: 'hidden' },
-        },
-      }),
-      /* ... */
-    }),
-    /* ... */
-  }),
-  /* ... */
-});
-```
-
-These defaults hide this field in the `create` and `update` views in the Admin UI.
-You can override these defaults, or any other field config options, by providing a field type configured as needed.
-
-The `idField` will always be made available in the GraphQL API with a name of `id`.
 
 ## access
 
@@ -213,6 +179,8 @@ The `db` config option allows you to configures certain aspects of the database 
 Options:
 
 - `searchField` (default: `"name"`): The name of the field to use when performing `search` filters in the GraphQL API.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  The default across all lists can be changed at the root-level `db.idField` config.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -222,6 +190,7 @@ export default config({
     ListName: list({
       db: {
         searchField: 'email',
+        idField: { kind: 'uuid' },
       },
       /* ... */
     }),
