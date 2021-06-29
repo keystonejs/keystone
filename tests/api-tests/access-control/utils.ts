@@ -5,8 +5,8 @@ import { createAuth } from '@keystone-next/auth';
 import type { KeystoneConfig } from '@keystone-next/types';
 import { apiTestConfig } from '../utils';
 
-const FAKE_ID = { postgresql: 137, sqlite: 137 } as const;
-const FAKE_ID_2 = { postgresql: 138, sqlite: 138 } as const;
+const FAKE_ID = { postgresql: 'cdsfasfafafadfasdf', sqlite: 'cdsfasfafafadfasdf' } as const;
+const FAKE_ID_2 = { postgresql: 'csdfbstrsbaf', sqlite: 'csdfbstrsbaf' } as const;
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');

@@ -115,8 +115,8 @@ input UserWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String
@@ -283,8 +283,8 @@ input PhoneNumberWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   user: UserWhereInput
   user_is_null: Boolean
   type: String
@@ -371,8 +371,8 @@ input PostWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   title: String
   title_not: String
   title_contains: String

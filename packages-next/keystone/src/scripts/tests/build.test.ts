@@ -63,7 +63,6 @@ test('build works with typescript without the user defining a babel config', asy
     } as any,
   });
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
-  expect(result.exitCode).toBe(0);
   expect(
     result
       .all!.replace(/\d+(|\.\d+) k?B/g, 'size')
@@ -113,4 +112,5 @@ test('build works with typescript without the user defining a babel config', asy
        (ISR)     incremental static regeneration (uses revalidate in getStaticProps)
     "
   `);
+  expect(result.exitCode).toBe(0);
 });
