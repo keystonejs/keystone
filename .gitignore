@@ -121,3 +121,7 @@ temp/
 
 # SQLite databases
 *.db
+
+# Generated files from build process
+robots.txt
+sitemap.xml

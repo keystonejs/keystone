@@ -95,7 +95,7 @@ export default function DS() {
   let firstGrad: string;
 
   return (
-    <Page>
+    <Page title="Design System Components and Tokens">
       <Type as="h1" look="heading92" margin={'var(--space-large) 0'}>
         Design System
       </Type>

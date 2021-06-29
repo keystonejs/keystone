@@ -132,12 +132,7 @@ export function Header() {
   }, [router.events, handleClose]);
 
   return (
-    <header
-      ref={headerRef}
-      css={{
-        marginBottom: '1.5rem',
-      }}
-    >
+    <header ref={headerRef}>
       <Wrapper
         css={mq({
           display: 'grid',

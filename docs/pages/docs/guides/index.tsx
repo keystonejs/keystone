@@ -11,7 +11,7 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse>
+    <DocsPage noRightNav noProse title="Guides">
       <Type as="h1" look="heading64">
         Keystone Guides
       </Type>

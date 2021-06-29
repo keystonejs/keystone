@@ -108,8 +108,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@testing-library/dom": "^7.31.2",
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/dom": "^8.0.0",
+    "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.1.9",
     "fixturez": "^1.1.0",
     "outdent": "^0.8.0",

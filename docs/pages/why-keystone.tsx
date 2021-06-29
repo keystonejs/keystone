@@ -39,7 +39,7 @@ export default function WhyKeystonePage() {
   const mq = useMediaQuery();
 
   return (
-    <Page>
+    <Page title="Why KeystoneJS">
       <MWrapper>
         <IntroHeading>
           Why <Highlight look="grad2">Keystone</Highlight>
