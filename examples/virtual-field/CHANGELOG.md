@@ -1,12 +1,10 @@
 # @keystone-next/example-virtual-field
 
 ## 0.1.0
+
 ### Minor Changes
 
-
-
 - [#5906](https://github.com/keystonejs/keystone/pull/5906) [`084c4e3c1`](https://github.com/keystonejs/keystone/commit/084c4e3c1fdf0795158be2facf7cb56d4ca48413) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated virtual fields to match those in the guide.
-
 
 ### Patch Changes
 
