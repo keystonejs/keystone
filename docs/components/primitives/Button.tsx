@@ -14,6 +14,15 @@ const styleMap = {
     '--button-bg-active': 'var(--danger-90)',
     '--button-bg-disabled': 'var(--danger--40)',
   },
+
+  secondary: { 
+    '--button-bg': 'var(--button-secondary-bg)',
+    '--button-bg-hover': 'var(--button-secondary-hover)',
+    '--button-bg-active': 'var(--button-secondary-hover)',
+  },
+
+
+
   soft: {
     '--button-bg': 'var(--app-bg)',
     '--button-bg-hover': 'var(--link)',
@@ -64,15 +73,21 @@ const shadowMap: Record<keyof typeof styleMap, any> = {
 const sizeMap = {
   default: {
     fontSize: '1rem',
-    borderRadius: '6px',
+    borderRadius: '5px',
     height: '2.4rem',
     padding: '0 var(--space-large)',
   },
   large: {
     fontSize: '1.125rem',
-    borderRadius: '6px',
+    borderRadius: '5px',
     height: '3rem',
     padding: '0 var(--space-xlarge)',
+  },
+    small: {
+    fontSize: '.875rem',
+    borderRadius: '4px',
+    height: '2.2rem',
+    padding: '0 14px',
   },
 };
 

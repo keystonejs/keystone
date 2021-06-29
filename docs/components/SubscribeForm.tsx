@@ -90,7 +90,7 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <Button loading={loading} type={'submit'}>
+          <Button look="secondary" size="small" loading={loading} type={'submit'}>
             {error ? 'Try again' : 'Subscribe'}
           </Button>
         </Stack>
