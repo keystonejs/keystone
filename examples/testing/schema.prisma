@@ -9,19 +9,19 @@ generator client {
 }
 
 model Task {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   label        String?
   priority     String?
   isComplete   Boolean?
   assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId Int?      @map("assignedTo")
+  assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
 
   @@index([assignedToId])
 }
 
 model Person {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(cuid())
   name     String?
   email    String? @unique
   password String?
