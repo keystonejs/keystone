@@ -15,7 +15,7 @@ export const config = withPreconstruct({
     if (isServer) {
       config.externals = [
         ...config.externals,
-        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui)/,
+        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view)/,
         /@keystone-next\/types/,
       ];
     }
