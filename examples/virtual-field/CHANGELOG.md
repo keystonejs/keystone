@@ -1,12 +1,19 @@
 # @keystone-next/example-virtual-field
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b), [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b)]:
+  - @keystone-next/keystone@21.0.0
+  - @keystone-next/types@21.0.0
+  - @keystone-next/fields@11.0.2
+
 ## 0.1.0
+
 ### Minor Changes
 
-
-
 - [#5906](https://github.com/keystonejs/keystone/pull/5906) [`084c4e3c1`](https://github.com/keystonejs/keystone/commit/084c4e3c1fdf0795158be2facf7cb56d4ca48413) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated virtual fields to match those in the guide.
-
 
 ### Patch Changes
 
