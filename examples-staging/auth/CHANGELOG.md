@@ -1,5 +1,14 @@
 # @keystone-next/example-auth
 
+## 4.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b), [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b)]:
+  - @keystone-next/keystone@21.0.0
+  - @keystone-next/auth@28.0.0
+  - @keystone-next/fields@11.0.2
+
 ## 4.0.2
 
 ### Patch Changes
