@@ -13,7 +13,11 @@ export const config = withPreconstruct({
       ),
     };
     if (isServer) {
-      config.externals = [...config.externals, /@keystone-next\/types/];
+      config.externals = [
+        ...config.externals,
+        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui)/,
+        /@keystone-next\/types/,
+      ];
     }
     return config;
   },
