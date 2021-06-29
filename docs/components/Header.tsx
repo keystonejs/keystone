@@ -106,9 +106,6 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
-  }, []);
-
-  useEffect(() => {
     if (window.docsearch) {
       window.docsearch({
         apiKey: '211e94c001e6b4c6744ae72fb252eaba',
@@ -120,7 +117,6 @@ export function Header() {
       console.warn('Search has failed to load');
     }
   }, []);
-
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
     document.body.style.overflow = 'hidden';
