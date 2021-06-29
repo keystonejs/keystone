@@ -69,7 +69,7 @@ export function H1(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-xxlarge)',
         fontWeight: 700,
-        letterSpacing: '-0.025em',
+        letterSpacing: '-0.03125rem',
         marginTop: 0,
       }}
       as="h1"
@@ -84,7 +84,7 @@ export function H2(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-xlarge)',
         fontWeight: 500,
-        letterSpacing: '-0.025em',
+        letterSpacing: '-0.03125rem',
         marginTop: 0,
       }}
       as="h2"
@@ -99,7 +99,7 @@ export function H3(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-large)',
         fontWeight: 500,
-        letterSpacing: '-0.025em',
+        letterSpacing: 'none',
         marginTop: 0,
       }}
       as="h3"

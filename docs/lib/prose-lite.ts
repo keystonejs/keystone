@@ -1,5 +1,5 @@
 export const proseStyles = {
-  color: 'var(--code)',
+  color: 'var(--muted)',
   'img, video': {
     maxWidth: '100%',
     height: 'auto',
@@ -8,7 +8,7 @@ export const proseStyles = {
     content: '""',
   },
   a: {
-    color: 'var(--text-heading)',
+    color: 'var(--text)',
     textDecoration: 'underline',
     fontWeight: 500,
   },
@@ -16,7 +16,7 @@ export const proseStyles = {
     color: 'var(--link)',
   },
   strong: {
-    color: 'var(--text-heading)',
+    color: 'var(--text)',
     fontWeight: 600,
   },
   'ol[type="A"], ol[type="A" s]': {
@@ -37,6 +37,7 @@ export const proseStyles = {
   'ol > li': {
     position: 'relative' as const,
     paddingLeft: '1.75em',
+    fontSize: '1.125rem',
   },
   'ol > li::before': {
     content: 'counter(list-item, var(--list-counter-style, decimal)) "."',
@@ -52,6 +53,7 @@ export const proseStyles = {
     borderRadius: '50%',
     width: '0.375em',
     height: '0.375em',
+
     top: `calc(0.875em - 0.1875em)`,
     left: '0.25em',
   },

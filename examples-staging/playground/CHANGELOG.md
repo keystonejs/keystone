@@ -1,9 +1,8 @@
 # @keystone-next/example-playground
 
 ## 1.0.1
+
 ### Patch Changes
-
-
 
 - [#5817](https://github.com/keystonejs/keystone/pull/5817) [`10b36551a`](https://github.com/keystonejs/keystone/commit/10b36551ac3a88da2cfeba3d065d6dd36041e769) Thanks [@bladey](https://github.com/bladey)! - Added example that demonstrates how you can customise the GraphQL Playground accessed at `/api/graphql`.
 
