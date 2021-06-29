@@ -60,6 +60,7 @@ const documentFeaturesProp = fields.object({
     defaultValue: ['center', 'end'],
     label: 'Alignment',
   }),
+  softBreaks: fields.checkbox({ label: 'Soft Breaks', defaultValue: true }),
   links: fields.checkbox({
     label: 'Links',
     defaultValue: true,
@@ -68,7 +69,6 @@ const documentFeaturesProp = fields.object({
     label: 'Dividers',
     defaultValue: true,
   }),
-  softBreaks: fields.checkbox({ label: 'Soft Breaks', defaultValue: true }),
   layouts: fields.checkbox({ label: 'Layouts', defaultValue: true }),
   useShorthand: fields.checkbox({ label: 'Use shorthand in code example', defaultValue: true }),
 });
@@ -255,7 +255,7 @@ export function DocumentFeaturesProvider({ children }: { children: ReactNode }) 
 }
 
 export function DocumentFeaturesFormAndCode() {
-  const { documentFeatures, formValue, setFormValue } = useContext(DocumentFeaturesContext);
+  const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
   return (
     <div>
       <FormValueContent
@@ -266,26 +266,13 @@ export function DocumentFeaturesFormAndCode() {
         value={formValue}
         onChange={setFormValue}
       />
-      <pre>
-        <Code className="language-tsx">
-          {useMemo(
-            () =>
-              documentFeaturesCodeExample(
-                formValue.useShorthand
-                  ? documentFeaturesToShorthand(documentFeatures)
-                  : documentFeatures
-              ),
-            [documentFeatures, formValue]
-          )}
-        </Code>
-      </pre>
     </div>
   );
 }
 
 export const DocumentEditorDemo = () => {
   const [value, setValue] = useState(initialContent as any);
-  const { documentFeatures } = useContext(DocumentFeaturesContext);
+  const { documentFeatures, formValue } = useContext(DocumentFeaturesContext);
 
   const isShiftPressedRef = useKeyDownRef('Shift');
   const editor = useMemo(
@@ -354,7 +341,30 @@ export const DocumentEditorDemo = () => {
         </DocumentEditorProvider>
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
+        <summary>View the Field Config</summary>
+        <p>
+          This is the configuration which is being used for the editor. This will be updated when
+          you select options to configure the demo.
+        </p>
+        <div className="prose">
+          <pre>
+            <Code className="language-tsx">
+              {useMemo(
+                () =>
+                  documentFeaturesCodeExample(
+                    formValue.useShorthand
+                      ? documentFeaturesToShorthand(documentFeatures)
+                      : documentFeatures
+                  ),
+                [documentFeatures, formValue]
+              )}
+            </Code>
+          </pre>
+        </div>
+      </details>
+      <details css={{ marginBottom: 'var(--space-xlarge)' }}>
         <summary>View the Document Structure</summary>
+        <p>Document field data is stored as a JSON string in the database.</p>
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>
     </div>
