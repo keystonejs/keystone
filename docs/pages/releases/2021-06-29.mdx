@@ -1,0 +1,67 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 29th June 2021
+
+## What's New
+
+The ID Field option has been revamped with `cuid`, `uuid` and `autoincrement` options! <Emoji symbol="🤹" alt="Juggler" />
+
+```sh
+"@keystone-next/admin-ui-utils": "5.0.3",
+"@keystone-next/auth": "28.0.0",
+"@keystone-next/cloudinary@": "6.0.2",
+"@keystone-next/fields": "11.0.2",
+"@keystone-next/fields-document": "7.0.1",
+"@keystone-next/keystone": "21.0.0",
+"@keystone-next/testing": "1.0.1",
+"@keystone-next/types": "21.0.0",
+"@keystone-next/utils": "1.0.1",
+```
+
+### New ID Fields <Emoji symbol="🧮" alt="Abacus" />
+
+We've replaced the `idField` list configuration option with a more constrained option, `db.idField`.
+
+This option accepts an object with a `kind` property with a value of:
+
+- `cuid`
+- `uuid`
+- `autoincrement`
+
+The default behaviour has changed from using `autoincrement` to using `cuids`.
+
+To keep the current behaviour, you should set `{ kind: 'autoincrement' }` at `db.idField` in your top level config.
+
+`db.idField` can be set on either the top level `config` object:
+
+```
+config({
+  db: {
+    idField: { kind: 'uuid' }
+  },
+  lists,
+});
+```
+
+Or on individual lists:
+
+```
+config({
+  db,
+  lists: createSchema({
+    User: list({
+      db: {
+        idField: { kind: 'uuid' },
+      },
+      fields: {
+        name: text({ isRequired: true }),
+      },
+    }),
+});
+```
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-29) on GitHub.
+
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }
