@@ -15,13 +15,11 @@ const styleMap = {
     '--button-bg-disabled': 'var(--danger--40)',
   },
 
-  secondary: { 
+  secondary: {
     '--button-bg': 'var(--button-secondary-bg)',
     '--button-bg-hover': 'var(--button-secondary-hover)',
     '--button-bg-active': 'var(--button-secondary-hover)',
   },
-
-
 
   soft: {
     '--button-bg': 'var(--app-bg)',
@@ -83,7 +81,7 @@ const sizeMap = {
     height: '3rem',
     padding: '0 var(--space-xlarge)',
   },
-    small: {
+  small: {
     fontSize: '.875rem',
     borderRadius: '4px',
     height: '2.2rem',
