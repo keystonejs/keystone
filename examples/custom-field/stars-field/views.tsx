@@ -11,6 +11,7 @@ import {
 } from '@keystone-next/types';
 import { StarsInput } from './stars-input';
 
+// this is the component shown in the create modal/the item page
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer as="fieldset">
     <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -18,12 +19,17 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
   </FieldContainer>
 );
 
+// this is shown on the list view in the table
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
+// setting supportsLinksTo means the cell component
+// for example, text fields support it but relationship fields don't because
+// their cell component links to the related item so it can't link to the item that the relationship is on
 Cell.supportsLinkTo = true;
 
+// this is shown for the of relationship fields with `displayMode: 'cards'`
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>

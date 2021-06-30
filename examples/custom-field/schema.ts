@@ -1,6 +1,6 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { select, relationship, text, timestamp } from '@keystone-next/fields';
-import { stars } from './star-field';
+import { stars } from './stars-field';
 
 export const lists = createSchema({
   Post: list({

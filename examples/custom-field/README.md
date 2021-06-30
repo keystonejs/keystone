@@ -1,8 +1,7 @@
-## Base Project - Blog
+## Feature Example - Custom Field
 
-This project implements a basic **Blog**, with `Posts` and `Authors`.
-
-You can use it as a starting place for learning how to use Keystone.
+This project demonstrates how to create a custom field that allows users to select a number of stars.
+It builds on the [Blog](../blog) starter project.
 
 ## Instructions
 
@@ -17,14 +16,6 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-🚀 Congratulations, you're now up and running with Keystone!
+##
 
-## Next steps
-
-This project is bare bones, and doesn't use any of Keystone's advanced features.
-We encourage you to experiment with the code here to see how Keystone works, become familiar with the Admin UI, and learn about the GraphQL Playground.
-
-Once you've got the hang of using this project, you can check out the [feature examples](../).
-These projects build on this starter project and show you how to use Keystones advanced features to take your project to the next level.
-
-When you've got the hang of the Blog app, try a [feature project](../) to learn Keystone's advanced features and take your knowledge to the next level.
+The `stars` fields in the `stars-field` directory shows a custom field.
