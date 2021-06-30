@@ -1,0 +1,52 @@
+import { MDXProvider } from '@mdx-js/react';
+import { components } from '../../../components/Markdown';
+import { getHeadings } from '../../../lib/getHeadings';
+import { H1 } from '../../../components/docs/Heading';
+import { DocsPage } from '../../../components/Page';
+import {
+  DocumentEditorDemo,
+  DocumentFeaturesFormAndCode,
+  DocumentFeaturesProvider,
+} from '../../../components/docs/DocumentEditorDemo';
+import Intro from './_doc-field-intro.mdx';
+
+## Configure the demo
+
+The document field is highly configurable.
+The form below lets you control which features are enabled in the demo editor.
+You can see the changes both in the toolbar of the editor, and in the field configuration itself.
+
+<DocumentFeaturesFormAndCode />
+
+export default ({ children }) => {
+  const headings = getHeadings(children);
+  return (
+    <DocsPage
+      title={'Document Fields Demo'}
+      headings={[
+        {
+          label: 'Document Field Demo',
+          id: 'document-field-demo',
+          depth: 1,
+        },
+        {
+          label: 'Try the demo',
+          id: 'try-the-demo',
+          depth: 2,
+        },
+        ...headings,
+      ]}
+    >
+      <DocumentFeaturesProvider>
+        <div className="prose">
+          <H1>Document Fields Demo</H1>
+          <MDXProvider components={components}><Intro /></MDXProvider>
+        </div>
+        <DocumentEditorDemo />
+        <div className="prose">
+          <MDXProvider components={components}>{children}</MDXProvider>
+        </div>
+      </DocumentFeaturesProvider>
+    </DocsPage>
+  );
+};

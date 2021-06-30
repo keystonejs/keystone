@@ -224,7 +224,7 @@ export default function WhyKeystonePage() {
                 Highly configurable. Design systems friendly. BYO custom React components.
                 Structured JSON output.
               </Type>
-              <Link href="/docs/guides/document-fields#try-the-demo">
+              <Link href="/docs/guides/document-field-demo">
                 <a>Try the editor →</a>
               </Link>
             </li>
