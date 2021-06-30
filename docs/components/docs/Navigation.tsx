@@ -129,6 +129,7 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/filters">Query Filters</NavItem>
         <NavItem href="/docs/guides/hooks">Hooks</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
         <NavItem href="/docs/guides/virtual-fields">
           Virtual Fields <Badge look="success">New</Badge>
         </NavItem>

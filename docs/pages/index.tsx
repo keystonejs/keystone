@@ -709,7 +709,7 @@ export const lists = createSchema({
           <Type as="h2" look="heading30" margin="2rem auto" css={{ maxWidth: '41.875rem' }}>
             What makes Keystone a CMS for the Design System generation?
           </Type>
-          <Button as="a" href="/docs/guides/document-fields#try-the-demo" shadow>
+          <Button as="a" href="/docs/guides/document-field-demo" shadow>
             See our new document editor <ArrowR />
           </Button>
           <div
