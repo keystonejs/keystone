@@ -78,7 +78,7 @@ export function Breadcrumbs() {
                 <Type
                   look="body14"
                   css={{
-                    textTransform: 'capitalize',
+                    textTransform: 'uppercase',
                     color: 'var(--muted)',
                   }}
                 >
