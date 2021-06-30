@@ -96,7 +96,7 @@ export default function Docs() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          View all &rarr;
+          View on Github &rarr;
         </a>
       </Type>
 
