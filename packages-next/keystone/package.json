@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/keystone",
-  "version": "21.0.1",
+  "version": "21.0.2",
   "license": "MIT",
   "main": "dist/keystone.cjs.js",
   "module": "dist/keystone.esm.js",
@@ -31,8 +31,8 @@
     "@graphql-tools/schema": "^7.1.5",
     "@hapi/iron": "^6.0.0",
     "@keystone-next/admin-ui-utils": "^5.0.3",
-    "@keystone-next/fields": "^11.0.2",
-    "@keystone-next/types": "^21.0.0",
+    "@keystone-next/fields": "^11.0.3",
+    "@keystone-next/types": "^21.0.1",
     "@keystone-next/utils": "^1.0.1",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.0",

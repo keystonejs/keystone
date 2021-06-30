@@ -104,7 +104,7 @@ const Welcome = ({ value }: { value: any }) => {
 
       <p css={{ margin: 0 }}>
         Thanks for installing KeystoneJS. While you're getting started, check out the docs at{' '}
-        <a href="https://next.keystonejs.com">next.keystonejs.com</a>
+        <a href="https://keystonejs.com">keystonejs.com</a>
       </p>
       <div>
         If you'd like to stay up to date with the exciting things we have planned, join our mailing
