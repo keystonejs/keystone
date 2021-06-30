@@ -1,5 +1,15 @@
 # @keystone-next/cloudinary
 
+## 6.0.3
+
+### Patch Changes
+
+- [#6031](https://github.com/keystonejs/keystone/pull/6031) [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `cloudinaryImage` field not passing through access control, hooks, ui and graphql options to Keystone.
+
+- Updated dependencies [[`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5), [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5)]:
+  - @keystone-next/fields@11.0.3
+  - @keystone-next/types@21.0.1
+
 ## 6.0.2
 
 ### Patch Changes

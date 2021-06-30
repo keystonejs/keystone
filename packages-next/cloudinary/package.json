@@ -1,13 +1,13 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "license": "MIT",
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.14.6",
-    "@keystone-next/fields": "^11.0.2",
-    "@keystone-next/types": "^21.0.0",
+    "@keystone-next/fields": "^11.0.3",
+    "@keystone-next/types": "^21.0.1",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.0",
     "@keystone-ui/fields": "^4.1.2",
