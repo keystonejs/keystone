@@ -109,7 +109,7 @@ replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks se
 It's important to remember that the Markdown files within this project are used in several places:
 
 - As raw Markdown in a local dev environment (eg. in editor, search/grep'ing, etc.)
-- Published on the [Keystone Next website](https://next.keystonejs.com/)
+- Published on the [Keystone Next website](https://keystonejs.com/)
 - Published on the [GitHub repo](https://github.com/keystonejs/keystone)
 - Published on NPM (only effects package `README.md` docs)
 
@@ -119,7 +119,7 @@ For links to work across these mediums, certain rules for URLs formulation must 
   - Eg. `See the secion on [Foo Config](#foo-config).`
 - Links to _other files in the monorepo_ must use..
   - An absolute file path from the monorepo root
-    - Eg. `/docs/pages/guides/cli.mdx` (**not** `https://next.keystonejs.com/guides/cli` or `https://github.com/keystonejs/keystone/blob/master/docs/pages/guides/cli.mdx`, etc.)
+    - Eg. `/docs/pages/guides/cli.mdx` (**not** `https://keystonejs.com/guides/cli` or `https://github.com/keystonejs/keystone/blob/master/docs/pages/guides/cli.mdx`, etc.)
   - The full filename, include the extension
     - Eg. `/docs/pages/guides/cli.mdx` (**not** `/docs/guides/cli`)
 - Links to `README.md` files must be explicit; they cannot rely on the GitHub behaviour that uses `README.md` at a sort of "index" for a directory
