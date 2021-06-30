@@ -1,0 +1,26 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 30th June 2021
+
+## What's New
+
+We fixed an issue with `cloudinaryImage` and `relationship` fields. <Emoji symbol="🔥" alt="Fire" />
+
+```sh
+"@keystone-next/auth": "28.0.1",
+"@keystone-next/cloudinary": "6.0.3",
+"@keystone-next/fields": "11.0.3",
+"@keystone-next/keystone": "21.0.2",
+"@keystone-next/session-store-redis": "3.0.1",
+"@keystone-next/types": "21.0.1",
+```
+
+### Field Options Hotfix <Emoji symbol="🔥" alt="Fire" />
+
+We discovered an issue where `cloudinaryImage` and `relationship` fields were not passing through access control, hooks, ui and graphql options to Keystone, this is now resolved!
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-30) on GitHub.
+
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }
