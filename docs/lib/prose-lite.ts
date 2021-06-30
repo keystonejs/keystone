@@ -53,7 +53,6 @@ export const proseStyles = {
     borderRadius: '50%',
     width: '0.375em',
     height: '0.375em',
-
     top: `calc(0.875em - 0.1875em)`,
     left: '0.25em',
   },

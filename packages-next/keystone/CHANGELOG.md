@@ -1,5 +1,29 @@
 # @keystone-next/keystone
 
+## 21.0.1
+
+### Patch Changes
+
+- [#6022](https://github.com/keystonejs/keystone/pull/6022) [`475307e0e`](https://github.com/keystonejs/keystone/commit/475307e0ef99e3ce137e976ecf7671e536facd91) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed error when loading the Admin UI due to the id field changes.
+
+## 21.0.0
+
+### Major Changes
+
+- [#5947](https://github.com/keystonejs/keystone/pull/5947) [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced the `idField` list configuration option with a more constrained option, `db.idField`, that accepts an object with a `kind` property with a value of `cuid`, `uuid` or `autoincrement`. `db.idField` can be set on either the top level `config` object, or on individual lists.
+
+  The default behaviour has changed from using `autoincrement` to using cuids. To keep the current behaviour, you should set `{ kind: 'autoincrement' }` at `db.idField` in your top level config.
+
+* [#5947](https://github.com/keystonejs/keystone/pull/5947) [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Id field filters no longer allow `null` to be passed because ids can never be null. For the `in` and `not_in`, this is reflected in the GraphQL types
+
+### Patch Changes
+
+- Updated dependencies [[`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b)]:
+  - @keystone-next/types@21.0.0
+  - @keystone-next/fields@11.0.2
+  - @keystone-next/admin-ui-utils@5.0.3
+  - @keystone-next/utils@1.0.1
+
 ## 20.0.1
 
 ### Patch Changes
