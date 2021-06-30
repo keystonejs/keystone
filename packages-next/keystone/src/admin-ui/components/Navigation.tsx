@@ -93,7 +93,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
           <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
             GitHub Repository
           </PopoverLink>
-          <PopoverLink target="_blank" href="https://next.keystonejs.com">
+          <PopoverLink target="_blank" href="https://keystonejs.com">
             Keystone Documentation
           </PopoverLink>
           <SignoutButton />

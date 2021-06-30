@@ -147,6 +147,7 @@ export const cloudinaryImage =
       return { id, filename, originalFilename, mimetype, encoding, _meta };
     };
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
+      ...config,
       input: {
         create: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
         update: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
