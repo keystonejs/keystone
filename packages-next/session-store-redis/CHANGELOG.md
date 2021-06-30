@@ -1,5 +1,11 @@
 # @keystone-next/session-store-redis
 
+## 3.0.1
+
+### Patch Changes
+
+- [#6029](https://github.com/keystonejs/keystone/pull/6029) [`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5) Thanks [@bladey](https://github.com/bladey)! - Updated Keystone URL reference from next.keystonejs.com to keystonejs.com.
+
 ## 3.0.0
 
 ### Major Changes
