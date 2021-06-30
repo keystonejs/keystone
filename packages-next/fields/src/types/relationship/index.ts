@@ -72,6 +72,7 @@ export const relationship =
   meta => {
     const [foreignListKey, foreignFieldKey] = ref.split('.');
     const commonConfig = {
+      ...config,
       views: resolveView('relationship/views'),
       getAdminMeta: (
         adminMetaRoot: AdminMetaRootVal
