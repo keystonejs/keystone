@@ -60,6 +60,10 @@ const shadowMap: Record<keyof typeof styleMap, any> = {
     '--button-shadow': '0 4px 14px 0 rgb(220 38 255 / 20%)',
     '--button-shadow-hover': '0 3px 14px 0 rgb(220 38 255 / 24%)',
   },
+  secondary: {
+    '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 36%)',
+    '--button-shadow-hover': '0 4px 14px 0 rgb(0 118 255 / 30%)',
+  },
   soft: {
     '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 10%)',
     '--button-shadow-hover': '0 3px 14px 0 rgb(0 118 255 / 10%)',
