@@ -242,7 +242,7 @@ export default function ForDevelopers() {
                 </Type>
               </li>
             </ul>
-            <Link href="/docs/guides/document-fields">
+            <Link href="/docs/guides/document-field-demo">
               <a>Try the demo →</a>
             </Link>
           </div>
