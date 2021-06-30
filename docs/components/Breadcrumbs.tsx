@@ -76,7 +76,7 @@ export function Breadcrumbs() {
             <Link href={href}>
               <a>
                 <Type
-                  look="body14"
+                  look="body12"
                   css={{
                     textTransform: 'uppercase',
                     color: 'var(--muted)',
