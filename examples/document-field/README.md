@@ -1,6 +1,6 @@
 ## Feature Example - Document Field
 
-This project demonstrates how to configure [document fields](https://next.keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend application.
+This project demonstrates how to configure [document fields](https://keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend application.
 It builds on the [Blog](../blog) starter project.
 
 ## Instructions

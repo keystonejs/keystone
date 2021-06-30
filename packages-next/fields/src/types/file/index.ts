@@ -42,7 +42,7 @@ const fileFields = schema.fields<FileData>()({
     resolve(data, args, context) {
       if (!context.files) {
         throw new Error(
-          'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://next.keystonejs.com/apis/config#files for details'
+          'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
         );
       }
       return context.files.getSrc(data.mode, data.filename);
