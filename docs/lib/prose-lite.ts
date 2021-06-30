@@ -1,5 +1,5 @@
 export const proseStyles = {
-  color: 'var(--code)',
+  color: 'var(--muted)',
   'img, video': {
     maxWidth: '100%',
     height: 'auto',
@@ -8,7 +8,7 @@ export const proseStyles = {
     content: '""',
   },
   a: {
-    color: 'var(--text-heading)',
+    color: 'var(--text)',
     textDecoration: 'underline',
     fontWeight: 500,
   },
@@ -16,7 +16,7 @@ export const proseStyles = {
     color: 'var(--link)',
   },
   strong: {
-    color: 'var(--text-heading)',
+    color: 'var(--text)',
     fontWeight: 600,
   },
   'ol[type="A"], ol[type="A" s]': {

@@ -69,7 +69,7 @@ export function H1(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-xxlarge)',
         fontWeight: 700,
-        letterSpacing: '-0.025em',
+        letterSpacing: '-0.03rem',
         marginTop: 0,
       }}
       as="h1"

@@ -18,7 +18,7 @@ export default function Docs() {
         Keystone Docs
       </Type>
 
-      <Type as="p" look="body18" margin="1.25rem 0 0 0">
+      <Type as="p" look="body18" margin="1.25rem 0 0">
         More than a backend framework. More than a Headless CMS. Keystone is a platform for next-gen
         development workflows and evolution.
       </Type>
