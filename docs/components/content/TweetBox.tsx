@@ -17,7 +17,7 @@ export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps)
       css={{
         background: 'var(--app-bg)',
         padding: '2rem',
-        border: '1px solid var(--border-muted)', 
+        border: '1px solid var(--border-muted)',
         borderRadius: '1rem',
         boxShadow: '0px 20px 38px -7px var(--shadow)',
         maxWidth: '22.5rem',

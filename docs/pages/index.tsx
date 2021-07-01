@@ -103,7 +103,7 @@ export default function IndexPage() {
             >
               <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. <br  css={{ padding: '0 0 2rem 0' }}/>
+                big products at scale for names you know. <br css={{ padding: '0 0 2rem 0' }} />
                 <Link href="/why-keystone">
                   <a>Why we built Keystone</a>
                 </Link>
@@ -121,7 +121,7 @@ export default function IndexPage() {
                 margin: 0,
                 padding: 0,
                 display: 'grid',
-                gridTemplateColumns: [ '1fr', 'auto auto auto' ],
+                gridTemplateColumns: ['1fr', 'auto auto auto'],
               })}
             >
               <li>

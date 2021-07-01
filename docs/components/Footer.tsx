@@ -78,7 +78,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/for-content-management">
-                  <a >For Content management</a>
+                  <a>For Content management</a>
                 </Link>
               </li>
             </List>
