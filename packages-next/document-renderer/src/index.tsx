@@ -32,6 +32,7 @@ interface Renderers {
   inline: {
     link: Component<{ children: ReactNode; href: string }> | 'a';
     relationship: Component<{
+      relationship: string;
       data: { id: string; label: string; data: Record<string, any> } | null;
     }>;
   } & MarkRenderers;
@@ -185,6 +186,7 @@ function DocumentNode({
       const data = node.data as any;
       return (
         <renderers.inline.relationship
+          relationship={node.relationship as string}
           data={
             data
               ? {
