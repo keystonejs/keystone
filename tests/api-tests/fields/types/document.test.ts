@@ -23,7 +23,19 @@ const runner = setupTestRunner({
         },
       }),
       Author: list({
-        fields: { name: text() },
+        fields: {
+          name: text(),
+          bio: document({
+            relationships: {
+              mention: {
+                kind: 'inline',
+                listKey: 'Author',
+                label: 'Mention',
+                // selection: INTENTIONALLY LEFT BLANK
+              },
+            },
+          }),
+        },
         access: { read: { name_not: 'Charlie' } },
       }),
     }),
@@ -32,9 +44,57 @@ const runner = setupTestRunner({
 
 const initData = async ({ context }: { context: KeystoneContext }) => {
   const alice = await context.lists.Author.createOne({ data: { name: 'Alice' } });
-  const bob = await context.lists.Author.createOne({ data: { name: 'Bob' } });
+  const bob = await context.lists.Author.createOne({
+    data: {
+      name: 'Bob',
+      bio: [
+        {
+          type: 'paragraph',
+          children: [
+            { text: '' },
+            {
+              type: 'relationship',
+              data: { id: alice.id } as T,
+              relationship: 'mention',
+              children: [{ text: '' }],
+            },
+            { text: '' },
+          ],
+        },
+      ],
+    },
+  });
   const charlie = await context.lists.Author.createOne({ data: { name: 'Charlie' } });
-  type T = { id: string; label?: string; data?: Record<string, any> } | null;
+  const bio = [
+    {
+      type: 'paragraph',
+      children: [
+        { text: '' },
+        {
+          type: 'relationship',
+          data: { id: alice.id } as T,
+          relationship: 'mention',
+          children: [{ text: '' }],
+        },
+        { text: '' },
+      ],
+    },
+    {
+      type: 'paragraph',
+      children: [
+        { text: '' },
+        {
+          type: 'relationship',
+          data: { id: charlie.id } as T,
+          relationship: 'mention',
+          children: [{ text: '' }],
+        },
+        { text: '' },
+      ],
+    },
+  ];
+  const dave = await context.lists.Author.createOne({ data: { name: 'Dave', bio } });
+  type T = { id: string; label?: string; data?: Record<string, any> | null };
   const content = [
     {
       type: 'paragraph',
@@ -77,7 +137,7 @@ const initData = async ({ context }: { context: KeystoneContext }) => {
     },
   ];
   const post = await context.lists.Post.createOne({ data: { content } });
-  return { alice, bob, charlie, post, content };
+  return { alice, bob, charlie, dave, post, content, bio };
 };
 
 describe('Document field type', () => {
@@ -110,7 +170,7 @@ describe('Document field type', () => {
   test(
     'hydrateRelationships: true',
     runner(async ({ context }) => {
-      const { alice, bob, post, content } = await initData({ context });
+      const { alice, bob, charlie, post, content } = await initData({ context });
 
       const _post = await context.lists.Post.findOne({
         where: { id: post.id },
@@ -123,7 +183,7 @@ describe('Document field type', () => {
       };
       content[1].children[1].data = { id: bob.id, label: 'Bob', data: { id: bob.id, name: 'Bob' } };
       // Access denied on charlie;
-      content[2].children[1].data = null;
+      content[2].children[1].data = { id: charlie.id, label: charlie.id, data: null };
       expect(_post.content.document).toEqual(content);
     })
   );
@@ -131,7 +191,7 @@ describe('Document field type', () => {
   test(
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
-      const { alice, bob, post, content } = await initData({ context });
+      const { alice, bob, charlie, post, content } = await initData({ context });
       await context.lists.Author.deleteOne({ id: bob.id });
       const _post = await context.lists.Post.findOne({
         where: { id: post.id },
@@ -143,10 +203,29 @@ describe('Document field type', () => {
         data: { id: alice.id, name: 'Alice' },
       };
       // We expect the `data` field of the relationship to be null
-      content[1].children[1].data = null;
+      content[1].children[1].data = { id: bob.id, label: bob.id, data: null };
       // Access denied on charlie;
-      content[2].children[1].data = null;
+      content[2].children[1].data = { id: charlie.id, label: charlie.id, data: null };
       expect(_post.content.document).toEqual(content);
+    })
+  );
+
+  test(
+    'hydrateRelationships: true - selection undefined',
+    runner(async ({ context }) => {
+      const { alice, charlie, dave, bio } = await initData({ context });
+
+      const _dave = await context.lists.Author.findOne({
+        where: { id: dave.id },
+        query: 'bio { document(hydrateRelationships: true) }',
+      });
+
+      // With no selection, we expect data to be an empty object
+      bio[0].children[1].data = { id: alice.id, label: 'Alice', data: {} };
+      // But still, and access-denied user will return data: null
+      bio[1].children[1].data = { id: charlie.id, label: charlie.id, data: null };
+
+      expect(_dave.bio.document).toEqual(bio);
     })
   );
 });

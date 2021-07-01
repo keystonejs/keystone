@@ -58,11 +58,8 @@ export function addRelationshipData(
         } catch (err) {
           // If we're unable to find the user (e.g. we have a dangling reference), or access was denied
           // then simply return null.
-          console.error(
-            `Unable to fetch relationship data: relationship: ${JSON.stringify(
-              relationship
-            )}, id: ${id} `
-          );
+          const r = JSON.stringify(relationship);
+          console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
           console.error(err);
           return { id, label: id, data: null };
         }
@@ -71,11 +68,7 @@ export function addRelationshipData(
               id,
               label: val.item[labelFieldAlias],
               data: (() => {
-                const {
-                  [labelFieldAlias]: _ignore,
-                  [idFieldAlias]: _ignore2,
-                  ...otherData
-                } = val.item;
+                const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
                 return otherData;
               })(),
             }
