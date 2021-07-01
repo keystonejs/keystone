@@ -41,7 +41,7 @@ export function addRelationshipData(
       }
       return [];
     } else {
-      // Inline
+      // Single related item
       const id = data?.id;
       if (id != null) {
         const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
