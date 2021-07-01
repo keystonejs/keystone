@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
+    "@emotion/cache": "11.4.0",
     "@emotion/react": "^11.4.0",
+    "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^7.0.0",
     "@mdx-js/loader": "next",
