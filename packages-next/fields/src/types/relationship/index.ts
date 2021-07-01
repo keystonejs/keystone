@@ -97,6 +97,7 @@ export const relationship =
                 inlineCreate: config.ui.inlineCreate ?? null,
                 inlineEdit: config.ui.inlineEdit ?? null,
                 inlineConnect: config.ui.inlineConnect ?? false,
+                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }
