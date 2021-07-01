@@ -384,6 +384,7 @@ export const controller = (
           inlineCreate: { fields: string[] } | null;
           inlineEdit: { fields: string[] } | null;
           inlineConnect: boolean;
+          refLabelField: string;
         }
       | { displayMode: 'count' }
     )
@@ -418,6 +419,7 @@ export const controller = (
           `${config.path}__id: id
            ${config.path} {
             id
+            label: ${config.fieldMeta.refLabelField}
            }`
         : config.fieldMeta.displayMode === 'count'
         ? `_${config.path}Meta {count}`
