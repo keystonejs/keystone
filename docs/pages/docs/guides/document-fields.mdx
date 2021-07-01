@@ -153,12 +153,14 @@ const renderers: DocumentRendererProps['renderers'] = {
 
 ## Inline Relationships
 
-The document field can also have inline relationships for things like mentions.
-These are not stored like relationship fields on lists, they are stored as ids in the document structure.
+The document field can also have inline relationships which reference other items in your system.
+For example, you might want to include twitter-style mentions of other users in a blog application.
+We can achieve this with the `relationships` option to the document field.
 
 ```tsx
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
 import { document } from '@keystone-next/fields-document';
+import { text } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
@@ -168,29 +170,62 @@ export default config({
           relationships: {
             mention: {
               kind: 'inline',
-              listKey: 'User',
+              listKey: 'Author',
               label: 'Mention',
-              selection: 'name',
+              selection: 'id name',
             },
           },
-          /* ... */
         }),
-        /* ... */
       },
     }),
-    User: list({
+    Author: list({
       fields: {
         name: text(),
       }
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
-By default, only the ids for the relationships are returned when querying for the document.
-To include the `label` and extra data from the `selection` specified in the `relationship`, pass `hydrateRelationships: true` to the GraphQL query.
+We use the `kind: 'inline'` option to indicate that we want to have an inline relationship.
+The other option, `kind: 'prop'`, is used with custom component blocks, which are discussed [below](#component-blocks).
+
+When you add an inline relationship to your document field, it becomes accessible in the Admin UI behind the `+` icon.
+This menu uses the `label` specified in the relationship config.
+
+![The Admin UI showing the relationship label behind the plus menu icon](/assets/guides/document-fields/inline-relationship-label.png)
+
+You can also access the relationship directly using the `/` command and then starting to type the label.
+
+![The Admin UI showing use of slash (/) to select the inline relationship](/assets/guides/document-fields/inline-relationship-slash.png)
+
+You can then select an item from the list specified by `listKey` from the inline select component in the document editor.
+
+![The Admin UI showing the select field used to choose a related item](/assets/guides/document-fields/inline-relationship-select.png)
+
+!> **Tip**: The select component will use the [`ui.labelField`](../apis/schema#ui) of the related list in its options list.
+Make sure you have this value configured to make finding related items easier for your users.
+
+### Querying inline relationships
+
+The document field stores the `id` of the related item in its data structure.
+If you query for the document, the inline relationship block will include the ID as `data.id`.
+
+```JSON
+...
+  {
+    "type": "relationship",
+    "data": {
+      "id": "ckqk4hkcg0030f5mu6le6xydu"
+    },
+    "relationship": "mention",
+    "children": [{ "text": "" }
+  },
+...
+```
+
+This is generally not very useful if you want to render the item in your document.
+To obtain more useful data, we can pass the `hydrateRelationships: true` option to our query.
 
 ```graphql
 query {
@@ -202,7 +237,65 @@ query {
 }
 ```
 
-Whenever a value is saved to the document field, the extra data from the `selection` and the `label` on `relationships` are removed (if they exist) so only the `id` is stored.
+This will add a `data.label` value, based on the related item's label field, and a `data.data` value, which is populated with the data indicated by the `selection` config option.
+
+```JSON
+...
+  {
+    "type": "relationship",
+    "data": {
+      "id": "ckqk4hkcg0030f5mu6le6xydu",
+      "label": "Alice",
+      "data": {
+        "id": "ckqk4hkcg0030f5mu6le6xydu",
+        "name": "Alice"
+      }
+    },
+    "relationship": "mention",
+    "children": [{ "text": "" }
+  },
+...
+```
+
+?> **Null data:** It is possible to add an inline relationship in the document editor without actually selecting a related item. In these cases, the value of `data` will be `null`.
+
+?> **Dangling references:** The data for relationships are stored as IDs within the JSON data structure of the document.
+If an item in your database is deleted, the document field will not have any knowledge of this, and you will be left with a dangling reference in your document data.
+In other instances the person querying for the document may not have read access to the related item.
+In both these cases the `data.label` and `data.data` values will be `undefined`.
+
+### Rendering inline relationships
+
+The `DocumentRenderer` has a rudimentary renderer built in for inline relationships which simply returns the `data.label` (or `data.id` if `hydrateRelationships` is `false`) inside a `<span>` tag.
+This is unlikely to be what you want, so you will need to define a custom renderer for your relationship.
+
+A custom renderer for our `mention` relationship might look like:
+
+```typescript
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+
+const renderers: DocumentRendererProps['renderers'] = {
+  inline: {
+    relationship({ relationship, data }) {
+      if (relationship === 'mention') {
+        if (data === null || data.data === undefined) {
+          return <span>[unknown author]</span>
+        } else {
+          return <Link href={`/author/${data.data.id}`}>{data.data.name}</Link>;
+        }
+      }
+      return null;
+    },
+  },
+};
+
+<DocumentRenderer document={document} renderers={renderers} />;
+```
+
+The `relationship` argument lets you write renderers for each of the different relationships defined in your document.
+The `data` argument is provided directly from the query, and we can use the properies of `data.data` to render our mentions as links to the author's page.
+
+?> **Missing data:** Make sure your renderer checks for `data === null` (no item selected) and `data.data === undefined` (selected item not found) and handles these cases appropriately.
 
 ## Component Blocks
 
@@ -486,7 +579,7 @@ export default config({
           relationships: {
             featuredAuthors: {
               kind: 'prop',
-              listKey: 'User',
+              listKey: 'Author',
               selection: 'posts { id title }',
               many: true,
             },
