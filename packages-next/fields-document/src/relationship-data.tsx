@@ -64,7 +64,7 @@ export function addRelationshipData(
             )}, id: ${id} `
           );
           console.error(err);
-          return null;
+          return { id, label: id, data: null };
         }
         return val.item
           ? {

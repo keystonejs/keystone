@@ -192,7 +192,7 @@ function DocumentNode({
               ? {
                   id: data.id,
                   label: data.label || data.id,
-                  data: data.data || {},
+                  data: data.data || null,
                 }
               : null
           }
