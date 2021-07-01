@@ -24,6 +24,7 @@ function List(props: HTMLAttributes<HTMLElement>) {
         },
         '& a': {
           color: 'var(--muted)',
+          lineHeight: 1.4,
         },
       }}
       {...props}
@@ -77,7 +78,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/for-content-management">
-                  <a>For Content management</a>
+                  <a >For Content management</a>
                 </Link>
               </li>
             </List>
@@ -176,8 +177,8 @@ export function Footer() {
           </div>
           <div
             css={mq({
-              borderLeft: [null, null, null, '1px solid var(--border)'],
-              paddingLeft: [null, null, null, '3rem'],
+              // borderLeft: [null, null, null, '1px solid var(--border)'],
+              // paddingLeft: [null, null, null, '3rem'],
               gridColumn: [null, '1 / 5', null, 'inherit'],
             })}
           >

@@ -87,7 +87,7 @@ export default function IndexPage() {
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '0.85fr 1.15fr'],
-            gap: ['1rem', '2rem', '4rem'],
+            gap: ['1rem', '2rem', '6rem'],
           })}
         >
           <div>
@@ -97,18 +97,18 @@ export default function IndexPage() {
             <div
               css={{
                 display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
+                gridTemplateColumns: '1fr auto',
                 gap: '1rem',
               }}
             >
-              <Thinkmill css={{ height: '3.75rem' }} />
               <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. <br />
+                big products at scale for names you know. <br  css={{ padding: '0 0 2rem 0' }}/>
                 <Link href="/why-keystone">
                   <a>Why we built Keystone</a>
                 </Link>
               </Type>
+              <Thinkmill css={{ height: '3.75rem' }} />
             </div>
           </div>
           <div>
@@ -116,17 +116,17 @@ export default function IndexPage() {
               Open Source & trusted
             </Type>
             <ul
-              css={{
+              css={mq({
                 listStyle: 'none',
                 margin: 0,
                 padding: 0,
                 display: 'grid',
-                gridTemplateColumns: 'auto auto auto',
-              }}
+                gridTemplateColumns: [ '1fr', 'auto auto auto' ],
+              })}
             >
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">1m+</Highlight>
+                  <Highlight look="grad1">1m+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> Installs
@@ -134,7 +134,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">160+</Highlight>
+                  <Highlight look="grad1">160+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   Contributors
@@ -142,7 +142,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">2013</Highlight>
+                  <Highlight look="grad1">2013</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   First Commit
