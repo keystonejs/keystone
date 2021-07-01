@@ -41,16 +41,31 @@ export function addRelationshipData(
       }
       return [];
     } else {
+      // Inline
       const id = data?.id;
       if (id != null) {
         const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
-        let val = await graphQLAPI.run({
-          query: `query($id: ID!) {item:${
-            relationship.listKey
-          }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${relationship.selection || ''}}}`,
-          variables: { id },
-        });
-
+        let val;
+        try {
+          val = await graphQLAPI.run({
+            query: `query($id: ID!) {item:${
+              relationship.listKey
+            }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${
+              relationship.selection || ''
+            }}}`,
+            variables: { id },
+          });
+        } catch (err) {
+          // If we're unable to find the user (e.g. we have a dangling reference), or access was denied
+          // then simply return null.
+          console.error(
+            `Unable to fetch relationship data: relationship: ${JSON.stringify(
+              relationship
+            )}, id: ${id} `
+          );
+          console.error(err);
+          return null;
+        }
         return val.item
           ? {
               id,

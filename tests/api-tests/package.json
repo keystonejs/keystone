@@ -13,6 +13,7 @@
   "devDependencies": {
     "@hapi/iron": "^6.0.0",
     "@keystone-next/auth": "*",
+    "@keystone-next/fields-document": "*",
     "@keystone-next/fields": "*",
     "@keystone-next/keystone": "*",
     "cookie-signature": "^1.1.0",
