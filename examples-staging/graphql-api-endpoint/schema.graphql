@@ -193,7 +193,7 @@ type Post {
 }
 
 type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
+  document(hydrateRelationships: Boolean! = true): JSON!
 }
 
 input PostWhereInput {

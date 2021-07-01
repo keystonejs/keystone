@@ -177,7 +177,7 @@ export default function Post() {
             name
           }
           content {
-            document(hydrateRelationships: true)
+            document
           }
         }
       }

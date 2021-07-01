@@ -130,7 +130,7 @@ export const document =
               args: {
                 hydrateRelationships: schema.arg({
                   type: schema.nonNull(schema.Boolean),
-                  defaultValue: false,
+                  defaultValue: true,
                 }),
               },
               type: schema.nonNull(schema.JSON),

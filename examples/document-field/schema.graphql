@@ -17,7 +17,7 @@ enum PostStatusType {
 }
 
 type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
+  document(hydrateRelationships: Boolean! = true): JSON!
 }
 
 input PostWhereInput {
@@ -161,7 +161,7 @@ type _QueryMeta {
 }
 
 type Author_bio_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
+  document(hydrateRelationships: Boolean! = true): JSON!
 }
 
 input AuthorWhereInput {
