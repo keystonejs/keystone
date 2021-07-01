@@ -63,16 +63,14 @@ export function addRelationshipData(
           console.error(err);
           return { id, label: id, data: null };
         }
-        return val.item
-          ? {
-              id,
-              label: val.item[labelFieldAlias],
-              data: (() => {
-                const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
-                return otherData;
-              })(),
-            }
-          : null;
+        return {
+          id,
+          label: val.item[labelFieldAlias],
+          data: (() => {
+            const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
+            return otherData;
+          })(),
+        };
       }
     }
   };
