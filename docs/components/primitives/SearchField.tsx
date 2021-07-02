@@ -2,11 +2,10 @@
 import { jsx, Global, css } from '@emotion/react';
 import { Fragment, HTMLAttributes } from 'react';
 
+import { algoliaStyles } from '../../lib/algoliaStyles';
 import { SearchKeys } from '../icons/SearchKeys';
 import { Search } from '../icons/Search';
 import { Field } from './Field';
-
-import { algoliaStyles } from '../../lib/algoliaStyles';
 
 type SearchFieldProps = HTMLAttributes<HTMLElement>;
 
