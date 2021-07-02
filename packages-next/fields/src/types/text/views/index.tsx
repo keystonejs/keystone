@@ -53,14 +53,17 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 type Config = FieldControllerConfig<{
-  displayMode: 'input' | 'textarea',
-  maxLength?: number,
-  fixedLength?: number,
+  displayMode: 'input' | 'textarea';
+  maxLength?: number;
+  fixedLength?: number;
 }>;
 
 export const controller = (
   config: Config
-): FieldController<string, string> & { displayMode: 'input' | 'textarea', placeholder: string | undefined } => {
+): FieldController<string, string> & {
+  displayMode: 'input' | 'textarea';
+  placeholder: string | undefined;
+} => {
   console.log(config);
   return {
     path: config.path,
@@ -70,8 +73,8 @@ export const controller = (
     placeholder: config.fieldMeta.maxLength
       ? `Maximum length: ${config.fieldMeta.maxLength}`
       : config.fieldMeta.fixedLength
-        ? `Fixed length: ${config.fieldMeta.fixedLength}`
-        : '',
+      ? `Fixed length: ${config.fieldMeta.fixedLength}`
+      : '',
     displayMode: config.fieldMeta.displayMode,
     deserialize: data => {
       const value = data[config.path];
