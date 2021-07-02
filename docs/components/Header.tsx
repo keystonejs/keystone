@@ -106,14 +106,17 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
-    if (window.docsearch) {
+    // @ts-ignore
+    if (window !== 'undefined' && window.docsearch) {
+      // @ts-ignore
       window.docsearch({
         apiKey: '211e94c001e6b4c6744ae72fb252eaba',
         indexName: 'keystonejs',
         inputSelector: '#search-field',
       });
     } else {
-      document.getElementById('search-field-container').style.visibility = 'hidden';
+      // @ts-ignore
+      document.getElementById('search-field-container')?.style.visibility = 'hidden';
     }
   }, []);
   const handleOpen = useCallback(() => {
