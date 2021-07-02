@@ -25,6 +25,16 @@ export const lists = createSchema({
           [1, 1],
           [1, 1, 1],
         ],
+        // We want to support twitter-style mentions in blogs, so we add an
+        // inline relationship which references the `Author` list.
+        relationships: {
+          mention: {
+            kind: 'inline',
+            listKey: 'Author',
+            label: 'Mention', // This will display in the Admin UI toolbar behind the `+` icon
+            selection: 'id name', // These fields will be available to the renderer
+          },
+        },
       }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
