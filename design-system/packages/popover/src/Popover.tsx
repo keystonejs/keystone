@@ -218,6 +218,9 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
     return (
       <Portal>
         <div
+          role="dialog"
+          aria-hidden={isVisible ? 'false' : 'true'}
+          aria-modal="true"
           ref={consumerRef}
           css={{
             background: colors.background,
@@ -230,14 +233,8 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           }}
           {...props}
         >
-          <div ref={focusTrapRef}>
-            {isVisible && (
-              <Fragment>
-                <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-                {children}
-              </Fragment>
-            )}
-          </div>
+          <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          <div ref={focusTrapRef}>{isVisible ? children : null}</div>
         </div>
       </Portal>
     );

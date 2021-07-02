@@ -1,5 +1,50 @@
 # @keystone-next/types
 
+## 21.0.1
+
+### Patch Changes
+
+- [#6029](https://github.com/keystonejs/keystone/pull/6029) [`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5) Thanks [@bladey](https://github.com/bladey)! - Updated Keystone URL reference from next.keystonejs.com to keystonejs.com.
+
+- Updated dependencies [[`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5), [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5)]:
+  - @keystone-next/fields@11.0.3
+
+## 21.0.0
+
+### Major Changes
+
+- [#5947](https://github.com/keystonejs/keystone/pull/5947) [`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced the `idField` list configuration option with a more constrained option, `db.idField`, that accepts an object with a `kind` property with a value of `cuid`, `uuid` or `autoincrement`. `db.idField` can be set on either the top level `config` object, or on individual lists.
+
+  The default behaviour has changed from using `autoincrement` to using cuids. To keep the current behaviour, you should set `{ kind: 'autoincrement' }` at `db.idField` in your top level config.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-next/fields@11.0.2
+
+## 20.0.1
+
+### Patch Changes
+
+- [#5910](https://github.com/keystonejs/keystone/pull/5910) [`50ad1ce6b`](https://github.com/keystonejs/keystone/commit/50ad1ce6be90f5fb2481840dbd01328b6f629432) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed generated list types to allow passing a value directly when a GraphQL list of the value is expected
+
+* [#5907](https://github.com/keystonejs/keystone/pull/5907) [`0df3734d5`](https://github.com/keystonejs/keystone/commit/0df3734d52a89df30f1d555d003002cb79ad9e9a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `lists` and `db.lists` APIs on `KeystoneContext` to have improved types. If you're using the generated `KeystoneListsTypeInfo` type like this:
+
+  ```ts
+  const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
+  ```
+
+  You will have to change it to use `as` like this:
+
+  ```ts
+  const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
+  ```
+
+- [#5992](https://github.com/keystonejs/keystone/pull/5992) [`543154bc0`](https://github.com/keystonejs/keystone/commit/543154bc081dde33ea29b8a2bff1d3033d538077) Thanks [@timleslie](https://github.com/timleslie)! - Pinned dependency `decimal.js` to `10.2.1` to be consistent with Prisma.
+
+- Updated dependencies [[`de0a5c19e`](https://github.com/keystonejs/keystone/commit/de0a5c19e656360ea3febc7e0240543c7817253e), [`7a25925c3`](https://github.com/keystonejs/keystone/commit/7a25925c3dc5b2af2cf1209ee949563fb71a4a8c), [`543154bc0`](https://github.com/keystonejs/keystone/commit/543154bc081dde33ea29b8a2bff1d3033d538077), [`972e04514`](https://github.com/keystonejs/keystone/commit/972e045145711e39fd6fa167cb87fa05e062272c)]:
+  - @keystone-next/fields@11.0.1
+
 ## 20.0.0
 
 ### Major Changes

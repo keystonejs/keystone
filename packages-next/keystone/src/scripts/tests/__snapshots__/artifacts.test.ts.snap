@@ -20,16 +20,8 @@ export type TodoWhereInput = {
   readonly id_lte?: Scalars['ID'] | null;
   readonly id_gt?: Scalars['ID'] | null;
   readonly id_gte?: Scalars['ID'] | null;
-  readonly id_in?:
-    | ReadonlyArray<Scalars['ID'] | null>
-    | Scalars['ID']
-    | null
-    | null;
-  readonly id_not_in?:
-    | ReadonlyArray<Scalars['ID'] | null>
-    | Scalars['ID']
-    | null
-    | null;
+  readonly id_in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
+  readonly id_not_in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
   readonly title?: Scalars['String'] | null;
   readonly title_not?: Scalars['String'] | null;
   readonly title_contains?: Scalars['String'] | null;

@@ -9,18 +9,18 @@ generator client {
 }
 
 model Package {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   label     String?
   pkgjson   String?
   isPrivate Boolean?
   ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
-  ownedById Int?     @map("ownedBy")
+  ownedById String?  @map("ownedBy")
 
   @@index([ownedById])
 }
 
 model Person {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(cuid())
   name     String?
   packages Package[] @relation("Package_ownedBy")
 }

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/popover",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "license": "MIT",
   "main": "dist/popover.cjs.js",
   "module": "dist/popover.esm.js",
@@ -16,7 +16,7 @@
     "@babel/runtime": "^7.14.6",
     "@keystone-ui/core": "^3.0.0",
     "@popperjs/core": "^2.9.2",
-    "focus-trap": "^6.5.0",
+    "focus-trap": "^6.5.1",
     "react-popper": "^2.2.5"
   },
   "engines": {

@@ -71,6 +71,8 @@ export function FieldSelection({
 
   return (
     <Popover
+      aria-label="Columns options"
+      aria-description={`list of column options to apply to the ${list.key} list`}
       triggerRenderer={({ triggerProps }) => {
         return (
           <Button weight="link" css={{ padding: 4 }} {...triggerProps}>

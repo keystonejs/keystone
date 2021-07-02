@@ -119,7 +119,9 @@ tags
 projects/
 temp/
 
-.api-test-prisma-clients
-
 # SQLite databases
 *.db
+
+# Generated files from build process
+robots.txt
+sitemap.xml

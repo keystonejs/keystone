@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
   "files": [
@@ -22,10 +22,10 @@
     "@babel/runtime": "^7.14.6",
     "@braintree/sanitize-url": "^5.0.2",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/admin-ui-utils": "^5.0.2",
-    "@keystone-next/fields": "^11.0.0",
-    "@keystone-next/keystone": "^20.0.0",
-    "@keystone-next/types": "^20.0.0",
+    "@keystone-next/admin-ui-utils": "^5.0.3",
+    "@keystone-next/fields": "^11.0.2",
+    "@keystone-next/keystone": "^21.0.0",
+    "@keystone-next/types": "^21.0.0",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.0",
     "@keystone-ui/fields": "^4.1.1",
@@ -35,7 +35,7 @@
     "@types/react": "^17.0.11",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.10.5",
-    "graphql": "^15.5.0",
+    "graphql": "^15.5.1",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
@@ -54,10 +54,10 @@
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document",
   "devDependencies": {
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/react": "^12.0.0",
     "array.prototype.flat": "^1.2.4",
-    "jest-diff": "^26.6.2",
-    "pretty-format": "^26.6.2",
+    "jest-diff": "^27.0.6",
+    "pretty-format": "^27.0.6",
     "slate-hyperscript": "^0.60.8"
   },
   "engines": {

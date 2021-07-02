@@ -41,30 +41,45 @@ export function addRelationshipData(
       }
       return [];
     } else {
+      // Single related item
       const id = data?.id;
       if (id != null) {
         const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
-        let val = await graphQLAPI.run({
-          query: `query($id: ID!) {item:${
-            relationship.listKey
-          }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${relationship.selection || ''}}}`,
-          variables: { id },
-        });
-
-        return val.item
-          ? {
-              id,
-              label: val.item[labelFieldAlias],
-              data: (() => {
-                const {
-                  [labelFieldAlias]: _ignore,
-                  [idFieldAlias]: _ignore2,
-                  ...otherData
-                } = val.item;
-                return otherData;
-              })(),
-            }
-          : null;
+        let val;
+        try {
+          val = await graphQLAPI.run({
+            query: `query($id: ID!) {item:${
+              relationship.listKey
+            }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${
+              relationship.selection || ''
+            }}}`,
+            variables: { id },
+          });
+        } catch (err) {
+          if (err.message === 'You do not have access to this resource') {
+            // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
+            // then simply return { id } and leave `label` and `data` undefined.
+            const r = JSON.stringify(relationship);
+            console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
+            console.error(err);
+            return { id };
+          } else {
+            // Other types of errors indicate something wrong with either the system or the
+            // configuration (e.g. a bad selection field) and they should be surfaced as a
+            // GraphQL error.
+            throw err;
+          }
+        }
+        return {
+          id,
+          label: val.item[labelFieldAlias],
+          data: (() => {
+            const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
+            return otherData;
+          })(),
+        };
+      } else {
+        return null;
       }
     }
   };

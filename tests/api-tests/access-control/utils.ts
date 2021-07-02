@@ -1,12 +1,12 @@
 import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
-import { setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createAuth } from '@keystone-next/auth';
-import type { DatabaseProvider, KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneConfig } from '@keystone-next/types';
+import { apiTestConfig } from '../utils';
 
-const FAKE_ID = { postgresql: 137, sqlite: 137 } as const;
-const FAKE_ID_2 = { postgresql: 138, sqlite: 138 } as const;
+const FAKE_ID = { postgresql: 'cdsfasfafafadfasdf', sqlite: 'cdsfasfafafadfasdf' } as const;
+const FAKE_ID_2 = { postgresql: 'csdfbstrsbaf', sqlite: 'csdfbstrsbaf' } as const;
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
@@ -88,67 +88,68 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
     },
   }),
 });
-function setupKeystone(provider: DatabaseProvider) {
-  const lists = createSchema({
-    User: list({
-      fields: {
-        name: text(),
-        email: text(),
-        password: password(),
-        noRead: text({ access: { read: () => false } }),
-        yesRead: text({ access: { read: () => true } }),
-      },
-    }),
-  });
 
-  listAccessVariations.forEach(access => {
-    lists[getStaticListName(access)] = list({
-      fields: Object.assign(
-        {
-          name: text(),
-        },
-        ...fieldMatrix.map(variation => createFieldStatic(variation))
-      ),
-      access,
-    });
-    lists[getImperativeListName(access)] = list({
-      fields: Object.assign(
-        {
-          name: text(),
-        },
-        ...fieldMatrix.map(variation => createFieldImperative(variation))
-      ),
-      access: {
-        create: () => access.create,
-        read: () => access.read,
-        update: () => access.update,
-        delete: () => access.delete,
+const lists = createSchema({
+  User: list({
+    fields: {
+      name: text(),
+      email: text(),
+      password: password(),
+      noRead: text({ access: { read: () => false } }),
+      yesRead: text({ access: { read: () => true } }),
+    },
+  }),
+});
+
+listAccessVariations.forEach(access => {
+  lists[getStaticListName(access)] = list({
+    fields: Object.assign(
+      {
+        name: text(),
       },
-    });
-    lists[getDeclarativeListName(access)] = list({
-      fields: { name: text() },
-      access: {
-        create: access.create,
-        // arbitrarily restrict the data to a single item (see data.js)
-        read: () => access.read && { name: 'Hello' },
-        update: () => access.update && { name: 'Hello' },
-        delete: () => access.delete && { name: 'Hello' },
-      },
-    });
-  });
-  const auth = createAuth({
-    listKey: 'User',
-    identityField: 'email',
-    secretField: 'password',
-    sessionData: 'id',
-  });
-  return setupFromConfig({
-    provider,
-    config: auth.withAuth(
-      testConfig({ lists, session: statelessSessions({ secret: COOKIE_SECRET }) }) as KeystoneConfig
+      ...fieldMatrix.map(variation => createFieldStatic(variation))
     ),
+    access,
   });
-}
+  lists[getImperativeListName(access)] = list({
+    fields: Object.assign(
+      {
+        name: text(),
+      },
+      ...fieldMatrix.map(variation => createFieldImperative(variation))
+    ),
+    access: {
+      create: () => access.create,
+      read: () => access.read,
+      update: () => access.update,
+      delete: () => access.delete,
+    },
+  });
+  lists[getDeclarativeListName(access)] = list({
+    fields: { name: text() },
+    access: {
+      create: access.create,
+      // arbitrarily restrict the data to a single item (see data.js)
+      read: () => access.read && { name: 'Hello' },
+      update: () => access.update && { name: 'Hello' },
+      delete: () => access.delete && { name: 'Hello' },
+    },
+  });
+});
+const auth = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id',
+});
+
+const config = apiTestConfig(
+  auth.withAuth({
+    lists,
+    session: statelessSessions({ secret: COOKIE_SECRET }),
+  } as KeystoneConfig)
+);
+
 export {
   FAKE_ID,
   FAKE_ID_2,
@@ -158,6 +159,6 @@ export {
   listAccessVariations,
   fieldMatrix,
   nameFn,
-  setupKeystone,
+  config,
   getFieldName,
 };

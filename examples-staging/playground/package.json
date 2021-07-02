@@ -1,0 +1,22 @@
+{
+  "name": "@keystone-next/example-playground",
+  "version": "1.0.2",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@keystone-next/fields": "^11.0.2",
+    "@keystone-next/keystone": "^21.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.4"
+  },
+  "engines": {
+    "node": ">=v12.13.1"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/playground"
+}
