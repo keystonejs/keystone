@@ -97,7 +97,8 @@ export function createAdminMeta(
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
     for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
-      fieldMetaRootVal.fieldMeta = list.fields[key].getAdminMeta?.(adminMetaRoot) ?? null;
+      fieldMetaRootVal.fieldMeta =
+        list.fields[fieldMetaRootVal.path].getAdminMeta?.(adminMetaRoot) ?? null;
     }
   }
 
