@@ -57,9 +57,7 @@ export function mapUniqueWhereToWhere(
   const key = Object.keys(uniqueWhere)[0];
   const dbField = list.fields[key].dbField;
   if (dbField.kind !== 'scalar') {
-    throw new Error(
-      'Currently only Scalar db fields can provide a uniqueWhere input'
-    );
+    throw new Error('Currently only Scalar db fields can provide a uniqueWhere input');
   }
   const val = uniqueWhere[key];
   if (dbField.scalar === 'Int' && typeof val !== 'number') {

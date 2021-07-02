@@ -53,7 +53,7 @@ export const idFieldType =
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
-      ...config.overrideDbField
+      ...config.overrideDbField,
     })({
       input: {
         uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
@@ -95,9 +95,10 @@ export const idFieldType =
     if (config.overrideField) {
       // We need to merge each item, not overwrite it
       for (const key in config.overrideField) {
-        field[key] = typeof (config.overrideField[key]) === 'object'
-          ? { ...field[key], ...config.overrideField[key] }
-          : config.overrideField[key];
+        field[key] =
+          typeof config.overrideField[key] === 'object'
+            ? { ...field[key], ...config.overrideField[key] }
+            : config.overrideField[key];
       }
     }
     return field;
