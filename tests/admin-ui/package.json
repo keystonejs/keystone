@@ -1,0 +1,26 @@
+{
+  "name": "@keystone-next/admin-ui-tests",
+  "description": "A set of tests for the KeystoneJS Admin UI.",
+  "private": true,
+  "version": "0.0.1",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "devDependencies": {
+    "@keystone-next/auth": "*",
+    "@keystone-next/fields": "*",
+    "@keystone-next/keystone": "*",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "playwright": "^1.12.3"
+  },
+  "dependencies": {
+    "@keystone-next/testing": "^1.0.0",
+    "@keystone-next/types": "^20.0.1",
+    "@keystone-next/utils": "^1.0.0"
+  }
+}
