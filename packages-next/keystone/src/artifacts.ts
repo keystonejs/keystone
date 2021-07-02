@@ -4,6 +4,7 @@ import * as fs from 'fs-extra';
 import type { KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import { format } from 'prettier';
+import { predefinedGeneratorResolvers } from '@prisma/sdk/dist/predefinedGeneratorResolvers';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
@@ -204,10 +205,31 @@ export async function generateNodeModulesArtifacts(
   ]);
 }
 
+const prismaClientDir = path.dirname(require.resolve('@prisma/client/package.json'));
+
 async function generatePrismaClient(cwd: string) {
-  const generator = await getGenerator({ schemaPath: getSchemaPaths(cwd).prisma });
-  await generator.generate();
-  generator.stop();
+  const prevPredefinedGeneratorResolver = predefinedGeneratorResolvers['prisma-client-js'];
+  try {
+    // this is ofc v bad and relying on implementation details of prisma
+    // but we use fixed versions of prisma so we will know exactly when this breaks
+    // this hack exists because predefinedGeneratorResolvers['prisma-client-js']
+    // does some really slow things that aren't really necessary for us
+    // the big thing seems to be it traverses like every directory inside of your cwd trying the @prisma/client package
+    // (not sure if it's exactly that but something like that)
+    predefinedGeneratorResolvers['prisma-client-js'] = async () => {
+      return {
+        outputPath: prismaClientDir,
+        generatorPath: path.resolve(prismaClientDir, 'generator-build/index.js'),
+        isNode: true,
+      };
+    };
+
+    const generator = await getGenerator({ schemaPath: getSchemaPaths(cwd).prisma });
+    await generator.generate();
+    generator.stop();
+  } finally {
+    predefinedGeneratorResolvers['prisma-client-js'] = prevPredefinedGeneratorResolver;
+  }
 }
 
 export function requirePrismaClient(cwd: string) {
