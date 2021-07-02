@@ -41,9 +41,6 @@ const idParsers = {
     }
     throw new Error('Only a uuid can be passed to id filters');
   },
-  custom(val: string | null) {
-    return val;
-  },
 };
 
 export const idFieldType =
