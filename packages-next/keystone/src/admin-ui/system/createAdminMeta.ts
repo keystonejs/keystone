@@ -93,7 +93,7 @@ export function createAdminMeta(
     }
   }
 
-  // we do this seperately after so that fields can check their config to for example, validate their config
+  // we do this seperately to the above so that fields can check other fields to validate their config or etc.
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
     for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
