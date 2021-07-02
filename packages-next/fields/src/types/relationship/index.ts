@@ -84,6 +84,33 @@ export const relationship =
             `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
           );
         }
+        if (config.ui?.displayMode === 'cards') {
+          // we're checking whether the field which will be in the admin meta at the time that getAdminMeta is called
+          // in newer version of keystone and will not be true for older versions of keystone
+          // so that the relationship fields doesn't break in confusing ways
+          // if people are using a slightly older version of keystone
+          const currentField = adminMetaRoot.listsByKey[meta.listKey].fields.find(
+            x => x.path === meta.fieldKey
+          );
+          if (currentField) {
+            const allForeignFields = new Set(
+              adminMetaRoot.listsByKey[meta.listKey].fields.map(x => x.path)
+            );
+            for (const [configOption, foreignFields] of [
+              ['ui.cardFields', config.ui.cardFields],
+              ['ui.inlineCreate.fields', config.ui.inlineCreate?.fields ?? []],
+              ['ui.inlineEdit.fields', config.ui.inlineEdit?.fields ?? []],
+            ] as const) {
+              for (const foreignField of foreignFields) {
+                if (!allForeignFields.has(foreignField)) {
+                  throw new Error(
+                    `The ${configOption} option on the relationship field at ${meta.listKey}.${meta.fieldKey} includes ${foreignField} but that field does not exist on ${foreignListKey}`
+                  );
+                }
+              }
+            }
+          }
+        }
         return {
           refListKey: foreignListKey,
           many,
