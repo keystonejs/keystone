@@ -33,7 +33,7 @@ interface Renderers {
     link: Component<{ children: ReactNode; href: string }> | 'a';
     relationship: Component<{
       relationship: string;
-      data: { id: string; label: string; data: Record<string, any> | null } | null;
+      data: { id: string; label: string | undefined; data: Record<string, any> | undefined } | null;
     }>;
   } & MarkRenderers;
   block: {

@@ -193,7 +193,7 @@ describe('Document field type', () => {
       };
       content[1].children[1].data = { id: bob.id, label: 'Bob', data: { id: bob.id, name: 'Bob' } };
       // Access denied on charlie;
-      content[2].children[1].data = { id: charlie.id, data: null };
+      content[2].children[1].data = { id: charlie.id };
       expect(_post.content.document).toEqual(content);
     })
   );
@@ -212,10 +212,10 @@ describe('Document field type', () => {
         label: 'Alice',
         data: { id: alice.id, name: 'Alice' },
       };
-      // We expect the `data` field of the relationship to be null
-      content[1].children[1].data = { id: bob.id, data: null };
+      // We expect the `data` field of the relationship to be undefined
+      content[1].children[1].data = { id: bob.id };
       // Access denied on charlie;
-      content[2].children[1].data = { id: charlie.id, data: null };
+      content[2].children[1].data = { id: charlie.id };
       expect(_post.content.document).toEqual(content);
     })
   );
@@ -232,8 +232,8 @@ describe('Document field type', () => {
 
       // With no selection, we expect data to be an empty object
       bio[0].children[1].data = { id: alice.id, label: 'Alice', data: {} };
-      // But still, and access-denied user will return data: null
-      bio[1].children[1].data = { id: charlie.id, data: null };
+      // But still, and access-denied user will return data: undefined
+      bio[1].children[1].data = { id: charlie.id };
 
       expect(_dave.bio.document).toEqual(bio);
     })

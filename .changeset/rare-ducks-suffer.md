@@ -1,5 +1,6 @@
 ---
-'@keystone-next/document-renderer': patch
+'@keystone-next/document-renderer': major
 ---
 
-Inline relationship data which is null or undefined is now explicitly set to `null`, rather than `{}`.
+The value of `data` passed to the inline relationship renderer now matches the data returned by the GraphQL query.
+Falsey values of `data.label` are no longer set to `data.id` and falsey values of `data.data` are no longer set to `{}`.
