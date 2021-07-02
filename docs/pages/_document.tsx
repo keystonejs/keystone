@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/do
 import React from 'react';
 import { jsx, CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
-import createEmotionServer from '@emotion/server/create-instance';
+import createEmotionServer, { EmotionCriticalToChunks } from '@emotion/server/create-instance';
 
 import { SkipLinks } from '../components/SkipLinks';
 import { GA_TRACKING_ID } from '../lib/analytics';
@@ -11,10 +11,10 @@ import { GA_TRACKING_ID } from '../lib/analytics';
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     let originalRenderPage = ctx.renderPage;
-    let data: any;
+    let data: EmotionCriticalToChunks | undefined;
     ctx.renderPage = async () => {
       const cache = createCache({ key: 'css' });
-      const { extractCritical } = createEmotionServer(cache);
+      const { extractCriticalToChunks } = createEmotionServer(cache);
       const result = await originalRenderPage({
         enhanceApp: App => props =>
           (
@@ -24,7 +24,7 @@ class MyDocument extends Document {
           ),
       });
 
-      data = extractCritical(result.html);
+      data = extractCriticalToChunks(result.html);
       return result;
     };
     const initialProps = await Document.getInitialProps(ctx);
@@ -33,10 +33,12 @@ class MyDocument extends Document {
       styles: (
         <React.Fragment>
           {initialProps.styles}
-          <style
-            data-emotion={`css ${data.ids.join(' ')}`}
-            dangerouslySetInnerHTML={{ __html: data.css }}
-          />
+          {data!.styles.map(data => (
+            <style
+              data-emotion={`${data.key} ${data.ids.join(' ')}`}
+              dangerouslySetInnerHTML={{ __html: data.css }}
+            />
+          ))}
         </React.Fragment>
       ),
     };
