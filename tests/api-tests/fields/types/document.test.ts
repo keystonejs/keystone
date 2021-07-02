@@ -145,19 +145,6 @@ const initData = async ({ context }: { context: KeystoneContext }) => {
         { text: '' },
       ],
     },
-    {
-      type: 'paragraph',
-      children: [
-        { text: '' },
-        {
-          type: 'relationship',
-          data: null,
-          relationship: 'mention',
-          children: [{ text: '' }],
-        },
-        { text: '' },
-      ],
-    },
   ];
   const post = await context.lists.Post.createOne({ data: { content } });
   return { alice, bob, charlie, dave, post, content, bio };

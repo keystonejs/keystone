@@ -78,8 +78,6 @@ export function addRelationshipData(
             return otherData;
           })(),
         };
-      } else {
-        return null;
       }
     }
   };
