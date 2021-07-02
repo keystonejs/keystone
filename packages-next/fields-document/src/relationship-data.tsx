@@ -56,12 +56,19 @@ export function addRelationshipData(
             variables: { id },
           });
         } catch (err) {
-          // If we're unable to find the user (e.g. we have a dangling reference), or access was denied
-          // then simply return null.
-          const r = JSON.stringify(relationship);
-          console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
-          console.error(err);
-          return { id, data: null };
+          if (err.message === 'You do not have access to this resource') {
+            // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
+            // then simply return null.
+            const r = JSON.stringify(relationship);
+            console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
+            console.error(err);
+            return { id, data: null };
+          } else {
+            // Other types of errors indicate something wrong with either the system or the
+            // configuration (e.g. a bad selection field) and they should be surfaced as a
+            // GraphQL error.
+            throw err;
+          }
         }
         return {
           id,

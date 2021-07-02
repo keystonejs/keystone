@@ -35,6 +35,16 @@ const runner = setupTestRunner({
               },
             },
           }),
+          badBio: document({
+            relationships: {
+              mention: {
+                kind: 'inline',
+                listKey: 'Author',
+                label: 'Mention',
+                selection: 'bad selection',
+              },
+            },
+          }),
         },
         access: { read: { name_not: 'Charlie' } },
       }),
@@ -226,6 +236,45 @@ describe('Document field type', () => {
       bio[1].children[1].data = { id: charlie.id, data: null };
 
       expect(_dave.bio.document).toEqual(bio);
+    })
+  );
+
+  test(
+    'hydrateRelationships: true - selection has bad fields',
+    runner(async ({ context }) => {
+      const { alice } = await initData({ context });
+      const badBob = await context.lists.Author.createOne({
+        data: {
+          name: 'Bob',
+          badBio: [
+            {
+              type: 'paragraph',
+              children: [
+                { text: '' },
+                {
+                  type: 'relationship',
+                  data: { id: alice.id },
+                  relationship: 'mention',
+                  children: [{ text: '' }],
+                },
+                { text: '' },
+              ],
+            },
+          ],
+        },
+      });
+
+      const { data, errors } = await context.graphql.raw({
+        query:
+          'query ($id: ID!){ Author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
+        variables: { id: badBob.id },
+      });
+      expect(data!.Author.badBio).toBe(null);
+      expect(errors).toHaveLength(1);
+      expect(errors![0].message).toEqual(
+        'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?'
+      );
+      expect(errors![0].path).toEqual(['Author', 'badBio', 'document']);
     })
   );
 });
