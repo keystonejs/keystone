@@ -61,7 +61,7 @@ export function addRelationshipData(
           const r = JSON.stringify(relationship);
           console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
           console.error(err);
-          return { id, label: id, data: null };
+          return { id, data: null };
         }
         return {
           id,

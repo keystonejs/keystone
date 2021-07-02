@@ -64,7 +64,7 @@ export const defaultRenderers: Renderers = {
     superscript: 'sup',
     underline: 'u',
     relationship: ({ data }) => {
-      return <span>{data?.label}</span>;
+      return <span>{data?.label || data?.id}</span>;
     },
   },
   block: {
