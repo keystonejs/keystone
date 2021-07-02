@@ -116,7 +116,7 @@ export function Header() {
       });
     } else {
       // @ts-ignore
-      document.getElementById('search-field-container')?.style.visibility = 'hidden';
+      document.getElementById('search-field-container').style.visibility = 'hidden';
     }
   }, []);
   const handleOpen = useCallback(() => {
