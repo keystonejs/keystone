@@ -3,7 +3,8 @@ import { jsx, Global, css } from '@emotion/react';
 import { Fragment, HTMLAttributes } from 'react';
 
 import { algoliaStyles } from '../../lib/algoliaStyles';
-import { SearchKeys } from '../icons/SearchKeys';
+// Search: Disabled until keyboard shortcuts implemented
+// import { SearchKeys } from '../icons/SearchKeys';
 import { Search } from '../icons/Search';
 import { Field } from './Field';
 
@@ -45,7 +46,8 @@ export function SearchField(props: SearchFieldProps) {
           }}
           {...props}
         />
-        <label
+        {/* // Search: Disabled until keyboard shortcuts implemented */}
+        {/* <label
           htmlFor="search-field"
           css={{
             position: 'absolute',
@@ -64,7 +66,7 @@ export function SearchField(props: SearchFieldProps) {
               padding: '0.325rem',
             }}
           />
-        </label>
+        </label> */}
       </span>
     </Fragment>
   );

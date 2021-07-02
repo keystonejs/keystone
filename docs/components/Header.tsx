@@ -29,7 +29,7 @@ function Logo() {
   return (
     <div
       css={mq({
-        marginRight: [0, null, null, null, '2rem'],
+        marginRight: [0, null, null, null, '1rem'],
         marginTop: '0.1rem',
       })}
     >
