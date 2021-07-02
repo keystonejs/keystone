@@ -85,11 +85,20 @@ export function createAdminMeta(
         label: field.label ?? humanize(fieldKey),
         viewsIndex: getViewId(field.views),
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
-        fieldMeta: field.getAdminMeta?.(adminMetaRoot) ?? null,
+        fieldMeta: null,
         isOrderable: !!field.input?.orderBy,
         path: fieldKey,
         listKey: key,
       });
+    }
+  }
+
+  // we do this seperately to the above so that fields can check other fields to validate their config or etc.
+  // (ofc they won't necessarily be able to see other field's fieldMeta)
+  for (const [key, list] of Object.entries(initialisedLists)) {
+    for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
+      fieldMetaRootVal.fieldMeta =
+        list.fields[fieldMetaRootVal.path].getAdminMeta?.(adminMetaRoot) ?? null;
     }
   }
 
