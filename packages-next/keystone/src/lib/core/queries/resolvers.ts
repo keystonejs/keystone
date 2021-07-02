@@ -56,9 +56,9 @@ export function mapUniqueWhereToWhere(
   // inputResolvers.uniqueWhere validates that there is only one key
   const key = Object.keys(uniqueWhere)[0];
   const dbField = list.fields[key].dbField;
-  if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
+  if (dbField.kind !== 'scalar') {
     throw new Error(
-      'Currently only String and Int scalar db fields can provide a uniqueWhere input'
+      'Currently only Scalar db fields can provide a uniqueWhere input'
     );
   }
   const val = uniqueWhere[key];

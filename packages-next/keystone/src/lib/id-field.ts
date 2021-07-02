@@ -41,18 +41,22 @@ const idParsers = {
     }
     throw new Error('Only a uuid can be passed to id filters');
   },
+  custom(val: string | null) {
+    return val;
+  },
 };
 
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
     const parseVal = idParsers[config.kind];
-    return fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
+    let field = fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
       kind: 'scalar',
       mode: 'required',
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
+      ...config.overrideDbField
     })({
       input: {
         uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
@@ -91,6 +95,15 @@ export const idFieldType =
         },
       },
     });
+    if (config.overrideField) {
+      // We need to merge each item, not overwrite it
+      for (const key in config.overrideField) {
+        field[key] = typeof (config.overrideField[key]) === 'object'
+          ? { ...field[key], ...config.overrideField[key] }
+          : config.overrideField[key];
+      }
+    }
+    return field;
   };
 
 function equalityConditions(fieldKey: string, f: (a: string | null) => any) {

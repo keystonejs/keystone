@@ -13,9 +13,9 @@ export function assertFieldsValid(list: ListForValidation) {
 function assertUniqueWhereInputsValid(list: ListForValidation) {
   for (const [fieldKey, { dbField, input }] of Object.entries(list.fields)) {
     if (input?.uniqueWhere) {
-      if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
+      if (dbField.kind !== 'scalar') {
         throw new Error(
-          `Only String and Int scalar db fields can provide a uniqueWhere input currently but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input`
+          `Only scalar db fields can provide a uniqueWhere input currently but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input`
         );
       }
 
@@ -74,12 +74,6 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${
         list.listKey
       } defines the type ${idField.input.uniqueWhere.arg.type.graphQLType.toString()}`
-    );
-  }
-  // we may want to loosen these constraints in the future
-  if (idField.input.create !== undefined) {
-    throw new Error(
-      `The idField on a list must not define a create GraphQL input but the idField for ${list.listKey} does define one`
     );
   }
   if (idField.input.update !== undefined) {
