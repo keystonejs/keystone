@@ -47,7 +47,7 @@ export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
     const parseVal = idParsers[config.kind];
-    let field = fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
+    let field: any = fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
       kind: 'scalar',
       mode: 'required',
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
