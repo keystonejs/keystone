@@ -111,7 +111,6 @@ export function Header() {
         apiKey: '211e94c001e6b4c6744ae72fb252eaba',
         indexName: 'keystonejs',
         inputSelector: '#search-field',
-        debug: true,
       });
     } else {
       document.getElementById('search-field-container').style.visibility = 'hidden';
