@@ -6497,10 +6497,10 @@ filename-reserved-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/filename-reserved-regex/-/filename-reserved-regex-2.0.0.tgz#abf73dfab735d045440abfea2d91f389ebbfa229"
   integrity sha1-q/c9+rc10EVECr/qLZHzieu/oik=
 
-filenamify@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/filenamify/-/filenamify-4.3.0.tgz#62391cb58f02b09971c9d4f9d63b3cf9aba03106"
-  integrity sha512-hcFKyUG57yWGAzu1CMt/dPzYZuv+jAJUT85bL8mrXvNe6hWj6yEHEc4EdcgiA6Z3oi1/9wXJdZPXF2dZNgwgOg==
+filenamify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/filenamify/-/filenamify-5.0.0.tgz#59a20e8291b181266fd3ef31931a710987527330"
+  integrity sha512-fum99BZD0q5wZ4GbZwE9imy0Lw0yULNgB10WxTtT8RAdvNhWUMcz0V3vuanxIgnqonCVD4wKZUVRbwepV3PkFw==
   dependencies:
     filename-reserved-regex "^2.0.0"
     strip-outer "^1.0.1"
