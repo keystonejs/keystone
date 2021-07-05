@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@keystone-next/fields": "^11.0.0",
-    "@keystone-next/keystone": "^20.0.0",
-    "@keystone-next/types": "^20.0.1",
+    "@keystone-next/keystone": "^21.0.2",
+    "@keystone-next/types": "^21.0.1",
     "@keystone-ui/fields": "^4.1.2",
     "react": "^17.0.2"
   },
