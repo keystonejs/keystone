@@ -120,6 +120,7 @@ export function Header() {
           apiKey: '211e94c001e6b4c6744ae72fb252eaba',
           indexName: 'keystonejs',
           inputSelector: '#search-field',
+          debug: true,
         });
       } else if (searchAttempt >= 10) {
         // @ts-ignore

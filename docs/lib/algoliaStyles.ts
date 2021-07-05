@@ -114,7 +114,7 @@ export const algoliaStyles = css`
   .algolia-autocomplete .ds-dropdown-menu [class^='ds-dataset-'] {
     position: relative;
     border: solid 1px #d9d9d9;
-    background: #fff;
+    background: var(--app-bg);
     border-radius: 4px;
     overflow: auto;
     padding: 0 8px 8px;
