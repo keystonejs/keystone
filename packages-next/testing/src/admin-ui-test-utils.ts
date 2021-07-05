@@ -44,7 +44,6 @@ export const adminUITests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
-      console.log('###### DATABASE URL IS: ', process.env.DATABASE_URL);
       let keystoneProcess = execa('yarn', ['keystone-next', command], {
         cwd: projectDir,
         env: process.env,
