@@ -17,7 +17,8 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
-import { Search } from './icons/Search';
+// TODO: Add in search for mobile via this button
+// import { Search } from './icons/Search';
 
 type HeaderContextType = { mobileNavIsOpen: boolean };
 const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
