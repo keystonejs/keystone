@@ -106,6 +106,7 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
+    // search - init field
     let searchAttempt = 0;
     // @ts-ignore
     document.getElementById('search-field').disabled = true;
@@ -128,6 +129,21 @@ export function Header() {
       }
     };
     loadSearch(searchAttempt);
+    // search - keyboard shortcut
+    let keysPressed = {};
+    document.body.addEventListener('keydown', event => {
+      // @ts-ignore
+      keysPressed[event.key] = true;
+      // @ts-ignore
+      if (keysPressed['Meta'] && event.key == 'k') {
+        event.preventDefault();
+        document.getElementById('search-field')?.focus();
+      }
+    });
+    document.body.addEventListener('keyup', event => {
+      // @ts-ignore
+      delete keysPressed[event.key];
+    });
   }, []);
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
