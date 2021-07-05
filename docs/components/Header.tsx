@@ -7,9 +7,7 @@ import Link from 'next/link';
 import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
 
-/* SEARCH COMING SOON */
-/* import { SearchField } from './primitives/SearchField'; */
-
+import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
@@ -19,9 +17,8 @@ import { DarkModeBtn } from './DarkModeBtn';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
-
-/* SEARCH COMING SOON */
-/* import { Search } from './icons/Search'; */
+// TODO: Add in search for mobile via this button
+// import { Search } from './icons/Search';
 
 type HeaderContextType = { mobileNavIsOpen: boolean };
 const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
@@ -33,7 +30,7 @@ function Logo() {
   return (
     <div
       css={mq({
-        marginRight: [0, null, null, null, '2rem'],
+        marginRight: [0, null, null, null, '1rem'],
         marginTop: '0.1rem',
       })}
     >
@@ -110,8 +107,45 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
+    // search - init field
+    let searchAttempt = 0;
+    // @ts-ignore
+    document.getElementById('search-field').disabled = true;
+    const loadSearch = (searchAttempt: number) => {
+      // @ts-ignore
+      if (window.docsearch && searchAttempt < 10) {
+        // @ts-ignore
+        document.getElementById('search-field').disabled = false;
+        // @ts-ignore
+        window.docsearch({
+          apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+          indexName: 'keystonejs',
+          inputSelector: '#search-field',
+        });
+      } else if (searchAttempt >= 10) {
+        // @ts-ignore
+        document.getElementById('search-field-container').style.visibility = 'hidden';
+      } else {
+        setTimeout(() => loadSearch(searchAttempt++), 500);
+      }
+    };
+    loadSearch(searchAttempt);
+    // search - keyboard shortcut
+    let keysPressed = {};
+    document.body.addEventListener('keydown', event => {
+      // @ts-ignore
+      keysPressed[event.key] = true;
+      // @ts-ignore
+      if (keysPressed['Meta'] && event.key == 'k') {
+        event.preventDefault();
+        document.getElementById('search-field')?.focus();
+      }
+    });
+    document.body.addEventListener('keyup', event => {
+      // @ts-ignore
+      delete keysPressed[event.key];
+    });
   }, []);
-
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
     document.body.style.overflow = 'hidden';
@@ -137,17 +171,11 @@ export function Header() {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            /* SEARCH COMING SOON */
-            /* 'auto max-content max-content max-content',
+            'auto max-content max-content max-content',
             'auto max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
-            '15rem auto max-content max-content max-content max-content max-content max-content', */
-            'auto max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content max-content max-content max-content',
           ],
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           justifyItems: 'start',
@@ -164,22 +192,23 @@ export function Header() {
           <Logo />
         </div>
 
-        {/* SEARCH COMING SOON */}
-        {/* <div
+        <div
+          id="search-field-container"
           css={mq({
             display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
           })}
         >
           <SearchField />
-        </div> */}
+        </div>
 
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
 
-        {/* SEARCH COMING SOON */}
-        {/* <button
+        {/* TODO: Add in search for mobile via this button */}
+        {/*
+        <button
           css={mq({
             display: ['inline-block', 'inline-block', 'none'],
             appearance: 'none',
@@ -192,7 +221,8 @@ export function Header() {
           })}
         >
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
-        </button> */}
+        </button>
+        */}
 
         <DarkModeBtn />
         <Button
