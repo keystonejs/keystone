@@ -106,18 +106,29 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
+    let searchAttempt = 0;
     // @ts-ignore
-    if (window !== 'undefined' && window.docsearch) {
+    document.getElementById('search-field').disabled = true;
+    const loadSearch = (searchAttempt: number) => {
       // @ts-ignore
-      window.docsearch({
-        apiKey: '211e94c001e6b4c6744ae72fb252eaba',
-        indexName: 'keystonejs',
-        inputSelector: '#search-field',
-      });
-    } else {
-      // @ts-ignore
-      document.getElementById('search-field-container').style.visibility = 'hidden';
+      if (window.docsearch && searchAttempt < 10) {
+        // @ts-ignore
+        document.getElementById('search-field').disabled = false;
+        // @ts-ignore
+        window.docsearch({
+          apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+          indexName: 'keystonejs',
+          inputSelector: '#search-field',
+        });
+      }
+      else if (searchAttempt >= 10) {
+        // @ts-ignore
+        document.getElementById('search-field-container').style.visibility = 'hidden';
+      } else {
+        setTimeout(() => loadSearch(searchAttempt++), 500);
+      }
     }
+    loadSearch(searchAttempt);
   }, []);
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
