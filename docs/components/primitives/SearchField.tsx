@@ -39,6 +39,7 @@ export function SearchField(props: SearchFieldProps) {
         </label>
         <Field
           placeholder="Search the docs"
+          aria-label="Search the docs"
           id="search-field"
           css={{
             padding: '0 3.5rem 0 2.8rem',
