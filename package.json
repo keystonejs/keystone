@@ -105,6 +105,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "test-projects/*",
       "tests/admin-ui",
       "tests/api-tests",
       "tests/benchmarks",
