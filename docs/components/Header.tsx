@@ -205,6 +205,8 @@ export function Header() {
         <LinkItem href="/updates">Updates</LinkItem>
         <LinkItem href="/docs">Docs</LinkItem>
 
+        {/* TODO: Add in search for mobile via this button */}
+        {/*
         <button
           css={mq({
             display: ['inline-block', 'inline-block', 'none'],
@@ -219,6 +221,7 @@ export function Header() {
         >
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
         </button>
+        */}
 
         <DarkModeBtn />
         <Button
