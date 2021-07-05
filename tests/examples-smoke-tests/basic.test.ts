@@ -8,7 +8,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3000');
   });
   initFirstItemTest(() => page);
   test('sign out and sign in', async () => {
