@@ -32,7 +32,8 @@ interface Renderers {
   inline: {
     link: Component<{ children: ReactNode; href: string }> | 'a';
     relationship: Component<{
-      data: { id: string; label: string; data: Record<string, any> } | null;
+      relationship: string;
+      data: { id: string; label: string | undefined; data: Record<string, any> | undefined } | null;
     }>;
   } & MarkRenderers;
   block: {
@@ -63,7 +64,7 @@ export const defaultRenderers: Renderers = {
     superscript: 'sup',
     underline: 'u',
     relationship: ({ data }) => {
-      return <span>{data?.label}</span>;
+      return <span>{data?.label || data?.id}</span>;
     },
   },
   block: {
@@ -185,15 +186,8 @@ function DocumentNode({
       const data = node.data as any;
       return (
         <renderers.inline.relationship
-          data={
-            data
-              ? {
-                  id: data.id,
-                  label: data.label || data.id,
-                  data: data.data || {},
-                }
-              : null
-          }
+          relationship={node.relationship as string}
+          data={data ? { id: data.id, label: data.label, data: data.data } : null}
         />
       );
     }
