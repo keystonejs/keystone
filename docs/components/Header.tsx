@@ -120,14 +120,13 @@ export function Header() {
           indexName: 'keystonejs',
           inputSelector: '#search-field',
         });
-      }
-      else if (searchAttempt >= 10) {
+      } else if (searchAttempt >= 10) {
         // @ts-ignore
         document.getElementById('search-field-container').style.visibility = 'hidden';
       } else {
         setTimeout(() => loadSearch(searchAttempt++), 500);
       }
-    }
+    };
     loadSearch(searchAttempt);
   }, []);
   const handleOpen = useCallback(() => {
