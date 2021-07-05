@@ -32,7 +32,7 @@ export async function getOperationAccess(
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
+    throw new systemError(
       `Must return a Boolean from ${args.listKey}.access.operation.${args.operation}(). Got ${resultType}`
     );
   }
@@ -63,11 +63,11 @@ export async function validateFieldAccessControl<
 }) {
   let result = typeof access === 'function' ? await access(args) : access;
   if (typeof result !== 'boolean') {
-    throw new Error(
+    throw systemError([
       `Must return a Boolean from ${args.listKey}.fields.${args.fieldKey}.access.${
         args.operation
-      }(). Got ${typeof result}`
-    );
+      }(). Got ${typeof result}`,
+    ]);
   }
   return result;
 }

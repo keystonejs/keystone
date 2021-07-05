@@ -65,25 +65,32 @@ export const password =
       );
     }
 
-    function inputResolver(val: string | null | undefined) {
+    function validateInput(args: any) {
+      const { originalInput, fieldPath, addValidationError } = args;
+      const val = originalInput[fieldPath];
       if (val === '') {
-        return null;
+        return;
       }
       if (typeof val === 'string') {
         if (rejectCommon && dumbPasswords.check(val)) {
-          throw new Error(
-            `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`
-          );
+          const msg = `Common and frequently-used passwords are not allowed.`;
+          addValidationError(msg);
         }
         if (val.length < minLength) {
-          throw new Error(
-            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
-          );
+          const msg = `Value must be at least ${minLength} characters long.`;
+          addValidationError(msg);
         }
-
-        return bcrypt.hash(val, workFactor);
       }
-      return val;
+    }
+
+    function inputResolver(val: string | null | undefined) {
+      if (val === '') {
+        return null;
+      } else if (typeof val === 'string') {
+        return bcrypt.hash(val, workFactor);
+      } else {
+        return val;
+      }
     }
 
     if ((config as any).isIndexed === 'unique') {
@@ -114,10 +121,12 @@ export const password =
         create: {
           arg: graphql.arg({ type: graphql.String }),
           resolve: inputResolver,
+          validate: validateInput,
         },
         update: {
           arg: graphql.arg({ type: graphql.String }),
           resolve: inputResolver,
+          validate: validateInput,
         },
       },
       views: resolveView('password/views'),

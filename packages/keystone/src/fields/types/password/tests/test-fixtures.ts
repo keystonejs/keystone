@@ -42,32 +42,48 @@ export const supportedFilters = () => ['isSet'];
 export const crudTests = (keystoneTestWrapper: any) => {
   test(
     'setting a password below the minLength fails',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      await expect(
-        context.lists.Test.createOne({
-          data: { password: '123' },
-        })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:minLength:Test:password] Value must be at least 4 characters long.]`
-      );
+    keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation {
+          createTest(data: { password: "123" }) {
+            id
+          }
+        }`,
+      });
+      expect(data).toEqual({ createTest: null });
+      expectValidationError(errors, [
+        {
+          path: ['createTest'],
+          messages: ['Test.password: Value must be at least 4 characters long.'],
+        },
+      ]);
     })
   );
   test(
     'setting a common password fails',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      await expect(
-        context.lists.Test.createOne({
-          data: { passwordRejectCommon: 'password' },
-          query: ``,
-        })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:rejectCommon:Test:passwordRejectCommon] Common and frequently-used passwords are not allowed.]`
-      );
-      const data = await context.lists.Test.createOne({
+    keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation {
+            createTest(data: { passwordRejectCommon: "password" }) {
+              id
+            }
+          }`,
+      });
+      expect(data).toEqual({ createTest: null });
+      expectValidationError(errors, [
+        {
+          path: ['createTest'],
+          messages: [
+            'Test.passwordRejectCommon: Common and frequently-used passwords are not allowed.',
+          ],
+        },
+      ]);
+
+      const item = await context.lists.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,
       });
-      expect(data.passwordRejectCommon.isSet).toBe(true);
+      expect(item.passwordRejectCommon.isSet).toBe(true);
     })
   );
 };

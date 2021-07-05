@@ -62,8 +62,13 @@ export const expectAccessDenied = (
     ...unpacked,
   }));
   expect(unpackedErrors).toEqual(
-    args.map(({ path, msg }) => ({
-      extensions: { code: undefined },
+    args.map(({ path }) => ({
+      extensions: {
+        code: httpQuery ? 'KS_ACCESS_DENIED' : undefined,
+        ...(expectException
+          ? { exception: { stacktrace: expect.arrayContaining([`Error: ${message}`]) } }
+          : {}),
+      },
       path,
       message: `Access denied: ${msg}`,
     }))
@@ -72,14 +77,12 @@ export const expectAccessDenied = (
 
 export const expectValidationError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; messages: string[] }[]
+  args: { path: any[]; messages: string[] }[]
 ) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
+  const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages }) => ({
-      extensions: { code: undefined },
+      extensions: { code: 'KS_VALIDATION_ERROR' },
       path,
       message: `You provided invalid data for this operation.\n${j(messages)}`,
     }))
@@ -113,7 +116,7 @@ export const expectExtensionError = (
 
       return {
         extensions: {
-          code: 'INTERNAL_SERVER_ERROR',
+          code: 'KS_EXTENSION_ERROR',
           ...(expectException
             ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),
@@ -134,8 +137,9 @@ export const expectPrismaError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message, code, target }) => ({
       extensions: {
-        code: 'INTERNAL_SERVER_ERROR',
-        prisma: { clientVersion: '2.30.3', code, meta: { target } },
+        code: 'KS_PRISMA_ERROR',
+        exception: { prisma: { clientVersion: '2.30.2', code, meta: { target } } },
+        prisma: { clientVersion: '2.30.2', code, meta: { target } },
       },
       path,
       message,
@@ -145,16 +149,14 @@ export const expectPrismaError = (
 
 export const expectLimitsExceededError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: any[]; listKey: string; type: 'maxResults' | 'maxTotalResults'; limit: number }[]
 ) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
+  const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
-      extensions: { code: undefined },
+    args.map(({ path, listKey, type, limit }) => ({
+      extensions: { code: 'KS_LIMITS_EXCEEDED_ERROR' },
       path,
-      message: 'Your request exceeded server limits',
+      message: `Your request exceeded server limits. '${listKey}' has ${type} limit of ${limit}`,
     }))
   );
 };
@@ -166,19 +168,37 @@ export const expectBadUserInput = (
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      extensions: { code: 'KS_USER_INPUT_ERROR' },
       path,
       message: `Input error: ${message}`,
     }))
   );
 };
 
+export const expectSystemError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; messages: string[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages }) => ({
+      extensions: { code: 'KS_SYSTEM_ERROR' },
+      path,
+      message: `System error:\n${j(messages)}`,
+    }))
+  );
+};
+
 export const expectRelationshipError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; message: string }[]
+  args: { path: any[]; messages: string[] }[]
 ) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
-  expect(unpackedErrors).toEqual(args.map(({ path, message }) => ({ path, message })));
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages }) => ({
+      extensions: { code: 'KS_RELATIONSHIP_ERROR' },
+      path,
+      message: `Relationship error:\n${j(messages)}`,
+    }))
+  );
 };

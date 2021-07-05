@@ -4,6 +4,7 @@ import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { KeystoneContext } from '../../../../types';
 import { image } from '..';
+import { expectSystemError } from '../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -112,8 +113,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: prepareFile('badfile.txt') } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('File type not found');
+        expectSystemError(errors, [{ path: ['createTest'], messages: ['File type not found'] }]);
       })
     );
   });
@@ -178,8 +178,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: { ref: 'Invalid ref!' } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Invalid image reference');
+        expectSystemError(errors, [
+          { path: ['createTest'], messages: ['Invalid image reference'] },
+        ]);
       })
     );
     test(
@@ -198,10 +199,12 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: { ref: null } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Either ref or upload must be passed to ImageFieldInput'
-        );
+        expectSystemError(errors, [
+          {
+            path: ['createTest'],
+            messages: ['Input error: Either ref or upload must be passed to ImageFieldInput'],
+          },
+        ]);
       })
     );
     test(
@@ -228,10 +231,12 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
-        );
+        expectSystemError(errors, [
+          {
+            path: ['createTest'],
+            messages: ['Input error: Only one of ref and upload can be passed to ImageFieldInput'],
+          },
+        ]);
       })
     );
     test(
@@ -252,10 +257,12 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
-        );
+        expectSystemError(errors, [
+          {
+            path: ['createTest'],
+            messages: ['Input error: Only one of ref and upload can be passed to ImageFieldInput'],
+          },
+        ]);
       })
     );
   });

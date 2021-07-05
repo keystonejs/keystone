@@ -152,8 +152,9 @@ describe('errors on incomplete data', () => {
       expectRelationshipError(errors, [
         {
           path: ['createUser'],
-          message:
-            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+          messages: [
+            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes',
+          ],
         },
       ]);
     })
@@ -193,7 +194,7 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: ['Unable to create and/or connect 1 UserToNotesNoRead.notes'],
           },
         ]);
       })
@@ -238,8 +239,9 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: [
+              'System error:\n  - Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes',
+            ],
           },
         ]);
       })

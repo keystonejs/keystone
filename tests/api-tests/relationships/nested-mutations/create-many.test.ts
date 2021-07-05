@@ -301,7 +301,7 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoCreate'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            messages: ['Unable to create and/or connect 1 UserToNotesNoCreate.notes'],
           },
         ]);
 
@@ -348,8 +348,9 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoCreate'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            messages: [
+              'System error:\n  - Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes',
+            ],
           },
         ]);
 

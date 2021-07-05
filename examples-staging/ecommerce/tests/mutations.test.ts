@@ -156,7 +156,7 @@ describe(`Custom mutations`, () => {
         const { data, errors } = await graphql.raw({ query, variables: { productId } });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual('Unable to connect a CartItem.product');
       })
     );
 
@@ -196,7 +196,7 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual('Unable to connect a CartItem.product');
       })
     );
 
@@ -221,7 +221,7 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual('Unable to connect a CartItem.product');
       })
     );
 

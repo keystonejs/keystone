@@ -133,7 +133,9 @@ describe('non-matching filter', () => {
       expectRelationshipError(errors, [
         {
           path: ['updateUser'],
-          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+          messages: [
+            'System error:\n  - Unable to create, connect, disconnect and/or set 1 User.notes',
+          ],
         },
       ]);
     })
@@ -177,8 +179,9 @@ describe('with access control', () => {
           expectRelationshipError(errors, [
             {
               path: ['updateUserToNotesNoRead'],
-              message:
-                'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+              messages: [
+                'System error:\n  - Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes',
+              ],
             },
           ]);
         }

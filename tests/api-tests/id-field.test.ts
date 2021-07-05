@@ -20,27 +20,27 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'Fetching an item uniquely with an invalid id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
-      expect(body.data).toEqual({ user: null });
+      expect(data).toEqual({ user: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(body.errors, [
-        { path: ['user'], message: `Only ${s} can be passed to id filters` },
+      expectBadUserInput(errors, [
+        { path: ['user'], message: `Input error: Only ${s} can be passed to id filters` },
       ]);
     })
   );
   test(
     'Filtering an item with an invalid id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
-        query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: `{ users(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
-      expect(body.data).toEqual({ users: null });
+      expect(data).toEqual({ users: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(body.errors, [
-        { path: ['users'], message: `Only ${s} can be passed to id filters` },
+      expectBadUserInput(errors, [
+        { path: ['users'], message: `Input error: Only ${s} can be passed to id filters` },
       ]);
     })
   );
@@ -162,18 +162,18 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'searching for uppercased cuid does not work',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const { id } = (await context.lists.User.createOne({
         data: { name: 'something' },
       })) as { id: string };
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `query q($id: ID!){ user(where: { id: $id }) { id } }`,
         variables: { id: id.toUpperCase() },
       });
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
-        { path: ['user'], message: `Only a cuid can be passed to id filters` },
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
+        { path: ['user'], message: `Input error: Only a cuid can be passed to id filters` },
       ]);
     })
   );

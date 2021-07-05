@@ -227,6 +227,7 @@ describe(`Many-to-many relationships`, () => {
         expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id.toString()]);
         expect(Friend.friendOf.length).toEqual(2);
 
+        // FIXME: Add order-by
         const _users = (await context.lists.User.findMany({
           query: ' id friends { id friendOf { id } }',
         })) as { id: IdType; friends: any[] }[];

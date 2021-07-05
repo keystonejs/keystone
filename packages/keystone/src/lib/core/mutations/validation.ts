@@ -51,6 +51,13 @@ export async function validateUpdateCreate({
       }
     }
 
+    // Field-type validation checks
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
+      const addValidationError = (msg: string) =>
+        _addValidationError(`${list.listKey}.${fieldPath}: ${msg}`);
+      field.input?.[hookArgs.operation]?.validate?.({ ...hookArgs, addValidationError, fieldPath });
+    }
+
     // Field validation hooks
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       const addValidationError = (msg: string) =>

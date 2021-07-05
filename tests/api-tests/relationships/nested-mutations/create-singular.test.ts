@@ -259,7 +259,7 @@ describe('with access control', () => {
               expectRelationshipError(errors, [
                 {
                   path: [`createEventTo${group.name}`],
-                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                  messages: ['You do not have access to this resource'],
                 },
               ]);
             }
@@ -319,7 +319,7 @@ describe('with access control', () => {
               expectRelationshipError(errors, [
                 {
                   path: [`updateEventTo${group.name}`],
-                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                  messages: ['You do not have access to this resource'],
                 },
               ]);
             }

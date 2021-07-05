@@ -116,7 +116,9 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['users'] }]);
+        expectLimitsExceededError(errors, [
+          { path: ['users'], listKey: 'User', type: 'maxResults', limit: 2 },
+        ]);
 
         // The query results don't break the limits, but the "take" parameter does
         ({ errors } = await context.graphql.raw({
@@ -132,7 +134,9 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['users'] }]);
+        expectLimitsExceededError(errors, [
+          { path: ['users'], listKey: 'User', type: 'maxResults', limit: 2 },
+        ]);
       })
     );
     test(
@@ -223,7 +227,14 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
+        expectLimitsExceededError(errors, [
+          {
+            path: ['posts', expect.any(Number), 'author'],
+            listKey: 'User',
+            type: 'maxResults',
+            limit: 2,
+          },
+        ]);
 
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
@@ -251,7 +262,14 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
+        expectLimitsExceededError(errors, [
+          {
+            path: ['posts', expect.any(Number), 'author'],
+            listKey: 'User',
+            type: 'maxResults',
+            limit: 2,
+          },
+        ]);
 
         // All subqueries are within limits, but the total isn't
         // Reset the count for each query
@@ -270,8 +288,14 @@ describe('maxResults Limit', () => {
           }
       `,
         }));
-
-        expectLimitsExceededError(errors, [{ path: ['posts', 0, 'author', 1, 'posts'] }]);
+        expectLimitsExceededError(errors, [
+          {
+            path: ['posts', 0, 'author', 1, 'posts'],
+            listKey: 'Post',
+            type: 'maxTotalResults',
+            limit: 6,
+          },
+        ]);
       })
     );
   });
@@ -729,6 +753,7 @@ describe('maxFields Limit', () => {
           `,
       }).expect(400);
 
+      // We also get an "internal server error" from other code that doesn't handle this case
       expectGraphQLValidationError(body.errors, [
         { message: 'Operation has depth 4 (max: 3)' },
         { message: 'Request contains 105 fields (max: 8)' },

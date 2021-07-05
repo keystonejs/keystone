@@ -132,9 +132,9 @@ export function resolveRelateToManyForUpdateInput(
       ...setResult.filter(isRejected),
     ];
     if (errors.length) {
-      throw new Error(
-        `Unable to create, connect, disconnect and/or set ${errors.length} ${target}`
-      );
+      throw systemError([
+        `Unable to create, connect, disconnect and/or set ${errors.length} ${target}`,
+      ]);
     }
 
     return {

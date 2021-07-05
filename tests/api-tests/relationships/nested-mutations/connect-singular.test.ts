@@ -156,7 +156,7 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ createEvent: null });
       expectRelationshipError(errors, [
-        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
+        { path: ['createEvent'], messages: ['Unable to connect a Event.group'] },
       ]);
     })
   );
@@ -187,7 +187,7 @@ describe('non-matching filter', () => {
       });
       expect(data).toEqual({ updateEvent: null });
       expectRelationshipError(errors, [
-        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
+        { path: ['updateEvent'], messages: ['Unable to connect a Event.group'] },
       ]);
     })
   );
@@ -329,7 +329,7 @@ describe('with access control', () => {
             expectRelationshipError(errors, [
               {
                 path: [`updateEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                messages: [`Unable to connect a EventTo${group.name}.group`],
               },
             ]);
           })
@@ -363,7 +363,7 @@ describe('with access control', () => {
             expectRelationshipError(errors, [
               {
                 path: [`createEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                messages: [`Unable to connect a EventTo${group.name}.group`],
               },
             ]);
           })
