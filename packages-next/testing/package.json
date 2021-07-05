@@ -11,9 +11,14 @@
   },
   "dependencies": {
     "@keystone-next/keystone": "^21.0.0",
+    "@manypkg/find-root": "^1.1.0",
     "@types/supertest": "^2.0.11",
+    "dotenv": "^10.0.0",
+    "execa": "^5.1.1",
     "memoize-one": "^5.2.1",
-    "supertest": "^6.1.3"
+    "playwright": "^1.12.3",
+    "supertest": "^6.1.3",
+    "tree-kill": "^1.2.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/testing"
 }

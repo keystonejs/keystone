@@ -13,7 +13,7 @@ import {
 } from '@keystone-next/keystone/artifacts';
 import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 
-export { setupAdminUITestEnv } from './withAdminUI';
+export { adminUITests } from './admin-ui-test-utils';
 
 export type GraphQLRequest = (arg: {
   query: string;
@@ -30,6 +30,7 @@ export type TestEnv = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   testArgs: TestArgs;
+  expressServer: any;
 };
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
