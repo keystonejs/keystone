@@ -8,19 +8,26 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/admin-ui",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@keystone-next/auth": "*",
     "@keystone-next/fields": "*",
     "@keystone-next/keystone": "*",
-    "dotenv": "^10.0.0",
+    "execa": "^5.1.1",
     "express": "^4.17.1",
-    "playwright": "^1.12.3"
+    "playwright": "^1.12.3",
+    "treekill": "^1.0.0"
+  },
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
   },
   "dependencies": {
     "@keystone-next/testing": "^1.0.0",
     "@keystone-next/types": "^20.0.1",
-    "@keystone-next/utils": "^1.0.0"
+    "@keystone-next/utils": "^1.0.0",
+    "dotenv": "^10.0.0"
   }
 }
