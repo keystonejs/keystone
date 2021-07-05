@@ -40,6 +40,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 export const controller = (
+  // the type parameter here needs to align with what is returned from `getAdminMeta`
+  // in the server-side portion of the field type
   config: FieldControllerConfig<{ maxStars: number }>
 ): FieldController<number | null, string> & { maxStars: number } => {
   return {

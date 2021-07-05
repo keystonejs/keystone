@@ -35,8 +35,18 @@ export const stars =
       scalar: 'Int',
       index: getIndexType({ isIndexed, isUnique }),
     })({
-      // this passes through all of the common configuration like hooks, access control, etc.
+      // this passes through all of the common configuration like access control and etc.
       ...config,
+      hooks: {
+        ...config.hooks,
+        async validateInput(args) {
+          const val = args.resolvedData[meta.fieldKey];
+          if (!(val == null || (val >= 0 && val <= maxStars))) {
+            args.addValidationError(`The value must be within the range of 0-${maxStars}`);
+          }
+          await config.hooks?.validateInput?.(args);
+        },
+      },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
         create: {
