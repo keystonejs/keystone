@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectNestedError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -226,42 +226,42 @@ describe('with access control', () => {
       } else {
         test(
           'throws error when creating nested within create mutation',
-          runner(async ({ context }) => {
+          runner(async ({ context, graphQLRequest }) => {
             const alphaNumGenerator = gen.alphaNumString.notEmpty();
             const eventName = sampleOne(alphaNumGenerator);
             const groupName = sampleOne(alphaNumGenerator);
 
             // Create an item that does the nested create
-            const { data, errors } = await context.graphql.raw({
-              query: `
-                    mutation {
-                      createEventTo${group.name}(data: {
-                        title: "${eventName}",
-                        group: { create: { name: "${groupName}" } }
-                      }) {
-                        id
-                      }
-                    }`,
-            });
+            const query = `
+              mutation {
+                createEventTo${group.name}(data: {
+                  title: "${eventName}",
+                  group: { create: { name: "${groupName}" } }
+                }) {
+                  id
+                }
+              }`;
 
             if (group.name === 'GroupNoCreateHard') {
+              const { body } = await graphQLRequest({ query });
+
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
-              expect(data).toBe(undefined);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].message).toEqual(
-                `Field "create" is not defined by type "${group.name}RelateToOneInput".`
-              );
+              expectGraphQLValidationError(body.errors, [
+                {
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                },
+              ]);
             } else {
+              const { data, errors } = await context.graphql.raw({ query });
+
               // Assert it throws an access denied error
-              expect(data).not.toBe(null);
-              expect(data![`createEventTo${group.name}`]).toBe(null);
-              expect(errors).toHaveLength(1);
-              const error = errors![0];
-              expect(error.message).toEqual(
-                `Unable to create a EventTo${group.name}.group<${group.name}>`
-              );
-              expect(error.path).toHaveLength(1);
-              expect(error.path![0]).toEqual(`createEventTo${group.name}`);
+              expect(data).toEqual({ [`createEventTo${group.name}`]: null });
+              expectNestedError(errors, [
+                {
+                  path: [`createEventTo${group.name}`],
+                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                },
+              ]);
             }
             // Confirm it didn't insert either of the records anyway
             const data1 = await context.lists[group.name].findMany({
@@ -281,7 +281,7 @@ describe('with access control', () => {
 
         test(
           'throws error when creating nested within update mutation',
-          runner(async ({ context }) => {
+          runner(async ({ context, graphQLRequest }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to update
@@ -290,39 +290,38 @@ describe('with access control', () => {
             });
 
             // Update an item that does the nested create
-            const { data, errors } = await context.graphql.raw({
-              query: `
-                    mutation {
-                      updateEventTo${group.name}(
-                        id: "${eventModel.id}"
-                        data: {
-                          title: "A thing",
-                          group: { create: { name: "${groupName}" } }
-                        }
-                      ) {
-                        id
-                      }
-                    }`,
-            });
+            const query = `
+              mutation {
+                updateEventTo${group.name}(
+                  id: "${eventModel.id}"
+                  data: {
+                    title: "A thing",
+                    group: { create: { name: "${groupName}" } }
+                  }
+                ) {
+                  id
+                }
+              }`;
 
             // Assert it throws an access denied error
             if (group.name === 'GroupNoCreateHard') {
+              const { body } = await graphQLRequest({ query });
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
-              expect(data).toBe(undefined);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].message).toEqual(
-                `Field "create" is not defined by type "${group.name}RelateToOneInput".`
-              );
+
+              expectGraphQLValidationError(body.errors, [
+                {
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                },
+              ]);
             } else {
-              expect(data).not.toBe(null);
-              expect(data![`updateEventTo${group.name}`]).toBe(null);
-              expect(errors).toHaveLength(1);
-              const error = errors![0];
-              expect(error.message).toEqual(
-                `Unable to create a EventTo${group.name}.group<${group.name}>`
-              );
-              expect(error.path).toHaveLength(1);
-              expect(error.path![0]).toEqual(`updateEventTo${group.name}`);
+              const { data, errors } = await context.graphql.raw({ query });
+              expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
+              expectNestedError(errors, [
+                {
+                  path: [`updateEventTo${group.name}`],
+                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                },
+              ]);
             }
 
             // Confirm it didn't insert the record anyway

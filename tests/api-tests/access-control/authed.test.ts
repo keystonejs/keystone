@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { expectAccessDenied } from '../utils';
 import {
   FAKE_ID,
   FAKE_ID_2,
@@ -22,11 +23,7 @@ const expectNoAccess = <N extends string>(
   name: N
 ) => {
   expect(data?.[name]).toBe(null);
-  expect(errors).toHaveLength(1);
-  const error = errors![0];
-  expect(error.message).toEqual('You do not have access to this resource');
-  expect(error.path).toHaveLength(1);
-  expect(error.path![0]).toEqual(name);
+  expectAccessDenied(errors, [{ path: [name] }]);
 };
 
 const expectNamedArray = <T extends { id: IdType }, N extends string>(
@@ -158,14 +155,10 @@ describe('Authed', () => {
       const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`;
       const _context = await context.withSession({ itemId: user.id, listKey: 'User', data: user });
       const { data, errors } = await _context.graphql.raw({ query });
-      expect(data?.authenticatedItem).not.toBe(null);
-      expect(data?.authenticatedItem.id).toEqual(user.id);
-      expect(data?.authenticatedItem.yesRead).toEqual(user.yesRead);
-      expect(data?.authenticatedItem.noRead).toEqual(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].name).toEqual('GraphQLError');
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['authenticatedItem', 'noRead']);
+      expect(data).toEqual({
+        authenticatedItem: { id: user.id, yesRead: user.yesRead, noRead: null },
+      });
+      expectAccessDenied(errors, [{ path: ['authenticatedItem', 'noRead'] }]);
     });
 
     (['imperative', 'declarative'] as const).forEach(mode => {
@@ -444,11 +437,11 @@ describe('Authed', () => {
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
               } else {
-                expect(errors?.[0].message).toEqual('You do not have access to this resource');
-                expect(errors?.[0].path).toEqual([multiDeleteMutationName, 0]);
-                expect(errors?.[1].message).toEqual('You do not have access to this resource');
-                expect(errors?.[1].path).toEqual([multiDeleteMutationName, 1]);
-                expect(data?.[multiDeleteMutationName]).toEqual([null, null]);
+                expectAccessDenied(errors, [
+                  { path: [multiDeleteMutationName, 0] },
+                  { path: [multiDeleteMutationName, 1] },
+                ]);
+                expect(data).toEqual({ [multiDeleteMutationName]: [null, null] });
               }
             });
 
@@ -461,9 +454,8 @@ describe('Authed', () => {
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, invalidId]);
               } else {
-                expect(errors?.[0].message).toEqual('You do not have access to this resource');
-                expect(errors?.[0].path).toEqual([multiDeleteMutationName, 1]);
-                expect(data?.[multiDeleteMutationName]).toEqual([{ id: validId1 }, null]);
+                expectAccessDenied(errors, [{ path: [multiDeleteMutationName, 1] }]);
+                expect(data).toEqual({ [multiDeleteMutationName]: [{ id: validId1 }, null] });
               }
             });
 
@@ -471,13 +463,11 @@ describe('Authed', () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
               const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}", "${FAKE_ID_2[provider]}"]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(errors).toHaveLength(2);
-              expect(errors?.[0].message).toEqual('You do not have access to this resource');
-              expect(errors?.[0].path).toEqual([multiDeleteMutationName, 0]);
-              expect(errors?.[1].message).toEqual('You do not have access to this resource');
-              expect(errors?.[1].path).toEqual([multiDeleteMutationName, 1]);
-              expect(data?.[multiDeleteMutationName]).toHaveLength(2);
-              expect(data?.[multiDeleteMutationName]).toEqual([null, null]);
+              expectAccessDenied(errors, [
+                { path: [multiDeleteMutationName, 0] },
+                { path: [multiDeleteMutationName, 1] },
+              ]);
+              expect(data).toEqual({ [multiDeleteMutationName]: [null, null] });
             });
           });
       });

@@ -1,7 +1,7 @@
 import { text, integer, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectGraphQLValidationError } from '../utils';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = setupTestRunner({
@@ -116,7 +116,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        limitsExceedError(errors, [{ path: ['allUsers'] }]);
 
         // The query results don't break the limits, but the "first" parameter does
         ({ errors } = await context.graphql.raw({
@@ -132,7 +132,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        limitsExceedError(errors, [{ path: ['allUsers'] }]);
       })
     );
   });
@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        limitsExceedError(errors, [{ path: ['allPosts', 0, 'author'] }]);
 
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
@@ -239,7 +239,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        limitsExceedError(errors, [{ path: ['allPosts', 1, 'author'] }]);
 
         // All subqueries are within limits, but the total isn't
         // Reset the count for each query
@@ -259,7 +259,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
+        limitsExceedError(errors, [{ path: ['allPosts', 0, 'author', 1, 'posts'] }]);
       })
     );
   });
@@ -289,7 +289,7 @@ describe('maxDepth Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Operation has depth 5 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
     })
   );
 
@@ -299,7 +299,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             mutation {
-              updatePost( title: "foo", data: { title: "bar" }) {
+              updatePost( id: "foo", data: { title: "bar" }) {
                 author {
                   posts {
                     author {
@@ -312,13 +312,7 @@ describe('maxDepth Limit', () => {
           `,
       }).expect(400);
 
-      // This isn't the only error, but that's okay
-      expect(body.errors).toContainEqual({
-        message: 'Operation has depth 5 (max: 3)',
-        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-        name: 'ValidationError',
-        uid: expect.anything(),
-      });
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
     })
   );
 
@@ -343,7 +337,7 @@ describe('maxDepth Limit', () => {
             `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
     })
   );
 
@@ -371,7 +365,7 @@ describe('maxDepth Limit', () => {
             `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Operation has depth 4 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
     })
   );
 
@@ -399,9 +393,13 @@ describe('maxDepth Limit', () => {
             `,
       }).expect(400);
 
-      // We don't get the error back because the GraphQL server errors for other reasons :/
-      // At least we get an error, not a hang or crash
-      expect(body.errors).toEqual(expect.anything());
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Operation has depth Infinity (max: 3)' },
+        { message: 'Operation has depth Infinity (max: 3)' },
+        { message: 'Operation has depth Infinity (max: 3)' },
+        { message: 'Request contains Infinity fields (max: 8)' },
+        { message: 'Cannot spread fragment "f1" within itself via "f2".' },
+      ]);
     })
   );
 
@@ -419,13 +417,11 @@ describe('maxDepth Limit', () => {
             `,
       }).expect(400);
 
-      // We also get an "internal server error" from other code that doesn't handle this case
-      expect(body.errors).toContainEqual({
-        message: 'Undefined fragment "nosuchfragment"',
-        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-        name: 'ValidationError',
-        uid: expect.anything(),
-      });
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Undefined fragment "nosuchfragment"' },
+        { message: 'Undefined fragment "nosuchfragment"' },
+        { message: 'Unknown fragment "nosuchfragment".' },
+      ]);
     })
   );
 });
@@ -461,7 +457,9 @@ describe('maxDefinitions Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 4 definitions (max: 3)' },
+      ]);
     })
   );
 
@@ -490,7 +488,9 @@ describe('maxDefinitions Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Request contains 4 definitions (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 4 definitions (max: 3)' },
+      ]);
     })
   );
 
@@ -501,22 +501,22 @@ describe('maxDefinitions Limit', () => {
         operationName: 'm1',
         query: `
             mutation m1 {
-              updatePost(title: "foo", data: { title: "bar" }) {
+              updatePost(id: "foo", data: { title: "bar" }) {
                 title
               }
             }
             mutation m2 {
-              updatePost(title: "foo", data: { title: "bar" }) {
+              updatePost(id: "foo", data: { title: "bar" }) {
                 title
               }
             }
             mutation m3 {
-              updatePost(title: "foo", data: { title: "bar" }) {
+              updatePost(id: "foo", data: { title: "bar" }) {
                 title
               }
             }
             mutation m4 {
-              updatePost(title: "foo", data: { title: "bar" }) {
+              updatePost(id: "foo", data: { title: "bar" }) {
                 title
               }
             }
@@ -524,12 +524,9 @@ describe('maxDefinitions Limit', () => {
       }).expect(400);
 
       // This isn't the only error, but that's okay
-      expect(body.errors).toContainEqual({
-        message: 'Request contains 4 definitions (max: 3)',
-        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-        name: 'ValidationError',
-        uid: expect.anything(),
-      });
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 4 definitions (max: 3)' },
+      ]);
     })
   );
 });
@@ -559,7 +556,9 @@ describe('maxFields Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 10 fields (max: 8)' },
+      ]);
     })
   );
 
@@ -593,7 +592,9 @@ describe('maxFields Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Request contains 10 fields (max: 8)' }]);
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 10 fields (max: 8)' },
+      ]);
     })
   );
 
@@ -624,7 +625,9 @@ describe('maxFields Limit', () => {
           `,
       }).expect(400);
 
-      expect(body.errors).toMatchObject([{ message: 'Request contains 11 fields (max: 8)' }]);
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 11 fields (max: 8)' },
+      ]);
     })
   );
 
@@ -659,13 +662,10 @@ describe('maxFields Limit', () => {
           `,
       }).expect(400);
 
-      // We also get an "internal server error" from other code that doesn't handle this case
-      expect(body.errors).toContainEqual({
-        message: 'Request contains 13 fields (max: 8)',
-        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-        name: 'ValidationError',
-        uid: expect.anything(),
-      });
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Request contains 13 fields (max: 8)' },
+        { message: 'Fragment "unused" is never used.' },
+      ]);
     })
   );
 
@@ -694,36 +694,33 @@ describe('maxFields Limit', () => {
               }
             }
             fragment lol1 on User {
-              p1: allPosts {
+              p1: posts {
                 ...lol2
               }
-              p2: allPosts {
+              p2: posts {
                 ...lol2
               }
-              p3: allPosts {
+              p3: posts {
                 ...lol2
               }
-              p4: allPosts {
+              p4: posts {
                 ...lol2
               }
-              p5: allPosts {
+              p5: posts {
                 ...lol2
               }
             }
             fragment lol2 on Post {
               title
-              author
+              author { id }
             }
           `,
       }).expect(400);
 
-      // We also get an "internal server error" from other code that doesn't handle this case
-      expect(body.errors).toContainEqual({
-        message: 'Request contains 80 fields (max: 8)',
-        extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-        name: 'ValidationError',
-        uid: expect.anything(),
-      });
+      expectGraphQLValidationError(body.errors, [
+        { message: 'Operation has depth 4 (max: 3)' },
+        { message: 'Request contains 105 fields (max: 8)' },
+      ]);
     })
   );
 });
