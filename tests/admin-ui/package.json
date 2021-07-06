@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@keystone-next/testing": "^1.0.0",
-    "@keystone-next/types": "^20.0.1",
+    "@keystone-next/types": "^21.0.1",
     "@keystone-next/utils": "^1.0.0",
     "@manypkg/find-root": "^1.1.0",
     "dotenv": "^10.0.0",
