@@ -26,3 +26,5 @@ strategy:
     test: ['init.test.ts', ADD_YOUR_FILENAME_HERE]
     fail-fast: false
 ```
+
+Remember to commit this change and validate that the tests are running remotely.
