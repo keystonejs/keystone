@@ -306,7 +306,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: should_run_tests
     env:
-      DATABASE_URL: 'files:./test.db'
+      DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
         test: ['init.test.ts']

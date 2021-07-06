@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import { promisify } from 'util';
 import execa from 'execa';
 import _treeKill from 'tree-kill';
@@ -36,6 +37,8 @@ export const adminUITests = (
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
   dotenv.config({ path: path.resolve(projectRoot, './tests/admin-ui/.env') });
+  console.log(projectRoot, process.env.DATABASE_URL);
+  // throw new Error(`${projectRoot} ${process.env.DATABASE_URL}`);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
@@ -44,10 +47,17 @@ export const adminUITests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
+      if (!fs.existsSync(projectDir)) {
+        throw new Error(`No such file or directory ${projectDir}`);
+      }
+
+      console.log(fs.existsSync(projectDir), projectDir);
+
       let keystoneProcess = execa('yarn', ['keystone-next', command], {
         cwd: projectDir,
         env: process.env,
       });
+
       let adminUIReady = promiseSignal();
       let listener = (chunk: any) => {
         let stringified = chunk.toString('utf8');

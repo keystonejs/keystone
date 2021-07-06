@@ -6,7 +6,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   let page: Page = undefined as any;
 
   beforeAll(async () => {
-    browser = await browserType.launch({ headless: false });
+    browser = await browserType.launch();
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
