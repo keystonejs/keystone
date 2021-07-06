@@ -2,6 +2,7 @@ import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
+import { InitialisedList } from '../../keystone/src/lib/core/types-for-lists';
 
 export type KeystoneContext = {
   req?: IncomingMessage;
@@ -20,6 +21,7 @@ export type KeystoneContext = {
   schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
+  initialisedLists: Record<string, InitialisedList>;
 } & Partial<SessionContext<any>>;
 
 // List item API
