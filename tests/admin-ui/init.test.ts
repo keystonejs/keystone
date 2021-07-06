@@ -11,6 +11,9 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.goto('http://localhost:3000');
   });
   // initFirstItemTest(() => page);
+  test('Task List card should be visible', async () => {
+    await page.waitForSelector('h3:has-text("Task")');
+  });
   test('Should see a 404 on request of the /init route', async () => {
     await page.goto('http://localhost:3000/init');
     const content = await page.textContent('body h1');
