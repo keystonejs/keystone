@@ -11,8 +11,14 @@ export type ListSchemaConfig = Record<
 
 export type IdFieldConfig = {
   kind: 'cuid' | 'uuid' | 'autoincrement';
-  overrideDbField?: any;
-  overrideField?: any;
+  experimental?: {
+    enableOverrides?: boolean;
+  }
+  override?: {
+    parseVal?: object;
+    dbField?: object;
+    field?: object;
+  }
 };
 
 export type ListConfig<
