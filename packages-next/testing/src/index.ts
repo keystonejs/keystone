@@ -13,8 +13,6 @@ import {
 } from '@keystone-next/keystone/artifacts';
 import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 
-export { adminUITests } from './admin-ui-test-utils';
-
 export type GraphQLRequest = (arg: {
   query: string;
   variables?: Record<string, any>;
