@@ -1,7 +1,7 @@
 import { text, integer, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectGraphQLValidationError } from '../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = setupTestRunner({
@@ -116,7 +116,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        limitsExceedError(errors, [{ path: ['allUsers'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allUsers'] }]);
 
         // The query results don't break the limits, but the "first" parameter does
         ({ errors } = await context.graphql.raw({
@@ -132,7 +132,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        limitsExceedError(errors, [{ path: ['allUsers'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allUsers'] }]);
       })
     );
   });
@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        limitsExceedError(errors, [{ path: ['allPosts', 0, 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allPosts', 0, 'author'] }]);
 
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
@@ -239,7 +239,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        limitsExceedError(errors, [{ path: ['allPosts', 1, 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allPosts', 1, 'author'] }]);
 
         // All subqueries are within limits, but the total isn't
         // Reset the count for each query
@@ -259,7 +259,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        limitsExceedError(errors, [{ path: ['allPosts', 0, 'author', 1, 'posts'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allPosts', 0, 'author', 1, 'posts'] }]);
       })
     );
   });

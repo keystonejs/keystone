@@ -83,7 +83,7 @@ export const expectValidationFailure = (
   );
 };
 
-export const expectLimitsExceedError = (
+export const expectLimitsExceededError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[] }[]
 ) => {
