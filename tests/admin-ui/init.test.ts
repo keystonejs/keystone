@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
 import { adminUITests } from './utils';
-// @ts-nocheck
+
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
