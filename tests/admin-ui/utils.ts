@@ -31,7 +31,7 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 
 export const adminUITests = (
   pathToTest: string,
-  tests: (browser: playwright.BrowserType<playwright.Browser>, browserName?: string) => void
+  tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
@@ -109,7 +109,7 @@ export const adminUITests = (
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });
-      tests(playwright[browserName], browserName);
+      tests(playwright[browserName]);
     });
   });
 };
