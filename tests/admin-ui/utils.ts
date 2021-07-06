@@ -35,7 +35,8 @@ export const adminUITests = (
 ) => {
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
-  dotenv.config({ path: path.resolve(projectRoot, '.env') });
+  console.log(projectRoot, projectDir);
+  dotenv.config({ path: path.resolve(projectRoot, './tests/admin-ui/.env') });
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 

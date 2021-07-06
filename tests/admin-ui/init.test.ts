@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
-import { adminUITests } from '@keystone-next/testing';
+import { adminUITests } from './utils';
 // @ts-nocheck
-adminUITests('./test-projects/basic', browserType => {
+adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
 
@@ -11,7 +11,7 @@ adminUITests('./test-projects/basic', browserType => {
     await page.goto('http://localhost:3000');
   });
   // initFirstItemTest(() => page);
-  test('A User card exists', () => {
+  test('A Task card exists', () => {
     expect(true).toBe(true);
   });
   afterAll(async () => {
