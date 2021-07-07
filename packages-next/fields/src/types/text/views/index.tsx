@@ -64,7 +64,6 @@ export const controller = (
   displayMode: 'input' | 'textarea';
   placeholder: string | undefined;
 } => {
-  console.log(config);
   return {
     path: config.path,
     label: config.label,
