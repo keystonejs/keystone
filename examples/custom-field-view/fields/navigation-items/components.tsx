@@ -51,7 +51,7 @@ const styles = {
       }
     `,
     data: css`
-      background-color: #ccd1d5;
+      background-color: #eff3f6;
       padding: 0.5rem;
       flex: auto;
       display: flex;
