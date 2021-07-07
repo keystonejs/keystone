@@ -349,11 +349,7 @@ jobs:
         run: node ./node_modules/playwright/install.js
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-<<<<<<< HEAD
         run: yarn jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
-=======
-        run: yarn jest --ci --maxWorkers=1 tests/admin-ui-tests/${{ matrix.test }}
->>>>>>> 4cd780ffd... remove debug env vars
 
   linting:
     name: Linting
