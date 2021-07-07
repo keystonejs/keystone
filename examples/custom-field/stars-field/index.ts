@@ -9,6 +9,11 @@ import {
   schema,
 } from '@keystone-next/types';
 
+// this field is based on the integer field
+// but with validation to ensure the value is within an expected range
+// and a different input in the Admin UI
+// https://github.com/keystonejs/keystone/tree/master/packages-next/fields/src/types/integer
+
 export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
@@ -40,7 +45,7 @@ export const stars =
       hooks: {
         ...config.hooks,
         // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
-        // This hook is the key difference on the backend between the stars field type and the integer field type.        
+        // This hook is the key difference on the backend between the stars field type and the integer field type.
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
           if (!(val == null || (val >= 0 && val <= maxStars))) {
