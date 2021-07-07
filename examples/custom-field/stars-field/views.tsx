@@ -11,7 +11,7 @@ import {
 } from '@keystone-next/types';
 import { StarsInput } from './stars-input';
 
-// this is the component shown in the create modal/the item page
+// this is the component shown in the create modal and item page
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer as="fieldset">
     <FieldLabel as="legend">{field.label}</FieldLabel>
