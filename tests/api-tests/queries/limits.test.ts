@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allPosts', 0, 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allPosts', expect.any(Number), 'author'] }]);
 
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
@@ -239,7 +239,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allPosts', 1, 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['allPosts', expect.any(Number), 'author'] }]);
 
         // All subqueries are within limits, but the total isn't
         // Reset the count for each query
