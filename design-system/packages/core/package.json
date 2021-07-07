@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.6",
     "@emotion/react": "^11.4.0",
+    "@types/facepaint": "1.2.1",
     "facepaint": "^1.2.1"
   },
   "engines": {

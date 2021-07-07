@@ -2676,7 +2676,7 @@
   resolved "https://registry.yarnpkg.com/@types/extract-files/-/extract-files-8.1.0.tgz#4728440e1d92a6d1d11ac47f5a10e3f9ce47f044"
   integrity sha512-ulxvlFU71yLVV3JxdBgryASAIp+aZQuQOpkhU1SznJlcWz0qsJCWHqdJqP6Lprs3blqGS5FH5GbBkU0977+Wew==
 
-"@types/facepaint@^1.2.1":
+"@types/facepaint@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@types/facepaint/-/facepaint-1.2.1.tgz#925f8f0f2ed7766487c58736d37c2ceded6966f8"
   integrity sha512-LBMeEmlndIC5yEm8g1ulIcAm38xDhVcqcgVrSv6bnn31yQnYT+XUT5Nljj9un2gr0cItCd5Gt02oGJuXjKdjSg==
