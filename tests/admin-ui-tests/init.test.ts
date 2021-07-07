@@ -10,7 +10,6 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
-  // initFirstItemTest(() => page);
   test('Task List card should be visible', async () => {
     await page.waitForSelector('h3:has-text("Task")');
   });
