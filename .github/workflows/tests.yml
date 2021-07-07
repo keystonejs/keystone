@@ -259,6 +259,7 @@ jobs:
             'task-manager.test.ts',
             'testing.test.ts',
             'with-auth.test.ts',
+            'custom-field.test.ts',
           ]
       fail-fast: false
     steps:
