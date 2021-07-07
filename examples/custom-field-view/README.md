@@ -1,9 +1,6 @@
-## Base Project - Task Manager
+## Feature Example - Custom Field View
 
-This base project implements a simple **Task Management** app, with `Tasks` and `People` who can be assigned to tasks.
-
-You can it as a starting place for learning how to use Keystone.
-It’s also a starter for other [feature projects](../).
+This project demonstrates how to create a custom field view for a JSON field. This custom field view allows users to add, edit and remove navigation items from a list
 
 ## Instructions
 
@@ -19,11 +16,3 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-🚀 Congratulations, you're now up and running with Keystone!
-
-## Next steps
-
-This project is bare bones, and doesn't use any of Keystone's advanced features.
-We encourage you to experiment with the code here to see how Keystone works, become familiar with the Admin UI, and learn about the GraphQL Playground.
-
-When you've got the hang of the Task Manager, try a [feature project](../) to learn Keystone's advanced features and take your knowledge to the next level.
