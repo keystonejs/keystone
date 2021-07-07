@@ -70,12 +70,7 @@ const styles = {
   },
 };
 
-export const Field = ({
-  field,
-  value,
-  onChange,
-  autoFocus,
-}: FieldProps<typeof controller>) => {
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   const [labelValue, setLabelValue] = useState('');
   const [hrefValue, setHrefValue] = useState('');
   const [index, setIndex] = useState<number | null>(null);
