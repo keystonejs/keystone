@@ -109,7 +109,6 @@ describe('no access control', () => {
       });
 
       expect(event).toMatchObject({ id: expect.any(String), group: null });
-      expect(event).not.toHaveProperty('errors');
     })
   );
 
@@ -133,7 +132,6 @@ describe('no access control', () => {
       });
 
       expect(event).toMatchObject({ id: expect.any(String), group: { id: createGroup.id } });
-      expect(event).not.toHaveProperty('errors');
     })
   );
 });
