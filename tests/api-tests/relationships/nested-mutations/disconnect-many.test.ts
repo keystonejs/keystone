@@ -119,7 +119,6 @@ describe('non-matching filter', () => {
       });
 
       expect(user).toMatchObject({ id: expect.any(String), notes: [] });
-      expect(user).not.toHaveProperty('errors');
     })
   );
 
