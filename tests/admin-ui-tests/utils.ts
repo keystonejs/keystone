@@ -37,7 +37,6 @@ export const adminUITests = (
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
   dotenv.config({ path: path.resolve(projectRoot, './tests/admin-ui/.env') });
-  console.log(projectRoot, process.env.DATABASE_URL);
   // throw new Error(`${projectRoot} ${process.env.DATABASE_URL}`);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
