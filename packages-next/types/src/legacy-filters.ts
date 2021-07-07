@@ -3,7 +3,7 @@ import { schema } from '.';
 const identity = (x: any) => x;
 
 export const impls = {
-  equalityConditions<T>(fieldKey: string, f: (a: any) => any = identity) {
+  equalityConditions<T>(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [fieldKey]: (value: T) => ({ [fieldKey]: { equals: f(value) } }),
       [`${fieldKey}_not`]: (value: T | null) =>
@@ -14,7 +14,7 @@ export const impls = {
             },
     };
   },
-  equalityConditionsInsensitive(fieldKey: string, f: (a: any) => any = identity) {
+  equalityConditionsInsensitive(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [`${fieldKey}_i`]: (value: string) => ({
         [fieldKey]: { equals: f(value), mode: 'insensitive' },
@@ -31,7 +31,7 @@ export const impls = {
     };
   },
 
-  inConditions<T>(fieldKey: string, f: (a: any) => any = identity) {
+  inConditions<T>(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [`${fieldKey}_in`]: (value: (T | null)[]) =>
         (value.includes(null)
@@ -56,7 +56,7 @@ export const impls = {
     };
   },
 
-  orderingConditions<T>(fieldKey: string, f: (a: any) => any = identity) {
+  orderingConditions<T>(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [`${fieldKey}_lt`]: (value: T) => ({ [fieldKey]: { lt: f(value) } }),
       [`${fieldKey}_lte`]: (value: T) => ({ [fieldKey]: { lte: f(value) } }),
@@ -65,7 +65,7 @@ export const impls = {
     };
   },
 
-  containsConditions(fieldKey: string, f: (a: any) => any = identity) {
+  containsConditions(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [`${fieldKey}_contains`]: (value: string) => ({ [fieldKey]: { contains: f(value) } }),
       [`${fieldKey}_not_contains`]: (value: string) => ({
@@ -74,7 +74,7 @@ export const impls = {
     };
   },
 
-  stringConditions(fieldKey: string, f: (a: any) => any = identity) {
+  stringConditions(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       ...impls.containsConditions(fieldKey, f),
       [`${fieldKey}_starts_with`]: (value: string) => ({ [fieldKey]: { startsWith: f(value) } }),
@@ -88,7 +88,7 @@ export const impls = {
     };
   },
 
-  stringConditionsInsensitive(fieldKey: string, f: (a: any) => any = identity) {
+  stringConditionsInsensitive(fieldKey: string, f: (a: any) => any = identity): any {
     return {
       [`${fieldKey}_contains_i`]: (value: string) => ({
         [fieldKey]: { contains: f(value), mode: 'insensitive' },
