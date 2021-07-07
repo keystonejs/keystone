@@ -28,7 +28,6 @@ export type TestEnv = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   testArgs: TestArgs;
-  expressServer: any;
 };
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
@@ -37,13 +36,11 @@ const _hashPrismaSchema = memoizeOne(prismaSchema =>
 const _alreadyGeneratedProjects = new Set<string>();
 export async function setupTestEnv({
   config: _config,
-  uiDisabled = true,
 }: {
   config: KeystoneConfig;
-  uiDisabled?: boolean;
 }): Promise<TestEnv> {
   // Force the UI to always be disabled.
-  const config = initConfig({ ..._config, ui: { isDisabled: uiDisabled } });
+  const config = initConfig({ ..._config, ui: { isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
 
   const artifacts = await getCommittedArtifacts(graphQLSchema, config);
@@ -67,27 +64,15 @@ export async function setupTestEnv({
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
   // (config, graphQLSchema, createContext, dev, projectAdminPath, isVerbose)
-  const expressServer = await createExpressServer(
-    config,
-    graphQLSchema,
-    createContext,
-    true,
-    '',
-    false
-  );
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
-    supertest(expressServer)
+    supertest(app)
       .post('/api/graphql')
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 
-  return {
-    connect,
-    disconnect,
-    expressServer,
-    testArgs: { context: createContext(), graphQLRequest },
-  };
+  return { connect, disconnect, testArgs: { context: createContext(), graphQLRequest } };
 }
 
 export function setupTestRunner({ config }: { config: KeystoneConfig }) {
