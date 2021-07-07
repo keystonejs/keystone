@@ -3,7 +3,7 @@ import { document } from '@keystone-next/fields-document';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { KeystoneContext } from '../../../../packages-next/types/src';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -254,7 +254,7 @@ describe('Document field type', () => {
 
   test(
     'hydrateRelationships: true - selection has bad fields',
-    runner(async ({ context }) => {
+    runner(async ({ context, graphQLRequest }) => {
       const { alice } = await initData({ context });
       const badBob = await context.lists.Author.createOne({
         data: {
@@ -277,17 +277,19 @@ describe('Document field type', () => {
         },
       });
 
-      const { data, errors } = await context.graphql.raw({
+      const { body } = await graphQLRequest({
         query:
           'query ($id: ID!){ Author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
       });
-      expect(data!.Author.badBio).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual(
-        'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?'
-      );
-      expect(errors![0].path).toEqual(['Author', 'badBio', 'document']);
+      // FIXME: The path doesn't match the null field here!
+      expect(body.data).toEqual({ Author: { badBio: null } });
+      expectInternalServerError(body.errors, [
+        {
+          path: ['Author', 'badBio', 'document'],
+          message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
+        },
+      ]);
     })
   );
 });

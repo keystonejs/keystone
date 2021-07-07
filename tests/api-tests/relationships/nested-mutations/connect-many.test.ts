@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectNestedError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -244,7 +244,7 @@ describe('non-matching filter', () => {
       const FAKE_ID = 100;
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 createUser(data: {
@@ -256,9 +256,9 @@ describe('non-matching filter', () => {
                 }
               }`,
       });
-
-      expect(errors).toMatchObject([
-        { message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      expect(data).toEqual({ createUser: null });
+      expectNestedError(errors, [
+        { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
       ]);
     })
   );
@@ -272,7 +272,7 @@ describe('non-matching filter', () => {
       const createUser = await context.lists.User.createOne({ data: {} });
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 updateUser(
@@ -288,8 +288,9 @@ describe('non-matching filter', () => {
               }`,
       });
 
-      expect(errors).toMatchObject([
-        { message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      expect(data).toEqual({ updateUser: null });
+      expectNestedError(errors, [
+        { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
       ]);
     })
   );
@@ -307,7 +308,7 @@ describe('with access control', () => {
           data: { content: noteContent },
         });
 
-        const { errors } = await context.graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -319,13 +320,13 @@ describe('with access control', () => {
                 }`,
         });
 
-        expect(errors).toHaveLength(1);
-        const error = errors![0];
-        expect(error.message).toEqual(
-          'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-        );
-        expect(error.path).toHaveLength(1);
-        expect(error.path![0]).toEqual('createUserToNotesNoRead');
+        expect(data).toEqual({ createUserToNotesNoRead: null });
+        expectNestedError(errors, [
+          {
+            path: ['createUserToNotesNoRead'],
+            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+          },
+        ]);
       })
     );
 
@@ -345,7 +346,7 @@ describe('with access control', () => {
         });
 
         // Update the item and link the relationship field
-        const { errors } = await context.graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -359,14 +360,13 @@ describe('with access control', () => {
                   }
                 }`,
         });
-
-        expect(errors).toHaveLength(1);
-        const error = errors![0];
-        expect(error.message).toEqual(
-          'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-        );
-        expect(error.path).toHaveLength(1);
-        expect(error.path![0]).toEqual('updateUserToNotesNoRead');
+        expect(data).toEqual({ updateUserToNotesNoRead: null });
+        expectNestedError(errors, [
+          {
+            path: ['updateUserToNotesNoRead'],
+            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+          },
+        ]);
       })
     );
   });

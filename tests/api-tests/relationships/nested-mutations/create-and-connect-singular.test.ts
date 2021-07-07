@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectNestedError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -26,7 +26,7 @@ describe('errors on incomplete data', () => {
     'when neither id or create data passed',
     runner(async ({ context }) => {
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 createEvent(data: { group: {} }) {
@@ -35,8 +35,12 @@ describe('errors on incomplete data', () => {
               }`,
       });
 
-      expect(errors).toMatchObject([
-        { message: 'Nested mutation operation invalid for Event.group<Group>' },
+      expect(data).toEqual({ createEvent: null });
+      expectNestedError(errors, [
+        {
+          path: ['createEvent'],
+          message: 'Nested mutation operation invalid for Event.group<Group>',
+        },
       ]);
     })
   );
@@ -57,9 +61,12 @@ describe('errors on incomplete data', () => {
               }`,
       });
 
-      expect(data?.createEvent).toBe(null);
-      expect(errors).toMatchObject([
-        { message: 'Nested mutation operation invalid for Event.group<Group>' },
+      expect(data).toEqual({ createEvent: null });
+      expectNestedError(errors, [
+        {
+          path: ['createEvent'],
+          message: 'Nested mutation operation invalid for Event.group<Group>',
+        },
       ]);
     })
   );

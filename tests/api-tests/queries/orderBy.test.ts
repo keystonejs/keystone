@@ -2,7 +2,7 @@ import { integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { KeystoneContext } from '@keystone-next/types';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -251,15 +251,16 @@ describe('Ordering by a single field', () => {
 
   test(
     'Multi filter, bad format throws error ',
-    runner(async ({ context }) => {
+    runner(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
 
-      const { data, errors } = await context.graphql.raw({
+      const { body } = await graphQLRequest({
         query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
       });
-      expect(data?.allUsers).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('Only a single key must be passed to UserOrderByInput');
+      expect(body.data).toEqual({ allUsers: null });
+      expectInternalServerError(body.errors, [
+        { path: ['allUsers'], message: 'Only a single key must be passed to UserOrderByInput' },
+      ]);
     })
   );
 });
