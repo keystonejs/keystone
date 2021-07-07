@@ -1,3 +1,37 @@
+/* URLs from v4.keystonejs.com */
+const KEYSTONE_4 = [
+  {
+    source: '/docs/configuration',
+    destination: 'https://v4.keystonejs.com/docs/configuration',
+    permanent: true,
+  },
+  {
+    source: '/docs/database',
+    destination: 'https://v4.keystonejs.com/api/field/options',
+    permanent: true,
+  },
+  {
+    source: '/docs/getting-started',
+    destination: 'https://v4.keystonejs.com/getting-started',
+    permanent: true,
+  },
+  {
+    source: '/documentation/configuration/project-options',
+    destination: 'https://v4.keystonejs.com/documentation/configuration/project-options',
+    permanent: true,
+  },
+  {
+    source: '/documentation/database',
+    destination: 'https://v4.keystonejs.com/documentation/database',
+    permanent: true,
+  },
+  {
+    source: '/getting-started',
+    destination: 'https://v4.keystonejs.com/getting-started',
+    permanent: true,
+  },
+];
+
 /* URLs from v5.keystonejs.com */
 const KEYSTONE_5 = [
   {
@@ -68,4 +102,4 @@ const ORIGINAL_NEXT = [
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
 
-module.exports = [...ORIGINAL_NEXT, ...KEYSTONE_5];
+module.exports = [...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
