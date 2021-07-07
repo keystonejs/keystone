@@ -21,6 +21,43 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 Keystone provides a testing library in the package [`@keystone-next/testing`](https://keystonejs.com/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
 This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example.test.ts](./example.test.ts)
 
+### Running tests
+
+The project's `package.json` includes a script:
+
+```
+    "test": "jest --runInBand --testTimeout=60000"
+```
+
+We set `--runInBand` to ensure that tests are not run in parallel. All the tests share a single database which they need to reset, so running the tests in parallel will result in undefined behaviour.
+
+We can run the tests by running the command
+
+```shell
+yarn test
+```
+
+which should give output ending with:
+
+```
+ PASS  ./example.test.ts (14.245 s)
+  Example tests using test runner
+    ✓ Create a Person using the list items API (3820 ms)
+    ✓ Create a Person using a hand-crafted GraphQL query sent over HTTP (780 ms)
+    ✓ Check that trying to create user with no name (required field) fails (722 ms)
+    ✓ Check access control by running updateTask as a specific user via context.withSession() (759 ms)
+  Example tests using test environment
+    ✓ Check that the persons password is set (4 ms)
+    ✓ Update the persons email address (10 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        14.332 s
+Ran all test suites.
+✨  Done in 17.14s.
+```
+
 ### Test runner
 
 The function `setupTestRunner` takes the project's `KeystoneConfig` object and creates a `runner` function. This test runner is then used to wrap a test function.

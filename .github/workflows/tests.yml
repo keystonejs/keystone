@@ -145,7 +145,7 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1 api-tests
+        run: yarn jest --ci --runInBand api-tests
         env:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
@@ -198,7 +198,7 @@ jobs:
       - name: Install Dependencies
         run: yarn
       - name: Unit tests
-        run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        run: yarn jest --ci --runInBand --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
         env:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
@@ -300,7 +300,7 @@ jobs:
         run: node ./node_modules/playwright/install.js
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1 tests/examples-smoke-tests/${{ matrix.test }}
+        run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
 
   linting:
     name: Linting
