@@ -7,7 +7,7 @@
     "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "keystone-next build",
-    "test": "jest --maxWorkers=1 --testTimeout=60000"
+    "test": "jest --runInBand --testTimeout=60000"
   },
   "dependencies": {
     "@babel/core": "^7.14.6",
