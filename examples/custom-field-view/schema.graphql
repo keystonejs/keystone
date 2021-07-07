@@ -1,24 +1,25 @@
 """
  A keystone list
 """
-type Post {
+type Task {
   id: ID!
-  title: String
-  status: PostStatusType
-  content: String
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: Person
+  finishBy: String
   relatedLinks: JSON
-  publishDate: String
-  author: Author
 }
 
-enum PostStatusType {
-  draft
-  published
+enum TaskPriorityType {
+  low
+  medium
+  high
 }
 
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
+input TaskWhereInput {
+  AND: [TaskWhereInput!]
+  OR: [TaskWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -27,57 +28,53 @@ input PostWhereInput {
   id_gte: ID
   id_in: [ID!]
   id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: PostStatusType
-  status_not: PostStatusType
-  status_in: [PostStatusType]
-  status_not_in: [PostStatusType]
-  content: String
-  content_not: String
-  content_contains: String
-  content_not_contains: String
-  content_in: [String]
-  content_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
-  author: AuthorWhereInput
-  author_is_null: Boolean
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  priority: TaskPriorityType
+  priority_not: TaskPriorityType
+  priority_in: [TaskPriorityType]
+  priority_not_in: [TaskPriorityType]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  assignedTo: PersonWhereInput
+  assignedTo_is_null: Boolean
+  finishBy: String
+  finishBy_not: String
+  finishBy_lt: String
+  finishBy_lte: String
+  finishBy_gt: String
+  finishBy_gte: String
+  finishBy_in: [String]
+  finishBy_not_in: [String]
 }
 
-input PostWhereUniqueInput {
+input TaskWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
+enum SortTasksBy {
   id_ASC
   id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
+  label_ASC
+  label_DESC
+  priority_ASC
+  priority_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
 }
 
-input PostOrderByInput {
+input TaskOrderByInput {
   id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  content: OrderDirection
-  publishDate: OrderDirection
+  label: OrderDirection
+  priority: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
 }
 
 enum OrderDirection {
@@ -85,78 +82,77 @@ enum OrderDirection {
   desc
 }
 
-input PostUpdateInput {
-  title: String
-  status: PostStatusType
-  content: String
+input TaskUpdateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
   relatedLinks: JSON
-  publishDate: String
-  author: AuthorRelateToOneInput
 }
 
-input AuthorRelateToOneInput {
-  create: AuthorCreateInput
-  connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
   disconnectAll: Boolean
 }
 
-input PostsUpdateInput {
+input TasksUpdateInput {
   id: ID!
-  data: PostUpdateInput
+  data: TaskUpdateInput
 }
 
-input PostCreateInput {
-  title: String
-  status: PostStatusType
-  content: String
+input TaskCreateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
   relatedLinks: JSON
-  publishDate: String
-  author: AuthorRelateToOneInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
+input TasksCreateInput {
+  data: TaskCreateInput
 }
 
 """
  A keystone list
 """
-type Author {
+type Person {
   id: ID!
   name: String
-  email: String
-  posts(
-    where: PostWhereInput! = {}
+  tasks(
+    where: TaskWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
+  ): [Task!]
+  _tasksMeta(
+    where: TaskWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
     @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int
+  tasksCount(where: TaskWhereInput! = {}): Int
 }
 
 type _QueryMeta {
   count: Int
 }
 
-input AuthorWhereInput {
-  AND: [AuthorWhereInput!]
-  OR: [AuthorWhereInput!]
+input PersonWhereInput {
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
   id: ID
   id_not: ID
   id_lt: ID
@@ -171,75 +167,63 @@ input AuthorWhereInput {
   name_not_contains: String
   name_in: [String]
   name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
 
   """
    condition must be true for all nodes
   """
-  posts_every: PostWhereInput
+  tasks_every: TaskWhereInput
 
   """
    condition must be true for at least 1 node
   """
-  posts_some: PostWhereInput
+  tasks_some: TaskWhereInput
 
   """
    condition must be false for all nodes
   """
-  posts_none: PostWhereInput
+  tasks_none: TaskWhereInput
 }
 
-input AuthorWhereUniqueInput {
+input PersonWhereUniqueInput {
   id: ID
-  email: String
 }
 
-enum SortAuthorsBy {
+enum SortPeopleBy {
   id_ASC
   id_DESC
   name_ASC
   name_DESC
-  email_ASC
-  email_DESC
 }
 
-input AuthorOrderByInput {
+input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
 }
 
-input AuthorUpdateInput {
+input PersonUpdateInput {
   name: String
-  email: String
-  posts: PostRelateToManyInput
+  tasks: TaskRelateToManyInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
+input TaskRelateToManyInput {
+  create: [TaskCreateInput]
+  connect: [TaskWhereUniqueInput]
+  disconnect: [TaskWhereUniqueInput]
   disconnectAll: Boolean
 }
 
-input AuthorsUpdateInput {
+input PeopleUpdateInput {
   id: ID!
-  data: AuthorUpdateInput
+  data: PersonUpdateInput
 }
 
-input AuthorCreateInput {
+input PersonCreateInput {
   name: String
-  email: String
-  posts: PostRelateToManyInput
+  tasks: TaskRelateToManyInput
 }
 
-input AuthorsCreateInput {
-  data: AuthorCreateInput
+input PeopleCreateInput {
+  data: PersonCreateInput
 }
 
 """
@@ -252,136 +236,136 @@ scalar JSON
 
 type Mutation {
   """
-   Create a single Post item.
+   Create a single Task item.
   """
-  createPost(data: PostCreateInput): Post
+  createTask(data: TaskCreateInput): Task
 
   """
-   Create multiple Post items.
+   Create multiple Task items.
   """
-  createPosts(data: [PostsCreateInput]): [Post]
+  createTasks(data: [TasksCreateInput]): [Task]
 
   """
-   Update a single Post item by ID.
+   Update a single Task item by ID.
   """
-  updatePost(id: ID!, data: PostUpdateInput): Post
+  updateTask(id: ID!, data: TaskUpdateInput): Task
 
   """
-   Update multiple Post items by ID.
+   Update multiple Task items by ID.
   """
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updateTasks(data: [TasksUpdateInput]): [Task]
 
   """
-   Delete a single Post item by ID.
+   Delete a single Task item by ID.
   """
-  deletePost(id: ID!): Post
+  deleteTask(id: ID!): Task
 
   """
-   Delete multiple Post items by ID.
+   Delete multiple Task items by ID.
   """
-  deletePosts(ids: [ID!]): [Post]
+  deleteTasks(ids: [ID!]): [Task]
 
   """
-   Create a single Author item.
+   Create a single Person item.
   """
-  createAuthor(data: AuthorCreateInput): Author
+  createPerson(data: PersonCreateInput): Person
 
   """
-   Create multiple Author items.
+   Create multiple Person items.
   """
-  createAuthors(data: [AuthorsCreateInput]): [Author]
+  createPeople(data: [PeopleCreateInput]): [Person]
 
   """
-   Update a single Author item by ID.
+   Update a single Person item by ID.
   """
-  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
 
   """
-   Update multiple Author items by ID.
+   Update multiple Person items by ID.
   """
-  updateAuthors(data: [AuthorsUpdateInput]): [Author]
+  updatePeople(data: [PeopleUpdateInput]): [Person]
 
   """
-   Delete a single Author item by ID.
+   Delete a single Person item by ID.
   """
-  deleteAuthor(id: ID!): Author
+  deletePerson(id: ID!): Person
 
   """
-   Delete multiple Author items by ID.
+   Delete multiple Person items by ID.
   """
-  deleteAuthors(ids: [ID!]): [Author]
+  deletePeople(ids: [ID!]): [Person]
 }
 
 type Query {
   """
-   Search for all Post items which match the where clause.
+   Search for all Task items which match the where clause.
   """
-  allPosts(
-    where: PostWhereInput! = {}
+  allTasks(
+    where: TaskWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]
+  ): [Task!]
 
   """
-   Search for the Post item with the matching ID.
+   Search for the Task item with the matching ID.
   """
-  Post(where: PostWhereUniqueInput!): Post
+  Task(where: TaskWhereUniqueInput!): Task
 
   """
-   Perform a meta-query on all Post items which match the where clause.
+   Perform a meta-query on all Task items which match the where clause.
   """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
+  _allTasksMeta(
+    where: TaskWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortTasksBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-
-  """
-   Search for all Author items which match the where clause.
-  """
-  allAuthors(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Author!]
-
-  """
-   Search for the Author item with the matching ID.
-  """
-  Author(where: AuthorWhereUniqueInput!): Author
-
-  """
-   Perform a meta-query on all Author items which match the where clause.
-  """
-  _allAuthorsMeta(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
+    orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
     @deprecated(
-      reason: "This query will be removed in a future version. Please use authorsCount instead."
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
-  authorsCount(where: AuthorWhereInput! = {}): Int
+  tasksCount(where: TaskWhereInput! = {}): Int
+
+  """
+   Search for all Person items which match the where clause.
+  """
+  allPeople(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+
+  """
+   Search for the Person item with the matching ID.
+  """
+  Person(where: PersonWhereUniqueInput!): Person
+
+  """
+   Perform a meta-query on all Person items which match the where clause.
+  """
+  _allPeopleMeta(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

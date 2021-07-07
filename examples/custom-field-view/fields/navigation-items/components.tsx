@@ -31,7 +31,7 @@ const styles = {
       width: 90%;
     `,
     button: css`
-      margin: 1rem 0 0 0;
+      margin: 1rem 0.5rem 0 0;
     `,
   },
   list: {

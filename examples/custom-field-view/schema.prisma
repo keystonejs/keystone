@@ -8,22 +8,21 @@ generator client {
   output   = "node_modules/.prisma/client"
 }
 
-model Post {
+model Task {
   id           String    @id @default(cuid())
-  title        String?
-  status       String?
-  content      String?
+  label        String?
+  priority     String?
+  isComplete   Boolean?
+  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId String?   @map("assignedTo")
+  finishBy     DateTime?
   relatedLinks String?
-  publishDate  DateTime?
-  author       Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId     String?   @map("author")
 
-  @@index([authorId])
+  @@index([assignedToId])
 }
 
-model Author {
+model Person {
   id    String  @id @default(cuid())
   name  String?
-  email String? @unique
-  posts Post[]  @relation("Post_author")
+  tasks Task[]  @relation("Task_assignedTo")
 }

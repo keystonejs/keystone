@@ -1,18 +1,22 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { json, select, relationship, text, timestamp } from '@keystone-next/fields';
+import { checkbox, relationship, text, timestamp } from '@keystone-next/fields';
+import { json, select } from '@keystone-next/fields';
 
 export const lists = createSchema({
-  Post: list({
+  Task: list({
     fields: {
-      title: text({ isRequired: true }),
-      status: select({
+      label: text({ isRequired: true }),
+      priority: select({
         dataType: 'enum',
         options: [
-          { label: 'Draft', value: 'draft' },
-          { label: 'Published', value: 'published' },
+          { label: 'Low', value: 'low' },
+          { label: 'Medium', value: 'medium' },
+          { label: 'High', value: 'high' },
         ],
       }),
-      content: text(),
+      isComplete: checkbox(),
+      assignedTo: relationship({ ref: 'Person.tasks', many: false }),
+      finishBy: timestamp(),
       relatedLinks: json({
         ui: {
           views: require.resolve('./fields/navigation-items/components.tsx'),
@@ -21,15 +25,12 @@ export const lists = createSchema({
           itemView: { fieldMode: 'edit' },
         },
       }),
-      publishDate: timestamp(),
-      author: relationship({ ref: 'Author.posts', many: false }),
     },
   }),
-  Author: list({
+  Person: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
-      posts: relationship({ ref: 'Post.author', many: true }),
+      tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
 });
