@@ -4,15 +4,6 @@ import { json, select, relationship, text, timestamp } from '@keystone-next/fiel
 export const lists = createSchema({
   Post: list({
     fields: {
-      navigationItems: json({
-        isRequired: true,
-        ui: {
-          views: require.resolve('./fields/navigation-items/components.tsx'),
-          createView: { fieldMode: 'edit' },
-          listView: { fieldMode: 'hidden' },
-          itemView: { fieldMode: 'read' },
-        },
-      }),
       title: text({ isRequired: true }),
       status: select({
         dataType: 'enum',
@@ -22,6 +13,14 @@ export const lists = createSchema({
         ],
       }),
       content: text(),
+      relatedLinks: json({
+        ui: {
+          views: require.resolve('./fields/navigation-items/components.tsx'),
+          createView: { fieldMode: 'edit' },
+          listView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'edit' },
+        },
+      }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
     },

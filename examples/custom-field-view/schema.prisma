@@ -9,14 +9,14 @@ generator client {
 }
 
 model Post {
-  id              String    @id @default(cuid())
-  navigationItems String?
-  title           String?
-  status          String?
-  content         String?
-  publishDate     DateTime?
-  author          Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId        String?   @map("author")
+  id           String    @id @default(cuid())
+  title        String?
+  status       String?
+  content      String?
+  relatedLinks String?
+  publishDate  DateTime?
+  author       Author?   @relation("Post_author", fields: [authorId], references: [id])
+  authorId     String?   @map("author")
 
   @@index([authorId])
 }

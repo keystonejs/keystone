@@ -1,6 +1,6 @@
 ## Base Project - Blog
 
-This project implements a basic **Blog**, with `Posts` and `Authors`.
+This project implements a basic **Blog**, with `Posts` (with custom field view for "related link") and `Authors`.
 
 You can use it as a starting place for learning how to use Keystone.
 

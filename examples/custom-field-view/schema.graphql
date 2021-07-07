@@ -3,10 +3,10 @@
 """
 type Post {
   id: ID!
-  navigationItems: JSON
   title: String
   status: PostStatusType
   content: String
+  relatedLinks: JSON
   publishDate: String
   author: Author
 }
@@ -86,10 +86,10 @@ enum OrderDirection {
 }
 
 input PostUpdateInput {
-  navigationItems: JSON
   title: String
   status: PostStatusType
   content: String
+  relatedLinks: JSON
   publishDate: String
   author: AuthorRelateToOneInput
 }
@@ -107,10 +107,10 @@ input PostsUpdateInput {
 }
 
 input PostCreateInput {
-  navigationItems: JSON
   title: String
   status: PostStatusType
   content: String
+  relatedLinks: JSON
   publishDate: String
   author: AuthorRelateToOneInput
 }
