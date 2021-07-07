@@ -13,7 +13,7 @@ DATABASE_URL = file:/.test.db
 ```
 
 To run these tests please run the `yarn test:admin-ui` script from the root of the Keystone monorepo.
-If you would like more explicit logging from playwright, please run `DEBUG=pw:api yarn test:Admin-ui`.
+If you would like more explicit logging from playwright, please run `DEBUG=pw:api yarn test:admin-ui`.
 
 # How to write
 
@@ -34,3 +34,4 @@ strategy:
 ```
 
 Remember to commit this change and validate that the tests are running remotely.
+Once your PR is merged, update the branch protection rules on `master` to require the admin UI test.
