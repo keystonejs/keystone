@@ -6,6 +6,12 @@ All integration tests in this repo are run using [playwright](https://playwright
 
 # How to run
 
+These tests expect a keystone configured with `sqlite`, so before running the tests please ensure that you have the following in your `.env` file in the root of this repo.
+
+```
+DATABASE_URL = file:/.test.db
+```
+
 To run these tests please run the `yarn test:admin-ui` script from the root of the Keystone monorepo.
 If you would like more explicit logging from playwright, please run `DEBUG=pw:api yarn test:Admin-ui`.
 
