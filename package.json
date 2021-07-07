@@ -107,7 +107,7 @@
     "packages": [
       "packages/*",
       "tests/test-projects/*",
-      "tests/admin-ui",
+      "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
