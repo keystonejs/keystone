@@ -7,7 +7,7 @@ All integration tests in this repo are run using [playwright](https://playwright
 # How to run
 
 To run these tests please run the `yarn test:admin-ui` script from the root of the Keystone monorepo.
-If you would like more explicit logging from playwright, please run `DEBUG=pw:api yarn test:Admin-ui`.
+If you would like more explicit logging from playwright, please run `DEBUG=pw:api yarn test:admin-ui`.
 
 # How to write
 
