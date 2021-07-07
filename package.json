@@ -23,7 +23,7 @@
     "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
-    "test:admin-ui": "cross-env DATABASE_URL=file:/.test.db yarn jest tests/admin-ui-tests",
+    "test:admin-ui": "yarn jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
