@@ -10,7 +10,7 @@
   "scripts": {
     "prisma": "prisma",
     "docs": "manypkg run @keystone-next/website dev",
-    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
+    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -21,8 +21,9 @@
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
     "test": "yarn lint && yarn test:unit",
-    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --maxWorkers=1 --logHeapUsage",
+    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
+    "test:admin-ui": "yarn jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
@@ -105,6 +106,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "tests/test-projects/*",
+      "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",

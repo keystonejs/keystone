@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 import { setupTestRunner, TestArgs } from '@keystone-next/testing';
-import { apiTestConfig } from './utils';
+import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
   User: [
@@ -88,15 +88,14 @@ async function login(
 describe('Auth testing', () => {
   test(
     'Gives access denied when not logged in',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       // seed the db
       for (const [listKey, data] of Object.entries(initialData)) {
         await context.sudo().lists[listKey].createMany({ data });
       }
-      const { body } = await graphQLRequest({ query: '{ allUsers { id } }' });
-      const { data, errors } = body;
+      const { data, errors } = await context.graphql.raw({ query: '{ allUsers { id } }' });
       expect(data).toEqual({ allUsers: null });
-      expect(errors).toMatchObject([{ name: 'AccessDeniedError' }]);
+      expectAccessDenied(errors, [{ path: ['allUsers'] }]);
     })
   );
 
