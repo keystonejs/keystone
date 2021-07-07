@@ -41,7 +41,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-focus-lock": "^2.5.1",
-    "react-toast-notifications": "^2.4.4",
+    "react-toast-notifications": "^2.5.0",
     "remark-gfm": "^1.0.0",
     "remark-hint": "^1.0.10"
   },

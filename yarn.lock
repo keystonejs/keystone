@@ -11145,10 +11145,10 @@ react-style-singleton@^2.1.0:
     invariant "^2.2.4"
     tslib "^1.0.0"
 
-react-toast-notifications@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.4.tgz#a4b46195b437f312d72f552073957e3a1916f1ab"
-  integrity sha512-FNekr4IIeZZ+9B7LO4Wdqfp16jX6yH6A3HMajbPHpfPwhmcqIX///wPhdbcef9bQaa+NZwdyCHKeCSC6eFnduw==
+react-toast-notifications@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.5.0.tgz#07a2f9f469fcb3b133f8621c596b55b0aa96b0de"
+  integrity sha512-Fp8Coc3ZGapsQWwsj1soxjhdCbNw8DJLElrsVvnjZ4CX1t4qVpbRNZVLk3riS+0vx5Adw+xe1rnU8JjiO32OIQ==
   dependencies:
     "@emotion/core" "^10.0.14"
     react-transition-group "^4.4.1"

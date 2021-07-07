@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectNestedError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -141,7 +141,7 @@ describe('non-matching filter', () => {
       const FAKE_ID = 100;
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 createEvent(data: {
@@ -154,7 +154,10 @@ describe('non-matching filter', () => {
               }`,
       });
 
-      expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
+      expect(data).toEqual({ createEvent: null });
+      expectNestedError(errors, [
+        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
+      ]);
     })
   );
 
@@ -167,7 +170,7 @@ describe('non-matching filter', () => {
       const createEvent = await context.lists.Event.createOne({ data: {} });
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 updateEvent(
@@ -182,8 +185,10 @@ describe('non-matching filter', () => {
                 }
               }`,
       });
-
-      expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
+      expect(data).toEqual({ updateEvent: null });
+      expectNestedError(errors, [
+        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
+      ]);
     })
   );
 });
@@ -278,7 +283,7 @@ describe('with access control', () => {
             expect(eventModel.id).toBeTruthy();
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.exitSudo().graphql.raw({
               query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -292,13 +297,13 @@ describe('with access control', () => {
                       }
                     }`,
             });
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              `Unable to connect a EventTo${group.name}.group<${group.name}>`
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual(`updateEventTo${group.name}`);
+            expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
+            expectNestedError(errors, [
+              {
+                path: [`updateEventTo${group.name}`],
+                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+              },
+            ]);
           })
         );
 
@@ -314,7 +319,7 @@ describe('with access control', () => {
             expect(id).toBeTruthy();
 
             // Create an item that does the linking
-            const { errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.exitSudo().graphql.raw({
               query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -325,13 +330,14 @@ describe('with access control', () => {
                       }
                     }`,
             });
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              `Unable to connect a EventTo${group.name}.group<${group.name}>`
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual(`createEventTo${group.name}`);
+
+            expect(data).toEqual({ [`createEventTo${group.name}`]: null });
+            expectNestedError(errors, [
+              {
+                path: [`createEventTo${group.name}`],
+                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+              },
+            ]);
           })
         );
       }

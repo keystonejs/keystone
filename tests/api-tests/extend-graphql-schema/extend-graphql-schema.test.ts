@@ -1,7 +1,7 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const falseFn: (...args: any) => boolean = () => false;
 
@@ -67,17 +67,16 @@ describe('extendGraphqlSchema', () => {
   );
   it(
     'Denies access acording to access control',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
         query: `
               query {
                 quads(x: 10)
               }
             `,
       });
-      expect(data?.quads).toBe(null);
-      expect(errors).not.toBe(undefined);
-      expect(errors).toHaveLength(1);
+      expect(body.data).toEqual({ quads: null });
+      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }]);
     })
   );
   it(
