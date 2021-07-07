@@ -24,12 +24,12 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
-// setting supportsLinksTo means the cell component
+// setting supportsLinksTo means the cell component allows containing a link to the item
 // for example, text fields support it but relationship fields don't because
 // their cell component links to the related item so it can't link to the item that the relationship is on
 Cell.supportsLinkTo = true;
 
-// this is shown for the of relationship fields with `displayMode: 'cards'`
+// this is shown on the item page in relationship fields with `displayMode: 'cards'`
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
