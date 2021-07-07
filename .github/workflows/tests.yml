@@ -299,7 +299,7 @@ jobs:
         run: node ./node_modules/playwright/install.js
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1 tests/examples-smoke-tests/${{ matrix.test }}
+        run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
