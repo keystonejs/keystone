@@ -37,7 +37,6 @@ export const adminUITests = (
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
   dotenv.config({ path: path.resolve(projectRoot, './tests/admin-ui/.env') });
-  // throw new Error(`${projectRoot} ${process.env.DATABASE_URL}`);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
@@ -49,8 +48,6 @@ export const adminUITests = (
       if (!fs.existsSync(projectDir)) {
         throw new Error(`No such file or directory ${projectDir}`);
       }
-
-      console.log(fs.existsSync(projectDir), projectDir);
 
       let keystoneProcess = execa('yarn', ['keystone-next', command], {
         cwd: projectDir,
