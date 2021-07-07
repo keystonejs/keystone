@@ -9,10 +9,9 @@ exampleProjectTests('custom-field-view', browserType => {
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
-  test('Custom field view "Related Links" is visible', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Tasks")')]);
-    await Promise.all([page.waitForSelector('button:has-text("Create Task")'), page.click('button:has-text("Create Task")')]);
-    await page.waitForSelector('label:has-text("Related Links")');
+  test('Load list', async () => {
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
+    await page.waitForSelector('button:has-text("Create Author")');
   });
   afterAll(async () => {
     await browser.close();
