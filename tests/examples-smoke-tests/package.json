@@ -11,7 +11,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/examples-smoke-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@types/tough-cookie": "^4.0.0",
+    "@types/tough-cookie": "^4.0.1",
     "execa": "^5.1.1",
     "node-fetch": "^2.6.1",
     "playwright": "^1.12.3",
