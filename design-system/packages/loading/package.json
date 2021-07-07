@@ -5,7 +5,7 @@
   "main": "dist/loading.cjs.js",
   "module": "dist/loading.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.11"
+    "@types/react": "^17.0.14"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",

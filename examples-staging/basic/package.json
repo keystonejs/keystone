@@ -22,7 +22,7 @@
     "@keystone-ui/icons": "^4.0.0",
     "@keystone-ui/tooltip": "^4.0.0",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.11",
+    "@types/react": "^17.0.14",
     "apollo-server-micro": "^2.25.2",
     "graphql": "^15.5.1",
     "graphql-tag": "^2.12.5",
@@ -31,7 +31,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
