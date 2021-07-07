@@ -39,6 +39,8 @@ export const stars =
       ...config,
       hooks: {
         ...config.hooks,
+        // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
+        // This hook is the key difference on the backend between the stars field type and the integer field type.        
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
           if (!(val == null || (val >= 0 && val <= maxStars))) {
