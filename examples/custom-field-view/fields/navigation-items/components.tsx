@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
+import React from 'react';
 import { FieldProps } from '@keystone-next/types';
-import css from '@emotion/css';
-import { jsx } from '@keystone-ui/core';
+import { css } from '@emotion/css';
 import { Button } from '@keystone-ui/button';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { MinusCircleIcon, EditIcon } from '@keystone-ui/icons';
@@ -122,48 +119,48 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
       <FieldLabel>{field.label}</FieldLabel>
       {onChange && (
         <Fragment>
-          <div css={styles.form.field}>
-            <FieldLabel css={styles.form.label}>Label</FieldLabel>
+          <div className={styles.form.field}>
+            <FieldLabel className={styles.form.label}>Label</FieldLabel>
             <TextInput
               autoFocus={autoFocus}
               onChange={event => setLabelValue(event.target.value)}
               value={labelValue}
-              css={styles.form.input}
+              className={styles.form.input}
             />
           </div>
-          <div css={styles.form.field}>
-            <FieldLabel css={styles.form.label}>Href</FieldLabel>
+          <div className={styles.form.field}>
+            <FieldLabel className={styles.form.label}>Href</FieldLabel>
             <TextInput
               autoFocus={autoFocus}
               onChange={event => setHrefValue(event.target.value)}
               value={hrefValue}
-              css={styles.form.input}
+              className={styles.form.input}
             />
           </div>
 
           {index !== null ? (
             <Fragment>
-              <Button onClick={onUpdateNavigationItem} css={styles.form.button}>
+              <Button onClick={onUpdateNavigationItem} className={styles.form.button}>
                 Update
               </Button>
-              <Button onClick={onCancelNavigationItem} css={styles.form.button}>
+              <Button onClick={onCancelNavigationItem} className={styles.form.button}>
                 Cancel
               </Button>
             </Fragment>
           ) : (
-            <Button onClick={onSubmitNewNavigationItem} css={styles.form.button}>
+            <Button onClick={onSubmitNewNavigationItem} className={styles.form.button}>
               Add
             </Button>
           )}
         </Fragment>
       )}
-      <ul css={styles.list.ul}>
+      <ul className={styles.list.ul}>
         {navigationItems.map((navigationItem: NavigationItem, i: number) => {
           return (
-            <li key={`navigation-item-${i}`} css={styles.list.li}>
-              <div css={styles.list.data}>
-                <div css={styles.list.dataLabel}>{navigationItem.label}</div>
-                <div css={styles.list.dataHref}>
+            <li key={`navigation-item-${i}`} className={styles.list.li}>
+              <div className={styles.list.data}>
+                <div className={styles.list.dataLabel}>{navigationItem.label}</div>
+                <div className={styles.list.dataHref}>
                   <a href={navigationItem.href} target="_blank">
                     {navigationItem.href}
                   </a>
@@ -174,11 +171,11 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
                   <Button
                     size="small"
                     onClick={() => onEditNavigationItem(i)}
-                    css={styles.list.optionButton}
+                    className={styles.list.optionButton}
                   >
                     <EditIcon size="small" color="blue" />
                   </Button>
-                  <Button size="small" css={styles.list.optionButton}>
+                  <Button size="small" className={styles.list.optionButton}>
                     <MinusCircleIcon
                       size="small"
                       color="red"
