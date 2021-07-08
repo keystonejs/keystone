@@ -1,5 +1,7 @@
 # Release Process
 
+These instructions capture the internal process for making releases of the Keystone packages.
+
 ## npm release
 
 Merge the PR named `Version Packages` into `master` on GitHub once tests are passing.
