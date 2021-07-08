@@ -88,7 +88,7 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
         >
           <li>
             <Tick grad="grad4" />
-            <Type look="body16">1900+ members</Type>
+            <Type look="body16">2000+ members</Type>
           </li>
           <li>
             <Tick grad="grad4" />
