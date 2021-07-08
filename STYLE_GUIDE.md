@@ -5,7 +5,7 @@ title: Documentation Style
 
 # Documentation Style
 
-This document describes the conventions for formatting and style used throughout Keystone Next docs.
+This document describes the conventions for formatting and style used throughout Keystone 6 docs.
 
 Many of these rules are enforced by the Prettier Markdown parser,
 [Remark](https://github.com/remarkjs/remark/tree/master/packages/remark-parse),
@@ -109,7 +109,7 @@ replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks se
 It's important to remember that the Markdown files within this project are used in several places:
 
 - As raw Markdown in a local dev environment (eg. in editor, search/grep'ing, etc.)
-- Published on the [Keystone Next website](https://keystonejs.com/)
+- Published on the [Keystone 6 website](https://keystonejs.com/)
 - Published on the [GitHub repo](https://github.com/keystonejs/keystone)
 - Published on NPM (only effects package `README.md` docs)
 
