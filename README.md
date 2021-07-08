@@ -1,14 +1,16 @@
-<div align="center">
-  <img src="assets/readme-header-next.png" width="445">
-  <br><br>
-  <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
-  <p><code>schema => ({ GraphQL, AdminUI })</code></p>
-  <br>
-  <p>Keystone Next is a preview of the upcoming release of KeystoneJS, the most powerful headless content management system around.</p>
-  <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
-  <br>
-</div>
 <br>
+<div align="center">
+  <img src="assets/readme-header.png" width="445">
+  <br><br>
+  <p><b>The superpowered CMS for developers</b></p>
+</div>
+
+<br>
+<p>Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data.</p>
+<p>No boilerplate or bootstrapping – just elegant APIs to help you ship the code that matters without sacrificing the flexibility or power of a bespoke back-end.
+</p>
+<sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
+<br><br>
 
 <!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
 
@@ -35,10 +37,6 @@ The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in ma
 
 For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
-<!-- ## Getting Started -->
-
-<!-- TBC -->
-
 ## Documentation
 
 Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonejs.com/docs). API Docs are complete, and we're furiously working to expand on our guides and walkthroughs.
@@ -53,41 +51,9 @@ The [examples](./examples) directory contains a number of complete projects whic
 
 We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our Slack.
 
-<!-- ## Version control -->
-
-<!-- TBC -->
-
-<!-- ## Contributing -->
-
-<!-- TBC -->
-
-<!-- ### Demo Projects -->
-
-<!-- TBC -->
-
-<!-- ### Development Practices -->
-
-<!-- TBC -->
-
-<!-- ### Setup -->
-
-<!-- TBC -->
-
-<!-- ### Testing -->
-
-<!-- TBC -->
-
-<!-- ### Unit Tests -->
-
-<!-- TBC -->
-
-<!-- ### End-to-End Tests -->
-
-<!-- TBC -->
-
 ## Code of Conduct
 
-KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduct.md).
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
 
 ## License
 
