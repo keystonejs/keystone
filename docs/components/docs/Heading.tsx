@@ -9,7 +9,7 @@ import { CopyToClipboard } from './CopyToClipboard';
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
  */
 
-function getAnchor(text: string | array) {
+function getAnchor(text: string | string[]) {
   if (typeof text === 'string') {
     return slugify(text);
   } else if (Array.isArray(text)) {
