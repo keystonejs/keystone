@@ -87,7 +87,7 @@ We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://tw
 
 ## Code of Conduct
 
-KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduct.md).
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
 
 ## License
 
