@@ -32,6 +32,7 @@ function Logo() {
       css={mq({
         marginRight: [0, null, null, null, '1rem'],
         marginTop: '0.1rem',
+        whiteSpace: 'nowrap',
       })}
     >
       <Link href="/" passHref>
@@ -91,7 +92,13 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
 
   return (
     <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
-      <NavItem isActive={isActive} href={href} css={mq({ padding: ['0', null, '0 0.2rem'] })}>
+      <NavItem
+        isActive={isActive}
+        href={href}
+        css={{
+          padding: '0 !important',
+        }}
+      >
         {children}
       </NavItem>
     </span>
@@ -146,6 +153,7 @@ export function Header() {
       delete keysPressed[event.key];
     });
   }, []);
+
   const handleOpen = useCallback(() => {
     setMobileNavIsOpen(true);
     document.body.style.overflow = 'hidden';
@@ -194,9 +202,7 @@ export function Header() {
           },
         })}
       >
-        <div>
-          <Logo />
-        </div>
+        <Logo />
 
         <div
           id="search-field-container"
@@ -262,13 +268,17 @@ export function Header() {
           <GitHub css={{ height: '1.5em' }} />
         </a>
         <HeaderContext.Provider value={{ mobileNavIsOpen }}>
-          <div ref={menuRef}>
+          <div
+            ref={menuRef}
+            css={mq({
+              display: ['inline-block', null, 'none'],
+            })}
+          >
             <button
               onClick={handleOpen}
               id="skip-link-navigation-btn"
               tabIndex={0}
               css={mq({
-                display: ['inline-block', null, 'none'],
                 appearance: 'none',
                 border: '0 none',
                 boxShadow: 'none',

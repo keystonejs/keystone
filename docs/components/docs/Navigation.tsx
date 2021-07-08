@@ -1,11 +1,12 @@
 /** @jsx jsx */
+import { HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
+import { useMediaQuery } from '../../lib/media';
 import { AnchorHTMLAttributes } from 'react';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
@@ -43,6 +44,7 @@ type NavItemProps = {
 
 export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
   const { pathname } = useRouter();
+  const mq = useMediaQuery();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isOpen = ctx ? ctx.mobileNavIsOpen : true;
@@ -51,16 +53,17 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
     <Link href={href} passHref>
       <a
         tabIndex={isOpen ? 0 : -1}
-        css={{
+        css={mq({
           display: 'block',
           textDecoration: 'none',
+          padding: ['0 0 var(--space-medium) 0', '0 0 var(--space-large) var(--space-medium)'],
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
           ':hover': {
             color: 'var(--link)',
           },
-        }}
+        })}
         {...props}
       />
     </Link>
