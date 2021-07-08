@@ -1,5 +1,7 @@
 # Release Process
 
+## npm release
+
 Merge the PR named `Version Packages` into `master` on GitHub once tests are passing.
 
 Get latest from `master`:
@@ -19,6 +21,8 @@ Find packages where the version listed in the `package.json` is ahead of the ver
 ```sh
 yarn publish-changed
 ```
+
+## GitHub tags
 
 Publish all new tags to GitHub:
 
@@ -44,10 +48,11 @@ Push tag to GitHub:
 git push --tags
 ```
 
+## Github release
+
 Create draft release on GitHub based on the above tag to fill with template below:
 
----
-
+```
 ## What's New
 
 [commentary about release here with headings and examples]
@@ -64,10 +69,9 @@ Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.c
 # Releases
 
 [verbose notes here copied verbatim from the `Version Packages` PR]
+```
 
----
-
-Copy the successful output of the published packages, example output:
+Copy the successful output of the published packages from above npm release, example output:
 
 ```sh
 @keystone-next/admin-ui-utils@5.0.2
@@ -143,10 +147,14 @@ Copy original description from `Version Packages` to the `View verbose release n
 
 Publish release on GitHub.
 
+## Website release
+
 Add a new release page to website for this release under `/docs/pages/releases/YYYY-MM-DD.mdx` using the same format as previous release.
 
-Add release to release page index under `/docs/pages/releases/index.mdx`.
+Copy over the GitHub markdown content from the GitHub release into this document (excluding verbose notes).
 
-Copy over the GitHub markdown into this document (excluding verbose notes).
+Add release to release page index under `/docs/pages/releases/index.mdx` with a summarised heading.
 
-Commit and open PR to add to `master`.
+Commit website update and open PR to add to `master`.
+
+Have PR reviewed and merged into `master`.
