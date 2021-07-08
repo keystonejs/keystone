@@ -17,9 +17,10 @@ export const lists = createSchema({
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
+      // We've added a json field which implements custom views in the Admin UI
       relatedLinks: json({
         ui: {
-          views: require.resolve('./fields/navigation-items/components.tsx'),
+          views: require.resolve('./fields/related-links/components.tsx'),
           createView: { fieldMode: 'edit' },
           listView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'edit' },

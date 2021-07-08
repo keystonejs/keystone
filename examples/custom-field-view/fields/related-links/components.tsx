@@ -7,7 +7,7 @@ import { MinusCircleIcon, EditIcon } from '@keystone-ui/icons';
 import { controller } from '@keystone-next/fields/types/json/views';
 import { Fragment, useState } from 'react';
 
-interface NavigationItem {
+interface RelatedLink {
   label: string;
   href: string;
 }
@@ -72,43 +72,43 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
   const [hrefValue, setHrefValue] = useState('');
   const [index, setIndex] = useState<number | null>(null);
 
-  const navigationItems: NavigationItem[] = value ? JSON.parse(value) : [];
+  const relatedLinks: RelatedLink[] = value ? JSON.parse(value) : [];
 
-  const onSubmitNewNavigationItem = () => {
+  const onSubmitNewRelatedLink = () => {
     if (onChange) {
-      const navigationItemsCopy = [...navigationItems, { label: labelValue, href: hrefValue }];
-      onChange(JSON.stringify(navigationItemsCopy));
-      onCancelNavigationItem();
+      const relatedLinksCopy = [...relatedLinks, { label: labelValue, href: hrefValue }];
+      onChange(JSON.stringify(relatedLinksCopy));
+      onCancelRelatedLink();
     }
   };
 
-  const onDeleteNavigationItem = (index: number) => {
+  const onDeleteRelatedLink = (index: number) => {
     if (onChange) {
-      const navigationItemsCopy = [...navigationItems];
-      navigationItemsCopy.splice(index, 1);
-      onChange(JSON.stringify(navigationItemsCopy));
-      onCancelNavigationItem();
+      const relatedLinksCopy = [...relatedLinks];
+      relatedLinksCopy.splice(index, 1);
+      onChange(JSON.stringify(relatedLinksCopy));
+      onCancelRelatedLink();
     }
   };
 
-  const onEditNavigationItem = (index: number) => {
+  const onEditRelatedLink = (index: number) => {
     if (onChange) {
       setIndex(index);
-      setLabelValue(navigationItems[index].label);
-      setHrefValue(navigationItems[index].href);
+      setLabelValue(relatedLinks[index].label);
+      setHrefValue(relatedLinks[index].href);
     }
   };
 
-  const onUpdateNavigationItem = () => {
+  const onUpdateRelatedLink = () => {
     if (onChange && index !== null) {
-      const navigationItemsCopy = [...navigationItems];
-      navigationItemsCopy[index] = { label: labelValue, href: hrefValue };
-      onChange(JSON.stringify(navigationItemsCopy));
-      onCancelNavigationItem();
+      const relatedLinksCopy = [...relatedLinks];
+      relatedLinksCopy[index] = { label: labelValue, href: hrefValue };
+      onChange(JSON.stringify(relatedLinksCopy));
+      onCancelRelatedLink();
     }
   };
 
-  const onCancelNavigationItem = () => {
+  const onCancelRelatedLink = () => {
     setIndex(null);
     setLabelValue('');
     setHrefValue('');
@@ -140,29 +140,29 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
 
           {index !== null ? (
             <Fragment>
-              <Button onClick={onUpdateNavigationItem} className={styles.form.button}>
+              <Button onClick={onUpdateRelatedLink} className={styles.form.button}>
                 Update
               </Button>
-              <Button onClick={onCancelNavigationItem} className={styles.form.button}>
+              <Button onClick={onCancelRelatedLink} className={styles.form.button}>
                 Cancel
               </Button>
             </Fragment>
           ) : (
-            <Button onClick={onSubmitNewNavigationItem} className={styles.form.button}>
+            <Button onClick={onSubmitNewRelatedLink} className={styles.form.button}>
               Add
             </Button>
           )}
         </Fragment>
       )}
       <ul className={styles.list.ul}>
-        {navigationItems.map((navigationItem: NavigationItem, i: number) => {
+        {relatedLinks.map((relatedLink: RelatedLink, i: number) => {
           return (
-            <li key={`navigation-item-${i}`} className={styles.list.li}>
+            <li key={`related-link-${i}`} className={styles.list.li}>
               <div className={styles.list.data}>
-                <div className={styles.list.dataLabel}>{navigationItem.label}</div>
+                <div className={styles.list.dataLabel}>{relatedLink.label}</div>
                 <div className={styles.list.dataHref}>
-                  <a href={navigationItem.href} target="_blank">
-                    {navigationItem.href}
+                  <a href={relatedLink.href} target="_blank">
+                    {relatedLink.href}
                   </a>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
                 <div>
                   <Button
                     size="small"
-                    onClick={() => onEditNavigationItem(i)}
+                    onClick={() => onEditRelatedLink(i)}
                     className={styles.list.optionButton}
                   >
                     <EditIcon size="small" color="blue" />
@@ -179,7 +179,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
                     <MinusCircleIcon
                       size="small"
                       color="red"
-                      onClick={() => onDeleteNavigationItem(i)}
+                      onClick={() => onDeleteRelatedLink(i)}
                     />
                   </Button>
                 </div>
