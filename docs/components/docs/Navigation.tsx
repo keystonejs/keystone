@@ -10,7 +10,6 @@ import { AnchorHTMLAttributes } from 'react';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
-import { useMediaQuery } from '../../lib/media';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -25,7 +24,7 @@ export function Section({ label, children }: SectionProps) {
         as="h3"
         look="body16bold"
         margin="var(--space-xlarge) 0 var(--space-large) 0"
-        font-weight="700"
+        fontWeight="700"
         color="var(--text-heading)"
         css={{ textTransform: 'uppercase' }}
       >
@@ -44,7 +43,6 @@ type NavItemProps = {
 
 export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
   const { pathname } = useRouter();
-  const mq = useMediaQuery();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isOpen = ctx ? ctx.mobileNavIsOpen : true;
@@ -53,17 +51,16 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
     <Link href={href} passHref>
       <a
         tabIndex={isOpen ? 0 : -1}
-        css={mq({
+        css={{
           display: 'block',
           textDecoration: 'none',
-          padding: ['0 0 var(--space-medium) 0', '0 0 var(--space-large) var(--space-medium)'],
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
           ':hover': {
             color: 'var(--link)',
           },
-        })}
+        }}
         {...props}
       />
     </Link>
@@ -78,9 +75,13 @@ type PrimaryNavItemProps = {
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
+  const ctx = useHeaderContext();
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+
   return (
     <Link href={href} passHref>
       <a
+        tabIndex={isOpen ? 0 : -1}
         css={{
           display: 'block',
           fontSize: '1rem',
