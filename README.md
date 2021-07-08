@@ -1,14 +1,16 @@
+<br>
 <div align="center">
   <img src="assets/readme-header.png" width="445">
+  <br><br>
+  <p><b>The superpowered CMS for developers</b></p>
 </div>
-<br><br>
-<p><b>The superpowered CMS for developers</b></p>
+
 <br>
 <p>Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data.</p>
 <p>No boilerplate or bootstrapping – just elegant APIs to help you ship the code that matters without sacrificing the flexibility or power of a bespoke back-end.
 </p>
 <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
-<br>
+<br><br>
 
 <!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
 
