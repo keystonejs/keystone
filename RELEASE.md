@@ -1,7 +1,5 @@
 # Release Process
 
-## GitHub
-
 Merge the PR named `Version Packages` into `master` on GitHub once tests are passing.
 
 Get latest from `master`:
@@ -46,11 +44,7 @@ Push tag to GitHub:
 git push --tags
 ```
 
-Create draft release on GitHub based on the above tag to fill with completed template below:
-
-## Notes
-
-Create a new markdown file for release based on this template:
+Create draft release on GitHub based on the above tag to fill with template below:
 
 ---
 
@@ -143,7 +137,7 @@ Group items and add headings to call out sections to have the release start to t
 
 Publish a draft when there is an overall story and get others to review.
 
-Finalise content, clean up text, add emojis.
+Finalise content based on feedback, clean up text, add emojis.
 
 Copy original description from `Version Packages` to the `View verbose release notes` section.
 
