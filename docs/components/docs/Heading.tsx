@@ -9,11 +9,14 @@ import { CopyToClipboard } from './CopyToClipboard';
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
  */
 
-function getAnchor(text: string) {
+function getAnchor(text: string | array) {
   if (typeof text === 'string') {
     return slugify(text);
+  } else if (Array.isArray(text)) {
+    return slugify(text.join('-').replace('[object Object]', ''));
+  } else {
+    return '';
   }
-  return '';
 }
 
 // emotions JSX pragma appends the correct css prop type
