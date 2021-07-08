@@ -1,1 +1,1 @@
-# @keystone-next/custom-field-view
+# @keystone-next/example-custom-field-view
