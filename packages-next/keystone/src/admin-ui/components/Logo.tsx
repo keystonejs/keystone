@@ -52,7 +52,7 @@ export const Logo = () => {
               transform="translate(-238.9 -47)"
             />
           </svg>
-          Keystone Next
+          Keystone 6
         </a>
       </Link>
     </H3>
