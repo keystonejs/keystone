@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
-    "@types/redis": "^2.8.30"
+    "@types/redis": "^2.8.31"
   },
   "devDependencies": {
     "redis": "^3.1.2"
