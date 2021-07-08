@@ -143,7 +143,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/keystonejs/keystone/blob/master/code-of-conduct.md"
+                  href="https://github.com/keystonejs/keystone/blob/master/CODE-OF-CONDUCT.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
