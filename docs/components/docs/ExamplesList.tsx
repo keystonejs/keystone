@@ -110,7 +110,8 @@ export function Examples() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a customised editing experience for users.
+        Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a
+        customised editing experience for users.
       </Well>
       <Well
         grad="grad3"
@@ -119,7 +120,8 @@ export function Examples() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which lets users rate items on a 5-star scale.
+        Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which lets
+        users rate items on a 5-star scale.
       </Well>
     </div>
   );
