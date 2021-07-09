@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { jsx, H3 } from '@keystone-ui/core';
+// import { jsx, H3 } from '@keystone-ui/core';
+
+console.log('REACT IS COMING FROM', require.resolve('react'));
 
 export const CustomLogo = () => {
   return (
@@ -8,7 +10,6 @@ export const CustomLogo = () => {
       <Link href="/" passHref>
         <a
           css={{
-            // TODO: we dont' have colors in our design-system for this.
             backgroundImage: `linear-gradient(to right, #0ea5e9, #6366f1)`,
             backgroundClip: 'text',
             lineHeight: '1.75rem',

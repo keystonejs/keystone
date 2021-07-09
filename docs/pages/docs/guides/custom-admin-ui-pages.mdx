@@ -12,6 +12,7 @@ The default export of every file in this directory is expected to be a valid Rea
 
 ```tsx
 // admin/pages/MyCustomAdminUIPage
+import React from 'react';
 export default function () {
     return (
         <h1>This is a custom Admin UI Page</h1>
@@ -20,6 +21,27 @@ export default function () {
 }
 ```
 
+If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
+
+```tsx
+// admin/config.tsx
+/** @jsx jsx */
+import { jsx } from '@keystone-ui/core';
+export default function () {
+    return (
+        <h1 css={{
+            fontSize: '3rem'
+        }}>This is a custom Admin UI Page</h1>
+        <p>It can be accessed via the route '/MyCustomPage'</p>
+    )
+}
+```
+
+Note that doing so means you are no longer required to import React into your file.
+Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
+
 ?> **Not all NextJS exports are available:** As of the inception of this guide, Keystone **only** expects the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` will be ignored.
+
+?> **Old JSX transform** As of the time of writing this guide, Keystone is internally still leveraging the old JSX transform, which means that any `.tsx` files within the admin folder will need to be preceded with a React import.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
