@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { HTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
@@ -7,7 +7,6 @@ import format from 'date-fns/format';
 import Link from 'next/link';
 
 import { useMediaQuery } from '../../lib/media';
-import { AnchorHTMLAttributes } from 'react';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
