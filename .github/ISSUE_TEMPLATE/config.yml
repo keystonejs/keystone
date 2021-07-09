@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions and Chat (Slack)
-    url: http://slack.keystonejs.com/
+    url: http://community.keystonejs.com/
     about: Join the Keystone community Slack – a place to ask questions, share ideas, and connect to the latest announcements.
   - name: Feature request (GitHub Discussions)
     url: https://github.com/keystonejs/keystone/discussions

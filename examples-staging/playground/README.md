@@ -1,4 +1,4 @@
-# Keystone Next GraphQL Playground Example
+# GraphQL Playground Example
 
 👋 This example demonstrates how you can customise the GraphQL Playground accessed at `/api/graphql`.
 
