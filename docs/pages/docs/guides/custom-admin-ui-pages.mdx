@@ -3,6 +3,23 @@ import { Markdown } from '../../../components/Markdown';
 
 # Custom Admin UI Pages
 
-<ComingSoon/>
+In this guide we'll show you how to add custom pages to the Keystone Admin UI.
+As the Keystone Admin UI is built on top of NextJS, it exposes the same pages directory for adding custom pages.
+
+To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
+Much like with Next, all files in this directory will be added as routes to the Admin-UI.
+The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
+
+```tsx
+// admin/pages/MyCustomAdminUIPage
+export default function () {
+    return (
+        <h1>This is a custom Admin UI Page</h1>
+        <p>It can be accessed via the route '/MyCustomPage'</p>
+    )
+}
+```
+
+?> **Not all NextJS exports are available:** As of the inception of this guide, Keystone **only** expects the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` will be ignored.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
