@@ -41,19 +41,20 @@ type NavItemProps = {
   href: string;
   isActive?: boolean;
   isPlaceholder?: boolean;
+  alwaysVisible?: boolean;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
+export function NavItem({ href, isActive: _isActive, isPlaceholder, alwaysVisible, ...props }: NavItemProps) {
   const { pathname } = useRouter();
   const mq = useMediaQuery();
-  let isActive = _isActive || pathname === href;
+  const isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isOpen = ctx ? ctx.mobileNavIsOpen : true;
 
   return (
     <Link href={href} passHref>
       <a
-        tabIndex={isOpen ? 0 : -1}
+        {...alwaysVisible ? {} : {tabIndex: isOpen ? 0 : -1}}
         css={mq({
           display: 'block',
           textDecoration: 'none',
@@ -78,7 +79,7 @@ type PrimaryNavItemProps = {
 
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
-  let isActive = pathname === href;
+  const isActive = pathname === href;
   const ctx = useHeaderContext();
   const isOpen = ctx ? ctx.mobileNavIsOpen : true;
 

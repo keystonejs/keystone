@@ -1,12 +1,10 @@
 /** @jsx jsx  */
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
+import { createContext, useContext, useCallback, useEffect, useState, useRef, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
-import { useCallback } from 'react';
 import { useMediaQuery } from '../lib/media';
-
 import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
@@ -94,6 +92,7 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
     <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
       <NavItem
         isActive={isActive}
+        alwaysVisible
         href={href}
         css={{
           padding: '0 !important',
