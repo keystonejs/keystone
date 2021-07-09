@@ -25,9 +25,11 @@ export function Section({ label, children }: SectionProps) {
         as="h3"
         look="body16bold"
         margin="var(--space-xlarge) 0 var(--space-large) 0"
-        fontWeight="700"
         color="var(--text-heading)"
-        css={{ textTransform: 'uppercase' }}
+        css={{
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
       >
         {label}
       </Type>
