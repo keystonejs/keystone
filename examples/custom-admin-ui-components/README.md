@@ -1,9 +1,6 @@
 ## Feature Example - Custom Components for the Admin UI
 
-This base project implements a simple **Task Management** app, with `Tasks` and `People` who can be assigned to tasks.
-
-You can it as a starting place for learning how to use Keystone.
-It’s also a starter for other [feature projects](../).
+This project demonstrates how to create a custom logo in the admin-ui.
 
 ## Instructions
 
