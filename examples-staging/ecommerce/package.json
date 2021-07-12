@@ -21,7 +21,7 @@
     "@keystone-next/fields": "^11.0.2",
     "@keystone-next/keystone": "^21.0.0",
     "@keystone-next/types": "^21.0.0",
-    "@types/nodemailer": "^6.4.3",
+    "@types/nodemailer": "^6.4.4",
     "dotenv": "^10.0.0",
     "next": "^10.2.3",
     "nodemailer": "^6.6.2",
