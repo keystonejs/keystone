@@ -10,8 +10,6 @@ This file expects a named export `components`. **Presently this `components` exp
 
 ```tsx
 // admin/config.tsx
-import React from 'react';
-
 function CustomLogo () {
     return <h3>Custom Logo here </h3>
 }
@@ -25,6 +23,7 @@ If you have styling constraints, we recommend using the jsx export from the `@ke
 
 ```tsx
 // admin/config.tsx
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 
@@ -39,7 +38,6 @@ export const components = {
 }
 ```
 
-Note that doing so means you are no longer required to import React into your file.
 Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
 
 ?> **Old JSX transform** As of the time of writing this guide, Keystone is internally still leveraging the old JSX transform, which means that **within the keystone repo** any `.tsx` files will need to be preceded with a React import (or have React in scope). This is why there are `import React from 'react'` statements in our examples, this is NOT necessary outside of the Keystone repo.
