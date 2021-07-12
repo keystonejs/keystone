@@ -1,6 +1,6 @@
 ## Feature Example - Custom Components for the Admin UI
 
-This project demonstrates how to create a custom logo in the admin-ui.
+This project demonstrates how to create a custom logo in the Admin UI.
 
 ## Instructions
 
