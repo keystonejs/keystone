@@ -26,6 +26,8 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [Testing](./testing): Adds tests with `@keystone-next/testing` to the `withAuth()` example.
 - [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
 - [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
+- [Custom admin-ui pages](./custom-admin-ui-pages): Adds a custom page in the Admin UI to the Task Manager base.
+- [Custom admin-ui components](./custom-admin-ui-components): Adds a custom logo in the Admin UI to the Task Manager base.
 
 ## Running examples
 
