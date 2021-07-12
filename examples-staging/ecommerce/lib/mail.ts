@@ -44,16 +44,15 @@ export interface Envelope {
 
 export async function sendPasswordResetEmail(resetToken: string, to: string): Promise<void> {
   // email the user a token
-  const info = (await transport.sendMail({
+  const info = await transport.sendMail({
     to,
     from: 'wes@wesbos.com',
     subject: 'Your password reset token!',
     html: makeANiceEmail(`Your Password Reset Token is here!
       <a href="${process.env.FRONTEND_URL}/reset?token=${resetToken}">Click Here to reset</a>
     `),
-  })) as MailResponse;
+  });
   if (process.env.MAIL_USER?.includes('ethereal.email')) {
-    // @ts-ignore
     console.log(`� Message Sent!  Preview it at ${getTestMessageUrl(info)}`);
   }
 }
