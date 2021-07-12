@@ -5,7 +5,7 @@ import { jsx, Stack } from '@keystone-ui/core';
 // Presently the only export from the directory that is respected is the page component itself.
 export default function () {
   return (
-    <Stack as="main" gap="sm">
+    <Stack as="main" gap="small">
       <h1
         css={{
           maxWidth: '80%',
