@@ -13,7 +13,7 @@
     "@keystone-next/keystone": "^21.0.0",
     "@keystone-next/types": "^21.0.1",
     "@keystone-ui/core": "^3.1.0",
-    "next": "^11.0.1",
+    "next": "^10.2.3",
     "react": "^17.0.2"
   },
   "devDependencies": {
