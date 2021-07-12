@@ -22,24 +22,15 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 export function getMutationsForList(list: InitialisedList, provider: DatabaseProvider) {
   const names = getGqlNames(list);
 
-  const createOneArgs = {
-    data: schema.arg({
-      type: list.types.create,
-    }),
-  };
   const createOne = schema.field({
     type: list.types.output,
-    args: createOneArgs,
-    description: ` Create a single ${list.listKey} item.`,
+    args: {
+      data: schema.arg({
+        type: list.types.create,
+      }),
+    },
     resolve(_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data: data ?? {} }, list, context);
-    },
-  });
-
-  const createManyInput = schema.inputObject({
-    name: names.createManyInputName,
-    fields: {
-      data: schema.arg({ type: list.types.create }),
     },
   });
 
@@ -47,36 +38,29 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     type: schema.list(list.types.output),
     args: {
       data: schema.arg({
-        type: schema.list(createManyInput),
+        type: schema.nonNull(schema.list(schema.nonNull(list.types.create))),
       }),
     },
-    description: ` Create multiple ${list.listKey} items.`,
     resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.createMany(
-          { data: (args.data || []).map(input => input?.data ?? {}) },
-          list,
-          context,
-          provider
-        )
+        createAndUpdate.createMany({ data: args.data }, list, context, provider)
       );
     },
   });
 
   const updateOneArgs = {
-    id: schema.arg({
-      type: schema.nonNull(schema.ID),
+    where: schema.arg({
+      type: schema.nonNull(list.types.uniqueWhere),
     }),
     data: schema.arg({
-      type: list.types.update,
+      type: schema.nonNull(list.types.update),
     }),
   };
   const updateOne = schema.field({
     type: list.types.output,
     args: updateOneArgs,
-    description: ` Update a single ${list.listKey} item by ID.`,
-    resolve(_rootVal, { data, id }, context) {
-      return createAndUpdate.updateOne({ data: data ?? {}, where: { id } }, list, context);
+    resolve(_rootVal, { data, where }, context) {
+      return createAndUpdate.updateOne({ data: data, where }, list, context);
     },
   });
 
@@ -89,22 +73,12 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     type: schema.list(list.types.output),
     args: {
       data: schema.arg({
-        type: schema.list(updateManyInput),
+        type: schema.nonNull(schema.list(schema.nonNull(updateManyInput))),
       }),
     },
-    description: ` Update multiple ${list.listKey} items by ID.`,
     resolve(_rootVal, { data }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.updateMany(
-          {
-            data: (data || [])
-              .filter((x): x is NonNullable<typeof x> => x !== null)
-              .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
-          },
-          list,
-          context,
-          provider
-        )
+        createAndUpdate.updateMany({ data }, list, context, provider)
       );
     },
   });
@@ -112,27 +86,25 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
   const deleteOne = schema.field({
     type: list.types.output,
     args: {
-      id: schema.arg({
-        type: schema.nonNull(schema.ID),
+      where: schema.arg({
+        type: schema.nonNull(list.types.uniqueWhere),
       }),
     },
-    description: ` Delete a single ${list.listKey} item by ID.`,
-    resolve(rootVal, { id }, context) {
-      return deletes.deleteOne({ where: { id } }, list, context);
+    resolve(rootVal, { where }, context) {
+      return deletes.deleteOne({ where }, list, context);
     },
   });
 
   const deleteMany = schema.field({
     type: schema.list(list.types.output),
     args: {
-      ids: schema.arg({
-        type: schema.list(schema.nonNull(schema.ID)),
+      where: schema.arg({
+        type: schema.nonNull(schema.list(schema.nonNull(list.types.uniqueWhere))),
       }),
     },
-    description: ` Delete multiple ${list.listKey} items by ID.`,
-    resolve(rootVal, { ids }, context) {
+    resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany({ where: (ids || []).map(id => ({ id })) }, list, context, provider)
+        deletes.deleteMany({ where }, list, context, provider)
       );
     },
   });
@@ -153,6 +125,5 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       }),
     },
     updateManyInput,
-    createManyInput,
   };
 }

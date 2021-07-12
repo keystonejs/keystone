@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -68,19 +65,6 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
-}
-
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -110,8 +94,8 @@ input AuthorRelateToOneInput {
 }
 
 input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
@@ -122,13 +106,6 @@ input PostCreateInput {
   author: AuthorRelateToOneInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-"""
- A keystone list
-"""
 type Author {
   id: ID!
   name: String
@@ -136,30 +113,12 @@ type Author {
   posts(
     where: PostWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   latestPost: Post
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input AuthorWhereInput {
@@ -207,15 +166,6 @@ input AuthorWhereUniqueInput {
   email: String
 }
 
-enum SortAuthorsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -236,18 +186,14 @@ input PostRelateToManyInput {
 }
 
 input AuthorsUpdateInput {
-  id: ID!
-  data: AuthorUpdateInput
+  where: AuthorWhereUniqueInput!
+  data: AuthorUpdateInput!
 }
 
 input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyInput
-}
-
-input AuthorsCreateInput {
-  data: AuthorCreateInput
 }
 
 """
@@ -259,136 +205,38 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Post item.
-  """
   createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
-  deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
-
-  """
-   Create a single Author item.
-  """
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   createAuthor(data: AuthorCreateInput): Author
-
-  """
-   Create multiple Author items.
-  """
-  createAuthors(data: [AuthorsCreateInput]): [Author]
-
-  """
-   Update a single Author item by ID.
-  """
-  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-
-  """
-   Update multiple Author items by ID.
-  """
-  updateAuthors(data: [AuthorsUpdateInput]): [Author]
-
-  """
-   Delete a single Author item by ID.
-  """
-  deleteAuthor(id: ID!): Author
-
-  """
-   Delete multiple Author items by ID.
-  """
-  deleteAuthors(ids: [ID!]): [Author]
+  createAuthors(data: [AuthorCreateInput!]!): [Author]
+  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
+  updateAuthors(data: [AuthorsUpdateInput!]!): [Author]
+  deleteAuthor(where: AuthorWhereUniqueInput!): Author
+  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
 }
 
 type Query {
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-
-  """
-   Search for all Author items which match the where clause.
-  """
-  allAuthors(
+  authors(
     where: AuthorWhereInput! = {}
     search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Author!]
-
-  """
-   Search for the Author item with the matching ID.
-  """
-  Author(where: AuthorWhereUniqueInput!): Author
-
-  """
-   Perform a meta-query on all Author items which match the where clause.
-  """
-  _allAuthorsMeta(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use authorsCount instead."
-    )
+  author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

@@ -11,11 +11,9 @@ import {
   KeystoneConfig,
   DatabaseProvider,
   FindManyArgs,
-  orderDirectionEnum,
   CacheHintArgs,
 } from '@keystone-next/types';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
-import { GraphQLEnumType } from 'graphql';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,
@@ -64,7 +62,6 @@ export function initialiseLists(
 
     let output = schema.object<ItemRootValue>()({
       name: names.outputTypeName,
-      description: ' A keystone list',
       fields: () => {
         const { fields } = lists[listKey];
         return {
@@ -173,17 +170,6 @@ export function initialiseLists(
       }),
       search: schema.arg({
         type: schema.String,
-      }),
-      sortBy: schema.arg({
-        type: schema.list(
-          schema.nonNull(
-            schema.enum({
-              name: names.listSortName,
-              values: schema.enumValues(['bad']),
-            })
-          )
-        ),
-        deprecationReason: 'sortBy has been deprecated in favour of orderBy',
       }),
       orderBy: schema.arg({
         type: schema.nonNull(schema.list(schema.nonNull(orderBy))),
@@ -296,35 +282,10 @@ export function initialiseLists(
     })
   );
 
-  for (const [listKey, { fields, pluralGraphQLName }] of Object.entries(
+  for (const [listKey, { fields }] of Object.entries(
     listsWithInitialisedFieldsAndResolvedDbFields
   )) {
     assertFieldsValid({ listKey, fields });
-    // this is quite a hack, we could do this in a better way if we "initialised" the fields twice,
-    // the first time to see if they have an orderBy and then the second time for real
-    // but that would be more complicated and this works
-    Object.assign(
-      listInfos[listKey].types.findManyArgs.sortBy.type.graphQLType.ofType.ofType,
-      new GraphQLEnumType({
-        name: getGqlNames({ listKey, pluralGraphQLName }).listSortName,
-        values: Object.fromEntries(
-          Object.entries(fields).flatMap(([fieldKey, field]) => {
-            if (
-              field.input?.orderBy?.arg.type === orderDirectionEnum &&
-              field.input?.orderBy?.arg.defaultValue === undefined &&
-              field.input?.orderBy?.resolve === undefined &&
-              field.access.read !== false
-            ) {
-              return [
-                [`${fieldKey}_ASC`, {}],
-                [`${fieldKey}_DESC`, {}],
-              ];
-            }
-            return [];
-          })
-        ),
-      })
-    );
   }
 
   const lists: Record<string, InitialisedList> = {};

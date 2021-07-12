@@ -6,7 +6,6 @@ import {
   schema,
   AdminMetaRootVal,
   FieldDefaultValue,
-  QueryMeta,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
@@ -180,14 +179,6 @@ export const relationship =
         }),
         extraOutputFields: withMeta
           ? {
-              [`_${meta.fieldKey}Meta`]: schema.field({
-                type: QueryMeta,
-                args: listTypes.findManyArgs,
-                deprecationReason: `This query will be removed in a future version. Please use ${meta.fieldKey}Count instead.`,
-                resolve({ value }, args) {
-                  return { getCount: () => value.count(args) };
-                },
-              }),
               [`${meta.fieldKey}Count`]: schema.field({
                 type: schema.Int,
                 args: {
@@ -197,7 +188,6 @@ export const relationship =
                   return value.count({
                     where: args.where,
                     orderBy: [],
-                    sortBy: undefined,
                     first: undefined,
                     search: undefined,
                     skip: 0,
