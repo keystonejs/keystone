@@ -261,6 +261,8 @@ jobs:
             'with-auth.test.ts',
             'custom-field-view.test.ts',
             'custom-field.test.ts',
+            'custom-admin-ui-pages.test.ts',
+            'custom-admin-ui-components.test.ts',
           ]
       fail-fast: false
     steps:
