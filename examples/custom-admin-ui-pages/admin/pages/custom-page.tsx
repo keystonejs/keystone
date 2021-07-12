@@ -26,7 +26,7 @@ export default function CustomPage() {
             textAlign: 'center',
           }}
         >
-          This is a custom page added to the admin-ui, leveraging <em>@keystone-ui/core</em>
+          This is a custom page added to the Admin UI, leveraging <em>@keystone-ui/core</em>
         </p>
       </main>
     </Fragment>
