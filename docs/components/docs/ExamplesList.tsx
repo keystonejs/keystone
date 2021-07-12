@@ -103,6 +103,26 @@ export function Examples() {
         Illustrates how to use the <InlineCode>json</InlineCode> field type. Builds on the Task
         Manager starter project.
       </Well>
+      <Well
+        grad="grad3"
+        heading="Custom Field View"
+        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-field-view"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a
+        customised editing experience for users. Builds on the Task Manager starter project.
+      </Well>
+      <Well
+        grad="grad3"
+        heading="Custom Field Type"
+        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-field"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which lets
+        users rate items on a 5-star scale. Builds on the Blog starter project.
+      </Well>
     </div>
   );
 }

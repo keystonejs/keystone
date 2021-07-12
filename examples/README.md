@@ -27,7 +27,6 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
 - [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
 
-
 ## Running examples
 
 To run an example, clone this repo and run the following commands:
