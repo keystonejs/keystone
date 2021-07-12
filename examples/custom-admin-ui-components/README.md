@@ -23,4 +23,4 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## admin/pages
 
-This project shows how to export custom components to be rendered in the admin-ui via the `/admin/config` file. As elaborated on in the [Custom Components](###ADDLINKHERE####) guide, the named `components` export of this file is used to replace specific components for use in the `admin-ui`.
+This project shows how to export custom components to be rendered in the admin-ui via the `/admin/config` file. As elaborated on in the [Custom Components](https://keystonejs.com/docs/guides/custom-admin-ui-components) guide, the named `components` export of this file is used to replace specific components for use in the `admin-ui`.
