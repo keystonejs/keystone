@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/example-custom-admin-ui-components",
+  "name": "@keystone-next/example-custom-admin-ui-logo",
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
@@ -22,5 +22,5 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-components"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-logo"
 }

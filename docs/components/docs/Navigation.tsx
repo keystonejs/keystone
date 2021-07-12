@@ -141,8 +141,8 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/testing">
           Testing <Badge look="success">New</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-components">
-          Custom Admin UI Components <Badge look="success">New</Badge>
+        <NavItem href="/docs/guides/custom-admin-ui-logo">
+          Custom Admin UI Logo <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-pages">
           Custom Admin UI Pages <Badge look="success">New</Badge>

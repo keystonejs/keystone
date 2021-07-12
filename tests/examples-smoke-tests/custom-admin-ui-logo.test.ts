@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests } from './utils';
 
-exampleProjectTests('custom-admin-ui-components', browserType => {
+exampleProjectTests('custom-admin-ui-logo', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {

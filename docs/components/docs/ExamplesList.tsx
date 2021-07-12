@@ -134,8 +134,8 @@ export function Examples() {
       </Well>
       <Well
         grad="grad3"
-        heading="Custom Admin UI Components"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-components"
+        heading="Custom Admin UI Logo"
+        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-logo"
         target="_blank"
         rel="noopener noreferrer"
       >
