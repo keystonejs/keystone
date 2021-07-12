@@ -44,6 +44,6 @@ Of course this is purely a recommendation, if you would prefer to roll your own 
 ?> **Not all NextJS exports are available:** As of the inception of this guide, Keystone **only** expects the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` will be ignored.
 ?> **Navigation** As of the time of writing this guide, there is presently no way to
 
-?> **Old JSX transform** As of the time of writing this guide, Keystone is internally still leveraging the old JSX transform, which means that any `.tsx` files within the admin folder will need to be preceded with a React import.
+?> **Old JSX transform** As of the time of writing this guide, Keystone is internally still leveraging the old JSX transform, which means that **within the keystone repo** any `.tsx` files will need to be preceded with a React import (or have React in scope). This is why there are `import React from 'react'` statements in our examples, this is NOT necessary outside of the Keystone repo.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
