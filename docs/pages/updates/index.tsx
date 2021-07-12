@@ -160,6 +160,36 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         })}
       >
         <Timeline date="29th June 2021" isLatest />
+        <Box heading="Watch Jed's Prisma Day talk">
+          Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
+          below, or <a href="/updates/prisma-day-talk-2021">read the full transcript</a>.
+          <div
+            css={{
+              position: 'relative',
+              paddingBottom: '56.25%',
+              marginTop: '1.25rem',
+              height: '0',
+            }}
+          >
+            <iframe
+              css={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+              }}
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </Box>
+        <Timeline date="29th June 2021" isLatest />
         <Box heading="New Website">
           We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
           and background on <a href="/why-keystone">why Keystone</a> is built for projects that need
