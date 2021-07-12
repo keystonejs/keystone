@@ -1,6 +1,6 @@
 ## Feature Example - Custom Components for the Admin UI
 
-This project demonstrates how to create a custom page in the admin-ui.
+This project demonstrates how to create a custom page in the Admin UI.
 It builds on the [Task Manager](../task-manager) starter project.
 
 ## Instructions
