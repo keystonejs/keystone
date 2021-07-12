@@ -40,6 +40,6 @@ export const components = {
 
 Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
 
-?> **Old JSX transform** As of the time of writing this guide, Keystone is internally still leveraging the old JSX transform, which means that **within the keystone repo** any `.tsx` files will need to be preceded with a React import (or have React in scope). This is why there are `import React from 'react'` statements in our examples, this is NOT necessary outside of the Keystone repo.
+?> **Old JSX transform** As of the time of writing this guide, the Keystone monorepo leverages a babel config that means we use the old jsx transform (this doesn't have an impact on the code we ship to npm). This is why there are import React from 'react' statements in our examples, this is NOT necessary outside of the Keystone repo (unless you have a babel config with the old jsx transform which is currently the default with @babel/preset-react) as you'll be using Next's babel config which uses the new jsx transform.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
