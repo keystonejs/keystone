@@ -57,8 +57,6 @@ input TodoUpdateInput {
 input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 input TodosUpdateInput {
@@ -151,20 +149,18 @@ input PersonUpdateInput {
   email: String
   password: String
   role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForUpdateInput
 }
 
 input RoleRelateToOneInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
 }
 
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
+input TodoRelateToManyForUpdateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
+  disconnect: [TodoWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -178,7 +174,12 @@ input PersonCreateInput {
   email: String
   password: String
   role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForCreateInput
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 type Role {
@@ -269,13 +270,13 @@ input RoleUpdateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
+  assignedTo: PersonRelateToManyForUpdateInput
 }
 
-input PersonRelateToManyInput {
-  create: [PersonCreateInput]
-  connect: [PersonWhereUniqueInput]
-  disconnect: [PersonWhereUniqueInput]
+input PersonRelateToManyForUpdateInput {
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
+  disconnect: [PersonWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -292,7 +293,12 @@ input RoleCreateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
+  assignedTo: PersonRelateToManyForCreateInput
+}
+
+input PersonRelateToManyForCreateInput {
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
 }
 
 """

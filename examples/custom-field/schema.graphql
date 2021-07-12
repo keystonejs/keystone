@@ -90,8 +90,6 @@ input PostUpdateInput {
 input AuthorRelateToOneInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 input PostsUpdateInput {
@@ -176,13 +174,13 @@ input AuthorOrderByInput {
 input AuthorUpdateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
+input PostRelateToManyForUpdateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -194,7 +192,12 @@ input AuthorsUpdateInput {
 input AuthorCreateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 """

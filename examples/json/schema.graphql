@@ -54,8 +54,6 @@ input PackageUpdateInput {
 input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 input PackagesUpdateInput {
@@ -128,13 +126,13 @@ input PersonOrderByInput {
 
 input PersonUpdateInput {
   name: String
-  packages: PackageRelateToManyInput
+  packages: PackageRelateToManyForUpdateInput
 }
 
-input PackageRelateToManyInput {
-  create: [PackageCreateInput]
-  connect: [PackageWhereUniqueInput]
-  disconnect: [PackageWhereUniqueInput]
+input PackageRelateToManyForUpdateInput {
+  create: [PackageCreateInput!]
+  connect: [PackageWhereUniqueInput!]
+  disconnect: [PackageWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -145,7 +143,12 @@ input PeopleUpdateInput {
 
 input PersonCreateInput {
   name: String
-  packages: PackageRelateToManyInput
+  packages: PackageRelateToManyForCreateInput
+}
+
+input PackageRelateToManyForCreateInput {
+  create: [PackageCreateInput!]
+  connect: [PackageWhereUniqueInput!]
 }
 
 """

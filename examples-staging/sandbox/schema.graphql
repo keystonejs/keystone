@@ -83,8 +83,6 @@ input TodoUpdateInput {
 input UserRelateToOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 input TodosUpdateInput {
@@ -193,13 +191,13 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForUpdateInput
 }
 
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
+input TodoRelateToManyForUpdateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
+  disconnect: [TodoWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -212,7 +210,12 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForCreateInput
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 """

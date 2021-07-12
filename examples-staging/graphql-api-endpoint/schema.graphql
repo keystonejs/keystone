@@ -102,13 +102,13 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
+input PostRelateToManyForUpdateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -121,7 +121,12 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 type Post {
@@ -222,20 +227,18 @@ input PostUpdateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneInput
-  tags: TagRelateToManyInput
+  tags: TagRelateToManyForUpdateInput
 }
 
 input UserRelateToOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
 }
 
-input TagRelateToManyInput {
-  create: [TagCreateInput]
-  connect: [TagWhereUniqueInput]
-  disconnect: [TagWhereUniqueInput]
+input TagRelateToManyForUpdateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+  disconnect: [TagWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -250,7 +253,12 @@ input PostCreateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneInput
-  tags: TagRelateToManyInput
+  tags: TagRelateToManyForCreateInput
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 type Tag {
@@ -323,7 +331,7 @@ input TagOrderByInput {
 
 input TagUpdateInput {
   name: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
 input TagsUpdateInput {
@@ -333,7 +341,7 @@ input TagsUpdateInput {
 
 input TagCreateInput {
   name: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
 }
 
 """

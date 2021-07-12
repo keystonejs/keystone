@@ -76,8 +76,6 @@ input TaskUpdateInput {
 input PersonRelateToOneInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
 }
 
 input TasksUpdateInput {
@@ -168,13 +166,13 @@ input PersonUpdateInput {
   name: String
   email: String
   password: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForUpdateInput
 }
 
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
+input TaskRelateToManyForUpdateInput {
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
+  disconnect: [TaskWhereUniqueInput!]
   disconnectAll: Boolean
 }
 
@@ -187,7 +185,12 @@ input PersonCreateInput {
   name: String
   email: String
   password: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForCreateInput
+}
+
+input TaskRelateToManyForCreateInput {
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
 }
 
 """
