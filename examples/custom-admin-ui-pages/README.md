@@ -23,6 +23,5 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## admin/pages
 
-This project leverages the `/admin/pages` directory. As elaborated on in the [Custom Pages](###ADDLINKHERE####) guide, this directory is used
-to generate additional routes in the `admin-ui`, a behaviour inherited from `NextJS`. The default export of files in this directory are expected to be **React Components**.
+This project leverages the `/admin/pages` directory. As elaborated on in the [Custom Pages](https://keystonejs.com/docs/guides/custom-admin-ui-pages) guide, this directory is used to generate additional routes in the `admin-ui`, a behaviour inherited from `NextJS`. The default export of files in this directory are expected to be **React Components**.
 **All other exports are ignored**
