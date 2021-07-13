@@ -6,4 +6,4 @@
 "@keystone-next/auth": patch
 ---
 
-Move packages-next to packages
+Move source code from the `packages-next` to the `packages` directory.
