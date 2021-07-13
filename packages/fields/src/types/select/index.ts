@@ -8,6 +8,7 @@ import {
   legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 // @ts-ignore
 import inflection from 'inflection';
@@ -68,6 +69,7 @@ export const select =
       })({
         ...commonConfig,
         input: {
+          where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }) },
           create: { arg: schema.arg({ type: schema.Int }) },
           update: { arg: schema.arg({ type: schema.Int }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -96,6 +98,7 @@ export const select =
       )({
         ...commonConfig,
         input: {
+          where: { arg: schema.arg({ type: filters[meta.provider].enum(graphQLType).optional }) },
           create: { arg: schema.arg({ type: graphQLType }) },
           update: { arg: schema.arg({ type: graphQLType }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -109,6 +112,7 @@ export const select =
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
       ...commonConfig,
       input: {
+        where: { arg: schema.arg({ type: filters[meta.provider].String.optional }) },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

@@ -34,6 +34,13 @@ const PasswordState = schema.object<{ isSet: boolean }>()({
   },
 });
 
+const PasswordFilter = schema.inputObject({
+  name: 'PasswordFilter',
+  fields: {
+    isSet: schema.arg({ type: schema.nonNull(schema.Boolean) }),
+  },
+});
+
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export const password =
@@ -89,6 +96,20 @@ export const password =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: PasswordFilter }),
+          resolve(val) {
+            if (val === null) {
+              throw new Error('Password filters cannot be set to null');
+            }
+            if (val.isSet) {
+              return {
+                not: null,
+              };
+            }
+            return null;
+          },
+        },
         create: {
           arg: schema.arg({ type: schema.String }),
           resolve: inputResolver,

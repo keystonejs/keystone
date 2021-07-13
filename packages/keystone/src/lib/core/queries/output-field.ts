@@ -90,7 +90,7 @@ function getRelationVal(
       where:
         access === true
           ? relationFilter
-          : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
+          : { AND: [relationFilter, await resolveWhereInput(access, foreignList, context)] },
     });
   };
 }

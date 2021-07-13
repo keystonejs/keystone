@@ -117,7 +117,8 @@
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "tests/test-projects/*"
+      "tests/test-projects/*",
+      "prisma-utils"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -126,7 +127,8 @@
   "preconstruct": {
     "packages": [
       "packages/*",
-      "design-system/packages/*"
+      "design-system/packages/*",
+      "prisma-utils"
     ],
     "distFilenameStrategy": "unscoped-package-name"
   },

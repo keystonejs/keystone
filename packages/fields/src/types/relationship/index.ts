@@ -154,6 +154,12 @@ export const relationship =
       })({
         ...commonConfig,
         input: {
+          where: {
+            arg: schema.arg({ type: listTypes.relateTo.many.where }),
+            resolve(value, context, resolve) {
+              return resolve(value);
+            },
+          },
           create: {
             arg: schema.arg({
               type: listTypes.relateTo.many.create,
@@ -240,6 +246,12 @@ export const relationship =
     })({
       ...commonConfig,
       input: {
+        where: {
+          arg: schema.arg({ type: listTypes.relateTo.many.where }),
+          resolve(value, context, resolve) {
+            return resolve(value);
+          },
+        },
         create: {
           arg: schema.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
