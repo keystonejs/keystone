@@ -6,16 +6,38 @@ import {
   getPrismaModelForList,
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
+  IdType,
 } from '../utils';
 import {
-  NestedMutationState,
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
+} from './nested-mutation-many-input-resolvers';
+import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
-} from './nested-mutation-input-resolvers';
+} from './nested-mutation-one-input-resolvers';
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
 import { runSideEffectOnlyHook, validationHook } from './hooks';
+
+export class NestedMutationState {
+  #afterChanges: (() => void | Promise<void>)[] = [];
+  #context: KeystoneContext;
+  constructor(context: KeystoneContext) {
+    this.#context = context;
+  }
+  async create(
+    input: Record<string, any>,
+    list: InitialisedList
+  ): Promise<{ kind: 'connect'; id: IdType } | { kind: 'create'; data: Record<string, any> }> {
+    const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
+    const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
+    this.#afterChanges.push(() => afterChange(item));
+    return { kind: 'connect' as const, id: item.id as any };
+  }
+  async afterChange() {
+    await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
+  }
+}
 
 export function createMany(
   { data }: { data: Record<string, any>[] },
