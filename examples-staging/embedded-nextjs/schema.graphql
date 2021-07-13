@@ -12,9 +12,32 @@ input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
+  id: IDFilter
   title: StringNullableFilter
   slug: StringNullableFilter
   content: StringNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {

@@ -42,10 +42,33 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
   posts: PostManyRelationFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -189,6 +212,7 @@ input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
+  id: IDFilter
   title: StringNullableFilter
   status: StringNullableFilter
   publishDate: DateTimeNullableFilter
@@ -327,6 +351,7 @@ input TagWhereInput {
   AND: [TagWhereInput!]
   OR: [TagWhereInput!]
   NOT: [TagWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   posts: PostManyRelationFilter
 }

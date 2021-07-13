@@ -15,12 +15,35 @@ input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
+  id: IDFilter
   label: StringNullableFilter
   isComplete: BoolNullableFilter
   assignedTo: UserManyRelationFilter
   finishBy: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -198,6 +221,7 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter

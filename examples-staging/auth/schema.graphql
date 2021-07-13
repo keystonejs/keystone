@@ -17,10 +17,33 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
   isAdmin: BoolNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {

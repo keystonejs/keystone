@@ -13,10 +13,33 @@ input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
+  id: IDFilter
   label: StringNullableFilter
   isComplete: BoolNullableFilter
   isPrivate: BoolNullableFilter
   assignedTo: PersonManyRelationFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -165,6 +188,7 @@ input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
@@ -286,6 +310,7 @@ input RoleWhereInput {
   AND: [RoleWhereInput!]
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   canCreateTodos: BoolNullableFilter
   canManageAllTodos: BoolNullableFilter

@@ -20,11 +20,34 @@ input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
+  id: IDFilter
   label: StringNullableFilter
   priority: TaskPriorityTypeNullableFilter
   isComplete: BoolNullableFilter
   assignedTo: PersonManyRelationFilter
   finishBy: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -206,6 +229,7 @@ input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter

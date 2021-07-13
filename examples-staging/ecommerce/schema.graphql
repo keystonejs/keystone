@@ -90,6 +90,7 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
@@ -100,6 +101,28 @@ input UserWhereInput {
   passwordResetToken: PasswordFilter
   passwordResetIssuedAt: DateTimeNullableFilter
   passwordResetRedeemedAt: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -291,6 +314,7 @@ input ProductWhereInput {
   AND: [ProductWhereInput!]
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   description: StringNullableFilter
   photo: ProductImageManyRelationFilter
@@ -462,6 +486,7 @@ input ProductImageWhereInput {
   AND: [ProductImageWhereInput!]
   OR: [ProductImageWhereInput!]
   NOT: [ProductImageWhereInput!]
+  id: IDFilter
   altText: StringNullableFilter
   product: ProductManyRelationFilter
 }
@@ -529,6 +554,7 @@ input CartItemWhereInput {
   AND: [CartItemWhereInput!]
   OR: [CartItemWhereInput!]
   NOT: [CartItemWhereInput!]
+  id: IDFilter
   quantity: IntNullableFilter
   product: ProductManyRelationFilter
   user: UserManyRelationFilter
@@ -588,6 +614,7 @@ input OrderItemWhereInput {
   AND: [OrderItemWhereInput!]
   OR: [OrderItemWhereInput!]
   NOT: [OrderItemWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   description: StringNullableFilter
   photo: ProductImageManyRelationFilter
@@ -692,6 +719,7 @@ input OrderWhereInput {
   AND: [OrderWhereInput!]
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
+  id: IDFilter
   total: IntNullableFilter
   items: OrderItemManyRelationFilter
   user: UserManyRelationFilter
@@ -793,6 +821,7 @@ input RoleWhereInput {
   AND: [RoleWhereInput!]
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   canManageProducts: BoolNullableFilter
   canSeeOtherUsers: BoolNullableFilter

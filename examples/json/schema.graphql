@@ -13,9 +13,32 @@ input PackageWhereInput {
   AND: [PackageWhereInput!]
   OR: [PackageWhereInput!]
   NOT: [PackageWhereInput!]
+  id: IDFilter
   label: StringNullableFilter
   isPrivate: BoolNullableFilter
   ownedBy: PersonManyRelationFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -154,6 +177,7 @@ input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   packages: PackageManyRelationFilter
 }

@@ -20,11 +20,34 @@ input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
+  id: IDFilter
   title: StringNullableFilter
   status: PostStatusTypeNullableFilter
   content: StringNullableFilter
   publishDate: DateTimeNullableFilter
   author: AuthorManyRelationFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
+}
+
+input NestedIDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: NestedIDFilter
 }
 
 input StringNullableFilter {
@@ -196,6 +219,7 @@ input AuthorWhereInput {
   AND: [AuthorWhereInput!]
   OR: [AuthorWhereInput!]
   NOT: [AuthorWhereInput!]
+  id: IDFilter
   name: StringNullableFilter
   email: StringNullableFilter
   posts: PostManyRelationFilter
