@@ -1,5 +1,18 @@
 # @keystone-next/document-renderer
 
+## 4.0.0
+
+### Major Changes
+
+- [#6040](https://github.com/keystonejs/keystone/pull/6040) [`890e3d0a5`](https://github.com/keystonejs/keystone/commit/890e3d0a500ecc30cc88946ba53438812b11b2a4) Thanks [@timleslie](https://github.com/timleslie)! - The value of `data` passed to the inline relationship renderer now matches the data returned by the GraphQL query.
+  Falsey values of `data.label` are no longer set to `data.id` and falsey values of `data.data` are no longer set to `{}`.
+
+### Patch Changes
+
+- [#6087](https://github.com/keystonejs/keystone/pull/6087) [`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951) Thanks [@JedWatson](https://github.com/JedWatson)! - Move source code from the `packages-next` to the `packages` directory.
+
+* [#6036](https://github.com/keystonejs/keystone/pull/6036) [`093f9791b`](https://github.com/keystonejs/keystone/commit/093f9791bc37357b9700a9c49a7ae1102757bca5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the relationship name not being passed to the inline relationship renderer
+
 ## 3.0.0
 
 ### Major Changes
