@@ -4,7 +4,7 @@ import { text } from '@keystone-next/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules
