@@ -85,6 +85,14 @@ export function printGeneratedTypes(
     Float: 'number',
     JSON: 'import("@keystone-next/types").JSONValue',
   };
+
+  let prelude = `import {
+  KeystoneListsAPI as GenericKeystoneListsAPI,
+  KeystoneDbAPI as GenericKeystoneDbAPI,
+  KeystoneContext as GenericKeystoneContext,
+} from '@keystone-next/types';
+`;
+
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
     printedSchema,
     graphQLSchema,
@@ -154,7 +162,19 @@ export type ${listKey}ListFn = (
 `;
     allListsStr += `\n  readonly ${JSON.stringify(listKey)}: ${listTypeInfoName};`;
   }
-  return prettier.format(printedTypes + allListsStr + '\n};\n', {
+  allListsStr += '\n};';
+
+  const postlude = `
+export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
+export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
+
+export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'lists' | 'prisma'> & {
+  db: { lists: KeystoneDbAPI };
+  lists: KeystoneListsAPI;
+  prisma: import('.prisma/client').PrismaClient;
+};
+`;
+  return prettier.format(prelude + printedTypes + allListsStr + postlude, {
     parser: 'babel-ts',
     trailingComma: 'es5',
     singleQuote: true,
