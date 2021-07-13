@@ -2,6 +2,11 @@
 
 exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+import {
+  KeystoneListsAPI as GenericKeystoneListsAPI,
+  KeystoneDbAPI as GenericKeystoneDbAPI,
+  KeystoneContext as GenericKeystoneContext,
+} from '@keystone-next/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
@@ -112,6 +117,17 @@ export type TodoListFn = (
 
 export type KeystoneListsTypeInfo = {
   readonly Todo: TodoListTypeInfo;
+};
+export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
+export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
+
+export type KeystoneContext = Omit<
+  GenericKeystoneContext,
+  'db' | 'lists' | 'prisma'
+> & {
+  db: { lists: KeystoneDbAPI };
+  lists: KeystoneListsAPI;
+  prisma: import('.prisma/client').PrismaClient;
 };
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
