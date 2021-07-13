@@ -48,7 +48,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -113,7 +113,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -150,7 +150,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -173,7 +173,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >

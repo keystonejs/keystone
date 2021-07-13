@@ -22,9 +22,9 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
         gridTemplateColumns: ['1fr', null, '1fr 1fr', '1.1fr 0.9fr'],
         gap: '3rem',
         alignItems: 'center',
-        border: '1px solid var(--border)',
+        border: '1px solid var(--border-muted)',
         borderRadius: '1rem',
-        padding: '2rem',
+        padding: ['1rem', '1rem', '2rem'],
         boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
       })}
       {...props}

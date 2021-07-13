@@ -9,12 +9,15 @@ import { ArrowR } from '../icons/ArrowR';
 import { Tick } from '../icons/Tick';
 import { CodeBox } from './CodeBox';
 import { Section } from './Section';
+import { useMediaQuery } from '../../lib/media';
 
 type EndCtaProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
 } & HTMLAttributes<HTMLElement>;
 
 export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
+  const mq = useMediaQuery();
+
   return (
     <Section
       css={{
@@ -26,12 +29,12 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
         Start building <Highlight look={grad}>today.</Highlight>
       </Type>
       <ul
-        css={{
+        css={mq({
           listStyle: 'none',
           margin: '1rem 0 0 0',
           padding: 0,
           display: 'flex',
-          gap: '1.5rem',
+          gap: ['.8rem', '1.5rem'],
           justifyContent: 'center',
           flexWrap: 'wrap',
           '& li': {
@@ -42,7 +45,7 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
             height: '1.25rem',
             margin: '0.25rem 0.5rem 0 0',
           },
-        }}
+        })}
       >
         <li>
           <Tick grad={grad} />
