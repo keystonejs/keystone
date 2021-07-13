@@ -4,6 +4,7 @@ export { decimal } from './types/decimal';
 export { file } from './types/file';
 export { float } from './types/float';
 export { integer } from './types/integer';
+export { bigInt } from './types/bigInt';
 export { image } from './types/image';
 export { json } from './types/json';
 export { password } from './types/password';
