@@ -1,5 +1,14 @@
 # @keystone-next/website
 
+## 3.1.3
+
+### Patch Changes
+
+- [#6087](https://github.com/keystonejs/keystone/pull/6087) [`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951) Thanks [@JedWatson](https://github.com/JedWatson)! - Move source code from the `packages-next` to the `packages` directory.
+
+- Updated dependencies [[`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951), [`890e3d0a5`](https://github.com/keystonejs/keystone/commit/890e3d0a500ecc30cc88946ba53438812b11b2a4)]:
+  - @keystone-next/fields-document@7.0.2
+
 ## 3.1.2
 
 ### Patch Changes
