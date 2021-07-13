@@ -1,7 +1,7 @@
 import type { MaybePromise } from '../utils';
 import type { BaseGeneratedListTypes, KeystoneContext } from '..';
 
-type BaseAccessArgs = {
+export type BaseAccessArgs = {
   session: any;
   listKey: string;
   context: KeystoneContext;
