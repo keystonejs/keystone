@@ -550,15 +550,15 @@ const NestedDateTimeFilter: NestedDateTimeFilterType = types.inputObject({
 
 type BigIntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: types.Arg<typeof BigInt>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  lt: types.Arg<typeof BigInt>;
+  lte: types.Arg<typeof BigInt>;
+  gt: types.Arg<typeof BigInt>;
+  gte: types.Arg<typeof BigInt>;
   // can be null
   not: types.Arg<typeof NestedBigIntNullableFilter>;
 }>;
@@ -567,15 +567,15 @@ const BigIntNullableFilter: BigIntNullableFilterType = types.inputObject({
   name: 'BigIntNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: types.arg({ type: BigInt }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    lt: types.arg({ type: BigInt }),
+    lte: types.arg({ type: BigInt }),
+    gt: types.arg({ type: BigInt }),
+    gte: types.arg({ type: BigInt }),
     // can be null
     not: types.arg({ type: NestedBigIntNullableFilter }),
   }),
@@ -583,15 +583,15 @@ const BigIntNullableFilter: BigIntNullableFilterType = types.inputObject({
 
 type NestedBigIntNullableFilterType = types.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: types.Arg<typeof BigInt>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  lt: types.Arg<typeof BigInt>;
+  lte: types.Arg<typeof BigInt>;
+  gt: types.Arg<typeof BigInt>;
+  gte: types.Arg<typeof BigInt>;
   // can be null
   not: types.Arg<typeof NestedBigIntNullableFilter>;
 }>;
@@ -600,66 +600,66 @@ const NestedBigIntNullableFilter: NestedBigIntNullableFilterType = types.inputOb
   name: 'NestedBigIntNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: types.arg({ type: BigInt }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    lt: types.arg({ type: BigInt }),
+    lte: types.arg({ type: BigInt }),
+    gt: types.arg({ type: BigInt }),
+    gte: types.arg({ type: BigInt }),
     // can be null
     not: types.arg({ type: NestedBigIntNullableFilter }),
   }),
 });
 
 type BigIntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  equals: types.Arg<typeof BigInt>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  lt: types.Arg<typeof BigInt>;
+  lte: types.Arg<typeof BigInt>;
+  gt: types.Arg<typeof BigInt>;
+  gte: types.Arg<typeof BigInt>;
   not: types.Arg<typeof NestedBigIntFilter>;
 }>;
 
 const BigIntFilter: BigIntFilterType = types.inputObject({
   name: 'BigIntFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    equals: types.arg({ type: BigInt }),
+    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    lt: types.arg({ type: BigInt }),
+    lte: types.arg({ type: BigInt }),
+    gt: types.arg({ type: BigInt }),
+    gte: types.arg({ type: BigInt }),
     not: types.arg({ type: NestedBigIntFilter }),
   }),
 });
 
 type NestedBigIntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  equals: types.Arg<typeof BigInt>;
+  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  lt: types.Arg<typeof BigInt>;
+  lte: types.Arg<typeof BigInt>;
+  gt: types.Arg<typeof BigInt>;
+  gte: types.Arg<typeof BigInt>;
   not: types.Arg<typeof NestedBigIntFilter>;
 }>;
 
 const NestedBigIntFilter: NestedBigIntFilterType = types.inputObject({
   name: 'NestedBigIntFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    equals: types.arg({ type: BigInt }),
+    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
+    lt: types.arg({ type: BigInt }),
+    lte: types.arg({ type: BigInt }),
+    gt: types.arg({ type: BigInt }),
+    gte: types.arg({ type: BigInt }),
     not: types.arg({ type: NestedBigIntFilter }),
   }),
 });

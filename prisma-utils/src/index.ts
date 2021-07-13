@@ -9,25 +9,13 @@ const providers = ['postgresql', 'sqlite'] as const;
 type Provider = typeof providers[number];
 
 // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types
-// (Unsupported isn't included here because it's special and isn't surfaced in the client which is what we're snapshotting here)
-const scalarTypes = [
-  'String',
-  'Boolean',
-  'Int',
-  'Float',
-  'DateTime',
-  'BigInt',
-  'Json',
-  'Decimal',
-  // we're gonna ignore Bytes because how do you want to filter by bytes and what GraphQL scalar do we use?
-  // 'Bytes',
-  // 'SomeEnum',
-] as const;
-
-// const enumDecl = `enum SomeEnum {
-//   a
-//   b
-// }`;
+// only the prisma scalars that we currently use are here because adding one requires choosing a graphql scalar
+// we can add them when we want field types for those scalars
+// the missing ones are:
+// - Bytes
+// - BigInt
+// - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
+const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Json', 'Decimal'] as const;
 
 const getScalarTypesForProvider = (provider: Provider): readonly typeof scalarTypes[number][] =>
   provider === 'sqlite' ? scalarTypes.filter(x => x !== 'Json') : scalarTypes;
@@ -113,7 +101,7 @@ ${
         2
       )
     );
-    const filepath = `${__dirname}/../../packages-next/types/src/filters/providers/${provider}.ts`;
+    const filepath = `${__dirname}/../../packages/types/src/filters/providers/${provider}.ts`;
     await fs.outputFile(
       filepath,
       format(
@@ -283,6 +271,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Float: 'types.Float',
   Json: 'types.JSON',
   DateTime: 'types.String',
-  BigInt: 'types.String',
   Decimal: 'types.String',
 };
