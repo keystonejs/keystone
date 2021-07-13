@@ -33,8 +33,9 @@ class MyDocument extends Document {
       styles: (
         <React.Fragment>
           {initialProps.styles}
-          {data!.styles.map(data => (
+          {data!.styles.map((data, i) => (
             <style
+              key={i}
               data-emotion={`${data.key} ${data.ids.join(' ')}`}
               dangerouslySetInnerHTML={{ __html: data.css }}
             />
