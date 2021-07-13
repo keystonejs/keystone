@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
   FieldTypeFunc,
   legacyFilters,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -40,6 +41,7 @@ export const text =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.String }) } : undefined,
+        where: { arg: schema.arg({ type: filters[meta.provider].String.optional }) },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

@@ -105,14 +105,14 @@ ${
     await fs.outputFile(
       filepath,
       format(
-        `import * as types from '../../ts-gql-schema';
+        `import { schema } from '../../schema';
 
 
 ${
   provider !== 'sqlite'
-    ? `const QueryMode = types.enum({
+    ? `const QueryMode = schema.enum({
   name: 'QueryMode',
-  values:types.enumValues(['default','insensitive'])
+  values:schema.enumValues(['default','insensitive'])
 })`
     : ''
 }
@@ -238,25 +238,25 @@ function printInputTypeForTSGQL(
   assert(inputType.constraints.minNumFields === expectedMaxMinNumFields);
   const nameOfInputObjectTypeType = `${inputTypeName}Type`;
   const fields = inputType.fields.map(x => [x.name, pickInputTypeForField(x)] as const);
-  return `type ${nameOfInputObjectTypeType} = types.InputObjectType<{
+  return `type ${nameOfInputObjectTypeType} = schema.InputObjectType<{
     ${fields
       .map(([name, field]) => {
-        return `${field.isNullable ? '// can be null\n' : ''}${name}: types.Arg<${
+        return `${field.isNullable ? '// can be null\n' : ''}${name}: schema.Arg<${
           field.isList
-            ? `types.ListType<types.NonNullType<typeof ${field.type}>>`
+            ? `schema.ListType<schema.NonNullType<typeof ${field.type}>>`
             : `typeof ${field.type}`
-        }>`;
+        }, undefined>`;
       })
       .join(',\n')}
   }>
   
-  const ${inputTypeName}: ${nameOfInputObjectTypeType} = types.inputObject({
+  const ${inputTypeName}: ${nameOfInputObjectTypeType} = schema.inputObject({
     name: '${inputTypeName}',
     fields: () => ({
       ${fields
         .map(([name, field]) => {
-          return `${field.isNullable ? '// can be null\n' : ''}${name}: types.arg({ type: ${
-            field.isList ? `types.list(types.nonNull(${field.type}))` : field.type
+          return `${field.isNullable ? '// can be null\n' : ''}${name}: schema.arg({ type: ${
+            field.isList ? `schema.list(schema.nonNull(${field.type}))` : field.type
           } })`;
         })
         .join(',\n')}
@@ -265,11 +265,11 @@ function printInputTypeForTSGQL(
 }
 
 const scalarsToGqlScalars: Record<string, string> = {
-  String: 'types.String',
-  Boolean: 'types.Boolean',
-  Int: 'types.Int',
-  Float: 'types.Float',
-  Json: 'types.JSON',
-  DateTime: 'types.String',
-  Decimal: 'types.String',
+  String: 'schema.String',
+  Boolean: 'schema.Boolean',
+  Int: 'schema.Int',
+  Float: 'schema.Float',
+  Json: 'schema.JSON',
+  DateTime: 'schema.String',
+  Decimal: 'schema.String',
 };

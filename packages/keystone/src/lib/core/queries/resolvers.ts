@@ -35,10 +35,10 @@ export async function findManyFilter(
   if (!access) {
     return false;
   }
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  let resolvedWhere = await resolveWhereInput(where || {}, list, context);
   if (typeof access === 'object') {
     resolvedWhere = {
-      AND: [resolvedWhere, await resolveWhereInput(access, list)],
+      AND: [resolvedWhere, await resolveWhereInput(access, list, context)],
     };
   }
 
@@ -92,7 +92,7 @@ async function findOneFilter(
   const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
   return access === true
     ? wherePrismaFilter
-    : { AND: [wherePrismaFilter, await resolveWhereInput(access, list)] };
+    : { AND: [wherePrismaFilter, await resolveWhereInput(access, list, context)] };
 }
 
 export async function findOne(

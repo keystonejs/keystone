@@ -24,7 +24,7 @@ import {
 } from './access-control';
 import { getNamesFromList } from './utils';
 import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
-import { InputFilter, PrismaFilter, resolveWhereInput } from './where-inputs';
+import { PrismaFilter } from './where-inputs';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
@@ -39,7 +39,6 @@ export type InitialisedList = {
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
-  filterImpls: Record<string, (input: InputFilter[string]) => PrismaFilter>;
   types: TypesForList;
   access: ResolvedListAccessControl;
   hooks: ListHooks<BaseGeneratedListTypes>;
@@ -119,9 +118,14 @@ export function initialiseLists(
             OR: schema.arg({
               type: schema.list(schema.nonNull(where)),
             }),
+            NOT: schema.arg({
+              type: schema.list(schema.nonNull(where)),
+            }),
           },
-          ...Object.values(fields).map(field =>
-            field.access.read === false ? {} : field.__legacy?.filters?.fields ?? {}
+          ...Object.entries(fields).map(
+            ([fieldKey, field]) =>
+              field.input?.where?.arg &&
+              field.access.read !== false && { [fieldKey]: field.input?.where?.arg }
           )
         );
       },
@@ -240,8 +244,29 @@ export function initialiseLists(
         update,
         findManyArgs,
         relateTo: {
-          many: { create: relateToMany, update: relateToMany },
-          one: { create: relateToOne, update: relateToOne },
+          many: {
+            where: schema.inputObject({
+              name: `${listKey}ManyRelationFilter`,
+              fields: {
+                every: schema.arg({ type: where }),
+                some: schema.arg({ type: where }),
+                none: schema.arg({ type: where }),
+              },
+            }),
+            create: relateToMany,
+            update: relateToMany,
+          },
+          one: {
+            where: schema.inputObject({
+              name: `${listKey}OneRelationFilter`,
+              fields: {
+                is: schema.arg({ type: where }),
+                isNot: schema.arg({ type: where }),
+              },
+            }),
+            create: relateToOne,
+            update: relateToOne,
+          },
         },
       },
     };
@@ -335,26 +360,6 @@ export function initialiseLists(
       ...listInfos[listKey],
       ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
-      filterImpls: Object.assign(
-        {},
-        ...Object.values(list.fields).map(field => {
-          if (field.dbField.kind === 'relation' && field.__legacy?.filters) {
-            const foreignListKey = field.dbField.list;
-            return Object.fromEntries(
-              Object.entries(field.__legacy.filters.impls).map(([key, resolve]) => {
-                return [
-                  key,
-                  (val: any) =>
-                    resolve(val, foreignListWhereInput =>
-                      resolveWhereInput(foreignListWhereInput, lists[foreignListKey])
-                    ),
-                ];
-              })
-            );
-          }
-          return field.__legacy?.filters?.impls ?? {};
-        })
-      ),
       applySearchField: (filter, search) => {
         const searchFieldName = listsConfig[listKey].db?.searchField ?? 'name';
         const searchField = list.fields[searchFieldName];

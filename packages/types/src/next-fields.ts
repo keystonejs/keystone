@@ -58,10 +58,14 @@ export type NextFieldType<
   OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
     schema.NullableInputType,
     undefined
+  >,
+  FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+    schema.NullableInputType,
+    undefined
   >
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg, FilterArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -236,6 +240,39 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldFilters<TDBField extends DBField> =
+  | ({
+      AND?: DBFieldFiltersInner<TDBField>;
+      OR?: DBFieldFiltersInner<TDBField>;
+      NOT?: DBFieldFiltersInner<TDBField>;
+    } & DBFieldFiltersInner<TDBField>)
+  | null;
+
+export type WhereFieldInputArg<
+  TDBField extends DBField,
+  TArg extends schema.Arg<schema.InputType, any>
+> = {
+  arg: TArg;
+} & ResolveFunc<
+  FieldInputResolver<
+    Exclude<schema.InferValueFromArg<TArg>, undefined>,
+    DBFieldFilters<TDBField>,
+    any
+    // i think this is broken because variance?
+    // TDBField extends RelationDBField<infer Mode>
+    //   ? (
+    //       input: {
+    //         many: types.InferValueFromArg<types.Arg<TypesForList['manyRelationWhere']>>;
+    //         one: types.InferValueFromArg<types.Arg<TypesForList['where']>>;
+    //       }[Mode]
+    //     ) => Promise<any>
+    //   : undefined
+  >
+>;
+
 export type UpdateFieldInputArg<
   TDBField extends DBField,
   TArg extends schema.Arg<schema.InputType, any>
@@ -328,10 +365,15 @@ export type FieldTypeWithoutDBField<
   OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
     schema.NullableInputType,
     undefined
+  >,
+  FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+    schema.NullableInputType,
+    undefined
   >
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
+    where?: WhereFieldInputArg<TDBField, FilterArg>;
     create?: CreateFieldInputArg<TDBField, CreateArg>;
     update?: UpdateFieldInputArg<TDBField, UpdateArg>;
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
@@ -359,9 +401,20 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     CreateArg extends schema.Arg<schema.InputType> | undefined,
     UpdateArg extends schema.Arg<schema.InputType>,
     UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined>,
-    OrderByArg extends schema.Arg<schema.NullableInputType, undefined>
+    OrderByArg extends schema.Arg<schema.NullableInputType, undefined>,
+    FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+      schema.NullableInputType,
+      undefined
+    >
   >(
-    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>
+    stuff: FieldTypeWithoutDBField<
+      TDBField,
+      CreateArg,
+      UpdateArg,
+      UniqueWhereArg,
+      OrderByArg,
+      FilterArg
+    >
   ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
     return { ...stuff, dbField };
   };
@@ -393,10 +446,19 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
+      where: schema.InputObjectType<{
+        every: schema.Arg<AnyInputObj>;
+        some: schema.Arg<AnyInputObj>;
+        none: schema.Arg<AnyInputObj>;
+      }>;
       create: RelateToManyInput;
       update: RelateToManyInput;
     };
     one: {
+      where: schema.InputObjectType<{
+        is: schema.Arg<AnyInputObj>;
+        isNot: schema.Arg<AnyInputObj>;
+      }>;
       create: RelateToOneInput;
       update: RelateToOneInput;
     };

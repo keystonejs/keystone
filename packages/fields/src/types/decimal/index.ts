@@ -8,6 +8,7 @@ import {
   Decimal,
   legacyFilters,
   FieldDefaultValue,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -66,6 +67,7 @@ export const decimal =
     })({
       ...config,
       input: {
+        where: { arg: schema.arg({ type: filters[meta.provider].Decimal.optional }) },
         create: {
           arg: schema.arg({ type: schema.String }),
           resolve(val) {

@@ -35,7 +35,7 @@ export async function getAccessControlledItemForDelete(
     await resolveUniqueWhereInput(inputFilter, list.fields, context)
   );
   if (typeof access === 'object') {
-    where = { AND: [where, await resolveWhereInput(access, list)] };
+    where = { AND: [where, await resolveWhereInput(access, list, context)] };
   }
   const item = await prismaModel.findFirst({ where });
   if (item === null) {
@@ -103,7 +103,7 @@ export async function getAccessControlledItemForUpdate(
       accessControl === true
         ? uniqueWhereInWhereForm
         : {
-            AND: [uniqueWhereInWhereForm, await resolveWhereInput(accessControl, list)],
+            AND: [uniqueWhereInWhereForm, await resolveWhereInput(accessControl, list, context)],
           },
   });
   if (!item) {

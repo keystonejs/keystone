@@ -12,24 +12,54 @@ type Package {
 input PackageWhereInput {
   AND: [PackageWhereInput!]
   OR: [PackageWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  isPrivate: Boolean
-  isPrivate_not: Boolean
-  ownedBy: PersonWhereInput
-  ownedBy_is_null: Boolean
+  NOT: [PackageWhereInput!]
+  label: StringNullableFilter
+  isPrivate: BoolNullableFilter
+  ownedBy: PersonManyRelationFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input BoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
+
+input NestedBoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
+
+input PersonManyRelationFilter {
+  every: PersonWhereInput
+  some: PersonWhereInput
+  none: PersonWhereInput
 }
 
 input PackageWhereUniqueInput {
@@ -123,35 +153,15 @@ type _QueryMeta {
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [PersonWhereInput!]
+  name: StringNullableFilter
+  packages: PackageManyRelationFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  packages_every: PackageWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  packages_some: PackageWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  packages_none: PackageWhereInput
+input PackageManyRelationFilter {
+  every: PackageWhereInput
+  some: PackageWhereInput
+  none: PackageWhereInput
 }
 
 input PersonWhereUniqueInput {

@@ -1,782 +1,666 @@
-import * as types from '../../ts-gql-schema';
+import { schema } from '../../schema';
 
-type StringNullableFilterType = types.InputObjectType<{
+type StringNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  contains: types.Arg<typeof types.String>;
-  startsWith: types.Arg<typeof types.String>;
-  endsWith: types.Arg<typeof types.String>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  contains: schema.Arg<typeof schema.String, undefined>;
+  startsWith: schema.Arg<typeof schema.String, undefined>;
+  endsWith: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedStringNullableFilter>;
+  not: schema.Arg<typeof NestedStringNullableFilter, undefined>;
 }>;
 
-const StringNullableFilter: StringNullableFilterType = types.inputObject({
+const StringNullableFilter: StringNullableFilterType = schema.inputObject({
   name: 'StringNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    contains: types.arg({ type: types.String }),
-    startsWith: types.arg({ type: types.String }),
-    endsWith: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    contains: schema.arg({ type: schema.String }),
+    startsWith: schema.arg({ type: schema.String }),
+    endsWith: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedStringNullableFilter }),
+    not: schema.arg({ type: NestedStringNullableFilter }),
   }),
 });
 
-type NestedStringNullableFilterType = types.InputObjectType<{
+type NestedStringNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  contains: types.Arg<typeof types.String>;
-  startsWith: types.Arg<typeof types.String>;
-  endsWith: types.Arg<typeof types.String>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  contains: schema.Arg<typeof schema.String, undefined>;
+  startsWith: schema.Arg<typeof schema.String, undefined>;
+  endsWith: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedStringNullableFilter>;
+  not: schema.Arg<typeof NestedStringNullableFilter, undefined>;
 }>;
 
-const NestedStringNullableFilter: NestedStringNullableFilterType = types.inputObject({
+const NestedStringNullableFilter: NestedStringNullableFilterType = schema.inputObject({
   name: 'NestedStringNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    contains: types.arg({ type: types.String }),
-    startsWith: types.arg({ type: types.String }),
-    endsWith: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    contains: schema.arg({ type: schema.String }),
+    startsWith: schema.arg({ type: schema.String }),
+    endsWith: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedStringNullableFilter }),
+    not: schema.arg({ type: NestedStringNullableFilter }),
   }),
 });
 
-type StringFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  contains: types.Arg<typeof types.String>;
-  startsWith: types.Arg<typeof types.String>;
-  endsWith: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedStringFilter>;
+type StringFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  contains: schema.Arg<typeof schema.String, undefined>;
+  startsWith: schema.Arg<typeof schema.String, undefined>;
+  endsWith: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedStringFilter, undefined>;
 }>;
 
-const StringFilter: StringFilterType = types.inputObject({
+const StringFilter: StringFilterType = schema.inputObject({
   name: 'StringFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    contains: types.arg({ type: types.String }),
-    startsWith: types.arg({ type: types.String }),
-    endsWith: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedStringFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    contains: schema.arg({ type: schema.String }),
+    startsWith: schema.arg({ type: schema.String }),
+    endsWith: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedStringFilter }),
   }),
 });
 
-type NestedStringFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  contains: types.Arg<typeof types.String>;
-  startsWith: types.Arg<typeof types.String>;
-  endsWith: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedStringFilter>;
+type NestedStringFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  contains: schema.Arg<typeof schema.String, undefined>;
+  startsWith: schema.Arg<typeof schema.String, undefined>;
+  endsWith: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedStringFilter, undefined>;
 }>;
 
-const NestedStringFilter: NestedStringFilterType = types.inputObject({
+const NestedStringFilter: NestedStringFilterType = schema.inputObject({
   name: 'NestedStringFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    contains: types.arg({ type: types.String }),
-    startsWith: types.arg({ type: types.String }),
-    endsWith: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedStringFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    contains: schema.arg({ type: schema.String }),
+    startsWith: schema.arg({ type: schema.String }),
+    endsWith: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedStringFilter }),
   }),
 });
 
-type BoolNullableFilterType = types.InputObjectType<{
+type BoolNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Boolean>;
+  equals: schema.Arg<typeof schema.Boolean, undefined>;
   // can be null
-  not: types.Arg<typeof NestedBoolNullableFilter>;
+  not: schema.Arg<typeof NestedBoolNullableFilter, undefined>;
 }>;
 
-const BoolNullableFilter: BoolNullableFilterType = types.inputObject({
+const BoolNullableFilter: BoolNullableFilterType = schema.inputObject({
   name: 'BoolNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Boolean }),
+    equals: schema.arg({ type: schema.Boolean }),
     // can be null
-    not: types.arg({ type: NestedBoolNullableFilter }),
+    not: schema.arg({ type: NestedBoolNullableFilter }),
   }),
 });
 
-type NestedBoolNullableFilterType = types.InputObjectType<{
+type NestedBoolNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Boolean>;
+  equals: schema.Arg<typeof schema.Boolean, undefined>;
   // can be null
-  not: types.Arg<typeof NestedBoolNullableFilter>;
+  not: schema.Arg<typeof NestedBoolNullableFilter, undefined>;
 }>;
 
-const NestedBoolNullableFilter: NestedBoolNullableFilterType = types.inputObject({
+const NestedBoolNullableFilter: NestedBoolNullableFilterType = schema.inputObject({
   name: 'NestedBoolNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Boolean }),
+    equals: schema.arg({ type: schema.Boolean }),
     // can be null
-    not: types.arg({ type: NestedBoolNullableFilter }),
+    not: schema.arg({ type: NestedBoolNullableFilter }),
   }),
 });
 
-type BoolFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Boolean>;
-  not: types.Arg<typeof NestedBoolFilter>;
+type BoolFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Boolean, undefined>;
+  not: schema.Arg<typeof NestedBoolFilter, undefined>;
 }>;
 
-const BoolFilter: BoolFilterType = types.inputObject({
+const BoolFilter: BoolFilterType = schema.inputObject({
   name: 'BoolFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Boolean }),
-    not: types.arg({ type: NestedBoolFilter }),
+    equals: schema.arg({ type: schema.Boolean }),
+    not: schema.arg({ type: NestedBoolFilter }),
   }),
 });
 
-type NestedBoolFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Boolean>;
-  not: types.Arg<typeof NestedBoolFilter>;
+type NestedBoolFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Boolean, undefined>;
+  not: schema.Arg<typeof NestedBoolFilter, undefined>;
 }>;
 
-const NestedBoolFilter: NestedBoolFilterType = types.inputObject({
+const NestedBoolFilter: NestedBoolFilterType = schema.inputObject({
   name: 'NestedBoolFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Boolean }),
-    not: types.arg({ type: NestedBoolFilter }),
+    equals: schema.arg({ type: schema.Boolean }),
+    not: schema.arg({ type: NestedBoolFilter }),
   }),
 });
 
-type IntNullableFilterType = types.InputObjectType<{
+type IntNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Int>;
+  equals: schema.Arg<typeof schema.Int, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  lt: types.Arg<typeof types.Int>;
-  lte: types.Arg<typeof types.Int>;
-  gt: types.Arg<typeof types.Int>;
-  gte: types.Arg<typeof types.Int>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  lt: schema.Arg<typeof schema.Int, undefined>;
+  lte: schema.Arg<typeof schema.Int, undefined>;
+  gt: schema.Arg<typeof schema.Int, undefined>;
+  gte: schema.Arg<typeof schema.Int, undefined>;
   // can be null
-  not: types.Arg<typeof NestedIntNullableFilter>;
+  not: schema.Arg<typeof NestedIntNullableFilter, undefined>;
 }>;
 
-const IntNullableFilter: IntNullableFilterType = types.inputObject({
+const IntNullableFilter: IntNullableFilterType = schema.inputObject({
   name: 'IntNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Int }),
+    equals: schema.arg({ type: schema.Int }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Int)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    lt: types.arg({ type: types.Int }),
-    lte: types.arg({ type: types.Int }),
-    gt: types.arg({ type: types.Int }),
-    gte: types.arg({ type: types.Int }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    lt: schema.arg({ type: schema.Int }),
+    lte: schema.arg({ type: schema.Int }),
+    gt: schema.arg({ type: schema.Int }),
+    gte: schema.arg({ type: schema.Int }),
     // can be null
-    not: types.arg({ type: NestedIntNullableFilter }),
+    not: schema.arg({ type: NestedIntNullableFilter }),
   }),
 });
 
-type NestedIntNullableFilterType = types.InputObjectType<{
+type NestedIntNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Int>;
+  equals: schema.Arg<typeof schema.Int, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  lt: types.Arg<typeof types.Int>;
-  lte: types.Arg<typeof types.Int>;
-  gt: types.Arg<typeof types.Int>;
-  gte: types.Arg<typeof types.Int>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  lt: schema.Arg<typeof schema.Int, undefined>;
+  lte: schema.Arg<typeof schema.Int, undefined>;
+  gt: schema.Arg<typeof schema.Int, undefined>;
+  gte: schema.Arg<typeof schema.Int, undefined>;
   // can be null
-  not: types.Arg<typeof NestedIntNullableFilter>;
+  not: schema.Arg<typeof NestedIntNullableFilter, undefined>;
 }>;
 
-const NestedIntNullableFilter: NestedIntNullableFilterType = types.inputObject({
+const NestedIntNullableFilter: NestedIntNullableFilterType = schema.inputObject({
   name: 'NestedIntNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Int }),
+    equals: schema.arg({ type: schema.Int }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Int)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    lt: types.arg({ type: types.Int }),
-    lte: types.arg({ type: types.Int }),
-    gt: types.arg({ type: types.Int }),
-    gte: types.arg({ type: types.Int }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    lt: schema.arg({ type: schema.Int }),
+    lte: schema.arg({ type: schema.Int }),
+    gt: schema.arg({ type: schema.Int }),
+    gte: schema.arg({ type: schema.Int }),
     // can be null
-    not: types.arg({ type: NestedIntNullableFilter }),
+    not: schema.arg({ type: NestedIntNullableFilter }),
   }),
 });
 
-type IntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Int>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  lt: types.Arg<typeof types.Int>;
-  lte: types.Arg<typeof types.Int>;
-  gt: types.Arg<typeof types.Int>;
-  gte: types.Arg<typeof types.Int>;
-  not: types.Arg<typeof NestedIntFilter>;
+type IntFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Int, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  lt: schema.Arg<typeof schema.Int, undefined>;
+  lte: schema.Arg<typeof schema.Int, undefined>;
+  gt: schema.Arg<typeof schema.Int, undefined>;
+  gte: schema.Arg<typeof schema.Int, undefined>;
+  not: schema.Arg<typeof NestedIntFilter, undefined>;
 }>;
 
-const IntFilter: IntFilterType = types.inputObject({
+const IntFilter: IntFilterType = schema.inputObject({
   name: 'IntFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Int }),
-    in: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    lt: types.arg({ type: types.Int }),
-    lte: types.arg({ type: types.Int }),
-    gt: types.arg({ type: types.Int }),
-    gte: types.arg({ type: types.Int }),
-    not: types.arg({ type: NestedIntFilter }),
+    equals: schema.arg({ type: schema.Int }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    lt: schema.arg({ type: schema.Int }),
+    lte: schema.arg({ type: schema.Int }),
+    gt: schema.arg({ type: schema.Int }),
+    gte: schema.arg({ type: schema.Int }),
+    not: schema.arg({ type: NestedIntFilter }),
   }),
 });
 
-type NestedIntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Int>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Int>>>;
-  lt: types.Arg<typeof types.Int>;
-  lte: types.Arg<typeof types.Int>;
-  gt: types.Arg<typeof types.Int>;
-  gte: types.Arg<typeof types.Int>;
-  not: types.Arg<typeof NestedIntFilter>;
+type NestedIntFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Int, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  lt: schema.Arg<typeof schema.Int, undefined>;
+  lte: schema.Arg<typeof schema.Int, undefined>;
+  gt: schema.Arg<typeof schema.Int, undefined>;
+  gte: schema.Arg<typeof schema.Int, undefined>;
+  not: schema.Arg<typeof NestedIntFilter, undefined>;
 }>;
 
-const NestedIntFilter: NestedIntFilterType = types.inputObject({
+const NestedIntFilter: NestedIntFilterType = schema.inputObject({
   name: 'NestedIntFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Int }),
-    in: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Int)) }),
-    lt: types.arg({ type: types.Int }),
-    lte: types.arg({ type: types.Int }),
-    gt: types.arg({ type: types.Int }),
-    gte: types.arg({ type: types.Int }),
-    not: types.arg({ type: NestedIntFilter }),
+    equals: schema.arg({ type: schema.Int }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Int)) }),
+    lt: schema.arg({ type: schema.Int }),
+    lte: schema.arg({ type: schema.Int }),
+    gt: schema.arg({ type: schema.Int }),
+    gte: schema.arg({ type: schema.Int }),
+    not: schema.arg({ type: NestedIntFilter }),
   }),
 });
 
-type FloatNullableFilterType = types.InputObjectType<{
+type FloatNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Float>;
+  equals: schema.Arg<typeof schema.Float, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  lt: types.Arg<typeof types.Float>;
-  lte: types.Arg<typeof types.Float>;
-  gt: types.Arg<typeof types.Float>;
-  gte: types.Arg<typeof types.Float>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  lt: schema.Arg<typeof schema.Float, undefined>;
+  lte: schema.Arg<typeof schema.Float, undefined>;
+  gt: schema.Arg<typeof schema.Float, undefined>;
+  gte: schema.Arg<typeof schema.Float, undefined>;
   // can be null
-  not: types.Arg<typeof NestedFloatNullableFilter>;
+  not: schema.Arg<typeof NestedFloatNullableFilter, undefined>;
 }>;
 
-const FloatNullableFilter: FloatNullableFilterType = types.inputObject({
+const FloatNullableFilter: FloatNullableFilterType = schema.inputObject({
   name: 'FloatNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Float }),
+    equals: schema.arg({ type: schema.Float }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Float)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    lt: types.arg({ type: types.Float }),
-    lte: types.arg({ type: types.Float }),
-    gt: types.arg({ type: types.Float }),
-    gte: types.arg({ type: types.Float }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    lt: schema.arg({ type: schema.Float }),
+    lte: schema.arg({ type: schema.Float }),
+    gt: schema.arg({ type: schema.Float }),
+    gte: schema.arg({ type: schema.Float }),
     // can be null
-    not: types.arg({ type: NestedFloatNullableFilter }),
+    not: schema.arg({ type: NestedFloatNullableFilter }),
   }),
 });
 
-type NestedFloatNullableFilterType = types.InputObjectType<{
+type NestedFloatNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.Float>;
+  equals: schema.Arg<typeof schema.Float, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  lt: types.Arg<typeof types.Float>;
-  lte: types.Arg<typeof types.Float>;
-  gt: types.Arg<typeof types.Float>;
-  gte: types.Arg<typeof types.Float>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  lt: schema.Arg<typeof schema.Float, undefined>;
+  lte: schema.Arg<typeof schema.Float, undefined>;
+  gt: schema.Arg<typeof schema.Float, undefined>;
+  gte: schema.Arg<typeof schema.Float, undefined>;
   // can be null
-  not: types.Arg<typeof NestedFloatNullableFilter>;
+  not: schema.Arg<typeof NestedFloatNullableFilter, undefined>;
 }>;
 
-const NestedFloatNullableFilter: NestedFloatNullableFilterType = types.inputObject({
+const NestedFloatNullableFilter: NestedFloatNullableFilterType = schema.inputObject({
   name: 'NestedFloatNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.Float }),
+    equals: schema.arg({ type: schema.Float }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.Float)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    lt: types.arg({ type: types.Float }),
-    lte: types.arg({ type: types.Float }),
-    gt: types.arg({ type: types.Float }),
-    gte: types.arg({ type: types.Float }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    lt: schema.arg({ type: schema.Float }),
+    lte: schema.arg({ type: schema.Float }),
+    gt: schema.arg({ type: schema.Float }),
+    gte: schema.arg({ type: schema.Float }),
     // can be null
-    not: types.arg({ type: NestedFloatNullableFilter }),
+    not: schema.arg({ type: NestedFloatNullableFilter }),
   }),
 });
 
-type FloatFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Float>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  lt: types.Arg<typeof types.Float>;
-  lte: types.Arg<typeof types.Float>;
-  gt: types.Arg<typeof types.Float>;
-  gte: types.Arg<typeof types.Float>;
-  not: types.Arg<typeof NestedFloatFilter>;
+type FloatFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Float, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  lt: schema.Arg<typeof schema.Float, undefined>;
+  lte: schema.Arg<typeof schema.Float, undefined>;
+  gt: schema.Arg<typeof schema.Float, undefined>;
+  gte: schema.Arg<typeof schema.Float, undefined>;
+  not: schema.Arg<typeof NestedFloatFilter, undefined>;
 }>;
 
-const FloatFilter: FloatFilterType = types.inputObject({
+const FloatFilter: FloatFilterType = schema.inputObject({
   name: 'FloatFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Float }),
-    in: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    lt: types.arg({ type: types.Float }),
-    lte: types.arg({ type: types.Float }),
-    gt: types.arg({ type: types.Float }),
-    gte: types.arg({ type: types.Float }),
-    not: types.arg({ type: NestedFloatFilter }),
+    equals: schema.arg({ type: schema.Float }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    lt: schema.arg({ type: schema.Float }),
+    lte: schema.arg({ type: schema.Float }),
+    gt: schema.arg({ type: schema.Float }),
+    gte: schema.arg({ type: schema.Float }),
+    not: schema.arg({ type: NestedFloatFilter }),
   }),
 });
 
-type NestedFloatFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.Float>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.Float>>>;
-  lt: types.Arg<typeof types.Float>;
-  lte: types.Arg<typeof types.Float>;
-  gt: types.Arg<typeof types.Float>;
-  gte: types.Arg<typeof types.Float>;
-  not: types.Arg<typeof NestedFloatFilter>;
+type NestedFloatFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.Float, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  lt: schema.Arg<typeof schema.Float, undefined>;
+  lte: schema.Arg<typeof schema.Float, undefined>;
+  gt: schema.Arg<typeof schema.Float, undefined>;
+  gte: schema.Arg<typeof schema.Float, undefined>;
+  not: schema.Arg<typeof NestedFloatFilter, undefined>;
 }>;
 
-const NestedFloatFilter: NestedFloatFilterType = types.inputObject({
+const NestedFloatFilter: NestedFloatFilterType = schema.inputObject({
   name: 'NestedFloatFilter',
   fields: () => ({
-    equals: types.arg({ type: types.Float }),
-    in: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.Float)) }),
-    lt: types.arg({ type: types.Float }),
-    lte: types.arg({ type: types.Float }),
-    gt: types.arg({ type: types.Float }),
-    gte: types.arg({ type: types.Float }),
-    not: types.arg({ type: NestedFloatFilter }),
+    equals: schema.arg({ type: schema.Float }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.Float)) }),
+    lt: schema.arg({ type: schema.Float }),
+    lte: schema.arg({ type: schema.Float }),
+    gt: schema.arg({ type: schema.Float }),
+    gte: schema.arg({ type: schema.Float }),
+    not: schema.arg({ type: NestedFloatFilter }),
   }),
 });
 
-type DateTimeNullableFilterType = types.InputObjectType<{
+type DateTimeNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedDateTimeNullableFilter>;
+  not: schema.Arg<typeof NestedDateTimeNullableFilter, undefined>;
 }>;
 
-const DateTimeNullableFilter: DateTimeNullableFilterType = types.inputObject({
+const DateTimeNullableFilter: DateTimeNullableFilterType = schema.inputObject({
   name: 'DateTimeNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedDateTimeNullableFilter }),
+    not: schema.arg({ type: NestedDateTimeNullableFilter }),
   }),
 });
 
-type NestedDateTimeNullableFilterType = types.InputObjectType<{
+type NestedDateTimeNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedDateTimeNullableFilter>;
+  not: schema.Arg<typeof NestedDateTimeNullableFilter, undefined>;
 }>;
 
-const NestedDateTimeNullableFilter: NestedDateTimeNullableFilterType = types.inputObject({
+const NestedDateTimeNullableFilter: NestedDateTimeNullableFilterType = schema.inputObject({
   name: 'NestedDateTimeNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedDateTimeNullableFilter }),
+    not: schema.arg({ type: NestedDateTimeNullableFilter }),
   }),
 });
 
-type DateTimeFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedDateTimeFilter>;
+type DateTimeFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedDateTimeFilter, undefined>;
 }>;
 
-const DateTimeFilter: DateTimeFilterType = types.inputObject({
+const DateTimeFilter: DateTimeFilterType = schema.inputObject({
   name: 'DateTimeFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedDateTimeFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedDateTimeFilter }),
   }),
 });
 
-type NestedDateTimeFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedDateTimeFilter>;
+type NestedDateTimeFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedDateTimeFilter, undefined>;
 }>;
 
-const NestedDateTimeFilter: NestedDateTimeFilterType = types.inputObject({
+const NestedDateTimeFilter: NestedDateTimeFilterType = schema.inputObject({
   name: 'NestedDateTimeFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedDateTimeFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedDateTimeFilter }),
   }),
 });
 
-type BigIntNullableFilterType = types.InputObjectType<{
+type DecimalNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof BigInt>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  lt: types.Arg<typeof BigInt>;
-  lte: types.Arg<typeof BigInt>;
-  gt: types.Arg<typeof BigInt>;
-  gte: types.Arg<typeof BigInt>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedBigIntNullableFilter>;
+  not: schema.Arg<typeof NestedDecimalNullableFilter, undefined>;
 }>;
 
-const BigIntNullableFilter: BigIntNullableFilterType = types.inputObject({
-  name: 'BigIntNullableFilter',
-  fields: () => ({
-    // can be null
-    equals: types.arg({ type: BigInt }),
-    // can be null
-    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    lt: types.arg({ type: BigInt }),
-    lte: types.arg({ type: BigInt }),
-    gt: types.arg({ type: BigInt }),
-    gte: types.arg({ type: BigInt }),
-    // can be null
-    not: types.arg({ type: NestedBigIntNullableFilter }),
-  }),
-});
-
-type NestedBigIntNullableFilterType = types.InputObjectType<{
-  // can be null
-  equals: types.Arg<typeof BigInt>;
-  // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  lt: types.Arg<typeof BigInt>;
-  lte: types.Arg<typeof BigInt>;
-  gt: types.Arg<typeof BigInt>;
-  gte: types.Arg<typeof BigInt>;
-  // can be null
-  not: types.Arg<typeof NestedBigIntNullableFilter>;
-}>;
-
-const NestedBigIntNullableFilter: NestedBigIntNullableFilterType = types.inputObject({
-  name: 'NestedBigIntNullableFilter',
-  fields: () => ({
-    // can be null
-    equals: types.arg({ type: BigInt }),
-    // can be null
-    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    lt: types.arg({ type: BigInt }),
-    lte: types.arg({ type: BigInt }),
-    gt: types.arg({ type: BigInt }),
-    gte: types.arg({ type: BigInt }),
-    // can be null
-    not: types.arg({ type: NestedBigIntNullableFilter }),
-  }),
-});
-
-type BigIntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof BigInt>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  lt: types.Arg<typeof BigInt>;
-  lte: types.Arg<typeof BigInt>;
-  gt: types.Arg<typeof BigInt>;
-  gte: types.Arg<typeof BigInt>;
-  not: types.Arg<typeof NestedBigIntFilter>;
-}>;
-
-const BigIntFilter: BigIntFilterType = types.inputObject({
-  name: 'BigIntFilter',
-  fields: () => ({
-    equals: types.arg({ type: BigInt }),
-    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    lt: types.arg({ type: BigInt }),
-    lte: types.arg({ type: BigInt }),
-    gt: types.arg({ type: BigInt }),
-    gte: types.arg({ type: BigInt }),
-    not: types.arg({ type: NestedBigIntFilter }),
-  }),
-});
-
-type NestedBigIntFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof BigInt>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof BigInt>>>;
-  lt: types.Arg<typeof BigInt>;
-  lte: types.Arg<typeof BigInt>;
-  gt: types.Arg<typeof BigInt>;
-  gte: types.Arg<typeof BigInt>;
-  not: types.Arg<typeof NestedBigIntFilter>;
-}>;
-
-const NestedBigIntFilter: NestedBigIntFilterType = types.inputObject({
-  name: 'NestedBigIntFilter',
-  fields: () => ({
-    equals: types.arg({ type: BigInt }),
-    in: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(BigInt)) }),
-    lt: types.arg({ type: BigInt }),
-    lte: types.arg({ type: BigInt }),
-    gt: types.arg({ type: BigInt }),
-    gte: types.arg({ type: BigInt }),
-    not: types.arg({ type: NestedBigIntFilter }),
-  }),
-});
-
-type DecimalNullableFilterType = types.InputObjectType<{
-  // can be null
-  equals: types.Arg<typeof types.String>;
-  // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  // can be null
-  not: types.Arg<typeof NestedDecimalNullableFilter>;
-}>;
-
-const DecimalNullableFilter: DecimalNullableFilterType = types.inputObject({
+const DecimalNullableFilter: DecimalNullableFilterType = schema.inputObject({
   name: 'DecimalNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedDecimalNullableFilter }),
+    not: schema.arg({ type: NestedDecimalNullableFilter }),
   }),
 });
 
-type NestedDecimalNullableFilterType = types.InputObjectType<{
+type NestedDecimalNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: types.Arg<typeof types.String>;
+  equals: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
   // can be null
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
   // can be null
-  not: types.Arg<typeof NestedDecimalNullableFilter>;
+  not: schema.Arg<typeof NestedDecimalNullableFilter, undefined>;
 }>;
 
-const NestedDecimalNullableFilter: NestedDecimalNullableFilterType = types.inputObject({
+const NestedDecimalNullableFilter: NestedDecimalNullableFilterType = schema.inputObject({
   name: 'NestedDecimalNullableFilter',
   fields: () => ({
     // can be null
-    equals: types.arg({ type: types.String }),
+    equals: schema.arg({ type: schema.String }),
     // can be null
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
     // can be null
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
     // can be null
-    not: types.arg({ type: NestedDecimalNullableFilter }),
+    not: schema.arg({ type: NestedDecimalNullableFilter }),
   }),
 });
 
-type DecimalFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedDecimalFilter>;
+type DecimalFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedDecimalFilter, undefined>;
 }>;
 
-const DecimalFilter: DecimalFilterType = types.inputObject({
+const DecimalFilter: DecimalFilterType = schema.inputObject({
   name: 'DecimalFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedDecimalFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedDecimalFilter }),
   }),
 });
 
-type NestedDecimalFilterType = types.InputObjectType<{
-  equals: types.Arg<typeof types.String>;
-  in: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  notIn: types.Arg<types.ListType<types.NonNullType<typeof types.String>>>;
-  lt: types.Arg<typeof types.String>;
-  lte: types.Arg<typeof types.String>;
-  gt: types.Arg<typeof types.String>;
-  gte: types.Arg<typeof types.String>;
-  not: types.Arg<typeof NestedDecimalFilter>;
+type NestedDecimalFilterType = schema.InputObjectType<{
+  equals: schema.Arg<typeof schema.String, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  lt: schema.Arg<typeof schema.String, undefined>;
+  lte: schema.Arg<typeof schema.String, undefined>;
+  gt: schema.Arg<typeof schema.String, undefined>;
+  gte: schema.Arg<typeof schema.String, undefined>;
+  not: schema.Arg<typeof NestedDecimalFilter, undefined>;
 }>;
 
-const NestedDecimalFilter: NestedDecimalFilterType = types.inputObject({
+const NestedDecimalFilter: NestedDecimalFilterType = schema.inputObject({
   name: 'NestedDecimalFilter',
   fields: () => ({
-    equals: types.arg({ type: types.String }),
-    in: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    notIn: types.arg({ type: types.list(types.nonNull(types.String)) }),
-    lt: types.arg({ type: types.String }),
-    lte: types.arg({ type: types.String }),
-    gt: types.arg({ type: types.String }),
-    gte: types.arg({ type: types.String }),
-    not: types.arg({ type: NestedDecimalFilter }),
+    equals: schema.arg({ type: schema.String }),
+    in: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    notIn: schema.arg({ type: schema.list(schema.nonNull(schema.String)) }),
+    lt: schema.arg({ type: schema.String }),
+    lte: schema.arg({ type: schema.String }),
+    gt: schema.arg({ type: schema.String }),
+    gte: schema.arg({ type: schema.String }),
+    not: schema.arg({ type: NestedDecimalFilter }),
   }),
 });
 
@@ -803,11 +687,6 @@ export const Float = {
 export const DateTime = {
   optional: DateTimeNullableFilter,
   required: DateTimeFilter,
-};
-
-export const BigInt = {
-  optional: BigIntNullableFilter,
-  required: BigIntFilter,
 };
 
 export const Decimal = {

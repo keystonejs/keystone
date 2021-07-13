@@ -7,6 +7,7 @@ import {
   legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -31,50 +32,7 @@ export const autoIncrement =
   }: AutoIncrementFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     const type = meta.fieldKey === 'id' || gqlType === 'ID' ? schema.ID : schema.Int;
-    const __legacy = {
-      isRequired,
-      defaultValue,
-      filters: {
-        fields: {
-          ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
-          ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),
-          ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
-        },
-        impls: {
-          ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
-          ...legacyFilters.impls.orderingConditions(meta.fieldKey, x => Number(x) || -1),
-          ...inConditions(meta.fieldKey, x => x.map((xx: any) => Number(xx) || -1)),
-        },
-      },
-    };
-    if (meta.fieldKey === 'id') {
-      return fieldType({
-        kind: 'scalar',
-        mode: 'required',
-        scalar: 'Int',
-        default: { kind: 'autoincrement' },
-      })({
-        ...config,
-        input: {
-          // TODO: fix the fact that TS did not catch that a resolver is needed here
-          uniqueWhere: {
-            arg: schema.arg({ type }),
-            resolve(value) {
-              return Number(value);
-            },
-          },
-          orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
-        },
-        output: schema.field({
-          type: schema.nonNull(schema.ID),
-          resolve({ value }) {
-            return value.toString();
-          },
-        }),
-        views: resolveView('integer/views'),
-        __legacy,
-      });
-    }
+
     const inputResolver = (val: number | string | null | undefined) => {
       if (val == null) {
         return val;
@@ -90,6 +48,9 @@ export const autoIncrement =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+        },
         uniqueWhere: isUnique ? { arg: schema.arg({ type }), resolve: x => Number(x) } : undefined,
         create: { arg: schema.arg({ type }), resolve: inputResolver },
         update: { arg: schema.arg({ type }), resolve: inputResolver },
@@ -103,7 +64,22 @@ export const autoIncrement =
         },
       }),
       views: resolveView('integer/views'),
-      __legacy,
+      __legacy: {
+        isRequired,
+        defaultValue,
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, type),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
+          },
+          impls: {
+            ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey, x => Number(x) || -1),
+            ...inConditions(meta.fieldKey, x => x.map((xx: any) => Number(xx) || -1)),
+          },
+        },
+      },
     });
   };
 

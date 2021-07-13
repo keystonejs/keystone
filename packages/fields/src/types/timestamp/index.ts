@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
   legacyFilters,
   FieldDefaultValue,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -42,6 +43,7 @@ export const timestamp =
     })({
       ...config,
       input: {
+        where: { arg: schema.arg({ type: filters[meta.provider].DateTime.optional }) },
         create: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
         update: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

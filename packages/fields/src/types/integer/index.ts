@@ -7,6 +7,7 @@ import {
   legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -37,6 +38,7 @@ export const integer =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
+        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }) },
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

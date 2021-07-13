@@ -109,65 +109,68 @@ type LocalFileFieldOutput implements FileFieldOutput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
-  roles: String
-  roles_not: String
-  roles_contains: String
-  roles_not_contains: String
-  roles_in: [String]
-  roles_not_in: [String]
+  NOT: [UserWhereInput!]
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  isAdmin: BoolNullableFilter
+  roles: StringNullableFilter
+  phoneNumbers: PhoneNumberManyRelationFilter
+  posts: PostManyRelationFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  phoneNumbers_every: PhoneNumberWhereInput
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
 
-  """
-   condition must be true for at least 1 node
-  """
-  phoneNumbers_some: PhoneNumberWhereInput
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
 
-  """
-   condition must be false for all nodes
-  """
-  phoneNumbers_none: PhoneNumberWhereInput
+input PasswordFilter {
+  isSet: Boolean!
+}
 
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
+input BoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
 
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
+input NestedBoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
+}
 
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
+input PhoneNumberManyRelationFilter {
+  every: PhoneNumberWhereInput
+  some: PhoneNumberWhereInput
+  none: PhoneNumberWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -277,26 +280,16 @@ type PhoneNumber {
 input PhoneNumberWhereInput {
   AND: [PhoneNumberWhereInput!]
   OR: [PhoneNumberWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  user: UserWhereInput
-  user_is_null: Boolean
-  type: String
-  type_not: String
-  type_in: [String]
-  type_not_in: [String]
-  value: String
-  value_not: String
-  value_contains: String
-  value_not_contains: String
-  value_in: [String]
-  value_not_in: [String]
+  NOT: [PhoneNumberWhereInput!]
+  user: UserManyRelationFilter
+  type: StringNullableFilter
+  value: StringNullableFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -365,34 +358,33 @@ type Post_content_DocumentField {
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
-  author: UserWhereInput
-  author_is_null: Boolean
+  NOT: [PostWhereInput!]
+  title: StringNullableFilter
+  status: StringNullableFilter
+  publishDate: DateTimeNullableFilter
+  author: UserManyRelationFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedDateTimeNullableFilter
+}
+
+input NestedDateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedDateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {
