@@ -55,8 +55,8 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@types/jest": "^26.0.24",
     "@types/node-fetch": "^2.5.11",
-    "@typescript-eslint/eslint-plugin": "^4.28.2",
-    "@typescript-eslint/parser": "^4.28.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
@@ -105,19 +105,17 @@
   },
   "workspaces": {
     "packages": [
+      "design-system/packages/*",
+      "design-system/website",
+      "docs",
+      "examples-staging/*",
+      "examples/*",
       "packages/*",
-      "tests/test-projects/*",
       "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "projects/*",
-      "examples/*",
-      "examples-staging/*",
-      "packages-next/*",
-      "design-system/packages/*",
-      "design-system/website",
-      "docs",
+      "tests/test-projects/*",
       "prisma-utils"
     ],
     "nohoist": [
@@ -126,12 +124,7 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/access-control",
-      "packages/session",
-      "packages/test-utils",
-      "packages/utils",
-      "packages/adapter-prisma",
-      "packages-next/*",
+      "packages/*",
       "design-system/packages/*",
       "prisma-utils"
     ],
@@ -151,10 +144,10 @@
       "\\.pnp\\.[^\\/]+$"
     ],
     "collectCoverageFrom": [
-      "packages{,-next}/**/*.{js,ts,tsx}",
+      "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
-      "!packages{,-next}/**/dist/**",
-      "!packages{,-next}/fields/**/test-fixtures.{js,ts}",
+      "!packages/**/dist/**",
+      "!packages/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },
