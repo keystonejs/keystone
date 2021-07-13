@@ -497,6 +497,10 @@ describe('useMigrations: true', () => {
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
+      The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
+
+      It should be understood as the set of changes to get from the expected schema to the actual schema.
+
       [+] Added tables
         - Todo
 
@@ -542,6 +546,10 @@ describe('useMigrations: true', () => {
       ⭐️ Dev Server Ready on http://localhost:3000
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
+
+      The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
+
+      It should be understood as the set of changes to get from the expected schema to the actual schema.
 
       [+] Added tables
         - Todo
