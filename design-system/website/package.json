@@ -24,7 +24,7 @@
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
     "@types/tinycolor2": "^1.4.3",
-    "@types/webpack": "^4.41.30",
+    "@types/webpack": "^5.28.0",
     "next": "^10.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
