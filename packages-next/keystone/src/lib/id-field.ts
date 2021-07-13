@@ -46,13 +46,15 @@ const idParsers = {
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
-    const parseVal = idParsers[config.kind];
-    return fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
+    const override = config.experimental?.enableOverrides === true ? config.override : {};
+    const parseVal = override?.parseVal ?? idParsers[config.kind];
+    let field: any = fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
       kind: 'scalar',
       mode: 'required',
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
+      ...override?.dbField,
     })({
       input: {
         uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
@@ -91,6 +93,16 @@ export const idFieldType =
         },
       },
     });
+    if (override?.field) {
+      // We need to merge each item, not overwrite it
+      for (const key in override.field) {
+        field[key] =
+          typeof override.field[key] === 'object'
+            ? { ...field[key], ...override.field[key] }
+            : override.field[key];
+      }
+    }
+    return field;
   };
 
 function equalityConditions(fieldKey: string, f: (a: string | null) => any) {
