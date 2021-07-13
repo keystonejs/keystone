@@ -1,5 +1,11 @@
 # @keystone-ui/core
 
+## 3.1.1
+
+### Patch Changes
+
+- [#6061](https://github.com/keystonejs/keystone/pull/6061) [`5f3d407d7`](https://github.com/keystonejs/keystone/commit/5f3d407d79171f04ae877e8eaed9a7f9d5671705) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed TypeScript errors in declarations
+
 ## 3.1.0
 
 ### Minor Changes
