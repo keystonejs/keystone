@@ -57,7 +57,7 @@ export type DatabaseConfig = {
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-  provider: 'postgresql' | 'sqlite';
+  provider: 'postgresql' | 'sqlite' | 'mongodb';
   prismaPreviewFeatures?: string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 };
 

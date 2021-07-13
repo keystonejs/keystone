@@ -207,14 +207,23 @@ export function printPrismaSchema(
 datasource ${provider} {
   url = env("DATABASE_URL")
   provider = "${provider}"
-}
+}\n\n`;
 
-generator client {
+  if (provider === 'mongodb') {
+    prismaSchema += `generator client {
   provider = "prisma-client-js"
-  output = "${clientDir}"${prismaFlags}
+  previewFeatures = ["mongoDb"]
+  output = "${clientDir}"
   engineType = "binary"
 }
 \n`;
+  } else {
+    prismaSchema += `generator client {
+    provider = "prisma-client-js"
+    output = "${clientDir}"
+  }
+  \n`;
+  }
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
     prismaSchema += `model ${listKey} {`;
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
@@ -224,6 +233,9 @@ generator client {
       if (fieldPath === 'id') {
         assertDbFieldIsValidForIdField(listKey, field);
         prismaSchema += ' @id';
+        if (provider === 'mongodb') {
+          prismaSchema += ' @map("_id")';
+        }
       }
     }
     prismaSchema += `\n}\n`;

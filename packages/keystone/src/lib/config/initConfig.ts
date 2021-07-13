@@ -8,9 +8,9 @@ import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 */
 
 export function initConfig(config: KeystoneConfig) {
-  if (!['postgresql', 'sqlite'].includes(config.db.provider)) {
+  if (!['postgresql', 'sqlite', 'mongodb'].includes(config.db.provider)) {
     throw new Error(
-      'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
+      'Invalid db configuration. Please specify db.provider as either "sqlite", "postgresql", or "mongodb"'
     );
   }
 

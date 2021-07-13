@@ -3,7 +3,7 @@ import type { GraphQLResolveInfo } from 'graphql';
 import type { GqlNames } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
 
-export type DatabaseProvider = 'sqlite' | 'postgresql';
+export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mongodb';
 
 export type CreateRequestContext = (
   req: IncomingMessage,
