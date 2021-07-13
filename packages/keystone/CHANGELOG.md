@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 22.0.1
+
+### Patch Changes
+
+- [#6096](https://github.com/keystonejs/keystone/pull/6096) [`fbe698461`](https://github.com/keystonejs/keystone/commit/fbe6984616de7a302db7c2b0082851db89c2e314) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma dependencies to `2.27.0`.
+
 ## 22.0.0
 
 ### Major Changes
