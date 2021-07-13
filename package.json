@@ -105,19 +105,17 @@
   },
   "workspaces": {
     "packages": [
+      "design-system/packages/*",
+      "design-system/website",
+      "docs",
+      "examples-staging/*",
+      "examples/*",
       "packages/*",
-      "tests/test-projects/*",
       "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "projects/*",
-      "examples/*",
-      "examples-staging/*",
-      "packages-next/*",
-      "design-system/packages/*",
-      "design-system/website",
-      "docs"
+      "tests/test-projects/*"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -125,12 +123,7 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/access-control",
-      "packages/session",
-      "packages/test-utils",
-      "packages/utils",
-      "packages/adapter-prisma",
-      "packages-next/*",
+      "packages/*",
       "design-system/packages/*"
     ],
     "distFilenameStrategy": "unscoped-package-name"
@@ -149,10 +142,10 @@
       "\\.pnp\\.[^\\/]+$"
     ],
     "collectCoverageFrom": [
-      "packages{,-next}/**/*.{js,ts,tsx}",
+      "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
-      "!packages{,-next}/**/dist/**",
-      "!packages{,-next}/fields/**/test-fixtures.{js,ts}",
+      "!packages/**/dist/**",
+      "!packages/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },

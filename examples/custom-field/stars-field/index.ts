@@ -12,7 +12,7 @@ import {
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
 // and a different input in the Admin UI
-// https://github.com/keystonejs/keystone/tree/master/packages-next/fields/src/types/integer
+// https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/integer
 
 export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

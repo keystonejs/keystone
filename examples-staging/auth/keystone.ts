@@ -5,7 +5,7 @@ import { lists } from './schema';
 
 /**
  * TODO: Implement validateItem. Would be invoked by the getItem() method in
- * packages-next/auth/src/getExtendGraphQLSchema.ts
+ * packages/auth/src/getExtendGraphQLSchema.ts
  */
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';

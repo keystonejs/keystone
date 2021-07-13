@@ -5,10 +5,10 @@ import { KeystoneContext } from '@keystone-next/types';
 import { setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.ts'));
+testModules.push(path.resolve('packages/fields/src/tests/test-fixtures.ts'));
 
 const provider = process.env.TEST_ADAPTER;
 
