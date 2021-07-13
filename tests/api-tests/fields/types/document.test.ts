@@ -2,7 +2,7 @@ import { text } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '../../../../packages-next/types/src';
+import { KeystoneContext } from '../../../../packages/types/src';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
