@@ -10,18 +10,12 @@ export async function findMatchingIdentity(
   | { success: false; code: AuthTokenRequestErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  const items = await dbItemAPI.findMany({ where: { [identityField]: identity } });
-
-  // Identity failures with helpful errors
-  let code: AuthTokenRequestErrorCode | undefined;
-  if (items.length === 0) {
-    code = 'IDENTITY_NOT_FOUND';
-  } else if (items.length > 1) {
-    code = 'MULTIPLE_IDENTITY_MATCHES';
-  }
-  if (code) {
-    return { success: false, code };
-  } else {
-    return { success: true, item: items[0] as any };
+  try {
+    const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
+    return { success: true, item };
+  } catch (err) {
+    // todo: throw on errors other than access control
+    console.log(err);
+    return { success: false, code: 'IDENTITY_NOT_FOUND' };
   }
 }
