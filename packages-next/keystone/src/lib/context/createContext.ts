@@ -12,6 +12,8 @@ import { PrismaClient } from '../core/utils';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
+import { initialiseLists } from '../core/types-for-lists';
+import { getDBProvider } from '../createSystem';
 
 export function makeCreateContext({
   graphQLSchema,
@@ -45,6 +47,7 @@ export function makeCreateContext({
   for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
     internalDbApiFactories[listKey] = getDbAPIFactory(gqlNames, internalSchema);
   }
+  const initialisedLists = initialiseLists(config.lists, getDBProvider(config.db));
 
   const createContext = ({
     sessionContext,
@@ -98,6 +101,7 @@ export function makeCreateContext({
       gqlNames: (listKey: string) => gqlNamesByList[listKey],
       images,
       files,
+      initialisedLists,
     };
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
