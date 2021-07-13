@@ -1,8 +1,3 @@
-<!--[meta]
-section: guides
-title: Documentation Style
-[meta]-->
-
 # Documentation Style
 
 This document describes the conventions for formatting and style used throughout Keystone 6 docs.
