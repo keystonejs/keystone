@@ -117,7 +117,8 @@
       "packages-next/*",
       "design-system/packages/*",
       "design-system/website",
-      "docs"
+      "docs",
+      "prisma-utils"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -131,7 +132,8 @@
       "packages/utils",
       "packages/adapter-prisma",
       "packages-next/*",
-      "design-system/packages/*"
+      "design-system/packages/*",
+      "prisma-utils"
     ],
     "distFilenameStrategy": "unscoped-package-name"
   },
