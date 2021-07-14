@@ -46,7 +46,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
-    "next-sitemap": "^1.6.133",
+    "next-sitemap": "^1.6.140",
     "start-server-and-test": "^1.12.6",
     "typescript": "^4.3.5"
   },
