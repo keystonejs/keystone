@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectMutationError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -36,10 +36,15 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectMutationError(errors, [
         {
           path: ['createEvent'],
-          message: 'Nested mutation operation invalid for Event.group<Group>',
+          errors: [
+            {
+              extensions: { code: 'BAD_USER_INPUT' },
+              message: 'Relationship field Event.group accepts exactly one input value.',
+            },
+          ],
         },
       ]);
     })
@@ -62,10 +67,15 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectMutationError(errors, [
         {
           path: ['createEvent'],
-          message: 'Nested mutation operation invalid for Event.group<Group>',
+          errors: [
+            {
+              extensions: { code: 'BAD_USER_INPUT' },
+              message: 'Relationship field Event.group accepts exactly one input value.',
+            },
+          ],
         },
       ]);
     })

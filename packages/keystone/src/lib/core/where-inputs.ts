@@ -1,4 +1,5 @@
 import { KeystoneContext } from '@keystone-next/types';
+import { UserInputError } from 'apollo-server-errors';
 import { InitialisedList } from './types-for-lists';
 
 export type InputFilter = Record<string, any> & {
@@ -32,20 +33,18 @@ export async function resolveUniqueWhereInput(
 ): Promise<UniquePrismaFilter> {
   const inputKeys = Object.keys(input);
   if (inputKeys.length !== 1) {
-    throw new Error(
+    throw new UserInputError(
       `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
     );
   }
   const key = inputKeys[0];
   const val = input[key];
   if (val === null) {
-    throw new Error(`The unique value provided in a unique where input must not be null`);
+    // Bad User Input
+    throw new UserInputError(`The unique value provided in a unique where input must not be null`);
   }
   const resolver = fields[key].input!.uniqueWhere!.resolve;
-  const resolvedVal = resolver ? await resolver(val, context) : val;
-  return {
-    [key]: resolvedVal,
-  };
+  return { [key]: resolver ? await resolver(val, context) : val };
 }
 
 export async function resolveWhereInput(

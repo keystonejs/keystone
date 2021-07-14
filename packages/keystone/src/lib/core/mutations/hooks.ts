@@ -1,32 +1,21 @@
 import { ValidationFailureError } from '../graphql-errors';
-import { promiseAllRejectWithAllErrors } from '../utils';
+import { promiseAllRejectWithMutationError } from '.';
 
-type ValidationError = { msg: string; data: {}; internalData: {} };
+type ValidationError = { msg: string; data: {} };
 
-type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
+type AddValidationError = (msg: string, data?: {}) => void;
 
 export async function validationHook(
-  listKey: string,
-  operation: 'create' | 'update' | 'delete',
-  originalInput: Record<string, string> | undefined,
   validationHook: (addValidationError: AddValidationError) => void | Promise<void>
 ) {
   const errors: ValidationError[] = [];
 
-  await validationHook((msg, data = {}, internalData = {}) => {
-    errors.push({ msg, data, internalData });
+  await validationHook((msg, data = {}) => {
+    errors.push({ msg, data });
   });
 
   if (errors.length) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey,
-        operation,
-      },
-      internalData: { errors: errors.map(e => e.internalData), data: originalInput },
-    });
+    throw ValidationFailureError({ data: { errors } });
   }
 }
 
@@ -52,12 +41,15 @@ export async function runSideEffectOnlyHook<
   args: Args,
   shouldRunFieldLevelHook: (fieldKey: string) => boolean
 ) {
-  await promiseAllRejectWithAllErrors(
+  // Field hooks
+  await promiseAllRejectWithMutationError(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         await field.hooks[hookName]?.({ fieldPath: fieldKey, ...args });
       }
     })
   );
+
+  // List hooks
   await list.hooks[hookName]?.(args);
 }

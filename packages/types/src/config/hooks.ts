@@ -83,7 +83,7 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
 };
 
 type ValidationArgs = {
-  addValidationError: (error: string, data?: {}, internalData?: {}) => void;
+  addValidationError: (error: string, data?: {}) => void;
 };
 
 type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (

@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectMutationError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -257,8 +257,11 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      expectNestedError(errors, [
-        { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      expectMutationError(errors, [
+        {
+          path: ['createUser'],
+          errors: [{ message: 'Unable to create and/or connect 1 User.notes' }],
+        },
       ]);
     })
   );
@@ -289,8 +292,11 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectNestedError(errors, [
-        { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      expectMutationError(errors, [
+        {
+          path: ['updateUser'],
+          errors: [{ message: 'Unable to create and/or connect 1 User.notes' }],
+        },
       ]);
     })
   );
@@ -321,10 +327,10 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectMutationError(errors, [
           {
             path: ['createUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            errors: [{ message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes' }],
           },
         ]);
       })
@@ -361,10 +367,10 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectMutationError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            errors: [{ message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes' }],
           },
         ]);
       })

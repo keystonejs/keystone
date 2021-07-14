@@ -97,8 +97,6 @@ testModules
               },
             });
 
-            expect(body.data.foo).not.toBe(null);
-            expect(body.data.bar).toBe(null);
             expectInternalServerError(body.errors, [
               {
                 path: ['bar'],

@@ -11,6 +11,7 @@ import {
 } from '@keystone-next/types';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils';
 import { FileUpload } from 'graphql-upload';
+import { UserInputError } from 'apollo-server-errors';
 import { resolveView } from '../../resolve-view';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -76,12 +77,12 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
 
   if (data.ref) {
     if (data.upload) {
-      throw new Error('Only one of ref and upload can be passed to ImageFieldInput');
+      throw new UserInputError('Only one of ref and upload can be passed to ImageFieldInput');
     }
     return context.images!.getDataFromRef(data.ref);
   }
   if (!data.upload) {
-    throw new Error('Either ref or upload must be passed to ImageFieldInput');
+    throw new UserInputError('Either ref or upload must be passed to ImageFieldInput');
   }
   return context.images!.getDataFromStream((await data.upload).createReadStream());
 }

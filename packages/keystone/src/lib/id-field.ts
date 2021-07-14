@@ -10,6 +10,7 @@ import {
 } from '@keystone-next/types';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
+import { UserInputError } from 'apollo-server-errors';
 
 const views = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
@@ -19,13 +20,13 @@ const views = path.join(
 const idParsers = {
   autoincrement(val: string | null) {
     if (val === null) {
-      throw new Error('Only an integer can be passed to id filters');
+      throw new UserInputError('Only an integer can be passed to id filters');
     }
     const parsed = parseInt(val);
     if (Number.isInteger(parsed)) {
       return parsed;
     }
-    throw new Error('Only an integer can be passed to id filters');
+    throw new UserInputError('Only an integer can be passed to id filters');
   },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
@@ -33,13 +34,13 @@ const idParsers = {
     if (typeof val === 'string' && isCuid(val)) {
       return val;
     }
-    throw new Error('Only a cuid can be passed to id filters');
+    throw new UserInputError('Only a cuid can be passed to id filters');
   },
   uuid(val: string | null) {
     if (typeof val === 'string' && validate(val)) {
       return val.toLowerCase();
     }
-    throw new Error('Only a uuid can be passed to id filters');
+    throw new UserInputError('Only a uuid can be passed to id filters');
   },
 };
 
@@ -104,7 +105,7 @@ function inConditions(fieldKey: string, f: (a: string | null) => any) {
   return {
     [`${fieldKey}_in`]: (value: string[] | null) => {
       if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_in filters`);
+        throw new UserInputError(`null cannot be passed to ${fieldKey}_in filters`);
       }
       return {
         [fieldKey]: { in: value.map(x => f(x)) },
@@ -112,7 +113,7 @@ function inConditions(fieldKey: string, f: (a: string | null) => any) {
     },
     [`${fieldKey}_not_in`]: (value: string[] | null) => {
       if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_not_in filters`);
+        throw new UserInputError(`null cannot be passed to ${fieldKey}_not_in filters`);
       }
       return {
         NOT: { [fieldKey]: { in: value.map(x => f(x)) } },

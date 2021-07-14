@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectMutationError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -155,8 +155,17 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
-        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
+      expectMutationError(errors, [
+        {
+          path: ['createEvent'],
+          errors: [
+            {
+              extensions: { code: 'KS_NESTED_ERROR', msg: 'Unable to connect a Event.group' },
+              message: 'An error occured while performing a mutation on a related item',
+              msg: 'Unable to connect a Event.group',
+            },
+          ],
+        },
       ]);
     })
   );
@@ -186,8 +195,17 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectNestedError(errors, [
-        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
+      expectMutationError(errors, [
+        {
+          path: ['updateEvent'],
+          errors: [
+            {
+              extensions: { code: 'KS_NESTED_ERROR', msg: 'Unable to connect a Event.group' },
+              message: 'An error occured while performing a mutation on a related item',
+              msg: 'Unable to connect a Event.group',
+            },
+          ],
+        },
       ]);
     })
   );
@@ -298,10 +316,19 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectMutationError(errors, [
               {
                 path: [`updateEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                errors: [
+                  {
+                    extensions: {
+                      code: 'KS_NESTED_ERROR',
+                      msg: `Unable to connect a EventTo${group.name}.group`,
+                    },
+                    message: 'An error occured while performing a mutation on a related item',
+                    msg: `Unable to connect a EventTo${group.name}.group`,
+                  },
+                ],
               },
             ]);
           })
@@ -332,10 +359,19 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectMutationError(errors, [
               {
                 path: [`createEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                errors: [
+                  {
+                    extensions: {
+                      code: 'KS_NESTED_ERROR',
+                      msg: `Unable to connect a EventTo${group.name}.group`,
+                    },
+                    message: 'An error occured while performing a mutation on a related item',
+                    msg: `Unable to connect a EventTo${group.name}.group`,
+                  },
+                ],
               },
             ]);
           })

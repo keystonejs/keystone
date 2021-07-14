@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectNestedError } from '../../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectMutationError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -256,10 +256,19 @@ describe('with access control', () => {
 
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectMutationError(errors, [
                 {
                   path: [`createEventTo${group.name}`],
-                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                  errors: [
+                    {
+                      extensions: {
+                        code: 'KS_NESTED_ERROR',
+                        msg: 'Unable to create a EventToGroupNoCreate.group',
+                      },
+                      msg: 'Unable to create a EventToGroupNoCreate.group',
+                      message: 'An error occured while performing a mutation on a related item',
+                    },
+                  ],
                 },
               ]);
             }
@@ -316,10 +325,19 @@ describe('with access control', () => {
             } else {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectMutationError(errors, [
                 {
                   path: [`updateEventTo${group.name}`],
-                  message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
+                  errors: [
+                    {
+                      extensions: {
+                        code: 'KS_NESTED_ERROR',
+                        msg: `Unable to create a EventTo${group.name}.group`,
+                      },
+                      msg: `Unable to create a EventTo${group.name}.group`,
+                      message: 'An error occured while performing a mutation on a related item',
+                    },
+                  ],
                 },
               ]);
             }

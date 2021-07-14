@@ -17,12 +17,10 @@ export const apiTestConfig = (
 });
 
 const unpackErrors = (errors: readonly any[] | undefined) =>
-  (errors || []).map(
-    ({ locations, uid, extensions: { exception, ...extensions }, ...unpacked }) => ({
-      extensions,
-      ...unpacked,
-    })
-  );
+  (errors || []).map(({ locations, extensions: { exception, ...extensions }, ...unpacked }) => ({
+    extensions,
+    ...unpacked,
+  }));
 
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
@@ -32,7 +30,6 @@ export const expectInternalServerError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
-      name: 'GraphQLError',
       path,
       message,
     }))
@@ -47,36 +44,30 @@ export const expectGraphQLValidationError = (
   expect(unpackedErrors).toEqual(
     args.map(({ message }) => ({
       extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-      name: 'ValidationError',
       message,
     }))
   );
 };
 
-export const expectAccessDenied = (
-  errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
-) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
+export const expectAccessDenied = (errors: readonly any[] | undefined, args: { path: any[] }[]) => {
+  const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: 'KS_ACCESS_DENIED' },
       path,
       message: 'You do not have access to this resource',
     }))
   );
 };
 
-export const expectValidationFailure = (
+export const expectValidationError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: any[]; errors: { data: Record<string, any>; msg: string }[] }[]
 ) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
+  const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
+    args.map(({ path, errors }) => ({
+      extensions: { code: 'KS_VALIDATION_FAILURE', data: { errors } },
       path,
       message: 'You attempted to perform an invalid mutation',
     }))
@@ -85,15 +76,38 @@ export const expectValidationFailure = (
 
 export const expectLimitsExceededError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: any[]; listKey: string; type: 'maxResults' | 'maxTotalResults'; limit: number }[]
 ) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
+  const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
+    args.map(({ path, listKey, type, limit }) => ({
+      extensions: { code: 'KS_LIMITS_EXCEEDED', data: { listKey, type, limit } },
       path,
       message: 'Your request exceeded server limits',
+    }))
+  );
+};
+
+export const expectBadUserInput = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({ extensions: { code: 'BAD_USER_INPUT' }, path, message }))
+  );
+};
+
+export const expectMutationError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; errors: any[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, errors }) => ({
+      extensions: { code: 'KS_MUTATION_ERROR', errors },
+      path,
+      message: 'One or more errors while attempting to perform mutation',
     }))
   );
 };

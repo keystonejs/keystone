@@ -1,4 +1,5 @@
 import { DatabaseProvider, getGqlNames, schema } from '@keystone-next/types';
+import { MutationError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';
@@ -22,34 +23,23 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 export function getMutationsForList(list: InitialisedList, provider: DatabaseProvider) {
   const names = getGqlNames(list);
 
-  const createOneArgs = {
-    data: schema.arg({
-      type: list.types.create,
-    }),
-  };
   const createOne = schema.field({
     type: list.types.output,
-    args: createOneArgs,
+    args: { data: schema.arg({ type: list.types.create }) },
     description: ` Create a single ${list.listKey} item.`,
     resolve(_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data: data ?? {} }, list, context);
     },
   });
 
+  // FIXME: Should this exist on list.types?
   const createManyInput = schema.inputObject({
     name: names.createManyInputName,
-    fields: {
-      data: schema.arg({ type: list.types.create }),
-    },
+    fields: { data: schema.arg({ type: list.types.create }) },
   });
-
   const createMany = schema.field({
     type: schema.list(list.types.output),
-    args: {
-      data: schema.arg({
-        type: schema.list(createManyInput),
-      }),
-    },
+    args: { data: schema.arg({ type: schema.list(createManyInput) }) },
     description: ` Create multiple ${list.listKey} items.`,
     resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
@@ -63,35 +53,29 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const updateOneArgs = {
-    id: schema.arg({
-      type: schema.nonNull(schema.ID),
-    }),
-    data: schema.arg({
-      type: list.types.update,
-    }),
-  };
   const updateOne = schema.field({
     type: list.types.output,
-    args: updateOneArgs,
+    args: {
+      id: schema.arg({ type: schema.nonNull(schema.ID) }),
+      data: schema.arg({ type: list.types.update }),
+    },
     description: ` Update a single ${list.listKey} item by ID.`,
     resolve(_rootVal, { data, id }, context) {
       return createAndUpdate.updateOne({ data: data ?? {}, where: { id } }, list, context);
     },
   });
 
+  // FIXME: Should this exist on list.types?
   const updateManyInput = schema.inputObject({
     name: names.updateManyInputName,
-    fields: updateOneArgs,
+    fields: {
+      id: schema.arg({ type: schema.nonNull(schema.ID) }),
+      data: schema.arg({ type: list.types.update }),
+    },
   });
-
   const updateMany = schema.field({
     type: schema.list(list.types.output),
-    args: {
-      data: schema.arg({
-        type: schema.list(updateManyInput),
-      }),
-    },
+    args: { data: schema.arg({ type: schema.list(updateManyInput) }) },
     description: ` Update multiple ${list.listKey} items by ID.`,
     resolve(_rootVal, { data }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
@@ -111,11 +95,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   const deleteOne = schema.field({
     type: list.types.output,
-    args: {
-      id: schema.arg({
-        type: schema.nonNull(schema.ID),
-      }),
-    },
+    args: { id: schema.arg({ type: schema.nonNull(schema.ID) }) },
     description: ` Delete a single ${list.listKey} item by ID.`,
     resolve(rootVal, { id }, context) {
       return deletes.deleteOne({ where: { id } }, list, context);
@@ -124,11 +104,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   const deleteMany = schema.field({
     type: schema.list(list.types.output),
-    args: {
-      ids: schema.arg({
-        type: schema.list(schema.nonNull(schema.ID)),
-      }),
-    },
+    args: { ids: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }) },
     description: ` Delete multiple ${list.listKey} items by ID.`,
     resolve(rootVal, { ids }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
@@ -155,4 +131,30 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     updateManyInput,
     createManyInput,
   };
+}
+
+type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
+
+// these aren't here out of thinking this is better syntax(i do not think it is),
+// it's just because TS won't infer the arg is X bit
+export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+  arg.status === 'fulfilled';
+
+export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
+  arg.status === 'rejected';
+
+export async function promiseAllRejectWithMutationError<T extends unknown[]>(
+  promises: readonly [...T]
+): Promise<{ [P in keyof T]: Awaited<T[P]> }> {
+  const results = await Promise.allSettled(promises);
+  if (results.every(isFulfilled)) {
+    return results.map((x: any) => x.value) as any;
+  } else {
+    throw MutationError(
+      results
+        .filter(isRejected)
+        .map(x => x.reason)
+        .map(e => ({ message: e.message, ...e }))
+    );
+  }
 }

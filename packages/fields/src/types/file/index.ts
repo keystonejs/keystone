@@ -10,6 +10,7 @@ import {
 } from '@keystone-next/types';
 import { getFileRef } from '@keystone-next/utils';
 import { FileUpload } from 'graphql-upload';
+import { UserInputError } from 'apollo-server-errors';
 import { resolveView } from '../../resolve-view';
 
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -69,12 +70,12 @@ async function inputResolver(data: FileFieldInputType, context: KeystoneContext)
 
   if (data.ref) {
     if (data.upload) {
-      throw new Error('Only one of ref and upload can be passed to FileFieldInput');
+      throw new UserInputError('Only one of ref and upload can be passed to FileFieldInput');
     }
     return context.files!.getDataFromRef(data.ref);
   }
   if (!data.upload) {
-    throw new Error('Either ref or upload must be passed to FileFieldInput');
+    throw new UserInputError('Either ref or upload must be passed to FileFieldInput');
   }
   const upload = await data.upload;
   return context.files!.getDataFromStream(upload.createReadStream(), upload.filename);

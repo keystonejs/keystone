@@ -11,7 +11,7 @@ import {
 } from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl, validateNonCreateListAccessControl } from '../access-control';
-import { accessDeniedError } from '../graphql-errors';
+import { AccessDeniedError } from '../graphql-errors';
 import { resolveWhereInput } from '../where-inputs';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
@@ -23,12 +23,6 @@ import {
 } from '../utils';
 import { findMany, findManyFilter } from './resolvers';
 
-function assert(condition: boolean): asserts condition {
-  if (!condition) {
-    throw new Error('failed assert');
-  }
-}
-
 function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
@@ -37,7 +31,7 @@ function getRelationVal(
   info: GraphQLResolveInfo
 ) {
   const oppositeDbField = foreignList.resolvedDbFields[dbField.field];
-  assert(oppositeDbField.kind === 'relation');
+  if (oppositeDbField.kind !== 'relation') throw new Error('failed assert');
   const relationFilter = {
     [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
   };
@@ -47,10 +41,9 @@ function getRelationVal(
         return findMany(args, foreignList, context, info, relationFilter);
       },
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
+        // Maybe KS_ACCESS_DENIED
         const filter = await findManyFilter(foreignList, context, where, search);
-        if (filter === false) {
-          throw accessDeniedError('query');
-        }
+
         const count = applyFirstSkipToCount({
           count: await getPrismaModelForList(context.prisma, dbField.list).count({
             where: { AND: [filter, relationFilter] },
@@ -70,29 +63,24 @@ function getRelationVal(
         return count;
       },
     };
+  } else {
+    return async () => {
+      const access = await validateNonCreateListAccessControl({
+        access: foreignList.access.read,
+        args: { context, listKey: dbField.list, operation: 'read', session: context.session },
+      });
+      if (access === false) {
+        throw AccessDeniedError();
+      }
+
+      return getPrismaModelForList(context.prisma, dbField.list).findFirst({
+        where:
+          access === true
+            ? relationFilter
+            : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
+      });
+    };
   }
-
-  return async () => {
-    const access = await validateNonCreateListAccessControl({
-      access: foreignList.access.read,
-      args: {
-        context,
-        listKey: dbField.list,
-        operation: 'read',
-        session: context.session,
-      },
-    });
-    if (access === false) {
-      throw accessDeniedError('query');
-    }
-
-    return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-      where:
-        access === true
-          ? relationFilter
-          : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
-    });
-  };
 }
 
 function getValueForDBField(
@@ -114,8 +102,9 @@ function getValueForDBField(
   }
   if (dbField.kind === 'relation') {
     return getRelationVal(dbField, id, lists[dbField.list], context, info);
+  } else {
+    return rootVal[fieldPath] as any;
   }
-  return rootVal[fieldPath] as any;
 }
 
 export function outputTypeField(
@@ -144,7 +133,7 @@ export function outputTypeField(
           fieldKey,
           item: rootVal,
           listKey,
-          operation: 'read',
+          operation: 'read' as const,
           session: context.session,
         },
       });
@@ -152,7 +141,7 @@ export function outputTypeField(
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throw accessDeniedError('query', fieldKey, { itemId: rootVal.id });
+        throw AccessDeniedError();
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -164,8 +153,9 @@ export function outputTypeField(
 
       if (output.resolve) {
         return output.resolve({ value, item: rootVal }, args, context, info);
+      } else {
+        return value;
       }
-      return value;
     },
   });
 }

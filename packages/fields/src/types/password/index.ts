@@ -9,6 +9,7 @@ import {
 import bcryptjs from 'bcryptjs';
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords';
+import { ValidationFailureError } from '../../../../keystone/src/lib/core/graphql-errors';
 import { resolveView } from '../../resolve-view';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -61,16 +62,16 @@ export const password =
       if (val === '') {
         return null;
       }
+
+      // These checks should move into the validation stage
       if (typeof val === 'string') {
         if (rejectCommon && dumbPasswords.check(val)) {
-          throw new Error(
-            `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`
-          );
+          const msg = `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`;
+          throw ValidationFailureError({ data: { errors: [{ msg, data: {} }] } });
         }
         if (val.length < minLength) {
-          throw new Error(
-            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
-          );
+          const msg = `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`;
+          throw ValidationFailureError({ data: { errors: [{ msg, data: {} }] } });
         }
 
         return bcrypt.hash(val, workFactor);

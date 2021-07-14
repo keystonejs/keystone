@@ -4,6 +4,7 @@ import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { text } from '../../text';
 import { file } from '..';
+import { expectMutationError } from '../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`packages/fields/src/types/file/test-files/${_filePath}`);
@@ -140,8 +141,12 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { secretFile: { ref: 'Invalid ref!' } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Invalid file reference');
+        expectMutationError(errors, [
+          {
+            path: ['createTest'],
+            errors: [{ message: 'Invalid file reference' }],
+          },
+        ]);
       })
     );
     test(
@@ -160,8 +165,17 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { secretFile: { ref: null } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Either ref or upload must be passed to FileFieldInput');
+        expectMutationError(errors, [
+          {
+            path: ['createTest'],
+            errors: [
+              {
+                extensions: { code: 'BAD_USER_INPUT' },
+                message: 'Either ref or upload must be passed to FileFieldInput',
+              },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -190,10 +204,17 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
-        );
+        expectMutationError(errors, [
+          {
+            path: ['createTest'],
+            errors: [
+              {
+                extensions: { code: 'BAD_USER_INPUT' },
+                message: 'Only one of ref and upload can be passed to FileFieldInput',
+              },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -214,10 +235,17 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
-        );
+        expectMutationError(errors, [
+          {
+            path: ['createTest'],
+            errors: [
+              {
+                extensions: { code: 'BAD_USER_INPUT' },
+                message: 'Only one of ref and upload can be passed to FileFieldInput',
+              },
+            ],
+          },
+        ]);
       })
     );
   });
