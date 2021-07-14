@@ -10,6 +10,8 @@ export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
     return 'postgresql';
   } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
     return 'sqlite';
+  } else if (db.provider === 'mongodb') {
+    return 'mongodb';
   } else {
     throw new Error(
       'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'

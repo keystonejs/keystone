@@ -8,7 +8,7 @@ type FieldDefaultValueArgs<TGeneratedListTypes extends BaseGeneratedListTypes> =
   originalInput: TGeneratedListTypes['inputs']['create'];
 };
 
-export type DatabaseProvider = 'sqlite' | 'postgresql';
+export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mongodb';
 
 export type FieldDefaultValue<T, TGeneratedListTypes extends BaseGeneratedListTypes> =
   | T

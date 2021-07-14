@@ -108,11 +108,18 @@ jobs:
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
+      mongodb:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: keystone5
+          MONGO_INITDB_ROOT_PASSWORD: k3yst0n3
+        ports:
+        - 27017:27017
     strategy:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['postgresql', 'sqlite']
+        adapter: ['postgresql', 'sqlite', 'mongodb']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -153,7 +160,7 @@ jobs:
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || matrix.adapter == 'postgresql' && 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' || 'mongodb://keystone5:k3yst0n3@localhost:27017/test_db' }}
 
   non-api-tests:
     name: Package Unit Tests
