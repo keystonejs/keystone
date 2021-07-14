@@ -42,10 +42,7 @@ export async function resolveUniqueWhereInput(
     throw new Error(`The unique value provided in a unique where input must not be null`);
   }
   const resolver = fields[key].input!.uniqueWhere!.resolve;
-  const resolvedVal = resolver ? await resolver(val, context) : val;
-  return {
-    [key]: resolvedVal,
-  };
+  return { [key]: resolver ? await resolver(val, context) : val };
 }
 
 export async function resolveWhereInput(

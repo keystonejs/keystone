@@ -52,6 +52,7 @@ export async function runSideEffectOnlyHook<
   args: Args,
   shouldRunFieldLevelHook: (fieldKey: string) => boolean
 ) {
+  // Field hooks
   await promiseAllRejectWithAllErrors(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
@@ -59,5 +60,7 @@ export async function runSideEffectOnlyHook<
       }
     })
   );
+
+  // List hooks
   await list.hooks[hookName]?.(args);
 }

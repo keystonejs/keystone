@@ -30,13 +30,38 @@ export class NestedMutationState {
     list: InitialisedList
   ): Promise<{ kind: 'connect'; id: IdType } | { kind: 'create'; data: Record<string, any> }> {
     const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
+
     const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
+
     this.#afterChanges.push(() => afterChange(item));
     return { kind: 'connect' as const, id: item.id as any };
   }
   async afterChange() {
     await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
   }
+}
+
+export async function createOneState(
+  { data: rawData }: { data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  await applyAccessControlForCreate(list, context, rawData);
+
+  return resolveInputForCreateOrUpdate(list, context, rawData, undefined);
+}
+
+export async function createOne(
+  args: { data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  const { afterChange, data } = await createOneState(args, list, context);
+
+  const item = await getPrismaModelForList(context.prisma, list.listKey).create({ data });
+
+  await afterChange(item);
+  return item;
 }
 
 export function createMany(
@@ -48,61 +73,12 @@ export function createMany(
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
   return data.map(async rawData => {
     const { afterChange, data } = await createOneState({ data: rawData }, list, context);
+
     const item = await writeLimit(() =>
       getPrismaModelForList(context.prisma, list.listKey).create({ data })
     );
     await afterChange(item);
     return item;
-  });
-}
-
-export async function createOneState(
-  { data: rawData }: { data: Record<string, any> },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  await applyAccessControlForCreate(list, context, rawData);
-  const { data, afterChange } = await resolveInputForCreateOrUpdate(
-    list,
-    context,
-    rawData,
-    undefined
-  );
-  return {
-    data,
-    afterChange,
-  };
-}
-
-export async function createOne(
-  args: { data: Record<string, any> },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  const { afterChange, data } = await createOneState(args, list, context);
-  const item = await getPrismaModelForList(context.prisma, list.listKey).create({ data });
-  await afterChange(item);
-  return item;
-}
-
-export function updateMany(
-  { data }: { data: { where: Record<string, any>; data: Record<string, any> }[] },
-  list: InitialisedList,
-  context: KeystoneContext,
-  provider: DatabaseProvider
-) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-    const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
-    const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
-    const updatedItem = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).update({
-        where: { id: item.id },
-        data,
-      })
-    );
-    afterChange(updatedItem);
-    return updatedItem;
   });
 }
 
@@ -127,6 +103,24 @@ export async function updateOne(
   return updatedItem;
 }
 
+export function updateMany(
+  { data }: { data: { where: Record<string, any>; data: Record<string, any> }[] },
+  list: InitialisedList,
+  context: KeystoneContext,
+  provider: DatabaseProvider
+) {
+  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
+  return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
+    const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
+    const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
+    const updatedItem = await writeLimit(() =>
+      getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
+    );
+    afterChange(updatedItem);
+    return updatedItem;
+  });
+}
+
 async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
@@ -139,7 +133,9 @@ async function resolveInputForCreateOrUpdate(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputConfig = field.input?.[operation];
+
         let input = originalInput[fieldKey];
+        // Apply default values
         if (
           operation === 'create' &&
           input === undefined &&
@@ -150,13 +146,15 @@ async function resolveInputForCreateOrUpdate(
               ? await field.__legacy.defaultValue({ originalInput, context })
               : field.__legacy.defaultValue;
         }
+
+        // Resolve field type input resolvers
         const resolved = inputConfig?.resolve
           ? await inputConfig.resolve(
               input,
               context,
               (() => {
                 if (field.dbField.kind !== 'relation') {
-                  return undefined as any;
+                  return undefined;
                 }
                 const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
                 const foreignList = list.lists[field.dbField.list];
@@ -168,28 +166,31 @@ async function resolveInputForCreateOrUpdate(
                       foreignList,
                       target
                     );
+                  } else {
+                    return resolveRelateToManyForUpdateInput(
+                      nestedMutationState,
+                      context,
+                      foreignList,
+                      target
+                    );
                   }
-                  return resolveRelateToManyForUpdateInput(
-                    nestedMutationState,
-                    context,
-                    foreignList,
-                    target
-                  );
+                } else {
+                  if (operation === 'create') {
+                    return resolveRelateToOneForCreateInput(
+                      nestedMutationState,
+                      context,
+                      foreignList,
+                      target
+                    );
+                  } else {
+                    return resolveRelateToOneForUpdateInput(
+                      nestedMutationState,
+                      context,
+                      foreignList,
+                      target
+                    );
+                  }
                 }
-                if (operation === 'create') {
-                  return resolveRelateToOneForCreateInput(
-                    nestedMutationState,
-                    context,
-                    foreignList,
-                    target
-                  );
-                }
-                return resolveRelateToOneForUpdateInput(
-                  nestedMutationState,
-                  context,
-                  foreignList,
-                  target
-                );
               })()
             )
           : input;
@@ -198,6 +199,7 @@ async function resolveInputForCreateOrUpdate(
     )
   );
 
+  // Resolve input hooks
   resolvedData = await resolveInputHook(
     list,
     context,
@@ -207,6 +209,7 @@ async function resolveInputForCreateOrUpdate(
     existingItem
   );
 
+  // Check isRequired
   await validationHook(list.listKey, operation, originalInput, addValidationError => {
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // yes, this is a massive hack, it's just to make image and file fields work well enough
@@ -232,6 +235,7 @@ async function resolveInputForCreateOrUpdate(
     }
   });
 
+  // Field validation hooks
   const args = {
     context,
     listKey: list.listKey,
@@ -252,12 +256,18 @@ async function resolveInputForCreateOrUpdate(
     );
   });
 
+  // List validation hooks
   await validationHook(list.listKey, operation, originalInput, async addValidationError => {
     await list.hooks.validateInput?.({ ...args, addValidationError });
   });
+
+  // Run beforeChange hooks
   const originalInputKeys = new Set(Object.keys(originalInput));
   const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
   await runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
+
+  // Return the full resolved input (ready for prisma level operation),
+  // and the afterChange hook to be applied
   return {
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
@@ -311,19 +321,13 @@ async function resolveInputHook(
         if (field.hooks.resolveInput === undefined) {
           return [fieldKey, resolvedData[fieldKey]];
         }
-        const value = await field.hooks.resolveInput({
-          ...args,
-          fieldPath: fieldKey,
-        });
+        const value = await field.hooks.resolveInput({ ...args, fieldPath: fieldKey });
         return [fieldKey, value];
       })
     )
   );
   if (list.hooks.resolveInput) {
-    resolvedData = (await list.hooks.resolveInput({
-      ...args,
-      resolvedData,
-    })) as any;
+    resolvedData = (await list.hooks.resolveInput({ ...args, resolvedData })) as any;
   }
   return resolvedData;
 }

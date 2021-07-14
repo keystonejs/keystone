@@ -25,21 +25,14 @@ export async function findManyFilter(
 ): Promise<false | PrismaFilter> {
   const access = await validateNonCreateListAccessControl({
     access: list.access.read,
-    args: {
-      context,
-      listKey: list.listKey,
-      operation: 'read',
-      session: context.session,
-    },
+    args: { context, listKey: list.listKey, operation: 'read', session: context.session },
   });
   if (!access) {
     return false;
   }
   let resolvedWhere = await resolveWhereInput(where || {}, list);
   if (typeof access === 'object') {
-    resolvedWhere = {
-      AND: [resolvedWhere, await resolveWhereInput(access, list)],
-    };
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
   }
 
   return list.applySearchField(resolvedWhere, search);
@@ -78,17 +71,14 @@ async function findOneFilter(
 ) {
   const access = await validateNonCreateListAccessControl({
     access: list.access.read,
-    args: {
-      context,
-      listKey: list.listKey,
-      operation: 'read',
-      session: context.session,
-    },
+    args: { context, listKey: list.listKey, operation: 'read', session: context.session },
   });
   if (access === false) {
     return false;
   }
+
   let resolvedUniqueWhere = await resolveUniqueWhereInput(where, list.fields, context);
+
   const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
   return access === true
     ? wherePrismaFilter
@@ -120,29 +110,27 @@ export async function findMany(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<ItemRootValue[]> {
-  const [resolvedWhere, orderBy] = await Promise.all([
-    findManyFilter(list, context, where || {}, search),
-    resolveOrderBy(rawOrderBy, sortBy, list, context),
-  ]);
+  const orderBy = await resolveOrderBy(rawOrderBy, sortBy, list, context);
+
   applyEarlyMaxResults(first, list);
 
+  const resolvedWhere = await findManyFilter(list, context, where || {}, search);
   if (resolvedWhere === false) {
     throw accessDeniedError('query');
   }
+
   const results = await getPrismaModelForList(context.prisma, list.listKey).findMany({
     where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
     orderBy,
     take: first ?? undefined,
     skip,
   });
+
   applyMaxResults(results, list, context);
+
   if (info.cacheControl && list.cacheHint) {
     info.cacheControl.setCacheHint(
-      list.cacheHint({
-        results,
-        operationName: info.operation.name?.value,
-        meta: false,
-      }) as any
+      list.cacheHint({ results, operationName: info.operation.name?.value, meta: false }) as any
     );
   }
   return results;
@@ -165,16 +153,14 @@ async function resolveOrderBy(
         }
 
         const fieldKey = keys[0];
-
         const value = orderBySelection[fieldKey];
-
         if (value === null) {
           throw new Error('null cannot be passed as an order direction');
         }
 
         const field = list.fields[fieldKey];
-        const resolveOrderBy = field.input!.orderBy!.resolve;
-        const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
+        const resolve = field.input!.orderBy!.resolve;
+        const resolvedValue = resolve ? await resolve(value, context) : value;
         if (field.dbField.kind === 'multi') {
           const keys = Object.keys(resolvedValue);
           if (keys.length !== 1) {
@@ -186,17 +172,17 @@ async function resolveOrderBy(
           return {
             [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
           };
+        } else {
+          return { [fieldKey]: resolvedValue };
         }
-        return { [fieldKey]: resolvedValue };
       })
     )
   ).concat(
-    sortBy?.map(sort => {
-      if (sort.endsWith('_DESC')) {
-        return { [sort.slice(0, -'_DESC'.length)]: 'desc' };
-      }
-      return { [sort.slice(0, -'_ASC'.length)]: 'asc' };
-    }) || []
+    sortBy?.map(sort =>
+      sort.endsWith('_DESC')
+        ? { [sort.slice(0, -'_DESC'.length)]: 'desc' }
+        : { [sort.slice(0, -'_ASC'.length)]: 'asc' }
+    ) || []
   );
 }
 
@@ -209,6 +195,7 @@ export async function count(
   if (resolvedWhere === false) {
     throw accessDeniedError('query');
   }
+
   return getPrismaModelForList(context.prisma, list.listKey).count({
     where: resolvedWhere,
   });
