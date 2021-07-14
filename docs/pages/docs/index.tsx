@@ -18,12 +18,42 @@ export default function Docs() {
         Keystone Docs
       </Type>
 
-      <Type as="p" look="body18" margin="1.25rem 0 0">
-        More than a backend framework. More than a Headless CMS. Keystone is a platform for next-gen
-        development workflows and evolution.
+      <CommunitySlackCTA />
+
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
+        Understanding Keystone
       </Type>
 
-      <CommunitySlackCTA />
+      <Type as="p" look="body18" margin="1.25rem 0 1.25rem">
+        Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6, and
+        how it delivers a developer experience that combines features, flexibility, and the perfect
+        amount of abstraction to get started fast, and grow as you learn.
+      </Type>
+
+      <div
+        css={{
+          position: 'relative',
+          paddingBottom: '56.25%',
+          height: '0',
+        }}
+      >
+        <iframe
+          css={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+          }}
+          width="560"
+          height="315"
+          src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Walkthroughs
