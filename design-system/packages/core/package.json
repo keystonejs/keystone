@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/core",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "license": "MIT",
   "main": "dist/core.cjs.js",
   "module": "dist/core.esm.js",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.6",
     "@emotion/react": "^11.4.0",
-    "@types/facepaint": "^1.2.1",
+    "@types/facepaint": "^1.2.2",
     "facepaint": "^1.2.1"
   },
   "engines": {

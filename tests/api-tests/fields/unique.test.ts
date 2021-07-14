@@ -4,7 +4,7 @@ import { text } from '@keystone-next/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules
@@ -73,7 +73,9 @@ testModules
             expectInternalServerError(body.errors, [
               {
                 path: ['createTest'],
-                message: `\nInvalid \`prisma.test.create()\` invocation:\n\n\n  Unique constraint failed on the fields: (\`testField\`)`,
+                message: expect.stringMatching(
+                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
               },
             ]);
           })
@@ -100,7 +102,9 @@ testModules
             expectInternalServerError(body.errors, [
               {
                 path: ['bar'],
-                message: `\nInvalid \`prisma.test.create()\` invocation:\n\n\n  Unique constraint failed on the fields: (\`testField\`)`,
+                message: expect.stringMatching(
+                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
               },
             ]);
           })
