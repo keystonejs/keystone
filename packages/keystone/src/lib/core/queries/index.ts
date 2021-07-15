@@ -9,16 +9,13 @@ export function getQueriesForList(list: InitialisedList) {
 
   const findOne = schema.field({
     type: list.types.output,
-    args: {
-      where: schema.arg({
-        type: schema.nonNull(list.types.uniqueWhere),
-      }),
-    },
+    args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
     description: ` Search for the ${list.listKey} item with the matching ID.`,
     async resolve(_rootVal, args, context) {
       return queries.findOne(args, list, context);
     },
   });
+
   const findMany = schema.field({
     type: schema.list(schema.nonNull(list.types.output)),
     args: list.types.findManyArgs,
@@ -27,11 +24,10 @@ export function getQueriesForList(list: InitialisedList) {
       return queries.findMany(args, list, context, info);
     },
   });
+
   const countQuery = schema.field({
     type: schema.Int,
-    args: {
-      where: schema.arg({ type: schema.nonNull(list.types.where), defaultValue: {} }),
-    },
+    args: { where: schema.arg({ type: schema.nonNull(list.types.where), defaultValue: {} }) },
     async resolve(_rootVal, args, context, info) {
       const count = await queries.count(args, list, context);
       if (info && info.cacheControl && list.cacheHint) {

@@ -113,12 +113,8 @@ export function initialiseLists(
         const { fields } = lists[listKey];
         return Object.assign(
           {
-            AND: schema.arg({
-              type: schema.list(schema.nonNull(where)),
-            }),
-            OR: schema.arg({
-              type: schema.list(schema.nonNull(where)),
-            }),
+            AND: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            OR: schema.arg({ type: schema.list(schema.nonNull(where)) }),
           },
           ...Object.values(fields).map(field =>
             field.access.read === false ? {} : field.__legacy?.filters?.fields ?? {}
@@ -167,20 +163,12 @@ export function initialiseLists(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: schema.arg({
-        type: schema.nonNull(where),
-        defaultValue: {},
-      }),
-      search: schema.arg({
-        type: schema.String,
-      }),
+      where: schema.arg({ type: schema.nonNull(where), defaultValue: {} }),
+      search: schema.arg({ type: schema.String }),
       sortBy: schema.arg({
         type: schema.list(
           schema.nonNull(
-            schema.enum({
-              name: names.listSortName,
-              values: schema.enumValues(['bad']),
-            })
+            schema.enum({ name: names.listSortName, values: schema.enumValues(['bad']) })
           )
         ),
         deprecationReason: 'sortBy has been deprecated in favour of orderBy',
@@ -190,13 +178,8 @@ export function initialiseLists(
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      first: schema.arg({
-        type: schema.Int,
-      }),
-      skip: schema.arg({
-        type: schema.nonNull(schema.Int),
-        defaultValue: 0,
-      }),
+      first: schema.arg({ type: schema.Int }),
+      skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
     };
 
     const relateToMany = schema.inputObject({
@@ -351,8 +334,9 @@ export function initialiseLists(
                 ];
               })
             );
+          } else {
+            return field.__legacy?.filters?.impls ?? {};
           }
-          return field.__legacy?.filters?.impls ?? {};
         })
       ),
       applySearchField: (filter, search) => {

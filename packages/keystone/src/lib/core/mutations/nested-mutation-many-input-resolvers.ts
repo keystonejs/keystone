@@ -6,22 +6,13 @@ import { NestedMutationState } from './create-update';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
-export function resolveRelateToManyForCreateInput(
-  nestedMutationState: NestedMutationState,
-  context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
-) {
-  return async (
-    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>
-  ) => {
-    if (value == null) {
-      return undefined;
-    }
-    assertValidManyOperation(value, target);
-    return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
-  };
-}
+type _CreateValueType = schema.InferValueFromArg<
+  schema.Arg<TypesForList['relateTo']['many']['create']>
+>;
+
+type _UpdateValueType = schema.InferValueFromArg<
+  schema.Arg<TypesForList['relateTo']['many']['update']>
+>;
 
 async function getDisconnects(
   uniqueWheres: (UniqueInputFilter | null)[],
@@ -33,7 +24,7 @@ async function getDisconnects(
       uniqueWheres.map(async filter => {
         if (filter === null) return [];
         try {
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter as any });
+          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter });
         } catch (err) {
           return [];
         }
@@ -49,37 +40,38 @@ function getConnects(
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
   return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter as any });
+    await context.db.lists[foreignList.listKey].findOne({ where: filter });
     return resolveUniqueWhereInput(filter, foreignList.fields, context);
   });
 }
 
 async function resolveCreateAndConnect(
-  value: Exclude<
-    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
-    null | undefined
-  >,
+  value: Exclude<_UpdateValueType, null | undefined>,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
 ) {
+  // Perform queries for the connections
   const connects = Promise.allSettled(
     getConnects((value.connect || []).filter(isNotNull), context, foreignList)
   );
+
+  // Perform nested mutations for the creations
   const creates = Promise.allSettled(
     (value.create || []).filter(isNotNull).map(x => nestedMutationState.create(x, foreignList))
   );
 
   const [connectResult, createResult] = await Promise.all([connects, creates]);
 
+  // Collect all the errors
   const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
     x => x.reason
   );
-
   if (errors.length) {
     throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
   }
+
   const result = {
     connect: connectResult.filter(isFulfilled).map(x => x.value),
     create: [] as Record<string, any>[],
@@ -88,20 +80,17 @@ async function resolveCreateAndConnect(
   for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
     if (createData.kind === 'create') {
       result.create.push(createData.data);
-    }
-    if (createData.kind === 'connect') {
+    } else if (createData.kind === 'connect') {
       result.connect.push({ id: createData.id });
     }
   }
 
+  // Perform queries for the connections
   return result;
 }
 
 function assertValidManyOperation(
-  val: Exclude<
-    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
-    undefined | null
-  >,
+  val: Exclude<_UpdateValueType, undefined | null>,
   target: string
 ) {
   if (
@@ -114,15 +103,28 @@ function assertValidManyOperation(
   }
 }
 
+export function resolveRelateToManyForCreateInput(
+  nestedMutationState: NestedMutationState,
+  context: KeystoneContext,
+  foreignList: InitialisedList,
+  target: string
+) {
+  return async (value: _CreateValueType) => {
+    if (value == null) {
+      return undefined;
+    }
+    assertValidManyOperation(value, target);
+    return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
+  };
+}
+
 export function resolveRelateToManyForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
 ) {
-  return async (
-    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>
-  ) => {
+  return async (value: _UpdateValueType) => {
     if (value == null) {
       return undefined;
     }

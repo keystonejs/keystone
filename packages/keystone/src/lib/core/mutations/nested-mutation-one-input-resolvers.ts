@@ -3,11 +3,15 @@ import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';
 
+type _CreateValueType = schema.InferValueFromArg<
+  schema.Arg<TypesForList['relateTo']['one']['create']>
+>;
+type _UpdateValueType = schema.InferValueFromArg<
+  schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
+>;
+
 async function handleCreateAndUpdate(
-  value: Exclude<
-    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>,
-    null | undefined
-  >,
+  value: Exclude<_CreateValueType, null | undefined>,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -15,18 +19,17 @@ async function handleCreateAndUpdate(
 ) {
   if (value.connect) {
     try {
-      await context.db.lists[foreignList.listKey].findOne({ where: value.connect as any });
+      await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
-    return {
-      connect: await resolveUniqueWhereInput(value.connect, foreignList.fields, context),
-    };
-  }
-  if (value.create) {
+    const connect = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
+    return { connect };
+  } else if (value.create) {
     const createInput = value.create;
     let create = await (async () => {
       try {
+        // Perform the nested create operation
         return await nestedMutationState.create(createInput, foreignList);
       } catch (err) {
         throw new Error(`Unable to create a ${target}`);
@@ -35,8 +38,9 @@ async function handleCreateAndUpdate(
 
     if (create.kind === 'connect') {
       return { connect: { id: create.id } };
+    } else {
+      return { create: create.data };
     }
-    return { create: create.data };
   }
 }
 
@@ -46,9 +50,7 @@ export function resolveRelateToOneForCreateInput(
   foreignList: InitialisedList,
   target: string
 ) {
-  return async (
-    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>
-  ) => {
+  return async (value: _CreateValueType) => {
     if (value == null) {
       return undefined;
     }
@@ -66,31 +68,25 @@ export function resolveRelateToOneForUpdateInput(
   foreignList: InitialisedList,
   target: string
 ) {
-  return async (
-    value: schema.InferValueFromArg<
-      schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
-    >
-  ) => {
+  return async (value: _UpdateValueType) => {
     if (value == null) {
       return undefined;
     }
+
     if (value.connect && value.create) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
     }
+
     if (value.connect || value.create) {
       return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
-    }
-    if (value.disconnect) {
+    } else if (value.disconnect) {
       try {
-        await context
-          .sudo()
-          .db.lists[foreignList.listKey].findOne({ where: value.disconnect as any });
+        await context.sudo().db.lists[foreignList.listKey].findOne({ where: value.disconnect });
       } catch (err) {
         return;
       }
       return { disconnect: true };
-    }
-    if (value.disconnectAll) {
+    } else if (value.disconnectAll) {
       return { disconnect: true };
     }
   };

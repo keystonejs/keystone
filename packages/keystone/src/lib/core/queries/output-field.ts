@@ -23,12 +23,6 @@ import {
 } from '../utils';
 import { findMany, findManyFilter } from './resolvers';
 
-function assert(condition: boolean): asserts condition {
-  if (!condition) {
-    throw new Error('failed assert');
-  }
-}
-
 function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
@@ -37,15 +31,14 @@ function getRelationVal(
   info: GraphQLResolveInfo
 ) {
   const oppositeDbField = foreignList.resolvedDbFields[dbField.field];
-  assert(oppositeDbField.kind === 'relation');
+  if (oppositeDbField.kind !== 'relation') throw new Error('failed assert');
   const relationFilter = {
     [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
   };
   if (dbField.mode === 'many') {
     return {
-      findMany: async (args: FindManyArgsValue) => {
-        return findMany(args, foreignList, context, info, relationFilter);
-      },
+      findMany: async (args: FindManyArgsValue) =>
+        findMany(args, foreignList, context, info, relationFilter),
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
         const filter = await findManyFilter(foreignList, context, where, search);
         if (filter === false) {
@@ -70,29 +63,24 @@ function getRelationVal(
         return count;
       },
     };
+  } else {
+    return async () => {
+      const access = await validateNonCreateListAccessControl({
+        access: foreignList.access.read,
+        args: { context, listKey: dbField.list, operation: 'read', session: context.session },
+      });
+      if (access === false) {
+        throw accessDeniedError('query');
+      }
+
+      return getPrismaModelForList(context.prisma, dbField.list).findFirst({
+        where:
+          access === true
+            ? relationFilter
+            : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
+      });
+    };
   }
-
-  return async () => {
-    const access = await validateNonCreateListAccessControl({
-      access: foreignList.access.read,
-      args: {
-        context,
-        listKey: dbField.list,
-        operation: 'read',
-        session: context.session,
-      },
-    });
-    if (access === false) {
-      throw accessDeniedError('query');
-    }
-
-    return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-      where:
-        access === true
-          ? relationFilter
-          : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
-    });
-  };
 }
 
 function getValueForDBField(
@@ -114,8 +102,9 @@ function getValueForDBField(
   }
   if (dbField.kind === 'relation') {
     return getRelationVal(dbField, id, lists[dbField.list], context, info);
+  } else {
+    return rootVal[fieldPath] as any;
   }
-  return rootVal[fieldPath] as any;
 }
 
 export function outputTypeField(
@@ -164,8 +153,9 @@ export function outputTypeField(
 
       if (output.resolve) {
         return output.resolve({ value, item: rootVal }, args, context, info);
+      } else {
+        return value;
       }
-      return value;
     },
   });
 }
