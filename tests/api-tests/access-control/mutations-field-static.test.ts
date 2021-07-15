@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -50,10 +50,8 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Returns null and throws an error
-      expect(data!.createUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUser']);
+      expect(data).toEqual({ createUser: null });
+      expectAccessDenied(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name other' });
@@ -77,10 +75,8 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Returns null and throws an error
-      expect(data!.updateUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUser']);
+      expect(data).toEqual({ updateUser: null });
+      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name other' });
@@ -108,19 +104,18 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.createUsers).toHaveLength(5);
-      expect(data!.createUsers[0].name).toEqual('good 1');
-      expect(data!.createUsers[1]).toBe(null);
-      expect(data!.createUsers[2].name).toEqual('good 2');
-      expect(data!.createUsers[3]).toBe(null);
-      expect(data!.createUsers[4].name).toEqual('good 3');
+      expect(data).toEqual({
+        createUsers: [
+          { id: expect.any(String), name: 'good 1' },
+          null,
+          { id: expect.any(String), name: 'good 2' },
+          null,
+          { id: expect.any(String), name: 'good 3' },
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['createUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // Valid users should exist in the database
       const users = await context.lists.User.findMany({
@@ -164,18 +159,17 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.updateUsers).toHaveLength(4);
-      expect(data!.updateUsers[0].name).toEqual('still good 1');
-      expect(data!.updateUsers[1]).toBe(null);
-      expect(data!.updateUsers[2].name).toEqual('still good 3');
-      expect(data!.updateUsers[3]).toBe(null);
+      expect(data).toEqual({
+        updateUsers: [
+          { id: users[0].id, name: 'still good 1' },
+          null,
+          { id: users[2].id, name: 'still good 3' },
+          null,
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['updateUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({

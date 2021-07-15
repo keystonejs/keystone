@@ -2,9 +2,9 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectInternalServerError } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules
@@ -56,12 +56,12 @@ testModules
         });
         test(
           'uniqueness is enforced over multiple mutations',
-          runner(async ({ context }) => {
+          runner(async ({ context, graphQLRequest }) => {
             await context.lists.Test.createOne({
               data: { testField: mod.exampleValue(matrixValue) },
             });
 
-            const { errors } = await context.graphql.raw({
+            const { body } = await graphQLRequest({
               query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -69,20 +69,22 @@ testModules
                 `,
               variables: { data: { testField: mod.exampleValue(matrixValue) } },
             });
-
-            expect(errors).toHaveProperty('0.message');
-            expect(errors![0].message).toEqual(
-              expect.stringMatching(
-                /duplicate key|to be unique|Unique constraint failed on the fields/
-              )
-            );
+            expect(body.data).toEqual({ createTest: null });
+            expectInternalServerError(body.errors, [
+              {
+                path: ['createTest'],
+                message: expect.stringMatching(
+                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
+              },
+            ]);
           })
         );
 
         test(
           'uniqueness is enforced over single mutation',
-          runner(async ({ context }) => {
-            const { errors } = await context.graphql.raw({
+          runner(async ({ graphQLRequest }) => {
+            const { body } = await graphQLRequest({
               query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -95,12 +97,16 @@ testModules
               },
             });
 
-            expect(errors).toHaveProperty('0.message');
-            expect(errors![0].message).toEqual(
-              expect.stringMatching(
-                /duplicate key|to be unique|Unique constraint failed on the fields/
-              )
-            );
+            expect(body.data.foo).not.toBe(null);
+            expect(body.data.bar).toBe(null);
+            expectInternalServerError(body.errors, [
+              {
+                path: ['bar'],
+                message: expect.stringMatching(
+                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
+              },
+            ]);
           })
         );
 

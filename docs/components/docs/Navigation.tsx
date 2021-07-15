@@ -1,16 +1,15 @@
 /** @jsx jsx */
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
-import { AnchorHTMLAttributes } from 'react';
+import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
-import { useMediaQuery } from '../../lib/media';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -25,9 +24,11 @@ export function Section({ label, children }: SectionProps) {
         as="h3"
         look="body16bold"
         margin="var(--space-xlarge) 0 var(--space-large) 0"
-        font-weight="700"
         color="var(--text-heading)"
-        css={{ textTransform: 'uppercase' }}
+        css={{
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
       >
         {label}
       </Type>
@@ -78,9 +79,13 @@ type PrimaryNavItemProps = {
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
+  const ctx = useHeaderContext();
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+
   return (
     <Link href={href} passHref>
       <a
+        tabIndex={isOpen ? 0 : -1}
         css={{
           display: 'block',
           fontSize: '1rem',
@@ -135,6 +140,9 @@ export function DocsNavigation() {
         </NavItem>
         <NavItem href="/docs/guides/testing">
           Testing <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-fields">
+          Custom Fields <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control

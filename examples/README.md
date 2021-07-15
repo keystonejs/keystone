@@ -24,6 +24,8 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [Virtual field](./virtual-field): Adds virtual fields to the Blog base.
 - [Document field](./document-field): Adds document fields to the Blog base.
 - [Testing](./testing): Adds tests with `@keystone-next/testing` to the `withAuth()` example.
+- [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
+- [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
 
 ## Running examples
 
