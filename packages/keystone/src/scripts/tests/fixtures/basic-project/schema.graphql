@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Todo {
   id: ID!
   title: String
@@ -67,73 +64,35 @@ input TodosCreateInput {
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+  @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type _QueryMeta {
   count: Int
 }
 
 type Mutation {
-  """
-   Create a single Todo item.
-  """
   createTodo(data: TodoCreateInput): Todo
-
-  """
-   Create multiple Todo items.
-  """
   createTodos(data: [TodosCreateInput]): [Todo]
-
-  """
-   Update a single Todo item by ID.
-  """
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-
-  """
-   Update multiple Todo items by ID.
-  """
   updateTodos(data: [TodosUpdateInput]): [Todo]
-
-  """
-   Delete a single Todo item by ID.
-  """
   deleteTodo(id: ID!): Todo
-
-  """
-   Delete multiple Todo items by ID.
-  """
   deleteTodos(ids: [ID!]): [Todo]
 }
 
 type Query {
-  """
-   Search for all Todo items which match the where clause.
-  """
   allTodos(
     where: TodoWhereInput! = {}
     search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    sortBy: [SortTodosBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-
-  """
-   Search for the Todo item with the matching ID.
-  """
   Todo(where: TodoWhereUniqueInput!): Todo
-
-  """
-   Perform a meta-query on all Todo items which match the where clause.
-  """
   _allTodosMeta(
     where: TodoWhereInput! = {}
     search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    sortBy: [SortTodosBy!] @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0

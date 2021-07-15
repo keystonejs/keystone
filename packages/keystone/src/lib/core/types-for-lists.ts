@@ -64,7 +64,6 @@ export function initialiseLists(
 
     let output = schema.object<ItemRootValue>()({
       name: names.outputTypeName,
-      description: ' A keystone list',
       fields: () => {
         const { fields } = lists[listKey];
         return {

@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
@@ -105,34 +102,11 @@ type _QueryMeta {
 }
 
 type Mutation {
-  """
-   Create a single User item.
-  """
   createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
   createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
   updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
   updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
   deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
   deleteUsers(ids: [ID!]): [User]
   authenticateUserWithPassword(
     email: String!
@@ -175,9 +149,6 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
   allUsers(
     where: UserWhereInput! = {}
     search: String
@@ -187,15 +158,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
   User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String

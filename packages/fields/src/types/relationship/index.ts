@@ -209,18 +209,9 @@ export const relationship =
         __legacy: {
           filters: {
             fields: {
-              [`${meta.fieldKey}_every`]: schema.arg({
-                type: listTypes.where,
-                description: ' condition must be true for all nodes',
-              }),
-              [`${meta.fieldKey}_some`]: schema.arg({
-                type: listTypes.where,
-                description: ' condition must be true for at least 1 node',
-              }),
-              [`${meta.fieldKey}_none`]: schema.arg({
-                type: listTypes.where,
-                description: ' condition must be false for all nodes',
-              }),
+              [`${meta.fieldKey}_every`]: schema.arg({ type: listTypes.where }),
+              [`${meta.fieldKey}_some`]: schema.arg({ type: listTypes.where }),
+              [`${meta.fieldKey}_none`]: schema.arg({ type: listTypes.where }),
             },
             impls: {
               [`${meta.fieldKey}_every`]: whereInputResolve('every'),
