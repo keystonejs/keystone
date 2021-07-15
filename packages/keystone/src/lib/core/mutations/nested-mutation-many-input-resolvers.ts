@@ -2,6 +2,7 @@ import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
+import { findOne } from '../queries/resolvers';
 import { NestedMutationState } from './create-update';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
@@ -24,7 +25,7 @@ async function getDisconnects(
       uniqueWheres.map(async filter => {
         if (filter === null) return [];
         try {
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter });
+          await findOne({ where: filter }, foreignList, context);
         } catch (err) {
           return [];
         }
@@ -40,7 +41,7 @@ function getConnects(
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
   return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter });
+    await findOne({ where: filter }, foreignList, context);
     return resolveUniqueWhereInput(filter, foreignList.fields, context);
   });
 }

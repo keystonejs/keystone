@@ -5,7 +5,7 @@ import {
   validateNonCreateListAccessControl,
 } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
-import { mapUniqueWhereToWhere } from '../queries/resolvers';
+import { findOne, mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { getPrismaModelForList } from '../utils';
 import {
@@ -18,10 +18,10 @@ import {
 export async function getAccessControlledItemForDelete(
   list: InitialisedList,
   context: KeystoneContext,
-  filter: UniqueInputFilter,
   inputFilter: UniqueInputFilter
 ): Promise<ItemRootValue> {
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(filter, list.listKey, context);
+  const uniqueWhere = await resolveUniqueWhereInput(inputFilter, list.fields, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(inputFilter, list, context);
 
   // List access: pass 1
   const access = await validateNonCreateListAccessControl({
@@ -34,10 +34,7 @@ export async function getAccessControlledItemForDelete(
 
   // List access: pass 2
   const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
-  let where: PrismaFilter = mapUniqueWhereToWhere(
-    list,
-    await resolveUniqueWhereInput(inputFilter, list.fields, context)
-  );
+  let where: PrismaFilter = mapUniqueWhereToWhere(list, uniqueWhere);
   if (typeof access === 'object') {
     where = { AND: [where, await resolveWhereInput(access, list)] };
   }
@@ -57,7 +54,7 @@ export async function getAccessControlledItemForUpdate(
 ) {
   const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
   const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list, context);
   const args = {
     context,
     itemId,
@@ -143,15 +140,15 @@ export async function applyAccessControlForCreate(
 
 async function getStringifiedItemIdFromUniqueWhereInput(
   uniqueWhere: UniqueInputFilter,
-  listKey: string,
+  list: InitialisedList,
   context: KeystoneContext
 ): Promise<string> {
   if (uniqueWhere.id !== undefined) {
     return uniqueWhere.id;
   }
   try {
-    const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere });
-    return item.id;
+    const item = await findOne({ where: uniqueWhere }, list, context);
+    return item.id.toString();
   } catch (err) {
     throw accessDeniedError('mutation');
   }

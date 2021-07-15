@@ -50,7 +50,7 @@ async function processDelete(
   filter: UniqueInputFilter
 ) {
   // Access control
-  const existingItem = await getAccessControlledItemForDelete(list, context, filter, filter);
+  const existingItem = await getAccessControlledItemForDelete(list, context, filter);
 
   // Field validation
   const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };

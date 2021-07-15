@@ -1,6 +1,7 @@
 import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
 import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
+import { findOne } from '../queries/resolvers';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = schema.InferValueFromArg<
@@ -19,7 +20,7 @@ async function handleCreateAndUpdate(
 ) {
   if (value.connect) {
     try {
-      await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
+      await findOne({ where: value.connect }, foreignList, context);
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
@@ -81,7 +82,7 @@ export function resolveRelateToOneForUpdateInput(
       return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
     } else if (value.disconnect) {
       try {
-        await context.sudo().db.lists[foreignList.listKey].findOne({ where: value.disconnect });
+        await findOne({ where: value.disconnect }, foreignList, context);
       } catch (err) {
         return;
       }
