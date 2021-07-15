@@ -162,7 +162,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         <Timeline date="10th July 2021" isLatest />
         <Box heading="Watch Jed's Prisma Day talk">
           Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
-          below, or <a href="/updates/prisma-day-talk-2021">read the full transcript</a>.
+          below, or <a href="/updates/prisma-day-2021">read the full transcript</a>.
           <div
             css={{
               position: 'relative',
