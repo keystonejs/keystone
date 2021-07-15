@@ -1,5 +1,5 @@
 import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
-import { resolveUniqueWhereInput } from '../where-inputs';
+import { resolveUniqueWhereInput, validateUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';
 
@@ -18,13 +18,13 @@ async function handleCreateAndUpdate(
   target: string
 ) {
   if (value.connect) {
+    validateUniqueWhereInput(value.connect);
     try {
       await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
-    const connect = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
-    return { connect };
+    return { connect: await resolveUniqueWhereInput(value.connect, foreignList.fields, context) };
   } else if (value.create) {
     const createInput = value.create;
     let create = await (async () => {

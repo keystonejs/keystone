@@ -12,6 +12,8 @@ import {
   UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  validateUniqueWhereInput,
+  UniqueInputFilter,
 } from '../where-inputs';
 import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
@@ -65,7 +67,7 @@ export function mapUniqueWhereToWhere(
 }
 
 async function findOneFilter(
-  { where }: { where: Record<string, any> },
+  uniqueInput: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -76,21 +78,22 @@ async function findOneFilter(
   if (access === false) {
     return false;
   }
-
-  let resolvedUniqueWhere = await resolveUniqueWhereInput(where, list.fields, context);
-
-  const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
+  const wherePrismaFilter = mapUniqueWhereToWhere(
+    list,
+    await resolveUniqueWhereInput(uniqueInput, list.fields, context)
+  );
   return access === true
     ? wherePrismaFilter
     : { AND: [wherePrismaFilter, await resolveWhereInput(access, list)] };
 }
 
 export async function findOne(
-  args: { where: Record<string, any> },
+  args: { where: UniqueInputFilter },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const filter = await findOneFilter(args, list, context);
+  validateUniqueWhereInput(args.where);
+  const filter = await findOneFilter(args.where, list, context);
   if (filter === false) {
     throw accessDeniedError('query');
   }

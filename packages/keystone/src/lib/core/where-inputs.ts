@@ -25,24 +25,29 @@ export type UniquePrismaFilter = Record<string, any> & {
   then?: undefined;
 };
 
-export async function resolveUniqueWhereInput(
-  input: UniqueInputFilter,
-  fields: InitialisedList['fields'],
-  context: KeystoneContext
-): Promise<UniquePrismaFilter> {
-  const inputKeys = Object.keys(input);
+export function validateUniqueWhereInput(uniqueInput: UniqueInputFilter) {
+  const inputKeys = Object.keys(uniqueInput);
   if (inputKeys.length !== 1) {
     throw new Error(
       `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
     );
   }
-  const key = inputKeys[0];
-  const val = input[key];
+  const fieldPath = inputKeys[0];
+  const val = uniqueInput[fieldPath];
   if (val === null) {
     throw new Error(`The unique value provided in a unique where input must not be null`);
   }
-  const resolver = fields[key].input!.uniqueWhere!.resolve;
-  return { [key]: resolver ? await resolver(val, context) : val };
+}
+
+export async function resolveUniqueWhereInput(
+  uniqueInput: UniqueInputFilter,
+  fields: InitialisedList['fields'],
+  context: KeystoneContext
+): Promise<UniquePrismaFilter> {
+  const fieldPath = Object.keys(uniqueInput)[0];
+  const val = uniqueInput[fieldPath];
+  const resolver = fields[fieldPath].input!.uniqueWhere!.resolve;
+  return { [fieldPath]: resolver ? await resolver(val, context) : val };
 }
 
 export async function resolveWhereInput(

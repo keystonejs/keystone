@@ -1,5 +1,5 @@
 import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
-import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
+import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter, validateUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
@@ -35,13 +35,14 @@ async function getDisconnects(
 }
 
 function getConnects(
-  uniqueWhere: UniqueInputFilter[],
+  uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
-  return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter });
-    return resolveUniqueWhereInput(filter, foreignList.fields, context);
+  return uniqueInputs.map(async uniqueInput => {
+    validateUniqueWhereInput(uniqueInput);
+    await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    return resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
   });
 }
 

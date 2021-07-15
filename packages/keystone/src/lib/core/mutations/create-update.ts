@@ -18,6 +18,7 @@ import {
 } from './nested-mutation-one-input-resolvers';
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
 import { runSideEffectOnlyHook, validationHook } from './hooks';
+import { validateUniqueWhereInput } from '../where-inputs';
 
 export class NestedMutationState {
   #afterChanges: (() => void | Promise<void>)[] = [];
@@ -83,14 +84,12 @@ export function createMany(
 }
 
 export async function updateOne(
-  {
-    where: rawUniqueWhere,
-    data: rawData,
-  }: { where: Record<string, any>; data: Record<string, any> },
+  { where: uniqueInput, data: rawData }: { where: Record<string, any>; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
+  validateUniqueWhereInput(uniqueInput);
+  const item = await getAccessControlledItemForUpdate(list, context, uniqueInput, rawData);
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
   const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
@@ -110,8 +109,9 @@ export function updateMany(
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-    const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
+  return data.map(async ({ data: rawData, where: uniqueInput }) => {
+    validateUniqueWhereInput(uniqueInput);
+    const item = await getAccessControlledItemForUpdate(list, context, uniqueInput, rawData);
     const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
     const updatedItem = await writeLimit(() =>
       getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
