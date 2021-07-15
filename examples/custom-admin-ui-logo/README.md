@@ -18,7 +18,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 🚀 Congratulations, you're now up and running with Keystone!
 
-## admin/pages
+## admin/config
 
 This project shows how to export custom a custom logo to be rendered in the admin-ui via the `/admin/config` file. As elaborated on in the [Custom Logo](https://keystonejs.com/docs/guides/custom-admin-ui-logo) guide, the named `components` export of this file is used to replace specific components for use in the `admin-ui`.
 
