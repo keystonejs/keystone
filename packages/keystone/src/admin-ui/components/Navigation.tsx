@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { AllHTMLAttributes, ReactNode } from 'react';
+import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
@@ -17,7 +17,7 @@ type NavItemProps = {
   children: ReactNode;
 };
 
-const NavItem = ({ href, children }: NavItemProps) => {
+export const NavItem = ({ href, children }: NavItemProps) => {
   const { colors, palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
   const isSelected =
@@ -124,30 +124,16 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
 
 export type NavigationProps = Pick<
   ReturnType<typeof useKeystone>,
-  'visibleLists' | 'authenticatedItem'
+  'authenticatedItem' | 'visibleLists'
 > & {
-  list: any;
+  lists: any;
 };
 
-export const Navigation = () => {
-  const {
-    adminMeta: { lists },
-    adminConfig,
-    authenticatedItem,
-    visibleLists,
-  } = useKeystone();
+export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
+  children: ReactNode;
+};
+export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
   const { spacing } = useTheme();
-
-  if (adminConfig?.components?.Navigation) {
-    return (
-      <adminConfig.components.Navigation
-        authenticatedItem={authenticatedItem}
-        lists={lists}
-        visibleLists={visibleLists}
-      />
-    );
-  }
-
   return (
     <div
       css={{
@@ -159,33 +145,64 @@ export const Navigation = () => {
       {authenticatedItem.state === 'authenticated' && (
         <AuthenticatedItem item={authenticatedItem} />
       )}
-      <nav css={{ marginTop: spacing.xlarge }}>
-        <NavItem href="/">Dashboard</NavItem>
-        {(() => {
-          if (visibleLists.state === 'loading') return null;
-          if (visibleLists.state === 'error') {
-            return (
-              <span css={{ color: 'red' }}>
-                {visibleLists.error instanceof Error
-                  ? visibleLists.error.message
-                  : visibleLists.error[0].message}
-              </span>
-            );
-          }
-          return Object.keys(lists).map(key => {
-            if (!visibleLists.lists.has(key)) {
-              return null;
-            }
-
-            const list = lists[key];
-            return (
-              <NavItem key={key} href={`/${list.path}`}>
-                {lists[key].label}
-              </NavItem>
-            );
-          });
-        })()}
-      </nav>
+      <nav css={{ marginTop: spacing.xlarge }}>{children}</nav>
     </div>
+  );
+};
+
+type DefaultNavigationListProps = Pick<NavigationProps, 'lists' | 'visibleLists'>;
+
+export const DefaultNavigationList = ({ lists, visibleLists }: DefaultNavigationListProps) => {
+  return (
+    <Fragment>
+      <NavItem href="/">Dashboard</NavItem>
+      {(() => {
+        if (visibleLists.state === 'loading') return null;
+        if (visibleLists.state === 'error') {
+          return (
+            <span css={{ color: 'red' }}>
+              {visibleLists.error instanceof Error
+                ? visibleLists.error.message
+                : visibleLists.error[0].message}
+            </span>
+          );
+        }
+        return Object.keys(lists).map(key => {
+          if (!visibleLists.lists.has(key)) {
+            return null;
+          }
+
+          const list = lists[key];
+          return (
+            <NavItem key={key} href={`/${list.path}`}>
+              {lists[key].label}
+            </NavItem>
+          );
+        });
+      })()}
+    </Fragment>
+  );
+};
+
+export const Navigation = () => {
+  const {
+    adminMeta: { lists },
+    adminConfig,
+    authenticatedItem,
+    visibleLists,
+  } = useKeystone();
+  if (adminConfig?.components?.Navigation) {
+    return (
+      <adminConfig.components.Navigation
+        lists={lists}
+        visibleLists={visibleLists}
+        authenticatedItem={authenticatedItem}
+      />
+    );
+  }
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <DefaultNavigationList lists={lists} visibleLists={visibleLists} />
+    </NavigationContainer>
   );
 };
