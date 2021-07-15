@@ -8,6 +8,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   IdType,
 } from '../utils';
+import { validateUniqueWhereInput } from '../where-inputs';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -18,7 +19,6 @@ import {
 } from './nested-mutation-one-input-resolvers';
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
 import { runSideEffectOnlyHook, validationHook } from './hooks';
-import { validateUniqueWhereInput } from '../where-inputs';
 
 export class NestedMutationState {
   #afterChanges: (() => void | Promise<void>)[] = [];
