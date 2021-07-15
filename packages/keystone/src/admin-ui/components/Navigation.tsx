@@ -126,12 +126,41 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   );
 };
 
+<<<<<<< HEAD
 export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
   children: ReactNode;
 };
 
 export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
   const { spacing } = useTheme();
+=======
+export type NavigationProps = Pick<
+  ReturnType<typeof useKeystone>,
+  'visibleLists' | 'authenticatedItem'
+> & {
+  list: any;
+};
+
+export const Navigation = () => {
+  const {
+    adminMeta: { lists },
+    adminConfig,
+    authenticatedItem,
+    visibleLists,
+  } = useKeystone();
+  const { spacing } = useTheme();
+
+  if (adminConfig?.components?.Navigation) {
+    return (
+      <adminConfig.components.Navigation
+        authenticatedItem={authenticatedItem}
+        lists={lists}
+        visibleLists={visibleLists}
+      />
+    );
+  }
+
+>>>>>>> 14387b2d8... add Navigation component to customisable components in adminConfig
   return (
     <div
       css={{
