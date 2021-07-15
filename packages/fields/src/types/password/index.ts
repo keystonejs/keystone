@@ -72,7 +72,8 @@ export const password =
         }
         if (val.length < minLength) {
           throw new UserInputError(
-            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
+            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`,
+            { listKey: meta.listKey, fieldKey: meta.fieldKey }
           );
         }
 
