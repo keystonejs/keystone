@@ -1,7 +1,13 @@
 import type { ReactElement } from 'react';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 import { GqlNames, JSONValue } from './utils';
 
-export type AdminConfig = { components?: { Logo?: (props: {}) => ReactElement } };
+export type AdminConfig = {
+  components?: {
+    Logo?: (props: {}) => ReactElement;
+    Navigation?: (props: NavigationProps) => ReactElement;
+  };
+};
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
   listKey: string;

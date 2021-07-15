@@ -122,13 +122,31 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   );
 };
 
+export type NavigationProps = Pick<
+  ReturnType<typeof useKeystone>,
+  'visibleLists' | 'authenticatedItem'
+> & {
+  list: any;
+};
+
 export const Navigation = () => {
   const {
     adminMeta: { lists },
+    adminConfig,
     authenticatedItem,
     visibleLists,
   } = useKeystone();
   const { spacing } = useTheme();
+
+  if (adminConfig?.components?.Navigation) {
+    return (
+      <adminConfig.components.Navigation
+        authenticatedItem={authenticatedItem}
+        lists={lists}
+        visibleLists={visibleLists}
+      />
+    );
+  }
 
   return (
     <div
