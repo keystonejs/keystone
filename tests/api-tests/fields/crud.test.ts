@@ -16,6 +16,7 @@ testModules
     ({ skipCrudTest, unSupportedAdapterList = [] }) =>
       !skipCrudTest && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
   )
+  .filter(mod => mod.name === 'Password')
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
       const listKey = 'Test';

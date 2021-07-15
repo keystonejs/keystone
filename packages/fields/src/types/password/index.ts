@@ -9,6 +9,7 @@ import {
 import bcryptjs from 'bcryptjs';
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords';
+import { UserInputError } from 'apollo-server-errors';
 import { resolveView } from '../../resolve-view';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -63,12 +64,14 @@ export const password =
       }
       if (typeof val === 'string') {
         if (rejectCommon && dumbPasswords.check(val)) {
-          throw new Error(
+          // Would use a custom validation error here in reality, but this demonstrates the issue.
+          // I have examples of using this function and the associated
+          throw new UserInputError(
             `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`
           );
         }
         if (val.length < minLength) {
-          throw new Error(
+          throw new UserInputError(
             `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
           );
         }

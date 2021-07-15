@@ -5,7 +5,7 @@ import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import type { Config } from 'apollo-server-express';
 import type { CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createSessionContext } from '../../session';
-import { formatError } from './format-error';
+// import { formatError } from './format-error';
 
 export const createApolloServerMicro = ({
   graphQLSchema,
@@ -87,7 +87,7 @@ const _createApolloServerConfig = ({
   return {
     uploads: false,
     schema: graphQLSchema,
-    formatError, // TODO: this needs to be discussed
+    // formatError, // TODO: this needs to be discussed
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }
