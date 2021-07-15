@@ -11,17 +11,17 @@ import { getPrismaModelForList } from '../utils';
 import {
   UniqueInputFilter,
   PrismaFilter,
-  resolveUniqueWhereInput,
   resolveWhereInput,
+  UniquePrismaFilter,
 } from '../where-inputs';
 
 export async function getAccessControlledItemForDelete(
   list: InitialisedList,
   context: KeystoneContext,
-  filter: UniqueInputFilter,
-  inputFilter: UniqueInputFilter
+  uniqueInput: UniqueInputFilter,
+  uniqueWhere: UniquePrismaFilter
 ): Promise<ItemRootValue> {
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(filter, list.listKey, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
 
   // List access: pass 1
   const access = await validateNonCreateListAccessControl({
@@ -34,10 +34,7 @@ export async function getAccessControlledItemForDelete(
 
   // List access: pass 2
   const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
-  let where: PrismaFilter = mapUniqueWhereToWhere(
-    list,
-    await resolveUniqueWhereInput(inputFilter, list.fields, context)
-  );
+  let where: PrismaFilter = mapUniqueWhereToWhere(list, uniqueWhere);
   if (typeof access === 'object') {
     where = { AND: [where, await resolveWhereInput(access, list)] };
   }
@@ -52,12 +49,12 @@ export async function getAccessControlledItemForDelete(
 export async function getAccessControlledItemForUpdate(
   list: InitialisedList,
   context: KeystoneContext,
-  uniqueWhere: UniqueInputFilter,
+  uniqueInput: UniqueInputFilter,
+  uniqueWhere: UniquePrismaFilter,
   update: Record<string, any>
 ) {
   const prismaModel = getPrismaModelForList(context.prisma, list.listKey);
-  const resolvedUniqueWhere = await resolveUniqueWhereInput(uniqueWhere, list.fields, context);
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
   const args = {
     context,
     itemId,
@@ -77,7 +74,7 @@ export async function getAccessControlledItemForUpdate(
   }
 
   // List access: pass 2
-  const uniqueWhereInWhereForm = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
+  const uniqueWhereInWhereForm = mapUniqueWhereToWhere(list, uniqueWhere);
   const item = await prismaModel.findFirst({
     where:
       accessControl === true
@@ -142,15 +139,15 @@ export async function applyAccessControlForCreate(
 }
 
 async function getStringifiedItemIdFromUniqueWhereInput(
-  uniqueWhere: UniqueInputFilter,
+  uniqueInput: UniqueInputFilter,
   listKey: string,
   context: KeystoneContext
 ): Promise<string> {
-  if (uniqueWhere.id !== undefined) {
-    return uniqueWhere.id;
+  if (uniqueInput.id !== undefined) {
+    return uniqueInput.id;
   }
   try {
-    const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere });
+    const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
     return item.id;
   } catch (err) {
     throw accessDeniedError('mutation');
