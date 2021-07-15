@@ -168,7 +168,7 @@ describe(`Not authed`, () => {
 
             test(`single denied: ${JSON.stringify(access)}`, async () => {
               const singleQueryName = nameFn[mode](access);
-              const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
+              const query = `query { ${singleQueryName}(where: { id: "cabc123" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, singleQueryName);
             });
