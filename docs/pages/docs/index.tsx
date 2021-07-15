@@ -20,10 +20,6 @@ export default function Docs() {
 
       <CommunitySlackCTA />
 
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-            Understanding Keystone
-      </Type>
-
       <div
         css={mq({
           display: 'grid',
@@ -32,19 +28,14 @@ export default function Docs() {
         })}
       >
         <div>
-
+          <Type as="h2" look="heading30" margin="0 0 1rem 0">
+            Understanding Keystone
+          </Type>
           <Type as="p" look="body18" margin="0 0 1.25rem">
             Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
             and how it delivers a developer experience that combines features, flexibility, and the
-            perfect amount of abstraction to get started fast, and grow as you learn.
-          </Type>
-          <Type as="p" look="body18" margin="1.25rem 0 0">
-          <a
-          href="/updates/prisma-day-2021"
-        >
-          Read the full transcript &rarr;
-        </a>
-            
+            perfect amount of abstraction to get started fast, and grow as you learn.{' '}
+            <a href="/updates/prisma-day-2021">Read the full transcript</a>.
           </Type>
         </div>
         <div>
