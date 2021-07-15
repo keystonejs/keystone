@@ -26,18 +26,18 @@ export type UniquePrismaFilter = Record<string, any> & {
 };
 
 export async function resolveUniqueWhereInput(
-  input: UniqueInputFilter,
+  uniqueInput: UniqueInputFilter,
   fields: InitialisedList['fields'],
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
-  const inputKeys = Object.keys(input);
+  const inputKeys = Object.keys(uniqueInput);
   if (inputKeys.length !== 1) {
     throw new Error(
       `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
     );
   }
   const key = inputKeys[0];
-  const val = input[key];
+  const val = uniqueInput[key];
   if (val === null) {
     throw new Error(`The unique value provided in a unique where input must not be null`);
   }

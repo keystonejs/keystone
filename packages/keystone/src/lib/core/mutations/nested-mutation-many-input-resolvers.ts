@@ -15,33 +15,35 @@ type _UpdateValueType = schema.InferValueFromArg<
 >;
 
 async function getDisconnects(
-  uniqueWheres: (UniqueInputFilter | null)[],
+  uniqueInputs: (UniqueInputFilter | null)[],
   context: KeystoneContext,
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter[]> {
   return (
     await Promise.all(
-      uniqueWheres.map(async filter => {
-        if (filter === null) return [];
+      uniqueInputs.map(async uniqueInput => {
+        if (uniqueInput === null) return [];
+        const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
         try {
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter });
+          await context.sudo().db.lists[foreignList.listKey].findOne({ where: uniqueWhere });
         } catch (err) {
           return [];
         }
-        return [await resolveUniqueWhereInput(filter, foreignList.fields, context)];
+        return [uniqueWhere];
       })
     )
   ).flat();
 }
 
 function getConnects(
-  uniqueWhere: UniqueInputFilter[],
+  uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
-  return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter });
-    return resolveUniqueWhereInput(filter, foreignList.fields, context);
+  return uniqueInputs.map(async uniqueInput => {
+    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+    await context.db.lists[foreignList.listKey].findOne({ where: uniqueWhere });
+    return uniqueWhere;
   });
 }
 

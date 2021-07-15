@@ -18,13 +18,13 @@ async function handleCreateAndUpdate(
   target: string
 ) {
   if (value.connect) {
+    const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
     try {
-      await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
+      await context.db.lists[foreignList.listKey].findOne({ where: uniqueWhere });
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
-    const connect = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
-    return { connect };
+    return { connect: uniqueWhere };
   } else if (value.create) {
     const createInput = value.create;
     let create = await (async () => {
