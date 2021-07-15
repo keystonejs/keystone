@@ -13,7 +13,6 @@ import {
   PrismaFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-  UniquePrismaFilter,
 } from '../where-inputs';
 
 export async function getAccessControlledItemForDelete(
@@ -22,7 +21,7 @@ export async function getAccessControlledItemForDelete(
   uniqueInput: UniqueInputFilter
 ): Promise<ItemRootValue> {
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
 
   // List access: pass 1
   const access = await validateNonCreateListAccessControl({
@@ -54,7 +53,7 @@ export async function getAccessControlledItemForUpdate(
   update: Record<string, any>
 ) {
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueWhere, list.listKey, context);
+  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
   const args = {
     context,
     itemId,
@@ -140,15 +139,18 @@ export async function applyAccessControlForCreate(
 }
 
 async function getStringifiedItemIdFromUniqueWhereInput(
-  uniqueWhere: UniquePrismaFilter,
+  uniqueInput: UniqueInputFilter,
   listKey: string,
   context: KeystoneContext
 ): Promise<string> {
-  if (uniqueWhere.id !== undefined) {
-    return uniqueWhere.id;
+  if (uniqueInput.id !== undefined) {
+    // We use uniqueInput rather than uniqueWhere in this function
+    // so that this value returns a string, even if the resolved input
+    // is e.g. and integer.
+    return uniqueInput.id;
   }
   try {
-    const item = await context.sudo().lists[listKey].findOne({ where: uniqueWhere });
+    const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
     return item.id;
   } catch (err) {
     throw accessDeniedError('mutation');
