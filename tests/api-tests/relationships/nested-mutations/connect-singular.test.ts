@@ -138,7 +138,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting an item which cannot be found during creating',
     runner(async ({ context }) => {
-      const FAKE_ID = "cabc123";
+      const FAKE_ID = 'cabc123';
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -164,7 +164,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting an item which cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = "cabc123";
+      const FAKE_ID = 'cabc123';
 
       // Create an item to link against
       const createEvent = await context.lists.Event.createOne({ data: {} });
