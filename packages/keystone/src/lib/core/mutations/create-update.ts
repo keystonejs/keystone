@@ -116,7 +116,7 @@ export function updateMany(
     const updatedItem = await writeLimit(() =>
       getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
     );
-    afterChange(updatedItem);
+    await afterChange(updatedItem);
     return updatedItem;
   });
 }
