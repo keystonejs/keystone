@@ -153,7 +153,13 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringNullableFilter {
@@ -305,15 +311,14 @@ input PhoneNumberWhereInput {
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
   id: IDFilter
-  user: UserManyRelationFilter
+  user: UserOneRelationFilter
   type: StringNullableFilter
   value: StringNullableFilter
 }
 
-input UserManyRelationFilter {
-  every: UserWhereInput
-  some: UserWhereInput
-  none: UserWhereInput
+input UserOneRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -387,7 +392,7 @@ input PostWhereInput {
   title: StringNullableFilter
   status: StringNullableFilter
   publishDate: DateTimeNullableFilter
-  author: UserManyRelationFilter
+  author: UserOneRelationFilter
 }
 
 input DateTimeNullableFilter {

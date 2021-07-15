@@ -247,7 +247,7 @@ export const relationship =
       ...commonConfig,
       input: {
         where: {
-          arg: schema.arg({ type: listTypes.relateTo.many.where }),
+          arg: schema.arg({ type: listTypes.relateTo.one.where }),
           resolve(value, context, resolve) {
             return resolve(value);
           },

@@ -18,7 +18,7 @@ input TodoWhereInput {
   id: IDFilter
   label: StringNullableFilter
   isComplete: BoolNullableFilter
-  assignedTo: UserManyRelationFilter
+  assignedTo: UserOneRelationFilter
   finishBy: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -84,10 +84,9 @@ input NestedBoolNullableFilter {
   not: NestedBoolNullableFilter
 }
 
-input UserManyRelationFilter {
-  every: UserWhereInput
-  some: UserWhereInput
-  none: UserWhereInput
+input UserOneRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
 }
 
 input DateTimeNullableFilter {

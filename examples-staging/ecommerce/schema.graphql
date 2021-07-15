@@ -96,7 +96,7 @@ input UserWhereInput {
   password: PasswordFilter
   cart: CartItemManyRelationFilter
   orders: OrderManyRelationFilter
-  role: RoleManyRelationFilter
+  role: RoleOneRelationFilter
   products: ProductManyRelationFilter
   passwordResetToken: PasswordFilter
   passwordResetIssuedAt: DateTimeNullableFilter
@@ -169,10 +169,9 @@ input OrderManyRelationFilter {
   none: OrderWhereInput
 }
 
-input RoleManyRelationFilter {
-  every: RoleWhereInput
-  some: RoleWhereInput
-  none: RoleWhereInput
+input RoleOneRelationFilter {
+  is: RoleWhereInput
+  isNot: RoleWhereInput
 }
 
 input ProductManyRelationFilter {
@@ -317,16 +316,15 @@ input ProductWhereInput {
   id: IDFilter
   name: StringNullableFilter
   description: StringNullableFilter
-  photo: ProductImageManyRelationFilter
+  photo: ProductImageOneRelationFilter
   status: StringNullableFilter
   price: IntNullableFilter
-  user: UserManyRelationFilter
+  user: UserOneRelationFilter
 }
 
-input ProductImageManyRelationFilter {
-  every: ProductImageWhereInput
-  some: ProductImageWhereInput
-  none: ProductImageWhereInput
+input ProductImageOneRelationFilter {
+  is: ProductImageWhereInput
+  isNot: ProductImageWhereInput
 }
 
 input IntNullableFilter {
@@ -351,10 +349,9 @@ input NestedIntNullableFilter {
   not: NestedIntNullableFilter
 }
 
-input UserManyRelationFilter {
-  every: UserWhereInput
-  some: UserWhereInput
-  none: UserWhereInput
+input UserOneRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -488,7 +485,12 @@ input ProductImageWhereInput {
   NOT: [ProductImageWhereInput!]
   id: IDFilter
   altText: StringNullableFilter
-  product: ProductManyRelationFilter
+  product: ProductOneRelationFilter
+}
+
+input ProductOneRelationFilter {
+  is: ProductWhereInput
+  isNot: ProductWhereInput
 }
 
 input ProductImageWhereUniqueInput {
@@ -556,8 +558,8 @@ input CartItemWhereInput {
   NOT: [CartItemWhereInput!]
   id: IDFilter
   quantity: IntNullableFilter
-  product: ProductManyRelationFilter
-  user: UserManyRelationFilter
+  product: ProductOneRelationFilter
+  user: UserOneRelationFilter
 }
 
 input CartItemWhereUniqueInput {
@@ -617,10 +619,15 @@ input OrderItemWhereInput {
   id: IDFilter
   name: StringNullableFilter
   description: StringNullableFilter
-  photo: ProductImageManyRelationFilter
+  photo: ProductImageOneRelationFilter
   price: IntNullableFilter
   quantity: IntNullableFilter
-  order: OrderManyRelationFilter
+  order: OrderOneRelationFilter
+}
+
+input OrderOneRelationFilter {
+  is: OrderWhereInput
+  isNot: OrderWhereInput
 }
 
 input OrderItemWhereUniqueInput {
@@ -722,7 +729,7 @@ input OrderWhereInput {
   id: IDFilter
   total: IntNullableFilter
   items: OrderItemManyRelationFilter
-  user: UserManyRelationFilter
+  user: UserOneRelationFilter
   charge: StringNullableFilter
 }
 
@@ -840,6 +847,12 @@ input BoolNullableFilter {
 input NestedBoolNullableFilter {
   equals: Boolean
   not: NestedBoolNullableFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input RoleWhereUniqueInput {

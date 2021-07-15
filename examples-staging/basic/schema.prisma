@@ -1,6 +1,6 @@
-datasource sqlite {
+datasource postgresql {
   url      = env("DATABASE_URL")
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 generator client {
@@ -42,7 +42,7 @@ model Post {
   id          String    @id @default(cuid())
   title       String?
   status      String?
-  content     String?
+  content     Json?
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")

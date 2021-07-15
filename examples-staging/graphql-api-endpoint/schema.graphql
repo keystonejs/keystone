@@ -216,7 +216,7 @@ input PostWhereInput {
   title: StringNullableFilter
   status: StringNullableFilter
   publishDate: DateTimeNullableFilter
-  author: UserManyRelationFilter
+  author: UserOneRelationFilter
   tags: TagManyRelationFilter
 }
 
@@ -242,10 +242,9 @@ input NestedDateTimeNullableFilter {
   not: NestedDateTimeNullableFilter
 }
 
-input UserManyRelationFilter {
-  every: UserWhereInput
-  some: UserWhereInput
-  none: UserWhereInput
+input UserOneRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
 }
 
 input TagManyRelationFilter {

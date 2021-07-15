@@ -17,7 +17,7 @@ input TodoWhereInput {
   label: StringNullableFilter
   isComplete: BoolNullableFilter
   isPrivate: BoolNullableFilter
-  assignedTo: PersonManyRelationFilter
+  assignedTo: PersonOneRelationFilter
 }
 
 input IDFilter {
@@ -80,10 +80,9 @@ input NestedBoolNullableFilter {
   not: NestedBoolNullableFilter
 }
 
-input PersonManyRelationFilter {
-  every: PersonWhereInput
-  some: PersonWhereInput
-  none: PersonWhereInput
+input PersonOneRelationFilter {
+  is: PersonWhereInput
+  isNot: PersonWhereInput
 }
 
 input TodoWhereUniqueInput {
@@ -192,7 +191,7 @@ input PersonWhereInput {
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
-  role: RoleManyRelationFilter
+  role: RoleOneRelationFilter
   tasks: TodoManyRelationFilter
 }
 
@@ -200,10 +199,9 @@ input PasswordFilter {
   isSet: Boolean!
 }
 
-input RoleManyRelationFilter {
-  every: RoleWhereInput
-  some: RoleWhereInput
-  none: RoleWhereInput
+input RoleOneRelationFilter {
+  is: RoleWhereInput
+  isNot: RoleWhereInput
 }
 
 input TodoManyRelationFilter {
@@ -319,6 +317,12 @@ input RoleWhereInput {
   canManagePeople: BoolNullableFilter
   canManageRoles: BoolNullableFilter
   assignedTo: PersonManyRelationFilter
+}
+
+input PersonManyRelationFilter {
+  every: PersonWhereInput
+  some: PersonWhereInput
+  none: PersonWhereInput
 }
 
 input RoleWhereUniqueInput {

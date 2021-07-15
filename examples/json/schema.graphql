@@ -16,7 +16,7 @@ input PackageWhereInput {
   id: IDFilter
   label: StringNullableFilter
   isPrivate: BoolNullableFilter
-  ownedBy: PersonManyRelationFilter
+  ownedBy: PersonOneRelationFilter
 }
 
 input IDFilter {
@@ -79,10 +79,9 @@ input NestedBoolNullableFilter {
   not: NestedBoolNullableFilter
 }
 
-input PersonManyRelationFilter {
-  every: PersonWhereInput
-  some: PersonWhereInput
-  none: PersonWhereInput
+input PersonOneRelationFilter {
+  is: PersonWhereInput
+  isNot: PersonWhereInput
 }
 
 input PackageWhereUniqueInput {

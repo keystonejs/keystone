@@ -34,7 +34,7 @@ input PostWhereInput {
   status: PostStatusTypeNullableFilter
   content: StringNullableFilter
   publishDate: DateTimeNullableFilter
-  author: AuthorManyRelationFilter
+  author: AuthorOneRelationFilter
 }
 
 input IDFilter {
@@ -116,10 +116,9 @@ input NestedDateTimeNullableFilter {
   not: NestedDateTimeNullableFilter
 }
 
-input AuthorManyRelationFilter {
-  every: AuthorWhereInput
-  some: AuthorWhereInput
-  none: AuthorWhereInput
+input AuthorOneRelationFilter {
+  is: AuthorWhereInput
+  isNot: AuthorWhereInput
 }
 
 input PostWhereUniqueInput {

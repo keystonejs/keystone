@@ -24,7 +24,7 @@ input TaskWhereInput {
   label: StringNullableFilter
   priority: TaskPriorityTypeNullableFilter
   isComplete: BoolNullableFilter
-  assignedTo: PersonManyRelationFilter
+  assignedTo: PersonOneRelationFilter
   finishBy: DateTimeNullableFilter
 }
 
@@ -95,10 +95,9 @@ input NestedBoolNullableFilter {
   not: NestedBoolNullableFilter
 }
 
-input PersonManyRelationFilter {
-  every: PersonWhereInput
-  some: PersonWhereInput
-  none: PersonWhereInput
+input PersonOneRelationFilter {
+  is: PersonWhereInput
+  isNot: PersonWhereInput
 }
 
 input DateTimeNullableFilter {
