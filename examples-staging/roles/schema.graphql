@@ -59,7 +59,7 @@ input PersonRelateToOneInput {
   connect: PersonWhereUniqueInput
 }
 
-input TodosUpdateInput {
+input TodoUpdateArgs {
   where: TodoWhereUniqueInput!
   data: TodoUpdateInput!
 }
@@ -152,7 +152,7 @@ input TodoRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input PeopleUpdateInput {
+input PersonUpdateArgs {
   where: PersonWhereUniqueInput!
   data: PersonUpdateInput!
 }
@@ -256,7 +256,7 @@ input PersonRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input RolesUpdateInput {
+input RoleUpdateArgs {
   where: RoleWhereUniqueInput!
   data: RoleUpdateInput!
 }
@@ -286,22 +286,22 @@ scalar JSON
   )
 
 type Mutation {
-  createTodo(data: TodoCreateInput): Todo
+  createTodo(data: TodoCreateInput!): Todo
   createTodos(data: [TodoCreateInput!]!): [Todo]
   updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
-  updateTodos(data: [TodosUpdateInput!]!): [Todo]
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
-  createPerson(data: PersonCreateInput): Person
+  createPerson(data: PersonCreateInput!): Person
   createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person]
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
-  createRole(data: RoleCreateInput): Role
+  createRole(data: RoleCreateInput!): Role
   createRoles(data: [RoleCreateInput!]!): [Role]
   updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role]
+  updateRoles(data: [RoleUpdateArgs!]!): [Role]
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   authenticatePersonWithPassword(

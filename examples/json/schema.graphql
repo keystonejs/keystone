@@ -56,7 +56,7 @@ input PersonRelateToOneInput {
   connect: PersonWhereUniqueInput
 }
 
-input PackagesUpdateInput {
+input PackageUpdateArgs {
   where: PackageWhereUniqueInput!
   data: PackageUpdateInput!
 }
@@ -124,7 +124,7 @@ input PackageRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input PeopleUpdateInput {
+input PersonUpdateArgs {
   where: PersonWhereUniqueInput!
   data: PersonUpdateInput!
 }
@@ -148,19 +148,19 @@ scalar JSON
   )
 
 type Mutation {
-  createPackage(data: PackageCreateInput): Package
+  createPackage(data: PackageCreateInput!): Package
   createPackages(data: [PackageCreateInput!]!): [Package]
   updatePackage(
     where: PackageWhereUniqueInput!
     data: PackageUpdateInput!
   ): Package
-  updatePackages(data: [PackagesUpdateInput!]!): [Package]
+  updatePackages(data: [PackageUpdateArgs!]!): [Package]
   deletePackage(where: PackageWhereUniqueInput!): Package
   deletePackages(where: [PackageWhereUniqueInput!]!): [Package]
-  createPerson(data: PersonCreateInput): Person
+  createPerson(data: PersonCreateInput!): Person
   createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PeopleUpdateInput!]!): [Person]
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
 }

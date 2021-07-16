@@ -100,7 +100,7 @@ input PostRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
@@ -218,7 +218,7 @@ input TagRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
 }
@@ -298,7 +298,7 @@ input TagUpdateInput {
   posts: PostRelateToManyForUpdateInput
 }
 
-input TagsUpdateInput {
+input TagUpdateArgs {
   where: TagWhereUniqueInput!
   data: TagUpdateInput!
 }
@@ -317,22 +317,22 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createTag(data: TagCreateInput): Tag
+  createTag(data: TagCreateInput!): Tag
   createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
-  updateTags(data: [TagsUpdateInput!]!): [Tag]
+  updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
   authenticateUserWithPassword(

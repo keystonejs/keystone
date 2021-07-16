@@ -170,7 +170,7 @@ input PostRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
@@ -251,7 +251,7 @@ input UserRelateToOneInput {
   connect: UserWhereUniqueInput
 }
 
-input PhoneNumbersUpdateInput {
+input PhoneNumberUpdateArgs {
   where: PhoneNumberWhereUniqueInput!
   data: PhoneNumberUpdateInput!
 }
@@ -327,7 +327,7 @@ input PostUpdateInput {
   author: UserRelateToOneInput
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
 }
@@ -349,25 +349,25 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
+  createPhoneNumber(data: PhoneNumberCreateInput!): PhoneNumber
   createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber]
   updatePhoneNumber(
     where: PhoneNumberWhereUniqueInput!
     data: PhoneNumberUpdateInput!
   ): PhoneNumber
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput!]!): [PhoneNumber]
+  updatePhoneNumbers(data: [PhoneNumberUpdateArgs!]!): [PhoneNumber]
   deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber]
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   authenticateUserWithPassword(

@@ -148,7 +148,7 @@ input ProductRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
 }
@@ -263,7 +263,7 @@ input UserRelateToOneInput {
   connect: UserWhereUniqueInput
 }
 
-input ProductsUpdateInput {
+input ProductUpdateArgs {
   where: ProductWhereUniqueInput!
   data: ProductUpdateInput!
 }
@@ -383,7 +383,7 @@ input ProductRelateToOneInput {
   connect: ProductWhereUniqueInput
 }
 
-input ProductImagesUpdateInput {
+input ProductImageUpdateArgs {
   where: ProductImageWhereUniqueInput!
   data: ProductImageUpdateInput!
 }
@@ -441,7 +441,7 @@ input CartItemUpdateInput {
   user: UserRelateToOneInput
 }
 
-input CartItemsUpdateInput {
+input CartItemUpdateArgs {
   where: CartItemWhereUniqueInput!
   data: CartItemUpdateInput!
 }
@@ -533,7 +533,7 @@ input OrderRelateToOneInput {
   connect: OrderWhereUniqueInput
 }
 
-input OrderItemsUpdateInput {
+input OrderItemUpdateArgs {
   where: OrderItemWhereUniqueInput!
   data: OrderItemUpdateInput!
 }
@@ -619,7 +619,7 @@ input OrderItemRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input OrdersUpdateInput {
+input OrderUpdateArgs {
   where: OrderWhereUniqueInput!
   data: OrderUpdateInput!
 }
@@ -722,7 +722,7 @@ input UserRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input RolesUpdateInput {
+input RoleUpdateArgs {
   where: RoleWhereUniqueInput!
   data: RoleUpdateInput!
 }
@@ -752,58 +752,58 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
-  updateUsers(data: [UsersUpdateInput!]!): [User]
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createProduct(data: ProductCreateInput): Product
+  createProduct(data: ProductCreateInput!): Product
   createProducts(data: [ProductCreateInput!]!): [Product]
   updateProduct(
     where: ProductWhereUniqueInput!
     data: ProductUpdateInput!
   ): Product
-  updateProducts(data: [ProductsUpdateInput!]!): [Product]
+  updateProducts(data: [ProductUpdateArgs!]!): [Product]
   deleteProduct(where: ProductWhereUniqueInput!): Product
   deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
-  createProductImage(data: ProductImageCreateInput): ProductImage
+  createProductImage(data: ProductImageCreateInput!): ProductImage
   createProductImages(data: [ProductImageCreateInput!]!): [ProductImage]
   updateProductImage(
     where: ProductImageWhereUniqueInput!
     data: ProductImageUpdateInput!
   ): ProductImage
-  updateProductImages(data: [ProductImagesUpdateInput!]!): [ProductImage]
+  updateProductImages(data: [ProductImageUpdateArgs!]!): [ProductImage]
   deleteProductImage(where: ProductImageWhereUniqueInput!): ProductImage
   deleteProductImages(where: [ProductImageWhereUniqueInput!]!): [ProductImage]
-  createCartItem(data: CartItemCreateInput): CartItem
+  createCartItem(data: CartItemCreateInput!): CartItem
   createCartItems(data: [CartItemCreateInput!]!): [CartItem]
   updateCartItem(
     where: CartItemWhereUniqueInput!
     data: CartItemUpdateInput!
   ): CartItem
-  updateCartItems(data: [CartItemsUpdateInput!]!): [CartItem]
+  updateCartItems(data: [CartItemUpdateArgs!]!): [CartItem]
   deleteCartItem(where: CartItemWhereUniqueInput!): CartItem
   deleteCartItems(where: [CartItemWhereUniqueInput!]!): [CartItem]
-  createOrderItem(data: OrderItemCreateInput): OrderItem
+  createOrderItem(data: OrderItemCreateInput!): OrderItem
   createOrderItems(data: [OrderItemCreateInput!]!): [OrderItem]
   updateOrderItem(
     where: OrderItemWhereUniqueInput!
     data: OrderItemUpdateInput!
   ): OrderItem
-  updateOrderItems(data: [OrderItemsUpdateInput!]!): [OrderItem]
+  updateOrderItems(data: [OrderItemUpdateArgs!]!): [OrderItem]
   deleteOrderItem(where: OrderItemWhereUniqueInput!): OrderItem
   deleteOrderItems(where: [OrderItemWhereUniqueInput!]!): [OrderItem]
-  createOrder(data: OrderCreateInput): Order
+  createOrder(data: OrderCreateInput!): Order
   createOrders(data: [OrderCreateInput!]!): [Order]
   updateOrder(where: OrderWhereUniqueInput!, data: OrderUpdateInput!): Order
-  updateOrders(data: [OrdersUpdateInput!]!): [Order]
+  updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
-  createRole(data: RoleCreateInput): Role
+  createRole(data: RoleCreateInput!): Role
   createRoles(data: [RoleCreateInput!]!): [Role]
   updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
-  updateRoles(data: [RolesUpdateInput!]!): [Role]
+  updateRoles(data: [RoleUpdateArgs!]!): [Role]
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   authenticateUserWithPassword(

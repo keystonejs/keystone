@@ -40,7 +40,7 @@ input NoteUpdateInput {
   label: String
 }
 
-input NotesUpdateInput {
+input NoteUpdateArgs {
   where: NoteWhereUniqueInput!
   data: NoteUpdateInput!
 }
@@ -58,10 +58,10 @@ scalar JSON
   )
 
 type Mutation {
-  createNote(data: NoteCreateInput): Note
+  createNote(data: NoteCreateInput!): Note
   createNotes(data: [NoteCreateInput!]!): [Note]
   updateNote(where: NoteWhereUniqueInput!, data: NoteUpdateInput!): Note
-  updateNotes(data: [NotesUpdateInput!]!): [Note]
+  updateNotes(data: [NoteUpdateArgs!]!): [Note]
   deleteNote(where: NoteWhereUniqueInput!): Note
   deleteNotes(where: [NoteWhereUniqueInput!]!): [Note]
 }

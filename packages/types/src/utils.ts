@@ -51,7 +51,6 @@ export type GqlNames = {
   updateInputName: string;
   createInputName: string;
   updateManyInputName: string;
-  createManyInputName: string;
   relateToManyForCreateInputName: string;
   relateToManyForUpdateInputName: string;
   relateToOneInputName: string;

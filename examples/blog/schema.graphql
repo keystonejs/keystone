@@ -81,7 +81,7 @@ input AuthorRelateToOneInput {
   connect: AuthorWhereUniqueInput
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
 }
@@ -160,7 +160,7 @@ input PostRelateToManyForUpdateInput {
   disconnectAll: Boolean
 }
 
-input AuthorsUpdateInput {
+input AuthorUpdateArgs {
   where: AuthorWhereUniqueInput!
   data: AuthorUpdateInput!
 }
@@ -185,16 +185,16 @@ scalar JSON
   )
 
 type Mutation {
-  createPost(data: PostCreateInput): Post
+  createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostsUpdateInput!]!): [Post]
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createAuthor(data: AuthorCreateInput): Author
+  createAuthor(data: AuthorCreateInput!): Author
   createAuthors(data: [AuthorCreateInput!]!): [Author]
   updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
-  updateAuthors(data: [AuthorsUpdateInput!]!): [Author]
+  updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
   deleteAuthor(where: AuthorWhereUniqueInput!): Author
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
 }
