@@ -10,7 +10,7 @@ const stringify = (data: any) => {
   return JSON.stringify(dataWithoutTypename, null, 2);
 };
 export function PrettyData({ data }: { data: any }) {
-  if (!data) return null;
+  if (data === undefined || data === null) return null;
 
   let prettyData: ReactNode = '';
   if (typeof data === 'string') prettyData = data;

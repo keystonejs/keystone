@@ -8,6 +8,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   IdType,
 } from '../utils';
+import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -83,14 +84,20 @@ export function createMany(
 }
 
 export async function updateOne(
-  {
-    where: rawUniqueWhere,
-    data: rawData,
-  }: { where: Record<string, any>; data: Record<string, any> },
+  { where: uniqueInput, data: rawData }: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+  // Apply access control
+  const item = await getAccessControlledItemForUpdate(
+    list,
+    context,
+    uniqueInput,
+    uniqueWhere,
+    rawData
+  );
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
   const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
@@ -104,14 +111,23 @@ export async function updateOne(
 }
 
 export function updateMany(
-  { data }: { data: { where: Record<string, any>; data: Record<string, any> }[] },
+  { data }: { data: { where: UniqueInputFilter; data: Record<string, any> }[] },
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
-    const item = await getAccessControlledItemForUpdate(list, context, rawUniqueWhere, rawData);
+  return data.map(async ({ data: rawData, where: uniqueInput }) => {
+    // Validate and resolve the input filter
+    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+    // Apply access control
+    const item = await getAccessControlledItemForUpdate(
+      list,
+      context,
+      uniqueInput,
+      uniqueWhere,
+      rawData
+    );
     const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
     const updatedItem = await writeLimit(() =>
       getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
