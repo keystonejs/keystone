@@ -42,11 +42,7 @@ async function handleCreateAndUpdate(
       }
     })();
 
-    if (create.kind === 'connect') {
-      return { connect: { id: create.id } };
-    } else {
-      return { create: create.data };
-    }
+    return { connect: { id: create.id } };
   }
 }
 
