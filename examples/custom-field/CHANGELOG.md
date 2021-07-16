@@ -1,9 +1,8 @@
 # @keystone-next/example-custom-field
 
 ## 0.0.1
+
 ### Patch Changes
-
-
 
 - [#6087](https://github.com/keystonejs/keystone/pull/6087) [`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951) Thanks [@JedWatson](https://github.com/JedWatson)! - Move source code from the `packages-next` to the `packages` directory.
 
