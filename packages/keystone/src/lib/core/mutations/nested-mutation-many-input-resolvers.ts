@@ -6,12 +6,14 @@ import { NestedMutationState } from './create-update';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
-type _CreateValueType = schema.InferValueFromArg<
-  schema.Arg<TypesForList['relateTo']['many']['create']>
+type _CreateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>,
+  null | undefined
 >;
 
-type _UpdateValueType = schema.InferValueFromArg<
-  schema.Arg<TypesForList['relateTo']['many']['update']>
+type _UpdateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
+  null | undefined
 >;
 
 async function getDisconnects(
@@ -53,7 +55,7 @@ function getConnects(
 }
 
 async function resolveCreateAndConnect(
-  value: Exclude<_UpdateValueType, null | undefined>,
+  value: _UpdateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -96,10 +98,7 @@ async function resolveCreateAndConnect(
   return result;
 }
 
-function assertValidManyOperation(
-  val: Exclude<_UpdateValueType, undefined | null>,
-  target: string
-) {
+function assertValidManyOperation(val: _UpdateValueType, target: string) {
   if (
     !Array.isArray(val.connect) &&
     !Array.isArray(val.create) &&
@@ -117,9 +116,6 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (value: _CreateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
     assertValidManyOperation(value, target);
     return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
   };
@@ -132,9 +128,6 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (value: _UpdateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
     assertValidManyOperation(value, target);
     const disconnects = getDisconnects(
       value.disconnectAll ? [] : value.disconnect || [],

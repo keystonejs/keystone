@@ -145,72 +145,73 @@ async function resolveInputForCreateOrUpdate(
 ) {
   const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
-  let resolvedData = Object.fromEntries(
+
+  let resolvedData = originalInput;
+
+  // Apply default values
+  // We don't expect any errors from here, so we can wrap all these operations
+  // in a generic catch-all error handler.
+  if (operation === 'create') {
+    resolvedData = Object.fromEntries(
+      await promiseAllRejectWithAllErrors(
+        Object.entries(list.fields).map(async ([fieldKey, field]) => {
+          let input = originalInput[fieldKey];
+          if (input === undefined && field.__legacy?.defaultValue !== undefined) {
+            input =
+              typeof field.__legacy.defaultValue === 'function'
+                ? await field.__legacy.defaultValue({ originalInput, context })
+                : field.__legacy.defaultValue;
+          }
+          return [fieldKey, input] as const;
+        })
+      )
+    );
+  }
+
+  // Apply field type input resolvers
+  resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        const inputConfig = field.input?.[operation];
-
-        let input = originalInput[fieldKey];
-        // Apply default values
-        if (
-          operation === 'create' &&
-          input === undefined &&
-          field.__legacy?.defaultValue !== undefined
-        ) {
-          input =
-            typeof field.__legacy.defaultValue === 'function'
-              ? await field.__legacy.defaultValue({ originalInput, context })
-              : field.__legacy.defaultValue;
-        }
-
-        // Resolve field type input resolvers
-        const resolved = inputConfig?.resolve
-          ? await inputConfig.resolve(
-              input,
-              context,
-              (() => {
-                if (field.dbField.kind !== 'relation') {
-                  return undefined;
-                }
-                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
-                const foreignList = list.lists[field.dbField.list];
-                if (field.dbField.mode === 'many') {
-                  if (operation === 'create') {
-                    return resolveRelateToManyForCreateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  } else {
-                    return resolveRelateToManyForUpdateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  }
+        const inputResolver = field.input?.[operation]?.resolve;
+        let input = resolvedData[fieldKey];
+        if (inputResolver) {
+          input = await inputResolver(
+            input,
+            context,
+            (() => {
+              // This third argument only applies to relationship fields
+              if (field.dbField.kind !== 'relation') {
+                return undefined;
+              }
+              if (input === undefined) {
+                // No-op: This is what we want
+                return () => undefined;
+              }
+              if (input === null) {
+                // No-op: Should this be UserInputError?
+                return () => undefined;
+              }
+              const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
+              const foreignList = list.lists[field.dbField.list];
+              let resolver;
+              if (field.dbField.mode === 'many') {
+                if (operation === 'create') {
+                  resolver = resolveRelateToManyForCreateInput;
                 } else {
-                  if (operation === 'create') {
-                    return resolveRelateToOneForCreateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  } else {
-                    return resolveRelateToOneForUpdateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  }
+                  resolver = resolveRelateToManyForUpdateInput;
                 }
-              })()
-            )
-          : input;
-        return [fieldKey, resolved] as const;
+              } else {
+                if (operation === 'create') {
+                  resolver = resolveRelateToOneForCreateInput;
+                } else {
+                  resolver = resolveRelateToOneForUpdateInput;
+                }
+              }
+              return resolver(nestedMutationState, context, foreignList, target);
+            })()
+          );
+        }
+        return [fieldKey, input] as const;
       })
     )
   );
