@@ -54,10 +54,10 @@ export default function WhyKeystonePage() {
         >
           <div>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
-              Keystone is a Thinkmill product. We’ve spent years shipping sophisticated solutions
-              for large companies like Atlassian, Samsung, Qantas, Breville, and the Australian
-              Government. We’ve also helped startups get off the ground in a way that lets them
-              deliver immediate value and change as they learn.
+              Keystone is a <a href="https://thinkmill.com.au">Thinkmill</a> product. We’ve spent
+              years shipping sophisticated solutions for large companies like Atlassian, Samsung,
+              Qantas, Breville, and the Australian Government. We’ve also helped startups get off
+              the ground in a way that lets them deliver immediate value and change as they learn.
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
               Keystone solves for this spectrum of needs in a way that other backend tools and
