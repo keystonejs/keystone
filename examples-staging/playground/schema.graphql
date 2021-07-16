@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Note {
   id: ID!
   label: String
@@ -76,41 +73,15 @@ type _QueryMeta {
 }
 
 type Mutation {
-  """
-   Create a single Note item.
-  """
   createNote(data: NoteCreateInput): Note
-
-  """
-   Create multiple Note items.
-  """
   createNotes(data: [NotesCreateInput]): [Note]
-
-  """
-   Update a single Note item by ID.
-  """
   updateNote(id: ID!, data: NoteUpdateInput): Note
-
-  """
-   Update multiple Note items by ID.
-  """
   updateNotes(data: [NotesUpdateInput]): [Note]
-
-  """
-   Delete a single Note item by ID.
-  """
   deleteNote(id: ID!): Note
-
-  """
-   Delete multiple Note items by ID.
-  """
   deleteNotes(ids: [ID!]): [Note]
 }
 
 type Query {
-  """
-   Search for all Note items which match the where clause.
-  """
   allNotes(
     where: NoteWhereInput! = {}
     search: String
@@ -120,15 +91,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Note!]
-
-  """
-   Search for the Note item with the matching ID.
-  """
   Note(where: NoteWhereUniqueInput!): Note
-
-  """
-   Perform a meta-query on all Note items which match the where clause.
-  """
   _allNotesMeta(
     where: NoteWhereInput! = {}
     search: String

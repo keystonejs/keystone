@@ -10,7 +10,6 @@ export function getQueriesForList(list: InitialisedList) {
   const findOne = schema.field({
     type: list.types.output,
     args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
-    description: ` Search for the ${list.listKey} item with the matching ID.`,
     async resolve(_rootVal, args, context) {
       return queries.findOne(args, list, context);
     },
@@ -19,7 +18,6 @@ export function getQueriesForList(list: InitialisedList) {
   const findMany = schema.field({
     type: schema.list(schema.nonNull(list.types.output)),
     args: list.types.findManyArgs,
-    description: ` Search for all ${list.listKey} items which match the where clause.`,
     async resolve(_rootVal, args, context, info) {
       return queries.findMany(args, list, context, info);
     },
@@ -46,7 +44,6 @@ export function getQueriesForList(list: InitialisedList) {
   const metaQuery = schema.field({
     type: QueryMeta,
     args: list.types.findManyArgs,
-    description: ` Perform a meta-query on all ${list.listKey} items which match the where clause.`,
     resolve(_rootVal, { first, search, skip, where }, context, info) {
       return {
         getCount: async () => {
