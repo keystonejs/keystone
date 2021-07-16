@@ -26,17 +26,15 @@ export class NestedMutationState {
   constructor(context: KeystoneContext) {
     this.#context = context;
   }
-  async create(
-    input: Record<string, any>,
-    list: InitialisedList
-  ): Promise<{ kind: 'connect'; id: IdType } | { kind: 'create'; data: Record<string, any> }> {
+  async create(input: Record<string, any>, list: InitialisedList) {
     const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
 
     const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
 
     this.#afterChanges.push(() => afterChange(item));
-    return { kind: 'connect' as const, id: item.id as any };
+    return { id: item.id as IdType };
   }
+
   async afterChange() {
     await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
   }
