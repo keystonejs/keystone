@@ -81,17 +81,9 @@ async function resolveCreateAndConnect(
     throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
   }
 
-  const result = {
-    connect: connectResult.filter(isFulfilled).map(x => x.value),
-    create: [] as Record<string, any>[],
-  };
-
+  const result = { connect: connectResult.filter(isFulfilled).map(x => x.value) };
   for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
-    if (createData.kind === 'create') {
-      result.create.push(createData.data);
-    } else if (createData.kind === 'connect') {
-      result.connect.push({ id: createData.id });
-    }
+    result.connect.push({ id: createData.id });
   }
 
   // Perform queries for the connections
@@ -135,15 +127,11 @@ export function resolveRelateToManyForUpdateInput(
       foreignList
     );
 
-    const [disconnect, connectAndCreates] = await Promise.all([
+    const [disconnect, connect] = await Promise.all([
       disconnects,
       resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
     ]);
 
-    return {
-      set: value.disconnectAll ? [] : undefined,
-      disconnect,
-      ...connectAndCreates,
-    };
+    return { set: value.disconnectAll ? [] : undefined, disconnect, ...connect };
   };
 }
