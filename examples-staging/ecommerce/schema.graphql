@@ -61,52 +61,16 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   cart_every: CartItemWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   cart_some: CartItemWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   cart_none: CartItemWhereInput
-
-  """
-   condition must be true for all nodes
-  """
   orders_every: OrderWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   orders_some: OrderWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   orders_none: OrderWhereInput
   role: RoleWhereInput
   role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   products_every: ProductWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   products_some: ProductWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   products_none: ProductWhereInput
   passwordResetToken_is_set: Boolean
   passwordResetIssuedAt: String
@@ -618,20 +582,8 @@ input OrderWhereInput {
   total_gte: Int
   total_in: [Int]
   total_not_in: [Int]
-
-  """
-   condition must be true for all nodes
-  """
   items_every: OrderItemWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   items_some: OrderItemWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   items_none: OrderItemWhereInput
   user: UserWhereInput
   user_is_null: Boolean
@@ -732,20 +684,8 @@ input RoleWhereInput {
   canManageCart_not: Boolean
   canManageOrders: Boolean
   canManageOrders_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   assignedTo_every: UserWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   assignedTo_some: UserWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   assignedTo_none: UserWhereInput
 }
 

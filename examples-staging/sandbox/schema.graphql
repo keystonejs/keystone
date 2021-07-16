@@ -142,20 +142,8 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tasks_every: TodoWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tasks_some: TodoWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tasks_none: TodoWhereInput
   createdAt: String
   createdAt_not: String

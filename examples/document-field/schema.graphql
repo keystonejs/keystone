@@ -144,20 +144,8 @@ input AuthorWhereInput {
   email_not_contains: String
   email_in: [String]
   email_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 

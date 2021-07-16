@@ -49,7 +49,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       data: schema.arg({ type: schema.nonNull(list.types.update) }),
     },
     resolve(_rootVal, { data, where }, context) {
-      return createAndUpdate.updateOne({ data: data, where }, list, context);
+      return createAndUpdate.updateOne({ data, where }, list, context);
     },
   });
 

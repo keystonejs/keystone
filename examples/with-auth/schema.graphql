@@ -134,20 +134,8 @@ input PersonWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tasks_every: TaskWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tasks_some: TaskWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tasks_none: TaskWhereInput
 }
 

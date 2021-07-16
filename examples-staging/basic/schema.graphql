@@ -103,35 +103,11 @@ input UserWhereInput {
   roles_not_contains: String
   roles_in: [String]
   roles_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   phoneNumbers_every: PhoneNumberWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   phoneNumbers_some: PhoneNumberWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   phoneNumbers_none: PhoneNumberWhereInput
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 

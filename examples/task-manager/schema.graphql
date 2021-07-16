@@ -121,20 +121,8 @@ input PersonWhereInput {
   name_not_contains: String
   name_in: [String]
   name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   tasks_every: TaskWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tasks_some: TaskWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tasks_none: TaskWhereInput
 }
 

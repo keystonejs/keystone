@@ -65,20 +65,8 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 
@@ -193,20 +181,8 @@ input PostWhereInput {
   publishDate_not_in: [String]
   author: UserWhereInput
   author_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tags_every: TagWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tags_some: TagWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tags_none: TagWhereInput
 }
 
@@ -303,20 +279,8 @@ input TagWhereInput {
   name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 

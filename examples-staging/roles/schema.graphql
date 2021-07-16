@@ -117,20 +117,8 @@ input PersonWhereInput {
   password_is_set: Boolean
   role: RoleWhereInput
   role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tasks_every: TodoWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tasks_some: TodoWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tasks_none: TodoWhereInput
 }
 
@@ -230,20 +218,8 @@ input RoleWhereInput {
   canManagePeople_not: Boolean
   canManageRoles: Boolean
   canManageRoles_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   assignedTo_every: PersonWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   assignedTo_some: PersonWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   assignedTo_none: PersonWhereInput
 }
 
