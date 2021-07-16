@@ -3,15 +3,19 @@ import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';
 
-type _CreateValueType = schema.InferValueFromArg<
-  schema.Arg<TypesForList['relateTo']['one']['create']>
+type _CreateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>,
+  null | undefined
 >;
-type _UpdateValueType = schema.InferValueFromArg<
-  schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
+type _UpdateValueType = Exclude<
+  schema.InferValueFromArg<
+    schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
+  >,
+  null | undefined
 >;
 
 async function handleCreateAndUpdate(
-  value: Exclude<_CreateValueType, null | undefined>,
+  value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -53,9 +57,6 @@ export function resolveRelateToOneForCreateInput(
   target: string
 ) {
   return async (value: _CreateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
@@ -71,10 +72,6 @@ export function resolveRelateToOneForUpdateInput(
   target: string
 ) {
   return async (value: _UpdateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
-
     if (value.connect && value.create) {
       throw new Error(`Nested mutation operation invalid for ${target}`);
     }
