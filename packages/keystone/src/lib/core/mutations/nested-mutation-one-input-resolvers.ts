@@ -18,13 +18,15 @@ async function handleCreateAndUpdate(
   target: string
 ) {
   if (value.connect) {
+    // Validate and resolve the input filter
+    const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
+    // Check whether the item exists
     try {
       await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
-    const connect = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
-    return { connect };
+    return { connect: uniqueWhere };
   } else if (value.create) {
     const createInput = value.create;
     let create = await (async () => {

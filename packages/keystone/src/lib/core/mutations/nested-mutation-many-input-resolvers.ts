@@ -15,33 +15,40 @@ type _UpdateValueType = schema.InferValueFromArg<
 >;
 
 async function getDisconnects(
-  uniqueWheres: (UniqueInputFilter | null)[],
+  uniqueInputs: (UniqueInputFilter | null)[],
   context: KeystoneContext,
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter[]> {
   return (
     await Promise.all(
-      uniqueWheres.map(async filter => {
-        if (filter === null) return [];
+      uniqueInputs.map(async uniqueInput => {
+        if (uniqueInput === null) return [];
+        let uniqueWhere;
         try {
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter });
+          // Validate and resolve the input filter
+          uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+          // Check whether the item exists
+          await context.sudo().db.lists[foreignList.listKey].findOne({ where: uniqueInput });
         } catch (err) {
           return [];
         }
-        return [await resolveUniqueWhereInput(filter, foreignList.fields, context)];
+        return [uniqueWhere];
       })
     )
   ).flat();
 }
 
 function getConnects(
-  uniqueWhere: UniqueInputFilter[],
+  uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList
 ): Promise<UniquePrismaFilter>[] {
-  return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter });
-    return resolveUniqueWhereInput(filter, foreignList.fields, context);
+  return uniqueInputs.map(async uniqueInput => {
+    // Validate and resolve the input filter
+    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+    // Check whether the item exists
+    await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    return uniqueWhere;
   });
 }
 

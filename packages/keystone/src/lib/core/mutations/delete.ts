@@ -2,7 +2,7 @@ import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
 import pLimit from 'p-limit';
 import { InitialisedList } from '../types-for-lists';
 import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
-import { UniqueInputFilter } from '../where-inputs';
+import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
 import { runSideEffectOnlyHook, validationHook } from './hooks';
 
@@ -47,10 +47,17 @@ export async function deleteOne(
 async function processDelete(
   list: InitialisedList,
   context: KeystoneContext,
-  filter: UniqueInputFilter
+  uniqueInput: UniqueInputFilter
 ) {
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
   // Access control
-  const existingItem = await getAccessControlledItemForDelete(list, context, filter, filter);
+  const existingItem = await getAccessControlledItemForDelete(
+    list,
+    context,
+    uniqueInput,
+    uniqueWhere
+  );
 
   // Field validation
   const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
