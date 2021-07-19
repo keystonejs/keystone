@@ -12,16 +12,19 @@
 <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
 <br><br>
 
-<!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
+![NPM](https://img.shields.io/npm/l/keystone)
+![CI](https://github.com/keystonejs/keystone-5/workflows/CI/badge.svg)
+[![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=keystone)
+[![slack](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://community.keystonejs.com/)
+![Twitter Follow](https://img.shields.io/twitter/follow/KeystoneJS?color=Blue&label=Follow%20KeystoneJS&logo=Twitter&logoColor=Blue&style=social)
 
-<!-- [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/) -->
-
-<!-- [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select) -->
 
 ## Contents
 
 - [What's new?](#whats-new)
 - [Keystone 5](#keystone-5)
+- [Documentation](#documentation)
+- [Version Control](#version-control)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
@@ -43,13 +46,23 @@ Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonej
 
 Join our [Community Slack](https://community.keystonejs.com/) to get help, share ideas, and explore what's possible in this new release.
 
+## Version control
+
+We do our best to follow SemVer version control within Keystone. This means package versions have 3 numbers. A change in the first number indicates a breaking change, the second number indicates backward compatible feature and the third number indicates a bug fix.
+
+You can find **changelogs** either by browsing our repository, or by using our [interactive changelog explorer](https://changelogs.xyz/@keystonejs/keystone).
+
+A quick note on dependency management: Keystone is organised into a number of small packages within a monorepo. When packages in the same repository depend on each other, new versions might not be compatible with older versions. If two or more packages are updated, it can result in breaking changes, even though collectively they appear to be non-breaking.
+
+We do our best to catch this but recommend updating Keystone packages together to avoid any potential conflict. This is especially important to be aware of if you use automated dependency management tools like Greenkeeper.
+
 ## Examples
 
 The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
 
 ## Feedback
 
-We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our Slack.
+We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our [Slack](https://community.keystonejs.com/).
 
 ## Code of Conduct
 
@@ -58,3 +71,7 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUC
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
+
+## Enjoying Keystone?
+
+Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.com/KeystoneJS) and in [Slack](http://community.keystonejs.com/).
