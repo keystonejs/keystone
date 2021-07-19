@@ -232,9 +232,7 @@ async function resolveInputForCreateOrUpdate(
   await validateUpdateCreate({ list, hookArgs });
 
   // Run beforeChange hooks
-  const originalInputKeys = new Set(Object.keys(originalInput));
-  const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
-  await runSideEffectOnlyHook(list, 'beforeChange', hookArgs, shouldCallFieldLevelSideEffectHook);
+  await runSideEffectOnlyHook(list, 'beforeChange', hookArgs);
 
   // Return the full resolved input (ready for prisma level operation),
   // and the afterChange hook to be applied
@@ -242,12 +240,7 @@ async function resolveInputForCreateOrUpdate(
     data: flattenMultiDbFields(list.fields, resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
       await nestedMutationState.afterChange();
-      await runSideEffectOnlyHook(
-        list,
-        'afterChange',
-        { ...hookArgs, updatedItem, existingItem },
-        shouldCallFieldLevelSideEffectHook
-      );
+      await runSideEffectOnlyHook(list, 'afterChange', { ...hookArgs, updatedItem, existingItem });
     },
   };
 }
