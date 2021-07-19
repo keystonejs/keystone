@@ -58,6 +58,10 @@ const NavItem = ({ href, children }: NavItemProps) => {
 
 const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
   const { spacing, typography } = useTheme();
+  const { adminConfig } = useKeystone();
+  if (adminConfig.components?.AuthenticatedItem) {
+    return <adminConfig.components.AuthenticatedItem item={item} />;
+  }
   return (
     <div
       css={{

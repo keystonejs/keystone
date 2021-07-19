@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { GqlNames, JSONValue } from './utils';
 
-export type AdminConfig = { components?: { Logo?: (props: {}) => ReactElement } };
+export type AdminConfig = { components?: { Logo?: (props: {}) => ReactElement, AuthenticatedItem?: (props: { item: { id: string; label: string } })  => ReactElement} };
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
   listKey: string;
