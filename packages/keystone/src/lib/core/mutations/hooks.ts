@@ -1,34 +1,4 @@
-import { ValidationFailureError } from '../graphql-errors';
 import { promiseAllRejectWithAllErrors } from '../utils';
-
-type ValidationError = { msg: string; data: {}; internalData: {} };
-
-type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
-
-export async function validationHook(
-  listKey: string,
-  operation: 'create' | 'update' | 'delete',
-  originalInput: Record<string, string> | undefined,
-  validationHook: (addValidationError: AddValidationError) => void | Promise<void>
-) {
-  const errors: ValidationError[] = [];
-
-  await validationHook((msg, data = {}, internalData = {}) => {
-    errors.push({ msg, data, internalData });
-  });
-
-  if (errors.length) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey,
-        operation,
-      },
-      internalData: { errors: errors.map(e => e.internalData), data: originalInput },
-    });
-  }
-}
 
 export async function runSideEffectOnlyHook<
   HookName extends string,
@@ -46,12 +16,19 @@ export async function runSideEffectOnlyHook<
     };
   },
   Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
->(
-  list: List,
-  hookName: HookName,
-  args: Args,
-  shouldRunFieldLevelHook: (fieldKey: string) => boolean
-) {
+>(list: List, hookName: HookName, args: Args) {
+  // Runs the before/after change/delete hooks
+
+  // Only run field hooks on change operations if the field
+  // was specified in the original input.
+  let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
+  if (hookName === 'beforeChange' || hookName === 'afterChange') {
+    const originalInputKeys = new Set(Object.keys(args.originalInput));
+    shouldRunFieldLevelHook = fieldKey => originalInputKeys.has(fieldKey);
+  } else {
+    shouldRunFieldLevelHook = () => true;
+  }
+
   // Field hooks
   await promiseAllRejectWithAllErrors(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
