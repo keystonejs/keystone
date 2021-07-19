@@ -1,34 +1,4 @@
-import { ValidationFailureError } from '../graphql-errors';
 import { promiseAllRejectWithAllErrors } from '../utils';
-
-type ValidationError = { msg: string; data: {}; internalData: {} };
-
-type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
-
-export async function validationHook(
-  listKey: string,
-  operation: 'create' | 'update' | 'delete',
-  originalInput: Record<string, string> | undefined,
-  validationHook: (addValidationError: AddValidationError) => void | Promise<void>
-) {
-  const errors: ValidationError[] = [];
-
-  await validationHook((msg, data = {}, internalData = {}) => {
-    errors.push({ msg, data, internalData });
-  });
-
-  if (errors.length) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey,
-        operation,
-      },
-      internalData: { errors: errors.map(e => e.internalData), data: originalInput },
-    });
-  }
-}
 
 export async function runSideEffectOnlyHook<
   HookName extends string,

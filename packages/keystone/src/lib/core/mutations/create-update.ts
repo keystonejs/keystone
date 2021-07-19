@@ -18,7 +18,8 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers';
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
-import { runSideEffectOnlyHook, validationHook } from './hooks';
+import { runSideEffectOnlyHook } from './hooks';
+import { validateUpdateCreate } from './validation';
 
 export class NestedMutationState {
   #afterChanges: (() => void | Promise<void>)[] = [];
@@ -224,62 +225,16 @@ async function resolveInputForCreateOrUpdate(
     existingItem
   );
 
-  // Check isRequired
-  await validationHook(list.listKey, operation, originalInput, addValidationError => {
-    for (const [fieldKey, field] of Object.entries(list.fields)) {
-      // yes, this is a massive hack, it's just to make image and file fields work well enough
-      let val = resolvedData[fieldKey];
-      if (field.dbField.kind === 'multi') {
-        if (Object.values(resolvedData[fieldKey]).every(x => x === null)) {
-          val = null;
-        }
-        if (Object.values(resolvedData[fieldKey]).every(x => x === undefined)) {
-          val = undefined;
-        }
-      }
-      if (
-        field.__legacy?.isRequired &&
-        ((operation === 'create' && val == null) || (operation === 'update' && val === null))
-      ) {
-        addValidationError(
-          `Required field "${fieldKey}" is null or undefined.`,
-          { resolvedData, operation, originalInput },
-          {}
-        );
-      }
-    }
-  });
+  const { listKey } = list;
+  const hookArgs = { context, listKey, operation, originalInput, resolvedData, existingItem };
 
-  // Field validation hooks
-  const args = {
-    context,
-    listKey: list.listKey,
-    operation,
-    originalInput,
-    resolvedData,
-    existingItem,
-  };
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        await field.hooks.validateInput?.({
-          ...args,
-          addValidationError,
-          fieldPath: fieldKey,
-        });
-      })
-    );
-  });
-
-  // List validation hooks
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await list.hooks.validateInput?.({ ...args, addValidationError });
-  });
+  // Apply all validation checks
+  await validateUpdateCreate({ list, hookArgs });
 
   // Run beforeChange hooks
   const originalInputKeys = new Set(Object.keys(originalInput));
   const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
-  await runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
+  await runSideEffectOnlyHook(list, 'beforeChange', hookArgs, shouldCallFieldLevelSideEffectHook);
 
   // Return the full resolved input (ready for prisma level operation),
   // and the afterChange hook to be applied
@@ -290,7 +245,7 @@ async function resolveInputForCreateOrUpdate(
       await runSideEffectOnlyHook(
         list,
         'afterChange',
-        { ...args, updatedItem, existingItem },
+        { ...hookArgs, updatedItem, existingItem },
         shouldCallFieldLevelSideEffectHook
       );
     },
