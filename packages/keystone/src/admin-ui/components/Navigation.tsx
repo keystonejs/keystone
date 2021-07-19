@@ -2,7 +2,7 @@
 
 import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
 import { useRouter } from 'next/router';
-import { Stack, jsx, useTheme } from '@keystone-ui/core';
+import { Stack, jsx, useTheme, Text } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
@@ -15,13 +15,15 @@ import { SignoutButton } from './SignoutButton';
 type NavItemProps = {
   href: string;
   children: ReactNode;
+  isSelected?: boolean;
 };
 
-export const NavItem = ({ href, children }: NavItemProps) => {
+export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProps) => {
   const { colors, palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
-  const isSelected =
-    router.pathname === href || router.pathname.split('/')[1] === href.split('/')[1];
+
+  // Split out router.pathname.split ..... into ListNavItem specific logic.
+  const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href;
 
   return (
     <Link
@@ -122,11 +124,8 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   );
 };
 
-export type NavigationProps = Pick<
-  ReturnType<typeof useKeystone>,
-  'authenticatedItem' | 'visibleLists'
-> & {
-  lists: any;
+export type NavigationProps = Pick<ReturnType<typeof useKeystone>, 'authenticatedItem'> & {
+  routes: ReturnType<typeof getRenderableRoutes>;
 };
 
 export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
@@ -150,38 +149,77 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   );
 };
 
-type DefaultNavigationListProps = Pick<NavigationProps, 'lists' | 'visibleLists'>;
+type ListNavItemsProps = Pick<NavigationProps, 'routes'>;
 
-export const DefaultNavigationList = ({ lists, visibleLists }: DefaultNavigationListProps) => {
+const ListNavItem = ({ href, children }: { href: string; children: ReactNode }) => {
+  const router = useRouter();
+  return (
+    <NavItem isSelected={router.pathname.split('/')[1] === href.split('/')[1]} href={href}>
+      {children}
+    </NavItem>
+  );
+};
+
+export const ListNavItems = ({ routes }: ListNavItemsProps) => {
+  // pull this logic up into a hook (or shared functionality);
+  if (!routes) return null;
+
+  if (routes.state === 'error' && 'error' in routes) {
+    return (
+      <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
+        {routes.error}
+      </Text>
+    );
+  }
+  console.log(routes);
+
   return (
     <Fragment>
-      <NavItem href="/">Dashboard</NavItem>
-      {(() => {
-        if (visibleLists.state === 'loading') return null;
-        if (visibleLists.state === 'error') {
+      {(routes as ListSuccess).data.map(
+        ({ path, key, label }: { path: string; key: string; label: string }) => {
           return (
-            <span css={{ color: 'red' }}>
-              {visibleLists.error instanceof Error
-                ? visibleLists.error.message
-                : visibleLists.error[0].message}
-            </span>
+            <ListNavItem key={key} href={path}>
+              {label}
+            </ListNavItem>
           );
         }
-        return Object.keys(lists).map(key => {
-          if (!visibleLists.lists.has(key)) {
-            return null;
-          }
-
-          const list = lists[key];
-          return (
-            <NavItem key={key} href={`/${list.path}`}>
-              {lists[key].label}
-            </NavItem>
-          );
-        });
-      })()}
+      )}
     </Fragment>
   );
+};
+
+type ListError = { state: 'error'; error: string };
+type ListSuccess = {
+  state: string;
+  data: Array<{ path: string; key: string; label: string }>;
+};
+
+const getRenderableRoutes = (
+  listMap: any,
+  visibleLists: Pick<ReturnType<typeof useKeystone>, 'visibleLists'>['visibleLists']
+): ListError | ListSuccess | null => {
+  if (visibleLists.state === 'loading') return null;
+  if (visibleLists.state === 'error') {
+    return {
+      state: visibleLists.state,
+      error:
+        visibleLists.error instanceof Error
+          ? visibleLists.error.message
+          : visibleLists.error[0].message,
+    };
+  }
+
+  const routesFromLists = Object.keys(listMap)
+    .map(key => {
+      if (!visibleLists.lists.has(key)) return null;
+      return { path: `/${listMap[key].path}`, key, label: listMap[key].label };
+    })
+    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+  return {
+    state: visibleLists.state,
+    data: [{ path: '/', key: 'dashboard', label: 'Dashboard' }, ...routesFromLists],
+  };
 };
 
 export const Navigation = () => {
@@ -191,18 +229,20 @@ export const Navigation = () => {
     authenticatedItem,
     visibleLists,
   } = useKeystone();
+
+  const renderableLists = getRenderableRoutes(lists, visibleLists);
+  // Visible Lists filtering here.
   if (adminConfig?.components?.Navigation) {
     return (
       <adminConfig.components.Navigation
-        lists={lists}
-        visibleLists={visibleLists}
         authenticatedItem={authenticatedItem}
+        routes={renderableLists}
       />
     );
   }
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <DefaultNavigationList lists={lists} visibleLists={visibleLists} />
+      <ListNavItems routes={renderableLists} />
     </NavigationContainer>
   );
 };
