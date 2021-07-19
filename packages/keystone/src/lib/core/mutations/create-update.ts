@@ -136,16 +136,21 @@ export function updateMany(
   });
 }
 
-async function resolveInputForCreateOrUpdate(
+async function getResolvedData(
   list: InitialisedList,
-  context: KeystoneContext,
-  originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined
+  hookArgs: {
+    context: KeystoneContext;
+    listKey: string;
+    operation: 'create' | 'update';
+    originalInput: Record<string, any>;
+    existingItem: Record<string, any> | undefined;
+  },
+  nestedMutationState: NestedMutationState
 ) {
-  const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
-  const nestedMutationState = new NestedMutationState(context);
+  const { context, operation, originalInput } = hookArgs;
 
-  let resolvedData = originalInput;
+  // Start with the original input
+  let resolvedData = hookArgs.originalInput;
 
   // Apply default values
   // We don't expect any errors from here, so we can wrap all these operations
@@ -154,7 +159,7 @@ async function resolveInputForCreateOrUpdate(
     resolvedData = Object.fromEntries(
       await promiseAllRejectWithAllErrors(
         Object.entries(list.fields).map(async ([fieldKey, field]) => {
-          let input = originalInput[fieldKey];
+          let input = resolvedData[fieldKey];
           if (input === undefined && field.__legacy?.defaultValue !== undefined) {
             input =
               typeof field.__legacy.defaultValue === 'function'
@@ -216,17 +221,49 @@ async function resolveInputForCreateOrUpdate(
   );
 
   // Resolve input hooks
-  resolvedData = await resolveInputHook(
-    list,
-    context,
-    operation,
-    resolvedData,
-    originalInput,
-    existingItem
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        if (field.hooks.resolveInput === undefined) {
+          return [fieldKey, resolvedData[fieldKey]];
+        }
+        const value = await field.hooks.resolveInput({
+          ...hookArgs,
+          resolvedData,
+          fieldPath: fieldKey,
+        });
+        return [fieldKey, value];
+      })
+    )
   );
+  if (list.hooks.resolveInput) {
+    resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+  }
 
+  return resolvedData;
+}
+
+async function resolveInputForCreateOrUpdate(
+  list: InitialisedList,
+  context: KeystoneContext,
+  originalInput: Record<string, any>,
+  existingItem: Record<string, any> | undefined
+) {
+  const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
+  const nestedMutationState = new NestedMutationState(context);
   const { listKey } = list;
-  const hookArgs = { context, listKey, operation, originalInput, resolvedData, existingItem };
+  const hookArgs = {
+    context,
+    listKey,
+    operation,
+    originalInput,
+    existingItem,
+    resolvedData: {},
+  };
+
+  // Take the original input and resolve all the fields down to what
+  // will be saved into the database.
+  hookArgs.resolvedData = await getResolvedData(list, hookArgs, nestedMutationState);
 
   // Apply all validation checks
   await validateUpdateCreate({ list, hookArgs });
@@ -237,7 +274,7 @@ async function resolveInputForCreateOrUpdate(
   // Return the full resolved input (ready for prisma level operation),
   // and the afterChange hook to be applied
   return {
-    data: flattenMultiDbFields(list.fields, resolvedData),
+    data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
       await nestedMutationState.afterChange();
       await runSideEffectOnlyHook(list, 'afterChange', { ...hookArgs, updatedItem, existingItem });
@@ -260,37 +297,4 @@ function flattenMultiDbFields(
       return [[fieldKey, value]];
     })
   );
-}
-
-async function resolveInputHook(
-  list: InitialisedList,
-  context: KeystoneContext,
-  operation: 'create' | 'update',
-  resolvedData: Record<string, any>,
-  originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined
-) {
-  const args = {
-    context,
-    listKey: list.listKey,
-    operation,
-    originalInput,
-    resolvedData,
-    existingItem,
-  };
-  resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        if (field.hooks.resolveInput === undefined) {
-          return [fieldKey, resolvedData[fieldKey]];
-        }
-        const value = await field.hooks.resolveInput({ ...args, fieldPath: fieldKey });
-        return [fieldKey, value];
-      })
-    )
-  );
-  if (list.hooks.resolveInput) {
-    resolvedData = (await list.hooks.resolveInput({ ...args, resolvedData })) as any;
-  }
-  return resolvedData;
 }
