@@ -21,30 +21,44 @@
 
 ## Contents
 
-- [What's new?](#whats-new)
-- [Keystone 5](#keystone-5)
+- [What's new](#whats-new)
 - [Documentation](#documentation)
 - [Version Control](#version-control)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
-## What's new?
+## What's New
 
 [Keystone 6](http://keystonejs.com) is the new major version of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
 It's currently in the final stages of preview release, and published on npm under the `@keystone-next` namespace. To learn more, check out our [Roadmap page](https://keystonejs.com/updates/roadmap).
 
-## Keystone 5
+### Looking for Keystone 5?
 
-The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
-
-For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
+The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5). For more information read [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21).
 
 ## Documentation
 
-Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonejs.com/docs). API Docs are complete, and we're furiously working to expand on our guides and walkthroughs.
+Keystone 6 documentation lives on the [website](https://keystonejs.com/docs):
 
-Join our [Community Slack](https://community.keystonejs.com/) to get help, share ideas, and explore what's possible in this new release.
+- Read [Why Keystone](https://keystonejs.com/why-keystone) to learn about our vision and what's in the box.
+- [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
+- The [Examples](./examples) directory contains a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
+- [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundations building blocks.
+- [Guides](https://keystonejs.com/docs/guides) offer practical explainers on how to build with those blocks. 
+
+> 💡 `API Docs` are complete. We're working hard on expanding coverage in our `guides` and `walkthroughs`.
+
+
+## Enjoying Keystone?
+
+- Star this repo 🌟 ☝️ 
+- Follow Keystone on [Twitter](https://twitter.com/KeystoneJS)
+- Join the conversation in [Keystone community Slack](http://community.keystonejs.com/).
+
+### Feedback
+
+Share your thoughts and feature requests on Slack (preferred) or Twitter.  [Bugfixes and issues always welcome](https://github.com/keystonejs/keystone/issues/new/choose).
 
 ## Version control
 
@@ -56,14 +70,6 @@ A quick note on dependency management: Keystone is organised into a number of sm
 
 We do our best to catch this but recommend updating Keystone packages together to avoid any potential conflict. This is especially important to be aware of if you use automated dependency management tools like Greenkeeper.
 
-## Examples
-
-The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
-
-## Feedback
-
-We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our [Slack](https://community.keystonejs.com/).
-
 ## Code of Conduct
 
 KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
@@ -71,7 +77,3 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUC
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
-
-## Enjoying Keystone?
-
-Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.com/KeystoneJS) and in [Slack](http://community.keystonejs.com/).
