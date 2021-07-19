@@ -1,10 +1,11 @@
 import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
 import pLimit from 'p-limit';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
+import { getPrismaModelForList } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
-import { runSideEffectOnlyHook, validationHook } from './hooks';
+import { runSideEffectOnlyHook } from './hooks';
+import { validateDelete } from './validation';
 
 export function deleteMany(
   { where }: { where: UniqueInputFilter[] },
@@ -59,20 +60,10 @@ async function processDelete(
     uniqueWhere
   );
 
-  // Field validation
   const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldPath, field]) => {
-        await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldPath });
-      })
-    );
-  });
 
-  // List validation
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
-  });
+  // Apply all validation checks
+  await validateDelete({ list, hookArgs });
 
   // Before delete
   await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs, () => true);
