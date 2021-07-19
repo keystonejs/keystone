@@ -23,7 +23,7 @@ export function deleteMany(
       })
     );
 
-    afterDelete();
+    await afterDelete();
 
     return existingItem;
   });
@@ -52,6 +52,7 @@ async function processDelete(
 ) {
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
   // Access control
   const existingItem = await getAccessControlledItemForDelete(
     list,
@@ -66,12 +67,12 @@ async function processDelete(
   await validateDelete({ list, hookArgs });
 
   // Before delete
-  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs, () => true);
+  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs);
 
   return {
     existingItem,
     afterDelete: async () => {
-      await runSideEffectOnlyHook(list, 'afterDelete', hookArgs, () => true);
+      await runSideEffectOnlyHook(list, 'afterDelete', hookArgs);
     },
   };
 }
