@@ -186,6 +186,40 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
   );
 };
 
+type ListError = { state: 'error'; error: string };
+type ListSuccess = {
+  state: string;
+  data: Array<{ path: string; key: string; label: string }>;
+};
+
+const getRenderableRoutes = (
+  listMap: any,
+  visibleLists: Pick<ReturnType<typeof useKeystone>, 'visibleLists'>['visibleLists']
+): ListError | ListSuccess | null => {
+  if (visibleLists.state === 'loading') return null;
+  if (visibleLists.state === 'error') {
+    return {
+      state: visibleLists.state,
+      error:
+        visibleLists.error instanceof Error
+          ? visibleLists.error.message
+          : visibleLists.error[0].message,
+    };
+  }
+
+  const routesFromLists = Object.keys(listMap)
+    .map(key => {
+      if (!visibleLists.lists.has(key)) return null;
+      return { path: `/${listMap[key].path}`, key, label: listMap[key].label };
+    })
+    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+  return {
+    state: visibleLists.state,
+    data: [{ path: '/', key: 'dashboard', label: 'Dashboard' }, ...routesFromLists],
+  };
+};
+
 export const Navigation = () => {
   const {
     adminMeta: { lists },
