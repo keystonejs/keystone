@@ -12,44 +12,63 @@
 <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
 <br><br>
 
-<!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
+![NPM](https://img.shields.io/npm/l/keystone)
+![CI](https://github.com/keystonejs/keystone-5/workflows/CI/badge.svg)
+[![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=keystone)
+[![slack](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://community.keystonejs.com/)
+![Twitter Follow](https://img.shields.io/twitter/follow/KeystoneJS?color=Blue&label=Follow%20KeystoneJS&logo=Twitter&logoColor=Blue&style=social)
 
-<!-- [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/) -->
-
-<!-- [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select) -->
 
 ## Contents
 
-- [What's new?](#whats-new)
-- [Keystone 5](#keystone-5)
+- [What's new](#whats-new)
+- [Documentation](#documentation)
+- [Version Control](#version-control)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
-## What's new?
+## What's New
 
 [Keystone 6](http://keystonejs.com) is the new major version of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
 It's currently in the final stages of preview release, and published on npm under the `@keystone-next` namespace. To learn more, check out our [Roadmap page](https://keystonejs.com/updates/roadmap).
 
-## Keystone 5
+### Looking for Keystone 5?
 
-The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
-
-For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
+The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5). For more information read [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21).
 
 ## Documentation
 
-Keystone 6 is documented on our website: [keystonejs.com/docs](https://keystonejs.com/docs). API Docs are complete, and we're furiously working to expand on our guides and walkthroughs.
+Keystone 6 documentation lives on the [website](https://keystonejs.com/docs):
 
-Join our [Community Slack](https://community.keystonejs.com/) to get help, share ideas, and explore what's possible in this new release.
+- Read [Why Keystone](https://keystonejs.com/why-keystone) to learn about our vision and what's in the box.
+- [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
+- The [Examples](./examples) directory contains a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
+- [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundations building blocks.
+- [Guides](https://keystonejs.com/docs/guides) offer practical explainers on how to build with those blocks. 
 
-## Examples
+> 💡 `API Docs` are complete. We're working hard on expanding coverage in our `guides` and `walkthroughs`.
 
-The [examples](./examples) directory contains a number of complete projects which show how to use Keystone's features.
 
-## Feedback
+## Enjoying Keystone?
 
-We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) or in our Slack.
+- Star this repo 🌟 ☝️ 
+- Follow Keystone on [Twitter](https://twitter.com/KeystoneJS)
+- Join the conversation in [Keystone community Slack](http://community.keystonejs.com/).
+
+### Feedback
+
+Share your thoughts and feature requests on Slack (preferred) or Twitter.  [Bugfixes and issues always welcome](https://github.com/keystonejs/keystone/issues/new/choose).
+
+## Version control
+
+We do our best to follow SemVer version control within Keystone. This means package versions have 3 numbers. A change in the first number indicates a breaking change, the second number indicates backward compatible feature and the third number indicates a bug fix.
+
+You can find **changelogs** either by browsing our repository, or by using our [interactive changelog explorer](https://changelogs.xyz/@keystonejs/keystone).
+
+A quick note on dependency management: Keystone is organised into a number of small packages within a monorepo. When packages in the same repository depend on each other, new versions might not be compatible with older versions. If two or more packages are updated, it can result in breaking changes, even though collectively they appear to be non-breaking.
+
+We do our best to catch this but recommend updating Keystone packages together to avoid any potential conflict. This is especially important to be aware of if you use automated dependency management tools like Greenkeeper.
 
 ## Code of Conduct
 
