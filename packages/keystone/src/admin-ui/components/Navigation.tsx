@@ -171,7 +171,6 @@ export const ListNavItems = ({ routes }: ListNavItemsProps) => {
       </Text>
     );
   }
-  console.log(routes);
 
   return (
     <Fragment>

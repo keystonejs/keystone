@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/example-custom-navigation-component",
+  "name": "@keystone-next/example-custom-admin-ui-navigation",
   "version": "4.0.4",
   "private": true,
   "license": "MIT",
@@ -18,5 +18,5 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-navigation"
 }
