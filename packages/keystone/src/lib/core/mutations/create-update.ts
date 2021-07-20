@@ -1,5 +1,5 @@
 import { KeystoneContext, DatabaseProvider, ItemRootValue } from '@keystone-next/types';
-import pLimit from 'p-limit';
+import pLimit, { Limit } from 'p-limit';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -21,16 +21,39 @@ import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from '.
 import { runSideEffectOnlyHook } from './hooks';
 import { validateUpdateCreate } from './validation';
 
+async function createSingle(
+  { data: rawData }: { data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext,
+  writeLimit: Limit
+) {
+  await applyAccessControlForCreate(list, context, rawData);
+
+  const { afterChange, data } = await resolveInputForCreateOrUpdate(
+    list,
+    context,
+    rawData,
+    undefined
+  );
+
+  const item = await writeLimit(() =>
+    getPrismaModelForList(context.prisma, list.listKey).create({ data })
+  );
+
+  return { item, afterChange };
+}
+
 export class NestedMutationState {
   #afterChanges: (() => void | Promise<void>)[] = [];
   #context: KeystoneContext;
   constructor(context: KeystoneContext) {
     this.#context = context;
   }
-  async create(input: Record<string, any>, list: InitialisedList) {
-    const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
+  async create(data: Record<string, any>, list: InitialisedList) {
+    const context = this.#context;
+    const writeLimit = pLimit(1);
 
-    const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
+    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
 
     this.#afterChanges.push(() => afterChange(item));
     return { id: item.id as IdType };
@@ -41,54 +64,46 @@ export class NestedMutationState {
   }
 }
 
-export async function createOneState(
-  { data: rawData }: { data: Record<string, any> },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  await applyAccessControlForCreate(list, context, rawData);
-
-  return resolveInputForCreateOrUpdate(list, context, rawData, undefined);
-}
-
 export async function createOne(
-  args: { data: Record<string, any> },
+  createInput: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { afterChange, data } = await createOneState(args, list, context);
+  const writeLimit = pLimit(1);
 
-  const item = await getPrismaModelForList(context.prisma, list.listKey).create({ data });
+  const { item, afterChange } = await createSingle(createInput, list, context, writeLimit);
 
   await afterChange(item);
+
   return item;
 }
 
 export function createMany(
-  { data }: { data: Record<string, any>[] },
+  createInputs: { data: Record<string, any>[] },
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async rawData => {
-    const { afterChange, data } = await createOneState({ data: rawData }, list, context);
+  return createInputs.data.map(async data => {
+    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
 
-    const item = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).create({ data })
-    );
     await afterChange(item);
+
     return item;
   });
 }
 
-export async function updateOne(
-  { where: uniqueInput, data: rawData }: { where: UniqueInputFilter; data: Record<string, any> },
+async function updateSingle(
+  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  writeLimit: Limit
 ) {
+  const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
   // Apply access control
   const item = await getAccessControlledItemForUpdate(
     list,
@@ -97,16 +112,25 @@ export async function updateOne(
     uniqueWhere,
     rawData
   );
+
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
-  const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
-    where: { id: item.id },
-    data,
-  });
+  const updatedItem = await writeLimit(() =>
+    getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
+  );
 
   await afterChange(updatedItem);
 
   return updatedItem;
+}
+
+export async function updateOne(
+  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  const writeLimit = pLimit(1);
+  return updateSingle(updateInput, list, context, writeLimit);
 }
 
 export function updateMany(
@@ -116,24 +140,7 @@ export function updateMany(
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async ({ data: rawData, where: uniqueInput }) => {
-    // Validate and resolve the input filter
-    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
-    // Apply access control
-    const item = await getAccessControlledItemForUpdate(
-      list,
-      context,
-      uniqueInput,
-      uniqueWhere,
-      rawData
-    );
-    const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
-    const updatedItem = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
-    );
-    await afterChange(updatedItem);
-    return updatedItem;
-  });
+  return data.map(async updateInput => updateSingle(updateInput, list, context, writeLimit));
 }
 
 async function getResolvedData(
