@@ -13,7 +13,7 @@
 <br><br>
 
 ![NPM](https://img.shields.io/npm/l/keystone)
-![CI](https://github.com/keystonejs/keystone-5/workflows/CI/badge.svg)
+![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg)
 [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=keystone)
 [![slack](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://community.keystonejs.com/)
 ![Twitter Follow](https://img.shields.io/twitter/follow/KeystoneJS?color=Blue&label=Follow%20KeystoneJS&logo=Twitter&logoColor=Blue&style=social)
