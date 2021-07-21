@@ -75,15 +75,11 @@ export function itemAPIForList(
   dbAPI: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string]
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const f = (
-    field: GraphQLField<any, any> | undefined,
+    operation: 'query' | 'mutation',
+    field: string,
     dbAPIVersionOfAPI: (args: any) => Promise<any>
   ) => {
-    if (field === undefined) {
-      return (): never => {
-        throw new Error('You do not have access to this resource');
-      };
-    }
-    const exec = executeGraphQLFieldWithSelection(context.graphql.schema, field);
+    const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
     return ({
       query,
       resolveFields,
@@ -98,11 +94,9 @@ export function itemAPIForList(
     };
   };
   const gqlNames = context.gqlNames(listKey);
-  const queryFields = context.graphql.schema.getQueryType()!.getFields();
-  const mutationFields = context.graphql.schema.getMutationType()!.getFields();
   return {
-    findOne: f(queryFields[gqlNames.itemQueryName], dbAPI.findOne),
-    findMany: f(queryFields[gqlNames.listQueryName], dbAPI.findMany),
+    findOne: f('query', gqlNames.itemQueryName, dbAPI.findOne),
+    findMany: f('query', gqlNames.listQueryName, dbAPI.findMany),
     async count(args = {}) {
       const { first, skip = 0, where = {} } = args;
       const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
@@ -110,11 +104,11 @@ export function itemAPIForList(
       const response = await context.graphql.run({ query, variables: { first, skip, where } });
       return response[listQueryMetaName].count;
     },
-    createOne: f(mutationFields[gqlNames.createMutationName], dbAPI.createOne),
-    createMany: f(mutationFields[gqlNames.createManyMutationName], dbAPI.createMany),
-    updateOne: f(mutationFields[gqlNames.updateMutationName], dbAPI.updateOne),
-    updateMany: f(mutationFields[gqlNames.updateManyMutationName], dbAPI.updateMany),
-    deleteOne: f(mutationFields[gqlNames.deleteMutationName], dbAPI.deleteOne),
-    deleteMany: f(mutationFields[gqlNames.deleteManyMutationName], dbAPI.deleteMany),
+    createOne: f('mutation', gqlNames.createMutationName, dbAPI.createOne),
+    createMany: f('mutation', gqlNames.createManyMutationName, dbAPI.createMany),
+    updateOne: f('mutation', gqlNames.updateMutationName, dbAPI.updateOne),
+    updateMany: f('mutation', gqlNames.updateManyMutationName, dbAPI.updateMany),
+    deleteOne: f('mutation', gqlNames.deleteMutationName, dbAPI.deleteOne),
+    deleteMany: f('mutation', gqlNames.deleteManyMutationName, dbAPI.deleteMany),
   };
 }

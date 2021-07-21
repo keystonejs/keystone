@@ -1,7 +1,6 @@
 import {
   execute,
   FragmentDefinitionNode,
-  GraphQLField,
   GraphQLList,
   GraphQLNonNull,
   GraphQLOutputType,
@@ -24,8 +23,16 @@ function getRootTypeName(type: GraphQLOutputType): string {
 
 export function executeGraphQLFieldWithSelection(
   schema: GraphQLSchema,
-  field: GraphQLField<any, any>
+  operation: 'query' | 'mutation',
+  fieldName: string
 ) {
+  const rootType = operation === 'mutation' ? schema.getMutationType()! : schema.getQueryType()!;
+  const field = rootType.getFields()[fieldName];
+  if (field === undefined) {
+    return () => {
+      throw new Error('You do not have access to this resource');
+    };
+  }
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
   const rootName = getRootTypeName(field.type);
   return async (args: Record<string, any>, query: string, context: KeystoneContext) => {
@@ -38,7 +45,7 @@ export function executeGraphQLFieldWithSelection(
       definitions: [
         {
           kind: 'OperationDefinition',
-          operation: 'query',
+          operation,
           selectionSet: {
             kind: 'SelectionSet',
             selections: [
