@@ -26,7 +26,7 @@ import {
   astFromValue,
 } from 'graphql';
 
-export function getNamedOrListTypeNodeForType(
+function getNamedOrListTypeNodeForType(
   type:
     | GraphQLScalarType
     | GraphQLObjectType<any, any>
