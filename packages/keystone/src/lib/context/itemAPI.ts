@@ -84,7 +84,7 @@ export function itemAPIForList(
       query,
       resolveFields,
       ...args
-    }: { resolveFields?: false | string; query?: string } & Record<string, any>) => {
+    }: { resolveFields?: false | string; query?: string } & Record<string, any> = {}) => {
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
         return exec(args, returnFields, context);
