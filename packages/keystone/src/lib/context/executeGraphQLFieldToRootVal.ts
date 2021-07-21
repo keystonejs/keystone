@@ -26,7 +26,7 @@ import {
   astFromValue,
 } from 'graphql';
 
-function getNamedOrListTypeNodeForType(
+export function getNamedOrListTypeNodeForType(
   type:
     | GraphQLScalarType
     | GraphQLObjectType<any, any>
@@ -42,14 +42,14 @@ function getNamedOrListTypeNodeForType(
   return { kind: 'NamedType', name: { kind: 'Name', value: type.name } };
 }
 
-function getTypeNodeForType(type: GraphQLType): TypeNode {
+export function getTypeNodeForType(type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
     return { kind: 'NonNullType', type: getNamedOrListTypeNodeForType(type.ofType) };
   }
   return getNamedOrListTypeNodeForType(type);
 }
 
-function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
+export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
   const variableDefinitions: VariableDefinitionNode[] = field.args.map(arg => ({
     kind: 'VariableDefinition',
     type: getTypeNodeForType(arg.type),
