@@ -2,4 +2,58 @@ import { Markdown } from '../../../components/Markdown';
 
 # Custom Admin UI Navigation
 
+## Creating your custom Navigation component
+
+Keystone expects your custom Navigation component to have the following prop types:
+
+```ts
+type NavigationProps {
+    routes:
+        { state: 'error', error: string }
+        | { state: string, data: Array<{ path: string, key: string, label: string }> }
+    authenticatedItem: AuthenticatedItem
+}
+```
+
+Where `routes` is a union of either an error object, or an object containing an array of route objects, and
+`authenticatedItem` a union of potential authentication states, expanded on below:
+
+```ts
+type AuthenticatedItem =
+  | { state: 'unauthenticated' }
+  | { state: 'authenticated'; label: string; id: string; listKey: string }
+  | { state: 'loading' }
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+```
+
+```tsx
+// admin/components/CustomNavigation
+```
+
+## Adding the custom navigation component to the Admin-UI
+
+Keystone allows you to customise key commponents for the admin-ui via the `/admin/config.ts` file in your project root.
+Below is the expected type of the component export:
+
+```ts
+export type AdminConfig = {
+  components?: {
+    Logo?: (props: {}) => ReactElement;
+    Navigation?: (props: NavigationProps) => ReactElement;
+  };
+};
+
+```
+
+Reference your custom Navigation component in the export as so, the exported component can either be declared inline or imported from elsewhere in your project.
+
+```ts
+import { CustomNavigation } from './components/CustomNavigation';
+export  const component: AdminConfig['components'] = {
+    Navigation: CustomNavigation
+}
+```
+
+Once this is done,
+
 export default ({ children }) => <Markdown>{children}</Markdown>
