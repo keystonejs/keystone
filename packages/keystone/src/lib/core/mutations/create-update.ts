@@ -1,5 +1,5 @@
 import { KeystoneContext, DatabaseProvider, ItemRootValue } from '@keystone-next/types';
-import pLimit from 'p-limit';
+import pLimit, { Limit } from 'p-limit';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -18,7 +18,30 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers';
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control';
-import { runSideEffectOnlyHook, validationHook } from './hooks';
+import { runSideEffectOnlyHook } from './hooks';
+import { validateUpdateCreate } from './validation';
+
+async function createSingle(
+  { data: rawData }: { data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext,
+  writeLimit: Limit
+) {
+  await applyAccessControlForCreate(list, context, rawData);
+
+  const { afterChange, data } = await resolveInputForCreateOrUpdate(
+    list,
+    context,
+    rawData,
+    undefined
+  );
+
+  const item = await writeLimit(() =>
+    getPrismaModelForList(context.prisma, list.listKey).create({ data })
+  );
+
+  return { item, afterChange };
+}
 
 export class NestedMutationState {
   #afterChanges: (() => void | Promise<void>)[] = [];
@@ -26,70 +49,61 @@ export class NestedMutationState {
   constructor(context: KeystoneContext) {
     this.#context = context;
   }
-  async create(
-    input: Record<string, any>,
-    list: InitialisedList
-  ): Promise<{ kind: 'connect'; id: IdType } | { kind: 'create'; data: Record<string, any> }> {
-    const { afterChange, data } = await createOneState({ data: input }, list, this.#context);
+  async create(data: Record<string, any>, list: InitialisedList) {
+    const context = this.#context;
+    const writeLimit = pLimit(1);
 
-    const item = await getPrismaModelForList(this.#context.prisma, list.listKey).create({ data });
+    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
 
     this.#afterChanges.push(() => afterChange(item));
-    return { kind: 'connect' as const, id: item.id as any };
+    return { id: item.id as IdType };
   }
+
   async afterChange() {
     await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
   }
 }
 
-export async function createOneState(
-  { data: rawData }: { data: Record<string, any> },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  await applyAccessControlForCreate(list, context, rawData);
-
-  return resolveInputForCreateOrUpdate(list, context, rawData, undefined);
-}
-
 export async function createOne(
-  args: { data: Record<string, any> },
+  createInput: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const { afterChange, data } = await createOneState(args, list, context);
+  const writeLimit = pLimit(1);
 
-  const item = await getPrismaModelForList(context.prisma, list.listKey).create({ data });
+  const { item, afterChange } = await createSingle(createInput, list, context, writeLimit);
 
   await afterChange(item);
+
   return item;
 }
 
 export function createMany(
-  { data }: { data: Record<string, any>[] },
+  createInputs: { data: Record<string, any>[] },
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async rawData => {
-    const { afterChange, data } = await createOneState({ data: rawData }, list, context);
+  return createInputs.data.map(async data => {
+    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
 
-    const item = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).create({ data })
-    );
     await afterChange(item);
+
     return item;
   });
 }
 
-export async function updateOne(
-  { where: uniqueInput, data: rawData }: { where: UniqueInputFilter; data: Record<string, any> },
+async function updateSingle(
+  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  writeLimit: Limit
 ) {
+  const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
   // Apply access control
   const item = await getAccessControlledItemForUpdate(
     list,
@@ -98,16 +112,25 @@ export async function updateOne(
     uniqueWhere,
     rawData
   );
+
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
-  const updatedItem = await getPrismaModelForList(context.prisma, list.listKey).update({
-    where: { id: item.id },
-    data,
-  });
+  const updatedItem = await writeLimit(() =>
+    getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
+  );
 
   await afterChange(updatedItem);
 
   return updatedItem;
+}
+
+export async function updateOne(
+  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  const writeLimit = pLimit(1);
+  return updateSingle(updateInput, list, context, writeLimit);
 }
 
 export function updateMany(
@@ -117,24 +140,114 @@ export function updateMany(
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async ({ data: rawData, where: uniqueInput }) => {
-    // Validate and resolve the input filter
-    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
-    // Apply access control
-    const item = await getAccessControlledItemForUpdate(
-      list,
-      context,
-      uniqueInput,
-      uniqueWhere,
-      rawData
+  return data.map(async updateInput => updateSingle(updateInput, list, context, writeLimit));
+}
+
+async function getResolvedData(
+  list: InitialisedList,
+  hookArgs: {
+    context: KeystoneContext;
+    listKey: string;
+    operation: 'create' | 'update';
+    originalInput: Record<string, any>;
+    existingItem: Record<string, any> | undefined;
+  },
+  nestedMutationState: NestedMutationState
+) {
+  const { context, operation, originalInput } = hookArgs;
+
+  // Start with the original input
+  let resolvedData = hookArgs.originalInput;
+
+  // Apply default values
+  // We don't expect any errors from here, so we can wrap all these operations
+  // in a generic catch-all error handler.
+  if (operation === 'create') {
+    resolvedData = Object.fromEntries(
+      await promiseAllRejectWithAllErrors(
+        Object.entries(list.fields).map(async ([fieldKey, field]) => {
+          let input = resolvedData[fieldKey];
+          if (input === undefined && field.__legacy?.defaultValue !== undefined) {
+            input =
+              typeof field.__legacy.defaultValue === 'function'
+                ? await field.__legacy.defaultValue({ originalInput, context })
+                : field.__legacy.defaultValue;
+          }
+          return [fieldKey, input] as const;
+        })
+      )
     );
-    const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
-    const updatedItem = await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
-    );
-    await afterChange(updatedItem);
-    return updatedItem;
-  });
+  }
+
+  // Apply field type input resolvers
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        const inputResolver = field.input?.[operation]?.resolve;
+        let input = resolvedData[fieldKey];
+        if (inputResolver) {
+          input = await inputResolver(
+            input,
+            context,
+            (() => {
+              // This third argument only applies to relationship fields
+              if (field.dbField.kind !== 'relation') {
+                return undefined;
+              }
+              if (input === undefined) {
+                // No-op: This is what we want
+                return () => undefined;
+              }
+              if (input === null) {
+                // No-op: Should this be UserInputError?
+                return () => undefined;
+              }
+              const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
+              const foreignList = list.lists[field.dbField.list];
+              let resolver;
+              if (field.dbField.mode === 'many') {
+                if (operation === 'create') {
+                  resolver = resolveRelateToManyForCreateInput;
+                } else {
+                  resolver = resolveRelateToManyForUpdateInput;
+                }
+              } else {
+                if (operation === 'create') {
+                  resolver = resolveRelateToOneForCreateInput;
+                } else {
+                  resolver = resolveRelateToOneForUpdateInput;
+                }
+              }
+              return resolver(nestedMutationState, context, foreignList, target);
+            })()
+          );
+        }
+        return [fieldKey, input] as const;
+      })
+    )
+  );
+
+  // Resolve input hooks
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        if (field.hooks.resolveInput === undefined) {
+          return [fieldKey, resolvedData[fieldKey]];
+        }
+        const value = await field.hooks.resolveInput({
+          ...hookArgs,
+          resolvedData,
+          fieldPath: fieldKey,
+        });
+        return [fieldKey, value];
+      })
+    )
+  );
+  if (list.hooks.resolveInput) {
+    resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+  }
+
+  return resolvedData;
 }
 
 async function resolveInputForCreateOrUpdate(
@@ -145,155 +258,33 @@ async function resolveInputForCreateOrUpdate(
 ) {
   const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
-  let resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        const inputConfig = field.input?.[operation];
-
-        let input = originalInput[fieldKey];
-        // Apply default values
-        if (
-          operation === 'create' &&
-          input === undefined &&
-          field.__legacy?.defaultValue !== undefined
-        ) {
-          input =
-            typeof field.__legacy.defaultValue === 'function'
-              ? await field.__legacy.defaultValue({ originalInput, context })
-              : field.__legacy.defaultValue;
-        }
-
-        // Resolve field type input resolvers
-        const resolved = inputConfig?.resolve
-          ? await inputConfig.resolve(
-              input,
-              context,
-              (() => {
-                if (field.dbField.kind !== 'relation') {
-                  return undefined;
-                }
-                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
-                const foreignList = list.lists[field.dbField.list];
-                if (field.dbField.mode === 'many') {
-                  if (operation === 'create') {
-                    return resolveRelateToManyForCreateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  } else {
-                    return resolveRelateToManyForUpdateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  }
-                } else {
-                  if (operation === 'create') {
-                    return resolveRelateToOneForCreateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  } else {
-                    return resolveRelateToOneForUpdateInput(
-                      nestedMutationState,
-                      context,
-                      foreignList,
-                      target
-                    );
-                  }
-                }
-              })()
-            )
-          : input;
-        return [fieldKey, resolved] as const;
-      })
-    )
-  );
-
-  // Resolve input hooks
-  resolvedData = await resolveInputHook(
-    list,
+  const { listKey } = list;
+  const hookArgs = {
     context,
-    operation,
-    resolvedData,
-    originalInput,
-    existingItem
-  );
-
-  // Check isRequired
-  await validationHook(list.listKey, operation, originalInput, addValidationError => {
-    for (const [fieldKey, field] of Object.entries(list.fields)) {
-      // yes, this is a massive hack, it's just to make image and file fields work well enough
-      let val = resolvedData[fieldKey];
-      if (field.dbField.kind === 'multi') {
-        if (Object.values(resolvedData[fieldKey]).every(x => x === null)) {
-          val = null;
-        }
-        if (Object.values(resolvedData[fieldKey]).every(x => x === undefined)) {
-          val = undefined;
-        }
-      }
-      if (
-        field.__legacy?.isRequired &&
-        ((operation === 'create' && val == null) || (operation === 'update' && val === null))
-      ) {
-        addValidationError(
-          `Required field "${fieldKey}" is null or undefined.`,
-          { resolvedData, operation, originalInput },
-          {}
-        );
-      }
-    }
-  });
-
-  // Field validation hooks
-  const args = {
-    context,
-    listKey: list.listKey,
+    listKey,
     operation,
     originalInput,
-    resolvedData,
     existingItem,
+    resolvedData: {},
   };
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        await field.hooks.validateInput?.({
-          ...args,
-          addValidationError,
-          fieldPath: fieldKey,
-        });
-      })
-    );
-  });
 
-  // List validation hooks
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await list.hooks.validateInput?.({ ...args, addValidationError });
-  });
+  // Take the original input and resolve all the fields down to what
+  // will be saved into the database.
+  hookArgs.resolvedData = await getResolvedData(list, hookArgs, nestedMutationState);
+
+  // Apply all validation checks
+  await validateUpdateCreate({ list, hookArgs });
 
   // Run beforeChange hooks
-  const originalInputKeys = new Set(Object.keys(originalInput));
-  const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
-  await runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
+  await runSideEffectOnlyHook(list, 'beforeChange', hookArgs);
 
   // Return the full resolved input (ready for prisma level operation),
   // and the afterChange hook to be applied
   return {
-    data: flattenMultiDbFields(list.fields, resolvedData),
+    data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
     afterChange: async (updatedItem: ItemRootValue) => {
       await nestedMutationState.afterChange();
-      await runSideEffectOnlyHook(
-        list,
-        'afterChange',
-        { ...args, updatedItem, existingItem },
-        shouldCallFieldLevelSideEffectHook
-      );
+      await runSideEffectOnlyHook(list, 'afterChange', { ...hookArgs, updatedItem, existingItem });
     },
   };
 }
@@ -313,37 +304,4 @@ function flattenMultiDbFields(
       return [[fieldKey, value]];
     })
   );
-}
-
-async function resolveInputHook(
-  list: InitialisedList,
-  context: KeystoneContext,
-  operation: 'create' | 'update',
-  resolvedData: Record<string, any>,
-  originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined
-) {
-  const args = {
-    context,
-    listKey: list.listKey,
-    operation,
-    originalInput,
-    resolvedData,
-    existingItem,
-  };
-  resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        if (field.hooks.resolveInput === undefined) {
-          return [fieldKey, resolvedData[fieldKey]];
-        }
-        const value = await field.hooks.resolveInput({ ...args, fieldPath: fieldKey });
-        return [fieldKey, value];
-      })
-    )
-  );
-  if (list.hooks.resolveInput) {
-    resolvedData = (await list.hooks.resolveInput({ ...args, resolvedData })) as any;
-  }
-  return resolvedData;
 }

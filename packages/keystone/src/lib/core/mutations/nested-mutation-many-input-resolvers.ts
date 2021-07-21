@@ -6,12 +6,14 @@ import { NestedMutationState } from './create-update';
 
 const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
 
-type _CreateValueType = schema.InferValueFromArg<
-  schema.Arg<TypesForList['relateTo']['many']['create']>
+type _CreateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>,
+  null | undefined
 >;
 
-type _UpdateValueType = schema.InferValueFromArg<
-  schema.Arg<TypesForList['relateTo']['many']['update']>
+type _UpdateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
+  null | undefined
 >;
 
 async function getDisconnects(
@@ -53,7 +55,7 @@ function getConnects(
 }
 
 async function resolveCreateAndConnect(
-  value: Exclude<_UpdateValueType, null | undefined>,
+  value: _UpdateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -79,27 +81,16 @@ async function resolveCreateAndConnect(
     throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
   }
 
-  const result = {
-    connect: connectResult.filter(isFulfilled).map(x => x.value),
-    create: [] as Record<string, any>[],
-  };
-
+  const result = { connect: connectResult.filter(isFulfilled).map(x => x.value) };
   for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
-    if (createData.kind === 'create') {
-      result.create.push(createData.data);
-    } else if (createData.kind === 'connect') {
-      result.connect.push({ id: createData.id });
-    }
+    result.connect.push({ id: createData.id });
   }
 
   // Perform queries for the connections
   return result;
 }
 
-function assertValidManyOperation(
-  val: Exclude<_UpdateValueType, undefined | null>,
-  target: string
-) {
+function assertValidManyOperation(val: _UpdateValueType, target: string) {
   if (
     !Array.isArray(val.connect) &&
     !Array.isArray(val.create) &&
@@ -117,9 +108,6 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (value: _CreateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
     assertValidManyOperation(value, target);
     return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
   };
@@ -132,9 +120,6 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (value: _UpdateValueType) => {
-    if (value == null) {
-      return undefined;
-    }
     assertValidManyOperation(value, target);
     const disconnects = getDisconnects(
       value.disconnectAll ? [] : value.disconnect || [],
@@ -142,15 +127,11 @@ export function resolveRelateToManyForUpdateInput(
       foreignList
     );
 
-    const [disconnect, connectAndCreates] = await Promise.all([
+    const [disconnect, connect] = await Promise.all([
       disconnects,
       resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
     ]);
 
-    return {
-      set: value.disconnectAll ? [] : undefined,
-      disconnect,
-      ...connectAndCreates,
-    };
+    return { set: value.disconnectAll ? [] : undefined, disconnect, ...connect };
   };
 }
