@@ -72,7 +72,13 @@ export function executeGraphQLFieldWithSelection(
       schema,
       document,
       contextValue: context,
-      variableValues: args,
+      variableValues: Object.fromEntries(
+        // GraphQL for some reason decides to make undefined values in args
+        // skip defaulting for some reason
+        // this ofc doesn't technically fully fix it (bc nested things)
+        // but for the cases where we care, it does
+        Object.entries(args).filter(([, val]) => val !== undefined)
+      ),
       rootValue: {},
     });
     if (result.errors?.length) {
