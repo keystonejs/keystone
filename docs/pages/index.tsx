@@ -129,7 +129,7 @@ export default function IndexPage() {
                   width: 'auto',
                   gap: 0,
                 },
-              }}
+              })}
             >
               <li>
                 <Type as="h3" look="heading48">
