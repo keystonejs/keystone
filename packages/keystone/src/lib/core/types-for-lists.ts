@@ -100,6 +100,15 @@ export function initialiseLists(
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
             if (!field.input?.uniqueWhere?.arg || field.access.read === false) return [];
+            const { dbField } = field;
+            if (
+              dbField.kind !== 'scalar' ||
+              (dbField.scalar !== 'String' && dbField.scalar !== 'Int')
+            ) {
+              throw new Error(
+                'Currently only String and Int scalar db fields can provide a uniqueWhere input'
+              );
+            }
             return [[key, field.input.uniqueWhere.arg]] as const;
           })
         );

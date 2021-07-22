@@ -27,20 +27,7 @@ export function mapUniqueWhereToWhere(
 ): PrismaFilter {
   // inputResolvers.uniqueWhere validates that there is only one key
   const key = Object.keys(uniqueWhere)[0];
-  const dbField = list.fields[key].dbField;
-  if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
-    throw new Error(
-      'Currently only String and Int scalar db fields can provide a uniqueWhere input'
-    );
-  }
-  const val = uniqueWhere[key];
-  if (dbField.scalar === 'Int' && typeof val !== 'number') {
-    throw new Error('uniqueWhere inputs must return an integer for Int db fields');
-  }
-  if (dbField.scalar === 'String' && typeof val !== 'string') {
-    throw new Error('uniqueWhere inputs must return an string for String db fields');
-  }
-  return { [key]: val };
+  return { [key]: uniqueWhere[key] };
 }
 
 export async function accessControlledFilter(
