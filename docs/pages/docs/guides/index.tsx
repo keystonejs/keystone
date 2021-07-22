@@ -20,7 +20,7 @@ export default function Docs() {
         something done, Keystone guides show you how to think about, and get the most out of each
         feature.
       </Type>
-      <CommunitySlackCTA />d
+      <CommunitySlackCTA />
       <div
         css={mq({
           display: 'grid',
