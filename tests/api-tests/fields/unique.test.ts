@@ -74,7 +74,7 @@ testModules
               {
                 path: ['createTest'],
                 message: expect.stringMatching(
-                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
                 ),
               },
             ]);
@@ -103,7 +103,7 @@ testModules
               {
                 path: ['bar'],
                 message: expect.stringMatching(
-                  /\nInvalid `list\.listKey\).create\(\)` invocation in\n(.*\n)\n(.*\n){4}  Unique constraint failed on the fields: \(`testField`\)/
+                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
                 ),
               },
             ]);

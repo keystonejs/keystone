@@ -11,7 +11,7 @@ export function Examples() {
     <div
       css={mq({
         display: 'grid',
-        gridTemplateColumns: ['1fr', '1fr 1fr'],
+        gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
         gap: 'var(--space-xlarge)',
       })}
     >
@@ -122,6 +122,15 @@ export function Examples() {
       >
         Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which lets
         users rate items on a 5-star scale. Builds on the Blog starter project.
+      </Well>
+      <Well
+        grad="grad3"
+        heading="Custom Admin UI Logo"
+        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-logo"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
       </Well>
     </div>
   );

@@ -90,7 +90,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     type: list.types.output,
     args: { id: schema.arg({ type: schema.nonNull(schema.ID) }) },
     resolve(rootVal, { id }, context) {
-      return deletes.deleteOne({ where: { id } }, list, context);
+      return deletes.deleteOne({ id }, list, context);
     },
   });
 
@@ -99,7 +99,12 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     args: { ids: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }) },
     resolve(rootVal, { ids }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany({ where: (ids || []).map(id => ({ id })) }, list, context, provider)
+        deletes.deleteMany(
+          (ids || []).map(id => ({ id })),
+          list,
+          context,
+          provider
+        )
       );
     },
   });
