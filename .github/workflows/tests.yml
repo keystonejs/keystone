@@ -262,6 +262,7 @@ jobs:
             'custom-field-view.test.ts',
             'custom-field.test.ts',
             'custom-admin-ui-logo.test.ts',
+            'custom-admin-ui-navigation.test.ts',
           ]
       fail-fast: false
     steps:
