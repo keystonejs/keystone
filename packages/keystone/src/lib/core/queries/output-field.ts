@@ -16,9 +16,9 @@ import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationshi
 import { InitialisedList } from '../types-for-lists';
 import {
   applyFirstSkipToCount,
-  getPrismaModelForList,
   IdType,
   getDBFieldKeyForFieldOnMultiField,
+  runWithPrisma,
 } from '../utils';
 import { accessControlledFilter } from './resolvers';
 import * as queries from './resolvers';
@@ -62,9 +62,9 @@ function getRelationVal(
     return async () => {
       const resolvedWhere = await accessControlledFilter(foreignList, context, relationFilter);
 
-      return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-        where: resolvedWhere,
-      });
+      return runWithPrisma(context, foreignList, model =>
+        model.findFirst({ where: resolvedWhere })
+      );
     };
   }
 }
