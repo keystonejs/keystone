@@ -306,7 +306,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         </Box>
         <Timeline date="19th March 2021" isFirst />
         <Box
-          link="/docs/guides/keystone-5-vs-keystone-next"
+          link="/docs/guides/keystone-5-vs-keystone-6-preview"
           heading="Guidance on using Keystone 5 vs Keystone 6 "
         >
           Keystone 5 is now in maintenance mode while we focus all our efforts on building Keystone

@@ -100,7 +100,7 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
             {error ? 'Try again' : 'Subscribe'}
           </Button>
         </Stack>
-        {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
+        {error ? <p css={{ margin: '0.5rem, 0', color: 'red' }}>{error}</p> : null}
       </form>
     </Fragment>
   ) : (
