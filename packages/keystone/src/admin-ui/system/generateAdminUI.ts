@@ -61,13 +61,21 @@ export const generateAdminUI = async (
   if (config.images) {
     const storagePath = Path.resolve(config.images.local?.storagePath ?? './public/images');
     await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(storagePath, Path.join(publicDirectory, 'images'), 'junction');
+    await fs.symlink(
+      Path.relative(publicDirectory, storagePath),
+      Path.join(publicDirectory, 'images'),
+      'junction'
+    );
   }
 
   if (config.files) {
     const storagePath = Path.resolve(config.files.local?.storagePath ?? './public/files');
     await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(storagePath, Path.join(publicDirectory, 'files'), 'junction');
+    await fs.symlink(
+      Path.relative(publicDirectory, storagePath),
+      Path.join(publicDirectory, 'files'),
+      'junction'
+    );
   }
 
   // Write out the files configured by the user
