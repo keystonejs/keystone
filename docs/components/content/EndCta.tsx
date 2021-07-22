@@ -6,10 +6,10 @@ import { Highlight } from '../primitives/Highlight';
 import { Button } from '../primitives/Button';
 import { Type } from '../primitives/Type';
 import { ArrowR } from '../icons/ArrowR';
+import { useMediaQuery } from '../../lib/media';
 import { Tick } from '../icons/Tick';
 import { CodeBox } from './CodeBox';
 import { Section } from './Section';
-import { useMediaQuery } from '../../lib/media';
 
 type EndCtaProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
