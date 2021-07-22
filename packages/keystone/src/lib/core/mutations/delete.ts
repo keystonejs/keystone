@@ -1,56 +1,21 @@
 import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
-import pLimit from 'p-limit';
+import pLimit, { Limit } from 'p-limit';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, promiseAllRejectWithAllErrors } from '../utils';
+import { getPrismaModelForList } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
-import { runSideEffectOnlyHook, validationHook } from './hooks';
+import { runSideEffectOnlyHook } from './hooks';
+import { validateDelete } from './validation';
 
-export function deleteMany(
-  { where }: { where: UniqueInputFilter[] },
+async function deleteSingle(
+  uniqueInput: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
-  provider: DatabaseProvider
-) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return where.map(async where => {
-    const { afterDelete, existingItem } = await processDelete(list, context, where);
-
-    await writeLimit(() =>
-      getPrismaModelForList(context.prisma, list.listKey).delete({
-        where: { id: existingItem.id },
-      })
-    );
-
-    afterDelete();
-
-    return existingItem;
-  });
-}
-
-export async function deleteOne(
-  { where }: { where: UniqueInputFilter },
-  list: InitialisedList,
-  context: KeystoneContext
-) {
-  const { afterDelete, existingItem } = await processDelete(list, context, where);
-
-  const item = await getPrismaModelForList(context.prisma, list.listKey).delete({
-    where: { id: existingItem.id },
-  });
-
-  await afterDelete();
-
-  return item;
-}
-
-async function processDelete(
-  list: InitialisedList,
-  context: KeystoneContext,
-  uniqueInput: UniqueInputFilter
+  writeLimit: Limit
 ) {
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
   // Access control
   const existingItem = await getAccessControlledItemForDelete(
     list,
@@ -59,28 +24,41 @@ async function processDelete(
     uniqueWhere
   );
 
-  // Field validation
   const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldPath, field]) => {
-        await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldPath });
-      })
-    );
-  });
 
-  // List validation
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
-  });
+  // Apply all validation checks
+  await validateDelete({ list, hookArgs });
 
   // Before delete
-  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs, () => true);
+  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs);
 
-  return {
-    existingItem,
-    afterDelete: async () => {
-      await runSideEffectOnlyHook(list, 'afterDelete', hookArgs, () => true);
-    },
-  };
+  const item = await writeLimit(() =>
+    getPrismaModelForList(context.prisma, list.listKey).delete({
+      where: { id: existingItem.id },
+    })
+  );
+
+  await runSideEffectOnlyHook(list, 'afterDelete', hookArgs);
+
+  return item;
+}
+
+export function deleteMany(
+  uniqueInputs: UniqueInputFilter[],
+  list: InitialisedList,
+  context: KeystoneContext,
+  provider: DatabaseProvider
+) {
+  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
+  return uniqueInputs.map(async uniqueInput =>
+    deleteSingle(uniqueInput, list, context, writeLimit)
+  );
+}
+
+export async function deleteOne(
+  uniqueInput: UniqueInputFilter,
+  list: InitialisedList,
+  context: KeystoneContext
+) {
+  return deleteSingle(uniqueInput, list, context, pLimit(1));
 }

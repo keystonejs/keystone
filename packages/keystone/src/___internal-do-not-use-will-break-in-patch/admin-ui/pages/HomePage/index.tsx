@@ -34,7 +34,7 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={list.path}
+        href={`/${list.path}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,

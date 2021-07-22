@@ -1,45 +1,6 @@
-import {
-  GraphQLSchema,
-  VariableDefinitionNode,
-  TypeNode,
-  GraphQLType,
-  GraphQLNonNull,
-  GraphQLList,
-  GraphQLEnumType,
-  GraphQLInputObjectType,
-  GraphQLInterfaceType,
-  GraphQLObjectType,
-  GraphQLScalarType,
-  GraphQLUnionType,
-  ListTypeNode,
-  NamedTypeNode,
-  GraphQLInputType,
-  GraphQLError,
-} from 'graphql';
+import { GraphQLSchema, VariableDefinitionNode, GraphQLInputType, GraphQLError } from 'graphql';
 import { getVariableValues } from 'graphql/execution/values';
-
-function getNamedOrListTypeNodeForType(
-  type:
-    | GraphQLScalarType
-    | GraphQLObjectType<any, any>
-    | GraphQLInterfaceType
-    | GraphQLUnionType
-    | GraphQLEnumType
-    | GraphQLInputObjectType
-    | GraphQLList<any>
-): NamedTypeNode | ListTypeNode {
-  if (type instanceof GraphQLList) {
-    return { kind: 'ListType', type: getTypeNodeForType(type.ofType) };
-  }
-  return { kind: 'NamedType', name: { kind: 'Name', value: type.name } };
-}
-
-function getTypeNodeForType(type: GraphQLType): TypeNode {
-  if (type instanceof GraphQLNonNull) {
-    return { kind: 'NonNullType', type: getNamedOrListTypeNodeForType(type.ofType) };
-  }
-  return getNamedOrListTypeNodeForType(type);
-}
+import { getTypeNodeForType } from './context/executeGraphQLFieldToRootVal';
 
 const argName = 'where';
 
