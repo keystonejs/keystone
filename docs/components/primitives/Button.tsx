@@ -16,9 +16,12 @@ const styleMap = {
   },
 
   secondary: {
-    '--button-bg': 'var(--button-secondary-bg)',
-    '--button-bg-hover': 'var(--button-secondary-hover)',
-    '--button-bg-active': 'var(--button-secondary-hover)',
+    '--button-bg': 'var(--app-bg)',
+    '--button-border': '2px solid var(--muted)',
+    '--button-color': 'var(--text)',
+    '--button-bg-hover': 'var(--app-bg)',
+    '--button-border-hover': '2px solid var(--link)',
+    '--button-color-hover': 'var(--link)',
   },
 
   soft: {
@@ -153,7 +156,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               '--button-border-hover': 'var(--button-border)',
               '--button-border-active': 'var(--button-border)',
               '--button-border-disabled': 'var(--button-border)',
-              '--button-color': 'var(--button-text)',
+              '--button-color': 'var(--brand-text)',
               '--button-color-hover': 'var(--button-color)',
               '--button-color-active': 'var(--button-color)',
               '--button-color-disabled': 'var(--button-color)',
