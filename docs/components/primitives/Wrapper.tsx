@@ -16,8 +16,8 @@ export function Wrapper({ as: Tag = 'div', ...props }: WrapperProps) {
       css={mq({
         maxWidth: 'var(--wrapper-width)',
         margin: '0 auto',
-        paddingLeft: ['var(--space-large)', 'var(--space-large)', null, '3rem'],
-        paddingRight: ['var(--space-large)', 'var(--space-large)', null, '3rem'],
+        paddingLeft: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '3rem'],
+        paddingRight: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '3rem'],
       })}
       {...props}
     />
