@@ -12,9 +12,7 @@ export function CustomNavigation({ routes, authenticatedItem }: NavigationProps)
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <ListNavItems routes={routes} />
-      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
-        Navigation Guide
-      </NavItem>
+      <NavItem href="https://keystonejs.com/">Keystone Docs</NavItem>
     </NavigationContainer>
   );
 }
