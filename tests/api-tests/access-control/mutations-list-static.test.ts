@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -45,10 +45,8 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Returns null and throws an error
-      expect(data!.createUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUser']);
+      expect(data).toEqual({ createUser: null });
+      expectAccessDenied(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -71,10 +69,8 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Returns null and throws an error
-      expect(data!.updateUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUser']);
+      expect(data).toEqual({ updateUser: null });
+      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -98,10 +94,8 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Returns null and throws an error
-      expect(data!.deleteUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['deleteUser']);
+      expect(data).toEqual({ deleteUser: null });
+      expectAccessDenied(errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -128,20 +122,18 @@ describe('Access control - Imperative => static', () => {
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.createUsers).toEqual([
-        { id: expect.any(String), name: 'good 1' },
-        null,
-        { id: expect.any(String), name: 'good 2' },
-        null,
-        { id: expect.any(String), name: 'good 3' },
-      ]);
+      expect(data).toEqual({
+        createUsers: [
+          { id: expect.any(String), name: 'good 1' },
+          null,
+          { id: expect.any(String), name: 'good 2' },
+          null,
+          { id: expect.any(String), name: 'good 3' },
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['createUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // The good users should exist in the database
       const users = await context.lists.User.findMany();
@@ -190,11 +182,7 @@ describe('Access control - Imperative => static', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['updateUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -242,11 +230,7 @@ describe('Access control - Imperative => static', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['deleteUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['deleteUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       const _users = await context.lists.User.findMany({
         orderBy: { name: 'asc' },

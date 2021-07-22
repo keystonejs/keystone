@@ -2,9 +2,9 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectValidationFailure } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules
@@ -64,11 +64,8 @@ testModules
                     createTest(data: { name: "test entry" } ) { id }
                   }`,
             });
-            expect(data!.createTest).toBe(null);
-            expect(errors).not.toBe(null);
-            expect(errors!.length).toEqual(1);
-            expect(errors![0].message).toEqual('You attempted to perform an invalid mutation');
-            expect(errors![0].path![0]).toEqual('createTest');
+            expect(data).toEqual({ createTest: null });
+            expectValidationFailure(errors, [{ path: ['createTest'] }]);
           })
         );
 
@@ -87,11 +84,8 @@ testModules
                     updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
                   }`,
             });
-            expect(data!.updateTest).toBe(null);
-            expect(errors).not.toBe(undefined);
-            expect(errors!.length).toEqual(1);
-            expect(errors![0].message).toEqual('You attempted to perform an invalid mutation');
-            expect(errors![0].path![0]).toEqual('updateTest');
+            expect(data).toEqual({ updateTest: null });
+            expectValidationFailure(errors, [{ path: ['updateTest'] }]);
           })
         );
 

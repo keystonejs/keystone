@@ -10,7 +10,7 @@
   "scripts": {
     "prisma": "prisma",
     "docs": "manypkg run @keystone-next/website dev",
-    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
+    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -21,8 +21,9 @@
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
     "test": "yarn lint && yarn test:unit",
-    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --maxWorkers=1 --logHeapUsage",
+    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
+    "test:admin-ui": "yarn jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
@@ -52,13 +53,13 @@
     "@preconstruct/cli": "2.1.0",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
     "@testing-library/jest-dom": "^5.14.1",
-    "@types/jest": "^26.0.23",
-    "@types/node-fetch": "^2.5.10",
-    "@typescript-eslint/eslint-plugin": "^4.28.1",
-    "@typescript-eslint/parser": "^4.28.1",
+    "@types/jest": "^26.0.24",
+    "@types/node-fetch": "^2.5.11",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.29.0",
+    "eslint": "^7.30.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jest": "^24.3.6",
@@ -67,12 +68,14 @@
     "is-ci": "^3.0.0",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "remark-cli": "^6.0.1",
     "remark-frontmatter": "^1.3.3",
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "terminal-link-cli": "^3.0.0",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "prettier": {
     "proseWrap": "preserve",
@@ -104,17 +107,17 @@
   },
   "workspaces": {
     "packages": [
+      "design-system/packages/*",
+      "design-system/website",
+      "docs",
+      "examples-staging/*",
+      "examples/*",
       "packages/*",
+      "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "projects/*",
-      "examples/*",
-      "examples-staging/*",
-      "packages-next/*",
-      "design-system/packages/*",
-      "design-system/website",
-      "docs"
+      "tests/test-projects/*"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -122,12 +125,7 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/access-control",
-      "packages/session",
-      "packages/test-utils",
-      "packages/utils",
-      "packages/adapter-prisma",
-      "packages-next/*",
+      "packages/*",
       "design-system/packages/*"
     ],
     "distFilenameStrategy": "unscoped-package-name"
@@ -146,10 +144,10 @@
       "\\.pnp\\.[^\\/]+$"
     ],
     "collectCoverageFrom": [
-      "packages{,-next}/**/*.{js,ts,tsx}",
+      "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
-      "!packages{,-next}/**/dist/**",
-      "!packages{,-next}/fields/**/test-fixtures.{js,ts}",
+      "!packages/**/dist/**",
+      "!packages/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },

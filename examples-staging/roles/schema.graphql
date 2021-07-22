@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Todo {
   id: ID!
   label: String
@@ -91,9 +88,6 @@ input TodosCreateInput {
   data: TodoCreateInput
 }
 
-"""
- A keystone list
-"""
 type Person {
   id: ID!
   name: String
@@ -158,20 +152,8 @@ input PersonWhereInput {
   password_is_set: Boolean
   role: RoleWhereInput
   role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tasks_every: TodoWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tasks_some: TodoWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tasks_none: TodoWhereInput
 }
 
@@ -233,9 +215,6 @@ input PeopleCreateInput {
   data: PersonCreateInput
 }
 
-"""
- A keystone list
-"""
 type Role {
   id: ID!
   name: String
@@ -298,20 +277,8 @@ input RoleWhereInput {
   canManagePeople_not: Boolean
   canManageRoles: Boolean
   canManageRoles_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   assignedTo_every: PersonWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   assignedTo_some: PersonWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   assignedTo_none: PersonWhereInput
 }
 
@@ -396,94 +363,23 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Todo item.
-  """
   createTodo(data: TodoCreateInput): Todo
-
-  """
-   Create multiple Todo items.
-  """
   createTodos(data: [TodosCreateInput]): [Todo]
-
-  """
-   Update a single Todo item by ID.
-  """
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-
-  """
-   Update multiple Todo items by ID.
-  """
   updateTodos(data: [TodosUpdateInput]): [Todo]
-
-  """
-   Delete a single Todo item by ID.
-  """
   deleteTodo(id: ID!): Todo
-
-  """
-   Delete multiple Todo items by ID.
-  """
   deleteTodos(ids: [ID!]): [Todo]
-
-  """
-   Create a single Person item.
-  """
   createPerson(data: PersonCreateInput): Person
-
-  """
-   Create multiple Person items.
-  """
   createPeople(data: [PeopleCreateInput]): [Person]
-
-  """
-   Update a single Person item by ID.
-  """
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-
-  """
-   Update multiple Person items by ID.
-  """
   updatePeople(data: [PeopleUpdateInput]): [Person]
-
-  """
-   Delete a single Person item by ID.
-  """
   deletePerson(id: ID!): Person
-
-  """
-   Delete multiple Person items by ID.
-  """
   deletePeople(ids: [ID!]): [Person]
-
-  """
-   Create a single Role item.
-  """
   createRole(data: RoleCreateInput): Role
-
-  """
-   Create multiple Role items.
-  """
   createRoles(data: [RolesCreateInput]): [Role]
-
-  """
-   Update a single Role item by ID.
-  """
   updateRole(id: ID!, data: RoleUpdateInput): Role
-
-  """
-   Update multiple Role items by ID.
-  """
   updateRoles(data: [RolesUpdateInput]): [Role]
-
-  """
-   Delete a single Role item by ID.
-  """
   deleteRole(id: ID!): Role
-
-  """
-   Delete multiple Role items by ID.
-  """
   deleteRoles(ids: [ID!]): [Role]
   authenticatePersonWithPassword(
     email: String!
@@ -526,9 +422,6 @@ input CreateInitialPersonInput {
 }
 
 type Query {
-  """
-   Search for all Todo items which match the where clause.
-  """
   allTodos(
     where: TodoWhereInput! = {}
     search: String
@@ -538,15 +431,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Todo!]
-
-  """
-   Search for the Todo item with the matching ID.
-  """
   Todo(where: TodoWhereUniqueInput!): Todo
-
-  """
-   Perform a meta-query on all Todo items which match the where clause.
-  """
   _allTodosMeta(
     where: TodoWhereInput! = {}
     search: String
@@ -560,10 +445,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use todosCount instead."
     )
   todosCount(where: TodoWhereInput! = {}): Int
-
-  """
-   Search for all Person items which match the where clause.
-  """
   allPeople(
     where: PersonWhereInput! = {}
     search: String
@@ -573,15 +454,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Person!]
-
-  """
-   Search for the Person item with the matching ID.
-  """
   Person(where: PersonWhereUniqueInput!): Person
-
-  """
-   Perform a meta-query on all Person items which match the where clause.
-  """
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String
@@ -595,10 +468,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use peopleCount instead."
     )
   peopleCount(where: PersonWhereInput! = {}): Int
-
-  """
-   Search for all Role items which match the where clause.
-  """
   allRoles(
     where: RoleWhereInput! = {}
     search: String
@@ -608,15 +477,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Role!]
-
-  """
-   Search for the Role item with the matching ID.
-  """
   Role(where: RoleWhereUniqueInput!): Role
-
-  """
-   Perform a meta-query on all Role items which match the where clause.
-  """
   _allRolesMeta(
     where: RoleWhereInput! = {}
     search: String
