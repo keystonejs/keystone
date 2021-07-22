@@ -102,11 +102,8 @@ const ORIGINAL_NEXT = [
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
 
-
-
-
 /* URLs from the current website */
-const CURRENT= [
+const CURRENT = [
   {
     source: '/docs/guides/keystone-5-vs-keystone-6-preview.mdx',
     destination: '/docs/guides/keystone-5-vs-keystone-6-preview.mdx',
