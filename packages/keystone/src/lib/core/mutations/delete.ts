@@ -1,7 +1,7 @@
 import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
 import pLimit, { Limit } from 'p-limit';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList } from '../utils';
+import { runWithPrisma } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
 import { runSideEffectOnlyHook } from './hooks';
@@ -33,9 +33,7 @@ async function deleteSingle(
   await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs);
 
   const item = await writeLimit(() =>
-    getPrismaModelForList(context.prisma, list.listKey).delete({
-      where: { id: existingItem.id },
-    })
+    runWithPrisma(context, list, model => model.delete({ where: { id: existingItem.id } }))
   );
 
   await runSideEffectOnlyHook(list, 'afterDelete', hookArgs);
