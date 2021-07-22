@@ -38,7 +38,7 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }: Well
           },
           '&:hover, &:focus': {
             boxShadow: '0 7px 21px var(--shadow)',
-            transform: ' scale(1.008)',
+            transform: 'translateY(-4px)',
           },
         }}
         {...props}

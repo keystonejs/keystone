@@ -9,11 +9,14 @@ import { CopyToClipboard } from './CopyToClipboard';
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
  */
 
-function getAnchor(text: string) {
+function getAnchor(text: string | string[]) {
   if (typeof text === 'string') {
     return slugify(text);
+  } else if (Array.isArray(text)) {
+    return slugify(text.join('-').replace('[object Object]', ''));
+  } else {
+    return '';
   }
-  return '';
 }
 
 // emotions JSX pragma appends the correct css prop type
@@ -69,7 +72,7 @@ export function H1(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-xxlarge)',
         fontWeight: 700,
-        letterSpacing: '-0.025em',
+        letterSpacing: '-0.03rem',
         marginTop: 0,
       }}
       as="h1"
@@ -84,7 +87,7 @@ export function H2(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-xlarge)',
         fontWeight: 500,
-        letterSpacing: '-0.025em',
+        letterSpacing: '-0.03rem',
         marginTop: 0,
       }}
       as="h2"
@@ -99,7 +102,7 @@ export function H3(props: StringOnlyChildren) {
       css={{
         fontSize: 'var(--font-large)',
         fontWeight: 500,
-        letterSpacing: '-0.025em',
+        letterSpacing: 'none',
         marginTop: 0,
       }}
       as="h3"

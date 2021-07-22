@@ -94,7 +94,6 @@ export const COLORS = {
     '--text-heading': '#f7f9fc',
     '--text-disabled': '#627693',
     '--code': '#cbd5e0',
-    // '--code-bg': '#2d3748',
     '--code-bg': '#1f2631',
     '--shadow': 'rgba(0, 0, 0, 0.2)',
 

@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { KeystoneContext } from '@keystone-next/types';
-import { setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { GraphQLRequest, setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { expectAccessDenied, expectGraphQLValidationError } from '../utils';
 import {
   FAKE_ID,
   nameFn,
@@ -19,21 +20,19 @@ const expectNoAccess = <N extends string>(
   name: N
 ) => {
   expect(data?.[name]).toBe(null);
-  expect(errors).toHaveLength(1);
-  const error = errors![0];
-  expect(error.message).toEqual('You do not have access to this resource');
-  expect(error.path).toHaveLength(1);
-  expect(error.path![0]).toEqual(name);
+  expectAccessDenied(errors, [{ path: [name] }]);
 };
 
 type IdType = any;
 
 describe(`Not authed`, () => {
-  let testEnv: TestEnv, context: KeystoneContext;
+  let testEnv: TestEnv, context: KeystoneContext, graphQLRequest: GraphQLRequest;
   let items: Record<string, { id: IdType; name: string }[]>;
+  let provider = config.db.provider!;
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
+    graphQLRequest = testEnv.testArgs.graphQLRequest;
 
     await testEnv.connect();
 
@@ -90,20 +89,32 @@ describe(`Not authed`, () => {
               const createMutationName = `create${nameFn[mode](listAccess)}`;
               const fieldName = getFieldName(access);
               const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id ${fieldName} } }`;
-              const { data, errors } = await context.graphql.raw({ query });
+              const { body } = await graphQLRequest({ query });
               // If create is not allowed on a field then there will be a query validation error
-              expect(errors).toHaveLength(access.read ? 1 : 2);
-              expect(errors![0].message).toContain(
-                `Field "${fieldName}" is not defined by type "${nameFn[mode](
+              if (access.read) {
+                const message = `Field "${fieldName}" is not defined by type "${nameFn[mode](
                   listAccess
-                )}CreateInput".`
-              );
-              if (!access.read) {
-                expect(errors![1].message).toContain(
-                  `Cannot query field "${fieldName}" on type "${nameFn[mode](listAccess)}".`
-                );
+                )}CreateInput".`;
+                expectGraphQLValidationError(body.errors, [
+                  { message: expect.stringContaining(message) },
+                ]);
+              } else {
+                expectGraphQLValidationError(body.errors, [
+                  {
+                    message: expect.stringContaining(
+                      `Field "${fieldName}" is not defined by type "${nameFn[mode](
+                        listAccess
+                      )}CreateInput".`
+                    ),
+                  },
+                  {
+                    message: expect.stringContaining(
+                      `Cannot query field "${fieldName}" on type "${nameFn[mode](listAccess)}".`
+                    ),
+                  },
+                ]);
               }
-              expect(data).toBe(undefined);
+              expect(body.data).toBe(undefined);
             });
           });
       });
@@ -124,12 +135,8 @@ describe(`Not authed`, () => {
               const fieldName = getFieldName(access);
               const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(data?.[createMutationName]).toEqual(null);
-              expect(errors).not.toBe(undefined);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].name).toEqual('GraphQLError');
-              expect(errors![0].message).toEqual('You do not have access to this resource');
-              expect(errors![0].path).toEqual([createMutationName]);
+              expect(data).toEqual({ [createMutationName]: null });
+              expectAccessDenied(errors, [{ path: [createMutationName] }]);
             });
           });
       });
@@ -155,17 +162,13 @@ describe(`Not authed`, () => {
               }sCount`;
               const query = `query { ${countName} }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(data?.[countName]).toBe(null);
-              expect(errors).toHaveLength(1);
-              const error = errors![0];
-              expect(error.message).toEqual('You do not have access to this resource');
-              expect(error.path).toHaveLength(1);
-              expect(error.path![0]).toEqual(countName);
+              expect(data).toEqual({ [countName]: null });
+              expectAccessDenied(errors, [{ path: [countName] }]);
             });
 
             test(`single denied: ${JSON.stringify(access)}`, async () => {
               const singleQueryName = nameFn[mode](access);
-              const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
+              const query = `query { ${singleQueryName}(where: { id: "cabc123" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, singleQueryName);
             });
@@ -193,14 +196,8 @@ describe(`Not authed`, () => {
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
               const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(errors).not.toBe(null);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].name).toEqual('GraphQLError');
-              expect(errors![0].message).toEqual('You do not have access to this resource');
-              expect(errors![0].path).toEqual([singleQueryName, fieldName]);
-              expect(data?.[singleQueryName]).not.toBe(null);
-              expect(data?.[singleQueryName].id).not.toBe(null);
-              expect(data?.[singleQueryName][fieldName]).toBe(null);
+              expectAccessDenied(errors, [{ path: [singleQueryName, fieldName] }]);
+              expect(data).toEqual({ [singleQueryName]: { id: item.id, [fieldName]: null } });
             });
             test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
               const listAccess = {
@@ -218,20 +215,16 @@ describe(`Not authed`, () => {
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
               const query = `query { ${allQueryName} { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(errors).not.toBe(null);
-              expect(errors).toHaveLength(2);
-              expect(errors![0].name).toEqual('GraphQLError');
-              expect(errors![0].message).toEqual('You do not have access to this resource');
-              expect(errors![0].path).toEqual([allQueryName, 0, fieldName]);
-              expect(errors![1].name).toEqual('GraphQLError');
-              expect(errors![1].message).toEqual('You do not have access to this resource');
-              expect(errors![1].path).toEqual([allQueryName, 1, fieldName]);
-              expect(data?.[allQueryName]).not.toBe(null);
-              expect(data?.[allQueryName]).toHaveLength(2);
-              for (const _item of data?.[allQueryName]) {
-                expect(_item.id).not.toBe(null);
-                expect(_item[fieldName]).toEqual(null);
-              }
+              expectAccessDenied(errors, [
+                { path: [allQueryName, 0, fieldName] },
+                { path: [allQueryName, 1, fieldName] },
+              ]);
+              expect(data).toEqual({
+                [allQueryName]: [
+                  { id: expect.any(String), [fieldName]: null },
+                  { id: expect.any(String), [fieldName]: null },
+                ],
+              });
             });
           });
       });
@@ -251,12 +244,15 @@ describe(`Not authed`, () => {
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
               const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
-              const { data, errors } = await context.graphql.raw({ query });
-              expect(errors).toHaveLength(1);
-              expect(errors![0].message).toContain(
-                `Cannot query field "${fieldName}" on type "${listKey}".`
-              );
-              expect(data).toBe(undefined);
+              const { body } = await graphQLRequest({ query });
+              expectGraphQLValidationError(body.errors, [
+                {
+                  message: expect.stringContaining(
+                    `Cannot query field "${fieldName}" on type "${listKey}".`
+                  ),
+                },
+              ]);
+              expect(body.data).toBe(undefined);
             });
             test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
               const listAccess = { create: true, read: true, update: true, delete: true };
@@ -268,12 +264,15 @@ describe(`Not authed`, () => {
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
               const query = `query { ${allQueryName} { id ${fieldName} } }`;
-              const { data, errors } = await context.graphql.raw({ query });
-              expect(errors).toHaveLength(1);
-              expect(errors![0].message).toContain(
-                `Cannot query field "${fieldName}" on type "${listKey}".`
-              );
-              expect(data).toBe(undefined);
+              const { body } = await graphQLRequest({ query });
+              expectGraphQLValidationError(body.errors, [
+                {
+                  message: expect.stringContaining(
+                    `Cannot query field "${fieldName}" on type "${listKey}".`
+                  ),
+                },
+              ]);
+              expect(body.data).toBe(undefined);
             });
           });
       });
@@ -288,7 +287,7 @@ describe(`Not authed`, () => {
           .forEach(access => {
             test(`denies: ${JSON.stringify(access)}`, async () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
-              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`;
+              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[provider]}", data: { name: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, updateMutationName);
             });
@@ -315,13 +314,16 @@ describe(`Not authed`, () => {
               const query = `mutation { ${updateMutationName}(id: "${
                 item.id
               }", data: { ${fieldName}: "bar" }) { id ${access.read ? fieldName : ''} } }`;
-              const { data, errors } = await context.graphql.raw({ query });
+              const { body } = await graphQLRequest({ query });
               // If update is not allowed on a field then there will be a query validation error
-              expect(errors).toHaveLength(1);
-              expect(errors![0].message).toContain(
-                `Field "${fieldName}" is not defined by type "${listKey}UpdateInput".`
-              );
-              expect(data).toBe(undefined);
+              expectGraphQLValidationError(body.errors, [
+                {
+                  message: expect.stringContaining(
+                    `Field "${fieldName}" is not defined by type "${listKey}UpdateInput".`
+                  ),
+                },
+              ]);
+              expect(body.data).toBe(undefined);
             });
           });
       });
@@ -344,12 +346,8 @@ describe(`Not authed`, () => {
               const fieldName = getFieldName(access);
               const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expect(data?.[updateMutationName]).toEqual(null);
-              expect(errors).not.toBe(undefined);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].name).toEqual('GraphQLError');
-              expect(errors![0].message).toEqual('You do not have access to this resource');
-              expect(errors![0].path).toEqual([updateMutationName]);
+              expect(data).toEqual({ [updateMutationName]: null });
+              expectAccessDenied(errors, [{ path: [updateMutationName] }]);
             });
           });
       });
@@ -364,22 +362,18 @@ describe(`Not authed`, () => {
           .forEach(access => {
             test(`single denied: ${JSON.stringify(access)}`, async () => {
               const deleteMutationName = `delete${nameFn[mode](access)}`;
-              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`;
+              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, deleteMutationName);
             });
 
             test(`multi denied: ${JSON.stringify(access)}`, async () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}"]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
 
-              expect(data?.[multiDeleteMutationName]).toEqual([null]);
-              expect(errors).not.toBe(undefined);
-              expect(errors).toHaveLength(1);
-              expect(errors![0].name).toEqual('GraphQLError');
-              expect(errors![0].message).toEqual('You do not have access to this resource');
-              expect(errors![0].path).toEqual([multiDeleteMutationName, 0]);
+              expect(data).toEqual({ [multiDeleteMutationName]: [null] });
+              expectAccessDenied(errors, [{ path: [multiDeleteMutationName, 0] }]);
             });
           });
       });

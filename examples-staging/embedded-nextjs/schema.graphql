@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -17,8 +14,8 @@ input PostWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   title: String
   title_not: String
   title_contains: String
@@ -100,41 +97,15 @@ type _QueryMeta {
 }
 
 type Mutation {
-  """
-   Create a single Post item.
-  """
   createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
   createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
   updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
   updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
   deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
   deletePosts(ids: [ID!]): [Post]
 }
 
 type Query {
-  """
-   Search for all Post items which match the where clause.
-  """
   allPosts(
     where: PostWhereInput! = {}
     search: String
@@ -144,15 +115,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
   Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String

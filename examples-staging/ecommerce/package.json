@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-ecommerce",
-  "version": "4.0.3",
+  "version": "4.0.5",
   "private": true,
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
@@ -16,22 +16,22 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
     "@babel/runtime": "^7.14.6",
-    "@keystone-next/auth": "^27.0.0",
-    "@keystone-next/cloudinary": "^6.0.1",
-    "@keystone-next/fields": "^11.0.1",
-    "@keystone-next/keystone": "^20.0.1",
-    "@keystone-next/types": "^20.0.1",
-    "@types/nodemailer": "^6.4.2",
+    "@keystone-next/auth": "^29.0.0",
+    "@keystone-next/cloudinary": "^6.0.4",
+    "@keystone-next/fields": "^12.0.0",
+    "@keystone-next/keystone": "^22.0.0",
+    "@keystone-next/types": "^22.0.0",
+    "@types/nodemailer": "^6.4.4",
     "dotenv": "^10.0.0",
     "next": "^10.2.3",
-    "nodemailer": "^6.6.2",
+    "nodemailer": "^6.6.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.157.0"
+    "stripe": "^8.161.0"
   },
   "devDependencies": {
-    "@keystone-next/testing": "^1.0.0",
-    "typescript": "^4.3.4"
+    "@keystone-next/testing": "^1.0.2",
+    "typescript": "^4.3.5"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

@@ -1,0 +1,362 @@
+type Task {
+  id: ID!
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: Person
+  finishBy: String
+  relatedLinks: JSON
+}
+
+enum TaskPriorityType {
+  low
+  medium
+  high
+}
+
+input TaskWhereInput {
+  AND: [TaskWhereInput!]
+  OR: [TaskWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  label: String
+  label_not: String
+  label_contains: String
+  label_not_contains: String
+  label_in: [String]
+  label_not_in: [String]
+  priority: TaskPriorityType
+  priority_not: TaskPriorityType
+  priority_in: [TaskPriorityType]
+  priority_not_in: [TaskPriorityType]
+  isComplete: Boolean
+  isComplete_not: Boolean
+  assignedTo: PersonWhereInput
+  assignedTo_is_null: Boolean
+  finishBy: String
+  finishBy_not: String
+  finishBy_lt: String
+  finishBy_lte: String
+  finishBy_gt: String
+  finishBy_gte: String
+  finishBy_in: [String]
+  finishBy_not_in: [String]
+}
+
+input TaskWhereUniqueInput {
+  id: ID
+}
+
+enum SortTasksBy {
+  id_ASC
+  id_DESC
+  label_ASC
+  label_DESC
+  priority_ASC
+  priority_DESC
+  isComplete_ASC
+  isComplete_DESC
+  finishBy_ASC
+  finishBy_DESC
+}
+
+input TaskOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  priority: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input TaskUpdateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
+  relatedLinks: JSON
+}
+
+input PersonRelateToOneInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: PersonWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TasksUpdateInput {
+  id: ID!
+  data: TaskUpdateInput
+}
+
+input TaskCreateInput {
+  label: String
+  priority: TaskPriorityType
+  isComplete: Boolean
+  assignedTo: PersonRelateToOneInput
+  finishBy: String
+  relatedLinks: JSON
+}
+
+input TasksCreateInput {
+  data: TaskCreateInput
+}
+
+type Person {
+  id: ID!
+  name: String
+  tasks(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Task!]
+  _tasksMeta(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TaskWhereInput! = {}): Int
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+input PersonWhereInput {
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_in: [String]
+  name_not_in: [String]
+  tasks_every: TaskWhereInput
+  tasks_some: TaskWhereInput
+  tasks_none: TaskWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID
+}
+
+enum SortPeopleBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input PersonUpdateInput {
+  name: String
+  tasks: TaskRelateToManyInput
+}
+
+input TaskRelateToManyInput {
+  create: [TaskCreateInput]
+  connect: [TaskWhereUniqueInput]
+  disconnect: [TaskWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PeopleUpdateInput {
+  id: ID!
+  data: PersonUpdateInput
+}
+
+input PersonCreateInput {
+  name: String
+  tasks: TaskRelateToManyInput
+}
+
+input PeopleCreateInput {
+  data: PersonCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type Mutation {
+  createTask(data: TaskCreateInput): Task
+  createTasks(data: [TasksCreateInput]): [Task]
+  updateTask(id: ID!, data: TaskUpdateInput): Task
+  updateTasks(data: [TasksUpdateInput]): [Task]
+  deleteTask(id: ID!): Task
+  deleteTasks(ids: [ID!]): [Task]
+  createPerson(data: PersonCreateInput): Person
+  createPeople(data: [PeopleCreateInput]): [Person]
+  updatePerson(id: ID!, data: PersonUpdateInput): Person
+  updatePeople(data: [PeopleUpdateInput]): [Person]
+  deletePerson(id: ID!): Person
+  deletePeople(ids: [ID!]): [Person]
+}
+
+type Query {
+  allTasks(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Task!]
+  Task(where: TaskWhereUniqueInput!): Task
+  _allTasksMeta(
+    where: TaskWhereInput! = {}
+    search: String
+    sortBy: [SortTasksBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TaskOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tasksCount instead."
+    )
+  tasksCount(where: TaskWhereInput! = {}): Int
+  allPeople(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Person!]
+  Person(where: PersonWhereUniqueInput!): Person
+  _allPeopleMeta(
+    where: PersonWhereInput! = {}
+    search: String
+    sortBy: [SortPeopleBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PersonOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use peopleCount instead."
+    )
+  peopleCount(where: PersonWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

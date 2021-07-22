@@ -1,12 +1,12 @@
 /** @jsx jsx */
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
-import { AnchorHTMLAttributes } from 'react';
+import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
@@ -22,11 +22,13 @@ export function Section({ label, children }: SectionProps) {
     >
       <Type
         as="h3"
-        look="body14bold"
-        margin="0 0 var(--space-large) 0"
-        // color="var(--muted)"
+        look="body16bold"
+        margin="var(--space-xlarge) 0 var(--space-large) 0"
         color="var(--text-heading)"
-        css={{ textTransform: 'uppercase' }}
+        css={{
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
       >
         {label}
       </Type>
@@ -43,6 +45,7 @@ type NavItemProps = {
 
 export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: NavItemProps) {
   const { pathname } = useRouter();
+  const mq = useMediaQuery();
   let isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isOpen = ctx ? ctx.mobileNavIsOpen : true;
@@ -51,17 +54,17 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
     <Link href={href} passHref>
       <a
         tabIndex={isOpen ? 0 : -1}
-        css={{
+        css={mq({
           display: 'block',
           textDecoration: 'none',
-          padding: '0 0 var(--space-medium) 0',
+          padding: ['0 0 var(--space-medium) 0', '0 0 var(--space-large) var(--space-medium)'],
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
           ':hover': {
             color: 'var(--link)',
           },
-        }}
+        })}
         {...props}
       />
     </Link>
@@ -76,16 +79,20 @@ type PrimaryNavItemProps = {
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
+  const ctx = useHeaderContext();
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+
   return (
     <Link href={href} passHref>
       <a
+        tabIndex={isOpen ? 0 : -1}
         css={{
           display: 'block',
           fontSize: '1rem',
           color: isActive ? 'var(--link)' : 'var(--text-heading)',
-          marginBottom: '1rem',
+          marginBottom: '1.25rem',
           alignItems: 'center',
-          fontWeight: 700,
+          fontWeight: 600,
           ':hover': {
             color: 'var(--link)',
           },
@@ -127,11 +134,18 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/filters">Query Filters</NavItem>
         <NavItem href="/docs/guides/hooks">Hooks</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
         <NavItem href="/docs/guides/virtual-fields">
           Virtual Fields <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/testing">
           Testing <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-fields">
+          Custom Fields <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-logo">
+          Custom Admin UI Logo <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
@@ -144,9 +158,6 @@ export function DocsNavigation() {
         </NavItem>
         <NavItem href="/docs/guides/internal-items" isPlaceholder>
           Internal Items
-        </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
-          Custom Admin UI Pages
         </NavItem>
         <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views

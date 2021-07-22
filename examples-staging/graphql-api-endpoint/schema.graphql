@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
@@ -47,8 +44,8 @@ input UserWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String
@@ -86,20 +83,8 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 
@@ -158,9 +143,6 @@ input UsersCreateInput {
   data: UserCreateInput
 }
 
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -205,8 +187,8 @@ input PostWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   title: String
   title_not: String
   title_contains: String
@@ -239,20 +221,8 @@ input PostWhereInput {
   publishDate_not_in: [String]
   author: UserWhereInput
   author_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   tags_every: TagWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   tags_some: TagWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   tags_none: TagWhereInput
 }
 
@@ -319,9 +289,6 @@ input PostsCreateInput {
   data: PostCreateInput
 }
 
-"""
- A keystone list
-"""
 type Tag {
   id: ID!
   name: String
@@ -358,8 +325,8 @@ input TagWhereInput {
   id_lte: ID
   id_gt: ID
   id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
+  id_in: [ID!]
+  id_not_in: [ID!]
   name: String
   name_not: String
   name_contains: String
@@ -378,20 +345,8 @@ input TagWhereInput {
   name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 
@@ -439,94 +394,23 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single User item.
-  """
   createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
   createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
   updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
   updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
   deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
   deleteUsers(ids: [ID!]): [User]
-
-  """
-   Create a single Post item.
-  """
   createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
   createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
   updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
   updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
   deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
   deletePosts(ids: [ID!]): [Post]
-
-  """
-   Create a single Tag item.
-  """
   createTag(data: TagCreateInput): Tag
-
-  """
-   Create multiple Tag items.
-  """
   createTags(data: [TagsCreateInput]): [Tag]
-
-  """
-   Update a single Tag item by ID.
-  """
   updateTag(id: ID!, data: TagUpdateInput): Tag
-
-  """
-   Update multiple Tag items by ID.
-  """
   updateTags(data: [TagsUpdateInput]): [Tag]
-
-  """
-   Delete a single Tag item by ID.
-  """
   deleteTag(id: ID!): Tag
-
-  """
-   Delete multiple Tag items by ID.
-  """
   deleteTags(ids: [ID!]): [Tag]
   authenticateUserWithPassword(
     email: String!
@@ -569,9 +453,6 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
   allUsers(
     where: UserWhereInput! = {}
     search: String
@@ -581,15 +462,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
   User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
@@ -603,10 +476,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
   usersCount(where: UserWhereInput! = {}): Int
-
-  """
-   Search for all Post items which match the where clause.
-  """
   allPosts(
     where: PostWhereInput! = {}
     search: String
@@ -616,15 +485,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
   Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -638,10 +499,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-
-  """
-   Search for all Tag items which match the where clause.
-  """
   allTags(
     where: TagWhereInput! = {}
     search: String
@@ -651,15 +508,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Tag!]
-
-  """
-   Search for the Tag item with the matching ID.
-  """
   Tag(where: TagWhereUniqueInput!): Tag
-
-  """
-   Perform a meta-query on all Tag items which match the where clause.
-  """
   _allTagsMeta(
     where: TagWhereInput! = {}
     search: String

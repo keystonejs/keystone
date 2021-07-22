@@ -1,6 +1,6 @@
 ## Feature Example - Document Field
 
-This project demonstrates how to configure [document fields](https://next.keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend application.
+This project demonstrates how to configure [document fields](https://keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend application.
 It builds on the [Blog](../blog) starter project.
 
 ## Instructions
@@ -33,6 +33,8 @@ The project contains two `document` fields which show how to use the field confi
 For the blog post content we want the user to have the full complement of formatting and editor options available, including multi-column layouts.
 To do this we use the short-hand notation of `formatting: true`, which enables all formatting features. We also enable `dividers`, `links`, and specify two additional column layouts.
 
+We also want blog authors to be able to mention other authors in their blogs, so we enable an [inline relationship](https://next.keystonejs.com/docs/guides/document-fields#inline-relationships) for mentions.
+
 ```ts
 content: document({
   formatting: true,
@@ -42,6 +44,14 @@ content: document({
     [1, 1],
     [1, 1, 1],
   ],
+  relationships: {
+    mention: {
+      kind: 'inline',
+      listKey: 'Author',
+      label: 'Mention',
+      selection: 'id name',
+    },
+  },
 }),
 ```
 

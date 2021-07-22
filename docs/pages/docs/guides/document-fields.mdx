@@ -1,70 +1,301 @@
-import { MDXProvider } from '@mdx-js/react';
-import { components } from '../../../components/Markdown';
-import { getHeadings } from '../../../lib/getHeadings';
-import { H1 } from '../../../components/docs/Heading';
-import { DocsPage } from '../../../components/Page';
-import {
-  DocumentEditorDemo,
-  DocumentFeaturesFormAndCode,
-  DocumentFeaturesProvider,
-} from '../../../components/docs/DocumentEditorDemo';
-import Intro from './_doc-field-intro.mdx';
+import { Markdown } from '../../../components/Markdown';
 
----
+# How To Use Document Fields
 
-## Customise the editor
+The [`document`](../apis/fields#document) field type is a highly customizable rich text editor that lets content creators quickly and easily edit content in your system.
 
-You can configure which fields appear in the editor based on what your team needs. Try adding and removing features below ↓ to see them update in the editor above ↑.
+It's built with [Slate](https://docs.slatejs.org/), stores your content as JSON-structured data, and lets you do things like:
 
-<DocumentFeaturesFormAndCode />
+- Configure the types of formatting used in your documents
+- Easily render the document in your application
+- Insert relationships to other items in your Keystone database
+- Define your own custom editor blocks based on React Components
 
-## Inline Relationships
+To see the document field in action, try out the [demo](./document-field-demo).
 
-The document field can also have inline relationships for things like mentions.
-These are not stored like relationship fields on lists, they are stored as ids in the document structure.
+## Configuration
 
-```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+The document field provides a number of different formatting options, all of which can be configured.
+To get started with a fully featured editor experience, you can turn on all of the built-in options.
+
+```typescript
+import { createSchema, list } from '@keystone-next/keystone/schema';
 import { document } from '@keystone-next/fields-document';
 
-export default config({
-  lists: createSchema({
-    ListName: list({
-      fields: {
-        fieldName: document({
-          relationships: {
-            mention: {
-              kind: 'inline',
-              listKey: 'User',
-              label: 'Mention',
-              selection: 'some GraphQL selection',
-            },
-          },
-          /* ... */
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
+export const lists = createSchema({
+  Post: list({
+    fields: {
+      content: document({
+        formatting: true,
+        dividers: true,
+        links: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+        ],
+      }),
+    },
   }),
-  /* ... */
 });
 ```
 
-By default, only the ids for relationships are sent in document.
-To include the label and extra data from the selection specified in the relationship, pass `hydrateRelationships: true` to the field.
+This has enabled all of the **formatting** options, enabled inline **links**, section **dividers**, and both 2 and 3 column **layouts**.
+
+We can disable any of these features by simply omitting the option from our configuration.
+
+### Formatting
+
+Setting `formatting: true` turns on all the formatting options for the document.
+If you need more fine-grained control over which options are enabled, you can explicitly list the features you want, e.g.
+
+```typescript
+content: document({
+  formatting: {
+    inlineMarks: {
+      bold: true,
+      italic: true,
+      underline: true,
+      strikethrough: true,
+      code: true,
+      superscript: true,
+      subscript: true,
+      keyboard: true,
+    },
+    listTypes: {
+      ordered: true,
+      unordered: true,
+    },
+    alignment: {
+      center: true,
+      end: true,
+    },
+    headingLevels: [1, 2, 3, 4, 5, 6],
+    blockTypes: {
+      blockquote: true,
+      code: true
+    },
+    softBreaks: true,
+  },
+}),
+```
+
+All the features set to `true` will be enabled in your document field.
+To disable a specific feature you can simply omit it from the configuration.
+
+If you want to enable all the options in a particular sub-group, you can set the group to `true`.
+For example, to enable all `listType` options you could set `listType: true`.
+
+You can experiment with the different configuration settings in the [document field demo](./document-field-demo).
+
+## Querying
+
+Each document field will generate a type within your GraphQL schema. The example above of a `content` field in the `Post` list would generate the type:
+
+```graphql
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+```
+
+To query the content we can run the following GraphQL query, which will return the JSON representation of the content in `allPosts.content.document`.
 
 ```graphql
 query {
   allPosts {
-    content(hydrateRelationships: true) {
+    content {
       document
     }
   }
 }
 ```
 
-Whenever a value is saved to the document field, the extra data from the selection and the label on relationships are removed (if they exist) so only the id is stored.
+We will discuss the `hydrateRelationships` option [below](#inline-relationships).
+
+The document data is stored as JSON.
+You can use the [document field demo](./document-field-demo) to interactively explore how data is stored when you make changes in the document editor.
+
+## Rendering
+
+To render the document in a React app, use the `@keystone-next/document-renderer` package.
+
+```tsx
+import { DocumentRenderer } from '@keystone-next/document-renderer';
+
+<DocumentRenderer document={document} />;
+```
+
+The `DocumentRenderer` component accepts the `JSON` representation of the document returned by the GraphQL API.
+
+### Overriding the default renderers
+
+The `DocumentRenderer` has built in renderers for all the different types of data stored in the JSON formatted data.
+If you need to override these defaults, you can do so by providing your own renderers to `DocumentRenderer`.
+
+```tsx
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+
+const renderers: DocumentRendererProps['renderers'] = {
+  // use your editor's autocomplete to see what other renderers you can override
+  inline: {
+    bold: ({ children }) => {
+      return <strong>{children}</strong>;
+    },
+  },
+  block: {
+    paragraph: ({ children, textAlign }) => {
+      return <p style={{ textAlign }}>{children}</p>;
+    },
+  },
+};
+
+<DocumentRenderer document={document} renderers={renderers} />;
+```
+
+## Inline Relationships
+
+The document field can also have inline relationships which reference other items in your system.
+For example, you might want to include twitter-style mentions of other users in a blog application.
+We can achieve this with the `relationships` option to the document field.
+
+```tsx
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { document } from '@keystone-next/fields-document';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    Post: list({
+      fields: {
+        content: document({
+          relationships: {
+            mention: {
+              kind: 'inline',
+              listKey: 'Author',
+              label: 'Mention',
+              selection: 'id name',
+            },
+          },
+        }),
+      },
+    }),
+    Author: list({
+      fields: {
+        name: text(),
+      }
+    }),
+  }),
+});
+```
+
+We use the `kind: 'inline'` option to indicate that we want to have an inline relationship.
+The other option, `kind: 'prop'`, is used with custom component blocks, which are discussed [below](#component-blocks).
+
+When you add an inline relationship to your document field, it becomes accessible in the Admin UI behind the `+` icon.
+This menu uses the `label` specified in the relationship config.
+
+![The Admin UI showing the relationship label behind the plus menu icon](/assets/guides/document-fields/inline-relationship-label.png)
+
+You can also access the relationship directly using the `/` command and then starting to type the label.
+
+![The Admin UI showing use of slash (/) to select the inline relationship](/assets/guides/document-fields/inline-relationship-slash.png)
+
+You can then select an item from the list specified by `listKey` from the inline select component in the document editor.
+
+![The Admin UI showing the select field used to choose a related item](/assets/guides/document-fields/inline-relationship-select.png)
+
+!> **Tip**: The select component will use the [`ui.labelField`](../apis/schema#ui) of the related list in its options list.
+Make sure you have this value configured to make finding related items easier for your users.
+
+### Querying inline relationships
+
+The document field stores the `id` of the related item in its data structure.
+If you query for the document, the inline relationship block will include the ID as `data.id`.
+
+```JSON
+...
+  {
+    "type": "relationship",
+    "data": {
+      "id": "ckqk4hkcg0030f5mu6le6xydu"
+    },
+    "relationship": "mention",
+    "children": [{ "text": "" }
+  },
+...
+```
+
+This is generally not very useful if you want to render the item in your document.
+To obtain more useful data, we can pass the `hydrateRelationships: true` option to our query.
+
+```graphql
+query {
+  allPosts {
+    content {
+      document(hydrateRelationships: true)
+    }
+  }
+}
+```
+
+This will add a `data.label` value, based on the related item's label field, and a `data.data` value, which is populated with the data indicated by the `selection` config option.
+
+```JSON
+...
+  {
+    "type": "relationship",
+    "data": {
+      "id": "ckqk4hkcg0030f5mu6le6xydu",
+      "label": "Alice",
+      "data": {
+        "id": "ckqk4hkcg0030f5mu6le6xydu",
+        "name": "Alice"
+      }
+    },
+    "relationship": "mention",
+    "children": [{ "text": "" }
+  },
+...
+```
+
+?> **Null data:** It is possible to add an inline relationship in the document editor without actually selecting a related item. In these cases, the value of `data` will be `null`.
+
+?> **Dangling references:** The data for relationships are stored as IDs within the JSON data structure of the document.
+If an item in your database is deleted, the document field will not have any knowledge of this, and you will be left with a dangling reference in your document data.
+In other instances the person querying for the document may not have read access to the related item.
+In both these cases the `data.label` and `data.data` values will be `undefined`.
+
+### Rendering inline relationships
+
+The `DocumentRenderer` has a rudimentary renderer built in for inline relationships which simply returns the `data.label` (or `data.id` if `hydrateRelationships` is `false`) inside a `<span>` tag.
+This is unlikely to be what you want, so you will need to define a custom renderer for your relationship.
+
+A custom renderer for our `mention` relationship might look like:
+
+```typescript
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+
+const renderers: DocumentRendererProps['renderers'] = {
+  inline: {
+    relationship({ relationship, data }) {
+      if (relationship === 'mention') {
+        if (data === null || data.data === undefined) {
+          return <span>[unknown author]</span>
+        } else {
+          return <Link href={`/author/${data.data.id}`}>{data.data.name}</Link>;
+        }
+      }
+      return null;
+    },
+  },
+};
+
+<DocumentRenderer document={document} renderers={renderers} />;
+```
+
+The `relationship` argument lets you write renderers for each of the different relationships defined in your document.
+The `data` argument is provided directly from the query, and we can use the properies of `data.data` to render our mentions as links to the author's page.
+
+?> **Missing data:** Make sure your renderer checks for `data === null` (no item selected) and `data.data === undefined` (selected item not found) and handles these cases appropriately.
 
 ## Component Blocks
 
@@ -348,7 +579,7 @@ export default config({
           relationships: {
             featuredAuthors: {
               kind: 'prop',
-              listKey: 'User',
+              listKey: 'Author',
               selection: 'posts { id title }',
               many: true,
             },
@@ -426,38 +657,6 @@ component({
 });
 ```
 
-## Rendering
-
-To render the document in a React app, use the `@keystone-next/document-renderer` package.
-
-```tsx
-import { DocumentRenderer } from '@keystone-next/document-renderer';
-
-<DocumentRenderer document={document} />;
-```
-
-### Overriding the default renderers
-
-```tsx
-import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
-
-const renderers: DocumentRendererProps['renderers'] = {
-  // use your editor's autocomplete to see what other renderers you can override
-  inline: {
-    bold: ({ children }) => {
-      return <strong>{children}</strong>;
-    },
-  },
-  block: {
-    paragraph: ({ children, textAlign }) => {
-      return <p style={{ textAlign }}>{children}</p>;
-    },
-  },
-};
-
-<DocumentRenderer document={document} renderers={renderers} />;
-```
-
 ### Rendering Component blocks
 
 #### Typing props for rendering component blocks
@@ -477,35 +676,4 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 <DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
 ```
 
-export default ({ children }) => {
-  const headings = getHeadings(children);
-  return (
-    <DocsPage
-      title={'How To Use Document Fields'}
-      headings={[
-        {
-          label: 'How To Use Document Fields',
-          id: 'how-to-use-document-fields',
-          depth: 1,
-        },
-        {
-          label: 'Try the demo',
-          id: 'try-the-demo',
-          depth: 2,
-        },
-        ...headings,
-      ]}
-    >
-      <DocumentFeaturesProvider>
-        <div className="prose">
-          <H1>How To Use Document Fields</H1>
-          <MDXProvider components={components}><Intro /></MDXProvider>
-        </div>
-        <DocumentEditorDemo />
-        <div className="prose">
-          <MDXProvider components={components}>{children}</MDXProvider>
-        </div>
-      </DocumentFeaturesProvider>
-    </DocsPage>
-  );
-};
+export default ({ children }) => <Markdown>{children}</Markdown>;
