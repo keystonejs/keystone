@@ -133,7 +133,7 @@ export function DocsNavigation() {
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
       <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
-        <NavItem href="/docs/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
+        <NavItem href="/docs/guides/keystone-5-vs-keystone-6-preview">Keystone 5 vs 6</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">Query Filters</NavItem>
