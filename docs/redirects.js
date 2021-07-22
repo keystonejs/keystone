@@ -105,7 +105,7 @@ const ORIGINAL_NEXT = [
 /* URLs from the current website */
 const CURRENT = [
   {
-    source: '/docs/guides/keystone-5-vs-keystone-6-preview.mdx',
+    source: '/docs/guides/keystone-5-vs-keystone-next',
     destination: '/docs/guides/keystone-5-vs-keystone-6-preview',
     permanent: true,
   },
