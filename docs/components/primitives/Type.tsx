@@ -58,12 +58,14 @@ export const styleMap = {
     fontSize: '4rem',
     fontWeight: 700,
     letterSpacing: '-0.05em',
+    lineHeight: 1.2,
   },
   heading84: {
     ...common.brand,
     fontSize: '5.25rem',
     fontWeight: 900,
     letterSpacing: '-0.05em',
+    lineHeight: 1.2,
   },
   heading92: {
     ...common.brand,
@@ -72,7 +74,6 @@ export const styleMap = {
     letterSpacing: '-0.025em',
     lineHeight: 1.2,
   },
-
   body12: {
     ...common.body,
     fontSize: '0.75rem',
