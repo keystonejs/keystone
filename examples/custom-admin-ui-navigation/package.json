@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@keystone-next/fields": "^12.0.0",
-    "@keystone-next/keystone": "^22.0.0"
+    "@keystone-next/keystone": "^22.0.0",
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "typescript": "^4.3.5"
