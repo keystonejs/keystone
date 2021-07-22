@@ -15,19 +15,16 @@ export default function Docs() {
       <Type as="h1" look="heading64">
         Keystone Guides
       </Type>
-
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
         Practical explanations of Keystone’s fundamental building blocks. When you’re trying to get
         something done, Keystone guides show you how to think about, and get the most out of each
         feature.
       </Type>
-
       <CommunitySlackCTA />
-
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
