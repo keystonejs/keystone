@@ -26,35 +26,39 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href;
 
   return (
-    <Link
-      aria-current={isSelected ? 'location' : false}
-      href={href}
-      css={{
-        background: 'transparent',
-        borderBottomRightRadius: radii.xsmall,
-        borderTopRightRadius: radii.xsmall,
-        color: palette.neutral700,
-        display: 'block',
-        fontWeight: typography.fontWeight.medium,
-        marginBottom: spacing.xsmall,
-        marginRight: spacing.xlarge,
-        padding: `${spacing.small}px ${spacing.xlarge}px`,
-        position: 'relative',
-        textDecoration: 'none',
+    <li>
+      <Link
+        tabIndex={1}
+        onFocus={() => console.log('LINK FOCUSED')}
+        aria-current={isSelected ? 'location' : false}
+        href={href}
+        css={{
+          background: 'transparent',
+          borderBottomRightRadius: radii.xsmall,
+          borderTopRightRadius: radii.xsmall,
+          color: palette.neutral700,
+          display: 'block',
+          fontWeight: typography.fontWeight.medium,
+          marginBottom: spacing.xsmall,
+          marginRight: spacing.xlarge,
+          padding: `${spacing.small}px ${spacing.xlarge}px`,
+          position: 'relative',
+          textDecoration: 'none',
 
-        ':hover': {
-          background: colors.backgroundHover,
-          color: colors.linkHoverColor,
-        },
+          ':hover': {
+            background: colors.backgroundHover,
+            color: colors.linkHoverColor,
+          },
 
-        '&[aria-current=location]': {
-          background: palette.neutral200,
-          color: palette.neutral900,
-        },
-      }}
-    >
-      {children}
-    </Link>
+          '&[aria-current=location]': {
+            background: palette.neutral200,
+            color: palette.neutral900,
+          },
+        }}
+      >
+        {children}
+      </Link>
+    </li>
   );
 };
 
@@ -144,7 +148,19 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
       {authenticatedItem.state === 'authenticated' && (
         <AuthenticatedItem item={authenticatedItem} />
       )}
-      <nav css={{ marginTop: spacing.xlarge }}>{children}</nav>
+      <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
+        <ul
+          css={{
+            padding: 0,
+            margin: 0,
+            li: {
+              listStyle: 'none',
+            },
+          }}
+        >
+          {children}
+        </ul>
+      </nav>
     </div>
   );
 };
