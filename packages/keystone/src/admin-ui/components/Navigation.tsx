@@ -28,8 +28,6 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   return (
     <li>
       <Link
-        tabIndex={1}
-        onFocus={() => console.log('LINK FOCUSED')}
         aria-current={isSelected ? 'location' : false}
         href={href}
         css={{
@@ -165,8 +163,6 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   );
 };
 
-type ListNavItemsProps = Pick<NavigationProps, 'routes'>;
-
 const ListNavItem = ({ href, children }: { href: string; children: ReactNode }) => {
   const router = useRouter();
   return (
@@ -175,6 +171,8 @@ const ListNavItem = ({ href, children }: { href: string; children: ReactNode }) 
     </NavItem>
   );
 };
+
+type ListNavItemsProps = Pick<NavigationProps, 'routes'>;
 
 export const ListNavItems = ({ routes }: ListNavItemsProps) => {
   // pull this logic up into a hook (or shared functionality);
