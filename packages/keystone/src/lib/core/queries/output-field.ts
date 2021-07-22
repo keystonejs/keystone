@@ -10,7 +10,7 @@ import {
   KeystoneContext,
 } from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
-import { validateFieldAccessControl, validateNonCreateListAccessControl } from '../access-control';
+import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { resolveWhereInput } from '../where-inputs';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
@@ -21,7 +21,7 @@ import {
   IdType,
   getDBFieldKeyForFieldOnMultiField,
 } from '../utils';
-import { findMany, findManyFilter } from './resolvers';
+import { accessControlledFilter, findMany } from './resolvers';
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,
@@ -40,10 +40,9 @@ function getRelationVal(
       findMany: async (args: FindManyArgsValue) =>
         findMany(args, foreignList, context, info, relationFilter),
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
-        const filter = await findManyFilter(foreignList, context, where, search);
-        if (filter === false) {
-          throw accessDeniedError('query');
-        }
+        let resolvedWhere = await resolveWhereInput(where || {}, foreignList);
+        const filter = await accessControlledFilter(foreignList, context, resolvedWhere, search);
+
         const count = applyFirstSkipToCount({
           count: await getPrismaModelForList(context.prisma, dbField.list).count({
             where: { AND: [filter, relationFilter] },
@@ -65,19 +64,10 @@ function getRelationVal(
     };
   } else {
     return async () => {
-      const access = await validateNonCreateListAccessControl({
-        access: foreignList.access.read,
-        args: { context, listKey: dbField.list, operation: 'read', session: context.session },
-      });
-      if (access === false) {
-        throw accessDeniedError('query');
-      }
+      const resolvedWhere = await accessControlledFilter(foreignList, context, relationFilter);
 
       return getPrismaModelForList(context.prisma, dbField.list).findFirst({
-        where:
-          access === true
-            ? relationFilter
-            : { AND: [relationFilter, await resolveWhereInput(access, foreignList)] },
+        where: resolvedWhere,
       });
     };
   }
