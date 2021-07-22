@@ -176,13 +176,14 @@ async function resolveOrderBy(
 export async function count(
   { where, search }: { where: Record<string, any>; search?: string | null },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  extraFilter?: PrismaFilter
 ) {
   let resolvedWhere = await resolveWhereInput(where || {}, list);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
 
   return getPrismaModelForList(context.prisma, list.listKey).count({
-    where: resolvedWhere,
+    where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
   });
 }
 
