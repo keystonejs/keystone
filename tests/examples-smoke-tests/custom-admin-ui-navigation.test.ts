@@ -10,9 +10,8 @@ exampleProjectTests('custom-admin-ui-navigation', browserType => {
     await page.goto('http://localhost:3000');
   });
   test('Contains a Navigation Guide link', async () => {
-    const content = await page.textContent('nav a');
-    // expect a 'Navigation Guide' nav link
-    expect(content).toBe('Navigation Guide');
+    await page.click('nav a:has-text("Naigation Guide")');
+    await page.waitForURL('https://keystonejs.com');
   });
   afterAll(async () => {
     await browser.close();
