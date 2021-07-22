@@ -3,10 +3,10 @@ import pLimit, { Limit } from 'p-limit';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
-  getPrismaModelForList,
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
   IdType,
+  runWithPrisma,
 } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import {
@@ -37,7 +37,7 @@ async function createSingle(
   );
 
   const item = await writeLimit(() =>
-    getPrismaModelForList(context.prisma, list.listKey).create({ data })
+    runWithPrisma(context, list, model => model.create({ data }))
   );
 
   return { item, afterChange };
@@ -116,7 +116,7 @@ async function updateSingle(
   const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
 
   const updatedItem = await writeLimit(() =>
-    getPrismaModelForList(context.prisma, list.listKey).update({ where: { id: item.id }, data })
+    runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))
   );
 
   await afterChange(updatedItem);
