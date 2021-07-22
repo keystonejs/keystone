@@ -106,7 +106,7 @@ const ORIGINAL_NEXT = [
 const CURRENT = [
   {
     source: '/docs/guides/keystone-5-vs-keystone-6-preview.mdx',
-    destination: '/docs/guides/keystone-5-vs-keystone-6-preview.mdx',
+    destination: '/docs/guides/keystone-5-vs-keystone-6-preview',
     permanent: true,
   },
 ];
