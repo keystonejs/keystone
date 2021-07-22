@@ -177,8 +177,6 @@ export function Footer() {
           </div>
           <div
             css={mq({
-              // borderLeft: [null, null, null, '1px solid var(--border)'],
-              // paddingLeft: [null, null, null, '3rem'],
               gridColumn: [null, '1 / 5', null, 'inherit'],
             })}
           >
