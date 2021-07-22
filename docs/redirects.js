@@ -111,4 +111,4 @@ const CURRENT = [
   },
 ];
 
-module.exports = [...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4, ...CURRENT];
+module.exports = [...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
