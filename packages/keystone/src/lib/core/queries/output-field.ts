@@ -12,7 +12,6 @@ import {
 import { GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
-import { resolveWhereInput } from '../where-inputs';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -21,7 +20,8 @@ import {
   IdType,
   getDBFieldKeyForFieldOnMultiField,
 } from '../utils';
-import { accessControlledFilter, findMany } from './resolvers';
+import { accessControlledFilter } from './resolvers';
+import * as queries from './resolvers';
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,
@@ -38,15 +38,11 @@ function getRelationVal(
   if (dbField.mode === 'many') {
     return {
       findMany: async (args: FindManyArgsValue) =>
-        findMany(args, foreignList, context, info, relationFilter),
+        queries.findMany(args, foreignList, context, info, relationFilter),
       count: async ({ where, search, first, skip }: FindManyArgsValue) => {
-        let resolvedWhere = await resolveWhereInput(where || {}, foreignList);
-        const filter = await accessControlledFilter(foreignList, context, resolvedWhere, search);
-
+        // This is the same as the legacy metaQuery resolver
         const count = applyFirstSkipToCount({
-          count: await getPrismaModelForList(context.prisma, dbField.list).count({
-            where: { AND: [filter, relationFilter] },
-          }),
+          count: await queries.count({ where, search }, foreignList, context, relationFilter),
           first,
           skip,
         });
