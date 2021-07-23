@@ -15,7 +15,7 @@ function useMustRenderServerResult() {
   useEffect(() => {
     _mustRenderServerResult = false;
     forceUpdate(1);
-  });
+  }, []);
 
   if (typeof window === 'undefined') {
     return true;
@@ -41,7 +41,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     } catch (err) {
       return;
     }
-  }, []);
+  }, [adminMetaHash]);
 
   // it seems like Apollo doesn't skip the first fetch when using skip: true so we're using useLazyQuery instead
   const [fetchStaticAdminMeta, { data, error, called }] = useLazyQuery(staticAdminMetaQuery, {
@@ -133,7 +133,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       );
     }
     return runtimeAdminMeta;
-  }, [data, error, adminMetaFromLocalStorage]);
+  }, [data, error, adminMetaFromLocalStorage, fieldViews]);
 
   const mustRenderServerResult = useMustRenderServerResult();
 

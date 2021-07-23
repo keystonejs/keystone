@@ -165,7 +165,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
       fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath];
     });
     return fields;
-  }, [fieldPaths]);
+  }, [fieldPaths, adminMeta.lists, listKey]);
 
   const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};
@@ -211,7 +211,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
         router.push((router.query.from as string | undefined) || '/');
       }
     }
-  }, [rawKeystone.authenticatedItem, router.query.from]);
+  }, [rawKeystone.authenticatedItem, router.query.from, enableWelcome, router]);
 
   return mode === 'init' ? (
     <SigninContainer>

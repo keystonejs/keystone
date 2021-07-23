@@ -106,6 +106,7 @@ export function Field({
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const inputKey = useMemo(() => Math.random(), [value]);
 
   return (

@@ -74,13 +74,14 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   }
 `;
 
+const storeableQueries = ['sortBy', 'fields'];
+
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
   const localStorageKey = `keystone.list.${listKey}.list.page.info`;
-  const storeableQueries = ['sortBy', 'fields'];
 
   const resetToDefaults = () => {
-    localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+    localStorage.removeItem(localStorageKey);
     router.replace({
       pathname: router.pathname,
     });
@@ -108,7 +109,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
         });
       }
     }
-  }, [localStorageKey, router.isReady]);
+  }, [localStorageKey, router.isReady, router]);
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {};
     Object.keys(router.query).forEach(key => {
@@ -117,14 +118,11 @@ function useQueryParamsFromLocalStorage(listKey: string) {
       }
     });
     if (Object.keys(queryParamsToSerialize).length) {
-      localStorage.setItem(
-        `keystone.list.${listKey}.list.page.info`,
-        JSON.stringify(queryParamsToSerialize)
-      );
+      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize));
     } else {
-      localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+      localStorage.removeItem(localStorageKey);
     }
-  }, [localStorageKey, router]);
+  }, [localStorageKey, router, listKey]);
 
   return { resetToDefaults };
 }
@@ -440,7 +438,7 @@ function DeleteManyButton({
     }
   }
 `,
-      [list, selectedItems]
+      [list]
     )
   );
   const [isOpen, setIsOpen] = useState(false);

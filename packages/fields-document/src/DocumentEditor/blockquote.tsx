@@ -116,7 +116,7 @@ const BlockquoteButton = ({
         <QuoteIcon />
       </ToolbarButton>
     ),
-    [attrs, isDisabled, isSelected]
+    [editor, attrs, isDisabled, isSelected]
   );
 };
 export const blockquoteButton = (

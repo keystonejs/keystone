@@ -61,7 +61,7 @@ export const SigninPage = ({
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
       router.push((router.query.from as string | undefined) || '/');
     }
-  }, [rawKeystone.authenticatedItem, router.query.from]);
+  }, [rawKeystone.authenticatedItem, router.query.from, router]);
   return (
     <SigninContainer>
       <Stack
