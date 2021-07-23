@@ -118,10 +118,17 @@ export default function IndexPage() {
             <ul
               css={mq({
                 listStyle: 'none',
-                margin: 0,
+                margin: '0 auto',
                 padding: 0,
                 display: 'grid',
-                gridTemplateColumns: ['1fr', 'auto auto auto'],
+                gridTemplateColumns: 'max-content',
+                gap: '1.5rem',
+                width: '7.5rem',
+                '@media(min-width: 420px)': {
+                  gridTemplateColumns: 'auto auto auto',
+                  width: 'auto',
+                  gap: 0,
+                },
               })}
             >
               <li>
