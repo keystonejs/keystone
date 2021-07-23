@@ -11,7 +11,6 @@ exampleProjectTests('custom-admin-ui-navigation', browserType => {
   });
   test('Contains a Navigation Guide link', async () => {
     const customNavItem = await page.$('text="Keystone Docs"');
-    console.log(customNavItem);
   });
   afterAll(async () => {
     await browser.close();
