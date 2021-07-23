@@ -93,7 +93,7 @@ const lists = createSchema({
   User: list({
     fields: {
       name: text(),
-      email: text(),
+      email: text({ isUnique: true }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),
@@ -143,11 +143,11 @@ const auth = createAuth({
   sessionData: 'id',
 });
 
-const config = apiTestConfig(
-  auth.withAuth({
+const config = auth.withAuth(
+  apiTestConfig({
     lists,
     session: statelessSessions({ secret: COOKIE_SECRET }),
-  } as KeystoneConfig)
+  })
 );
 
 export {
