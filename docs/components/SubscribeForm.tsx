@@ -96,7 +96,7 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
               margin: ['0 auto', 0],
             })}
           />
-          <Button loading={loading} type={'submit'}>
+          <Button look="secondary" size="small" loading={loading} type={'submit'}>
             {error ? 'Try again' : 'Subscribe'}
           </Button>
         </Stack>
