@@ -83,7 +83,7 @@ export function createAdminMeta(
     const searchFields = new Set(config.lists[key].ui?.searchFields ?? []);
     if (searchFields.has('id')) {
       throw new Error(
-        `The ui.searchFields option on the ${key} list includes 'id'. Lists can always be searched by an item's id so it must be not be specified as a search field`
+        `The ui.searchFields option on the ${key} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
       );
     }
     const whereInputFields = list.types.where.graphQLType.getFields();
