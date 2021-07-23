@@ -6,7 +6,7 @@ export { ErrorBoundary, ErrorContainer } from './Errors';
 
 // ADMIN-UI CUSTOM COMPONENTS
 export { Logo } from './Logo';
-export { Navigation, NavigationContainer, NavItem, ListNavItems } from './Navigation';
+export { Navigation, NavigationContainer, NavItem, ListNavItems, ListNavItem } from './Navigation';
 export type { NavigationProps } from './Navigation';
 
 // CUSTOM PAGE BUILDING UTILITIES

@@ -127,12 +127,13 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
 };
 
 export type NavigationProps = Pick<ReturnType<typeof useKeystone>, 'authenticatedItem'> & {
-  routes: ReturnType<typeof getRenderableRoutes>;
+  lists: any[];
 };
 
 export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
   children: ReactNode;
 };
+
 export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
   const { spacing } = useTheme();
   return (
@@ -163,76 +164,33 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   );
 };
 
-const ListNavItem = ({ href, children }: { href: string; children: ReactNode }) => {
+export const ListNavItem = ({ list }: { list: any }) => {
   const router = useRouter();
   return (
-    <NavItem isSelected={router.pathname.split('/')[1] === href.split('/')[1]} href={href}>
-      {children}
+    <NavItem
+      isSelected={router.pathname.split('/')[1] === list.path.split('/')[1]}
+      href={list.path}
+    >
+      {list.label}
     </NavItem>
   );
 };
 
-type ListNavItemsProps = Pick<NavigationProps, 'routes'>;
+type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] };
 
-export const ListNavItems = ({ routes }: ListNavItemsProps) => {
+export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
   // pull this logic up into a hook (or shared functionality);
-  if (!routes) return null;
-
-  if (routes.state === 'error' && 'error' in routes) {
-    return (
-      <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
-        {routes.error}
-      </Text>
-    );
-  }
+  // We can remove this null check if we simpify the routes object
+  // we can also strip the errors out entirely.
+  const renderedList = lists.filter(i => include.includes(i.key));
 
   return (
     <Fragment>
-      {(routes as ListSuccess).data.map(
-        ({ path, key, label }: { path: string; key: string; label: string }) => {
-          return (
-            <ListNavItem key={key} href={path}>
-              {label}
-            </ListNavItem>
-          );
-        }
-      )}
+      {renderedList.map((list: any) => {
+        return <ListNavItem key={list.key} list={list} />;
+      })}
     </Fragment>
   );
-};
-
-type ListError = { state: 'error'; error: string };
-type ListSuccess = {
-  state: string;
-  data: Array<{ path: string; key: string; label: string }>;
-};
-
-const getRenderableRoutes = (
-  listMap: any,
-  visibleLists: Pick<ReturnType<typeof useKeystone>, 'visibleLists'>['visibleLists']
-): ListError | ListSuccess | null => {
-  if (visibleLists.state === 'loading') return null;
-  if (visibleLists.state === 'error') {
-    return {
-      state: visibleLists.state,
-      error:
-        visibleLists.error instanceof Error
-          ? visibleLists.error.message
-          : visibleLists.error[0].message,
-    };
-  }
-
-  const routesFromLists = Object.keys(listMap)
-    .map(key => {
-      if (!visibleLists.lists.has(key)) return null;
-      return { path: `/${listMap[key].path}`, key, label: listMap[key].label };
-    })
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
-
-  return {
-    state: visibleLists.state,
-    data: [{ path: '/', key: 'dashboard', label: 'Dashboard' }, ...routesFromLists],
-  };
 };
 
 export const Navigation = () => {
@@ -243,19 +201,38 @@ export const Navigation = () => {
     visibleLists,
   } = useKeystone();
 
-  const renderableLists = getRenderableRoutes(lists, visibleLists);
-  // Visible Lists filtering here.
+  // This visible lists error is critical and likely to result in a server restart
+  // if it happens, we'll show the error and not render the navigation component/s
+
+  if (visibleLists.state === 'loading') return null;
+  if (visibleLists.state === 'error') {
+    return (
+      <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
+        {visibleLists.error instanceof Error
+          ? visibleLists.error.message
+          : visibleLists.error[0].message}
+      </Text>
+    );
+  }
+  const renderableLists = Object.keys(lists)
+    .map(key => {
+      if (!visibleLists.lists.has(key)) return null;
+      return lists[key];
+    })
+    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
   if (adminConfig?.components?.Navigation) {
     return (
       <adminConfig.components.Navigation
         authenticatedItem={authenticatedItem}
-        routes={renderableLists}
+        lists={renderableLists}
       />
     );
   }
+
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <ListNavItems routes={renderableLists} />
+      <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   );
 };
