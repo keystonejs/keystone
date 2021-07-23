@@ -348,7 +348,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
-  search: KeystoneAdminUIFieldMetaSearchMode
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -379,8 +379,8 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   hidden
 }
 
-enum KeystoneAdminUIFieldMetaSearchMode {
-  sensitive
+enum QueryMode {
+  default
   insensitive
 }
 

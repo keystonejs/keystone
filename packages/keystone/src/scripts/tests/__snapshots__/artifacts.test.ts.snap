@@ -82,7 +82,7 @@ export type KeystoneAdminUIFieldMetaItemViewFieldMode =
   | 'read'
   | 'hidden';
 
-export type KeystoneAdminUIFieldMetaSearchMode = 'sensitive' | 'insensitive';
+export type QueryMode = 'default' | 'insensitive';
 
 export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 

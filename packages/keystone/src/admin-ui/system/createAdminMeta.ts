@@ -99,12 +99,12 @@ export function createAdminMeta(
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       if (field.access.read === false) continue;
-      let search: 'sensitive' | 'insensitive' | null = null;
+      let search: 'default' | 'insensitive' | null = null;
       if (searchFields.has(fieldKey)) {
         if (whereInputFields[`${fieldKey}_contains_i`]?.type === GraphQLString) {
           search = 'insensitive';
         } else if (whereInputFields[`${fieldKey}_contains`]?.type === GraphQLString) {
-          search = 'sensitive';
+          search = 'default';
         } else {
           throw new Error(
             `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`

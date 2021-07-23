@@ -154,8 +154,8 @@ export function getAdminMetaSchema({
       }),
       search: schema.field({
         type: schema.enum({
-          name: 'KeystoneAdminUIFieldMetaSearchMode',
-          values: schema.enumValues(['sensitive', 'insensitive']),
+          name: 'QueryMode',
+          values: schema.enumValues(['default', 'insensitive']),
         }),
       }),
     },

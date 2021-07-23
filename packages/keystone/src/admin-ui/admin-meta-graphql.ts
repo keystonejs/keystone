@@ -164,7 +164,7 @@ type KeystoneAdminUIFieldMeta = {
   createView: KeystoneAdminUIFieldMetaCreateView;
   itemView: Maybe<KeystoneAdminUIFieldMetaItemView>;
   listView: KeystoneAdminUIFieldMetaListView;
-  search: Maybe<KeystoneAdminUIFieldMetaSearchMode>;
+  search: Maybe<QueryMode>;
 };
 
 type KeystoneAdminUIFieldMetaCreateView = {
@@ -190,4 +190,4 @@ type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
 
 type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 
-type KeystoneAdminUIFieldMetaSearchMode = 'sensitive' | 'insensitive';
+type QueryMode = 'default' | 'insensitive';
