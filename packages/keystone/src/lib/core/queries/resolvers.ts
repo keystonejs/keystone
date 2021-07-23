@@ -13,7 +13,7 @@ import {
   resolveWhereInput,
   UniqueInputFilter,
 } from '../where-inputs';
-import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
+import { accessDeniedError, notFoundError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
@@ -86,7 +86,7 @@ export async function findOne(
   const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
 
   if (item === null) {
-    throw accessDeniedError('query');
+    throw notFoundError('query');
   }
   return item;
 }
