@@ -2,7 +2,6 @@ import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneConfig } from '@keystone-next/types';
 import { apiTestConfig } from '../utils';
 
 const FAKE_ID = { postgresql: 'cdsfasfafafadfasdf', sqlite: 'cdsfasfafafadfasdf' } as const;
