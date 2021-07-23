@@ -18,7 +18,6 @@
 [![slack](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://community.keystonejs.com/)
 ![Twitter Follow](https://img.shields.io/twitter/follow/KeystoneJS?color=Blue&label=Follow%20KeystoneJS&logo=Twitter&logoColor=Blue&style=social)
 
-
 ## Contents
 
 - [What's new](#whats-new)
@@ -45,20 +44,19 @@ Keystone 6 documentation lives on the [website](https://keystonejs.com/docs):
 - [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
 - The [Examples](./examples) directory contains a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
 - [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundations building blocks.
-- [Guides](https://keystonejs.com/docs/guides) offer practical explainers on how to build with those blocks. 
+- [Guides](https://keystonejs.com/docs/guides) offer practical explainers on how to build with those blocks.
 
 > 💡 `API Docs` are complete. We're working hard on expanding coverage in our `guides` and `walkthroughs`.
 
-
 ## Enjoying Keystone?
 
-- Star this repo 🌟 ☝️ 
+- Star this repo 🌟 ☝️
 - Follow Keystone on [Twitter](https://twitter.com/KeystoneJS)
 - Join the conversation in [Keystone community Slack](http://community.keystonejs.com/).
 
 ### Feedback
 
-Share your thoughts and feature requests on Slack (preferred) or Twitter.  [Bugfixes and issues always welcome](https://github.com/keystonejs/keystone/issues/new/choose).
+Share your thoughts and feature requests on Slack (preferred) or Twitter. [Bugfixes and issues always welcome](https://github.com/keystonejs/keystone/issues/new/choose).
 
 ## Version control
 
