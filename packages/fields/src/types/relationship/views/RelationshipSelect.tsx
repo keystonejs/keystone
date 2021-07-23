@@ -102,8 +102,6 @@ export const RelationshipSelect = ({
   // so that we can register the intersection observer
   // on the right element
   const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
-  console.log(search);
-  const where = useFilter(search, list);
 
   const QUERY: TypedDocumentNode<
     { items: { [idField]: string; [labelField]: string | null }[]; count: number },
@@ -118,7 +116,8 @@ export const RelationshipSelect = ({
       count: ${list.gqlNames.listQueryCountName}(where: $where)
     }
   `;
-  console.log(where);
+
+  const where = useFilter(search, list);
 
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
