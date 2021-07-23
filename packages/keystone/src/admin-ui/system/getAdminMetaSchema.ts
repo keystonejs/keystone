@@ -152,6 +152,12 @@ export function getAdminMetaSchema({
           },
         }),
       }),
+      search: schema.field({
+        type: schema.enum({
+          name: 'KeystoneAdminUIFieldMetaSearchMode',
+          values: schema.enumValues(['sensitive', 'insensitive']),
+        }),
+      }),
     },
   });
 
