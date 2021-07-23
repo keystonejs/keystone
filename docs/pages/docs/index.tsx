@@ -89,14 +89,14 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
         <Well
           grad="grad2"
           heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-next"
+          href="/docs/guides/keystone-5-vs-keystone-6-preview"
         >
           We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
           with today, this guide is for you.
@@ -154,7 +154,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -191,7 +191,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -214,7 +214,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
