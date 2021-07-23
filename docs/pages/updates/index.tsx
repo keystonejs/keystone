@@ -202,7 +202,8 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
               Custom components in the <a href="/docs/guides/document-field-demo">document field</a>
             </li>
           </ul>
-          Editors can embed audience Polls in post content, and authenticated visitors can make their vote count in the frontend.
+          Editors can embed audience Polls in post content, and authenticated visitors can make
+          their vote count in the frontend.
         </Box>
         <Timeline date="29th June 2021" />
         <Box heading="New example: Custom Field Views">
