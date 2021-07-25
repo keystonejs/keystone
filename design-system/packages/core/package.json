@@ -5,7 +5,7 @@
   "main": "dist/core.cjs.js",
   "module": "dist/core.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.14",
+    "@types/react": "^17.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
@@ -14,7 +14,7 @@
     "react-dom": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@emotion/react": "^11.4.0",
     "@types/facepaint": "^1.2.2",
     "facepaint": "^1.2.1"

@@ -10,8 +10,8 @@
     "test": "jest --runInBand --testTimeout=60000"
   },
   "dependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
     "@babel/preset-typescript": "^7.14.5",
     "@keystone-next/auth": "^29.0.0",
     "@keystone-next/fields": "^12.0.0",

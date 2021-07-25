@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@braintree/sanitize-url": "^5.0.2",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/admin-ui-utils": "^5.0.4",
@@ -32,7 +32,7 @@
     "@keystone-ui/icons": "^4.0.0",
     "@keystone-ui/popover": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.0",
-    "@types/react": "^17.0.14",
+    "@types/react": "^17.0.15",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.10.5",
     "graphql": "^15.5.1",

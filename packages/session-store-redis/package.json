@@ -8,7 +8,7 @@
     "node": "^12.20 || >= 14.13"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@types/redis": "^2.8.31"
   },
   "devDependencies": {

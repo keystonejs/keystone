@@ -11,7 +11,7 @@
     "mime": "^2.5.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@keystone-next/admin-ui-utils": "^5.0.4",
     "@keystone-next/keystone": "^22.0.0",
     "@keystone-next/types": "^22.0.0",
@@ -27,7 +27,7 @@
     "@keystone-ui/toast": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.0",
     "@types/bcryptjs": "^2.4.2",
-    "@types/react": "^17.0.14",
+    "@types/react": "^17.0.15",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
