@@ -159,6 +159,7 @@ input PersonWhereInput {
 
 input PersonWhereUniqueInput {
   id: ID
+  email: String
 }
 
 enum SortPeopleBy {

@@ -2,8 +2,8 @@ import { text, timestamp, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
-import { setupTestRunner, TestArgs } from '@keystone-next/testing';
+import type { KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/testing';
 import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
@@ -36,8 +36,8 @@ const auth = createAuth({
 });
 
 const runner = setupTestRunner({
-  config: apiTestConfig(
-    auth.withAuth({
+  config: auth.withAuth(
+    apiTestConfig({
       lists: createSchema({
         Post: list({
           fields: {
@@ -48,7 +48,7 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text(),
+            email: text({ isUnique: true }),
             password: password(),
           },
           access: {
@@ -60,7 +60,7 @@ const runner = setupTestRunner({
         }),
       }),
       session: statelessSessions({ secret: COOKIE_SECRET }),
-    } as KeystoneConfig)
+    })
   ),
 });
 
@@ -98,6 +98,36 @@ describe('Auth testing', () => {
       expectAccessDenied(errors, [{ path: ['allUsers'] }]);
     })
   );
+
+  test('Fails with useful error when identity field is not unique', async () => {
+    const auth = createAuth({
+      listKey: 'User',
+      identityField: 'email',
+      secretField: 'password',
+      sessionData: 'id',
+    });
+    await expect(
+      setupTestEnv({
+        config: auth.withAuth(
+          apiTestConfig({
+            lists: createSchema({
+              User: list({
+                fields: {
+                  name: text(),
+                  email: text(),
+                  password: password(),
+                },
+              }),
+            }),
+
+            session: statelessSessions({ secret: COOKIE_SECRET }),
+          })
+        ),
+      })
+    ).rejects.toMatchInlineSnapshot(
+      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true\` to the field at User.email]`
+    );
+  });
 
   describe('logged in', () => {
     // eslint-disable-next-line jest/no-disabled-tests

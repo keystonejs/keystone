@@ -22,7 +22,7 @@ model Todo {
 model Person {
   id       String  @id @default(cuid())
   name     String?
-  email    String?
+  email    String? @unique
   password String?
   role     Role?   @relation("Person_role", fields: [roleId], references: [id])
   roleId   String? @map("role")
