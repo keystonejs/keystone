@@ -1,7 +1,13 @@
 import { mergeSchemas } from '@graphql-tools/merge';
 import { ExtendGraphqlSchema } from '@keystone-next/types';
 
-import { assertObjectType, GraphQLSchema } from 'graphql';
+import {
+  assertObjectType,
+  GraphQLSchema,
+  assertInputObjectType,
+  GraphQLString,
+  GraphQLID,
+} from 'graphql';
 import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
@@ -53,6 +59,20 @@ export const getSchemaExtension =
     magicAuthLink?: AuthTokenTypeConfig;
   }): ExtendGraphqlSchema =>
   schema => {
+    const uniqueWhereInputType = assertInputObjectType(
+      schema.getType(`${listKey}WhereUniqueInput`)
+    );
+    const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField];
+    if (
+      identityFieldOnUniqueWhere?.type !== GraphQLString &&
+      identityFieldOnUniqueWhere?.type !== GraphQLID
+    ) {
+      throw new Error(
+        `createAuth was called with an identityField of ${identityField} on the list ${listKey} ` +
+          `but that field doesn't allow being searched uniquely with a String or ID. ` +
+          `You should likely add \`isUnique: true\` to the field at ${listKey}.${identityField}`
+      );
+    }
     return [
       getBaseAuthSchema({
         identityField,
