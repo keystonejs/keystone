@@ -152,6 +152,12 @@ export function getAdminMetaSchema({
           },
         }),
       }),
+      search: schema.field({
+        type: schema.enum({
+          name: 'QueryMode',
+          values: schema.enumValues(['default', 'insensitive']),
+        }),
+      }),
     },
   });
 

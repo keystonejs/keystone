@@ -7,6 +7,7 @@ import {
   CellComponent,
   FieldController,
   FieldControllerConfig,
+  IdFieldConfig,
 } from '@keystone-next/types';
 import { CellLink, CellContainer } from '../../admin-ui/components';
 
@@ -27,11 +28,14 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-export const controller = (config: FieldControllerConfig): FieldController<void, string> => {
+export const controller = (
+  config: FieldControllerConfig<IdFieldConfig>
+): FieldController<void, string> & { idFieldKind: IdFieldConfig['kind'] } => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
+    idFieldKind: config.fieldMeta.kind,
     defaultValue: undefined,
     deserialize: () => {},
     serialize: () => ({}),

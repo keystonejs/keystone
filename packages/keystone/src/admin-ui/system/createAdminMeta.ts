@@ -1,4 +1,5 @@
 import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
+import { GraphQLString } from 'graphql';
 import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
@@ -79,8 +80,37 @@ export function createAdminMeta(
   }
   // Populate .fields array
   for (const [key, list] of Object.entries(initialisedLists)) {
+    const searchFields = new Set(config.lists[key].ui?.searchFields ?? []);
+    if (searchFields.has('id')) {
+      throw new Error(
+        `The ui.searchFields option on the ${key} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
+      );
+    }
+    const whereInputFields = list.types.where.graphQLType.getFields();
+
+    if (config.lists[key].ui?.searchFields === undefined) {
+      const labelField = adminMetaRoot.listsByKey[key].labelField;
+      const potentialFilterField =
+        whereInputFields[`${labelField}_contains_i`] || whereInputFields[`${labelField}_contains`];
+      if (potentialFilterField?.type === GraphQLString) {
+        searchFields.add(labelField);
+      }
+    }
+
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       if (field.access.read === false) continue;
+      let search: 'default' | 'insensitive' | null = null;
+      if (searchFields.has(fieldKey)) {
+        if (whereInputFields[`${fieldKey}_contains_i`]?.type === GraphQLString) {
+          search = 'insensitive';
+        } else if (whereInputFields[`${fieldKey}_contains`]?.type === GraphQLString) {
+          search = 'default';
+        } else {
+          throw new Error(
+            `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+          );
+        }
+      }
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),
         viewsIndex: getViewId(field.views),
@@ -89,6 +119,7 @@ export function createAdminMeta(
         isOrderable: !!field.input?.orderBy,
         path: fieldKey,
         listKey: key,
+        search,
       });
     }
   }
