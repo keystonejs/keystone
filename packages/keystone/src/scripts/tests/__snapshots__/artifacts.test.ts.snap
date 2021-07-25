@@ -82,6 +82,8 @@ export type KeystoneAdminUIFieldMetaItemViewFieldMode =
   | 'read'
   | 'hidden';
 
+export type QueryMode = 'default' | 'insensitive';
+
 export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 
 export type TodoListTypeInfo = {
