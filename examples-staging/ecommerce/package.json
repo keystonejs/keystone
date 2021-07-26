@@ -27,7 +27,7 @@
     "nodemailer": "^6.6.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.161.0"
+    "stripe": "^8.165.0"
   },
   "devDependencies": {
     "@keystone-next/testing": "^1.0.2",
