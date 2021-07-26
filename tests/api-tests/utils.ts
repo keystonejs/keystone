@@ -68,7 +68,7 @@ export const expectAccessDenied = (
   );
 };
 
-export const expectValidationFailure = (
+export const expectValidationError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[] }[]
 ) => {
@@ -79,6 +79,21 @@ export const expectValidationFailure = (
     args.map(({ path }) => ({
       path,
       message: 'You attempted to perform an invalid mutation',
+    }))
+  );
+};
+
+export const expectPrismaError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      name: 'GraphQLError',
+      path,
+      message,
     }))
   );
 };
@@ -98,7 +113,23 @@ export const expectLimitsExceededError = (
   );
 };
 
-export const expectNestedError = (
+export const expectBadUserInput = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      name: 'GraphQLError',
+      path,
+      message,
+    }))
+  );
+};
+
+
+export const expectRelationshipError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[]; message: string }[]
 ) => {
