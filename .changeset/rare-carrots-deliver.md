@@ -2,4 +2,4 @@
 '@keystone-next/types': minor
 ---
 
-Add admin-ui specific types AuthenticatedItem, VisibleLists, CreateViewFieldModes and NavigationProps to exports.
+Add Admin UI specific types AuthenticatedItem, VisibleLists, CreateViewFieldModes and NavigationProps to exports.
