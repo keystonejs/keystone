@@ -23,7 +23,6 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   const { colors, palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
 
-  // Split out router.pathname.split ..... into ListNavItem specific logic.
   const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href;
 
   return (
@@ -176,9 +175,6 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
 type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] };
 
 export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
-  // pull this logic up into a hook (or shared functionality);
-  // We can remove this null check if we simpify the routes object
-  // we can also strip the errors out entirely.
   const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists;
 
   return (
@@ -198,10 +194,9 @@ export const Navigation = () => {
     visibleLists,
   } = useKeystone();
 
+  if (visibleLists.state === 'loading') return null;
   // This visible lists error is critical and likely to result in a server restart
   // if it happens, we'll show the error and not render the navigation component/s
-
-  if (visibleLists.state === 'loading') return null;
   if (visibleLists.state === 'error') {
     return (
       <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
