@@ -89,27 +89,31 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
-  useEffect(() => {
-    let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
-      return x.startsWith('!') || storeableQueries.includes(x);
-    });
+  useEffect(
+    () => {
+      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+        return x.startsWith('!') || storeableQueries.includes(x);
+      });
 
-    if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
-      const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
-      let parsed;
-      try {
-        parsed = JSON.parse(queryParamsFromLocalStorage!);
-      } catch (err) {}
-      if (parsed) {
-        router.replace({
-          query: {
-            ...router.query,
-            ...parsed,
-          },
-        });
+      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+        const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
+        let parsed;
+        try {
+          parsed = JSON.parse(queryParamsFromLocalStorage!);
+        } catch (err) {}
+        if (parsed) {
+          router.replace({
+            query: {
+              ...router.query,
+              ...parsed,
+            },
+          });
+        }
       }
-    }
-  }, [localStorageKey, router.isReady, router]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [localStorageKey, router.isReady]
+  );
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {};
     Object.keys(router.query).forEach(key => {
@@ -122,7 +126,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
     } else {
       localStorage.removeItem(localStorageKey);
     }
-  }, [localStorageKey, router, listKey]);
+  }, [localStorageKey, router]);
 
   return { resetToDefaults };
 }
