@@ -198,15 +198,13 @@ export default config({
     ListKey: list({
       fields: {
         fieldName: text({
+          // Concise access control definition
+          access: true,
+          // Verbose access control definition
           access: {
-            // Concise access control definition
-            access: true,
-            // Verbose access control definition
-            access: {
-              create: true,
-              read: true,
-              update: true,
-            },
+            create: true,
+            read: true,
+            update: true,
           },
         }),
       },
