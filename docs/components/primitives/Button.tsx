@@ -14,6 +14,16 @@ const styleMap = {
     '--button-bg-active': 'var(--danger-90)',
     '--button-bg-disabled': 'var(--danger--40)',
   },
+
+  secondary: {
+    '--button-bg': 'var(--app-bg)',
+    '--button-border': '2px solid var(--muted)',
+    '--button-color': 'var(--text)',
+    '--button-bg-hover': 'var(--app-bg)',
+    '--button-border-hover': '2px solid var(--link)',
+    '--button-color-hover': 'var(--link)',
+  },
+
   soft: {
     '--button-bg': 'var(--app-bg)',
     '--button-bg-hover': 'var(--link)',
@@ -53,6 +63,10 @@ const shadowMap: Record<keyof typeof styleMap, any> = {
     '--button-shadow': '0 4px 14px 0 rgb(220 38 255 / 20%)',
     '--button-shadow-hover': '0 3px 14px 0 rgb(220 38 255 / 24%)',
   },
+  secondary: {
+    '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 36%)',
+    '--button-shadow-hover': '0 4px 14px 0 rgb(0 118 255 / 30%)',
+  },
   soft: {
     '--button-shadow': '0 4px 14px 0 rgb(0 118 255 / 10%)',
     '--button-shadow-hover': '0 3px 14px 0 rgb(0 118 255 / 10%)',
@@ -64,15 +78,21 @@ const shadowMap: Record<keyof typeof styleMap, any> = {
 const sizeMap = {
   default: {
     fontSize: '1rem',
-    borderRadius: '6px',
+    borderRadius: '5px',
     height: '2.4rem',
     padding: '0 var(--space-large)',
   },
   large: {
     fontSize: '1.125rem',
-    borderRadius: '6px',
+    borderRadius: '5px',
     height: '3rem',
     padding: '0 var(--space-xlarge)',
+  },
+  small: {
+    fontSize: '.875rem',
+    borderRadius: '4px',
+    height: '2.2rem',
+    padding: '0 14px',
   },
 };
 
@@ -136,7 +156,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               '--button-border-hover': 'var(--button-border)',
               '--button-border-active': 'var(--button-border)',
               '--button-border-disabled': 'var(--button-border)',
-              '--button-color': 'var(--button-text)',
+              '--button-color': 'var(--brand-text)',
               '--button-color-hover': 'var(--button-color)',
               '--button-color-active': 'var(--button-color)',
               '--button-color-disabled': 'var(--button-color)',

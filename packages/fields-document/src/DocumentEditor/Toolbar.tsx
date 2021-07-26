@@ -51,7 +51,6 @@ export function Toolbar({
   documentFeatures: DocumentFeatures;
   viewState?: { expanded: boolean; toggle: () => void };
 }) {
-  const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
   const relationship = useContext(DocumentFieldRelationshipsContext);
   const blockComponent = useContext(ComponentBlockContext);
   const hasBlockItems = Object.entries(relationship).length || Object.keys(blockComponent).length;
@@ -119,8 +118,9 @@ export function Toolbar({
       {!!hasBlockItems && <InsertBlockMenu />}
 
       <ToolbarSeparator />
-      {useMemo(
-        () =>
+      {useMemo(() => {
+        const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
+        return (
           viewState && (
             <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
               {attrs => (
@@ -135,9 +135,9 @@ export function Toolbar({
                 </ToolbarButton>
               )}
             </Tooltip>
-          ),
-        [viewState]
-      )}
+          )
+        );
+      }, [viewState])}
     </ToolbarContainer>
   );
 }
@@ -172,7 +172,7 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
         {...restProps}
       />
     );
-  }, [editor, isDisabled, isSelected, props]);
+  }, [editor, isDisabled, isSelected, props, ref]);
 });
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {

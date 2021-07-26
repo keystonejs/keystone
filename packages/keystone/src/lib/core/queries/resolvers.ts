@@ -15,7 +15,7 @@ import {
 } from '../where-inputs';
 import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, getDBFieldKeyForFieldOnMultiField } from '../utils';
+import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
 // doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
 // we want to do this explicit mapping because:
@@ -83,9 +83,8 @@ export async function findOne(
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere);
 
-  const item = await getPrismaModelForList(context.prisma, list.listKey).findFirst({
-    where: filter,
-  });
+  const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+
   if (item === null) {
     throw accessDeniedError('query');
   }
@@ -106,12 +105,14 @@ export async function findMany(
   let resolvedWhere = await resolveWhereInput(where || {}, list);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
 
-  const results = await getPrismaModelForList(context.prisma, list.listKey).findMany({
-    where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
-    orderBy,
-    take: first ?? undefined,
-    skip,
-  });
+  const results = await runWithPrisma(context, list, model =>
+    model.findMany({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      orderBy,
+      take: first ?? undefined,
+      skip,
+    })
+  );
 
   applyMaxResults(results, list, context);
 
@@ -176,14 +177,17 @@ async function resolveOrderBy(
 export async function count(
   { where, search }: { where: Record<string, any>; search?: string | null },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  extraFilter?: PrismaFilter
 ) {
   let resolvedWhere = await resolveWhereInput(where || {}, list);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
 
-  return getPrismaModelForList(context.prisma, list.listKey).count({
-    where: resolvedWhere,
-  });
+  return runWithPrisma(context, list, model =>
+    model.count({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+    })
+  );
 }
 
 const limitsExceedError = (args: { type: string; limit: number; list: string }) =>

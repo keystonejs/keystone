@@ -18,6 +18,8 @@ export function CommunitySlackCTA() {
       </span>
       <Button
         as="a"
+        look="secondary"
+        size="small"
         href="https://community.keystonejs.com/"
         target="_blank"
         rel="noopener noreferrer"

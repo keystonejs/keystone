@@ -80,6 +80,7 @@ export type FieldMeta = {
   customViewsIndex: number | null;
   views: FieldViews[number];
   controller: FieldController<unknown, JSONValue>;
+  search: 'default' | 'insensitive' | null;
 };
 
 export type ListMeta = {
@@ -157,6 +158,7 @@ export type FieldMetaRootVal = {
   viewsIndex: number;
   customViewsIndex: number | null;
   listKey: string;
+  search: 'default' | 'insensitive' | null;
 };
 
 export type ListMetaRootVal = {
