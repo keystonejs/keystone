@@ -1,6 +1,27 @@
+import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 import { GqlNames, JSONValue } from './utils';
+
+export type NavigationProps = {
+  authenticatedItem: AuthenticatedItem;
+  lists: ListMeta[];
+};
+
+export type AuthenticatedItem =
+  | { state: 'unauthenticated' }
+  | { state: 'authenticated'; label: string; id: string; listKey: string }
+  | { state: 'loading' }
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+
+export type VisibleLists =
+  | { state: 'loaded'; lists: ReadonlySet<string> }
+  | { state: 'loading' }
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+
+export type CreateViewFieldModes =
+  | { state: 'loaded'; lists: Record<string, Record<string, 'edit' | 'hidden'>> }
+  | { state: 'loading' }
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
 export type AdminConfig = {
   components?: {

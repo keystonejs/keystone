@@ -2,6 +2,7 @@
 
 import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
 import { useRouter } from 'next/router';
+import { NavigationProps, ListMeta } from '@keystone-next/types';
 import { Stack, jsx, useTheme, Text } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
@@ -126,10 +127,6 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   );
 };
 
-export type NavigationProps = Pick<ReturnType<typeof useKeystone>, 'authenticatedItem'> & {
-  lists: any[];
-};
-
 export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
   children: ReactNode;
 };
@@ -164,7 +161,7 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   );
 };
 
-export const ListNavItem = ({ list }: { list: any }) => {
+export const ListNavItem = ({ list }: { list: ListMeta }) => {
   const router = useRouter();
   return (
     <NavItem
@@ -186,7 +183,7 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
 
   return (
     <Fragment>
-      {renderedList.map((list: any) => {
+      {renderedList.map((list: ListMeta) => {
         return <ListNavItem key={list.key} list={list} />;
       })}
     </Fragment>
