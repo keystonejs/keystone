@@ -182,7 +182,7 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
   // pull this logic up into a hook (or shared functionality);
   // We can remove this null check if we simpify the routes object
   // we can also strip the errors out entirely.
-  const renderedList = lists.filter(i => include.includes(i.key));
+  const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists;
 
   return (
     <Fragment>

@@ -12,17 +12,12 @@ Keystone passes the following props to your custom Navigation component:
 
 ```ts
 type NavigationProps {
-    routes:
-        { state: 'error', error: string }
-        | { state: string, data: Array<{ path: string, key: string, label: string }> }
-    authenticatedItem: AuthenticatedItem
+    lists: any[];
+    authenticatedItem: AuthenticatedItem;
 }
 ```
 
-`routes` is a union of either an error object, or an object containing an array of route objects.
-
-!> Note that the first item in this routes array will always be the index route to the Dashboard.
-
+`lists` is an array of list objects that include amongst other things routing information to be rendered by the custom Navigation component.
 `authenticatedItem` is a union of potential authentication states, expanded on below:
 
 ```ts
@@ -44,7 +39,8 @@ This should be handled for you automatically by passing the prop into the `Navig
 Keystone exposes a variety of helper components to make building out your custom Admin-UI Navigation component easier. These are:
 
 - NavigationContainer
-- ListNavItems: A component that takes the list generated routes prop and renders out a list of NavItems.
+- ListNavItems: A component that takes the `lists` array and renders out a list of NavItems.
+- ListNavItem: A component that takes a list item and renders a NavItem.
 - NavItem: A thin styling and accessibility wrapper around Next.js' Link component.
 
 #### NavigationContainer
@@ -57,7 +53,7 @@ import { NavigationContainer} from '@keystone-next/keystone/admin-ui/components'
 
 #### ListNavItems
 
-This component takes the list generated routes provided to you via the `routes` prop and renders out a list of NavItems.
+This component takes the provided Array of `lists` and renders out a list of NavItems.
 
 ```tsx
 import { ListNavItems } from '@keystone-next/keystone/admin-ui/components'
@@ -66,21 +62,12 @@ import { ListNavItems } from '@keystone-next/keystone/admin-ui/components'
 As mentioned above the routes object has the following type:
 
 ```typescript
- type Routes = {
-   state: 'error',
-   error: string
-  } |
-  {
-    state: 'loaded',
-    data: {
-      path: string,
-      key: string,
-      label: string
-    }[]
-  }
+ type lists = any[]
+ type include = string[]
 ```
 
-In an error state, the ListNavItem component will render out the error message, otherwise it will render out the `data` array as a list of `NavItems`.
+If an include prop is supplied, the component will only render out lists that match the list `keys` specified in the include array.
+Otherwise, all lists will be added.
 
 #### NavItem
 
