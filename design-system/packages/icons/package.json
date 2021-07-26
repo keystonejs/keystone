@@ -16,7 +16,7 @@
     "chalk": "^4.1.1",
     "feather-icons": "^4.28.0",
     "fs-extra": "^10.0.0",
-    "globby": "^11.0.4",
+    "globby": "^12.0.0",
     "react": "^17.0.2",
     "to-pascal-case": "^1.0.0"
   },
