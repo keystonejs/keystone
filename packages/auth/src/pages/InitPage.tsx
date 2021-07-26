@@ -211,7 +211,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
         router.push((router.query.from as string | undefined) || '/');
       }
     }
-  }, [rawKeystone.authenticatedItem, router.query.from, enableWelcome, router]);
+  }, [rawKeystone.authenticatedItem, enableWelcome, router]);
 
   return mode === 'init' ? (
     <SigninContainer>
