@@ -7,7 +7,6 @@ import {
 import { GraphQLResolveInfo } from 'graphql';
 import { validateNonCreateListAccessControl } from '../access-control';
 import {
-  InputFilter,
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
@@ -16,28 +15,7 @@ import {
 } from '../where-inputs';
 import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, getDBFieldKeyForFieldOnMultiField } from '../utils';
-
-export async function findManyFilter(
-  list: InitialisedList,
-  context: KeystoneContext,
-  where: InputFilter,
-  search: string | null | undefined
-): Promise<false | PrismaFilter> {
-  const access = await validateNonCreateListAccessControl({
-    access: list.access.read,
-    args: { context, listKey: list.listKey, operation: 'read', session: context.session },
-  });
-  if (!access) {
-    return false;
-  }
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
-  if (typeof access === 'object') {
-    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
-  }
-
-  return list.applySearchField(resolvedWhere, search);
-}
+import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
 // doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
 // we want to do this explicit mapping because:
@@ -65,23 +43,32 @@ export function mapUniqueWhereToWhere(
   return { [key]: val };
 }
 
-async function findOneFilter(
-  uniqueWhere: UniquePrismaFilter,
+export async function accessControlledFilter(
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  resolvedWhere: PrismaFilter,
+  search?: string | null | undefined
 ) {
+  // Run access control
   const access = await validateNonCreateListAccessControl({
     access: list.access.read,
     args: { context, listKey: list.listKey, operation: 'read', session: context.session },
   });
   if (access === false) {
-    return false;
+    throw accessDeniedError('query');
   }
 
-  const wherePrismaFilter = mapUniqueWhereToWhere(list, uniqueWhere);
-  return access === true
-    ? wherePrismaFilter
-    : { AND: [wherePrismaFilter, await resolveWhereInput(access, list)] };
+  // Merge declarative access control
+  if (typeof access === 'object') {
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
+  }
+
+  // Merge legacy `search` inputs
+  if (search) {
+    resolvedWhere = list.applySearchField(resolvedWhere, search);
+  }
+
+  return resolvedWhere;
 }
 
 export async function findOne(
@@ -91,14 +78,13 @@ export async function findOne(
 ) {
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
+  const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
+
   // Apply access control
-  const filter = await findOneFilter(uniqueWhere, list, context);
-  if (filter === false) {
-    throw accessDeniedError('query');
-  }
-  const item = await getPrismaModelForList(context.prisma, list.listKey).findFirst({
-    where: filter,
-  });
+  const filter = await accessControlledFilter(list, context, resolvedWhere);
+
+  const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+
   if (item === null) {
     throw accessDeniedError('query');
   }
@@ -116,17 +102,17 @@ export async function findMany(
 
   applyEarlyMaxResults(first, list);
 
-  const resolvedWhere = await findManyFilter(list, context, where || {}, search);
-  if (resolvedWhere === false) {
-    throw accessDeniedError('query');
-  }
+  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
 
-  const results = await getPrismaModelForList(context.prisma, list.listKey).findMany({
-    where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
-    orderBy,
-    take: first ?? undefined,
-    skip,
-  });
+  const results = await runWithPrisma(context, list, model =>
+    model.findMany({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      orderBy,
+      take: first ?? undefined,
+      skip,
+    })
+  );
 
   applyMaxResults(results, list, context);
 
@@ -191,16 +177,17 @@ async function resolveOrderBy(
 export async function count(
   { where, search }: { where: Record<string, any>; search?: string | null },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  extraFilter?: PrismaFilter
 ) {
-  const resolvedWhere = await findManyFilter(list, context, where || {}, search);
-  if (resolvedWhere === false) {
-    throw accessDeniedError('query');
-  }
+  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
 
-  return getPrismaModelForList(context.prisma, list.listKey).count({
-    where: resolvedWhere,
-  });
+  return runWithPrisma(context, list, model =>
+    model.count({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+    })
+  );
 }
 
 const limitsExceedError = (args: { type: string; limit: number; list: string }) =>

@@ -76,7 +76,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     type: list.types.output,
     args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
     resolve(rootVal, { where }, context) {
-      return deletes.deleteOne({ where }, list, context);
+      return deletes.deleteOne(where, list, context);
     },
   });
 
@@ -89,7 +89,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
     resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany({ where }, list, context, provider)
+        deletes.deleteMany(where, list, context, provider)
       );
     },
   });

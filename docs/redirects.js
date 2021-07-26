@@ -102,4 +102,13 @@ const ORIGINAL_NEXT = [
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
 
-module.exports = [...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
+/* URLs from the current website */
+const CURRENT = [
+  {
+    source: '/docs/guides/keystone-5-vs-keystone-next',
+    destination: '/docs/guides/keystone-5-vs-keystone-6-preview',
+    permanent: true,
+  },
+];
+
+module.exports = [...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
