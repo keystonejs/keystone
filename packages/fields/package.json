@@ -31,7 +31,7 @@
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
-    "date-fns": "^2.22.1",
+    "date-fns": "^2.23.0",
     "decimal.js": "10.3.1",
     "dumb-passwords": "^0.2.1",
     "fast-deep-equal": "^3.1.3",
