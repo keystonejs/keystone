@@ -214,7 +214,7 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
           return;
         }
         case 'Escape': {
-          const path = ReactEditor.findPath(editor, text);
+          const path = ReactEditor.findPath(editor, stateRef.current.text);
           Transforms.unsetNodes(editor, 'insertMenu', { at: path });
           event.preventDefault();
           return;

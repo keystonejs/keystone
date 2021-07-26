@@ -33,6 +33,7 @@ module.exports = {
     'no-undef': 'error',
     'no-unused-expressions': 'error',
     'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

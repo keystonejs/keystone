@@ -176,7 +176,7 @@ export const ListButton = forwardRef<
         {...restProps}
       />
     );
-  }, [props, ref, isDisabled, isSelected]);
+  }, [props, ref, isDisabled, isSelected, editor]);
 });
 
 export function nestList(editor: Editor) {

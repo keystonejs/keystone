@@ -277,7 +277,7 @@ export const DocumentEditorDemo = () => {
   const isShiftPressedRef = useKeyDownRef('Shift');
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj, isShiftPressedRef),
-    [documentFeatures]
+    [documentFeatures, isShiftPressedRef]
   );
 
   // this is why we're creating the editor ourselves and not using the DocumentEditor component
@@ -285,7 +285,7 @@ export const DocumentEditorDemo = () => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
     Editor.normalize(editor, { force: true });
-  }, [documentFeatures]);
+  }, [editor, documentFeatures, isShiftPressedRef]);
 
   return (
     <div

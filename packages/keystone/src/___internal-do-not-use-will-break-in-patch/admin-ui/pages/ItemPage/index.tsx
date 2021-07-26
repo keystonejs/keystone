@@ -161,6 +161,8 @@ function ItemForm({
         });
       });
   });
+  const labelFieldValue = itemGetter.data?.[list.labelField];
+  const itemId = itemGetter.data?.id!;
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
@@ -200,11 +202,11 @@ function ItemForm({
             showDelete ? (
               <DeleteButton
                 list={list}
-                itemLabel={(itemGetter.data?.[list.labelField] ?? itemGetter.data?.id!) as string}
-                itemId={itemGetter.data?.id!}
+                itemLabel={(labelFieldValue ?? itemId) as string}
+                itemId={itemId}
               />
             ) : undefined,
-          [showDelete, list, itemGetter.data?.[list.labelField], itemGetter.data?.id]
+          [showDelete, list, labelFieldValue, itemId]
         )}
       />
     </Box>

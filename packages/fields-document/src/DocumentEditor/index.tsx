@@ -230,7 +230,7 @@ export function DocumentEditor({
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
-    [documentFeatures, componentBlocks, relationships]
+    [documentFeatures, componentBlocks, relationships, isShiftPressedRef]
   );
 
   return (
@@ -309,6 +309,7 @@ export function DocumentEditorProvider({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 }) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const identity = useMemo(() => Math.random().toString(36), [editor]);
   return (
     <Slate
@@ -392,7 +393,7 @@ export function DocumentEditorEditable({
           }
           return decorations;
         },
-        [editor]
+        [editor, componentBlocks]
       )}
       css={styles}
       autoFocus={autoFocus}

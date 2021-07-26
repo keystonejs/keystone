@@ -83,7 +83,7 @@ function CodeButton({ attrs }: { attrs: {} }) {
         <CodeIcon size="small" />
       </ToolbarButton>
     ),
-    [isDisabled, isSelected, attrs]
+    [isDisabled, isSelected, attrs, editor]
   );
 }
 
