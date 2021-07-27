@@ -196,7 +196,7 @@ Options:
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
-- `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server
+- `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
 
 ```typescript
 export default config({
@@ -212,7 +212,7 @@ export default config({
 
 ### healthCheck
 
-If set to `true`, a `/_healthcheck` endpoint will be added to your server which will respond with `will respond with `{ status: 'pass', timestamp: Date.now() }``.
+If set to `true`, a `/_healthcheck` endpoint will be added to your server which will respond with `{ status: 'pass', timestamp: Date.now() }`.
 
 You can configure the health check with a custom path and JSON data:
 
