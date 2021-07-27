@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -149,7 +149,7 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createUser: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         {
           path: ['createUser'],
           message: 'Nested mutation operation invalid for User.notes<Note>',
@@ -189,7 +189,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
@@ -234,7 +234,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',

@@ -90,7 +90,7 @@ describe('no access control', () => {
   test(
     'silently succeeds if used during create',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
       const user = await context.lists.User.createOne({
@@ -106,7 +106,7 @@ describe('non-matching filter', () => {
   test(
     'silently succeeds if items to disconnect cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
       const createUser = await context.lists.User.createOne({ data: {} });
@@ -125,7 +125,7 @@ describe('non-matching filter', () => {
   test(
     'removes items that match, silently ignores those that do not',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 

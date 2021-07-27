@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -241,7 +241,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during creating',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -257,7 +257,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
       ]);
     })
@@ -266,7 +266,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item to link against
       const createUser = await context.lists.User.createOne({ data: {} });
@@ -289,7 +289,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
       ]);
     })
@@ -321,7 +321,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
@@ -361,7 +361,7 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
