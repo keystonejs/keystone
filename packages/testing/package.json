@@ -12,6 +12,7 @@
   "dependencies": {
     "@keystone-next/keystone": "^22.0.0",
     "@types/supertest": "^2.0.11",
+    "express": "^4.17.1",    
     "memoize-one": "^5.2.1",
     "supertest": "^6.1.4"
   },
