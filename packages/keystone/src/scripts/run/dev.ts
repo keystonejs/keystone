@@ -5,6 +5,7 @@ import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations'
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
+import { defaults } from '../../lib/config/defaults';
 import { createExpressServer } from '../../lib/server/createExpressServer';
 import {
   generateCommittedArtifacts,
@@ -77,6 +78,21 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     );
     console.log(`👋 Admin UI and GraphQL API ready`);
   };
+
+  // You shouldn't really be doing a healthcheck on the dev server, but we
+  // respond on the endpoint with the correct error code just in case. This
+  // doesn't send the configured data shape, because config doesn't allow
+  // for the "not ready" case but that's probably OK.
+  if (config.server?.healthCheck) {
+    const healthCheckPath =
+      config.server.healthCheck === true
+        ? defaults.healthCheckPath
+        : config.server.healthCheck.path || defaults.healthCheckPath;
+    app.use(healthCheckPath, (req, res, next) => {
+      if (expressServer) return next();
+      res.status(503).json({ status: 'fail' });
+    });
+  }
 
   app.use('/__keystone_dev_status', (req, res) => {
     res.json({ ready: expressServer ? true : false });
