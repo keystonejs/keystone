@@ -107,7 +107,7 @@ export function outputTypeField(
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throw accessDeniedError('query', fieldKey, { itemId: rootVal.id });
+        throw accessDeniedError();
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
