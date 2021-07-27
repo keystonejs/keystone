@@ -171,29 +171,16 @@ export function initialiseLists(
       skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
     };
 
-    const relateToManyCreate = schema.inputObject({
-      name: names.relateToManyForCreateInputName,
+    const relateToMany = schema.inputObject({
+      name: names.relateToManyInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
+            create: schema.arg({ type: schema.list(create) }),
           }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-        };
-      },
-    });
-
-    const relateToManyUpdate = schema.inputObject({
-      name: names.relateToManyForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
-          }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-          disconnect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          connect: schema.arg({ type: schema.list(uniqueWhere) }),
+          disconnect: schema.arg({ type: schema.list(uniqueWhere) }),
           disconnectAll: schema.arg({ type: schema.Boolean }),
         };
       },
@@ -209,6 +196,8 @@ export function initialiseLists(
             create: schema.arg({ type: create }),
           }),
           connect: schema.arg({ type: uniqueWhere }),
+          disconnect: schema.arg({ type: uniqueWhere }),
+          disconnectAll: schema.arg({ type: schema.Boolean }),
         };
       },
     });
@@ -223,7 +212,7 @@ export function initialiseLists(
         update,
         findManyArgs,
         relateTo: {
-          many: { create: relateToManyCreate, update: relateToManyUpdate },
+          many: { create: relateToMany, update: relateToMany },
           one: { create: relateToOne, update: relateToOne },
         },
       },

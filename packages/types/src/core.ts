@@ -68,8 +68,7 @@ export function getGqlNames({
     updateInputName: `${listKey}UpdateInput`,
     createInputName: `${listKey}CreateInput`,
     updateManyInputName: `${listKey}UpdateArgs`,
-    relateToManyForCreateInputName: `${listKey}RelateToManyForCreateInput`,
-    relateToManyForUpdateInputName: `${listKey}RelateToManyForUpdateInput`,
+    relateToManyInputName: `${listKey}RelateToManyInput`,
     relateToOneInputName: `${listKey}RelateToOneInput`,
   };
 }
