@@ -46,8 +46,8 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
   const result = (await context.graphql.raw({
     query: `
       {
-        User(where: { id: "${userId}"} ) { id friends { id } }
-        Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
+        User: user(where: { id: "${userId}"} ) { id friends { id } }
+        Friend: user(where: { id: "${friendId}"} ) { id friendOf { id } }
       }`,
   })) as T;
   return result.data;
