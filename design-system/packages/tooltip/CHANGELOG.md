@@ -1,5 +1,11 @@
 # @keystone-ui/tooltip
 
+## 4.0.1
+
+### Patch Changes
+
+- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed issues with React hooks dependency arrays
+
 ## 4.0.0
 
 ### Major Changes
