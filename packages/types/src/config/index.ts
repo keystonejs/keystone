@@ -115,7 +115,7 @@ export type AdminFileToWrite =
 
 type HealthCheckConfig = {
   path?: string;
-  data?: Record<string, any>;
+  data?: Record<string, any> | (() => Record<string, any>);
 };
 
 export type ServerConfig = {
