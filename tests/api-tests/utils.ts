@@ -17,12 +17,10 @@ export const apiTestConfig = (
 });
 
 const unpackErrors = (errors: readonly any[] | undefined) =>
-  (errors || []).map(
-    ({ locations, uid, extensions: { exception, ...extensions }, ...unpacked }) => ({
-      extensions,
-      ...unpacked,
-    })
-  );
+  (errors || []).map(({ locations, extensions: { exception, ...extensions }, ...unpacked }) => ({
+    extensions,
+    ...unpacked,
+  }));
 
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
@@ -32,7 +30,6 @@ export const expectInternalServerError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
-      name: 'GraphQLError',
       path,
       message,
     }))
@@ -47,7 +44,6 @@ export const expectGraphQLValidationError = (
   expect(unpackedErrors).toEqual(
     args.map(({ message }) => ({
       extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-      name: 'ValidationError',
       message,
     }))
   );
@@ -91,7 +87,6 @@ export const expectPrismaError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
-      name: 'GraphQLError',
       path,
       message,
     }))
@@ -121,7 +116,6 @@ export const expectBadUserInput = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
-      name: 'GraphQLError',
       path,
       message,
     }))

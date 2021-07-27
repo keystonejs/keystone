@@ -17,7 +17,10 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
       <Stack gap="small">
         {errors.map(err => {
           const errButAny: any = err;
-          if (err.name === 'ValidationFailureError' && errButAny.data?.messages?.length) {
+          if (
+            err.message === 'You attempted to perform an invalid mutation' &&
+            errButAny.data?.messages?.length
+          ) {
             return errButAny.data.messages.map((message: string) => (
               <Notice tone="negative">{message}</Notice>
             ));
