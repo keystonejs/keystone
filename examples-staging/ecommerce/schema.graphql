@@ -5,70 +5,25 @@ type User {
   password: PasswordState
   cart(
     where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [CartItem!]
-  _cartMeta(
-    where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [CartItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use cartCount instead."
-    )
   cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]
-  _ordersMeta(
-    where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use ordersCount instead."
-    )
   ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   products(
     where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Product!]
-  _productsMeta(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
-    )
   productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken: PasswordState
   passwordResetIssuedAt: String
@@ -77,10 +32,6 @@ type User {
 
 type PasswordState {
   isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input UserWhereInput {
@@ -140,19 +91,6 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   email: String
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  passwordResetIssuedAt_ASC
-  passwordResetIssuedAt_DESC
-  passwordResetRedeemedAt_ASC
-  passwordResetRedeemedAt_DESC
 }
 
 input UserOrderByInput {
@@ -284,19 +222,6 @@ input ProductWhereInput {
 
 input ProductWhereUniqueInput {
   id: ID
-}
-
-enum SortProductsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  status_ASC
-  status_DESC
-  price_ASC
-  price_DESC
 }
 
 input ProductOrderByInput {
@@ -433,13 +358,6 @@ input ProductImageWhereUniqueInput {
   id: ID
 }
 
-enum SortProductImagesBy {
-  id_ASC
-  id_DESC
-  altText_ASC
-  altText_DESC
-}
-
 input ProductImageOrderByInput {
   id: OrderDirection
   altText: OrderDirection
@@ -512,13 +430,6 @@ input CartItemWhereInput {
 
 input CartItemWhereUniqueInput {
   id: ID
-}
-
-enum SortCartItemsBy {
-  id_ASC
-  id_DESC
-  quantity_ASC
-  quantity_DESC
 }
 
 input CartItemOrderByInput {
@@ -606,19 +517,6 @@ input OrderItemWhereUniqueInput {
   id: ID
 }
 
-enum SortOrderItemsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  price_ASC
-  price_DESC
-  quantity_ASC
-  quantity_DESC
-}
-
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -667,25 +565,10 @@ type Order {
   total: Int
   items(
     where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
-  _itemsMeta(
-    where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use itemsCount instead."
-    )
   itemsCount(where: OrderItemWhereInput! = {}): Int
   user: User
   charge: String
@@ -725,15 +608,6 @@ input OrderWhereInput {
 
 input OrderWhereUniqueInput {
   id: ID
-}
-
-enum SortOrdersBy {
-  id_ASC
-  id_DESC
-  total_ASC
-  total_DESC
-  charge_ASC
-  charge_DESC
 }
 
 input OrderOrderByInput {
@@ -783,25 +657,10 @@ type Role {
   canManageOrders: Boolean
   assignedTo(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  _assignedToMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use assignedToCount instead."
-    )
   assignedToCount(where: UserWhereInput! = {}): Int
 }
 
@@ -841,25 +700,6 @@ input RoleWhereInput {
 
 input RoleWhereUniqueInput {
   id: ID
-}
-
-enum SortRolesBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  canManageProducts_ASC
-  canManageProducts_DESC
-  canSeeOtherUsers_ASC
-  canSeeOtherUsers_DESC
-  canManageUsers_ASC
-  canManageUsers_DESC
-  canManageRoles_ASC
-  canManageRoles_DESC
-  canManageCart_ASC
-  canManageCart_DESC
-  canManageOrders_ASC
-  canManageOrders_DESC
 }
 
 input RoleOrderByInput {
@@ -1043,164 +883,59 @@ enum PasswordResetRedemptionErrorCode {
 type Query {
   allUsers(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
   User(where: UserWhereUniqueInput!): User
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
   usersCount(where: UserWhereInput! = {}): Int
   allProducts(
     where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Product!]
   Product(where: ProductWhereUniqueInput!): Product
-  _allProductsMeta(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
-    )
   productsCount(where: ProductWhereInput! = {}): Int
   allProductImages(
     where: ProductImageWhereInput! = {}
-    search: String
-    sortBy: [SortProductImagesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductImageOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
   ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
-  _allProductImagesMeta(
-    where: ProductImageWhereInput! = {}
-    search: String
-    sortBy: [SortProductImagesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductImageOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productImagesCount instead."
-    )
   productImagesCount(where: ProductImageWhereInput! = {}): Int
   allCartItems(
     where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [CartItem!]
   CartItem(where: CartItemWhereUniqueInput!): CartItem
-  _allCartItemsMeta(
-    where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [CartItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use cartItemsCount instead."
-    )
   cartItemsCount(where: CartItemWhereInput! = {}): Int
   allOrderItems(
     where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
   OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
-  _allOrderItemsMeta(
-    where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use orderItemsCount instead."
-    )
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
   allOrders(
     where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]
   Order(where: OrderWhereUniqueInput!): Order
-  _allOrdersMeta(
-    where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use ordersCount instead."
-    )
   ordersCount(where: OrderWhereInput! = {}): Int
   allRoles(
     where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]
   Role(where: RoleWhereUniqueInput!): Role
-  _allRolesMeta(
-    where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [RoleOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use rolesCount instead."
-    )
   rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(

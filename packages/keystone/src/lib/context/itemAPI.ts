@@ -32,7 +32,7 @@ export function getDbAPIFactory(
   const api = {
     findOne: f(queryFields[gqlNames.itemQueryName]),
     findMany: f(queryFields[gqlNames.listQueryName]),
-    count: f(queryFields[gqlNames.listQueryMetaName]),
+    count: f(queryFields[gqlNames.listQueryCountName]),
     createOne: f(mutationFields[gqlNames.createMutationName]),
     createMany: f(mutationFields[gqlNames.createManyMutationName]),
     updateOne: f(mutationFields[gqlNames.updateMutationName]),
@@ -47,7 +47,6 @@ export function getDbAPIFactory(
         (args: Record<string, any>) => impl(args, context),
       ])
     );
-    obj.count = async (args: Record<string, any>) => (await api.count(args, context)).getCount();
     return obj;
   };
 }
@@ -97,12 +96,11 @@ export function itemAPIForList(
   return {
     findOne: f('query', gqlNames.itemQueryName, dbAPI.findOne),
     findMany: f('query', gqlNames.listQueryName, dbAPI.findMany),
-    async count(args = {}) {
-      const { first, skip = 0, where = {} } = args;
-      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
-      const query = `query ($first: Int, $skip: Int! = 0, $where: ${whereInputName}! = {}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
-      const response = await context.graphql.run({ query, variables: { first, skip, where } });
-      return response[listQueryMetaName].count;
+    async count({ where = {} } = {}) {
+      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
+      const response = await context.graphql.run({ query, variables: { where } });
+      return response.count;
     },
     createOne: f('mutation', gqlNames.createMutationName, dbAPI.createOne),
     createMany: f('mutation', gqlNames.createManyMutationName, dbAPI.createMany),

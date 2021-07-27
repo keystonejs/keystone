@@ -26,13 +26,6 @@ input NoteWhereUniqueInput {
   id: ID
 }
 
-enum SortNotesBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-}
-
 input NoteOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -68,10 +61,6 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
-}
-
 type Mutation {
   createNote(data: NoteCreateInput): Note
   createNotes(data: [NotesCreateInput]): [Note]
@@ -84,26 +73,11 @@ type Mutation {
 type Query {
   allNotes(
     where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [NoteOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Note!]
   Note(where: NoteWhereUniqueInput!): Note
-  _allNotesMeta(
-    where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [NoteOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use notesCount instead."
-    )
   notesCount(where: NoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
