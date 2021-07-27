@@ -77,7 +77,7 @@ describe('List Hooks: #validateInput()', () => {
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ id: user1.id });
+      await context.lists.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({

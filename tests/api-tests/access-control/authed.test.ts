@@ -99,7 +99,7 @@ describe('Authed', () => {
               const item = await context.lists[listKey].createOne({ data });
               expect(item).not.toBe(null);
               expect(item.id).not.toBe(null);
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -124,7 +124,7 @@ describe('Authed', () => {
               } else {
                 expect(item[fieldName]).toBe(undefined);
               }
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -143,7 +143,7 @@ describe('Authed', () => {
               });
               expect(item).not.toBe(null);
               expect(item.id).not.toBe(null);
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -395,7 +395,9 @@ describe('Authed', () => {
 
             test(`single allowed: ${JSON.stringify(access)}`, async () => {
               const { id } = await create({ name: 'Hello' });
-              const deleted = await context.lists[nameFn[mode](access)].deleteOne({ id });
+              const deleted = await context.lists[nameFn[mode](access)].deleteOne({
+                where: { id },
+              });
               expect(deleted).not.toBe(null);
               expect(deleted!.id).toEqual(id);
             });
