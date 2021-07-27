@@ -150,7 +150,7 @@ describe(`Not authed`, () => {
           .filter(({ read }) => !read)
           .forEach(access => {
             test(`'all' denied: ${JSON.stringify(access)}`, async () => {
-              const allQueryName = `all${nameFn[mode](access)}s`;
+              const allQueryName = context.gqlNames(nameFn[mode](access)).listQueryName;
               const query = `query { ${allQueryName} { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, allQueryName);
@@ -167,7 +167,7 @@ describe(`Not authed`, () => {
             });
 
             test(`single denied: ${JSON.stringify(access)}`, async () => {
-              const singleQueryName = nameFn[mode](access);
+              const singleQueryName = context.gqlNames(nameFn[mode](access)).itemQueryName;
               const query = `query { ${singleQueryName}(where: { id: "cabc123" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, singleQueryName);
@@ -190,7 +190,7 @@ describe(`Not authed`, () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              const singleQueryName = listKey;
+              const singleQueryName = context.gqlNames(listKey).itemQueryName;
               await context
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
@@ -209,7 +209,7 @@ describe(`Not authed`, () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              const allQueryName = `all${listKey}s`;
+              const allQueryName = context.gqlNames(listKey).listQueryName;
               await context
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
@@ -239,7 +239,7 @@ describe(`Not authed`, () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              const singleQueryName = listKey;
+              const singleQueryName = context.gqlNames(listKey).itemQueryName;
               await context
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
@@ -259,7 +259,7 @@ describe(`Not authed`, () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              const allQueryName = `all${listKey}s`;
+              const allQueryName = context.gqlNames(listKey).listQueryName;
               await context
                 .sudo()
                 .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });

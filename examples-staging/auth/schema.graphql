@@ -62,7 +62,7 @@ input UserUpdateInput {
   isAdmin: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   id: ID!
   data: UserUpdateInput
 }
@@ -90,7 +90,7 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
   authenticateUserWithPassword(
@@ -134,13 +134,13 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  allUsers(
+  users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

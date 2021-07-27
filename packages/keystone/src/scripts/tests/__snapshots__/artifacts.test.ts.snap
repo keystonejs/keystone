@@ -58,7 +58,7 @@ export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
 };
 
-export type TodosUpdateInput = {
+export type TodoUpdateArgs = {
   readonly id: Scalars['ID'];
   readonly data?: TodoUpdateInput | null;
 };

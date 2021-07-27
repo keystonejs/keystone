@@ -1,5 +1,5 @@
 import { setupTestEnv, TestEnv } from '@keystone-next/testing';
-import { KeystoneContext } from '@keystone-next/types';
+import { getGqlNames, KeystoneContext } from '@keystone-next/types';
 import {
   getStaticListName,
   getImperativeListName,
@@ -85,46 +85,47 @@ describe(`Schema`, () => {
     listAccessVariations.forEach(access => {
       test(JSON.stringify(access), async () => {
         const name = getStaticListName(access);
+        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
         // The type is used in all the queries and mutations as a return type
         if (access.create || access.read || access.update || access.delete) {
-          expect(types).toContain(`${name}`);
+          expect(types).toContain(gqlNames.outputTypeName);
           // Filter types are also available for update/delete/create (thanks
           // to nested mutations)
-          expect(types).toContain(`${name}WhereInput`);
-          expect(types).toContain(`${name}WhereUniqueInput`);
+          expect(types).toContain(gqlNames.whereInputName);
+          expect(types).toContain(gqlNames.whereUniqueInputName);
         } else {
-          expect(types).not.toContain(`${name}`);
-          expect(types).not.toContain(`${name}WhereInput`);
-          expect(types).not.toContain(`${name}WhereUniqueInput`);
+          expect(types).not.toContain(gqlNames.outputTypeName);
+          expect(types).not.toContain(gqlNames.whereInputName);
+          expect(types).not.toContain(gqlNames.whereUniqueInputName);
         }
 
         // Queries are only accessible when reading
         if (access.read) {
-          expect(queries).toContain(`${name}`);
-          expect(queries).toContain(`all${name}s`);
-          expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
+          expect(queries).toContain(gqlNames.itemQueryName);
+          expect(queries).toContain(gqlNames.listQueryName);
+          expect(queries).toContain(gqlNames.listQueryCountName);
         } else {
-          expect(queries).not.toContain(`${name}`);
-          expect(queries).not.toContain(`all${name}s`);
-          expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
+          expect(queries).not.toContain(gqlNames.itemQueryName);
+          expect(queries).not.toContain(gqlNames.listQueryName);
+          expect(queries).not.toContain(gqlNames.listQueryCountName);
         }
 
         if (access.create) {
-          expect(mutations).toContain(`create${name}`);
+          expect(mutations).toContain(gqlNames.createMutationName);
         } else {
-          expect(mutations).not.toContain(`create${name}`);
+          expect(mutations).not.toContain(gqlNames.createMutationName);
         }
 
         if (access.update) {
-          expect(mutations).toContain(`update${name}`);
+          expect(mutations).toContain(gqlNames.updateMutationName);
         } else {
-          expect(mutations).not.toContain(`update${name}`);
+          expect(mutations).not.toContain(gqlNames.updateMutationName);
         }
 
         if (access.delete) {
-          expect(mutations).toContain(`delete${name}`);
+          expect(mutations).toContain(gqlNames.deleteMutationName);
         } else {
-          expect(mutations).not.toContain(`delete${name}`);
+          expect(mutations).not.toContain(gqlNames.deleteMutationName);
         }
       });
     });
@@ -194,19 +195,21 @@ describe(`Schema`, () => {
     listAccessVariations.forEach(access => {
       test(JSON.stringify(access), async () => {
         const name = getImperativeListName(access);
+        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+
         // All types, etc, are included when imperative no matter the config (because
         // it can't be resolved until runtime)
-        expect(types).toContain(`${name}`);
-        expect(types).toContain(`${name}WhereInput`);
-        expect(types).toContain(`${name}WhereUniqueInput`);
+        expect(types).toContain(gqlNames.outputTypeName);
+        expect(types).toContain(gqlNames.whereInputName);
+        expect(types).toContain(gqlNames.whereUniqueInputName);
 
-        expect(queries).toContain(`${name}`);
-        expect(queries).toContain(`all${name}s`);
-        expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
+        expect(queries).toContain(gqlNames.itemQueryName);
+        expect(queries).toContain(gqlNames.listQueryName);
+        expect(queries).toContain(gqlNames.listQueryCountName);
 
-        expect(mutations).toContain(`create${name}`);
-        expect(mutations).toContain(`update${name}`);
-        expect(mutations).toContain(`delete${name}`);
+        expect(mutations).toContain(gqlNames.createMutationName);
+        expect(mutations).toContain(gqlNames.updateMutationName);
+        expect(mutations).toContain(gqlNames.deleteMutationName);
       });
     });
   });
@@ -215,20 +218,22 @@ describe(`Schema`, () => {
     listAccessVariations.forEach(access => {
       test(JSON.stringify(access), async () => {
         const name = getDeclarativeListName(access);
+
+        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
         // All types, etc, are included when declarative no matter the config (because
         // it can't be resolved until runtime)
-        expect(types).toContain(`${name}`);
-        expect(types).toContain(`${name}WhereInput`);
-        expect(types).toContain(`${name}WhereUniqueInput`);
+        expect(types).toContain(gqlNames.outputTypeName);
+        expect(types).toContain(gqlNames.whereInputName);
+        expect(types).toContain(gqlNames.whereUniqueInputName);
 
-        expect(queries).toContain(`${name}`);
-        expect(queries).toContain(`all${name}s`);
-        expect(queries).not.toContain(`${name.slice(0, 1).toLowerCase() + name.slice(1)}Count`);
+        expect(queries).toContain(gqlNames.itemQueryName);
+        expect(queries).toContain(gqlNames.listQueryName);
+        expect(queries).toContain(gqlNames.listQueryCountName);
 
         if (access.create) {
-          expect(mutations).toContain(`create${name}`);
+          expect(mutations).toContain(gqlNames.createMutationName);
         } else {
-          expect(mutations).not.toContain(`create${name}`);
+          expect(mutations).not.toContain(gqlNames.createMutationName);
         }
         expect(mutations).toContain(`update${name}`);
         expect(mutations).toContain(`delete${name}`);

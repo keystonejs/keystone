@@ -147,7 +147,7 @@ input ProductRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   id: ID!
   data: UserUpdateInput
 }
@@ -255,7 +255,7 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductsUpdateInput {
+input ProductUpdateArgs {
   id: ID!
   data: ProductUpdateInput
 }
@@ -381,7 +381,7 @@ input ProductRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ProductImagesUpdateInput {
+input ProductImageUpdateArgs {
   id: ID!
   data: ProductImageUpdateInput
 }
@@ -443,7 +443,7 @@ input CartItemUpdateInput {
   user: UserRelateToOneInput
 }
 
-input CartItemsUpdateInput {
+input CartItemUpdateArgs {
   id: ID!
   data: CartItemUpdateInput
 }
@@ -541,7 +541,7 @@ input OrderRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input OrderItemsUpdateInput {
+input OrderItemUpdateArgs {
   id: ID!
   data: OrderItemUpdateInput
 }
@@ -630,7 +630,7 @@ input OrderItemRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input OrdersUpdateInput {
+input OrderUpdateArgs {
   id: ID!
   data: OrderUpdateInput
 }
@@ -731,7 +731,7 @@ input UserRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RolesUpdateInput {
+input RoleUpdateArgs {
   id: ID!
   data: RoleUpdateInput
 }
@@ -763,43 +763,43 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
   createProduct(data: ProductCreateInput): Product
   createProducts(data: [ProductsCreateInput]): [Product]
   updateProduct(id: ID!, data: ProductUpdateInput): Product
-  updateProducts(data: [ProductsUpdateInput]): [Product]
+  updateProducts(data: [ProductUpdateArgs]): [Product]
   deleteProduct(id: ID!): Product
   deleteProducts(ids: [ID!]): [Product]
   createProductImage(data: ProductImageCreateInput): ProductImage
   createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
   updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
-  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
+  updateProductImages(data: [ProductImageUpdateArgs]): [ProductImage]
   deleteProductImage(id: ID!): ProductImage
   deleteProductImages(ids: [ID!]): [ProductImage]
   createCartItem(data: CartItemCreateInput): CartItem
   createCartItems(data: [CartItemsCreateInput]): [CartItem]
   updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
-  updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
+  updateCartItems(data: [CartItemUpdateArgs]): [CartItem]
   deleteCartItem(id: ID!): CartItem
   deleteCartItems(ids: [ID!]): [CartItem]
   createOrderItem(data: OrderItemCreateInput): OrderItem
   createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
   updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
-  updateOrderItems(data: [OrderItemsUpdateInput]): [OrderItem]
+  updateOrderItems(data: [OrderItemUpdateArgs]): [OrderItem]
   deleteOrderItem(id: ID!): OrderItem
   deleteOrderItems(ids: [ID!]): [OrderItem]
   createOrder(data: OrderCreateInput): Order
   createOrders(data: [OrdersCreateInput]): [Order]
   updateOrder(id: ID!, data: OrderUpdateInput): Order
-  updateOrders(data: [OrdersUpdateInput]): [Order]
+  updateOrders(data: [OrderUpdateArgs]): [Order]
   deleteOrder(id: ID!): Order
   deleteOrders(ids: [ID!]): [Order]
   createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput]): [Role]
+  updateRoles(data: [RoleUpdateArgs]): [Role]
   deleteRole(id: ID!): Role
   deleteRoles(ids: [ID!]): [Role]
   authenticateUserWithPassword(
@@ -881,61 +881,61 @@ enum PasswordResetRedemptionErrorCode {
 }
 
 type Query {
-  allUsers(
+  users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  allProducts(
+  products(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Product!]
-  Product(where: ProductWhereUniqueInput!): Product
+  product(where: ProductWhereUniqueInput!): Product
   productsCount(where: ProductWhereInput! = {}): Int
-  allProductImages(
+  productImages(
     where: ProductImageWhereInput! = {}
     orderBy: [ProductImageOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
-  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+  productImage(where: ProductImageWhereUniqueInput!): ProductImage
   productImagesCount(where: ProductImageWhereInput! = {}): Int
-  allCartItems(
+  cartItems(
     where: CartItemWhereInput! = {}
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [CartItem!]
-  CartItem(where: CartItemWhereUniqueInput!): CartItem
+  cartItem(where: CartItemWhereUniqueInput!): CartItem
   cartItemsCount(where: CartItemWhereInput! = {}): Int
-  allOrderItems(
+  orderItems(
     where: OrderItemWhereInput! = {}
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
-  OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+  orderItem(where: OrderItemWhereUniqueInput!): OrderItem
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
-  allOrders(
+  orders(
     where: OrderWhereInput! = {}
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]
-  Order(where: OrderWhereUniqueInput!): Order
+  order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
-  allRoles(
+  roles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]
-  Role(where: RoleWhereUniqueInput!): Role
+  role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
