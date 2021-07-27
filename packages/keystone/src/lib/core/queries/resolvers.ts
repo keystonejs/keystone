@@ -46,8 +46,7 @@ export function mapUniqueWhereToWhere(
 export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
-  resolvedWhere: PrismaFilter,
-  search?: string | null | undefined
+  resolvedWhere: PrismaFilter
 ) {
   // Run access control
   const access = await validateNonCreateListAccessControl({
@@ -61,11 +60,6 @@ export async function accessControlledFilter(
   // Merge declarative access control
   if (typeof access === 'object') {
     resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
-  }
-
-  // Merge legacy `search` inputs
-  if (search) {
-    resolvedWhere = list.applySearchField(resolvedWhere, search);
   }
 
   return resolvedWhere;
@@ -92,18 +86,18 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
+  { where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<ItemRootValue[]> {
-  const orderBy = await resolveOrderBy(rawOrderBy, sortBy, list, context);
+  const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
   applyEarlyMaxResults(first, list);
 
   let resolvedWhere = await resolveWhereInput(where || {}, list);
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
   const results = await runWithPrisma(context, list, model =>
     model.findMany({
@@ -126,68 +120,70 @@ export async function findMany(
 
 async function resolveOrderBy(
   orderBy: readonly Record<string, any>[],
-  sortBy: readonly string[] | null | undefined,
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
-  return (
-    await Promise.all(
-      orderBy.map(async orderBySelection => {
-        const keys = Object.keys(orderBySelection);
+  return await Promise.all(
+    orderBy.map(async orderBySelection => {
+      const keys = Object.keys(orderBySelection);
+      if (keys.length !== 1) {
+        throw new Error(
+          `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+        );
+      }
+
+      const fieldKey = keys[0];
+      const value = orderBySelection[fieldKey];
+      if (value === null) {
+        throw new Error('null cannot be passed as an order direction');
+      }
+
+      const field = list.fields[fieldKey];
+      const resolve = field.input!.orderBy!.resolve;
+      const resolvedValue = resolve ? await resolve(value, context) : value;
+      if (field.dbField.kind === 'multi') {
+        const keys = Object.keys(resolvedValue);
         if (keys.length !== 1) {
           throw new Error(
-            `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+            `Only a single key must be returned from an orderBy input resolver for a multi db field`
           );
         }
-
-        const fieldKey = keys[0];
-        const value = orderBySelection[fieldKey];
-        if (value === null) {
-          throw new Error('null cannot be passed as an order direction');
-        }
-
-        const field = list.fields[fieldKey];
-        const resolve = field.input!.orderBy!.resolve;
-        const resolvedValue = resolve ? await resolve(value, context) : value;
-        if (field.dbField.kind === 'multi') {
-          const keys = Object.keys(resolvedValue);
-          if (keys.length !== 1) {
-            throw new Error(
-              `Only a single key must be returned from an orderBy input resolver for a multi db field`
-            );
-          }
-          const innerKey = keys[0];
-          return {
-            [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
-          };
-        } else {
-          return { [fieldKey]: resolvedValue };
-        }
-      })
-    )
-  ).concat(
-    sortBy?.map(sort =>
-      sort.endsWith('_DESC')
-        ? { [sort.slice(0, -'_DESC'.length)]: 'desc' }
-        : { [sort.slice(0, -'_ASC'.length)]: 'asc' }
-    ) || []
+        const innerKey = keys[0];
+        return {
+          [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
+        };
+      } else {
+        return { [fieldKey]: resolvedValue };
+      }
+    })
   );
 }
 
 export async function count(
-  { where, search }: { where: Record<string, any>; search?: string | null },
+  { where }: { where: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
+  info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
   let resolvedWhere = await resolveWhereInput(where || {}, list);
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, search);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
-  return runWithPrisma(context, list, model =>
+  const count = await runWithPrisma(context, list, model =>
     model.count({
       where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
     })
   );
+  if (info.cacheControl && list.cacheHint) {
+    info.cacheControl.setCacheHint(
+      list.cacheHint({
+        results: count,
+        operationName: info.operation.name?.value,
+        meta: true,
+      }) as any
+    );
+  }
+  return count;
 }
 
 const limitsExceedError = (args: { type: string; limit: number; list: string }) =>

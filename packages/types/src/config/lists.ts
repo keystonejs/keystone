@@ -200,11 +200,6 @@ export type CacheHintArgs = { results: any; operationName?: string; meta: boolea
 
 export type ListDBConfig = {
   /**
-   * The name of the field to use for `search` filter operations.
-   * @default "name""
-   */
-  searchField?: string;
-  /**
    * The kind of id to use.
    * @default { kind: "cuid" }
    */
