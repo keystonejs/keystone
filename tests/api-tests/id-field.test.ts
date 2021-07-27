@@ -3,7 +3,7 @@ import { text } from '@keystone-next/fields';
 import { setupTestRunner } from '@keystone-next/testing';
 import { isCuid } from 'cuid';
 import { validate } from 'uuid';
-import { apiTestConfig } from './utils';
+import { apiTestConfig, expectBadUserInput } from './utils';
 
 export function assertNever(arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
@@ -20,26 +20,28 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'Fetching an item uniquely with an invalid id throws an error',
-    runner(async ({ context }) => {
-      await expect(
-        context.lists.User.findOne({ where: { id: 'adskjnfasdfkjekfj' } })
-      ).rejects.toMatchObject({
-        message: `Only ${
-          kind === 'autoincrement' ? 'an integer' : `a ${kind}`
-        } can be passed to id filters`,
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ User(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
+      expect(body.data).toEqual({ User: null });
+      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
+      expectBadUserInput(body.errors, [
+        { path: ['User'], message: `Only ${s} can be passed to id filters` },
+      ]);
     })
   );
   test(
     'Filtering an item with an invalid id throws an error',
-    runner(async ({ context }) => {
-      await expect(
-        context.lists.User.findOne({ where: { id: 'adskjnfasdfkjekfj' } })
-      ).rejects.toMatchObject({
-        message: `Only ${
-          kind === 'autoincrement' ? 'an integer' : `a ${kind}`
-        } can be passed to id filters`,
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ allUsers(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
+      expect(body.data).toEqual({ allUsers: null });
+      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
+      expectBadUserInput(body.errors, [
+        { path: ['allUsers'], message: `Only ${s} can be passed to id filters` },
+      ]);
     })
   );
   test(
@@ -102,14 +104,19 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'searching for uppercased cuid does not work',
-    runner(async ({ context }) => {
+    runner(async ({ context, graphQLRequest }) => {
       const { id } = (await context.lists.User.createOne({
         data: { name: 'something' },
       })) as { id: string };
 
-      await expect(
-        context.lists.User.findOne({ where: { id: id.toUpperCase() } })
-      ).rejects.toMatchInlineSnapshot(`[GraphQLError: Only a cuid can be passed to id filters]`);
+      const { body } = await graphQLRequest({
+        query: `query q($id: ID!){ User(where: { id: $id }) { id } }`,
+        variables: { id: id.toUpperCase() },
+      });
+      expect(body.data).toEqual({ User: null });
+      expectBadUserInput(body.errors, [
+        { path: ['User'], message: `Only a cuid can be passed to id filters` },
+      ]);
     })
   );
 }

@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -36,7 +36,7 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         {
           path: ['createEvent'],
           message: 'Nested mutation operation invalid for Event.group<Group>',
@@ -53,7 +53,7 @@ describe('errors on incomplete data', () => {
         query: `
               mutation {
                 createEvent(data: { group: {
-                  connect: { id: "abc123"},
+                  connect: { id: "cabc123"},
                   create: { name: "foo" }
                 } }) {
                   id
@@ -62,7 +62,7 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         {
           path: ['createEvent'],
           message: 'Nested mutation operation invalid for Event.group<Group>',
