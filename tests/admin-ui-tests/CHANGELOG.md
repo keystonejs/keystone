@@ -1,5 +1,14 @@
 # @keystone-next/admin-ui-tests
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`93f1e5d30`](https://github.com/keystonejs/keystone/commit/93f1e5d302701c610b6cba74e0c5c86a3ac8aacc), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`14cb7c5c4`](https://github.com/keystonejs/keystone/commit/14cb7c5c40456cd0d2c8408ed46823d2695614cc), [`e4e6cf9b5`](https://github.com/keystonejs/keystone/commit/e4e6cf9b59eec461d2b53acfa3b350e4f5a06fc4)]:
+  - @keystone-next/types@23.0.0
+  - @keystone-next/testing@1.1.0
+  - @keystone-next/utils@1.0.3
+
 ## 0.0.2
 
 ### Patch Changes
