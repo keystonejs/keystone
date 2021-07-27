@@ -67,7 +67,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PackagesUpdateInput {
+input PackageUpdateArgs {
   id: ID!
   data: PackageUpdateInput
 }
@@ -164,7 +164,7 @@ input PackageRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PeopleUpdateInput {
+input PersonUpdateArgs {
   id: ID!
   data: PersonUpdateInput
 }
@@ -190,19 +190,19 @@ type Mutation {
   createPackage(data: PackageCreateInput): Package
   createPackages(data: [PackagesCreateInput]): [Package]
   updatePackage(id: ID!, data: PackageUpdateInput): Package
-  updatePackages(data: [PackagesUpdateInput]): [Package]
+  updatePackages(data: [PackageUpdateArgs]): [Package]
   deletePackage(id: ID!): Package
   deletePackages(ids: [ID!]): [Package]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput]): [Person]
+  updatePeople(data: [PersonUpdateArgs]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]): [Person]
 }
 
 type Query {
-  allPackages(
+  packages(
     where: PackageWhereInput! = {}
     search: String
     sortBy: [SortPackagesBy!]
@@ -211,7 +211,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Package!]
-  Package(where: PackageWhereUniqueInput!): Package
+  package(where: PackageWhereUniqueInput!): Package
   _allPackagesMeta(
     where: PackageWhereInput! = {}
     search: String
@@ -225,7 +225,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use packagesCount instead."
     )
   packagesCount(where: PackageWhereInput! = {}): Int
-  allPeople(
+  people(
     where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
@@ -234,7 +234,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Person!]
-  Person(where: PersonWhereUniqueInput!): Person
+  person(where: PersonWhereUniqueInput!): Person
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String

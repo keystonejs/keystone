@@ -1,0 +1,10 @@
+---
+'@keystone-next/keystone': major
+'@keystone-next/types': major
+---
+
+Various renamings in the GraphQL API (`Item` is used as an example list key here):
+
+- The query `allItems` to `items`
+- The query `Item` to `item`
+- The input type `ItemsUpdateInput` to `ItemUpdateArgs`

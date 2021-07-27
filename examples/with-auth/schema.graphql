@@ -93,7 +93,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TasksUpdateInput {
+input TaskUpdateArgs {
   id: ID!
   data: TaskUpdateInput
 }
@@ -210,7 +210,7 @@ input TaskRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PeopleUpdateInput {
+input PersonUpdateArgs {
   id: ID!
   data: PersonUpdateInput
 }
@@ -238,13 +238,13 @@ type Mutation {
   createTask(data: TaskCreateInput): Task
   createTasks(data: [TasksCreateInput]): [Task]
   updateTask(id: ID!, data: TaskUpdateInput): Task
-  updateTasks(data: [TasksUpdateInput]): [Task]
+  updateTasks(data: [TaskUpdateArgs]): [Task]
   deleteTask(id: ID!): Task
   deleteTasks(ids: [ID!]): [Task]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput]): [Person]
+  updatePeople(data: [PersonUpdateArgs]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]): [Person]
   authenticatePersonWithPassword(
@@ -288,7 +288,7 @@ input CreateInitialPersonInput {
 }
 
 type Query {
-  allTasks(
+  tasks(
     where: TaskWhereInput! = {}
     search: String
     sortBy: [SortTasksBy!]
@@ -297,7 +297,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Task!]
-  Task(where: TaskWhereUniqueInput!): Task
+  task(where: TaskWhereUniqueInput!): Task
   _allTasksMeta(
     where: TaskWhereInput! = {}
     search: String
@@ -311,7 +311,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use tasksCount instead."
     )
   tasksCount(where: TaskWhereInput! = {}): Int
-  allPeople(
+  people(
     where: PersonWhereInput! = {}
     search: String
     sortBy: [SortPeopleBy!]
@@ -320,7 +320,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Person!]
-  Person(where: PersonWhereUniqueInput!): Person
+  person(where: PersonWhereUniqueInput!): Person
   _allPeopleMeta(
     where: PersonWhereInput! = {}
     search: String

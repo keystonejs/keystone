@@ -127,7 +127,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   id: ID!
   data: UserUpdateInput
 }
@@ -271,7 +271,7 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   id: ID!
   data: PostUpdateInput
 }
@@ -371,7 +371,7 @@ input TagUpdateInput {
   posts: PostRelateToManyInput
 }
 
-input TagsUpdateInput {
+input TagUpdateArgs {
   id: ID!
   data: TagUpdateInput
 }
@@ -397,19 +397,19 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostUpdateArgs]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]): [Post]
   createTag(data: TagCreateInput): Tag
   createTags(data: [TagsCreateInput]): [Tag]
   updateTag(id: ID!, data: TagUpdateInput): Tag
-  updateTags(data: [TagsUpdateInput]): [Tag]
+  updateTags(data: [TagUpdateArgs]): [Tag]
   deleteTag(id: ID!): Tag
   deleteTags(ids: [ID!]): [Tag]
   authenticateUserWithPassword(
@@ -453,7 +453,7 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  allUsers(
+  users(
     where: UserWhereInput! = {}
     search: String
     sortBy: [SortUsersBy!]
@@ -462,7 +462,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!): User
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
@@ -476,7 +476,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
   usersCount(where: UserWhereInput! = {}): Int
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
@@ -485,7 +485,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
+  post(where: PostWhereUniqueInput!): Post
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -499,7 +499,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-  allTags(
+  tags(
     where: TagWhereInput! = {}
     search: String
     sortBy: [SortTagsBy!]
@@ -508,7 +508,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Tag!]
-  Tag(where: TagWhereUniqueInput!): Tag
+  tag(where: TagWhereUniqueInput!): Tag
   _allTagsMeta(
     where: TagWhereInput! = {}
     search: String

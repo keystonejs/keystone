@@ -135,7 +135,7 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   id: ID!
   data: PostUpdateInput
 }
@@ -246,7 +246,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input AuthorsUpdateInput {
+input AuthorUpdateArgs {
   id: ID!
   data: AuthorUpdateInput
 }
@@ -273,19 +273,19 @@ type Mutation {
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostUpdateArgs]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]): [Post]
   createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-  updateAuthors(data: [AuthorsUpdateInput]): [Author]
+  updateAuthors(data: [AuthorUpdateArgs]): [Author]
   deleteAuthor(id: ID!): Author
   deleteAuthors(ids: [ID!]): [Author]
 }
 
 type Query {
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
     search: String
     sortBy: [SortPostsBy!]
@@ -294,7 +294,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
+  post(where: PostWhereUniqueInput!): Post
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -308,7 +308,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-  allAuthors(
+  authors(
     where: AuthorWhereInput! = {}
     search: String
     sortBy: [SortAuthorsBy!]
@@ -317,7 +317,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Author!]
-  Author(where: AuthorWhereUniqueInput!): Author
+  author(where: AuthorWhereUniqueInput!): Author
   _allAuthorsMeta(
     where: AuthorWhereInput! = {}
     search: String
