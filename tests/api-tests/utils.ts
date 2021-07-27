@@ -58,6 +58,7 @@ export const expectAccessDenied = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'You do not have access to this resource',
     }))
@@ -73,6 +74,7 @@ export const expectValidationError = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'You attempted to perform an invalid mutation',
     }))
@@ -102,6 +104,7 @@ export const expectLimitsExceededError = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'Your request exceeded server limits',
     }))
