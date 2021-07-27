@@ -1,4 +1,4 @@
-import { ValidationFailureError } from '../graphql-errors';
+import { validationFailureError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { promiseAllRejectWithAllErrors } from '../utils';
 
@@ -21,7 +21,7 @@ export async function validationHook(
   if (errors.length) {
     // FIXME: We will incorporate the `msg` values, which are currently being lost
     // into the error message in an upcoming change. -TL
-    throw ValidationFailureError();
+    throw validationFailureError();
   }
 }
 
