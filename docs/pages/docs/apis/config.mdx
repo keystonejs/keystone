@@ -216,7 +216,7 @@ If set to `true`, a `/_healthcheck` endpoint will be added to your server which 
 
 You can configure the health check with a custom path and JSON data:
 
-```js
+```typescript
 config({
   server: {
     healthCheck: {
@@ -229,7 +229,7 @@ config({
 
 Or use a function for the `data` config to return real-time information:
 
-```js
+```typescript
 config({
   server: {
     healthCheck: {
@@ -242,6 +242,7 @@ config({
     }
   }
 })
+```
 
 ## session
 
