@@ -52,19 +52,6 @@ input TaskWhereUniqueInput {
   id: ID
 }
 
-enum SortTasksBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  priority_ASC
-  priority_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
-}
-
 input TaskOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -115,30 +102,11 @@ type Person {
   name: String
   tasks(
     where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task!]
-  _tasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
   tasksCount(where: TaskWhereInput! = {}): Int
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input PersonWhereInput {
@@ -165,13 +133,6 @@ input PersonWhereInput {
 
 input PersonWhereUniqueInput {
   id: ID
-}
-
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
 }
 
 input PersonOrderByInput {
@@ -231,49 +192,19 @@ type Mutation {
 type Query {
   tasks(
     where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TaskOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Task!]
   task(where: TaskWhereUniqueInput!): Task
-  _allTasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
   tasksCount(where: TaskWhereInput! = {}): Int
   people(
     where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person
-  _allPeopleMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use peopleCount instead."
-    )
   peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

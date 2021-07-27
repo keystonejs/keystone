@@ -65,19 +65,6 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
-}
-
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -129,31 +116,12 @@ type Author {
   email: String
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   latestPost: Post
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input AuthorWhereInput {
@@ -187,15 +155,6 @@ input AuthorWhereInput {
 input AuthorWhereUniqueInput {
   id: ID
   email: String
-}
-
-enum SortAuthorsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
 }
 
 input AuthorOrderByInput {
@@ -258,49 +217,19 @@ type Mutation {
 type Query {
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
   post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   authors(
     where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
-  _allAuthorsMeta(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use authorsCount instead."
-    )
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

@@ -100,9 +100,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "resolve": "^1.20.0",
-    "serialize-error": "^8.1.0",
     "source-map-support": "^0.5.19",
-    "stack-utils": "^2.0.3",
     "typescript": "^4.3.5",
     "uid-safe": "^2.1.5",
     "uuid": "^8.3.2"
