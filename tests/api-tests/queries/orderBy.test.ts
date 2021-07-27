@@ -2,7 +2,7 @@ import { integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { KeystoneContext } from '@keystone-next/types';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -255,11 +255,11 @@ describe('Ordering by a single field', () => {
       await initialiseData({ context });
 
       const { body } = await graphQLRequest({
-        query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
+        query: 'query { users(orderBy: [{ a: asc, b: asc }]) { id } }',
       });
-      expect(body.data).toEqual({ allUsers: null });
-      expectInternalServerError(body.errors, [
-        { path: ['allUsers'], message: 'Only a single key must be passed to UserOrderByInput' },
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
       ]);
     })
   );

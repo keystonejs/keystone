@@ -49,7 +49,7 @@ export function addRelationshipData(
         try {
           val = await graphQLAPI.run({
             query: `query($id: ID!) {item:${
-              relationship.listKey
+              gqlNames(relationship.listKey).itemQueryName
             }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${
               relationship.selection || ''
             }}}`,

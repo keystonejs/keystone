@@ -17,12 +17,10 @@ export const apiTestConfig = (
 });
 
 const unpackErrors = (errors: readonly any[] | undefined) =>
-  (errors || []).map(
-    ({ locations, uid, extensions: { exception, ...extensions }, ...unpacked }) => ({
-      extensions,
-      ...unpacked,
-    })
-  );
+  (errors || []).map(({ locations, extensions: { exception, ...extensions }, ...unpacked }) => ({
+    extensions,
+    ...unpacked,
+  }));
 
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
@@ -32,7 +30,6 @@ export const expectInternalServerError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
-      name: 'GraphQLError',
       path,
       message,
     }))
@@ -47,7 +44,6 @@ export const expectGraphQLValidationError = (
   expect(unpackedErrors).toEqual(
     args.map(({ message }) => ({
       extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
-      name: 'ValidationError',
       message,
     }))
   );
@@ -62,13 +58,14 @@ export const expectAccessDenied = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'You do not have access to this resource',
     }))
   );
 };
 
-export const expectValidationFailure = (
+export const expectValidationError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[] }[]
 ) => {
@@ -77,8 +74,23 @@ export const expectValidationFailure = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'You attempted to perform an invalid mutation',
+    }))
+  );
+};
+
+export const expectPrismaError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message,
     }))
   );
 };
@@ -92,13 +104,28 @@ export const expectLimitsExceededError = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
+      extensions: { code: undefined },
       path,
       message: 'Your request exceeded server limits',
     }))
   );
 };
 
-export const expectNestedError = (
+export const expectBadUserInput = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message,
+    }))
+  );
+};
+
+export const expectRelationshipError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[]; message: string }[]
 ) => {

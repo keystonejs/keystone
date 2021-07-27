@@ -5,34 +5,15 @@ type User {
   password: PasswordState
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
 }
 
 type PasswordState {
   isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input UserWhereInput {
@@ -93,15 +74,6 @@ input UserWhereUniqueInput {
   email: String
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -127,7 +99,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   id: ID!
   data: UserUpdateInput
 }
@@ -152,25 +124,10 @@ type Post {
   author: User
   tags(
     where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Tag!]
-  _tagsMeta(
-    where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TagOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tagsCount instead."
-    )
   tagsCount(where: TagWhereInput! = {}): Int
 }
 
@@ -230,17 +187,6 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  publishDate_ASC
-  publishDate_DESC
-}
-
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -271,7 +217,7 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   id: ID!
   data: PostUpdateInput
 }
@@ -294,25 +240,10 @@ type Tag {
   name: String
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
 }
 
@@ -354,13 +285,6 @@ input TagWhereUniqueInput {
   id: ID
 }
 
-enum SortTagsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-}
-
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -371,7 +295,7 @@ input TagUpdateInput {
   posts: PostRelateToManyInput
 }
 
-input TagsUpdateInput {
+input TagUpdateArgs {
   id: ID!
   data: TagUpdateInput
 }
@@ -397,19 +321,19 @@ type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostUpdateArgs]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]): [Post]
   createTag(data: TagCreateInput): Tag
   createTags(data: [TagsCreateInput]): [Tag]
   updateTag(id: ID!, data: TagUpdateInput): Tag
-  updateTags(data: [TagsUpdateInput]): [Tag]
+  updateTags(data: [TagUpdateArgs]): [Tag]
   deleteTag(id: ID!): Tag
   deleteTags(ids: [ID!]): [Tag]
   authenticateUserWithPassword(
@@ -453,74 +377,29 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  allUsers(
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  allTags(
+  tags(
     where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TagOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Tag!]
-  Tag(where: TagWhereUniqueInput!): Tag
-  _allTagsMeta(
-    where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TagOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tagsCount instead."
-    )
+  tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!

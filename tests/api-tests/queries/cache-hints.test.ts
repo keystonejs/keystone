@@ -113,13 +113,13 @@ describe('cache hints', () => {
       const { body, headers } = await graphQLRequest({
         query: `
           query {
-            allUsers {
+            users {
               name
             }
           }
         `,
       });
-      expect(body.data).toHaveProperty('allUsers');
+      expect(body.data).toHaveProperty('users');
       expect(headers['cache-control']).toBe('max-age=80, public');
 
       // favNumber has the most restrictive hint
@@ -127,7 +127,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
             query favNumbers {
-              allUsers {
+              users {
                 name
                 favNumber
               }
@@ -135,7 +135,7 @@ describe('cache hints', () => {
           `,
         });
 
-        expect(body.data).toHaveProperty('allUsers');
+        expect(body.data).toHaveProperty('users');
         expect(headers['cache-control']).toBe('max-age=10, private');
       }
       // Count query
@@ -152,7 +152,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allUsers {
+            users {
               posts {
                 title
               }
@@ -161,7 +161,7 @@ describe('cache hints', () => {
         `,
         });
 
-        expect(body.data).toHaveProperty('allUsers');
+        expect(body.data).toHaveProperty('users');
         expect(headers['cache-control']).toBe('max-age=100, public');
       }
       // Operation name detected
@@ -169,14 +169,14 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query complexQuery {
-            allUsers {
+            users {
               name
             }
           }
         `,
         });
 
-        expect(body.data).toHaveProperty('allUsers');
+        expect(body.data).toHaveProperty('users');
         expect(headers['cache-control']).toBe('max-age=1, public');
       }
       // Hint based on query results
@@ -184,14 +184,14 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allUsers(where: { name: "nope" })  {
+            users(where: { name: "nope" })  {
               name
             }
           }
         `,
         });
 
-        expect(body.data).toHaveProperty('allUsers');
+        expect(body.data).toHaveProperty('users');
         expect(headers['cache-control']).toBe('max-age=5, public');
       }
     })
@@ -208,14 +208,14 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allPosts {
+            posts {
               title
             }
           }
         `,
         });
 
-        expect(body.data).toHaveProperty('allPosts');
+        expect(body.data).toHaveProperty('posts');
         expect(headers['cache-control']).toBe('max-age=100, public');
       }
 
@@ -224,7 +224,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allPosts {
+            posts {
               author {
                 name
                 favNumber
@@ -234,7 +234,7 @@ describe('cache hints', () => {
         `,
         });
 
-        expect(body.data).toHaveProperty('allPosts');
+        expect(body.data).toHaveProperty('posts');
         expect(headers['cache-control']).toBe('max-age=10, private');
       }
 
@@ -243,16 +243,14 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allPosts {
-              _authorMeta {
-                count
-              }
+            posts {
+              authorCount
             }
           }
         `,
         });
 
-        expect(body.data).toHaveProperty('allPosts');
+        expect(body.data).toHaveProperty('posts');
         expect(headers['cache-control']).toBe('max-age=90, public');
       }
 
@@ -261,7 +259,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query complexQuery {
-            allPosts {
+            posts {
               author {
                 name
               }
@@ -270,7 +268,7 @@ describe('cache hints', () => {
         `,
         });
 
-        expect(body.data).toHaveProperty('allPosts');
+        expect(body.data).toHaveProperty('posts');
         expect(headers['cache-control']).toBe('max-age=1, public');
       }
       // Post author query using cache hint dynamically caculated from results
@@ -278,7 +276,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            allPosts {
+            posts {
               author(where: { name: "nope" }) {
                 name
               }
@@ -287,7 +285,7 @@ describe('cache hints', () => {
         `,
         });
 
-        expect(body.data).toHaveProperty('allPosts');
+        expect(body.data).toHaveProperty('posts');
         expect(headers['cache-control']).toBe('max-age=5, public');
       }
     })

@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectNestedError } from '../../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -256,7 +256,7 @@ describe('with access control', () => {
 
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectRelationshipError(errors, [
                 {
                   path: [`createEventTo${group.name}`],
                   message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
@@ -316,7 +316,7 @@ describe('with access control', () => {
             } else {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectRelationshipError(errors, [
                 {
                   path: [`updateEventTo${group.name}`],
                   message: `Unable to create a EventTo${group.name}.group<${group.name}>`,

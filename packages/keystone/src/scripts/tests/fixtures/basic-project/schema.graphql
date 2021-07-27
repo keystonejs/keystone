@@ -26,13 +26,6 @@ input TodoWhereUniqueInput {
   id: ID
 }
 
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-}
-
 input TodoOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -47,7 +40,7 @@ input TodoUpdateInput {
   title: String
 }
 
-input TodosUpdateInput {
+input TodoUpdateArgs {
   id: ID!
   data: TodoUpdateInput
 }
@@ -68,42 +61,23 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
-}
-
 type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput]): [Todo]
+  updateTodos(data: [TodoUpdateArgs]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]): [Todo]
 }
 
 type Query {
-  allTodos(
+  todos(
     where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  Todo(where: TodoWhereUniqueInput!): Todo
-  _allTodosMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use todosCount instead."
-    )
+  todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

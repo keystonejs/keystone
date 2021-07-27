@@ -37,18 +37,18 @@ const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
   });
 
 const getStudent = async (context: KeystoneContext, studentId: IdType) => {
-  type T = { data: { Student: { id: IdType; teachers: { id: IdType }[] } } };
+  type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } };
   const { data } = (await context.graphql.raw({
     query: `
       query getStudent($studentId: ID!){
-        Student(where: { id: $studentId }) {
+        student(where: { id: $studentId }) {
           id
           teachers { id }
         }
       }`,
     variables: { studentId },
   })) as T;
-  return data.Student;
+  return data.student;
 };
 
 // We can't assume what IDs get assigned, or what order they come back in

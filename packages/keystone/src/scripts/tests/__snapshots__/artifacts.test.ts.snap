@@ -47,8 +47,6 @@ export type TodoWhereUniqueInput = {
   readonly id?: Scalars['ID'] | null;
 };
 
-export type SortTodosBy = 'id_ASC' | 'id_DESC' | 'title_ASC' | 'title_DESC';
-
 export type TodoOrderByInput = {
   readonly id?: OrderDirection | null;
   readonly title?: OrderDirection | null;
@@ -60,7 +58,7 @@ export type TodoUpdateInput = {
   readonly title?: Scalars['String'] | null;
 };
 
-export type TodosUpdateInput = {
+export type TodoUpdateArgs = {
   readonly id: Scalars['ID'];
   readonly data?: TodoUpdateInput | null;
 };
@@ -99,7 +97,6 @@ export type TodoListTypeInfo = {
   args: {
     listQuery: {
       readonly where?: TodoWhereInput;
-      readonly sortBy?: ReadonlyArray<SortTodosBy> | SortTodosBy | null;
       readonly orderBy?: ReadonlyArray<TodoOrderByInput> | TodoOrderByInput;
       readonly first?: Scalars['Int'] | null;
       readonly skip?: Scalars['Int'];

@@ -55,19 +55,6 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
-}
-
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -96,7 +83,7 @@ input AuthorRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input PostsUpdateInput {
+input PostUpdateArgs {
   id: ID!
   data: PostUpdateInput
 }
@@ -119,30 +106,11 @@ type Author {
   email: String
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input AuthorWhereInput {
@@ -178,15 +146,6 @@ input AuthorWhereUniqueInput {
   email: String
 }
 
-enum SortAuthorsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -206,7 +165,7 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input AuthorsUpdateInput {
+input AuthorUpdateArgs {
   id: ID!
   data: AuthorUpdateInput
 }
@@ -233,13 +192,13 @@ type Mutation {
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
+  updatePosts(data: [PostUpdateArgs]): [Post]
   deletePost(id: ID!): Post
   deletePosts(ids: [ID!]): [Post]
   createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-  updateAuthors(data: [AuthorsUpdateInput]): [Author]
+  updateAuthors(data: [AuthorUpdateArgs]): [Author]
   deleteAuthor(id: ID!): Author
   deleteAuthors(ids: [ID!]): [Author]
 
@@ -259,51 +218,21 @@ type Statistics {
 }
 
 type Query {
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  allAuthors(
+  authors(
     where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [AuthorOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Author!]
-  Author(where: AuthorWhereUniqueInput!): Author
-  _allAuthorsMeta(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use authorsCount instead."
-    )
+  author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
 
   """

@@ -2,7 +2,7 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectValidationFailure } from '../utils';
+import { apiTestConfig, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -65,7 +65,7 @@ testModules
                   }`,
             });
             expect(data).toEqual({ createTest: null });
-            expectValidationFailure(errors, [{ path: ['createTest'] }]);
+            expectValidationError(errors, [{ path: ['createTest'] }]);
           })
         );
 
@@ -85,7 +85,7 @@ testModules
                   }`,
             });
             expect(data).toEqual({ updateTest: null });
-            expectValidationFailure(errors, [{ path: ['updateTest'] }]);
+            expectValidationError(errors, [{ path: ['updateTest'] }]);
           })
         );
 
