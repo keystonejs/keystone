@@ -90,7 +90,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
         : config.server.healthCheck.path || defaults.healthCheckPath;
     app.use(healthCheckPath, (req, res, next) => {
       if (expressServer) return next();
-      res.status(503).json({ status: 'fail' });
+      res.status(503).json({ status: 'fail', timestamp: Date.now() });
     });
   }
 
