@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/utils",
   "description": "Common utility functions used throughout @keystone-next packages.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.8",
-    "@keystone-next/types": "^22.0.0"
+    "@keystone-next/types": "^23.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/utils"
 }
