@@ -113,6 +113,11 @@ export type AdminFileToWrite =
 
 // config.server
 
+type HealthCheckConfig = {
+  path?: string;
+  data?: Record<string, any> | (() => Record<string, any>);
+};
+
 export type ServerConfig = {
   /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
   cors?: CorsOptions | true;
@@ -120,6 +125,8 @@ export type ServerConfig = {
   port?: number;
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number;
+  /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
+  healthCheck?: HealthCheckConfig | true;
 };
 
 // config.graphql
