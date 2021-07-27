@@ -10,12 +10,14 @@ export const addHealthCheck = async ({ config, server }: AddHealthCheckArgs) => 
   const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck;
 
   const path = healthCheck.path || defaults.healthCheckPath;
-  const data = (typeof healthCheck.data === 'function' ? healthCheck.data() : healthCheck.data) || {
-    status: 'pass',
-    timestamp: Date.now(),
-  };
 
   server.use(path, (req, res) => {
+    const data = (typeof healthCheck.data === 'function'
+      ? healthCheck.data()
+      : healthCheck.data) || {
+      status: 'pass',
+      timestamp: Date.now(),
+    };
     res.json(data);
   });
 };
