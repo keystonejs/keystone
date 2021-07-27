@@ -172,16 +172,18 @@ export default function IndexPage() {
             So impressive what the team have done in version 6! ...and it works perfectly with
             GraphCDN, just use it already!
           </TweetBox>
+          <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
+            I use Keystone in my{' '}
+            <a href="https://advancedreact.com/" target="_blank" rel="noopener noreferrer">
+              Advanced React
+            </a>{' '}
+            course because it’s super quick to get my content types up and running, add custom
+            server-side cart & checkout logic, and the fine grain access control is just fantastic!
+          </TweetBox>
           <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
             As someone who lives on the frontend, I love how Keystone lets me define content models
             and gives me the backend I need. I get a sweet GraphQL API, and can stay focused on
             building the UI <Emoji symbol="😍" alt="Love" />
-          </TweetBox>
-          <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad2">
-            Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-            schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev experience
-            feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
-            <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
         </Section>
 
