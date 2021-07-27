@@ -87,7 +87,7 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodosUpdateInput {
+input TodoUpdateArgs {
   id: ID!
   data: TodoUpdateInput
 }
@@ -194,7 +194,7 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
+input UserUpdateArgs {
   id: ID!
   data: UserUpdateInput
 }
@@ -222,33 +222,33 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput]): [Todo]
+  updateTodos(data: [TodoUpdateArgs]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]): [Todo]
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
 }
 
 type Query {
-  allTodos(
+  todos(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  Todo(where: TodoWhereUniqueInput!): Todo
+  todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
-  allUsers(
+  users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

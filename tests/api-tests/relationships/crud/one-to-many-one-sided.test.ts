@@ -91,8 +91,8 @@ const getCompanyAndLocation = async (
   const { data } = (await context.graphql.raw({
     query: `
   {
-    Company(where: { id: "${companyId}"} ) { id location { id } }
-    Location(where: { id: "${locationId}"} ) { id }
+    Company: company(where: { id: "${companyId}"} ) { id location { id } }
+    Location: location(where: { id: "${locationId}"} ) { id }
   }`,
   })) as T;
   return data;

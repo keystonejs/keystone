@@ -162,7 +162,7 @@ describe('Access control - Imperative => static', () => {
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersUpdateInput]) { updateUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserUpdateArgs]) { updateUsers(data: $data) { id name } }`,
         variables: {
           data: [
             { id: users[0].id, data: { name: 'still good 1' } },

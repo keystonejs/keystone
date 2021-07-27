@@ -93,9 +93,9 @@ describe('Auth testing', () => {
       for (const [listKey, data] of Object.entries(initialData)) {
         await context.sudo().lists[listKey].createMany({ data });
       }
-      const { data, errors } = await context.graphql.raw({ query: '{ allUsers { id } }' });
-      expect(data).toEqual({ allUsers: null });
-      expectAccessDenied(errors, [{ path: ['allUsers'] }]);
+      const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
+      expect(data).toEqual({ users: null });
+      expectAccessDenied(errors, [{ path: ['users'] }]);
     })
   );
 
@@ -144,13 +144,13 @@ describe('Auth testing', () => {
         );
 
         expect(sessionToken).toBeTruthy();
-        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
           'Authorization',
           `Bearer ${sessionToken}`
         );
         const { data, errors } = body;
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(initialData.User.length);
         expect(errors).toBe(undefined);
       })
     );
@@ -169,13 +169,13 @@ describe('Auth testing', () => {
 
         expect(sessionToken).toBeTruthy();
 
-        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
           'Cookie',
           `keystonejs-session=${sessionToken}`
         );
         const { data, errors } = body;
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(initialData.User.length);
         expect(errors).toBe(undefined);
       })
     );

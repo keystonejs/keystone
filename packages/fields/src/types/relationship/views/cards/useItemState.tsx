@@ -26,7 +26,7 @@ export function useItemState({
 }) {
   const { data, error, loading } = useQuery(
     gql`query($id: ID!) {
-  item: ${localList.key}(where: {id: $id}) {
+  item: ${localList.gqlNames.itemQueryName}(where: {id: $id}) {
     id
     relationship: ${field.path} {
       ${selectedFields}

@@ -40,7 +40,7 @@ input NoteUpdateInput {
   label: String
 }
 
-input NotesUpdateInput {
+input NoteUpdateArgs {
   id: ID!
   data: NoteUpdateInput
 }
@@ -65,19 +65,19 @@ type Mutation {
   createNote(data: NoteCreateInput): Note
   createNotes(data: [NotesCreateInput]): [Note]
   updateNote(id: ID!, data: NoteUpdateInput): Note
-  updateNotes(data: [NotesUpdateInput]): [Note]
+  updateNotes(data: [NoteUpdateArgs]): [Note]
   deleteNote(id: ID!): Note
   deleteNotes(ids: [ID!]): [Note]
 }
 
 type Query {
-  allNotes(
+  notes(
     where: NoteWhereInput! = {}
     orderBy: [NoteOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Note!]
-  Note(where: NoteWhereUniqueInput!): Note
+  note(where: NoteWhereUniqueInput!): Note
   notesCount(where: NoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

@@ -22,8 +22,8 @@ const expectNoAccess = <N extends string>(
   errors: readonly GraphQLError[] | undefined,
   name: N
 ) => {
-  expect(data?.[name]).toBe(null);
   expectAccessDenied(errors, [{ path: [name] }]);
+  expect(data?.[name]).toBe(null);
 };
 
 const expectNamedArray = <T extends { id: IdType }, N extends string>(
@@ -194,24 +194,26 @@ describe('Authed', () => {
             });
 
             test(`single not allowed: ${JSON.stringify(access)}`, async () => {
+              const { itemQueryName } = context.gqlNames(listKey);
               const invalidId = items[listKey].find(({ name }) => name !== 'Hello')?.id;
-              const query = `query { ${listKey}(where: { id: "${invalidId}" }) { id } }`;
+              const query = `query { ${itemQueryName}(where: { id: "${invalidId}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 // Imperative should work
                 expect(errors).toBe(undefined);
-                expect(data?.[listKey]).not.toBe(null);
-                expect(data?.[listKey].id).toEqual(invalidId);
+                expect(data?.[itemQueryName]).not.toBe(null);
+                expect(data?.[itemQueryName].id).toEqual(invalidId);
               } else {
                 // but declarative should not
-                expectNoAccess(data, errors, listKey);
+                expectNoAccess(data, errors, itemQueryName);
               }
             });
 
             test(`single not existing: ${JSON.stringify(access)}`, async () => {
-              const query = `query { ${listKey}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
+              const { itemQueryName } = context.gqlNames(listKey);
+              const query = `query { ${itemQueryName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expectNoAccess(data, errors, listKey);
+              expectNoAccess(data, errors, itemQueryName);
             });
 
             test(`multiple not existing: ${JSON.stringify(access)}`, async () => {

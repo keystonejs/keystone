@@ -255,11 +255,11 @@ describe('Ordering by a single field', () => {
       await initialiseData({ context });
 
       const { body } = await graphQLRequest({
-        query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
+        query: 'query { users(orderBy: [{ a: asc, b: asc }]) { id } }',
       });
-      expect(body.data).toEqual({ allUsers: null });
+      expect(body.data).toEqual({ users: null });
       expectBadUserInput(body.errors, [
-        { path: ['allUsers'], message: 'Only a single key must be passed to UserOrderByInput' },
+        { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
       ]);
     })
   );

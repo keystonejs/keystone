@@ -61,7 +61,7 @@ input PersonRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodosUpdateInput {
+input TodoUpdateArgs {
   id: ID!
   data: TodoUpdateInput
 }
@@ -160,7 +160,7 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input PeopleUpdateInput {
+input PersonUpdateArgs {
   id: ID!
   data: PersonUpdateInput
 }
@@ -262,7 +262,7 @@ input PersonRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RolesUpdateInput {
+input RoleUpdateArgs {
   id: ID!
   data: RoleUpdateInput
 }
@@ -294,19 +294,19 @@ type Mutation {
   createTodo(data: TodoCreateInput): Todo
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput]): [Todo]
+  updateTodos(data: [TodoUpdateArgs]): [Todo]
   deleteTodo(id: ID!): Todo
   deleteTodos(ids: [ID!]): [Todo]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PeopleUpdateInput]): [Person]
+  updatePeople(data: [PersonUpdateArgs]): [Person]
   deletePerson(id: ID!): Person
   deletePeople(ids: [ID!]): [Person]
   createRole(data: RoleCreateInput): Role
   createRoles(data: [RolesCreateInput]): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput]): [Role]
+  updateRoles(data: [RoleUpdateArgs]): [Role]
   deleteRole(id: ID!): Role
   deleteRoles(ids: [ID!]): [Role]
   authenticatePersonWithPassword(
@@ -350,29 +350,29 @@ input CreateInitialPersonInput {
 }
 
 type Query {
-  allTodos(
+  todos(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  Todo(where: TodoWhereUniqueInput!): Todo
+  todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
-  allPeople(
+  people(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Person!]
-  Person(where: PersonWhereUniqueInput!): Person
+  person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
-  allRoles(
+  roles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]
-  Role(where: RoleWhereUniqueInput!): Role
+  role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
