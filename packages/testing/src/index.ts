@@ -2,6 +2,7 @@ import path from 'path';
 import crypto from 'crypto';
 import express from 'express';
 import fs from 'fs';
+import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
