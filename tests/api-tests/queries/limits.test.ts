@@ -53,7 +53,7 @@ describe('maxResults Limit', () => {
         let data = await context.graphql.run({
           query: `
           query {
-            allUsers(
+            users(
               where: { name_contains: "J" },
               orderBy: { name: asc },
             ) {
@@ -63,14 +63,14 @@ describe('maxResults Limit', () => {
       `,
         });
 
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
+        expect(data).toHaveProperty('users');
+        expect(data.users).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
 
         // No results is okay
         data = await context.graphql.run({
           query: `
           query {
-            allUsers(
+            users(
               where: { name: "Nope" }
             ) {
               name
@@ -79,8 +79,8 @@ describe('maxResults Limit', () => {
       `,
         });
 
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers.length).toEqual(0);
+        expect(data).toHaveProperty('users');
+        expect(data.users.length).toEqual(0);
 
         // Count is still correct
         data = await context.graphql.run({
@@ -94,35 +94,35 @@ describe('maxResults Limit', () => {
         data = await context.graphql.run({
           query: `
           query {
-            allUsers(first: 1) {
+            users(first: 1) {
               name
             }
           }
       `,
         });
 
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers.length).toEqual(1);
+        expect(data).toHaveProperty('users');
+        expect(data.users.length).toEqual(1);
 
         // This query returns too many results
         let errors;
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            allUsers {
+            users {
               name
             }
           }
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allUsers'] }]);
+        expectLimitsExceededError(errors, [{ path: ['users'] }]);
 
         // The query results don't break the limits, but the "first" parameter does
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            allUsers(
+            users(
               where: { name: "Nope" },
               first: 100000
             ) {
@@ -132,7 +132,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allUsers'] }]);
+        expectLimitsExceededError(errors, [{ path: ['users'] }]);
       })
     );
   });
@@ -199,7 +199,7 @@ describe('maxResults Limit', () => {
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            allPosts(
+            posts(
               where: { title: "Three authors" },
             ) {
               title
@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allPosts', expect.any(Number), 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
 
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
@@ -229,7 +229,7 @@ describe('maxResults Limit', () => {
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            allPosts {
+            posts {
               title
               author {
                 name
@@ -239,7 +239,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allPosts', expect.any(Number), 'author'] }]);
+        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
 
         // All subqueries are within limits, but the total isn't
         // Reset the count for each query
@@ -247,7 +247,7 @@ describe('maxResults Limit', () => {
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            allPosts(where: { title: "Two authors" }) {
+            posts(where: { title: "Two authors" }) {
               title
               author {
                 posts {
@@ -259,7 +259,7 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['allPosts', 0, 'author', 1, 'posts'] }]);
+        expectLimitsExceededError(errors, [{ path: ['posts', 0, 'author', 1, 'posts'] }]);
       })
     );
   });
@@ -276,7 +276,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query {
-              allPosts {
+              posts {
                 author {
                   posts {
                     author {
@@ -323,7 +323,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query nestingbomb {
-              allPosts {
+              posts {
                 ...f
               }
             }
@@ -348,7 +348,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query nestingbomb {
-              allPosts {
+              posts {
                 ...f1
               }
             }
@@ -376,7 +376,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query nestingbomb {
-              allPosts {
+              posts {
                 ...f1
               }
             }
@@ -410,7 +410,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query {
-              allPosts {
+              posts {
                 ...nosuchfragment
               }
             }
@@ -435,22 +435,22 @@ describe('maxDefinitions Limit', () => {
         operationName: 'a',
         query: `
             query a {
-              allPosts {
+              posts {
                 title
               }
             }
             query b {
-              allPosts {
+              posts {
                 title
               }
             }
             query c {
-              allPosts {
+              posts {
                 title
               }
             }
             query d {
-              allPosts {
+              posts {
                 title
               }
             }
@@ -476,12 +476,12 @@ describe('maxDefinitions Limit', () => {
               title
             }
             query q1 {
-              allPosts {
+              posts {
                 ...f1
               }
             }
             query q2 {
-              allPosts {
+              posts {
                 ...f2
               }
             }
@@ -538,14 +538,14 @@ describe('maxFields Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             query {
-              allPosts {
+              posts {
                 title
                 author {
                   name
                   favNumber
                 }
               }
-              allUsers {
+              users {
                 name
                 favNumber
                 posts {
@@ -569,23 +569,23 @@ describe('maxFields Limit', () => {
         operationName: 'a',
         query: `
             query a {
-              allPosts {
+              posts {
                 title
               }
-              allUsers {
+              users {
                 name
               }
             }
             query b {
-              allPosts {
+              posts {
                 title
               }
-              allUsers {
+              users {
                 name
               }
             }
             query c {
-              allPosts {
+              posts {
                 title
               }
             }
@@ -609,16 +609,16 @@ describe('maxFields Limit', () => {
               favNumber
             }
             query a {
-              allPosts {
+              posts {
                 title
                 author {
                   ...f
                 }
               }
-              users1: allUsers {
+              users1: users {
                 ...f
               }
-              users2: allUsers {
+              users2: users {
                 ...f
               }
             }
@@ -646,16 +646,16 @@ describe('maxFields Limit', () => {
               favNumber
             }
             query a {
-              allPosts {
+              posts {
                 title
                 author {
                   ...f
                 }
               }
-              users1: allUsers {
+              users1: users {
                 ...f
               }
-              users2: allUsers {
+              users2: users {
                 ...f
               }
             }
@@ -677,19 +677,19 @@ describe('maxFields Limit', () => {
         operationName: 'a',
         query: `
             query a {
-              u1: allUsers {
+              u1: users {
                 ...lol1
               }
-              u2: allUsers {
+              u2: users {
                 ...lol1
               }
-              u3: allUsers {
+              u3: users {
                 ...lol1
               }
-              u4: allUsers {
+              u4: users {
                 ...lol1
               }
-              u5: allUsers {
+              u5: users {
                 ...lol1
               }
             }

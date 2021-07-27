@@ -279,14 +279,14 @@ describe('Document field type', () => {
 
       const { body } = await graphQLRequest({
         query:
-          'query ($id: ID!){ Author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
+          'query ($id: ID!){ author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
       });
       // FIXME: The path doesn't match the null field here!
-      expect(body.data).toEqual({ Author: { badBio: null } });
+      expect(body.data).toEqual({ author: { badBio: null } });
       expectInternalServerError(body.errors, [
         {
-          path: ['Author', 'badBio', 'document'],
+          path: ['author', 'badBio', 'document'],
           message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
         },
       ]);

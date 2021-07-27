@@ -22,12 +22,12 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     'Fetching an item uniquely with an invalid id throws an error',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
-        query: `{ User(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
+        query: `{ user(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
-      expect(body.data).toEqual({ User: null });
+      expect(body.data).toEqual({ user: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
       expectBadUserInput(body.errors, [
-        { path: ['User'], message: `Only ${s} can be passed to id filters` },
+        { path: ['user'], message: `Only ${s} can be passed to id filters` },
       ]);
     })
   );
@@ -35,12 +35,12 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     'Filtering an item with an invalid id throws an error',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
-        query: `{ allUsers(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
+        query: `{ users(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
-      expect(body.data).toEqual({ allUsers: null });
+      expect(body.data).toEqual({ users: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
       expectBadUserInput(body.errors, [
-        { path: ['allUsers'], message: `Only ${s} can be passed to id filters` },
+        { path: ['users'], message: `Only ${s} can be passed to id filters` },
       ]);
     })
   );
@@ -110,12 +110,12 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
       })) as { id: string };
 
       const { body } = await graphQLRequest({
-        query: `query q($id: ID!){ User(where: { id: $id }) { id } }`,
+        query: `query q($id: ID!){ user(where: { id: $id }) { id } }`,
         variables: { id: id.toUpperCase() },
       });
-      expect(body.data).toEqual({ User: null });
+      expect(body.data).toEqual({ user: null });
       expectBadUserInput(body.errors, [
-        { path: ['User'], message: `Only a cuid can be passed to id filters` },
+        { path: ['user'], message: `Only a cuid can be passed to id filters` },
       ]);
     })
   );
