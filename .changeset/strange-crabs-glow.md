@@ -2,6 +2,7 @@
 '@keystone-next/keystone': major
 '@keystone-next/types': major
 '@keystone-next/fields-document': patch
+'@keystone-next/fields': patch
 ---
 
 Various renamings in the GraphQL API (`Item` is used as an example list key here):
