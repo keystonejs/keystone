@@ -89,25 +89,6 @@ declare const idTypeSymbol: unique symbol;
 
 export type IdType = { ___keystoneIdType: typeof idTypeSymbol; toString(): string };
 
-export function applyFirstSkipToCount({
-  count,
-  first,
-  skip,
-}: {
-  count: number;
-  first: number | null | undefined;
-  skip: number | null | undefined;
-}) {
-  if (skip !== undefined && skip !== null) {
-    count -= skip;
-  }
-  if (first !== undefined && first !== null) {
-    count = Math.min(count, first);
-  }
-  count = Math.max(0, count); // Don't want to go negative from a skip!
-  return count;
-}
-
 // these aren't here out of thinking this is better syntax(i do not think it is),
 // it's just because TS won't infer the arg is X bit
 export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>

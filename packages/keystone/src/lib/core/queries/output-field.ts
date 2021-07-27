@@ -8,18 +8,14 @@ import {
   schema,
   FindManyArgsValue,
   KeystoneContext,
+  TypesForList,
 } from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
 import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
-import {
-  applyFirstSkipToCount,
-  IdType,
-  getDBFieldKeyForFieldOnMultiField,
-  runWithPrisma,
-} from '../utils';
+import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { accessControlledFilter } from './resolvers';
 import * as queries from './resolvers';
 
@@ -39,24 +35,8 @@ function getRelationVal(
     return {
       findMany: async (args: FindManyArgsValue) =>
         queries.findMany(args, foreignList, context, info, relationFilter),
-      count: async ({ where, search, first, skip }: FindManyArgsValue) => {
-        // This is the same as the legacy metaQuery resolver
-        const count = applyFirstSkipToCount({
-          count: await queries.count({ where, search }, foreignList, context, relationFilter),
-          first,
-          skip,
-        });
-        if (info.cacheControl && foreignList.cacheHint) {
-          info.cacheControl.setCacheHint(
-            foreignList.cacheHint({
-              results: count,
-              operationName: info.operation.name?.value,
-              meta: true,
-            }) as any
-          );
-        }
-        return count;
-      },
+      count: async ({ where }: { where: TypesForList['where'] }) =>
+        queries.count({ where }, foreignList, context, info, relationFilter),
     };
   } else {
     return async () => {

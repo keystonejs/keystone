@@ -61,7 +61,6 @@ function collectTypes(
       }
       collectedTypes.push(list.types.where.graphQLType);
       collectedTypes.push(list.types.uniqueWhere.graphQLType);
-      collectedTypes.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
       collectedTypes.push(list.types.orderBy.graphQLType);
     }
     if (list.access.update) {

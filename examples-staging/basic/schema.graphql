@@ -9,47 +9,17 @@ type User {
   roles: String
   phoneNumbers(
     where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]
-  _phoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
-    )
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
@@ -80,10 +50,6 @@ interface FileFieldOutput {
 
 type PasswordState {
   isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 type LocalImageFieldOutput implements ImageFieldOutput {
@@ -146,19 +112,6 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   email: String
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  isAdmin_ASC
-  isAdmin_DESC
-  roles_ASC
-  roles_DESC
 }
 
 input UserOrderByInput {
@@ -273,15 +226,6 @@ input PhoneNumberWhereUniqueInput {
   id: ID
 }
 
-enum SortPhoneNumbersBy {
-  id_ASC
-  id_DESC
-  type_ASC
-  type_DESC
-  value_ASC
-  value_DESC
-}
-
 input PhoneNumberOrderByInput {
   id: OrderDirection
   type: OrderDirection
@@ -364,17 +308,6 @@ input PostWhereInput {
 
 input PostWhereUniqueInput {
   id: ID
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  publishDate_ASC
-  publishDate_DESC
 }
 
 input PostOrderByInput {
@@ -485,72 +418,27 @@ type RandomNumber {
 type Query {
   allUsers(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
   User(where: UserWhereUniqueInput!): User
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
   usersCount(where: UserWhereInput! = {}): Int
   allPhoneNumbers(
     where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PhoneNumberOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [PhoneNumber!]
   PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
-  _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
-    )
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   allPosts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
   Post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   randomNumber: RandomNumber

@@ -7,18 +7,6 @@ import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
 
-export const QueryMeta = schema.object<{ getCount: () => Promise<number> }>()({
-  name: '_QueryMeta',
-  fields: {
-    count: schema.field({
-      type: schema.Int,
-      resolve({ getCount }) {
-        return getCount();
-      },
-    }),
-  },
-});
-
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
 // because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
 // so we have a copy of it but using a union of string literals instead of an enum
@@ -206,7 +194,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
       one: () => Promise<ItemRootValue>;
       many: {
         findMany(args: FindManyArgsValue): Promise<ItemRootValue[]>;
-        count(args: FindManyArgsValue): Promise<number>;
+        count(args: { where: FindManyArgsValue['where'] }): Promise<number>;
       };
     }[Mode]
   : TDBField extends EnumDBField<infer Value, infer Mode>
@@ -408,10 +396,6 @@ export type FindManyArgs = {
   orderBy: schema.Arg<
     schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
-  >;
-  search: schema.Arg<typeof schema.String>;
-  sortBy: schema.Arg<
-    schema.ListType<schema.NonNullType<schema.EnumType<Record<string, schema.EnumValue<string>>>>>
   >;
   first: schema.Arg<typeof schema.Int>;
   skip: schema.Arg<schema.NonNullType<typeof schema.Int>, number>;

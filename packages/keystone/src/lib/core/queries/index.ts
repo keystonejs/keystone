@@ -1,6 +1,5 @@
-import { getGqlNames, QueryMeta, schema } from '@keystone-next/types';
+import { getGqlNames, schema } from '@keystone-next/types';
 import { InitialisedList } from '../types-for-lists';
-import { applyFirstSkipToCount } from '../utils';
 import * as queries from './resolvers';
 
 export function getQueriesForList(list: InitialisedList) {
@@ -27,50 +26,13 @@ export function getQueriesForList(list: InitialisedList) {
     type: schema.Int,
     args: { where: schema.arg({ type: schema.nonNull(list.types.where), defaultValue: {} }) },
     async resolve(_rootVal, args, context, info) {
-      const count = await queries.count(args, list, context);
-      if (info && info.cacheControl && list.cacheHint) {
-        info.cacheControl.setCacheHint(
-          list.cacheHint({
-            results: count,
-            operationName: info.operation.name?.value,
-            meta: true,
-          }) as any
-        );
-      }
-      return count;
+      return queries.count(args, list, context, info);
     },
   });
 
-  const metaQuery = schema.field({
-    type: QueryMeta,
-    args: list.types.findManyArgs,
-    resolve(_rootVal, { first, search, skip, where }, context, info) {
-      return {
-        getCount: async () => {
-          const count = applyFirstSkipToCount({
-            count: await queries.count({ where, search }, list, context),
-            first,
-            skip,
-          });
-          if (info && info.cacheControl && list.cacheHint) {
-            info.cacheControl.setCacheHint(
-              list.cacheHint({
-                results: count,
-                operationName: info.operation.name?.value,
-                meta: true,
-              }) as any
-            );
-          }
-          return count;
-        },
-      };
-    },
-    deprecationReason: `This query will be removed in a future version. Please use ${names.listQueryCountName} instead.`,
-  });
   return {
     [names.listQueryName]: findMany,
     [names.itemQueryName]: findOne,
-    [names.listQueryMetaName]: metaQuery,
     [names.listQueryCountName]: countQuery,
   };
 }
