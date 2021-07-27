@@ -29,7 +29,7 @@ export async function getAccessControlledItemForDelete(
     args: { context, listKey: list.listKey, operation: 'delete', session: context.session, itemId },
   });
   if (access === false) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   // List access: pass 2
@@ -39,7 +39,7 @@ export async function getAccessControlledItemForDelete(
   }
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
   if (item === null) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   return item;
@@ -68,7 +68,7 @@ export async function getAccessControlledItemForUpdate(
     args,
   });
   if (accessControl === false) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   // List access: pass 2
@@ -82,7 +82,7 @@ export async function getAccessControlledItemForUpdate(
     })
   );
   if (!item) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   // Field access
@@ -97,7 +97,7 @@ export async function getAccessControlledItemForUpdate(
   );
 
   if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   return item;
@@ -119,7 +119,7 @@ export async function applyAccessControlForCreate(
   // List access
   const result = await validateCreateListAccessControl({ access: list.access.create, args });
   if (!result) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 
   // Field access
@@ -134,7 +134,7 @@ export async function applyAccessControlForCreate(
   );
 
   if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 }
 
@@ -150,6 +150,6 @@ async function getStringifiedItemIdFromUniqueWhereInput(
     const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
     return item.id;
   } catch (err) {
-    throw accessDeniedError('mutation');
+    throw accessDeniedError();
   }
 }
