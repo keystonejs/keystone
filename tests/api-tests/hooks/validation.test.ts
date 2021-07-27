@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectValidationFailure } from '../utils';
+import { apiTestConfig, expectValidationError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -40,7 +40,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectValidationFailure(errors, [{ path: ['createUser'] }]);
+      expectValidationError(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -63,7 +63,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectValidationFailure(errors, [{ path: ['updateUser'] }]);
+      expectValidationError(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -87,7 +87,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectValidationFailure(errors, [{ path: ['deleteUser'] }]);
+      expectValidationError(errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -123,7 +123,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid creates should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // Three users should exist in the database
       const users = await context.lists.User.findMany({
@@ -172,7 +172,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid updates should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -220,7 +220,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid deletes should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Three users should still exist in the database
       const _users = await context.lists.User.findMany({

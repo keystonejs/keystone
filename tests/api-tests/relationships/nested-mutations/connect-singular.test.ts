@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -155,7 +155,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
       ]);
     })
@@ -186,7 +186,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
       ]);
     })
@@ -298,7 +298,7 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectRelationshipError(errors, [
               {
                 path: [`updateEventTo${group.name}`],
                 message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
@@ -332,7 +332,7 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectRelationshipError(errors, [
               {
                 path: [`createEventTo${group.name}`],
                 message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,

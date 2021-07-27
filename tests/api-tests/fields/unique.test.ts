@@ -2,7 +2,7 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectPrismaError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -70,7 +70,7 @@ testModules
               variables: { data: { testField: mod.exampleValue(matrixValue) } },
             });
             expect(body.data).toEqual({ createTest: null });
-            expectInternalServerError(body.errors, [
+            expectPrismaError(body.errors, [
               {
                 path: ['createTest'],
                 message: expect.stringMatching(
@@ -97,9 +97,8 @@ testModules
               },
             });
 
-            expect(body.data.foo).not.toBe(null);
-            expect(body.data.bar).toBe(null);
-            expectInternalServerError(body.errors, [
+            expect(body.data).toEqual({ foo: { id: expect.any(String) }, bar: null });
+            expectPrismaError(body.errors, [
               {
                 path: ['bar'],
                 message: expect.stringMatching(
