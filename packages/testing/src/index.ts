@@ -1,5 +1,6 @@
 import path from 'path';
 import crypto from 'crypto';
+import express from 'express';
 import fs from 'fs';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
@@ -22,6 +23,7 @@ export type GraphQLRequest = (arg: {
 export type TestArgs = {
   context: KeystoneContext;
   graphQLRequest: GraphQLRequest;
+  app: express.Express;
 };
 
 export type TestEnv = {
@@ -72,7 +74,7 @@ export async function setupTestEnv({
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 
-  return { connect, disconnect, testArgs: { context: createContext(), graphQLRequest } };
+  return { connect, disconnect, testArgs: { context: createContext(), graphQLRequest, app } };
 }
 
 export function setupTestRunner({ config }: { config: KeystoneConfig }) {
