@@ -198,7 +198,7 @@ describe('relationship meta filtering', () => {
       });
 
       const users = await context.lists.User.findMany({
-        query: 'id postsCount(where: { content_contains: "hi" }){ count }',
+        query: 'id postsCount(where: { content_contains: "hi" })',
       });
       expect(users).toHaveLength(2);
       expect(users).toContainEqual({ id: user.id, postsCount: 2 });
