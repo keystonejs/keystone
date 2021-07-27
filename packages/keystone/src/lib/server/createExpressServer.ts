@@ -6,6 +6,7 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '../../admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
+import { addHealthCheck } from './addHealthCheck';
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MiB
 
@@ -57,6 +58,8 @@ export const createExpressServer = async (
         : config.server.cors;
     server.use(cors(corsConfig));
   }
+
+  addHealthCheck({ config, server });
 
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
   addApolloServer({
