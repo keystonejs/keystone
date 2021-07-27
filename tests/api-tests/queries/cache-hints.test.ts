@@ -244,9 +244,7 @@ describe('cache hints', () => {
           query: `
           query {
             allPosts {
-              _authorMeta {
-                count
-              }
+              authorCount
             }
           }
         `,
