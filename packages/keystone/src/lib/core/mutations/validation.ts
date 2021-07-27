@@ -19,15 +19,9 @@ export async function validationHook(
   });
 
   if (errors.length) {
-    throw new ValidationFailureError({
-      data: {
-        messages: errors.map(e => e.msg),
-        errors: errors.map(e => e.data),
-        listKey,
-        operation,
-      },
-      internalData: { errors: errors.map(e => e.internalData), data: originalInput },
-    });
+    // FIXME: We will incorporate the `msg` values, which are currently being lost
+    // into the error message in an upcoming change. -TL
+    throw ValidationFailureError();
   }
 }
 

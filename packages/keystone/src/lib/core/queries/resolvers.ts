@@ -13,7 +13,7 @@ import {
   resolveWhereInput,
   UniqueInputFilter,
 } from '../where-inputs';
-import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
+import { AccessDeniedError, LimitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
@@ -54,7 +54,7 @@ export async function accessControlledFilter(
     args: { context, listKey: list.listKey, operation: 'read', session: context.session },
   });
   if (access === false) {
-    throw accessDeniedError('query');
+    throw AccessDeniedError();
   }
 
   // Merge declarative access control
@@ -80,7 +80,7 @@ export async function findOne(
   const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
 
   if (item === null) {
-    throw accessDeniedError('query');
+    throw AccessDeniedError();
   }
   return item;
 }
@@ -186,9 +186,6 @@ export async function count(
   return count;
 }
 
-const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
-  new LimitsExceededError({ data: args });
-
 function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
   const first = _first ?? Infinity;
   // We want to help devs by failing fast and noisily if limits are violated.
@@ -199,18 +196,18 @@ function applyEarlyMaxResults(_first: number | null | undefined, list: Initialis
   // * The query explicitly has a "first" that exceeds the limit
   // * The query has no "first", and has more results than the limit
   if (first < Infinity && first > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw LimitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
 }
 
 function applyMaxResults(results: unknown[], list: InitialisedList, context: KeystoneContext) {
   if (results.length > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw LimitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
   if (context) {
     context.totalResults += Array.isArray(results) ? results.length : 1;
     if (context.totalResults > context.maxTotalResults) {
-      throw limitsExceedError({
+      throw LimitsExceededError({
         list: list.listKey,
         type: 'maxTotalResults',
         limit: context.maxTotalResults,
