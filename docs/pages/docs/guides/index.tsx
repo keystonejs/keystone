@@ -11,7 +11,14 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Guides">
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Guides'}
+      description={
+        'Practical explanations of Keystone’s fundamental building blocks. Learn how to think about, and get the most out of Keystone’s many features.'
+      }
+    >
       <Type as="h1" look="heading64">
         Keystone Guides
       </Type>

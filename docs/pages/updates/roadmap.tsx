@@ -166,7 +166,13 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Roadmap" {...props}>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Roadmap'}
+      description={'Discover where KeystoneJS is headed, and why we’re going there.'}
+      {...props}
+    >
       <Type as="h1" look="heading64">
         Roadmap
       </Type>

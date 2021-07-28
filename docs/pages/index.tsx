@@ -46,7 +46,7 @@ export default function IndexPage() {
     <Page
       title={'KeystoneJS: The superpowered Node.js Headless CMS for developers'}
       description={
-        'Build faster and scale further with the programmable GraphQL API back-end for structured content projects. Ship better Apps, Websites, eCommerce, & more…'
+        'Build faster and scale further with the programmable open source GraphQL API back-end for structured content projects.'
       }
     >
       <MWrapper>
