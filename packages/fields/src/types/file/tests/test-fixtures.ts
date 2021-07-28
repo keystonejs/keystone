@@ -129,7 +129,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-            mutation ($item: TestCreateInput) {
+            mutation ($item: TestCreateInput!) {
                 createTest(data: $item) {
                     secretFile {
                         filename
@@ -149,7 +149,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-            mutation ($item: TestCreateInput) {
+            mutation ($item: TestCreateInput!) {
                 createTest(data: $item) {
                     secretFile {
                         filename
@@ -175,7 +175,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         const { data, errors } = await context.graphql.raw({
           query: `
-          mutation ($item: TestCreateInput) {
+          mutation ($item: TestCreateInput!) {
               createTest(data: $item) {
                   secretFile {
                      filename
@@ -201,7 +201,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-          mutation ($item: TestCreateInput) {
+          mutation ($item: TestCreateInput!) {
               createTest(data: $item) {
                   secretFile {
                       filename

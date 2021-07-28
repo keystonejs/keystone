@@ -73,10 +73,6 @@ input TodoCreateInput {
   assignedTo: PersonRelateToOneInput
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
 type Person {
   id: ID!
   name: String
@@ -171,10 +167,6 @@ input PersonCreateInput {
   password: String
   role: RoleRelateToOneInput
   tasks: TodoRelateToManyInput
-}
-
-input PeopleCreateInput {
-  data: PersonCreateInput
 }
 
 type Role {
@@ -278,10 +270,6 @@ input RoleCreateInput {
   assignedTo: PersonRelateToManyInput
 }
 
-input RolesCreateInput {
-  data: RoleCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -291,20 +279,20 @@ scalar JSON
   )
 
 type Mutation {
-  createTodo(data: TodoCreateInput): Todo
-  createTodos(data: [TodosCreateInput]): [Todo]
+  createTodo(data: TodoCreateInput!): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodoUpdateArgs]): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
-  createPerson(data: PersonCreateInput): Person
-  createPeople(data: [PeopleCreateInput]): [Person]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PersonUpdateArgs]): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
-  createRole(data: RoleCreateInput): Role
-  createRoles(data: [RolesCreateInput]): [Role]
+  createRole(data: RoleCreateInput!): Role
+  createRoles(data: [RoleCreateInput!]!): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
   updateRoles(data: [RoleUpdateArgs]): [Role]
   deleteRole(where: RoleWhereUniqueInput!): Role
