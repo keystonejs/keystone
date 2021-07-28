@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
 
@@ -56,7 +56,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
   const createUsers = await context.lists.User.createMany({
-    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
+    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ name })),
     query: 'id name',
   });
 
@@ -410,7 +410,7 @@ describe(`Many-to-many relationships`, () => {
         const { user, friend } = await createUserAndFriend(context);
 
         // Run the query to disconnect the location from company
-        const _user = await context.lists.User.deleteOne({ id: user.id });
+        const _user = await context.lists.User.deleteOne({ where: { id: user.id } });
         expect(_user?.id).toBe(user.id);
 
         // Check the link has been broken

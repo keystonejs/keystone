@@ -12,16 +12,16 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   return { locations, companies };
@@ -69,7 +69,7 @@ const getCompanyAndLocation = async (
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C, D];
   const locations = await context.lists.Location.createMany({
-    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
+    data: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ name })),
     query: 'id name',
   });
   await Promise.all(
@@ -477,7 +477,7 @@ describe(`One-to-many relationships`, () => {
         const { location, company } = await createCompanyAndLocation(context);
 
         // Run the query to disconnect the location from company
-        const _company = await context.lists.Company.deleteOne({ id: company.id });
+        const _company = await context.lists.Company.deleteOne({ where: { id: company.id } });
         expect(_company?.id).toBe(company.id);
 
         // Check the link has been broken

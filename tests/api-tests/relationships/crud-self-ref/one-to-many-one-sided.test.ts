@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
 
@@ -38,10 +38,10 @@ const createUserAndFriend = async (context: KeystoneContext) => {
 const createComplexData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: 'A', friend: { create: { name: 'A1' } } } },
-      { data: { name: 'B', friend: { create: { name: 'D1' } } } },
-      { data: { name: 'C', friend: { create: { name: 'B1' } } } },
-      { data: { name: 'E' } },
+      { name: 'A', friend: { create: { name: 'A1' } } },
+      { name: 'B', friend: { create: { name: 'D1' } } },
+      { name: 'C', friend: { create: { name: 'B1' } } },
+      { name: 'E' },
     ],
     query: 'id name friend { id name }',
   });
@@ -54,10 +54,7 @@ const createComplexData = async (context: KeystoneContext) => {
   expect(users[3].name).toEqual('E');
   expect(users[3].friend).toBe(null);
   const _users = await context.lists.User.createMany({
-    data: [
-      { data: { name: 'D', friend: { connect: { id: users[2].friend.id } } } },
-      { data: { name: 'C1' } },
-    ],
+    data: [{ name: 'D', friend: { connect: { id: users[2].friend.id } } }, { name: 'C1' }],
     query: 'id name friend { id name }',
   });
   expect(_users[0].name).toEqual('D');
@@ -305,7 +302,7 @@ describe(`One-to-many relationships`, () => {
         const { friend, user } = await createUserAndFriend(context);
 
         // Run the query to disconnect the location from company
-        const _user = await context.lists.User.deleteOne({ id: user.id });
+        const _user = await context.lists.User.deleteOne({ where: { id: user.id } });
         expect(_user?.id).toBe(user.id);
 
         // Check the link has been broken
@@ -323,7 +320,7 @@ describe(`One-to-many relationships`, () => {
 
           // Delete company {name}
           const id = users.find(company => company.name === name)?.id;
-          const _user = await context.lists.User.deleteOne({ id });
+          const _user = await context.lists.User.deleteOne({ where: { id } });
           expect(_user?.id).toBe(id);
 
           // Check all the companies look how we expect
@@ -380,7 +377,7 @@ describe(`One-to-many relationships`, () => {
 
           // Delete friend {name}
           const id = users.find(user => user.name === name)?.id;
-          const _user = await context.lists.User.deleteOne({ id });
+          const _user = await context.lists.User.deleteOne({ where: { id } });
           expect(_user?.id).toBe(id);
 
           // Check all the companies look how we expect

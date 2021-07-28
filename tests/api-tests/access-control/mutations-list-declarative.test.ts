@@ -55,11 +55,11 @@ describe('Access control - Imperative => declarative', () => {
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ id: user1.id });
+      await context.lists.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID!) { deleteUser(id: $id) { id } }`,
+        query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
         variables: { id: user2.id },
       });
 
@@ -80,11 +80,11 @@ describe('Access control - Imperative => declarative', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'good 2' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'good 4' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'good 2' },
+          { name: 'good 3' },
+          { name: 'good 4' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
@@ -144,20 +144,24 @@ describe('Access control - Imperative => declarative', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'no delete 1' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'no delete 2' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'no delete 1' },
+          { name: 'good 3' },
+          { name: 'no delete 2' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($ids: [ID!]) { deleteUsers(ids: $ids) { id name } }`,
-        variables: { ids: [users[0].id, users[1].id, users[2].id, users[3].id] },
+        query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
+        variables: {
+          where: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
+        },
       });
+
+      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Valid users are returned, invalid come back as null
       // The invalid deletes should have errors which point to the nulls in their path
@@ -169,7 +173,6 @@ describe('Access control - Imperative => declarative', () => {
           null,
         ],
       });
-      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Three users should still exist in the database
       const _users = await context.lists.User.findMany({

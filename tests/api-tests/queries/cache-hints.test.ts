@@ -76,26 +76,19 @@ const runner = setupTestRunner({
 const addFixtures = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: 'Jess', favNumber: 1 } },
-      { data: { name: 'Johanna', favNumber: 8 } },
-      { data: { name: 'Sam', favNumber: 5 } },
+      { name: 'Jess', favNumber: 1 },
+      { name: 'Johanna', favNumber: 8 },
+      { name: 'Sam', favNumber: 5 },
     ],
   });
 
   const posts = await context.lists.Post.createMany({
     data: [
-      { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
+      { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
+      { author: { connect: [{ id: users[0].id }, { id: users[1].id }] }, title: 'Two authors' },
       {
-        data: {
-          author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
-          title: 'Two authors',
-        },
-      },
-      {
-        data: {
-          author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
-          title: 'Three authors',
-        },
+        author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
+        title: 'Three authors',
       },
     ],
   });
@@ -303,7 +296,7 @@ describe('cache hints', () => {
       const { body } = await graphQLRequest({
         query: `
           mutation {
-            deletePost(id: "${posts[0].id}") {
+            deletePost(where: { id: "${posts[0].id}" }) {
               id
             }
           }

@@ -69,10 +69,6 @@ input PostCreateInput {
   content: String
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -82,12 +78,12 @@ scalar JSON
   )
 
 type Mutation {
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostUpdateArgs]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
 }
 
 type Query {

@@ -49,7 +49,7 @@ describe(`Not authed`, () => {
     items = {};
     for (const [listKey, _items] of Object.entries(initialData)) {
       items[listKey] = (await context.sudo().lists[listKey].createMany({
-        data: _items.map(x => ({ data: x })),
+        data: _items,
         query: 'id, name',
       })) as { id: IdType; name: string }[];
     }
@@ -362,14 +362,14 @@ describe(`Not authed`, () => {
           .forEach(access => {
             test(`single denied: ${JSON.stringify(access)}`, async () => {
               const deleteMutationName = `delete${nameFn[mode](access)}`;
-              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
+              const query = `mutation { ${deleteMutationName}(where: {id: "${FAKE_ID[provider]}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, deleteMutationName);
             });
 
             test(`multi denied: ${JSON.stringify(access)}`, async () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID[provider]}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
 
               expect(data).toEqual({ [multiDeleteMutationName]: [null] });

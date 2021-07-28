@@ -49,10 +49,6 @@ input TodoCreateInput {
   title: String
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -62,12 +58,12 @@ scalar JSON
   )
 
 type Mutation {
-  createTodo(data: TodoCreateInput): Todo
-  createTodos(data: [TodosCreateInput]): [Todo]
+  createTodo(data: TodoCreateInput!): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodoUpdateArgs]): [Todo]
-  deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
 }
 
 type Query {
