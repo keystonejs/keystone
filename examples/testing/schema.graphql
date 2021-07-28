@@ -198,14 +198,14 @@ type Mutation {
   createTasks(data: [TasksCreateInput]): [Task]
   updateTask(id: ID!, data: TaskUpdateInput): Task
   updateTasks(data: [TaskUpdateArgs]): [Task]
-  deleteTask(id: ID!): Task
-  deleteTasks(ids: [ID!]): [Task]
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PersonUpdateArgs]): [Person]
-  deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
   authenticatePersonWithPassword(
     email: String!
     password: String!
