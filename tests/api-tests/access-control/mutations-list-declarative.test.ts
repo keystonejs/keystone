@@ -157,9 +157,11 @@ describe('Access control - Imperative => declarative', () => {
       const { data, errors } = await context.graphql.raw({
         query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
         variables: {
-          ids: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
+          where: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
         },
       });
+
+      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Valid users are returned, invalid come back as null
       // The invalid deletes should have errors which point to the nulls in their path
@@ -171,7 +173,6 @@ describe('Access control - Imperative => declarative', () => {
           null,
         ],
       });
-      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Three users should still exist in the database
       const _users = await context.lists.User.findMany({

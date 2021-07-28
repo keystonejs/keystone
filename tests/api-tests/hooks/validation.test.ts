@@ -206,7 +206,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($ids: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
+        query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
         variables: {
           ids: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
         },

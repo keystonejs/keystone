@@ -436,7 +436,7 @@ describe('Authed', () => {
               const { id: validId1 } = await create({ name: 'hi' });
               const { id: validId2 } = await create({ name: 'hi' });
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: [{ id: "${validId1}" }, { id: "${validId2}" }]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}" }, { id: "${validId2}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
@@ -453,7 +453,7 @@ describe('Authed', () => {
               const { id: validId1 } = await create({ name: 'Hello' });
               const { id: invalidId } = await create({ name: 'hi' });
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: [{ id: "${validId1}" }, { id: "${invalidId}" }]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}" }, { id: "${invalidId}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, invalidId]);
@@ -465,7 +465,7 @@ describe('Authed', () => {
 
             test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: [{ id: "${FAKE_ID[provider]}" }, { id: "${FAKE_ID_2[provider]}" }]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID[provider]}" }, { id: "${FAKE_ID_2[provider]}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectAccessDenied(errors, [
                 { path: [multiDeleteMutationName, 0] },
