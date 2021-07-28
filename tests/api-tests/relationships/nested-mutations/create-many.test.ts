@@ -260,7 +260,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: [{ content: "${noteContent}" }] }
@@ -332,7 +332,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoCreate(
-                    id: "${createUserToNotesNoCreate.id}"
+                    where: { id: "${createUserToNotesNoCreate.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: { content: "${noteContent}" } }

@@ -293,7 +293,7 @@ describe('with access control', () => {
             const query = `
               mutation {
                 updateEventTo${group.name}(
-                  id: "${eventModel.id}"
+                  where: { id: "${eventModel.id}" }
                   data: {
                     title: "A thing",
                     group: { create: { name: "${groupName}" } }

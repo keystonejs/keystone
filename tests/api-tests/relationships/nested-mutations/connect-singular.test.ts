@@ -174,7 +174,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateEvent(
-                  id: "${createEvent.id}",
+                  where: { id: "${createEvent.id}" },
                   data: {
                     group: {
                       connect: { id: "${FAKE_ID}" }
@@ -287,7 +287,7 @@ describe('with access control', () => {
               query: `
                     mutation {
                       updateEventTo${group.name}(
-                        id: "${eventModel.id}"
+                        where: { id: "${eventModel.id}" }
                         data: {
                           title: "A thing",
                           group: { connect: { id: "${groupModel.id}" } }

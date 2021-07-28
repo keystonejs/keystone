@@ -276,7 +276,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateUser(
-                  id: "${createUser.id}",
+                  where: { id: "${createUser.id}" },
                   data: {
                     notes: {
                       connect: [{ id: "${FAKE_ID}" }]
@@ -350,7 +350,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { connect: [{ id: "${createNote.id}" }] }
