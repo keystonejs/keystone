@@ -142,7 +142,7 @@ describe('no access control', () => {
 
       // Update an item that does the nested create
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { title: 'A thing', group: { create: { name: groupName } } },
         query: 'id group { id name }',
       });
@@ -207,7 +207,7 @@ describe('with access control', () => {
 
             // Update an item that does the nested create
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { create: { name: groupName } } },
             });
 
@@ -293,7 +293,7 @@ describe('with access control', () => {
             const query = `
               mutation {
                 updateEventTo${group.name}(
-                  id: "${eventModel.id}"
+                  where: { id: "${eventModel.id}" }
                   data: {
                     title: "A thing",
                     group: { create: { name: "${groupName}" } }

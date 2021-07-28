@@ -122,7 +122,7 @@ describe('update many to many relationship back reference', () => {
 
         // Run the query to disconnect the teacher from student
         await context.lists.Student.updateOne({
-          id: student1.id,
+          where: { id: student1.id },
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
         });
@@ -177,7 +177,7 @@ describe('update many to many relationship back reference', () => {
 
         // Run the query to disconnect the teacher from student
         const _student = await context.lists.Student.updateOne({
-          id: student.id,
+          where: { id: student.id },
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers { id }',
         });
@@ -212,11 +212,11 @@ describe('update many to many relationship back reference', () => {
       await context.lists.Teacher.updateMany({
         data: [
           {
-            id: teacher1.id,
+            where: { id: teacher1.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
           {
-            id: teacher2.id,
+            where: { id: teacher2.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
         ],
@@ -235,7 +235,7 @@ describe('update many to many relationship back reference', () => {
 
       // Run the query to disconnect the teacher from student
       await context.lists.Student.updateOne({
-        id: student1.id,
+        where: { id: student1.id },
         data: { teachers: { disconnect: [{ id: teacher1.id }] } },
         query: 'id teachers { id }',
       });
@@ -270,11 +270,11 @@ describe('update many to many relationship back reference', () => {
       await context.lists.Teacher.updateMany({
         data: [
           {
-            id: teacher1.id,
+            where: { id: teacher1.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
           {
-            id: teacher2.id,
+            where: { id: teacher2.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
         ],
@@ -293,7 +293,7 @@ describe('update many to many relationship back reference', () => {
 
       // Run the query to disconnect the teacher from student
       await context.lists.Student.updateOne({
-        id: student1.id,
+        where: { id: student1.id },
         data: { teachers: { disconnectAll: true } },
         query: 'id teachers { id }',
       });
@@ -329,11 +329,11 @@ test(
     await context.lists.Teacher.updateMany({
       data: [
         {
-          id: teacher1.id,
+          where: { id: teacher1.id },
           data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
         },
         {
-          id: teacher2.id,
+          where: { id: teacher2.id },
           data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
         },
       ],
