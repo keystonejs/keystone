@@ -63,9 +63,15 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseGe
           readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][];
         } & ResolveFields
       ): Promise<Record<string, any>[]>;
-      deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
+      deleteOne(
+        args: {
+          readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+        } & ResolveFields
+      ): Promise<Record<string, any> | null>;
       deleteMany(
-        args: { readonly ids: readonly string[] } & ResolveFields
+        args: {
+          readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][];
+        } & ResolveFields
       ): Promise<Record<string, any>[]>;
     };
   };
@@ -111,9 +117,11 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
     createMany(args: {
       readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
-    deleteOne(args: { readonly id: string }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
+    deleteOne(args: {
+      readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+    }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
     deleteMany(args: {
-      readonly ids: readonly string[];
+      readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][];
     }): Promise<KeystoneListsTypeInfo[Key]['backing'][]>;
   };
 };

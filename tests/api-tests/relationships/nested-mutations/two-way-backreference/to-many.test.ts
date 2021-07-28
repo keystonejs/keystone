@@ -351,7 +351,7 @@ test(
     compareIds(teacher2.students, [student1, student2]);
 
     // Run the query to delete the student
-    await context.lists.Student.deleteOne({ id: student1.id });
+    await context.lists.Student.deleteOne({ where: { id: student1.id } });
     teacher1 = await getTeacher(context, teacher1.id);
     teacher2 = await getTeacher(context, teacher2.id);
     student1 = await getStudent(context, student1.id);

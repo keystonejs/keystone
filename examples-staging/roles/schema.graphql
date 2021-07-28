@@ -283,20 +283,20 @@ type Mutation {
   createTodos(data: [TodoCreateInput!]!): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodoUpdateArgs]): [Todo]
-  deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
   createPerson(data: PersonCreateInput!): Person
   createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PersonUpdateArgs]): [Person]
-  deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
   createRole(data: RoleCreateInput!): Role
   createRoles(data: [RoleCreateInput!]!): [Role]
   updateRole(id: ID!, data: RoleUpdateInput): Role
   updateRoles(data: [RoleUpdateArgs]): [Role]
-  deleteRole(id: ID!): Role
-  deleteRoles(ids: [ID!]): [Role]
+  deleteRole(where: RoleWhereUniqueInput!): Role
+  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   authenticatePersonWithPassword(
     email: String!
     password: String!

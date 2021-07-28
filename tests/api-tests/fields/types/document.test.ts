@@ -215,7 +215,7 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context });
-      await context.lists.Author.deleteOne({ id: bob.id });
+      await context.lists.Author.deleteOne({ where: { id: bob.id } });
       const _post = await context.lists.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: true) }',

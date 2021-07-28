@@ -82,8 +82,8 @@ type Mutation {
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostUpdateArgs]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
 }
 
 type Query {

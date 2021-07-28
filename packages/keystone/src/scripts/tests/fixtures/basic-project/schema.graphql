@@ -62,8 +62,8 @@ type Mutation {
   createTodos(data: [TodoCreateInput!]!): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodoUpdateArgs]): [Todo]
-  deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
 }
 
 type Query {
