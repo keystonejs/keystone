@@ -53,7 +53,7 @@ Keystone passes the following props to your custom Navigation component:
 ```typescript
    NavigationProps = {
     authenticatedItem: AuthenticatedItem,
-    routes: { state: string, data: Array<{ path: string, label: string, key: string }> } | { state: 'error', error: string }
+    lists: ListMeta[]
    }
 ```
 
@@ -73,27 +73,21 @@ You will need to reasonably account for all of these states if you would like to
 
 ### routes prop
 
-The `routes` prop is also a `Union` comprising of an error state and a "success" state
+The `lists` prop is an array of keystone list objects.
 
 ```typescript
-type Routes =
-  | {
-      state: string;
-      data: Array<{
-        path: string;
-        label: string;
-        key: string;
-      }>;
-    }
-  | {
-      state: 'error';
-      error: string;
-    };
+type ListMeta = {
+  /** Used for optimising the generated list of NavItems in React */
+  key: string;
+  /** Used as the href for each list generated NavItem */
+  path: string;
+  /** Used as the label for each list generated NavItem */
+  label: string;
+  /** Other properties exists, but these are the ones that are relevant to the Navigation implementation */
+};
+
+type Lists = ListMeta[];
 ```
-
-The error state includes an `error` payload representing the error message, while the success state contains a `data` payload consisting of an aray of route objects containing the `path` (a URL to pass into the NavItem component) a `label` to be rendered as the innerText of the `NavItem` element, and a `key` for React.
-
-The `data` payload will always contain a route to the `Dashboard` as its first entry.
 
 ## Navigation components
 
@@ -127,26 +121,28 @@ const CustomNavigation = ({ authenticatedItem }) => {
 };
 ```
 
+### ListNavItems
+
+```ts
+type ListNavItemsProps = {
+  lists: ListMeta[];
+  include?: string[];
+};
+```
+
+The ListNavItems component expects `lists` an array of list objects and renders a list of NavItems. It also optionally takes `include`, an array of strings. If this array is passed to this component, only lists with a `key` property that matches an element in the `include` array will be rendered. If this array is not passed into the component, all lists will be rendered.
+
 ### ListNavItem
 
-The ListNavItem component takes a `routes` object and rendes the array of routes into a list of NavItems. It has the following prop signature:
-
 ```typescript
-{
-    routes:  {
-        state: string,
-        data: Array<{
-            path: string,
-            label: string,
-            key: string
-        }>
-    }   |
-    {
-        state: 'error',
-        error: string
-    }
-}
+type ListNavItemProps = {
+  list: ListMeta;
+};
 ```
+
+The ListNavItem component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to NavItem. It also adds a custom `isSelected` expression optimised for keystone lists.
+
+The impetus behind `ListNavItem` is to have a higher-level abstraction that can allow users to not have to care about the contents and structure of our lists. This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually leveraging a lower level component.)
 
 ### NavItem
 
@@ -160,6 +156,6 @@ type NavItemProps = {
 };
 ```
 
-By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in isSelected if you have a custom condition or would like more granular control over the selected state of Navigation items.
+By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
 
 See also the [Custom Navigation guide](httpes://keystonejs.com/docs/guides/custom-admin-ui-navigation).
