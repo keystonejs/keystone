@@ -237,7 +237,7 @@ describe(`One-to-many relationships`, () => {
         expect(company.location).not.toBe(expect.anything());
 
         await context.lists.Company.updateOne({
-          id: company.id,
+          where: { id: company.id },
           data: { location: { connect: { id: location.id } } },
         });
 
@@ -254,7 +254,7 @@ describe(`One-to-many relationships`, () => {
         let company = companies[0];
         const locationName = sampleOne(alphanumGenerator);
         const _company = await context.lists.Company.updateOne({
-          id: company.id,
+          where: { id: company.id },
           data: { location: { create: { name: locationName } } },
           query: 'id location { id name }',
         });
@@ -277,7 +277,7 @@ describe(`One-to-many relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
-          id: company.id,
+          where: { id: company.id },
           data: { location: { disconnect: { id: location.id } } },
           query: 'id location { id name }',
         });
@@ -298,7 +298,7 @@ describe(`One-to-many relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
-          id: company.id,
+          where: { id: company.id },
           data: { location: { disconnectAll: true } },
           query: 'id location { id name }',
         });
@@ -319,7 +319,7 @@ describe(`One-to-many relationships`, () => {
 
         // Run the query with a null operation
         const _company = await context.lists.Company.updateOne({
-          id: company.id,
+          where: { id: company.id },
           data: { location: null },
           query: 'id location { id name }',
         });

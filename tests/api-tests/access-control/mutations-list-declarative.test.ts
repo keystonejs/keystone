@@ -92,8 +92,8 @@ describe('Access control - Imperative => declarative', () => {
       // Set up some of them with bad names
       await context.lists.User.updateMany({
         data: [
-          { id: users[1].id, data: { name: 'bad' } },
-          { id: users[3].id, data: { name: 'bad' } },
+          { where: { id: users[1].id }, data: { name: 'bad' } },
+          { where: { id: users[3].id }, data: { name: 'bad' } },
         ],
       });
 

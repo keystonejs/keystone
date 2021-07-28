@@ -99,7 +99,7 @@ testModules
               },
             });
             const data = await context.lists.Test.updateOne({
-              id: data0.id,
+              where: { id: data0.id },
               data: { name: 'updated test entry' },
               query: 'id name',
             });

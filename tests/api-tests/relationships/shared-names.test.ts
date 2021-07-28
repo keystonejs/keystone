@@ -83,21 +83,21 @@ const createInitialData = async (context: KeystoneContext) => {
   await context.lists.Role.updateMany({
     data: [
       {
-        id: roles.find(({ name }) => name === 'RoleA')!.id,
+        where: { id: roles.find(({ name }) => name === 'RoleA')!.id },
         data: {
           company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')!.id } },
           employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeA')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleB')!.id,
+        where: { id: roles.find(({ name }) => name === 'RoleB')!.id },
         data: {
           company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')!.id } },
           employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeB')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleC')!.id,
+        where: { id: roles.find(({ name }) => name === 'RoleC')!.id },
         data: {
           company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')!.id } },
           employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeC')!.id }] },
