@@ -63,7 +63,7 @@ testModules
 
             const { body } = await graphQLRequest({
               query: `
-                  mutation($data: TestCreateInput) {
+                  mutation($data: TestCreateInput!) {
                     createTest(data: $data) { id }
                   }
                 `,
@@ -86,7 +86,7 @@ testModules
           runner(async ({ graphQLRequest }) => {
             const { body } = await graphQLRequest({
               query: `
-                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
+                  mutation($fooData: TestCreateInput!, $barData: TestCreateInput!) {
                     foo: createTest(data: $fooData) { id }
                     bar: createTest(data: $barData) { id }
                   }
@@ -114,8 +114,8 @@ testModules
           runner(async ({ context }) => {
             const items = await context.lists.Test.createMany({
               data: [
-                { data: { testField: mod.exampleValue(matrixValue), name: 'jess' } },
-                { data: { testField: mod.exampleValue2(matrixValue), name: 'jess' } },
+                { testField: mod.exampleValue(matrixValue), name: 'jess' },
+                { testField: mod.exampleValue2(matrixValue), name: 'jess' },
               ],
             });
             expect(items).toHaveLength(2);

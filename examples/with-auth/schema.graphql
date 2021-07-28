@@ -93,10 +93,6 @@ input TaskCreateInput {
   finishBy: String
 }
 
-input TasksCreateInput {
-  data: TaskCreateInput
-}
-
 type Person {
   id: ID!
   name: String
@@ -181,10 +177,6 @@ input PersonCreateInput {
   tasks: TaskRelateToManyInput
 }
 
-input PeopleCreateInput {
-  data: PersonCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -194,14 +186,14 @@ scalar JSON
   )
 
 type Mutation {
-  createTask(data: TaskCreateInput): Task
-  createTasks(data: [TasksCreateInput]): [Task]
+  createTask(data: TaskCreateInput!): Task
+  createTasks(data: [TaskCreateInput!]!): [Task]
   updateTask(id: ID!, data: TaskUpdateInput): Task
   updateTasks(data: [TaskUpdateArgs]): [Task]
   deleteTask(id: ID!): Task
   deleteTasks(ids: [ID!]): [Task]
-  createPerson(data: PersonCreateInput): Person
-  createPeople(data: [PeopleCreateInput]): [Person]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PersonUpdateArgs]): [Person]
   deletePerson(id: ID!): Person

@@ -12,16 +12,16 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   return { locations, companies };
@@ -47,10 +47,10 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
 const createComplexData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { data: { name: 'A', location: { create: { name: 'A' } } } },
-      { data: { name: 'B', location: { create: { name: 'D' } } } },
-      { data: { name: 'C', location: { create: { name: 'B' } } } },
-      { data: { name: 'E' } },
+      { name: 'A', location: { create: { name: 'A' } } },
+      { name: 'B', location: { create: { name: 'D' } } },
+      { name: 'C', location: { create: { name: 'B' } } },
+      { name: 'E' },
     ],
     query: 'id name location { id name }',
   });

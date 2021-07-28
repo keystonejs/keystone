@@ -12,16 +12,16 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const companies = await context.lists.Company.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   const locations = await context.lists.Location.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
   return { locations, companies };
@@ -69,7 +69,7 @@ const getCompanyAndLocation = async (
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
   const locations = await context.lists.Location.createMany({
-    data: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } })),
+    data: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ name })),
     query: 'id name',
   });
   await Promise.all(
