@@ -10,7 +10,7 @@ exampleProjectTests('custom-admin-ui-pages', browserType => {
     await page.goto('http://localhost:3000');
   });
   test('Load list', async () => {
-    await page.goto('https://localhost:3000/custom-page');
+    await page.goto('http://localhost:3000/custom-page');
     const content = await page.textContent('body h1');
     expect(content).toBe('Hello this is a custom page');
   });
