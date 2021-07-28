@@ -59,7 +59,7 @@ describe('Access control - Imperative => declarative', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID!) { deleteUser(id: $id) { id } }`,
+        query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
         variables: { id: user2.id },
       });
 
@@ -155,7 +155,7 @@ describe('Access control - Imperative => declarative', () => {
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($where: [UserWhereUniqueInput!]) { deleteUsers(where: $where) { id name } }`,
+        query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
         variables: {
           ids: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
         },

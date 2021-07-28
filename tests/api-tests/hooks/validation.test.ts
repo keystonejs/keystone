@@ -81,7 +81,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID!) { deleteUser(id: $id) { id } }`,
+        query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
         variables: { id: user2.id },
       });
 
@@ -206,8 +206,10 @@ describe('List Hooks: #validateInput()', () => {
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($ids: [ID!]) { deleteUsers(ids: $ids) { id name } }`,
-        variables: { ids: [users[0].id, users[1].id, users[2].id, users[3].id] },
+        query: `mutation ($ids: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
+        variables: {
+          ids: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
+        },
       });
 
       // Valid users are returned, invalid come back as null
