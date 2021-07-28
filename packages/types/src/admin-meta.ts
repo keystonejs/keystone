@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 import { GqlNames, JSONValue } from './utils';
 
 export type NavigationProps = {
