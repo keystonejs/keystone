@@ -26,7 +26,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     type: list.types.output,
     args: { data: schema.arg({ type: schema.nonNull(list.types.create) }) },
     resolve(_rootVal, { data }, context) {
-      return createAndUpdate.createOne({ data: data }, list, context);
+      return createAndUpdate.createOne({ data }, list, context);
     },
   });
 
