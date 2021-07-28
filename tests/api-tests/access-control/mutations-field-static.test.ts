@@ -45,7 +45,7 @@ describe('Access control - Imperative => static', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: UserCreateInput) { createUser(data: $data) { id } }`,
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'bad', other: 'b' } },
       });
 
@@ -91,14 +91,14 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersCreateInput]) { createUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { data: { name: 'good 1', other: 'a' } },
-            { data: { name: 'bad', other: 'a' } },
-            { data: { name: 'good 2', other: 'a' } },
-            { data: { name: 'bad', other: 'a' } },
-            { data: { name: 'good 3', other: 'a' } },
+            { name: 'good 1', other: 'a' },
+            { name: 'bad', other: 'a' },
+            { name: 'good 2', other: 'a' },
+            { name: 'bad', other: 'a' },
+            { name: 'good 3', other: 'a' },
           ],
         },
       });
@@ -136,11 +136,11 @@ describe('Access control - Imperative => static', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1', other: 'a' } },
-          { data: { name: 'good 2', other: 'a' } },
-          { data: { name: 'good 3', other: 'a' } },
-          { data: { name: 'good 4', other: 'a' } },
-          { data: { name: 'good 5', other: 'a' } },
+          { name: 'good 1', other: 'a' },
+          { name: 'good 2', other: 'a' },
+          { name: 'good 3', other: 'a' },
+          { name: 'good 4', other: 'a' },
+          { name: 'good 5', other: 'a' },
         ],
         query: 'id name',
       });

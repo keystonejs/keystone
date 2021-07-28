@@ -8,20 +8,8 @@ import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
   User: [
-    {
-      data: {
-        name: 'Boris Bozic',
-        email: 'boris@keystone.com',
-        password: 'correctbattery',
-      },
-    },
-    {
-      data: {
-        name: 'Jed Watson',
-        email: 'jed@keystone.com',
-        password: 'horsestaple',
-      },
-    },
+    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
   ],
 };
 
@@ -139,8 +127,8 @@ describe('Auth testing', () => {
         }
         const { sessionToken } = await login(
           graphQLRequest,
-          initialData.User[0].data.email,
-          initialData.User[0].data.password
+          initialData.User[0].email,
+          initialData.User[0].password
         );
 
         expect(sessionToken).toBeTruthy();
@@ -163,8 +151,8 @@ describe('Auth testing', () => {
         }
         const { sessionToken } = await login(
           graphQLRequest,
-          initialData.User[0].data.email,
-          initialData.User[0].data.password
+          initialData.User[0].email,
+          initialData.User[0].password
         );
 
         expect(sessionToken).toBeTruthy();

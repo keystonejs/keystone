@@ -49,7 +49,7 @@ describe(`Not authed`, () => {
     items = {};
     for (const [listKey, _items] of Object.entries(initialData)) {
       items[listKey] = (await context.sudo().lists[listKey].createMany({
-        data: _items.map(x => ({ data: x })),
+        data: _items,
         query: 'id, name',
       })) as { id: IdType; name: string }[];
     }

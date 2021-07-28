@@ -34,7 +34,7 @@ describe('List Hooks: #validateInput()', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: UserCreateInput) { createUser(data: $data) { id } }`,
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'bad' } },
       });
 
@@ -100,14 +100,14 @@ describe('List Hooks: #validateInput()', () => {
     runner(async ({ context }) => {
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersCreateInput]) { createUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { data: { name: 'good 1' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 2' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 3' } },
+            { name: 'good 1' },
+            { name: 'bad' },
+            { name: 'good 2' },
+            { name: 'bad' },
+            { name: 'good 3' },
           ],
         },
       });
@@ -140,11 +140,11 @@ describe('List Hooks: #validateInput()', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'good 2' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'good 4' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'good 2' },
+          { name: 'good 3' },
+          { name: 'good 4' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
@@ -195,11 +195,11 @@ describe('List Hooks: #validateInput()', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'no delete 1' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'no delete 2' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'no delete 1' },
+          { name: 'good 3' },
+          { name: 'no delete 2' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });

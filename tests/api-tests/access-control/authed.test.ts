@@ -57,7 +57,7 @@ const afterConnect = async ({ context }: { context: KeystoneContext }) => {
   const items: Record<string, T> = {};
   for (const [listKey, _items] of Object.entries(initialData)) {
     items[listKey] = (await context.lists[listKey].createMany({
-      data: _items.map(x => ({ data: x })),
+      data: _items,
       query: 'id name',
     })) as T;
   }

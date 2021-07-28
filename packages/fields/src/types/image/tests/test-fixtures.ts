@@ -101,7 +101,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-            mutation ($item: TestCreateInput) {
+            mutation ($item: TestCreateInput!) {
                 createTest(data: $item) {
                     avatar {
                         id
@@ -167,7 +167,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-            mutation ($item: TestCreateInput) {
+            mutation ($item: TestCreateInput!) {
                 createTest(data: $item) {
                     avatar {
                         id
@@ -187,7 +187,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-            mutation ($item: TestCreateInput) {
+            mutation ($item: TestCreateInput!) {
                 createTest(data: $item) {
                     avatar {
                         id
@@ -215,7 +215,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         const { data, errors } = await context.graphql.raw({
           query: `
-          mutation ($item: TestCreateInput) {
+          mutation ($item: TestCreateInput!) {
               createTest(data: $item) {
                   avatar {
                       id
@@ -239,7 +239,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
-          mutation ($item: TestCreateInput) {
+          mutation ($item: TestCreateInput!) {
               createTest(data: $item) {
                   avatar {
                       id

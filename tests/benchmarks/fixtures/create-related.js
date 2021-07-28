@@ -52,11 +52,11 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({
         provider,
@@ -75,11 +75,11 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({
         provider,

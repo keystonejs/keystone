@@ -105,8 +105,8 @@ describe('no access control', () => {
       // Create an item that does the linking
       const users = await context.lists.User.createMany({
         data: [
-          { data: { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } } },
-          { data: { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } } },
+          { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
+          { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
         ],
       });
 

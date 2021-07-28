@@ -33,38 +33,14 @@ describe('Querying with relationship filters', () => {
       runner(async ({ context }) => {
         // Create an item to link against
         const users = await context.lists.User.createMany({
-          data: [
-            { data: { name: 'Jess' } },
-            { data: { name: 'Johanna' } },
-            { data: { name: 'Sam' } },
-          ],
+          data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
         });
         const posts = await context.lists.Post.createMany({
           data: [
-            {
-              data: {
-                author: { connect: { id: users[0].id } },
-                title: sampleOne(alphanumGenerator),
-              },
-            },
-            {
-              data: {
-                author: { connect: { id: users[1].id } },
-                title: sampleOne(alphanumGenerator),
-              },
-            },
-            {
-              data: {
-                author: { connect: { id: users[2].id } },
-                title: sampleOne(alphanumGenerator),
-              },
-            },
-            {
-              data: {
-                author: { connect: { id: users[0].id } },
-                title: sampleOne(alphanumGenerator),
-              },
-            },
+            { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[1].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[2].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
           ],
           query: 'id title',
         });
@@ -90,13 +66,8 @@ describe('Querying with relationship filters', () => {
         const user = await context.lists.User.createOne({ data: { name: 'Jess' } });
         const posts = await context.lists.Post.createMany({
           data: [
-            {
-              data: {
-                author: { connect: { id: user.id } },
-                title: sampleOne(alphanumGenerator),
-              },
-            },
-            { data: { title: sampleOne(alphanumGenerator) } },
+            { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
+            { title: sampleOne(alphanumGenerator) },
           ],
           query: 'id title',
         });
