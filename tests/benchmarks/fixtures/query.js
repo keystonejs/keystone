@@ -58,7 +58,7 @@ range(14).forEach(i => {
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await context.lists.User.createMany({
-        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -86,7 +86,7 @@ range(k).forEach(i => {
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await context.lists.User.createMany({
-        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -113,7 +113,7 @@ range(14).forEach(i => {
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await context.lists.User.createMany({
-        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
@@ -140,7 +140,7 @@ range(k).forEach(i => {
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await context.lists.User.createMany({
-        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
