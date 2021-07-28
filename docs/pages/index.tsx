@@ -42,9 +42,13 @@ import deployTargets from '../public/assets/deploy-targets.png';
 
 export default function IndexPage() {
   const mq = useMediaQuery();
-
   return (
-    <Page>
+    <Page
+      title={'KeystoneJS: The superpowered Node.js Headless CMS for developers'}
+      description={
+        'Build faster and scale further with the programmable GraphQL API back-end for structured content projects. Ship better Apps, Websites, eCommerce, & more…'
+      }
+    >
       <MWrapper>
         <IntroWrapper>
           <IntroHeading>

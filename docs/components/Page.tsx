@@ -27,6 +27,34 @@ function Announcement() {
   );
 }
 
+function OpenGraph({
+  title,
+  description,
+  ogImage,
+}: {
+  title: string;
+  description: string;
+  ogImage?: string;
+}) {
+  const siteUrl = process.env.siteUrl;
+  // add fallback image using router
+  return (
+    <Fragment>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta key="og:site_name" property="og:site_name" content={title} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={`${siteUrl}/${ogImage}`} />
+      <meta property="og:image:width" content="761" />
+      <meta property="og:image:height" content="410" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={`${siteUrl}/${ogImage}`} />
+    </Fragment>
+  );
+}
+
 export function DocsPage({
   children,
   headings = [],
@@ -34,25 +62,29 @@ export function DocsPage({
   noRightNav,
   releases,
   title,
+  description,
+  ogImage,
 }: {
   children: ReactNode;
   headings?: Heading[];
   noProse?: boolean;
   noRightNav?: boolean;
   releases?: any;
-  title?: string;
+  title: string;
+  description: string;
+  ogImage?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
   const mq = useMediaQuery();
   const { pathname } = useRouter();
   const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
 
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
+
   return (
     <Fragment>
       <Head>
-        <meta key="og:site_name" property="og:site_name" content={metaTitle} />
-        <title>{metaTitle}</title>
+        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       </Head>
       <div
         css={{
@@ -99,14 +131,22 @@ export function DocsPage({
   );
 }
 
-export function Page({ title, children }: { children: ReactNode; title?: string }) {
+export function Page({
+  children,
+  title,
+  description,
+  ogImage,
+}: {
+  children: ReactNode;
+  title: string;
+  description: string;
+  ogImage?: string;
+}) {
   const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`;
-
   return (
     <Fragment>
       <Head>
-        <meta key="og:site_name" property="og:site_name" content={metaTitle} />
-        <title>{metaTitle}</title>
+        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       </Head>
       <div
         css={{
