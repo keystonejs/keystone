@@ -80,11 +80,11 @@ describe('Access control - Imperative => declarative', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'good 2' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'good 4' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'good 2' },
+          { name: 'good 3' },
+          { name: 'good 4' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
@@ -144,11 +144,11 @@ describe('Access control - Imperative => declarative', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'no delete 1' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'no delete 2' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'no delete 1' },
+          { name: 'good 3' },
+          { name: 'no delete 2' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });

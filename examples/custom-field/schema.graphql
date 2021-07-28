@@ -108,10 +108,6 @@ input PostCreateInput {
   author: AuthorRelateToOneInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 type Author {
   id: ID!
   name: String
@@ -188,10 +184,6 @@ input AuthorCreateInput {
   posts: PostRelateToManyInput
 }
 
-input AuthorsCreateInput {
-  data: AuthorCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -201,14 +193,14 @@ scalar JSON
   )
 
 type Mutation {
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostUpdateArgs]): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createAuthor(data: AuthorCreateInput): Author
-  createAuthors(data: [AuthorsCreateInput]): [Author]
+  createAuthor(data: AuthorCreateInput!): Author
+  createAuthors(data: [AuthorCreateInput!]!): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
   updateAuthors(data: [AuthorUpdateArgs]): [Author]
   deleteAuthor(where: AuthorWhereUniqueInput!): Author

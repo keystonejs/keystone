@@ -21,15 +21,15 @@ const initialiseData = async ({ context }: { context: KeystoneContext }) => {
   // Use shuffled data to ensure that ordering is actually happening.
   await context.lists.User.createMany({
     data: [
-      { data: { a: 1, b: 10 } },
-      { data: { a: 1, b: 30 } },
-      { data: { a: 1, b: 20 } },
-      { data: { a: 3, b: 30 } },
-      { data: { a: 3, b: 10 } },
-      { data: { a: 3, b: 20 } },
-      { data: { a: 2, b: 30 } },
-      { data: { a: 2, b: 20 } },
-      { data: { a: 2, b: 10 } },
+      { a: 1, b: 10 },
+      { a: 1, b: 30 },
+      { a: 1, b: 20 },
+      { a: 3, b: 30 },
+      { a: 3, b: 10 },
+      { a: 3, b: 20 },
+      { a: 2, b: 30 },
+      { a: 2, b: 20 },
+      { a: 2, b: 10 },
     ],
   });
 };

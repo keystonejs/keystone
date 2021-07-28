@@ -74,10 +74,6 @@ input UserCreateInput {
   isAdmin: Boolean
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -87,8 +83,8 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UserUpdateArgs]): [User]
   deleteUser(where: UserWhereUniqueInput!): User
