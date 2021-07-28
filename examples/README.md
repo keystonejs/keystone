@@ -27,7 +27,7 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
 - [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
 - [Custom Admin UI logo](./custom-admin-ui-logo): Adds a custom logo in the Admin UI to the Task Manager base.
-- [Custom admin-ui pages](./custom-admin-ui-pages): Adds a custom page in the Admin UI to the Task Manager base.
+- [Custom Admin UI pages](./custom-admin-ui-pages): Adds a custom page in the Admin UI to the Task Manager base.
 
 ## Running examples
 
