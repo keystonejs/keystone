@@ -60,8 +60,10 @@ export function addRelationshipData(
             // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
             // then simply return { id } and leave `label` and `data` undefined.
             const r = JSON.stringify(relationship);
-            console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
-            console.error(err);
+            if (!process.env.TEST_ADAPTER) {
+              console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
+              console.error(err);
+            }
             return { id };
           } else {
             // Other types of errors indicate something wrong with either the system or the

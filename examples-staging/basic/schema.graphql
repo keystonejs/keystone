@@ -185,10 +185,6 @@ input UserCreateInput {
   posts: PostRelateToManyInput
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
 type PhoneNumber {
   id: ID!
   label: String
@@ -254,10 +250,6 @@ input PhoneNumberCreateInput {
   user: UserRelateToOneInput
   type: String
   value: String
-}
-
-input PhoneNumbersCreateInput {
-  data: PhoneNumberCreateInput
 }
 
 type Post {
@@ -338,10 +330,6 @@ input PostCreateInput {
   author: UserRelateToOneInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -351,14 +339,14 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
-  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+  createPhoneNumber(data: PhoneNumberCreateInput!): PhoneNumber
+  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber]
   updatePhoneNumber(
     where: PhoneNumberWhereUniqueInput!
     data: PhoneNumberUpdateInput!
@@ -366,8 +354,8 @@ type Mutation {
   updatePhoneNumbers(data: [PhoneNumberUpdateArgs!]!): [PhoneNumber]
   deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber]
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post

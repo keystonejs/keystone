@@ -70,10 +70,6 @@ input PackageCreateInput {
   ownedBy: PersonRelateToOneInput
 }
 
-input PackagesCreateInput {
-  data: PackageCreateInput
-}
-
 type Person {
   id: ID!
   name: String
@@ -139,10 +135,6 @@ input PersonCreateInput {
   packages: PackageRelateToManyInput
 }
 
-input PeopleCreateInput {
-  data: PersonCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -152,8 +144,8 @@ scalar JSON
   )
 
 type Mutation {
-  createPackage(data: PackageCreateInput): Package
-  createPackages(data: [PackagesCreateInput]): [Package]
+  createPackage(data: PackageCreateInput!): Package
+  createPackages(data: [PackageCreateInput!]!): [Package]
   updatePackage(
     where: PackageWhereUniqueInput!
     data: PackageUpdateInput!
@@ -161,8 +153,8 @@ type Mutation {
   updatePackages(data: [PackageUpdateArgs!]!): [Package]
   deletePackage(where: PackageWhereUniqueInput!): Package
   deletePackages(where: [PackageWhereUniqueInput!]!): [Package]
-  createPerson(data: PersonCreateInput): Person
-  createPeople(data: [PeopleCreateInput]): [Person]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
   updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person

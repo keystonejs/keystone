@@ -111,10 +111,6 @@ input UserCreateInput {
   posts: PostRelateToManyInput
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
 type Post {
   id: ID!
   title: String
@@ -231,10 +227,6 @@ input PostCreateInput {
   tags: TagRelateToManyInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
 type Tag {
   id: ID!
   name: String
@@ -305,10 +297,6 @@ input TagCreateInput {
   posts: PostRelateToManyInput
 }
 
-input TagsCreateInput {
-  data: TagCreateInput
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -318,20 +306,20 @@ scalar JSON
   )
 
 type Mutation {
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createTag(data: TagCreateInput): Tag
-  createTags(data: [TagsCreateInput]): [Tag]
+  createTag(data: TagCreateInput!): Tag
+  createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag

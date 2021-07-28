@@ -67,10 +67,6 @@ export type TodoCreateInput = {
   readonly title?: Scalars['String'] | null;
 };
 
-export type TodosCreateInput = {
-  readonly data?: TodoCreateInput | null;
-};
-
 export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
 
 export type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';

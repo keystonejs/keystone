@@ -30,12 +30,7 @@ describe('Reconnect', () => {
     runner(async ({ context }) => {
       // Create some notes
       const [noteA, noteB, noteC, noteD] = await context.lists.Note.createMany({
-        data: [
-          { data: { title: 'A' } },
-          { data: { title: 'B' } },
-          { data: { title: 'C' } },
-          { data: { title: 'D' } },
-        ],
+        data: [{ title: 'A' }, { title: 'B' }, { title: 'C' }, { title: 'D' }],
       });
 
       // Create some users that does the linking

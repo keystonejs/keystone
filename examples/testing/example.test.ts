@@ -71,8 +71,8 @@ describe('Example tests using test runner', () => {
       // Create some users
       const [alice, bob] = await context.lists.Person.createMany({
         data: [
-          { data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' } },
-          { data: { name: 'Bob', email: 'bob@example.com', password: 'super-secret' } },
+          { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+          { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
         ],
         query: 'id name',
       });
