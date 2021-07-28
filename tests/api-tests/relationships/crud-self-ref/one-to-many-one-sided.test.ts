@@ -305,7 +305,7 @@ describe(`One-to-many relationships`, () => {
         const { friend, user } = await createUserAndFriend(context);
 
         // Run the query to disconnect the location from company
-        const _user = await context.lists.User.deleteOne({ id: user.id });
+        const _user = await context.lists.User.deleteOne({ where: { id: user.id } });
         expect(_user?.id).toBe(user.id);
 
         // Check the link has been broken
@@ -323,7 +323,7 @@ describe(`One-to-many relationships`, () => {
 
           // Delete company {name}
           const id = users.find(company => company.name === name)?.id;
-          const _user = await context.lists.User.deleteOne({ id });
+          const _user = await context.lists.User.deleteOne({ where: { id } });
           expect(_user?.id).toBe(id);
 
           // Check all the companies look how we expect
@@ -380,7 +380,7 @@ describe(`One-to-many relationships`, () => {
 
           // Delete friend {name}
           const id = users.find(user => user.name === name)?.id;
-          const _user = await context.lists.User.deleteOne({ id });
+          const _user = await context.lists.User.deleteOne({ where: { id } });
           expect(_user?.id).toBe(id);
 
           // Check all the companies look how we expect
