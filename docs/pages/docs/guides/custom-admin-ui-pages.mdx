@@ -40,6 +40,8 @@ export default function () {
 
 Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
 
+!> **This feature will improve over time**: It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
+
 x> **Not all Next.js exports are available:** Keystone **only** supports the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` are not supported.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
