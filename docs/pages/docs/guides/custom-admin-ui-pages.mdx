@@ -7,6 +7,8 @@ import { Alert } from '../../../components/primitives/Alert';
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of Next.js, it exposes the same pages directory for adding custom pages.
 
+!> **Note:** This feature will improve over time. It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
+
 To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
 Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
 The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
@@ -39,8 +41,6 @@ export default function () {
 ```
 
 Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
-
-!> **This feature will improve over time**: It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
 
 x> **Not all Next.js exports are available:** Keystone **only** supports the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` are not supported.
 
