@@ -156,14 +156,14 @@ type Mutation {
   createPackages(data: [PackagesCreateInput]): [Package]
   updatePackage(id: ID!, data: PackageUpdateInput): Package
   updatePackages(data: [PackageUpdateArgs]): [Package]
-  deletePackage(id: ID!): Package
-  deletePackages(ids: [ID!]): [Package]
+  deletePackage(where: PackageWhereUniqueInput!): Package
+  deletePackages(where: [PackageWhereUniqueInput!]!): [Package]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
   updatePerson(id: ID!, data: PersonUpdateInput): Person
   updatePeople(data: [PersonUpdateArgs]): [Person]
-  deletePerson(id: ID!): Person
-  deletePeople(ids: [ID!]): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
 }
 
 type Query {

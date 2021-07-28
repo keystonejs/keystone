@@ -233,14 +233,14 @@ type Mutation {
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostUpdateArgs]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   createAuthor(data: AuthorCreateInput): Author
   createAuthors(data: [AuthorsCreateInput]): [Author]
   updateAuthor(id: ID!, data: AuthorUpdateInput): Author
   updateAuthors(data: [AuthorUpdateArgs]): [Author]
-  deleteAuthor(id: ID!): Author
-  deleteAuthors(ids: [ID!]): [Author]
+  deleteAuthor(where: AuthorWhereUniqueInput!): Author
+  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
 }
 
 type Query {

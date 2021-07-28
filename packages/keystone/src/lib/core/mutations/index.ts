@@ -88,23 +88,22 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   const deleteOne = schema.field({
     type: list.types.output,
-    args: { id: schema.arg({ type: schema.nonNull(schema.ID) }) },
-    resolve(rootVal, { id }, context) {
-      return deletes.deleteOne({ id }, list, context);
+    args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
+    resolve(rootVal, { where }, context) {
+      return deletes.deleteOne(where, list, context);
     },
   });
 
   const deleteMany = schema.field({
     type: schema.list(list.types.output),
-    args: { ids: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }) },
-    resolve(rootVal, { ids }, context) {
+    args: {
+      where: schema.arg({
+        type: schema.nonNull(schema.list(schema.nonNull(list.types.uniqueWhere))),
+      }),
+    },
+    resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany(
-          (ids || []).map(id => ({ id })),
-          list,
-          context,
-          provider
-        )
+        deletes.deleteMany(where, list, context, provider)
       );
     },
   });

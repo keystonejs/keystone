@@ -355,20 +355,20 @@ type Mutation {
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UserUpdateArgs]): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
   createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
   updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
   updatePhoneNumbers(data: [PhoneNumberUpdateArgs]): [PhoneNumber]
-  deletePhoneNumber(id: ID!): PhoneNumber
-  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
+  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber]
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
   updatePost(id: ID!, data: PostUpdateInput): Post
   updatePosts(data: [PostUpdateArgs]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   authenticateUserWithPassword(
     email: String!
     password: String!

@@ -101,7 +101,13 @@ testModules
             ? `id name ${readFieldName || fieldName} { ${subfieldName} }`
             : `id name ${readFieldName || fieldName}`;
 
-          const withHelpers = (wrappedFn: (args: any) => void | Promise<void>) => {
+          const withHelpers = (
+            wrappedFn: (args: {
+              context: KeystoneContext;
+              listKey: string;
+              items: readonly Record<string, any>[];
+            }) => void | Promise<void>
+          ) => {
             return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
               const items = await context.lists[listKey].findMany({
                 orderBy: { name: 'asc' },
@@ -213,7 +219,7 @@ testModules
               keystoneTestWrapper(
                 withHelpers(async ({ context, items, listKey }) => {
                   const data = await context.lists[listKey].deleteOne({
-                    id: items[0].id,
+                    where: { id: items[0].id },
                     query,
                   });
                   expect(data).not.toBe(null);

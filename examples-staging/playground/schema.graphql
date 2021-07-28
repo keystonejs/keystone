@@ -66,8 +66,8 @@ type Mutation {
   createNotes(data: [NotesCreateInput]): [Note]
   updateNote(id: ID!, data: NoteUpdateInput): Note
   updateNotes(data: [NoteUpdateArgs]): [Note]
-  deleteNote(id: ID!): Note
-  deleteNotes(ids: [ID!]): [Note]
+  deleteNote(where: NoteWhereUniqueInput!): Note
+  deleteNotes(where: [NoteWhereUniqueInput!]!): [Note]
 }
 
 type Query {

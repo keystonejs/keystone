@@ -88,7 +88,7 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
   const cartItemIds = user.cart.map((cartItem: any) => cartItem.id);
   console.log('gonna create delete cartItems');
   await context.lists.CartItem.deleteMany({
-    ids: cartItemIds,
+    where: cartItemIds.map((id: string) => ({ id })),
   });
   return order;
 }

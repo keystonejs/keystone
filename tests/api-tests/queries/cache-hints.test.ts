@@ -303,7 +303,7 @@ describe('cache hints', () => {
       const { body } = await graphQLRequest({
         query: `
           mutation {
-            deletePost(id: "${posts[0].id}") {
+            deletePost(where: { id: "${posts[0].id}" }) {
               id
             }
           }

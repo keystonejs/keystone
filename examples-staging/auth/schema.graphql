@@ -91,8 +91,8 @@ type Mutation {
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UserUpdateArgs]): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   authenticateUserWithPassword(
     email: String!
     password: String!

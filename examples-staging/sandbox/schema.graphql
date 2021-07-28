@@ -223,14 +223,14 @@ type Mutation {
   createTodos(data: [TodosCreateInput]): [Todo]
   updateTodo(id: ID!, data: TodoUpdateInput): Todo
   updateTodos(data: [TodoUpdateArgs]): [Todo]
-  deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
   updateUser(id: ID!, data: UserUpdateInput): User
   updateUsers(data: [UserUpdateArgs]): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
 
 type Query {
