@@ -75,7 +75,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
       });
@@ -113,7 +113,7 @@ describe('non-matching filter', () => {
 
       // Create an item that does the linking
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { notes: { disconnect: [{ id: FAKE_ID }] } },
         query: 'id notes { id }',
       });
@@ -145,7 +145,7 @@ describe('non-matching filter', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { notes: { disconnect: [{ id: createNote.id }, { id: FAKE_ID }] } },
         query: 'id notes { id content }',
       });
@@ -180,7 +180,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         await context.lists.UserToNotesNoRead.updateOne({
-          id: createUser.id,
+          where: { id: createUser.id },
           data: { username: 'A thing', notes: { disconnect: [{ id: createNote.id }] } },
         });
 

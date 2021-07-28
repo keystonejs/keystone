@@ -169,8 +169,8 @@ input PostRelateToManyInput {
 }
 
 input UserUpdateArgs {
-  id: ID!
-  data: UserUpdateInput
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
@@ -242,8 +242,8 @@ input UserRelateToOneInput {
 }
 
 input PhoneNumberUpdateArgs {
-  id: ID!
-  data: PhoneNumberUpdateInput
+  where: PhoneNumberWhereUniqueInput!
+  data: PhoneNumberUpdateInput!
 }
 
 input PhoneNumberCreateInput {
@@ -318,8 +318,8 @@ input PostUpdateInput {
 }
 
 input PostUpdateArgs {
-  id: ID!
-  data: PostUpdateInput
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
@@ -341,20 +341,23 @@ scalar JSON
 type Mutation {
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UserUpdateArgs]): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createPhoneNumber(data: PhoneNumberCreateInput!): PhoneNumber
   createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber]
-  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
-  updatePhoneNumbers(data: [PhoneNumberUpdateArgs]): [PhoneNumber]
+  updatePhoneNumber(
+    where: PhoneNumberWhereUniqueInput!
+    data: PhoneNumberUpdateInput!
+  ): PhoneNumber
+  updatePhoneNumbers(data: [PhoneNumberUpdateArgs!]!): [PhoneNumber]
   deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
-  updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostUpdateArgs]): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   authenticateUserWithPassword(

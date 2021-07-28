@@ -69,7 +69,7 @@ const createReadData = async (context: KeystoneContext) => {
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: users[i].id }));
       await context.lists.User.updateOne({
-        id: users[j].id,
+        where: { id: users[j].id },
         data: { friends: { connect: ids } },
         query: 'id friends { name }',
       });
@@ -223,7 +223,7 @@ describe(`Many-to-many relationships`, () => {
         expect(user.friends).not.toBe(expect.anything());
 
         await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friends: { connect: [{ id: friend.id }] } },
           query: 'id friends { id }',
         });
@@ -241,7 +241,7 @@ describe(`Many-to-many relationships`, () => {
         let user = users[0];
         const friendName = sampleOne(alphanumGenerator);
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friends: { create: [{ name: friendName }] } },
           query: 'id friends { id name }',
         });
@@ -261,7 +261,7 @@ describe(`Many-to-many relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friends: { disconnect: [{ id: friend.id }] } },
           query: 'id friends { id name }',
         });
@@ -282,7 +282,7 @@ describe(`Many-to-many relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friends: { disconnectAll: true } },
           query: 'id friends { id name }',
         });
@@ -303,7 +303,7 @@ describe(`Many-to-many relationships`, () => {
 
         // Run the query with a null operation
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friends: null },
           query: 'id friends { id name }',
         });

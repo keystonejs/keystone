@@ -293,7 +293,7 @@ describe('maxDepth Limit', () => {
       const { body } = await graphQLRequest({
         query: `
             mutation {
-              updatePost( id: "foo", data: { title: "bar" }) {
+              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
                 author {
                   posts {
                     author {
@@ -495,22 +495,22 @@ describe('maxDefinitions Limit', () => {
         operationName: 'm1',
         query: `
             mutation m1 {
-              updatePost(id: "foo", data: { title: "bar" }) {
+              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
                 title
               }
             }
             mutation m2 {
-              updatePost(id: "foo", data: { title: "bar" }) {
+              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
                 title
               }
             }
             mutation m3 {
-              updatePost(id: "foo", data: { title: "bar" }) {
+              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
                 title
               }
             }
             mutation m4 {
-              updatePost(id: "foo", data: { title: "bar" }) {
+              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
                 title
               }
             }

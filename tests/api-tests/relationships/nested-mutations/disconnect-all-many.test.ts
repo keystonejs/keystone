@@ -75,7 +75,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { disconnectAll: true } },
         query: 'id notes { id content }',
       });
@@ -120,7 +120,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         await context.lists.UserToNotesNoRead.updateOne({
-          id: createUser.id,
+          where: { id: createUser.id },
           data: { username: 'A thing', notes: { disconnectAll: true } },
         });
 

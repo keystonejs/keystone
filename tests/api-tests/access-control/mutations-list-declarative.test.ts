@@ -27,14 +27,14 @@ describe('Access control - Imperative => declarative', () => {
       context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Setting up a bad name
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'bad' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
 
       // Now it has a bad name, we can't update it.
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID! $data: UserUpdateInput) { updateUser(id: $id data: $data) { id } }`,
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
         variables: { id: user.id, data: { name: 'good' } },
       });
 
@@ -92,20 +92,20 @@ describe('Access control - Imperative => declarative', () => {
       // Set up some of them with bad names
       await context.lists.User.updateMany({
         data: [
-          { id: users[1].id, data: { name: 'bad' } },
-          { id: users[3].id, data: { name: 'bad' } },
+          { where: { id: users[1].id }, data: { name: 'bad' } },
+          { where: { id: users[3].id }, data: { name: 'bad' } },
         ],
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UserUpdateArgs]) { updateUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserUpdateArgs!]!) { updateUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { id: users[0].id, data: { name: 'still good 1' } },
-            { id: users[1].id, data: { name: 'good' } },
-            { id: users[2].id, data: { name: 'still good 3' } },
-            { id: users[3].id, data: { name: 'good' } },
+            { where: { id: users[0].id }, data: { name: 'still good 1' } },
+            { where: { id: users[1].id }, data: { name: 'good' } },
+            { where: { id: users[2].id }, data: { name: 'still good 3' } },
+            { where: { id: users[3].id }, data: { name: 'good' } },
           ],
         },
       });

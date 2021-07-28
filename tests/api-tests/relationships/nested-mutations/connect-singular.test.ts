@@ -121,7 +121,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const _event = await context.lists.Event.updateOne({
-        id: event.id,
+        where: { id: event.id },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
       });
@@ -174,7 +174,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateEvent(
-                  id: "${createEvent.id}",
+                  where: { id: "${createEvent.id}" },
                   data: {
                     group: {
                       connect: { id: "${FAKE_ID}" }
@@ -244,7 +244,7 @@ describe('with access control', () => {
 
             // Update the item and link the relationship field
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
             });
@@ -287,7 +287,7 @@ describe('with access control', () => {
               query: `
                     mutation {
                       updateEventTo${group.name}(
-                        id: "${eventModel.id}"
+                        where: { id: "${eventModel.id}" }
                         data: {
                           title: "A thing",
                           group: { connect: { id: "${groupModel.id}" } }
