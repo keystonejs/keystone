@@ -107,7 +107,7 @@ describe('no access control', () => {
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },

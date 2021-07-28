@@ -184,7 +184,7 @@ describe('Example tests using test environment', () => {
 
   test('Update the persons email address', async () => {
     const { email } = await context.lists.Person.updateOne({
-      id: person.id,
+      where: { id: person.id },
       data: { email: 'new-email@example.com' },
       query: 'email',
     });

@@ -59,8 +59,8 @@ input PostUpdateInput {
 }
 
 input PostUpdateArgs {
-  id: ID!
-  data: PostUpdateInput
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
@@ -84,8 +84,8 @@ scalar JSON
 type Mutation {
   createPost(data: PostCreateInput): Post
   createPosts(data: [PostsCreateInput]): [Post]
-  updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostUpdateArgs]): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
 }

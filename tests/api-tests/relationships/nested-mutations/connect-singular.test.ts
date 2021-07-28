@@ -121,7 +121,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const _event = await context.lists.Event.updateOne({
-        id: event.id,
+        where: { id: event.id },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
       });
@@ -244,7 +244,7 @@ describe('with access control', () => {
 
             // Update the item and link the relationship field
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
             });

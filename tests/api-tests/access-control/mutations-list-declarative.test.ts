@@ -27,10 +27,10 @@ describe('Access control - Imperative => declarative', () => {
       context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Setting up a bad name
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'bad' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
 
       // Now it has a bad name, we can't update it.
       const { data, errors } = await context.graphql.raw({

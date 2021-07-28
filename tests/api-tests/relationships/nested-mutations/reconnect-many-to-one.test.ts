@@ -60,7 +60,7 @@ describe('Reconnect', () => {
       await (async () => {
         type T = { id: IdType; notes: { id: IdType; title: string }[] };
         const user = (await context.lists.User.updateOne({
-          id: bob.id,
+          where: { id: bob.id },
           data: { notes: { connect: [{ id: noteB.id }] } },
           query: 'id notes(orderBy: { title: asc }) { id title }',
         })) as T;

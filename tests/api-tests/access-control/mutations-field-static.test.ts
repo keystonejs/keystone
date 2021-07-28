@@ -66,7 +66,10 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better', other: 'b' } });
+      await context.lists.User.updateOne({
+        where: { id: user.id },
+        data: { name: 'better', other: 'b' },
+      });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({

@@ -86,7 +86,7 @@ export function getMagicAuthLinkSchema<I extends string>({
             // Save the token and related info back to the item
             const { token, itemId } = result;
             await dbItemAPI.updateOne({
-              id: `${itemId}`,
+              where: { id: `${itemId}` },
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
@@ -134,7 +134,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           // Update system state
           // Save the token and related info back to the item
           await dbItemAPI.updateOne({
-            id: result.item.id,
+            where: { id: result.item.id },
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
           });
 

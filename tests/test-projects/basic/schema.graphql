@@ -81,8 +81,8 @@ input PersonRelateToOneInput {
 }
 
 input TaskUpdateArgs {
-  id: ID!
-  data: TaskUpdateInput
+  where: TaskWhereUniqueInput!
+  data: TaskUpdateInput!
 }
 
 input TaskCreateInput {
@@ -153,8 +153,8 @@ input TaskRelateToManyInput {
 }
 
 input PersonUpdateArgs {
-  id: ID!
-  data: PersonUpdateInput
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
 }
 
 input PersonCreateInput {
@@ -177,14 +177,14 @@ scalar JSON
 type Mutation {
   createTask(data: TaskCreateInput): Task
   createTasks(data: [TasksCreateInput]): [Task]
-  updateTask(id: ID!, data: TaskUpdateInput): Task
-  updateTasks(data: [TaskUpdateArgs]): [Task]
+  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  updateTasks(data: [TaskUpdateArgs!]!): [Task]
   deleteTask(where: TaskWhereUniqueInput!): Task
   deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PersonUpdateArgs]): [Person]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
 }

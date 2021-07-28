@@ -240,9 +240,10 @@ describe('Authed', () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              await context
-                .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+              await context.sudo().lists[listKey].updateOne({
+                where: { id: item.id },
+                data: { [fieldName]: 'hello' },
+              });
               const _item = await context.lists[listKey].findOne({
                 where: { id: item.id },
                 query: `id ${fieldName}`,
@@ -257,7 +258,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               await context.sudo().lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'hello' },
               });
               const _items = await context.lists[listKey].findMany({ query: `id ${fieldName}` });
@@ -316,7 +317,7 @@ describe('Authed', () => {
               const listKey = nameFn[mode](access);
               const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
               const item = await context.lists[listKey].updateOne({
-                id: validId,
+                where: { id: validId },
                 data: { name: 'bar' },
                 query: 'id name',
               });
@@ -347,7 +348,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
                 query: `id ${access.read ? fieldName : ''}`,
               });
@@ -373,7 +374,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
               });
               expect(_item).not.toBe(null);

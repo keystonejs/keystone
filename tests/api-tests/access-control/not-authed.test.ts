@@ -193,7 +193,10 @@ describe(`Not authed`, () => {
               const singleQueryName = context.gqlNames(listKey).itemQueryName;
               await context
                 .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+                .lists[listKey].updateOne({
+                  where: { id: item.id },
+                  data: { [fieldName]: 'hello' },
+                });
               const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectAccessDenied(errors, [{ path: [singleQueryName, fieldName] }]);
@@ -212,7 +215,10 @@ describe(`Not authed`, () => {
               const allQueryName = context.gqlNames(listKey).listQueryName;
               await context
                 .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+                .lists[listKey].updateOne({
+                  where: { id: item.id },
+                  data: { [fieldName]: 'hello' },
+                });
               const query = `query { ${allQueryName} { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectAccessDenied(errors, [
@@ -242,7 +248,10 @@ describe(`Not authed`, () => {
               const singleQueryName = context.gqlNames(listKey).itemQueryName;
               await context
                 .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+                .lists[listKey].updateOne({
+                  where: { id: item.id },
+                  data: { [fieldName]: 'hello' },
+                });
               const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
               const { body } = await graphQLRequest({ query });
               expectGraphQLValidationError(body.errors, [
@@ -262,7 +271,10 @@ describe(`Not authed`, () => {
               const allQueryName = context.gqlNames(listKey).listQueryName;
               await context
                 .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+                .lists[listKey].updateOne({
+                  where: { id: item.id },
+                  data: { [fieldName]: 'hello' },
+                });
               const query = `query { ${allQueryName} { id ${fieldName} } }`;
               const { body } = await graphQLRequest({ query });
               expectGraphQLValidationError(body.errors, [

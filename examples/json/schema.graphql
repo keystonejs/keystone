@@ -59,8 +59,8 @@ input PersonRelateToOneInput {
 }
 
 input PackageUpdateArgs {
-  id: ID!
-  data: PackageUpdateInput
+  where: PackageWhereUniqueInput!
+  data: PackageUpdateInput!
 }
 
 input PackageCreateInput {
@@ -130,8 +130,8 @@ input PackageRelateToManyInput {
 }
 
 input PersonUpdateArgs {
-  id: ID!
-  data: PersonUpdateInput
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
 }
 
 input PersonCreateInput {
@@ -154,14 +154,17 @@ scalar JSON
 type Mutation {
   createPackage(data: PackageCreateInput): Package
   createPackages(data: [PackagesCreateInput]): [Package]
-  updatePackage(id: ID!, data: PackageUpdateInput): Package
-  updatePackages(data: [PackageUpdateArgs]): [Package]
+  updatePackage(
+    where: PackageWhereUniqueInput!
+    data: PackageUpdateInput!
+  ): Package
+  updatePackages(data: [PackageUpdateArgs!]!): [Package]
   deletePackage(where: PackageWhereUniqueInput!): Package
   deletePackages(where: [PackageWhereUniqueInput!]!): [Package]
   createPerson(data: PersonCreateInput): Person
   createPeople(data: [PeopleCreateInput]): [Person]
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
-  updatePeople(data: [PersonUpdateArgs]): [Person]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
 }

@@ -156,7 +156,7 @@ describe('no access control', () => {
 
       // Update an item that does the nested create
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
       });
@@ -168,7 +168,7 @@ describe('no access control', () => {
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const _user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },

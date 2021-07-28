@@ -63,8 +63,8 @@ input UserUpdateInput {
 }
 
 input UserUpdateArgs {
-  id: ID!
-  data: UserUpdateInput
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
@@ -89,8 +89,8 @@ scalar JSON
 type Mutation {
   createUser(data: UserCreateInput): User
   createUsers(data: [UsersCreateInput]): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UserUpdateArgs]): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   authenticateUserWithPassword(
