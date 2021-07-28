@@ -98,7 +98,7 @@ describe('Example tests using test runner', () => {
       {
         const { data, errors } = await context.graphql.raw({
           query: `mutation update($id: ID!) {
-            updateTask(id: $id data: { isComplete: true }) {
+            updateTask(where: { id: $id }, data: { isComplete: true }) {
               id
             }
           }`,
@@ -116,7 +116,7 @@ describe('Example tests using test runner', () => {
           .withSession({ itemId: alice.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
-              updateTask(id: $id data: { isComplete: true }) {
+              updateTask(where: { id: $id }, data: { isComplete: true }) {
                 id
               }
             }`,
@@ -132,7 +132,7 @@ describe('Example tests using test runner', () => {
           .withSession({ itemId: bob.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
-              updateTask(id: $id data: { isComplete: true }) {
+              updateTask(where: { id: $id }, data: { isComplete: true }) {
                 id
               }
             }`,
@@ -184,7 +184,7 @@ describe('Example tests using test environment', () => {
 
   test('Update the persons email address', async () => {
     const { email } = await context.lists.Person.updateOne({
-      id: person.id,
+      where: { id: person.id },
       data: { email: 'new-email@example.com' },
       query: 'email',
     });

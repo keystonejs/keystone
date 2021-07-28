@@ -142,7 +142,7 @@ export function Examples() {
       </Well>
       <Well
         grad="grad2"
-        heading="Custom Admin-UI Navigation"
+        heading="Custom Admin UI Navigation"
         href="/docs/guides/custom-admin-ui-navigation"
       >
         Adds a custom Navigation component to the Admin-UI. Builds on the Task Manager starter
