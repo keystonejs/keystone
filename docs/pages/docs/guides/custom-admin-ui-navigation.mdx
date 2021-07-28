@@ -52,10 +52,10 @@ This should be handled for you automatically by passing the prop into the `Navig
 
 Keystone exposes a variety of helper components to make building out your custom Admin-UI Navigation component easier. These are:
 
-- NavigationContainer
-- ListNavItems: A component that takes the `lists` array and renders out a list of NavItems.
-- ListNavItem: A component that takes a list item and renders a NavItem.
-- NavItem: A thin styling and accessibility wrapper around Next.js' Link component.
+- [NavigationContainer](#navigation-container)
+- [ListNavItems](#list-nav-items)
+- [ListNavItem](#list-nav-item)
+- [NavItem](#nav-item)
 
 #### NavigationContainer
 
@@ -103,6 +103,29 @@ const CustomNavigation = ({lists}) => (
 ```
 
 ![example of navigation without include prop values](/assets/guides/custom-admin-ui-navigation/listNavItems-without-include.png)
+
+#### ListNavItem
+
+The ListNavItem component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to NavItem.
+It also adds a custom `isSelected` expression optimised for keystone lists.
+
+```tsx
+import { ListNavItem } from '@keystone-next/keystone/admin-ui/components';
+```
+
+It expects the following props.
+
+```typescript
+type ListNavItemProps = {
+  list: ListMeta;
+};
+```
+
+The impetus behind `ListNavItem` is to have a higher-level abstraction that can allow users to not have to care about the contents and structure of our lists.
+This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually leveraging a lower level component.)
+
+Use this component when you want to have more granular control over rendering nav items from lists prop provided to the `Navigation` component by keystone,
+but would still like to not have to care about which list properties need to be associated with each NavItem prop.
 
 #### NavItem
 
