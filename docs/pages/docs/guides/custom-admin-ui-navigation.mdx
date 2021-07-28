@@ -163,7 +163,7 @@ c) Adds a new custom route to take us to the `keystonejs docs`.
 d) Renders out additional UI based on whether or not the user has signed in provided by the `authenticatedItem` prop.
 
 ```tsx
-// admin/components/CustomNavigation
+// admin/components/CustomNavigation.tsx
 import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
 import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 
@@ -180,12 +180,12 @@ export function CustomNavigation({ authenticatedItem, routes }: NavigationProps)
 }
 ```
 
-!> **Note** When opting into a custom Navigation component you will need to specify the a NavItem for the `Dashboard` page (the index route). Keysone doesn't provide this to you out of the box, as its not strictly a list concern, but doing so is relatively trivial as seen in the snippet above.
+!> **Note** When opting into a custom Navigation component you will need to specify a NavItem for the `Dashboard` page (the index route). Keysone doesn't provide this to you out of the box, as it's not strictly a list concern, but doing so is straight-forward as seen in the snippet above.
 
-If you want a custom order to your list based NavItems or want to insert more custom markup but would still prefer not to pass list properties to `NavItem` yourself, you can use the exported `ListNavItem` component as below:
+If you want a custom order to your list based NavItems or want to insert custom markup but would still prefer not to pass list properties to `NavItem` yourself, you can use the exported `ListNavItem` component as below:
 
 ```tsx
-// admin/components/CustomNavigation
+// admin/components/CustomNavigation.tsx
 import { NavigationContainer, NavItem, ListNavItem } from '@keystone-next/keystone/admin-ui/components';
 import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 
