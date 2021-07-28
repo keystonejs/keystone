@@ -81,7 +81,7 @@ testModules
             const { data, errors } = await context.graphql.raw({
               query: `
                   mutation {
-                    updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
+                    updateTest(where: { id: "${data0.id}" }, data: { name: "updated test entry", testField: null } ) { id }
                   }`,
             });
             expect(data).toEqual({ updateTest: null });
@@ -99,7 +99,7 @@ testModules
               },
             });
             const data = await context.lists.Test.updateOne({
-              id: data0.id,
+              where: { id: data0.id },
               data: { name: 'updated test entry' },
               query: 'id name',
             });

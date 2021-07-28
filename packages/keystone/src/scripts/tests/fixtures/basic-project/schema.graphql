@@ -41,8 +41,8 @@ input TodoUpdateInput {
 }
 
 input TodoUpdateArgs {
-  id: ID!
-  data: TodoUpdateInput
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
 }
 
 input TodoCreateInput {
@@ -60,8 +60,8 @@ scalar JSON
 type Mutation {
   createTodo(data: TodoCreateInput!): Todo
   createTodos(data: [TodoCreateInput!]!): [Todo]
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodoUpdateArgs]): [Todo]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
 }

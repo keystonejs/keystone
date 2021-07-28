@@ -25,7 +25,7 @@ async function addToCart(
     // 3. See if the current item is in their cart
     // 4. if itis, increment by 1
     return await context.db.lists.CartItem.updateOne({
-      id: existingCartItem.id,
+      where: { id: existingCartItem.id },
       data: { quantity: existingCartItem.quantity + 1 },
     });
   }
