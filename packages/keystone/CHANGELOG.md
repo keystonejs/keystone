@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 23.0.1
+
+### Patch Changes
+
+- [#6205](https://github.com/keystonejs/keystone/pull/6205) [`9c7430ec3`](https://github.com/keystonejs/keystone/commit/9c7430ec31cbe162fabd10f3778c4240ffc760cc) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fix nav path bug in Admin-UI.
+
 ## 23.0.0
 
 ### Major Changes
