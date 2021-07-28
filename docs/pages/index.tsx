@@ -174,7 +174,7 @@ export default function IndexPage() {
           </TweetBox>
           <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
             I use Keystone in my{' '}
-            <a href="https://advancedreact.com/" target="_blank" rel="noopener noreferrer">
+            <a href="https://advancedreact.com/friend/KEYSTONE" target="_blank" rel="noopener noreferrer">
               Advanced React
             </a>{' '}
             course because it’s super quick to get my content types up and running, add custom
