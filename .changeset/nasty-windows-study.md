@@ -13,10 +13,9 @@ input ItemRelateToOneForCreateInput {
   create: ItemCreateInput
   connect: ItemWhereUniqueInput
 }
-input ItemRelateToOneForCreateInput {
+input ItemRelateToOneForUpdateInput {
   create: ItemCreateInput
   connect: ItemWhereUniqueInput
   disconnect: Boolean
 }
 ```
-
