@@ -21,6 +21,45 @@ const runner = setupTestRunner({
           },
         },
       }),
+      Post: list({
+        fields: {
+          neverValid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('never change me');
+                }
+              },
+            },
+          }),
+          sometimesValid: text({
+            hooks: {
+              validateInput: ({ resolvedData, addValidationError }) => {
+                if (resolvedData.sometimesValid === 'invalid') {
+                  addValidationError('not this time');
+                }
+              },
+            },
+          }),
+          doubleInvalid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('first error');
+                  addValidationError('second error');
+                }
+              },
+            },
+          }),
+          noDelete: text({
+            hooks: {
+              validateDelete: ({ addValidationError }) => {
+                addValidationError('I am invincible!');
+              },
+            },
+          }),
+        },
+      }),
     }),
   }),
 });
@@ -230,6 +269,35 @@ describe('List Hooks: #validateInput()', () => {
         query: 'id name',
       });
       expect(_users.map(({ name }) => name)).toEqual(['good 5', 'no delete 1', 'no delete 2']);
+    })
+  );
+});
+
+describe('Field Hooks: #validateInput()', () => {
+  test(
+    'update',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID! $data: PostUpdateInput!) { updatePost(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: post.id, data: {} },
+      });
+      expectValidationError(errors, [{ path: ['updatePost'] }]);
+      expect(data).toEqual({ updatePost: null });
+    })
+  );
+
+  test(
+    'delete',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
+        variables: { id: post.id },
+      });
+      expectValidationError(errors, [{ path: ['deletePost'] }]);
+      expect(data).toEqual({ deletePost: null });
     })
   );
 });
