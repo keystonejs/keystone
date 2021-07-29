@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 23.0.2
+
+### Patch Changes
+
+- [#6216](https://github.com/keystonejs/keystone/pull/6216) [`c176d9b3e`](https://github.com/keystonejs/keystone/commit/c176d9b3e46df289e1e376c4a327bf407b5bf211) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Resolved nav bug with isSelected state, add Dashboard route back to default Navigation.
+
 ## 23.0.1
 
 ### Patch Changes
