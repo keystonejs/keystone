@@ -62,7 +62,7 @@ Keystone exposes a variety of helper components to make building out your custom
 This component renders containing markup around your navigation links, as well as as the different states of the `authenticatedItem` prop.
 
 ```tsx
-import { NavigationContainer} from '@keystone-next/keystone/admin-ui/components'
+import { NavigationContainer } from '@keystone-next/keystone/admin-ui/components'
 ```
 
 #### ListNavItems
@@ -84,9 +84,9 @@ If an include prop is supplied, the component will only render out lists that ma
 
 ```tsx
 const CustomNavigation = ({ lists }) => (
-  <NavContainer>
+  <NavigationContainer>
     <ListNavItems lists={lists} include={["Task"]} />
-  </NavContainer>
+  </NavigationContainer>
 )
 ```
 
@@ -95,10 +95,10 @@ const CustomNavigation = ({ lists }) => (
 Otherwise, all lists will be added.
 
 ```tsx
-const CustomNavigation = ({lists}) => (
-  <NavContainer>
+const CustomNavigation = ({ lists }) => (
+  <NavigationContainer>
     <ListNavItems lists={lists}/>
-  </NavContainer>
+  </NavigationContainer>
 )
 ```
 
