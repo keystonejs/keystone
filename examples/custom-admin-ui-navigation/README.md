@@ -71,7 +71,7 @@ type AuthenticatedItem =
 
 You will need to reasonably account for all of these states if you would like to role your own AuthenticatedItem component but that's out of the scope for this particular example.
 
-### routes prop
+### lists prop
 
 The `lists` prop is an array of keystone list objects.
 
