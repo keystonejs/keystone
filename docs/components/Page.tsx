@@ -37,7 +37,9 @@ function OpenGraph({
   ogImage?: string;
 }) {
   const siteUrl = process.env.siteUrl;
-  // add fallback image using router
+  if (!ogImage) {
+    ogImage = `${siteUrl}/og-image-landscape.png`;
+  }
   return (
     <Fragment>
       <title>{title}</title>
@@ -45,12 +47,12 @@ function OpenGraph({
       <meta key="og:site_name" property="og:site_name" content={title} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={`${siteUrl}/${ogImage}`} />
+      <meta property="og:image" content={`${ogImage}`} />
       <meta property="og:image:width" content="761" />
       <meta property="og:image:height" content="410" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}/${ogImage}`} />
+      <meta name="twitter:image" content={`${ogImage}`} />
     </Fragment>
   );
 }
