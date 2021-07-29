@@ -1,0 +1,15 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 29th July 2021
+
+## What's New
+
+Custom **navigation**, **pages** and **logo** in this big **Admin UI** themed release! <Emoji symbol="🎛️" alt="Control knobs" />
+
+[enter content]
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
+
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }
