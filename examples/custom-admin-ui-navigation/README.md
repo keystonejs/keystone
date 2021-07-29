@@ -1,4 +1,4 @@
-## Feature Example - Custom Field View
+## Feature Example - Custom Admin UI Navigation
 
 This project demonstrates how to create a custom Navigation component for use in the Admin UI. It builds on the [Task Manager](../task-manager) starter project.
 
