@@ -142,7 +142,8 @@ type ListNavItemProps = {
 
 The ListNavItem component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to NavItem. It also adds a custom `isSelected` expression optimised for keystone lists.
 
-The impetus behind `ListNavItem` is to have a higher-level abstraction that can allow users to not have to care about the contents and structure of our lists. This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually leveraging a lower level component.)
+The idea behind `ListNavItem` is to have a higher-level abstraction that makes it easier to render navigation links for lists consistently.
+This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually with a lower level component.)
 
 ### NavItem
 
