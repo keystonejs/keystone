@@ -27,7 +27,12 @@ export default function ForOrganisations() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="KeystoneJS for Content Management">
+    <Page
+      title={'KeystoneJS for Content Management'}
+      description={
+        'Discover how Keystone’s Admin UI is a natural extension of how you work in code, and has the flexibility you need to enable content creatives.'
+      }
+    >
       <MWrapper>
         <Pill grad="grad5">Keystone for content management</Pill>
         <IntroWrapper>

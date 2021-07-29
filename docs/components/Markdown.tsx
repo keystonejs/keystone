@@ -19,11 +19,18 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export function Markdown({ children, ...props }: { children: ReactNode }) {
+export function Markdown({
+  children,
+  description,
+  ...props
+}: {
+  children: ReactNode;
+  description: string;
+}) {
   const headings = getHeadings(children);
 
   return (
-    <DocsPage headings={headings} title={headings[0].label} {...props}>
+    <DocsPage headings={headings} title={headings[0].label} description={description} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );

@@ -95,7 +95,10 @@ export default function DS() {
   let firstGrad: string;
 
   return (
-    <Page title="Design System Components and Tokens">
+    <Page
+      title={'Design System Components and Tokens'}
+      description={'Design System Components & Tokens for the KeystoneJS website'}
+    >
       <Type as="h1" look="heading92" margin={'var(--space-large) 0'}>
         Design System
       </Type>

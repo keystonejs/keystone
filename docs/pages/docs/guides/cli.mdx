@@ -186,4 +186,4 @@ yarn keystone-next start
 - If you promote your build through separate environments in a pipeline (e.g testing &rarr; staging &rarr; production) you should run migrations during the **promote** step and **not** as part of the build script.
 - It is important you do **not run migrations against your production database from staging builds**. If you have staging or preview environments set up in production, make sure they are not pointed to your production database.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to use Keystone's command line interface (CLI) to develop, build, and deploy your Keystone projects.">{children}</Markdown>;
