@@ -119,7 +119,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
-      'has no effect when using disconnect: true,
+      'has no effect when using disconnect: true',
       runner(async ({ context }) => {
         const groupName = sampleOne(alphanumGenerator);
 
