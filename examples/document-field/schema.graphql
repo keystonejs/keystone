@@ -80,14 +80,13 @@ input PostUpdateInput {
   status: PostStatusType
   content: JSON
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForUpdateInput
 }
 
-input AuthorRelateToOneInput {
+input AuthorRelateToOneForUpdateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -101,7 +100,12 @@ input PostCreateInput {
   status: PostStatusType
   content: JSON
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForCreateInput
+}
+
+input AuthorRelateToOneForCreateInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
 }
 
 type Author {
