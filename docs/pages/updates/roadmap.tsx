@@ -162,7 +162,7 @@ function RoadmapItem({ title, status = 'not started', children }: RoadmapItemPro
   );
 }
 
-export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
+export default function Roadmap() {
   const mq = useMediaQuery();
 
   return (
@@ -171,7 +171,6 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
       noProse
       title={'Roadmap'}
       description={'Discover where KeystoneJS is headed, and why we’re going there.'}
-      {...props}
     >
       <Type as="h1" look="heading64">
         Roadmap

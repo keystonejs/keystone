@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
@@ -119,7 +119,7 @@ function Box({ link, heading, children, ...props }: BoxProps) {
   );
 }
 
-export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
+export default function WhatsNew() {
   const mq = useMediaQuery();
 
   return (
@@ -128,7 +128,6 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
       noProse
       title={'Latest News'}
       description={'What’s new with Keystone. A snapshot of announcements and recent releases.'}
-      {...props}
     >
       <Type as="h1" look="heading64">
         Latest News
