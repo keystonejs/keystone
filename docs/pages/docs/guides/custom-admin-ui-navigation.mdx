@@ -67,7 +67,7 @@ import { NavigationContainer } from '@keystone-next/keystone/admin-ui/components
 
 #### ListNavItems
 
-This component takes the provided Array of `lists` and renders a list of NavItems.
+This component takes the provided Array of `lists` and renders a list of `NavItems`.
 
 ```tsx
 import { ListNavItems } from '@keystone-next/keystone/admin-ui/components'
@@ -106,8 +106,8 @@ const CustomNavigation = ({ lists }) => (
 
 #### ListNavItem
 
-The ListNavItem component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to NavItem.
-It also adds a custom `isSelected` expression optimised for keystone lists.
+The `ListNavItem` component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to `NavItem`.
+It also adds a custom `isSelected` expression optimised for Keystone lists.
 
 ```tsx
 import { ListNavItem } from '@keystone-next/keystone/admin-ui/components';
@@ -124,8 +124,8 @@ type ListNavItemProps = {
 The idea behind `ListNavItem` is to have a higher-level abstraction that makes it easier to render navigation links for lists consistently.
 This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually with a lower level component.)
 
-Use this component when you want to have more granular control over rendering nav items from lists prop provided to the `Navigation` component by keystone,
-but would still like to not have to worry about which list properties need to be associated with each NavItem prop.
+Use this component when you want to have more granular control over rendering nav items from lists prop provided to the `Navigation` component by Keystone,
+but would still like to not have to worry about which list properties need to be associated with each `NavItem` prop.
 
 #### NavItem
 
@@ -135,7 +135,7 @@ This component is a thin styling and accessibility wrapper around the Link compo
 import { NavItem } from '@keystone-next/keystone/admin-ui/components'
 ```
 
-It expects the following props.
+It expects the following props:
 
 ```ts
 type NavItemProps = {
@@ -158,7 +158,7 @@ a) Has the styling constraints of the default Admin UI navigation
 
 b) Renders out all the necessary routes generated from our Keystone `lists`
 
-c) Adds a new custom route to take us to the `keystonejs docs`.
+c) Adds a new custom route to take us to the Keystone docs.
 
 d) Renders additional UI based on whether or not the user has signed in provided by the `authenticatedItem` prop.
 
@@ -180,7 +180,7 @@ export function CustomNavigation({ authenticatedItem, routes }: NavigationProps)
 }
 ```
 
-!> **Note** When opting into a custom Navigation component you will need to specify a NavItem for the `Dashboard` page (the index route). Keysone doesn't provide this to you out of the box, as it's not strictly a list concern, but doing so is straight-forward as seen in the snippet above.
+!> **Note** When opting into a custom Navigation component you will need to specify a `NavItem` for the `Dashboard` page (the index route). Keystone doesn't provide this to you out of the box, as it's not strictly a list concern, but doing so is straight-forward as seen in the snippet above.
 
 If you want a custom order to your list based NavItems or want to insert custom markup but would still prefer not to pass list properties to `NavItem` yourself, you can use the exported `ListNavItem` component as below:
 
@@ -231,7 +231,7 @@ export  const component: AdminConfig['components'] = {
 }
 ```
 
-Once this is done, you should see your custom navigation component in your Admin UI Navigation
+Once this is done, you should see your custom navigation component in your Admin UI Navigation.
 ![finished custom navigation example](/assets/guides/custom-admin-ui-navigation/final-result.png)
 
 export default ({ children }) => <Markdown>{children}</Markdown>
