@@ -39,7 +39,8 @@ describe('errors on incomplete data', () => {
       expectRelationshipError(errors, [
         {
           path: ['createEvent'],
-          message: 'Nested mutation operation invalid for Event.group<Group>',
+          message:
+            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })
@@ -65,7 +66,8 @@ describe('errors on incomplete data', () => {
       expectRelationshipError(errors, [
         {
           path: ['createEvent'],
-          message: 'Nested mutation operation invalid for Event.group<Group>',
+          message:
+            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })
