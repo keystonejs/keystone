@@ -1,5 +1,5 @@
 export const proseStyles = {
-  color: 'var(--muted)',
+  color: 'var(--text)',
   'img, video': {
     maxWidth: '100%',
     height: 'auto',
