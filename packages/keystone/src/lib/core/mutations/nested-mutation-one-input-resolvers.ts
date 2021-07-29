@@ -55,7 +55,9 @@ export function resolveRelateToOneForCreateInput(
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
-      throw new Error(`Nested mutation operation invalid for ${target}`);
+      throw new Error(
+        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+      );
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
   };
@@ -68,20 +70,15 @@ export function resolveRelateToOneForUpdateInput(
   target: string
 ) {
   return async (value: _UpdateValueType) => {
-    if (value.connect && value.create) {
-      throw new Error(`Nested mutation operation invalid for ${target}`);
+    if (Object.keys(value).length !== 1) {
+      throw new Error(
+        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+      );
     }
 
     if (value.connect || value.create) {
       return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
     } else if (value.disconnect) {
-      try {
-        await context.sudo().db.lists[foreignList.listKey].findOne({ where: value.disconnect });
-      } catch (err) {
-        return;
-      }
-      return { disconnect: true };
-    } else if (value.disconnectAll) {
       return { disconnect: true };
     }
   };

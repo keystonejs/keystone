@@ -50,7 +50,8 @@ export type GqlNames = {
   createInputName: string;
   updateManyInputName: string;
   relateToManyInputName: string;
-  relateToOneInputName: string;
+  relateToOneForCreateInputName: string;
+  relateToOneForUpdateInputName: string;
 };
 
 export type MaybePromise<T> = T | Promise<T>;

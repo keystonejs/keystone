@@ -512,13 +512,7 @@ export const controller = (
         }
       } else if (state.kind === 'one') {
         if (state.initialValue && !state.value) {
-          return {
-            [config.path]: {
-              disconnect: {
-                id: state.initialValue.id,
-              },
-            },
-          };
+          return { [config.path]: { disconnect: true } };
         } else if (state.value && state.value.id !== state.initialValue?.id) {
           return {
             [config.path]: {
@@ -552,11 +546,7 @@ export const controller = (
             },
           };
         } else if (disconnect.length) {
-          return {
-            [config.path]: {
-              disconnect: disconnect[0],
-            },
-          };
+          return { [config.path]: { disconnect: true } };
         }
       }
       return {};

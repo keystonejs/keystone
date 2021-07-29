@@ -248,7 +248,7 @@ describe('with access control', () => {
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
               expectGraphQLValidationError(body.errors, [
                 {
-                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneForCreateInput".`,
                 },
               ]);
             } else {
@@ -310,7 +310,7 @@ describe('with access control', () => {
 
               expectGraphQLValidationError(body.errors, [
                 {
-                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneForUpdateInput".`,
                 },
               ]);
             } else {

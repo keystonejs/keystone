@@ -112,7 +112,7 @@ input UserUpdateInput {
   password: String
   cart: CartItemRelateToManyInput
   orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
+  role: RoleRelateToOneForUpdateInput
   products: ProductRelateToManyInput
   passwordResetToken: String
   passwordResetIssuedAt: String
@@ -133,11 +133,10 @@ input OrderRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input RoleRelateToOneInput {
+input RoleRelateToOneForUpdateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input ProductRelateToManyInput {
@@ -158,11 +157,16 @@ input UserCreateInput {
   password: String
   cart: CartItemRelateToManyInput
   orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
+  role: RoleRelateToOneForCreateInput
   products: ProductRelateToManyInput
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
+}
+
+input RoleRelateToOneForCreateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
 }
 
 type Product {
@@ -231,24 +235,22 @@ input ProductOrderByInput {
 input ProductUpdateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForUpdateInput
   status: String
   price: Int
-  user: UserRelateToOneInput
+  user: UserRelateToOneForUpdateInput
 }
 
-input ProductImageRelateToOneInput {
+input ProductImageRelateToOneForUpdateInput {
   create: ProductImageCreateInput
   connect: ProductImageWhereUniqueInput
-  disconnect: ProductImageWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input ProductUpdateArgs {
@@ -259,10 +261,20 @@ input ProductUpdateArgs {
 input ProductCreateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForCreateInput
   status: String
   price: Int
-  user: UserRelateToOneInput
+  user: UserRelateToOneForCreateInput
+}
+
+input ProductImageRelateToOneForCreateInput {
+  create: ProductImageCreateInput
+  connect: ProductImageWhereUniqueInput
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 type ProductImage {
@@ -358,7 +370,7 @@ input ProductImageOrderByInput {
 input ProductImageUpdateInput {
   image: Upload
   altText: String
-  product: ProductRelateToOneInput
+  product: ProductRelateToOneForUpdateInput
 }
 
 """
@@ -366,11 +378,10 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
-input ProductRelateToOneInput {
+input ProductRelateToOneForUpdateInput {
   create: ProductCreateInput
   connect: ProductWhereUniqueInput
-  disconnect: ProductWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input ProductImageUpdateArgs {
@@ -381,7 +392,12 @@ input ProductImageUpdateArgs {
 input ProductImageCreateInput {
   image: Upload
   altText: String
-  product: ProductRelateToOneInput
+  product: ProductRelateToOneForCreateInput
+}
+
+input ProductRelateToOneForCreateInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
 }
 
 type CartItem {
@@ -427,8 +443,8 @@ input CartItemOrderByInput {
 
 input CartItemUpdateInput {
   quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
+  product: ProductRelateToOneForUpdateInput
+  user: UserRelateToOneForUpdateInput
 }
 
 input CartItemUpdateArgs {
@@ -438,8 +454,8 @@ input CartItemUpdateArgs {
 
 input CartItemCreateInput {
   quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
+  product: ProductRelateToOneForCreateInput
+  user: UserRelateToOneForCreateInput
 }
 
 type OrderItem {
@@ -512,17 +528,16 @@ input OrderItemOrderByInput {
 input OrderItemUpdateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForUpdateInput
   price: Int
   quantity: Int
-  order: OrderRelateToOneInput
+  order: OrderRelateToOneForUpdateInput
 }
 
-input OrderRelateToOneInput {
+input OrderRelateToOneForUpdateInput {
   create: OrderCreateInput
   connect: OrderWhereUniqueInput
-  disconnect: OrderWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input OrderItemUpdateArgs {
@@ -533,10 +548,15 @@ input OrderItemUpdateArgs {
 input OrderItemCreateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForCreateInput
   price: Int
   quantity: Int
-  order: OrderRelateToOneInput
+  order: OrderRelateToOneForCreateInput
+}
+
+input OrderRelateToOneForCreateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
 }
 
 type Order {
@@ -599,7 +619,7 @@ input OrderOrderByInput {
 input OrderUpdateInput {
   total: Int
   items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
+  user: UserRelateToOneForUpdateInput
   charge: String
 }
 
@@ -618,7 +638,7 @@ input OrderUpdateArgs {
 input OrderCreateInput {
   total: Int
   items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
+  user: UserRelateToOneForCreateInput
   charge: String
 }
 
