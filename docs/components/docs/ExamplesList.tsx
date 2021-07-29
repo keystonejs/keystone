@@ -145,7 +145,7 @@ export function Examples() {
         heading="Custom Admin UI Navigation"
         href="/docs/guides/custom-admin-ui-navigation"
       >
-        Adds a custom Navigation component to the Admin-UI. Builds on the Task Manager starter
+        Adds a custom Navigation component to the Admin UI. Builds on the Task Manager starter
         project.
       </Well>
     </div>
