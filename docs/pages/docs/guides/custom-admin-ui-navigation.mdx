@@ -2,7 +2,7 @@ import { Markdown } from '../../../components/Markdown';
 
 # Custom Admin UI Navigation
 
-In this guide, we'll show you how to create a custom Navigation component with custom routes to be rendered in the Admin-UI.
+In this guide, we'll show you how to create a custom Navigation component with custom routes to be rendered in the Admin UI.
 
 ## Creating your custom Navigation component
 
@@ -23,7 +23,7 @@ type NavigationProps {
 type ListMeta = {
   // key is used as the unique key for each navigation item in React.
   key: string;
-  // href to the list route in the Admin-UI.
+  // href to the list route in the Admin UI.
   path: string;
   // Used as the label for each navigation item.
   label: string;
@@ -231,7 +231,7 @@ export  const component: AdminConfig['components'] = {
 }
 ```
 
-Once this is done, you should see your custom navigation component in your Admin-UI Navigation
+Once this is done, you should see your custom navigation component in your Admin UI Navigation
 ![finished custom navigation example](/assets/guides/custom-admin-ui-navigation/final-result.png)
 
 export default ({ children }) => <Markdown>{children}</Markdown>
