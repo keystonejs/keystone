@@ -240,9 +240,10 @@ describe('Authed', () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              await context
-                .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+              await context.sudo().lists[listKey].updateOne({
+                where: { id: item.id },
+                data: { [fieldName]: 'hello' },
+              });
               const _item = await context.lists[listKey].findOne({
                 where: { id: item.id },
                 query: `id ${fieldName}`,
@@ -257,7 +258,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               await context.sudo().lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'hello' },
               });
               const _items = await context.lists[listKey].findMany({ query: `id ${fieldName}` });
@@ -285,7 +286,7 @@ describe('Authed', () => {
           .forEach(access => {
             test(`denies missing: ${JSON.stringify(access)}`, async () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
-              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[provider]}", data: { name: "bar" }) { id } }`;
+              const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID[provider]}" }, data: { name: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, updateMutationName);
             });
@@ -294,7 +295,7 @@ describe('Authed', () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
               const singleQueryName = nameFn[mode](access);
               const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello')?.id;
-              const query = `mutation { ${updateMutationName}(id: "${invalidId}", data: { name: "bar" }) { id name } }`;
+              const query = `mutation { ${updateMutationName}(where: { id: "${invalidId}" }, data: { name: "bar" }) { id name } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expect(errors).toBe(undefined);
@@ -303,7 +304,7 @@ describe('Authed', () => {
                 expect(data?.[updateMutationName].name).toEqual('bar');
                 // Reset data
                 await context.sudo().graphql.raw({
-                  query: `mutation { ${updateMutationName}(id: "${invalidId}", data: { name: "Hello" }) { id name } }`,
+                  query: `mutation { ${updateMutationName}(where: { id: "${invalidId}" }, data: { name: "Hello" }) { id name } }`,
                 });
               } else {
                 expectNoAccess(data, errors, updateMutationName);
@@ -316,7 +317,7 @@ describe('Authed', () => {
               const listKey = nameFn[mode](access);
               const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
               const item = await context.lists[listKey].updateOne({
-                id: validId,
+                where: { id: validId },
                 data: { name: 'bar' },
                 query: 'id name',
               });
@@ -325,7 +326,7 @@ describe('Authed', () => {
               expect(item.name).toEqual('bar');
               // Reset data
               await context.sudo().graphql.raw({
-                query: `mutation { ${updateMutationName}(id: "${validId}", data: { name: "Hello" }) { id name } }`,
+                query: `mutation { ${updateMutationName}(where: { id: "${validId}" }, data: { name: "Hello" }) { id name } }`,
               });
             });
           });
@@ -347,7 +348,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
                 query: `id ${access.read ? fieldName : ''}`,
               });
@@ -373,7 +374,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
               });
               expect(_item).not.toBe(null);

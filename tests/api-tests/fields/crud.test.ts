@@ -162,7 +162,7 @@ testModules
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
                     const data = await context.lists[listKey].updateOne({
-                      id: items[0].id,
+                      where: { id: items[0].id },
                       data: { [fieldName]: exampleValue2(matrixValue) },
                       query,
                     });
@@ -181,7 +181,7 @@ testModules
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
                     const data = await context.lists[listKey].updateOne({
-                      id: items[0].id,
+                      where: { id: items[0].id },
                       data: { [fieldName]: null },
                       query,
                     });
@@ -196,7 +196,7 @@ testModules
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
                     const data = await context.lists[listKey].updateOne({
-                      id: items[0].id,
+                      where: { id: items[0].id },
                       data: { name: 'Updated value' },
                       query,
                     });

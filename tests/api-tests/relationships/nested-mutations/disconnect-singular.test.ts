@@ -61,7 +61,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: createGroup.id } } },
         query: 'id group { id }',
       });
@@ -103,7 +103,7 @@ describe('no access control', () => {
 
       // Create an item that does the linking
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: FAKE_ID } } },
         query: 'id group { id }',
       });
@@ -126,7 +126,7 @@ describe('no access control', () => {
 
       // Create an item that does the linking
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: FAKE_ID } } },
         query: 'id group { id }',
       });
@@ -160,7 +160,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         await context.lists.EventToGroupNoRead.updateOne({
-          id: createEvent.id,
+          where: { id: createEvent.id },
           data: { group: { disconnect: { id: createGroup.id } } },
         });
 

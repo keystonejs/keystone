@@ -131,7 +131,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
       });
@@ -143,7 +143,7 @@ describe('no access control', () => {
 
       // Update the item and link multiple relationship fields
       const _user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
@@ -179,7 +179,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
       });
@@ -218,11 +218,11 @@ describe('no access control', () => {
       const users = await context.lists.User.updateMany({
         data: [
           {
-            id: createUser.id,
+            where: { id: createUser.id },
             data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
           },
           {
-            id: createUser2.id,
+            where: { id: createUser2.id },
             data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
           },
         ],
@@ -276,7 +276,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateUser(
-                  id: "${createUser.id}",
+                  where: { id: "${createUser.id}" },
                   data: {
                     notes: {
                       connect: [{ id: "${FAKE_ID}" }]
@@ -350,7 +350,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { connect: [{ id: "${createNote.id}" }] }
@@ -408,7 +408,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         const data = await context.lists.UserToNotesNoCreate.updateOne({
-          id: createUser.id,
+          where: { id: createUser.id },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         });
 

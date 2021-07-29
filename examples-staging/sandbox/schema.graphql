@@ -88,8 +88,8 @@ input UserRelateToOneInput {
 }
 
 input TodoUpdateArgs {
-  id: ID!
-  data: TodoUpdateInput
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
 }
 
 input TodoCreateInput {
@@ -191,8 +191,8 @@ input TodoRelateToManyInput {
 }
 
 input UserUpdateArgs {
-  id: ID!
-  data: UserUpdateInput
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
@@ -213,14 +213,14 @@ scalar JSON
 type Mutation {
   createTodo(data: TodoCreateInput!): Todo
   createTodos(data: [TodoCreateInput!]!): [Todo]
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodoUpdateArgs]): [Todo]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UserUpdateArgs]): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
