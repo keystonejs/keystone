@@ -26,13 +26,6 @@ input NoteWhereUniqueInput {
   id: ID
 }
 
-enum SortNotesBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-}
-
 input NoteOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -47,17 +40,13 @@ input NoteUpdateInput {
   label: String
 }
 
-input NotesUpdateInput {
-  id: ID!
-  data: NoteUpdateInput
+input NoteUpdateArgs {
+  where: NoteWhereUniqueInput!
+  data: NoteUpdateInput!
 }
 
 input NoteCreateInput {
   label: String
-}
-
-input NotesCreateInput {
-  data: NoteCreateInput
 }
 
 """
@@ -68,42 +57,23 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
-}
-
 type Mutation {
-  createNote(data: NoteCreateInput): Note
-  createNotes(data: [NotesCreateInput]): [Note]
-  updateNote(id: ID!, data: NoteUpdateInput): Note
-  updateNotes(data: [NotesUpdateInput]): [Note]
-  deleteNote(id: ID!): Note
-  deleteNotes(ids: [ID!]): [Note]
+  createNote(data: NoteCreateInput!): Note
+  createNotes(data: [NoteCreateInput!]!): [Note]
+  updateNote(where: NoteWhereUniqueInput!, data: NoteUpdateInput!): Note
+  updateNotes(data: [NoteUpdateArgs!]!): [Note]
+  deleteNote(where: NoteWhereUniqueInput!): Note
+  deleteNotes(where: [NoteWhereUniqueInput!]!): [Note]
 }
 
 type Query {
-  allNotes(
+  notes(
     where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [NoteOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Note!]
-  Note(where: NoteWhereUniqueInput!): Note
-  _allNotesMeta(
-    where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [NoteOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use notesCount instead."
-    )
+  note(where: NoteWhereUniqueInput!): Note
   notesCount(where: NoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

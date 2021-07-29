@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectAccessDenied, expectNestedError } from '../../utils';
+import { apiTestConfig, expectAccessDenied, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -156,7 +156,7 @@ describe('no access control', () => {
 
       // Update an item that does the nested create
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
       });
@@ -168,7 +168,7 @@ describe('no access control', () => {
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const _user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -260,7 +260,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: [{ content: "${noteContent}" }] }
@@ -298,7 +298,7 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoCreate'],
             message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
@@ -332,7 +332,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoCreate(
-                    id: "${createUserToNotesNoCreate.id}"
+                    where: { id: "${createUserToNotesNoCreate.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: { content: "${noteContent}" } }
@@ -345,7 +345,7 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoCreate'],
             message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',

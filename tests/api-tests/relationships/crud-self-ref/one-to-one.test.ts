@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
 
@@ -50,8 +50,8 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
   const { data } = (await context.graphql.raw({
     query: `
       {
-        User(where: { id: "${userId}"} ) { id friend { id } }
-        Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
+        User: user(where: { id: "${userId}"} ) { id friend { id } }
+        Friend: user(where: { id: "${friendId}"} ) { id friendOf { id } }
       }`,
   })) as T;
   return data;
@@ -320,7 +320,7 @@ describe(`One-to-one relationships`, () => {
         expect(friend.friendOf).not.toBe(expect.anything());
 
         await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { connect: { id: friend.id } } },
           query: 'id friend { id }',
         });
@@ -339,7 +339,7 @@ describe(`One-to-one relationships`, () => {
         let user = users[0];
         const friendName = sampleOne(alphanumGenerator);
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { create: { name: friendName } } },
           query: 'id friend { id name }',
         });
@@ -360,7 +360,7 @@ describe(`One-to-one relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { disconnect: { id: friend.id } } },
           query: 'id friend { id name }',
         });
@@ -383,7 +383,7 @@ describe(`One-to-one relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { disconnectAll: true } },
           query: 'id friend { id name }',
         });
@@ -406,7 +406,7 @@ describe(`One-to-one relationships`, () => {
 
         // Run the query with a null operation
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: null },
           query: 'id friend { id name }',
         });
@@ -427,7 +427,7 @@ describe(`One-to-one relationships`, () => {
         const { user, friend } = await createUserAndFriend(context);
 
         // Run the query to disconnect the location from company
-        const _user = await context.lists.User.deleteOne({ id: user.id });
+        const _user = await context.lists.User.deleteOne({ where: { id: user.id } });
         expect(_user?.id).toBe(user.id);
 
         // Check the link has been broken

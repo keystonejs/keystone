@@ -201,8 +201,7 @@ describe('Type Generation', () => {
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
   id: ID!
-  foo(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
-  _fooMeta(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta @deprecated(reason: \\"This query will be removed in a future version. Please use fooCount instead.\\")
+  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
   fooCount(where: ZipWhereInput! = {}): Int
 }"
 `);
@@ -214,7 +213,7 @@ describe('Type Generation', () => {
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
   id: ID!
-  foo(where: ZipWhereInput! = {}, search: String, sortBy: [SortZipsBy!] @deprecated(reason: \\"sortBy has been deprecated in favour of orderBy\\"), orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
+  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
 }"
 `);
   });

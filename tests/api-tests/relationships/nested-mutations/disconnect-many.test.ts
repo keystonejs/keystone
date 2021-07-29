@@ -75,7 +75,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
       });
@@ -90,7 +90,7 @@ describe('no access control', () => {
   test(
     'silently succeeds if used during create',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
       const user = await context.lists.User.createOne({
@@ -106,14 +106,14 @@ describe('non-matching filter', () => {
   test(
     'silently succeeds if items to disconnect cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
       const createUser = await context.lists.User.createOne({ data: {} });
 
       // Create an item that does the linking
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { notes: { disconnect: [{ id: FAKE_ID }] } },
         query: 'id notes { id }',
       });
@@ -125,7 +125,7 @@ describe('non-matching filter', () => {
   test(
     'removes items that match, silently ignores those that do not',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -145,7 +145,7 @@ describe('non-matching filter', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { notes: { disconnect: [{ id: createNote.id }, { id: FAKE_ID }] } },
         query: 'id notes { id content }',
       });
@@ -180,7 +180,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         await context.lists.UserToNotesNoRead.updateOne({
-          id: createUser.id,
+          where: { id: createUser.id },
           data: { username: 'A thing', notes: { disconnect: [{ id: createNote.id }] } },
         });
 

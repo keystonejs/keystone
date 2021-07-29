@@ -61,7 +61,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: createGroup.id } } },
         query: 'id group { id }',
       });
@@ -81,7 +81,7 @@ describe('no access control', () => {
   test(
     'silently succeeds if used during create',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
       const event = await context.lists.Event.createOne({
@@ -96,14 +96,14 @@ describe('no access control', () => {
   test(
     'silently succeeds if no item to disconnect during update',
     runner(async ({ context }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
       const createEvent = await context.lists.Event.createOne({ data: {} });
 
       // Create an item that does the linking
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: FAKE_ID } } },
         query: 'id group { id }',
       });
@@ -116,7 +116,7 @@ describe('no access control', () => {
     'silently succeeds if item to disconnect does not match during update',
     runner(async ({ context }) => {
       const groupName = `foo${sampleOne(alphanumGenerator)}`;
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
       const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
@@ -126,7 +126,7 @@ describe('no access control', () => {
 
       // Create an item that does the linking
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { group: { disconnect: { id: FAKE_ID } } },
         query: 'id group { id }',
       });
@@ -160,7 +160,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         await context.lists.EventToGroupNoRead.updateOne({
-          id: createEvent.id,
+          where: { id: createEvent.id },
           data: { group: { disconnect: { id: createGroup.id } } },
         });
 

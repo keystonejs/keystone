@@ -59,21 +59,6 @@ input TodoWhereUniqueInput {
   id: ID
 }
 
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
 input TodoOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -102,9 +87,9 @@ input UserRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
+input TodoUpdateArgs {
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
 }
 
 input TodoCreateInput {
@@ -114,10 +99,6 @@ input TodoCreateInput {
   finishBy: String
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
 type User {
   id: ID!
   name: String
@@ -125,25 +106,10 @@ type User {
   password: PasswordState
   tasks(
     where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
   tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
@@ -151,10 +117,6 @@ type User {
 
 type PasswordState {
   isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input UserWhereInput {
@@ -206,19 +168,6 @@ input UserWhereUniqueInput {
   id: ID
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -241,9 +190,9 @@ input TodoRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
@@ -251,10 +200,6 @@ input UserCreateInput {
   email: String
   password: String
   tasks: TodoRelateToManyInput
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
 }
 
 """
@@ -266,66 +211,36 @@ scalar JSON
   )
 
 type Mutation {
-  createTodo(data: TodoCreateInput): Todo
-  createTodos(data: [TodosCreateInput]): [Todo]
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
-  updateTodos(data: [TodosUpdateInput]): [Todo]
-  deleteTodo(id: ID!): Todo
-  deleteTodos(ids: [ID!]): [Todo]
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
+  createTodo(data: TodoCreateInput!): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
 
 type Query {
-  allTodos(
+  todos(
     where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Todo!]
-  Todo(where: TodoWhereUniqueInput!): Todo
-  _allTodosMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use todosCount instead."
-    )
+  todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
-  allUsers(
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

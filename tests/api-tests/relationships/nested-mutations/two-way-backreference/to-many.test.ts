@@ -37,18 +37,18 @@ const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
   });
 
 const getStudent = async (context: KeystoneContext, studentId: IdType) => {
-  type T = { data: { Student: { id: IdType; teachers: { id: IdType }[] } } };
+  type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } };
   const { data } = (await context.graphql.raw({
     query: `
       query getStudent($studentId: ID!){
-        Student(where: { id: $studentId }) {
+        student(where: { id: $studentId }) {
           id
           teachers { id }
         }
       }`,
     variables: { studentId },
   })) as T;
-  return data.Student;
+  return data.student;
 };
 
 // We can't assume what IDs get assigned, or what order they come back in
@@ -122,7 +122,7 @@ describe('update many to many relationship back reference', () => {
 
         // Run the query to disconnect the teacher from student
         await context.lists.Student.updateOne({
-          id: student1.id,
+          where: { id: student1.id },
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
         });
@@ -177,7 +177,7 @@ describe('update many to many relationship back reference', () => {
 
         // Run the query to disconnect the teacher from student
         const _student = await context.lists.Student.updateOne({
-          id: student.id,
+          where: { id: student.id },
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers { id }',
         });
@@ -212,11 +212,11 @@ describe('update many to many relationship back reference', () => {
       await context.lists.Teacher.updateMany({
         data: [
           {
-            id: teacher1.id,
+            where: { id: teacher1.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
           {
-            id: teacher2.id,
+            where: { id: teacher2.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
         ],
@@ -235,7 +235,7 @@ describe('update many to many relationship back reference', () => {
 
       // Run the query to disconnect the teacher from student
       await context.lists.Student.updateOne({
-        id: student1.id,
+        where: { id: student1.id },
         data: { teachers: { disconnect: [{ id: teacher1.id }] } },
         query: 'id teachers { id }',
       });
@@ -270,11 +270,11 @@ describe('update many to many relationship back reference', () => {
       await context.lists.Teacher.updateMany({
         data: [
           {
-            id: teacher1.id,
+            where: { id: teacher1.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
           {
-            id: teacher2.id,
+            where: { id: teacher2.id },
             data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
           },
         ],
@@ -293,7 +293,7 @@ describe('update many to many relationship back reference', () => {
 
       // Run the query to disconnect the teacher from student
       await context.lists.Student.updateOne({
-        id: student1.id,
+        where: { id: student1.id },
         data: { teachers: { disconnectAll: true } },
         query: 'id teachers { id }',
       });
@@ -329,11 +329,11 @@ test(
     await context.lists.Teacher.updateMany({
       data: [
         {
-          id: teacher1.id,
+          where: { id: teacher1.id },
           data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
         },
         {
-          id: teacher2.id,
+          where: { id: teacher2.id },
           data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
         },
       ],
@@ -351,7 +351,7 @@ test(
     compareIds(teacher2.students, [student1, student2]);
 
     // Run the query to delete the student
-    await context.lists.Student.deleteOne({ id: student1.id });
+    await context.lists.Student.deleteOne({ where: { id: student1.id } });
     teacher1 = await getTeacher(context, teacher1.id);
     teacher2 = await getTeacher(context, teacher2.id);
     student1 = await getStudent(context, student1.id);
