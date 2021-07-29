@@ -156,7 +156,7 @@ export function DocsNavigation() {
           Custom Admin UI Pages <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-navigation">
-          Custom Admin-UI Navigation <Badge look="success">New</Badge>
+          Custom Admin UI Navigation <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
