@@ -97,7 +97,7 @@ Otherwise, all lists will be added.
 ```tsx
 const CustomNavigation = ({ lists }) => (
   <NavigationContainer>
-    <ListNavItems lists={lists}/>
+    <ListNavItems lists={lists} />
   </NavigationContainer>
 )
 ```
@@ -171,7 +171,7 @@ export function CustomNavigation({ authenticatedItem, routes }: NavigationProps)
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={lists}/>
+      <ListNavItems lists={lists} />
       <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
         Navigation Guide
       </NavItem>
