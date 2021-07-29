@@ -42,7 +42,7 @@ type AuthenticatedItem =
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 ```
 
-This should be handled for you automatically by passing the prop into the `NavigationContainer`,
+The `authenticatedItem` props is rendered automatically when you pass it into the `NavigationContainer` component.
 
 !> `NavigationContainer` is one of several higher-level components to help you more easily compose your custom Navigation component. You can read more about it down [below](#components).
 
