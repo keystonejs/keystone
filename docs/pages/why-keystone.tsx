@@ -39,7 +39,12 @@ export default function WhyKeystonePage() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="Why KeystoneJS">
+    <Page
+      title={'Why KeystoneJS'}
+      description={
+        'More than a backend framework, and more than a Headless CMS, discover why Keystone is the platform for next-gen development workflows and evolution.'
+      }
+    >
       <MWrapper>
         <IntroHeading>
           Why <Highlight look="grad2">Keystone</Highlight>

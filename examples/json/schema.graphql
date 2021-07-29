@@ -48,14 +48,13 @@ input PackageUpdateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
-  ownedBy: PersonRelateToOneInput
+  ownedBy: PersonRelateToOneForUpdateInput
 }
 
-input PersonRelateToOneInput {
+input PersonRelateToOneForUpdateInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input PackageUpdateArgs {
@@ -67,7 +66,12 @@ input PackageCreateInput {
   label: String
   pkgjson: JSON
   isPrivate: Boolean
-  ownedBy: PersonRelateToOneInput
+  ownedBy: PersonRelateToOneForCreateInput
+}
+
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
 }
 
 type Person {

@@ -24,7 +24,6 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   const router = useRouter();
 
   const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href;
-
   return (
     <li>
       <Link
@@ -164,7 +163,7 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
   const router = useRouter();
   return (
     <NavItem
-      isSelected={router.pathname.split('/')[1] === list.path.split('/')[1]}
+      isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
       href={`/${list.path}`}
     >
       {list.label}
@@ -224,6 +223,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   );

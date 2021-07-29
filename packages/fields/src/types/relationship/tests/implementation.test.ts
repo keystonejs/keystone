@@ -34,7 +34,7 @@ describe('Type Generation', () => {
     const relSingle = getSchema(relationship({ many: false, ref: 'Zip' }));
     expect(
       assertInputObjectType(relSingle.getType('TestCreateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToOneInput');
+    ).toEqual('ZipRelateToOneForCreateInput');
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -46,65 +46,30 @@ describe('Type Generation', () => {
     const relSingle = getSchema(relationship({ many: false, ref: 'Zip' }));
     expect(
       assertInputObjectType(relSingle.getType('TestUpdateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToOneInput');
+    ).toEqual('ZipRelateToOneForUpdateInput');
   });
 
-  test('to-single relationship nested mutation input', () => {
+  test('to-one for create relationship nested mutation input', () => {
     const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
 
-    // We're testing the AST is as we expect it to be
-    expect(parse(printType(schema.getType('ZipRelateToOneInput')!)).definitions[0]).toMatchObject({
-      kind: 'InputObjectTypeDefinition',
-      name: {
-        value: 'ZipRelateToOneInput',
-      },
-      fields: [
-        {
-          kind: 'InputValueDefinition',
-          name: {
-            value: 'create',
-          },
-          type: {
-            name: {
-              value: 'ZipCreateInput',
-            },
-          },
-        },
-        {
-          kind: 'InputValueDefinition',
-          name: {
-            value: 'connect',
-          },
-          type: {
-            name: {
-              value: 'ZipWhereUniqueInput',
-            },
-          },
-        },
-        {
-          kind: 'InputValueDefinition',
-          name: {
-            value: 'disconnect',
-          },
-          type: {
-            name: {
-              value: 'ZipWhereUniqueInput',
-            },
-          },
-        },
-        {
-          kind: 'InputValueDefinition',
-          name: {
-            value: 'disconnectAll',
-          },
-          type: {
-            name: {
-              value: 'Boolean',
-            },
-          },
-        },
-      ],
-    });
+    expect(printType(schema.getType('ZipRelateToOneForCreateInput')!)).toMatchInlineSnapshot(`
+"input ZipRelateToOneForCreateInput {
+  create: ZipCreateInput
+  connect: ZipWhereUniqueInput
+}"
+`);
+  });
+
+  test('to-one for update relationship nested mutation input', () => {
+    const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
+
+    expect(printType(schema.getType('ZipRelateToOneForUpdateInput')!)).toMatchInlineSnapshot(`
+"input ZipRelateToOneForUpdateInput {
+  create: ZipCreateInput
+  connect: ZipWhereUniqueInput
+  disconnect: Boolean
+}"
+`);
   });
 
   test('to-many relationship nested mutation input', () => {
@@ -174,7 +139,7 @@ describe('Type Generation', () => {
     });
   });
 
-  test('to-single relationships cannot be filtered at the field level', () => {
+  test('to-one relationships cannot be filtered at the field level', () => {
     const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
 
     expect(

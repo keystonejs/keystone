@@ -11,7 +11,12 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="APIs">
+    <DocsPage
+      noRightNav
+      noProse
+      title={'APIs'}
+      description={'Index for Keystone’s API reference docs.'}
+    >
       <Type as="h1" look="heading64">
         API Reference
       </Type>

@@ -25,7 +25,12 @@ export default function ForOrganisations() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="KeystoneJS for Organisations">
+    <Page
+      title={'KeystoneJS for Organisations'}
+      description={
+        'Discover how Keystone’s flexibility lets organisations scale fast and sustainably with a backend that can be shaped to any business logic.'
+      }
+    >
       <MWrapper>
         <Pill grad="grad4">Keystone for organisations</Pill>
         <IntroWrapper>
