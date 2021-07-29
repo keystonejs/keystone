@@ -101,15 +101,14 @@ input PostUpdateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForUpdateInput
   hero: ImageFieldInput
 }
 
-input AuthorRelateToOneInput {
+input AuthorRelateToOneForUpdateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input ImageFieldInput {
@@ -132,8 +131,13 @@ input PostCreateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForCreateInput
   hero: ImageFieldInput
+}
+
+input AuthorRelateToOneForCreateInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
 }
 
 type Author {
