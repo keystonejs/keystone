@@ -255,7 +255,7 @@ describe('update many to many relationship back reference', () => {
   );
 
   test(
-    'nested disconnectAll during update mutation',
+    'nested set: [] during update mutation',
     runner(async ({ context }) => {
       // Manually setup a connected Student <-> Teacher
       let teacher1 = await context.lists.Teacher.createOne({ data: {} });
@@ -294,7 +294,7 @@ describe('update many to many relationship back reference', () => {
       // Run the query to disconnect the teacher from student
       await context.lists.Student.updateOne({
         where: { id: student1.id },
-        data: { teachers: { disconnectAll: true } },
+        data: { teachers: { set: [] } },
         query: 'id teachers { id }',
       });
 

@@ -89,14 +89,14 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -108,7 +108,12 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 type Post {
@@ -196,7 +201,7 @@ input PostUpdateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneForUpdateInput
-  tags: TagRelateToManyInput
+  tags: TagRelateToManyForUpdateInput
 }
 
 input UserRelateToOneForUpdateInput {
@@ -205,11 +210,11 @@ input UserRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToManyInput {
-  create: [TagCreateInput]
-  connect: [TagWhereUniqueInput]
-  disconnect: [TagWhereUniqueInput]
-  disconnectAll: Boolean
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input PostUpdateArgs {
@@ -223,12 +228,17 @@ input PostCreateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneForCreateInput
-  tags: TagRelateToManyInput
+  tags: TagRelateToManyForCreateInput
 }
 
 input UserRelateToOneForCreateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 type Tag {
@@ -288,7 +298,7 @@ input TagOrderByInput {
 
 input TagUpdateInput {
   name: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
 input TagUpdateArgs {
@@ -298,7 +308,7 @@ input TagUpdateArgs {
 
 input TagCreateInput {
   name: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
 }
 
 """

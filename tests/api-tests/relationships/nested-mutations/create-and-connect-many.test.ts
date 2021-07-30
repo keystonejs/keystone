@@ -152,7 +152,8 @@ describe('errors on incomplete data', () => {
       expectRelationshipError(errors, [
         {
           path: ['createUser'],
-          message: 'Nested mutation operation invalid for User.notes<Note>',
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
         },
       ]);
     })
@@ -237,7 +238,8 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })
