@@ -29,7 +29,6 @@ export function Markdown({
 }) {
   const headings = getHeadings(children);
 
-  console.log('description', description);
   if (!description) {
     throw new Error('description prop is required');
   }
