@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectValidationFailure } from '../utils';
+import { apiTestConfig, expectValidationError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -21,6 +21,45 @@ const runner = setupTestRunner({
           },
         },
       }),
+      Post: list({
+        fields: {
+          neverValid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('never change me');
+                }
+              },
+            },
+          }),
+          sometimesValid: text({
+            hooks: {
+              validateInput: ({ resolvedData, addValidationError }) => {
+                if (resolvedData.sometimesValid === 'invalid') {
+                  addValidationError('not this time');
+                }
+              },
+            },
+          }),
+          doubleInvalid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('first error');
+                  addValidationError('second error');
+                }
+              },
+            },
+          }),
+          noDelete: text({
+            hooks: {
+              validateDelete: ({ addValidationError }) => {
+                addValidationError('I am invincible!');
+              },
+            },
+          }),
+        },
+      }),
     }),
   }),
 });
@@ -34,13 +73,13 @@ describe('List Hooks: #validateInput()', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: UserCreateInput) { createUser(data: $data) { id } }`,
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'bad' } },
       });
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectValidationFailure(errors, [{ path: ['createUser'] }]);
+      expectValidationError(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -53,17 +92,17 @@ describe('List Hooks: #validateInput()', () => {
     runner(async ({ context }) => {
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID! $data: UserUpdateInput) { updateUser(id: $id data: $data) { id } }`,
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
         variables: { id: user.id, data: { name: 'bad' } },
       });
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectValidationFailure(errors, [{ path: ['updateUser'] }]);
+      expectValidationError(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -77,17 +116,17 @@ describe('List Hooks: #validateInput()', () => {
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ id: user1.id });
+      await context.lists.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID!) { deleteUser(id: $id) { id } }`,
+        query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
         variables: { id: user2.id },
       });
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectValidationFailure(errors, [{ path: ['deleteUser'] }]);
+      expectValidationError(errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -100,14 +139,14 @@ describe('List Hooks: #validateInput()', () => {
     runner(async ({ context }) => {
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersCreateInput]) { createUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { data: { name: 'good 1' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 2' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 3' } },
+            { name: 'good 1' },
+            { name: 'bad' },
+            { name: 'good 2' },
+            { name: 'bad' },
+            { name: 'good 3' },
           ],
         },
       });
@@ -123,7 +162,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid creates should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // Three users should exist in the database
       const users = await context.lists.User.findMany({
@@ -140,24 +179,24 @@ describe('List Hooks: #validateInput()', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'good 2' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'good 4' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'good 2' },
+          { name: 'good 3' },
+          { name: 'good 4' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersUpdateInput]) { updateUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserUpdateArgs!]!) { updateUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { id: users[0].id, data: { name: 'still good 1' } },
-            { id: users[1].id, data: { name: 'bad' } },
-            { id: users[2].id, data: { name: 'still good 3' } },
-            { id: users[3].id, data: { name: 'bad' } },
+            { where: { id: users[0].id }, data: { name: 'still good 1' } },
+            { where: { id: users[1].id }, data: { name: 'bad' } },
+            { where: { id: users[2].id }, data: { name: 'still good 3' } },
+            { where: { id: users[3].id }, data: { name: 'bad' } },
           ],
         },
       });
@@ -172,7 +211,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid updates should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -195,19 +234,21 @@ describe('List Hooks: #validateInput()', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'no delete 1' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'no delete 2' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'no delete 1' },
+          { name: 'good 3' },
+          { name: 'no delete 2' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($ids: [ID!]) { deleteUsers(ids: $ids) { id name } }`,
-        variables: { ids: [users[0].id, users[1].id, users[2].id, users[3].id] },
+        query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
+        variables: {
+          where: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
+        },
       });
 
       // Valid users are returned, invalid come back as null
@@ -220,7 +261,7 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid deletes should have errors which point to the nulls in their path
-      expectValidationFailure(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
+      expectValidationError(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       // Three users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -228,6 +269,35 @@ describe('List Hooks: #validateInput()', () => {
         query: 'id name',
       });
       expect(_users.map(({ name }) => name)).toEqual(['good 5', 'no delete 1', 'no delete 2']);
+    })
+  );
+});
+
+describe('Field Hooks: #validateInput()', () => {
+  test(
+    'update',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID! $data: PostUpdateInput!) { updatePost(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: post.id, data: {} },
+      });
+      expectValidationError(errors, [{ path: ['updatePost'] }]);
+      expect(data).toEqual({ updatePost: null });
+    })
+  );
+
+  test(
+    'delete',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
+        variables: { id: post.id },
+      });
+      expectValidationError(errors, [{ path: ['deletePost'] }]);
+      expect(data).toEqual({ deletePost: null });
     })
   );
 });

@@ -6,17 +6,8 @@ import {
   KeystoneContext,
   GqlNames,
 } from '@keystone-next/types';
-import {
-  getItem,
-  getItems,
-  createItem,
-  createItems,
-  updateItem,
-  updateItems,
-  deleteItem,
-  deleteItems,
-} from './server-side-graphql-client';
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
+import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 
 // this is generally incorrect because types are open in TS but is correct in the specific usage here.
 // (i mean it's not really any more incorrect than TS is generally is but let's ignore that)
@@ -41,7 +32,7 @@ export function getDbAPIFactory(
   const api = {
     findOne: f(queryFields[gqlNames.itemQueryName]),
     findMany: f(queryFields[gqlNames.listQueryName]),
-    count: f(queryFields[gqlNames.listQueryMetaName]),
+    count: f(queryFields[gqlNames.listQueryCountName]),
     createOne: f(mutationFields[gqlNames.createMutationName]),
     createMany: f(mutationFields[gqlNames.createManyMutationName]),
     updateOne: f(mutationFields[gqlNames.updateMutationName]),
@@ -56,7 +47,6 @@ export function getDbAPIFactory(
         (args: Record<string, any>) => impl(args, context),
       ])
     );
-    obj.count = async (args: Record<string, any>) => (await api.count(args, context)).getCount();
     return obj;
   };
 }
@@ -83,83 +73,40 @@ export function itemAPIForList(
   context: KeystoneContext,
   dbAPI: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string]
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
+  const f = (
+    operation: 'query' | 'mutation',
+    field: string,
+    dbAPIVersionOfAPI: (args: any) => Promise<any>
+  ) => {
+    const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
+    return ({
+      query,
+      resolveFields,
+      ...args
+    }: { resolveFields?: false | string; query?: string } & Record<string, any> = {}) => {
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return exec(args, returnFields, context);
+      } else {
+        return dbAPIVersionOfAPI(args);
+      }
+    };
+  };
+  const gqlNames = context.gqlNames(listKey);
   return {
-    findOne({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        return getItem({ listKey, context, returnFields, where: args.where });
-      } else {
-        return dbAPI.findOne(args);
-      }
+    findOne: f('query', gqlNames.itemQueryName, dbAPI.findOne),
+    findMany: f('query', gqlNames.listQueryName, dbAPI.findMany),
+    async count({ where = {} } = {}) {
+      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
+      const response = await context.graphql.run({ query, variables: { where } });
+      return response.count;
     },
-    findMany({ query, resolveFields, ...args } = {}) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        return getItems({ listKey, context, returnFields, ...args });
-      } else {
-        return dbAPI.findMany(args);
-      }
-    },
-    async count(args = {}) {
-      const { first, skip = 0, where = {} } = args;
-      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
-      const query = `query ($first: Int, $skip: Int! = 0, $where: ${whereInputName}! = {}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
-      const response = await context.graphql.run({ query, variables: { first, skip, where } });
-      return response[listQueryMetaName].count;
-    },
-    createOne({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { data } = args;
-        return createItem({ listKey, context, returnFields, item: data });
-      } else {
-        return dbAPI.createOne(args);
-      }
-    },
-    createMany({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { data } = args;
-        return createItems({ listKey, context, returnFields, items: data });
-      } else {
-        return dbAPI.createMany(args);
-      }
-    },
-    updateOne({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { id, data } = args;
-        return updateItem({ listKey, context, returnFields, item: { id, data } });
-      } else {
-        return dbAPI.updateOne(args);
-      }
-    },
-    updateMany({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { data } = args;
-        return updateItems({ listKey, context, returnFields, items: data });
-      } else {
-        return dbAPI.updateMany(args);
-      }
-    },
-    deleteOne({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { id } = args;
-        return deleteItem({ listKey, context, returnFields, itemId: id });
-      } else {
-        return dbAPI.deleteOne(args);
-      }
-    },
-    deleteMany({ query, resolveFields, ...args }) {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        const { ids } = args;
-        return deleteItems({ listKey, context, returnFields, items: ids });
-      } else {
-        return dbAPI.deleteMany(args);
-      }
-    },
+    createOne: f('mutation', gqlNames.createMutationName, dbAPI.createOne),
+    createMany: f('mutation', gqlNames.createManyMutationName, dbAPI.createMany),
+    updateOne: f('mutation', gqlNames.updateMutationName, dbAPI.updateOne),
+    updateMany: f('mutation', gqlNames.updateManyMutationName, dbAPI.updateMany),
+    deleteOne: f('mutation', gqlNames.deleteMutationName, dbAPI.deleteOne),
+    deleteMany: f('mutation', gqlNames.deleteManyMutationName, dbAPI.deleteMany),
   };
 }

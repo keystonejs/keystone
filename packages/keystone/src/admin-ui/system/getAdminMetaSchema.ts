@@ -1,4 +1,4 @@
-import { JSONValue, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
+import { JSONValue, QueryMode, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -151,6 +151,9 @@ export function getAdminMetaSchema({
             }),
           },
         }),
+      }),
+      search: schema.field({
+        type: QueryMode,
       }),
     },
   });

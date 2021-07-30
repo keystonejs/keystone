@@ -74,13 +74,14 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   }
 `;
 
+const storeableQueries = ['sortBy', 'fields'];
+
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
   const localStorageKey = `keystone.list.${listKey}.list.page.info`;
-  const storeableQueries = ['sortBy', 'fields'];
 
   const resetToDefaults = () => {
-    localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+    localStorage.removeItem(localStorageKey);
     router.replace({
       pathname: router.pathname,
     });
@@ -88,27 +89,31 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
-  useEffect(() => {
-    let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
-      return x.startsWith('!') || storeableQueries.includes(x);
-    });
+  useEffect(
+    () => {
+      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+        return x.startsWith('!') || storeableQueries.includes(x);
+      });
 
-    if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
-      const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
-      let parsed;
-      try {
-        parsed = JSON.parse(queryParamsFromLocalStorage!);
-      } catch (err) {}
-      if (parsed) {
-        router.replace({
-          query: {
-            ...router.query,
-            ...parsed,
-          },
-        });
+      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+        const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
+        let parsed;
+        try {
+          parsed = JSON.parse(queryParamsFromLocalStorage!);
+        } catch (err) {}
+        if (parsed) {
+          router.replace({
+            query: {
+              ...router.query,
+              ...parsed,
+            },
+          });
+        }
       }
-    }
-  }, [localStorageKey, router.isReady]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [localStorageKey, router.isReady]
+  );
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {};
     Object.keys(router.query).forEach(key => {
@@ -117,12 +122,9 @@ function useQueryParamsFromLocalStorage(listKey: string) {
       }
     });
     if (Object.keys(queryParamsToSerialize).length) {
-      localStorage.setItem(
-        `keystone.list.${listKey}.list.page.info`,
-        JSON.stringify(queryParamsToSerialize)
-      );
+      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize));
     } else {
-      localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+      localStorage.removeItem(localStorageKey);
     }
   }, [localStorageKey, router]);
 
@@ -434,13 +436,13 @@ function DeleteManyButton({
     useMemo(
       () =>
         gql`
-  mutation($ids: [ID!]!) {
-    ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
+  mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
+    ${list.gqlNames.deleteManyMutationName}(where: $where) {
       id
     }
   }
 `,
-      [list, selectedItems]
+      [list]
     )
   );
   const [isOpen, setIsOpen] = useState(false);
@@ -466,7 +468,7 @@ function DeleteManyButton({
             label: 'Delete',
             action: async () => {
               await deleteItems({
-                variables: { ids: [...selectedItems] },
+                variables: { where: [...selectedItems].map(id => ({ id })) },
               }).catch(err => {
                 toasts.addToast({
                   title: 'Failed to delete items',

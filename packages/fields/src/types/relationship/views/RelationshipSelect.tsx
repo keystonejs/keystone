@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
 import 'intersection-observer';
-import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useState, createContext, useContext } from 'react';
 
 import { gql, TypedDocumentNode, useQuery } from '@keystone-next/keystone/admin-ui/apollo';
-import { ListMeta } from '@keystone-next/types';
+import { IdFieldConfig, ListMeta } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
+import { validate as validateUUID } from 'uuid';
 
 function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
   useEffect(() => {
@@ -19,12 +20,52 @@ function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObjec
   });
 }
 
+const idValidators = {
+  uuid: validateUUID,
+  cuid(value: string) {
+    return value.startsWith('c');
+  },
+  autoincrement(value: string) {
+    return /^\d+$/.test(value);
+  },
+};
+
+function useFilter(search: string, list: ListMeta) {
+  return useMemo(() => {
+    let conditions: Record<string, any>[] = [];
+    if (search.length) {
+      const idFieldKind: IdFieldConfig['kind'] = (list.fields.id.controller as any).idFieldKind;
+      const trimmedSearch = search.trim();
+      const isValidId = idValidators[idFieldKind](trimmedSearch);
+      if (isValidId) {
+        conditions.push({ id: trimmedSearch });
+      }
+      for (const field of Object.values(list.fields)) {
+        if (field.search !== null) {
+          conditions.push({
+            [`${field.path}_contains${field.search === 'insensitive' ? '_i' : ''}`]: trimmedSearch,
+          });
+        }
+      }
+    }
+    return { OR: conditions };
+  }, [search, list]);
+}
+
 const initialItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
 const idField = '____id____';
 
 const labelField = '____label____';
+
+const LoadingIndicatorContext = createContext<{
+  count: number;
+  ref: (element: HTMLElement | null) => void;
+}>({
+  count: 0,
+  ref: () => {},
+});
 
 export const RelationshipSelect = ({
   autoFocus,
@@ -56,79 +97,83 @@ export const RelationshipSelect = ({
   extraSelection?: string;
 }) => {
   const [search, setSearch] = useState('');
+  // note it's important that this is in state rather than a ref
+  // because we want a re-render if the element changes
+  // so that we can register the intersection observer
+  // on the right element
+  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
 
   const QUERY: TypedDocumentNode<
-    { items: { [idField]: string; [labelField]: string | null }[]; meta: { count: number } },
-    { search: string; first: number; skip: number }
+    { items: { [idField]: string; [labelField]: string | null }[]; count: number },
+    { where: Record<string, any>; first: number; skip: number }
   > = gql`
-    query RelationshipSelect($search: String!, $first: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
+    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $first: Int!, $skip: Int!) {
+      items: ${list.gqlNames.listQueryName}(where: $where, first: $first, skip: $skip) {
         ${idField}: id
         ${labelField}: ${list.labelField}
         ${extraSelection}
       }
-
-      meta: ${list.gqlNames.listQueryMetaName}(search: $search) {
-        count
-      }
+      count: ${list.gqlNames.listQueryCountName}(where: $where)
     }
   `;
 
+  const where = useFilter(search, list);
+
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { search, first: initialItemsToLoad, skip: 0 },
+    variables: { where, first: initialItemsToLoad, skip: 0 },
   });
 
-  const count = data?.meta.count || 0;
+  const count = data?.count || 0;
 
-  const relationshipSelectComponents: Partial<typeof selectComponents> = useMemo(
+  const options =
+    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
+      value,
+      label: label || value,
+      data,
+    })) || [];
+
+  const loadingIndicatorContextVal = useMemo(
     () => ({
-      MenuList: ({ children, ...props }) => {
-        const loadingRef = useRef(null);
+      count,
+      ref: setLoadingIndicatorElement,
+    }),
+    [count]
+  );
+
+  useIntersectionObserver(
+    ([{ isIntersecting }]) => {
+      if (!loading && isIntersecting && options.length < count) {
         const QUERY: TypedDocumentNode<
           { items: { [idField]: string; [labelField]: string | null }[] },
-          { search: string; first: number; skip: number }
+          { where: Record<string, any>; first: number; skip: number }
         > = gql`
-            query RelationshipSelectMore($search: String!, $first: Int!, $skip: Int!) {
-              items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
-                ${labelField}: ${list.labelField}
-                ${idField}: id
-                ${extraSelection}
+              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $first: Int!, $skip: Int!) {
+                items: ${list.gqlNames.listQueryName}(where: $where, first: $first, skip: $skip) {
+                  ${labelField}: ${list.labelField}
+                  ${idField}: id
+                  ${extraSelection}
+                }
               }
-            }
-          `;
-
-        useIntersectionObserver(([{ isIntersecting }]) => {
-          if (!props.selectProps.isLoading && isIntersecting && props.options.length < count) {
-            fetchMore({
-              query: QUERY,
-              variables: {
-                search,
-                first: subsequentItemsToLoad,
-                skip: props.options.length,
-              },
-              updateQuery: (prev, { fetchMoreResult }) => {
-                if (!fetchMoreResult) return prev;
-                return {
-                  meta: prev.meta,
-                  items: [...prev.items, ...fetchMoreResult.items],
-                };
-              },
-            });
-          }
-        }, loadingRef);
-
-        return (
-          <selectComponents.MenuList {...props}>
-            {children}
-            <div css={{ textAlign: 'center' }} ref={loadingRef}>
-              {props.options.length < count && <span css={{ padding: 8 }}>Loading...</span>}
-            </div>
-          </selectComponents.MenuList>
-        );
-      },
-    }),
-    [count, list.gqlNames.listQueryName]
+            `;
+        fetchMore({
+          query: QUERY,
+          variables: {
+            where,
+            first: subsequentItemsToLoad,
+            skip: data!.items.length,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev;
+            return {
+              ...prev,
+              items: [...prev.items, ...fetchMoreResult.items],
+            };
+          },
+        });
+      }
+    },
+    { current: loadingIndicatorElement }
   );
 
   // TODO: better error UI
@@ -139,70 +184,85 @@ export const RelationshipSelect = ({
     return <span>Error</span>;
   }
 
-  const options =
-    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
-      value,
-      label: label || value,
-      data,
-    })) || [];
-
   if (state.kind === 'one') {
     return (
-      <Select
-        // this is necessary because react-select passes a second argument to onInputChange
+      <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
+        <Select
+          // this is necessary because react-select passes a second argument to onInputChange
+          // and useState setters log a warning if a second argument is passed
+          onInputChange={val => setSearch(val)}
+          isLoading={loading || isLoading}
+          autoFocus={autoFocus}
+          components={relationshipSelectComponents}
+          portalMenu
+          value={
+            state.value
+              ? {
+                  value: state.value.id,
+                  label: state.value.label,
+                  // @ts-ignore
+                  data: state.value.data,
+                }
+              : null
+          }
+          options={options}
+          onChange={value => {
+            state.onChange(
+              value
+                ? {
+                    id: value.value,
+                    label: value.label,
+                    data: (value as any).data,
+                  }
+                : null
+            );
+          }}
+          placeholder={placeholder}
+          controlShouldRenderValue={controlShouldRenderValue}
+          isClearable={controlShouldRenderValue}
+          isDisabled={isDisabled}
+        />
+      </LoadingIndicatorContext.Provider>
+    );
+  }
+
+  return (
+    <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
+      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
         // and useState setters log a warning if a second argument is passed
         onInputChange={val => setSearch(val)}
         isLoading={loading || isLoading}
         autoFocus={autoFocus}
         components={relationshipSelectComponents}
         portalMenu
-        value={
-          state.value
-            ? {
-                value: state.value.id,
-                label: state.value.label,
-                // @ts-ignore
-                data: state.value.data,
-              }
-            : null
-        }
+        value={state.value.map(value => ({
+          value: value.id,
+          label: value.label,
+          data: value.data,
+        }))}
         options={options}
         onChange={value => {
-          state.onChange(
-            value
-              ? {
-                  id: value.value,
-                  label: value.label,
-                  data: (value as any).data,
-                }
-              : null
-          );
+          state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })));
         }}
         placeholder={placeholder}
         controlShouldRenderValue={controlShouldRenderValue}
         isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
       />
-    );
-  }
-
-  return (
-    <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
-      // and useState setters log a warning if a second argument is passed
-      onInputChange={val => setSearch(val)}
-      isLoading={loading || isLoading}
-      autoFocus={autoFocus}
-      components={relationshipSelectComponents}
-      portalMenu
-      value={state.value.map(value => ({ value: value.id, label: value.label, data: value.data }))}
-      options={options}
-      onChange={value => {
-        state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })));
-      }}
-      placeholder={placeholder}
-      controlShouldRenderValue={controlShouldRenderValue}
-      isClearable={controlShouldRenderValue}
-      isDisabled={isDisabled}
-    />
+    </LoadingIndicatorContext.Provider>
   );
+};
+
+const relationshipSelectComponents: Partial<typeof selectComponents> = {
+  MenuList: ({ children, ...props }) => {
+    const { count, ref } = useContext(LoadingIndicatorContext);
+    return (
+      <selectComponents.MenuList {...props}>
+        {children}
+        <div css={{ textAlign: 'center' }} ref={ref}>
+          {props.options.length < count && <span css={{ padding: 8 }}>Loading...</span>}
+        </div>
+      </selectComponents.MenuList>
+    );
+  },
 };

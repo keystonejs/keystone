@@ -136,6 +136,7 @@ export const idFieldType =
         },
       }),
       views,
+      getAdminMeta: () => ({ kind: config.kind }),
       ui: {
         createView: {
           fieldMode: 'hidden',

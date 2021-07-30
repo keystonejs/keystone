@@ -11,11 +11,9 @@ import {
   KeystoneConfig,
   DatabaseProvider,
   FindManyArgs,
-  orderDirectionEnum,
   CacheHintArgs,
 } from '@keystone-next/types';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
-import { GraphQLEnumType } from 'graphql';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,
@@ -24,7 +22,6 @@ import {
 } from './access-control';
 import { getNamesFromList } from './utils';
 import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
-import { PrismaFilter } from './where-inputs';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
@@ -43,7 +40,6 @@ export type InitialisedList = {
   access: ResolvedListAccessControl;
   hooks: ListHooks<BaseGeneratedListTypes>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
-  applySearchField: (filter: PrismaFilter, search: string | null | undefined) => PrismaFilter;
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   maxResults: number;
   listKey: string;
@@ -63,7 +59,6 @@ export function initialiseLists(
 
     let output = schema.object<ItemRootValue>()({
       name: names.outputTypeName,
-      description: ' A keystone list',
       fields: () => {
         const { fields } = lists[listKey];
         return {
@@ -112,15 +107,9 @@ export function initialiseLists(
         const { fields } = lists[listKey];
         return Object.assign(
           {
-            AND: schema.arg({
-              type: schema.list(schema.nonNull(where)),
-            }),
-            OR: schema.arg({
-              type: schema.list(schema.nonNull(where)),
-            }),
-            NOT: schema.arg({
-              type: schema.list(schema.nonNull(where)),
-            }),
+            AND: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            OR: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            NOT: schema.arg({ type: schema.list(schema.nonNull(where)) }),
           },
           ...Object.entries(fields).map(
             ([fieldKey, field]) =>
@@ -171,65 +160,67 @@ export function initialiseLists(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: schema.arg({
-        type: schema.nonNull(where),
-        defaultValue: {},
-      }),
-      search: schema.arg({
-        type: schema.String,
-      }),
-      sortBy: schema.arg({
-        type: schema.list(
-          schema.nonNull(
-            schema.enum({
-              name: names.listSortName,
-              values: schema.enumValues(['bad']),
-            })
-          )
-        ),
-        deprecationReason: 'sortBy has been deprecated in favour of orderBy',
-      }),
+      where: schema.arg({ type: schema.nonNull(where), defaultValue: {} }),
       orderBy: schema.arg({
         type: schema.nonNull(schema.list(schema.nonNull(orderBy))),
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      first: schema.arg({
-        type: schema.Int,
-      }),
-      skip: schema.arg({
-        type: schema.nonNull(schema.Int),
-        defaultValue: 0,
-      }),
+      first: schema.arg({ type: schema.Int }),
+      skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
     };
 
-    const relateToMany = schema.inputObject({
-      name: names.relateToManyInputName,
+    const relateToManyForCreate = schema.inputObject({
+      name: names.relateToManyForCreateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(create) }),
+            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
           }),
-          connect: schema.arg({ type: schema.list(uniqueWhere) }),
-          disconnect: schema.arg({ type: schema.list(uniqueWhere) }),
-          disconnectAll: schema.arg({ type: schema.Boolean }),
+          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
         };
       },
     });
 
-    const relateToOne = schema.inputObject({
-      name: names.relateToOneInputName,
+    const relateToManyForUpdate = schema.inputObject({
+      name: names.relateToManyForUpdateInputName,
       fields: () => {
         const list = lists[listKey];
+        return {
+          disconnect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          set: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          ...(list.access.create !== false && {
+            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
+          }),
+          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+        };
+      },
+    });
 
+    const relateToOneForCreate = schema.inputObject({
+      name: names.relateToOneForCreateInputName,
+      fields: () => {
+        const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
             create: schema.arg({ type: create }),
           }),
           connect: schema.arg({ type: uniqueWhere }),
-          disconnect: schema.arg({ type: uniqueWhere }),
-          disconnectAll: schema.arg({ type: schema.Boolean }),
+        };
+      },
+    });
+
+    const relateToOneForUpdate = schema.inputObject({
+      name: names.relateToOneForUpdateInputName,
+      fields: () => {
+        const list = lists[listKey];
+        return {
+          ...(list.access.create !== false && {
+            create: schema.arg({ type: create }),
+          }),
+          connect: schema.arg({ type: uniqueWhere }),
+          disconnect: schema.arg({ type: schema.Boolean }),
         };
       },
     });
@@ -253,20 +244,10 @@ export function initialiseLists(
                 none: schema.arg({ type: where }),
               },
             }),
-            create: relateToMany,
-            update: relateToMany,
+            create: relateToManyForCreate,
+            update: relateToManyForUpdate,
           },
-          one: {
-            where: schema.inputObject({
-              name: `${listKey}OneRelationFilter`,
-              fields: {
-                is: schema.arg({ type: where }),
-                isNot: schema.arg({ type: where }),
-              },
-            }),
-            create: relateToOne,
-            update: relateToOne,
-          },
+          one: { create: relateToOneForCreate, update: relateToOneForUpdate },
         },
       },
     };
@@ -321,35 +302,10 @@ export function initialiseLists(
     })
   );
 
-  for (const [listKey, { fields, pluralGraphQLName }] of Object.entries(
+  for (const [listKey, { fields }] of Object.entries(
     listsWithInitialisedFieldsAndResolvedDbFields
   )) {
     assertFieldsValid({ listKey, fields });
-    // this is quite a hack, we could do this in a better way if we "initialised" the fields twice,
-    // the first time to see if they have an orderBy and then the second time for real
-    // but that would be more complicated and this works
-    Object.assign(
-      listInfos[listKey].types.findManyArgs.sortBy.type.graphQLType.ofType.ofType,
-      new GraphQLEnumType({
-        name: getGqlNames({ listKey, pluralGraphQLName }).listSortName,
-        values: Object.fromEntries(
-          Object.entries(fields).flatMap(([fieldKey, field]) => {
-            if (
-              field.input?.orderBy?.arg.type === orderDirectionEnum &&
-              field.input?.orderBy?.arg.defaultValue === undefined &&
-              field.input?.orderBy?.resolve === undefined &&
-              field.access.read !== false
-            ) {
-              return [
-                [`${fieldKey}_ASC`, {}],
-                [`${fieldKey}_DESC`, {}],
-              ];
-            }
-            return [];
-          })
-        ),
-      })
-    );
   }
 
   const lists: Record<string, InitialisedList> = {};
@@ -360,24 +316,6 @@ export function initialiseLists(
       ...listInfos[listKey],
       ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
-      applySearchField: (filter, search) => {
-        const searchFieldName = listsConfig[listKey].db?.searchField ?? 'name';
-        const searchField = list.fields[searchFieldName];
-        if (search != null && search !== '' && searchField) {
-          if (searchField.dbField.kind === 'scalar' && searchField.dbField.scalar === 'String') {
-            const mode = provider === 'sqlite' ? undefined : 'insensitive';
-            filter = {
-              AND: [filter, { [searchFieldName]: { contains: search, mode } }],
-            };
-          } else {
-            // Return no results
-            filter = {
-              AND: [filter, { [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }],
-            };
-          }
-        }
-        return filter;
-      },
       cacheHint: (() => {
         const cacheHint = listsConfig[listKey].graphql?.cacheHint;
         if (cacheHint === undefined) {

@@ -2,7 +2,7 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectPrismaError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -63,17 +63,19 @@ testModules
 
             const { body } = await graphQLRequest({
               query: `
-                  mutation($data: TestCreateInput) {
+                  mutation($data: TestCreateInput!) {
                     createTest(data: $data) { id }
                   }
                 `,
               variables: { data: { testField: mod.exampleValue(matrixValue) } },
             });
             expect(body.data).toEqual({ createTest: null });
-            expectInternalServerError(body.errors, [
+            expectPrismaError(body.errors, [
               {
                 path: ['createTest'],
-                message: `\nInvalid \`prisma.test.create()\` invocation:\n\n\n  Unique constraint failed on the fields: (\`testField\`)`,
+                message: expect.stringMatching(
+                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
               },
             ]);
           })
@@ -84,7 +86,7 @@ testModules
           runner(async ({ graphQLRequest }) => {
             const { body } = await graphQLRequest({
               query: `
-                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
+                  mutation($fooData: TestCreateInput!, $barData: TestCreateInput!) {
                     foo: createTest(data: $fooData) { id }
                     bar: createTest(data: $barData) { id }
                   }
@@ -95,12 +97,13 @@ testModules
               },
             });
 
-            expect(body.data.foo).not.toBe(null);
-            expect(body.data.bar).toBe(null);
-            expectInternalServerError(body.errors, [
+            expect(body.data).toEqual({ foo: { id: expect.any(String) }, bar: null });
+            expectPrismaError(body.errors, [
               {
                 path: ['bar'],
-                message: `\nInvalid \`prisma.test.create()\` invocation:\n\n\n  Unique constraint failed on the fields: (\`testField\`)`,
+                message: expect.stringMatching(
+                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                ),
               },
             ]);
           })
@@ -111,8 +114,8 @@ testModules
           runner(async ({ context }) => {
             const items = await context.lists.Test.createMany({
               data: [
-                { data: { testField: mod.exampleValue(matrixValue), name: 'jess' } },
-                { data: { testField: mod.exampleValue2(matrixValue), name: 'jess' } },
+                { testField: mod.exampleValue(matrixValue), name: 'jess' },
+                { testField: mod.exampleValue2(matrixValue), name: 'jess' },
               ],
             });
             expect(items).toHaveLength(2);

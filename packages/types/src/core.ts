@@ -49,14 +49,13 @@ export function getGqlNames({
   listKey: string;
   pluralGraphQLName: string;
 }): GqlNames {
-  const _lowerListName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1);
+  const lowerPluralName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1);
+  const lowerSingularName = listKey.slice(0, 1).toLowerCase() + listKey.slice(1);
   return {
     outputTypeName: listKey,
-    itemQueryName: listKey,
-    listQueryName: `all${pluralGraphQLName}`,
-    listQueryMetaName: `_all${pluralGraphQLName}Meta`,
-    listQueryCountName: `${_lowerListName}Count`,
-    listSortName: `Sort${pluralGraphQLName}By`,
+    itemQueryName: lowerSingularName,
+    listQueryName: lowerPluralName,
+    listQueryCountName: `${lowerPluralName}Count`,
     listOrderName: `${listKey}OrderByInput`,
     deleteMutationName: `delete${listKey}`,
     updateMutationName: `update${listKey}`,
@@ -68,9 +67,10 @@ export function getGqlNames({
     whereUniqueInputName: `${listKey}WhereUniqueInput`,
     updateInputName: `${listKey}UpdateInput`,
     createInputName: `${listKey}CreateInput`,
-    updateManyInputName: `${pluralGraphQLName}UpdateInput`,
-    createManyInputName: `${pluralGraphQLName}CreateInput`,
-    relateToManyInputName: `${listKey}RelateToManyInput`,
-    relateToOneInputName: `${listKey}RelateToOneInput`,
+    updateManyInputName: `${listKey}UpdateArgs`,
+    relateToManyForCreateInputName: `${listKey}RelateToManyForCreateInput`,
+    relateToManyForUpdateInputName: `${listKey}RelateToManyForUpdateInput`,
+    relateToOneForCreateInputName: `${listKey}RelateToOneForCreateInput`,
+    relateToOneForUpdateInputName: `${listKey}RelateToOneForUpdateInput`,
   };
 }

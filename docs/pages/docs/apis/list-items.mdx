@@ -76,7 +76,7 @@ const user = await context.lists.User.createOne({
 ### createMany
 
 ```typescript
-const users = await context.lists.User.createOne({
+const users = await context.lists.User.createMany({
   data: [
     {
       data: {
@@ -150,4 +150,4 @@ const user = await context.lists.User.deleteMany({
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Reference docs for Keystone‘s List Items API: a programmatic API for running CRUD operations against your GraphQL API.">{children}</Markdown>;

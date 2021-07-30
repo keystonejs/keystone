@@ -1,6 +1,7 @@
-import { ItemRootValue, KeystoneConfig } from '@keystone-next/types';
+import { ItemRootValue, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import pluralize from 'pluralize';
 import { humanize } from '../utils';
+import { InitialisedList } from './types-for-lists';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 
 declare const prisma: unique symbol;
@@ -70,8 +71,15 @@ export type PrismaClient = {
   $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>;
 } & Record<string, PrismaModel>;
 
-export function getPrismaModelForList(prismaClient: PrismaClient, listKey: string) {
-  return prismaClient[listKey[0].toLowerCase() + listKey.slice(1)];
+// Run prisma operations as part of a resolver
+export async function runWithPrisma<T>(
+  context: KeystoneContext,
+  { listKey }: InitialisedList,
+  fn: (model: PrismaModel) => Promise<T>
+) {
+  const model = context.prisma[listKey[0].toLowerCase() + listKey.slice(1)];
+  // FIXME: We will capture errors here and return them with a custom error code
+  return await fn(model);
 }
 
 // this is wrong
@@ -80,25 +88,6 @@ export function getPrismaModelForList(prismaClient: PrismaClient, listKey: strin
 declare const idTypeSymbol: unique symbol;
 
 export type IdType = { ___keystoneIdType: typeof idTypeSymbol; toString(): string };
-
-export function applyFirstSkipToCount({
-  count,
-  first,
-  skip,
-}: {
-  count: number;
-  first: number | null | undefined;
-  skip: number | null | undefined;
-}) {
-  if (skip !== undefined && skip !== null) {
-    count -= skip;
-  }
-  if (first !== undefined && first !== null) {
-    count = Math.min(count, first);
-  }
-  count = Math.max(0, count); // Don't want to go negative from a skip!
-  return count;
-}
 
 // these aren't here out of thinking this is better syntax(i do not think it is),
 // it's just because TS won't infer the arg is X bit

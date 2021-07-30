@@ -1,9 +1,6 @@
 import { schema } from '../../schema';
 
-const QueryMode = schema.enum({
-  name: 'QueryMode',
-  values: schema.enumValues(['default', 'insensitive']),
-});
+import { QueryMode } from '../..';
 
 type StringNullableFilterType = schema.InputObjectType<{
   // can be null

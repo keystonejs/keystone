@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Note {
   id: ID!
   label: String
@@ -68,13 +65,6 @@ input NoteWhereUniqueInput {
   id: ID
 }
 
-enum SortNotesBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-}
-
 input NoteOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -89,17 +79,13 @@ input NoteUpdateInput {
   label: String
 }
 
-input NotesUpdateInput {
-  id: ID!
-  data: NoteUpdateInput
+input NoteUpdateArgs {
+  where: NoteWhereUniqueInput!
+  data: NoteUpdateInput!
 }
 
 input NoteCreateInput {
   label: String
-}
-
-input NotesCreateInput {
-  data: NoteCreateInput
 }
 
 """
@@ -110,76 +96,23 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
-}
-
 type Mutation {
-  """
-   Create a single Note item.
-  """
-  createNote(data: NoteCreateInput): Note
-
-  """
-   Create multiple Note items.
-  """
-  createNotes(data: [NotesCreateInput]): [Note]
-
-  """
-   Update a single Note item by ID.
-  """
-  updateNote(id: ID!, data: NoteUpdateInput): Note
-
-  """
-   Update multiple Note items by ID.
-  """
-  updateNotes(data: [NotesUpdateInput]): [Note]
-
-  """
-   Delete a single Note item by ID.
-  """
-  deleteNote(id: ID!): Note
-
-  """
-   Delete multiple Note items by ID.
-  """
-  deleteNotes(ids: [ID!]): [Note]
+  createNote(data: NoteCreateInput!): Note
+  createNotes(data: [NoteCreateInput!]!): [Note]
+  updateNote(where: NoteWhereUniqueInput!, data: NoteUpdateInput!): Note
+  updateNotes(data: [NoteUpdateArgs!]!): [Note]
+  deleteNote(where: NoteWhereUniqueInput!): Note
+  deleteNotes(where: [NoteWhereUniqueInput!]!): [Note]
 }
 
 type Query {
-  """
-   Search for all Note items which match the where clause.
-  """
-  allNotes(
+  notes(
     where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [NoteOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Note!]
-
-  """
-   Search for the Note item with the matching ID.
-  """
-  Note(where: NoteWhereUniqueInput!): Note
-
-  """
-   Perform a meta-query on all Note items which match the where clause.
-  """
-  _allNotesMeta(
-    where: NoteWhereInput! = {}
-    search: String
-    sortBy: [SortNotesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [NoteOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use notesCount instead."
-    )
+  note(where: NoteWhereUniqueInput!): Note
   notesCount(where: NoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
@@ -224,6 +157,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -252,6 +186,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

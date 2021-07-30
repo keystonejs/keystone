@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-testing",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,14 +10,14 @@
     "test": "jest --runInBand --testTimeout=60000"
   },
   "dependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
     "@babel/preset-typescript": "^7.14.5",
-    "@keystone-next/auth": "^29.0.0",
-    "@keystone-next/fields": "^12.0.0",
-    "@keystone-next/keystone": "^22.0.0",
-    "@keystone-next/testing": "^1.0.2",
-    "@keystone-next/types": "^22.0.0"
+    "@keystone-next/auth": "^30.0.0",
+    "@keystone-next/fields": "^13.0.0",
+    "@keystone-next/keystone": "^23.0.0",
+    "@keystone-next/testing": "^1.1.0",
+    "@keystone-next/types": "^23.0.0"
   },
   "devDependencies": {
     "babel-jest": "^27.0.6",

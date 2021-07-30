@@ -14,8 +14,9 @@ export async function findMatchingIdentity(
     const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
     return { success: true, item };
   } catch (err) {
-    // todo: throw on errors other than access control
-    console.log(err);
-    return { success: false, code: 'IDENTITY_NOT_FOUND' };
+    if (err.message === 'You do not have access to this resource') {
+      return { success: false, code: 'IDENTITY_NOT_FOUND' };
+    }
+    throw err;
   }
 }

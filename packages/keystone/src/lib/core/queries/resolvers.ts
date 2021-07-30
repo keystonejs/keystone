@@ -7,43 +7,15 @@ import {
 import { GraphQLResolveInfo } from 'graphql';
 import { validateNonCreateListAccessControl } from '../access-control';
 import {
-  InputFilter,
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
+  UniqueInputFilter,
 } from '../where-inputs';
-import { accessDeniedError, LimitsExceededError } from '../graphql-errors';
+import { accessDeniedError, limitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { getPrismaModelForList, getDBFieldKeyForFieldOnMultiField } from '../utils';
-
-export async function findManyFilter(
-  list: InitialisedList,
-  context: KeystoneContext,
-  where: InputFilter,
-  search: string | null | undefined
-): Promise<false | PrismaFilter> {
-  const access = await validateNonCreateListAccessControl({
-    access: list.access.read,
-    args: {
-      context,
-      listKey: list.listKey,
-      operation: 'read',
-      session: context.session,
-    },
-  });
-  if (!access) {
-    return false;
-  }
-  let resolvedWhere = await resolveWhereInput(where || {}, list, context);
-  if (typeof access === 'object') {
-    resolvedWhere = {
-      AND: [resolvedWhere, await resolveWhereInput(access, list, context)],
-    };
-  }
-
-  return list.applySearchField(resolvedWhere, search);
-}
+import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
 // doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
 // we want to do this explicit mapping because:
@@ -71,78 +43,76 @@ export function mapUniqueWhereToWhere(
   return { [key]: val };
 }
 
-async function findOneFilter(
-  { where }: { where: Record<string, any> },
+export async function accessControlledFilter(
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  resolvedWhere: PrismaFilter
 ) {
+  // Run access control
   const access = await validateNonCreateListAccessControl({
     access: list.access.read,
-    args: {
-      context,
-      listKey: list.listKey,
-      operation: 'read',
-      session: context.session,
-    },
+    args: { context, listKey: list.listKey, operation: 'read', session: context.session },
   });
   if (access === false) {
-    return false;
+    throw accessDeniedError();
   }
-  let resolvedUniqueWhere = await resolveUniqueWhereInput(where, list.fields, context);
-  const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
-  return access === true
-    ? wherePrismaFilter
-    : { AND: [wherePrismaFilter, await resolveWhereInput(access, list, context)] };
+
+  // Merge declarative access control
+  if (typeof access === 'object') {
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list, context)] };
+  }
+
+  return resolvedWhere;
 }
 
 export async function findOne(
-  args: { where: Record<string, any> },
+  args: { where: UniqueInputFilter },
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const filter = await findOneFilter(args, list, context);
-  if (filter === false) {
-    throw accessDeniedError('query');
-  }
-  const item = await getPrismaModelForList(context.prisma, list.listKey).findFirst({
-    where: filter,
-  });
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
+  const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
+
+  // Apply access control
+  const filter = await accessControlledFilter(list, context, resolvedWhere);
+
+  const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+
   if (item === null) {
-    throw accessDeniedError('query');
+    throw accessDeniedError();
   }
   return item;
 }
 
 export async function findMany(
-  { where, first, skip, orderBy: rawOrderBy, search, sortBy }: FindManyArgsValue,
+  { where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<ItemRootValue[]> {
-  const [resolvedWhere, orderBy] = await Promise.all([
-    findManyFilter(list, context, where || {}, search),
-    resolveOrderBy(rawOrderBy, sortBy, list, context),
-  ]);
+  const orderBy = await resolveOrderBy(rawOrderBy, list, context);
+
   applyEarlyMaxResults(first, list);
 
-  if (resolvedWhere === false) {
-    throw accessDeniedError('query');
-  }
-  const results = await getPrismaModelForList(context.prisma, list.listKey).findMany({
-    where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
-    orderBy,
-    take: first ?? undefined,
-    skip,
-  });
+  let resolvedWhere = await resolveWhereInput(where, list, context);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
+
+  const results = await runWithPrisma(context, list, model =>
+    model.findMany({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      orderBy,
+      take: first ?? undefined,
+      skip,
+    })
+  );
+
   applyMaxResults(results, list, context);
+
   if (info.cacheControl && list.cacheHint) {
     info.cacheControl.setCacheHint(
-      list.cacheHint({
-        results,
-        operationName: info.operation.name?.value,
-        meta: false,
-      }) as any
+      list.cacheHint({ results, operationName: info.operation.name?.value, meta: false }) as any
     );
   }
   return results;
@@ -150,72 +120,71 @@ export async function findMany(
 
 async function resolveOrderBy(
   orderBy: readonly Record<string, any>[],
-  sortBy: readonly string[] | null | undefined,
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
-  return (
-    await Promise.all(
-      orderBy.map(async orderBySelection => {
-        const keys = Object.keys(orderBySelection);
+  return await Promise.all(
+    orderBy.map(async orderBySelection => {
+      const keys = Object.keys(orderBySelection);
+      if (keys.length !== 1) {
+        throw new Error(
+          `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+        );
+      }
+
+      const fieldKey = keys[0];
+      const value = orderBySelection[fieldKey];
+      if (value === null) {
+        throw new Error('null cannot be passed as an order direction');
+      }
+
+      const field = list.fields[fieldKey];
+      const resolve = field.input!.orderBy!.resolve;
+      const resolvedValue = resolve ? await resolve(value, context) : value;
+      if (field.dbField.kind === 'multi') {
+        const keys = Object.keys(resolvedValue);
         if (keys.length !== 1) {
           throw new Error(
-            `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+            `Only a single key must be returned from an orderBy input resolver for a multi db field`
           );
         }
-
-        const fieldKey = keys[0];
-
-        const value = orderBySelection[fieldKey];
-
-        if (value === null) {
-          throw new Error('null cannot be passed as an order direction');
-        }
-
-        const field = list.fields[fieldKey];
-        const resolveOrderBy = field.input!.orderBy!.resolve;
-        const resolvedValue = resolveOrderBy ? await resolveOrderBy(value, context) : value;
-        if (field.dbField.kind === 'multi') {
-          const keys = Object.keys(resolvedValue);
-          if (keys.length !== 1) {
-            throw new Error(
-              `Only a single key must be returned from an orderBy input resolver for a multi db field`
-            );
-          }
-          const innerKey = keys[0];
-          return {
-            [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
-          };
-        }
+        const innerKey = keys[0];
+        return {
+          [getDBFieldKeyForFieldOnMultiField(fieldKey, innerKey)]: resolvedValue[innerKey],
+        };
+      } else {
         return { [fieldKey]: resolvedValue };
-      })
-    )
-  ).concat(
-    sortBy?.map(sort => {
-      if (sort.endsWith('_DESC')) {
-        return { [sort.slice(0, -'_DESC'.length)]: 'desc' };
       }
-      return { [sort.slice(0, -'_ASC'.length)]: 'asc' };
-    }) || []
+    })
   );
 }
 
 export async function count(
-  { where, search }: { where: Record<string, any>; search?: string | null },
+  { where }: { where: Record<string, any> },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  info: GraphQLResolveInfo,
+  extraFilter?: PrismaFilter
 ) {
-  const resolvedWhere = await findManyFilter(list, context, where || {}, search);
-  if (resolvedWhere === false) {
-    throw accessDeniedError('query');
-  }
-  return getPrismaModelForList(context.prisma, list.listKey).count({
-    where: resolvedWhere,
-  });
-}
+  let resolvedWhere = await resolveWhereInput(where, list, context);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
-const limitsExceedError = (args: { type: string; limit: number; list: string }) =>
-  new LimitsExceededError({ data: args });
+  const count = await runWithPrisma(context, list, model =>
+    model.count({
+      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+    })
+  );
+  if (info.cacheControl && list.cacheHint) {
+    info.cacheControl.setCacheHint(
+      list.cacheHint({
+        results: count,
+        operationName: info.operation.name?.value,
+        meta: true,
+      }) as any
+    );
+  }
+  return count;
+}
 
 function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
   const first = _first ?? Infinity;
@@ -227,18 +196,18 @@ function applyEarlyMaxResults(_first: number | null | undefined, list: Initialis
   // * The query explicitly has a "first" that exceeds the limit
   // * The query has no "first", and has more results than the limit
   if (first < Infinity && first > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
 }
 
 function applyMaxResults(results: unknown[], list: InitialisedList, context: KeystoneContext) {
   if (results.length > list.maxResults) {
-    throw limitsExceedError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
   if (context) {
     context.totalResults += Array.isArray(results) ? results.length : 1;
     if (context.totalResults > context.maxTotalResults) {
-      throw limitsExceedError({
+      throw limitsExceededError({
         list: list.listKey,
         type: 'maxTotalResults',
         limit: context.maxTotalResults,

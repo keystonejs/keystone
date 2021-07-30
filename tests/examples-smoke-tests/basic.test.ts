@@ -32,7 +32,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
       body: JSON.stringify({
         query: `
           query {
-            allUsers {
+            users {
               id
               name
             }
@@ -45,7 +45,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
     }).then(res => res.json());
     expect(usersResponse).toEqual({
       data: {
-        allUsers: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
+        users: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
       },
     });
   });

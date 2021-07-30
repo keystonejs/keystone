@@ -4,7 +4,29 @@ import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
 
-const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
+type _CreateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>,
+  null | undefined
+>;
+
+type _UpdateValueType = Exclude<
+  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
+  null | undefined
+>;
+
+function getResolvedUniqueWheres(
+  uniqueInputs: UniqueInputFilter[],
+  context: KeystoneContext,
+  foreignList: InitialisedList
+): Promise<UniquePrismaFilter>[] {
+  return uniqueInputs.map(async uniqueInput => {
+    // Validate and resolve the input filter
+    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+    // Check whether the item exists
+    await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    return uniqueWhere;
+  });
+}
 
 export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
@@ -12,106 +34,40 @@ export function resolveRelateToManyForCreateInput(
   foreignList: InitialisedList,
   target: string
 ) {
-  return async (
-    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>
-  ) => {
-    if (value == null) {
-      return undefined;
+  return async (value: _CreateValueType) => {
+    if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
+      throw new Error(
+        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
+      );
     }
-    assertValidManyOperation(value, target);
-    return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
+
+    // Perform queries for the connections
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList)
+    );
+
+    // Perform nested mutations for the creations
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    );
+
+    const [connectResult, createResult] = await Promise.all([connects, creates]);
+
+    // Collect all the errors
+    const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
+      x => x.reason
+    );
+    if (errors.length) {
+      throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
+    }
+
+    const result = {
+      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
+    };
+
+    // Perform queries for the connections
+    return result;
   };
-}
-
-async function getDisconnects(
-  uniqueWheres: (UniqueInputFilter | null)[],
-  context: KeystoneContext,
-  foreignList: InitialisedList
-): Promise<UniquePrismaFilter[]> {
-  return (
-    await Promise.all(
-      uniqueWheres.map(async filter => {
-        if (filter === null) return [];
-        try {
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: filter as any });
-        } catch (err) {
-          return [];
-        }
-        return [await resolveUniqueWhereInput(filter, foreignList.fields, context)];
-      })
-    )
-  ).flat();
-}
-
-function getConnects(
-  uniqueWhere: UniqueInputFilter[],
-  context: KeystoneContext,
-  foreignList: InitialisedList
-): Promise<UniquePrismaFilter>[] {
-  return uniqueWhere.map(async filter => {
-    await context.db.lists[foreignList.listKey].findOne({ where: filter as any });
-    return resolveUniqueWhereInput(filter, foreignList.fields, context);
-  });
-}
-
-async function resolveCreateAndConnect(
-  value: Exclude<
-    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
-    null | undefined
-  >,
-  nestedMutationState: NestedMutationState,
-  context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
-) {
-  const connects = Promise.allSettled(
-    getConnects((value.connect || []).filter(isNotNull), context, foreignList)
-  );
-  const creates = Promise.allSettled(
-    (value.create || []).filter(isNotNull).map(x => nestedMutationState.create(x, foreignList))
-  );
-
-  const [connectResult, createResult] = await Promise.all([connects, creates]);
-
-  const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
-    x => x.reason
-  );
-
-  if (errors.length) {
-    throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
-  }
-  const result = {
-    connect: connectResult.filter(isFulfilled).map(x => x.value),
-    create: [] as Record<string, any>[],
-  };
-
-  for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
-    if (createData.kind === 'create') {
-      result.create.push(createData.data);
-    }
-    if (createData.kind === 'connect') {
-      result.connect.push({ id: createData.id });
-    }
-  }
-
-  return result;
-}
-
-function assertValidManyOperation(
-  val: Exclude<
-    schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
-    undefined | null
-  >,
-  target: string
-) {
-  if (
-    !Array.isArray(val.connect) &&
-    !Array.isArray(val.create) &&
-    !Array.isArray(val.disconnect) &&
-    !val.disconnectAll
-  ) {
-    throw new Error(`Nested mutation operation invalid for ${target}`);
-  }
 }
 
 export function resolveRelateToManyForUpdateInput(
@@ -120,28 +76,64 @@ export function resolveRelateToManyForUpdateInput(
   foreignList: InitialisedList,
   target: string
 ) {
-  return async (
-    value: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>
-  ) => {
-    if (value == null) {
-      return undefined;
+  return async (value: _UpdateValueType) => {
+    if (
+      !Array.isArray(value.connect) &&
+      !Array.isArray(value.create) &&
+      !Array.isArray(value.disconnect) &&
+      !Array.isArray(value.set)
+    ) {
+      throw new Error(
+        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
+      );
     }
-    assertValidManyOperation(value, target);
-    const disconnects = getDisconnects(
-      value.disconnectAll ? [] : value.disconnect || [],
-      context,
-      foreignList
+    if (value.set && value.disconnect) {
+      throw new Error(
+        `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
+      );
+    }
+
+    // Perform queries for the connections
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList)
     );
 
-    const [disconnect, connectAndCreates] = await Promise.all([
+    const disconnects = Promise.allSettled(
+      getResolvedUniqueWheres(value.disconnect || [], context, foreignList)
+    );
+
+    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList));
+
+    // Perform nested mutations for the creations
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    );
+
+    const [connectResult, createResult, disconnectResult, setResult] = await Promise.all([
+      connects,
+      creates,
       disconnects,
-      resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
+      sets,
     ]);
 
+    // Collect all the errors
+    const errors = [
+      ...connectResult.filter(isRejected),
+      ...createResult.filter(isRejected),
+      ...disconnectResult.filter(isRejected),
+      ...setResult.filter(isRejected),
+    ];
+    if (errors.length) {
+      throw new Error(
+        `Unable to create, connect, disconnect and/or set ${errors.length} ${target}`
+      );
+    }
+
     return {
-      set: value.disconnectAll ? [] : undefined,
-      disconnect,
-      ...connectAndCreates,
+      // unlike all the other operations, an empty array isn't a no-op for set
+      set: value.set ? setResult.filter(isFulfilled).map(x => x.value) : undefined,
+      disconnect: disconnectResult.filter(isFulfilled).map(x => x.value),
+      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
     };
   };
 }

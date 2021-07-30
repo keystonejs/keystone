@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
@@ -119,11 +119,16 @@ function Box({ link, heading, children, ...props }: BoxProps) {
   );
 }
 
-export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
+export default function WhatsNew() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Latest News" {...props}>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Latest News'}
+      description={'What’s new with Keystone. A snapshot of announcements and recent releases.'}
+    >
       <Type as="h1" look="heading64">
         Latest News
       </Type>
@@ -159,8 +164,93 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           gap: 0,
         })}
       >
-        <Timeline date="29th June 2021" isLatest />
-        <Box heading="New Website">
+        <Timeline date="10th July 2021" isLatest />
+        <Box heading="Watch Jed's Prisma Day workshop">
+          <div
+            css={{
+              position: 'relative',
+              paddingBottom: '56.25%',
+              marginBottom: '1.25rem',
+              height: '0',
+            }}
+          >
+            <iframe
+              css={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+              }}
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/Z-0_qlxNpm4?rel=0"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <a href="https://github.com/keystonejs/prisma-day-2021-workshop">
+            Follow along in with the repo
+          </a>{' '}
+          as Jed builds a front and back-end for a Blog app with Prisma, KeystoneJS, GraphQL,
+          Next.js and Tailwind, that gives you:
+          <ul>
+            <li>
+              Public <a href="/docs/guides/auth">auth</a> and signup
+            </li>
+            <li>
+              Role-based <a href="/docs/guides/access-control">access control</a>
+            </li>
+            <li>
+              Custom components in the <a href="/docs/guides/document-field-demo">document field</a>
+            </li>
+          </ul>
+          Editors can embed audience Polls in post content, and authenticated visitors can make
+          their vote count in the frontend.
+        </Box>
+        <Timeline date="29th June 2021" />
+        <Box heading="New example: Custom Field Views">
+          Learn how to create a{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view">
+            custom field view
+          </a>{' '}
+          for a <InlineCode>JSON</InlineCode> field that lets users users add, edit and remove
+          navigation items from a list.
+        </Box>
+        <Timeline date="10th July 2021" />
+        <Box heading="Watch Jed's Prisma Day talk">
+          Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
+          below, or <a href="/updates/prisma-day-2021">read the full transcript</a>.
+          <div
+            css={{
+              position: 'relative',
+              paddingBottom: '56.25%',
+              marginTop: '1.25rem',
+              height: '0',
+            }}
+          >
+            <iframe
+              css={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+              }}
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </Box>
+        <Timeline date="29th June 2021" />
+        <Box heading="New website">
           We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
           and background on <a href="/why-keystone">why Keystone</a> is built for projects that need
           to scale on their own terms. Navigating the docs is easier with breadcrumbs, index pages
@@ -276,7 +366,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         </Box>
         <Timeline date="19th March 2021" isFirst />
         <Box
-          link="/docs/guides/keystone-5-vs-keystone-next"
+          link="/docs/guides/keystone-5-vs-keystone-6-preview"
           heading="Guidance on using Keystone 5 vs Keystone 6 "
         >
           Keystone 5 is now in maintenance mode while we focus all our efforts on building Keystone

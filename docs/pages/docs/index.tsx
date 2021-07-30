@@ -13,17 +13,63 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Keystone Docs Home'}
+      description={'Developer docs for KeystoneJS: The superpowered headless CMS for developers.'}
+    >
       <Type as="h1" look="heading64">
         Keystone Docs
       </Type>
 
-      <Type as="p" look="body18" margin="1.25rem 0 0">
-        More than a backend framework. More than a Headless CMS. Keystone is a platform for next-gen
-        development workflows and evolution.
-      </Type>
-
       <CommunitySlackCTA />
+
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr', '.4fr .6fr'],
+          gap: 'var(--space-xlarge)',
+        })}
+      >
+        <div>
+          <Type as="h2" look="heading30" margin="0 0 1rem 0">
+            Understanding Keystone
+          </Type>
+          <Type as="p" look="body18" margin="0 0 1.25rem">
+            Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
+            and how it delivers a developer experience that combines features, flexibility, and the
+            perfect amount of abstraction to get started fast, and grow as you learn.{' '}
+            <a href="/updates/prisma-day-2021">Read the full transcript</a>.
+          </Type>
+        </div>
+        <div>
+          <div
+            css={{
+              position: 'relative',
+              paddingBottom: '56.25%',
+              height: '0',
+            }}
+          >
+            <iframe
+              css={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+              }}
+              width="560"
+              height="315"
+              src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Walkthroughs
@@ -48,14 +94,14 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
         <Well
           grad="grad2"
           heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-next"
+          href="/docs/guides/keystone-5-vs-keystone-6-preview"
         >
           We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
           with today, this guide is for you.
@@ -113,7 +159,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -150,7 +196,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
@@ -173,7 +219,7 @@ export default function Docs() {
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >

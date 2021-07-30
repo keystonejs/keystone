@@ -24,37 +24,20 @@ This system will generate the following GraphQL API.
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
   User(where: UserWhereUniqueInput!): User
-
-  """ Search for all User items which match the where clause. """
   allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
-
-  """ Perform a meta-query on all User items which match the where clause. """
   _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
 }
 
 type Mutation {
-  """ Create a single User item. """
   createUser(data: UserCreateInput): User
-
-  """ Create multiple User items. """
   createUsers(data: [UsersCreateInput]): [User]
-
-  """ Update a single User item by ID. """
   updateUser(id: ID!, data: UserUpdateInput): User
-
-  """ Update multiple User items by ID. """
   updateUsers(data: [UsersUpdateInput]): [User]
-
-  """ Delete a single User item by ID. """
   deleteUser(id: ID!): User
-
-  """ Delete multiple User items by ID. """
   deleteUsers(ids: [ID!]): [User]
 }
 
-""" A keystone list """
 type User {
   id: ID!
   name: String
@@ -133,7 +116,6 @@ type _QueryMeta {
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
   User(where: UserWhereUniqueInput!): User
 }
 
@@ -151,7 +133,6 @@ type User {
 
 ```graphql
 type Query {
-  """ Search for all User items which match the where clause. """
   allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
 }
 
@@ -261,7 +242,6 @@ type _QueryMeta {
 
 ```graphql
 type Mutation {
-  """ Create a single User item. """
   createUser(data: UserCreateInput): User
 }
 
@@ -279,7 +259,6 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Create multiple User items. """
   createUsers(data: [UsersCreateInput]): [User]
 }
 
@@ -301,7 +280,6 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update a single User item by ID. """
   updateUser(id: ID!, data: UserUpdateInput): User
 }
 
@@ -319,7 +297,6 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update multiple User items by ID. """
   updateUsers(data: [UsersUpdateInput]): [User]
 }
 
@@ -342,7 +319,6 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete a single User item by ID. """
   deleteUser(id: ID!): User
 }
 
@@ -356,7 +332,6 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete multiple User items by ID. """
   deleteUsers(ids: [ID!]): [User]
 }
 
@@ -366,4 +341,4 @@ type User {
 }
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config.">{children}</Markdown>;

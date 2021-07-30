@@ -42,6 +42,7 @@ export function Emoji({ symbol, alt, ...props }: EmojiProps) {
   const posRef = useRef<HTMLElement>(null);
   const [showOnTop, setShownTop] = useState(true);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (posRef.current && posRef.current.offsetTop - window.pageYOffset < 50) {
       setShownTop(false);

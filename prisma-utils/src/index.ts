@@ -108,14 +108,7 @@ ${
         `import { schema } from '../../schema';
 
 
-${
-  provider !== 'sqlite'
-    ? `const QueryMode = schema.enum({
-  name: 'QueryMode',
-  values:schema.enumValues(['default','insensitive'])
-})`
-    : ''
-}
+${provider !== 'sqlite' ? `import { QueryMode } from '../..'` : ''}
 
 ${[...referencedTypes].map(typeName => printInputTypeForTSGQL(typeName, types)).join('\n\n')}
 

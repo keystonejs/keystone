@@ -91,7 +91,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             // Save the token and related info back to the item
             const { token, itemId } = result;
             await dbItemAPI.updateOne({
-              id: `${itemId}`,
+              where: { id: `${itemId}` },
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
@@ -139,7 +139,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const itemId = result.item.id;
           // Save the token and related info back to the item
           await dbItemAPI.updateOne({
-            id: itemId,
+            where: { id: itemId },
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
           });
 
@@ -147,7 +147,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
           await dbItemAPI.updateOne({
-            id: itemId,
+            where: { id: itemId },
             data: { [secretField]: args[secretField] },
           });
 

@@ -35,6 +35,7 @@ export const staticAdminMetaQuery = gql`
             fieldMeta
             viewsIndex
             customViewsIndex
+            search
           }
         }
       }
@@ -84,7 +85,13 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
               fields: Array<
                 { __typename: 'KeystoneAdminUIFieldMeta' } & Pick<
                   KeystoneAdminUIFieldMeta,
-                  'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'viewsIndex' | 'customViewsIndex'
+                  | 'path'
+                  | 'label'
+                  | 'isOrderable'
+                  | 'fieldMeta'
+                  | 'viewsIndex'
+                  | 'customViewsIndex'
+                  | 'search'
                 >
               >;
             }
@@ -157,6 +164,7 @@ type KeystoneAdminUIFieldMeta = {
   createView: KeystoneAdminUIFieldMetaCreateView;
   itemView: Maybe<KeystoneAdminUIFieldMetaItemView>;
   listView: KeystoneAdminUIFieldMetaListView;
+  search: Maybe<QueryMode>;
 };
 
 type KeystoneAdminUIFieldMetaCreateView = {
@@ -181,3 +189,5 @@ type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
 type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
 
 type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
+
+type QueryMode = 'default' | 'insensitive';

@@ -84,6 +84,12 @@ export type ListAdminUIConfig<
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
   labelField?: keyof Fields;
+  /**
+   * The fields used by the Admin UI when searching this list.
+   * It is always possible to search by id and `id` should not be specified in this option.
+   * @default The `labelField` if it has a string `contains` filter, otherwise none.
+   */
+  searchFields?: Extract<keyof Fields, string>[];
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.
@@ -193,11 +199,6 @@ export type ListGraphQLConfig = {
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
 
 export type ListDBConfig = {
-  /**
-   * The name of the field to use for `search` filter operations.
-   * @default "name""
-   */
-  searchField?: string;
   /**
    * The kind of id to use.
    * @default { kind: "cuid" }
