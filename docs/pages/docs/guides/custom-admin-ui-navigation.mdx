@@ -102,7 +102,7 @@ export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) 
 
 ### Adding additional routes
 
-The `NavItem` component is a thin styling and accessibility wrapper around the Link component from Next.js. We'll use this component to render our custom route as well as the `Dashboard` route.
+The `NavItem` component is a thin styling and accessibility wrapper around the `Link` component from Next.js. We'll use this component to render our custom route as well as the `Dashboard` route.
 
 ```tsx
 import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
@@ -295,6 +295,6 @@ type NavItemProps = {
 }
 ```
 
-By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
+By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the "selected" state of Navigation items.
 
 export default ({ children }) => <Markdown>{children}</Markdown>
