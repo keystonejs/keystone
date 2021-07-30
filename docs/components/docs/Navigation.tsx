@@ -204,13 +204,15 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
       <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
-      <Section label="Recent Releases">
-        {releases.map(name => (
-          <NavItem key={name} href={`/releases/${name}`}>
-            {format(parseISO(name), 'do LLL yyyy')}
-          </NavItem>
-        ))}
-      </Section>
+      {releases.length ? (
+        <Section label="Recent Releases">
+          {releases.map(name => (
+            <NavItem key={name} href={`/releases/${name}`}>
+              {format(parseISO(name), 'do LLL yyyy')}
+            </NavItem>
+          ))}
+        </Section>
+      ) : null}
     </nav>
   );
 }
