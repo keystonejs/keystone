@@ -143,7 +143,7 @@ input PersonUpdateInput {
   email: String
   password: String
   role: RoleRelateToOneForUpdateInput
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForUpdateInput
 }
 
 input RoleRelateToOneForUpdateInput {
@@ -152,11 +152,11 @@ input RoleRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
-  disconnectAll: Boolean
+input TodoRelateToManyForUpdateInput {
+  disconnect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 input PersonUpdateArgs {
@@ -169,12 +169,17 @@ input PersonCreateInput {
   email: String
   password: String
   role: RoleRelateToOneForCreateInput
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForCreateInput
 }
 
 input RoleRelateToOneForCreateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 type Role {
@@ -252,14 +257,14 @@ input RoleUpdateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
+  assignedTo: PersonRelateToManyForUpdateInput
 }
 
-input PersonRelateToManyInput {
-  create: [PersonCreateInput]
-  connect: [PersonWhereUniqueInput]
-  disconnect: [PersonWhereUniqueInput]
-  disconnectAll: Boolean
+input PersonRelateToManyForUpdateInput {
+  disconnect: [PersonWhereUniqueInput!]
+  set: [PersonWhereUniqueInput!]
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
 }
 
 input RoleUpdateArgs {
@@ -275,7 +280,12 @@ input RoleCreateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
+  assignedTo: PersonRelateToManyForCreateInput
+}
+
+input PersonRelateToManyForCreateInput {
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
 }
 
 """

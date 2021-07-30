@@ -110,27 +110,27 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
+  cart: CartItemRelateToManyForUpdateInput
+  orders: OrderRelateToManyForUpdateInput
   role: RoleRelateToOneForUpdateInput
-  products: ProductRelateToManyInput
+  products: ProductRelateToManyForUpdateInput
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
 
-input CartItemRelateToManyInput {
-  create: [CartItemCreateInput]
-  connect: [CartItemWhereUniqueInput]
-  disconnect: [CartItemWhereUniqueInput]
-  disconnectAll: Boolean
+input CartItemRelateToManyForUpdateInput {
+  disconnect: [CartItemWhereUniqueInput!]
+  set: [CartItemWhereUniqueInput!]
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
-input OrderRelateToManyInput {
-  create: [OrderCreateInput]
-  connect: [OrderWhereUniqueInput]
-  disconnect: [OrderWhereUniqueInput]
-  disconnectAll: Boolean
+input OrderRelateToManyForUpdateInput {
+  disconnect: [OrderWhereUniqueInput!]
+  set: [OrderWhereUniqueInput!]
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
 }
 
 input RoleRelateToOneForUpdateInput {
@@ -139,11 +139,11 @@ input RoleRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input ProductRelateToManyInput {
-  create: [ProductCreateInput]
-  connect: [ProductWhereUniqueInput]
-  disconnect: [ProductWhereUniqueInput]
-  disconnectAll: Boolean
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -155,18 +155,33 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
+  cart: CartItemRelateToManyForCreateInput
+  orders: OrderRelateToManyForCreateInput
   role: RoleRelateToOneForCreateInput
-  products: ProductRelateToManyInput
+  products: ProductRelateToManyForCreateInput
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
 
+input CartItemRelateToManyForCreateInput {
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
+}
+
+input OrderRelateToManyForCreateInput {
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
+}
+
 input RoleRelateToOneForCreateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 type Product {
@@ -618,16 +633,16 @@ input OrderOrderByInput {
 
 input OrderUpdateInput {
   total: Int
-  items: OrderItemRelateToManyInput
+  items: OrderItemRelateToManyForUpdateInput
   user: UserRelateToOneForUpdateInput
   charge: String
 }
 
-input OrderItemRelateToManyInput {
-  create: [OrderItemCreateInput]
-  connect: [OrderItemWhereUniqueInput]
-  disconnect: [OrderItemWhereUniqueInput]
-  disconnectAll: Boolean
+input OrderItemRelateToManyForUpdateInput {
+  disconnect: [OrderItemWhereUniqueInput!]
+  set: [OrderItemWhereUniqueInput!]
+  create: [OrderItemCreateInput!]
+  connect: [OrderItemWhereUniqueInput!]
 }
 
 input OrderUpdateArgs {
@@ -637,9 +652,14 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   total: Int
-  items: OrderItemRelateToManyInput
+  items: OrderItemRelateToManyForCreateInput
   user: UserRelateToOneForCreateInput
   charge: String
+}
+
+input OrderItemRelateToManyForCreateInput {
+  create: [OrderItemCreateInput!]
+  connect: [OrderItemWhereUniqueInput!]
 }
 
 type Role {
@@ -717,14 +737,14 @@ input RoleUpdateInput {
   canManageRoles: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
+  assignedTo: UserRelateToManyForUpdateInput
 }
 
-input UserRelateToManyInput {
-  create: [UserCreateInput]
-  connect: [UserWhereUniqueInput]
-  disconnect: [UserWhereUniqueInput]
-  disconnectAll: Boolean
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input RoleUpdateArgs {
@@ -740,7 +760,12 @@ input RoleCreateInput {
   canManageRoles: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
+  assignedTo: UserRelateToManyForCreateInput
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 """
