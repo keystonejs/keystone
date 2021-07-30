@@ -2,11 +2,169 @@ import { Markdown } from '../../../components/Markdown';
 
 # Custom Admin UI Navigation
 
-In this guide, we'll show you how to create a custom Navigation component with custom routes to be rendered in the Admin-UI.
+In this guide, we'll show you how to create a custom Navigation component with custom routes to be rendered in the Admin UI.
+By the end of this guide you should have a custom Navigation component rendering in the Admin UI with a custom route pointing to the KeystoneJS docs.
+![finished custom navigation example](/assets/guides/custom-admin-ui-navigation/final-result.png)
+
+## Adding the custom navigation component to the Admin UI
+
+The first thing you'll need to do in creating your Custom Navigation component is to specify an `/admin/config.ts` file in the root of your Keystone project.
+
+Keystone is made aware of custom components it needs to render in the Admin UI via the `/admin/config.ts` file.
+Below is the expected type for the component export:
+
+```ts
+export type AdminConfig = {
+  components?: {
+    Logo?: (props: {}) => ReactElement;
+    Navigation?: (props: NavigationProps) => ReactElement;
+  };
+};
+```
+
+Reference your custom Navigation component in the export as so, the exported component can either be declared inline or imported from elsewhere in your project.
+
+```ts
+import { CustomNavigation } from './components/CustomNavigation';
+export  const component: AdminConfig['components'] = {
+    Navigation: CustomNavigation
+}
+```
 
 ## Creating your custom Navigation component
 
-### Navigation props
+The next step is to create our `CustomNavigation` React component, in the root of your project create a new tsx file at `/admin/components/CustomNavigation.tsx`.
+
+Here we'll export our CustomNavigation component as a named export.
+
+```tsx
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    ...
+  )
+}
+```
+
+If it detects a Navigation property in the `config.tsx` file we created earlier, Keystone will pass the following props to this component.
+
+```tsx
+type NavigationProps = {
+  lists: ListMeta[];
+  authenticatedItem: AuthenticatedItem
+}
+```
+
+!> For more information on the props, please see the Navigation Props section of this guide.
+
+Next we'll want to import some components that Keystone provides to help us build our custom Navigation.
+
+```tsx
+import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
+```
+
+The `NavigationContainer` component renders containing markup around your navigation links, as well as as the different states of the `authenticatedItem` prop. We'll need this to:
+
+- To make our CustomNavigation look and feel like the default Admin UI Navigation component.
+- Render out the hamburger menu with additional options should a user session be in progress via the `authenticatedItem` prop.
+
+!> For more information on the `NavigationContainer` see the [NavigationContainer](#navigation-container) section of the [component docs](#components) below.
+
+```tsx
+import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      {/* ... */}
+    </NavigationContainer>
+  )
+}
+```
+
+The `ListNavItems` component takes the provided Array of `lists` and renders a list of NavItems. We'll use this component to help us easily create NavItems from Keystone lists.
+
+!> For more information on the `ListNavItems` component, see the [ListNavItems](#list-nav-items) section of the [component docs](#components) below.
+
+```tsx
+import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <ListNavItems lists={lists}/>
+      {/* ... */}
+    </NavigationContainer>
+  )
+}
+```
+
+The `NavItem` component is a thin styling and accessibility wrapper around the Link component from Next.js. We'll use this component to render out custom route as well as the `Dashboard` route that Keystone expects.
+
+!> For more information on the `NavItem` component, see the [NavItem](#nav-item) section of the [component docs](#components) below.
+
+```tsx
+import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard<NavItem>
+      <ListNavItems lists={lists}/>
+      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
+        Navigation Guide
+      </NavItem>
+    </NavigationContainer>
+  )
+}
+```
+
+!> **Note** When opting into a custom Navigation component you will need to specify a NavItem for the `Dashboard` page (the index route). Keysone doesn't provide this to you out of the box, as it's not strictly a list concern, but doing so is straight-forward as seen in the snippet above.
+
+With all that done, your Custom Navigation component should be good to go, and your admin folder should look like this.
+
+```tsx
+// admin/components/CustomNavigation.tsx
+import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard</NavItem>
+      <ListNavItems lists={lists}/>
+      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
+        Navigation Guide
+      </NavItem>
+    </NavigationContainer>
+  )
+}
+
+
+// admin/config.ts
+import { AdminConfig } from '@keystone-next/types';
+export type AdminConfig = {
+  components?: {
+    Logo?: (props: {}) => ReactElement;
+    Navigation?: (props: NavigationProps) => ReactElement;
+  };
+};
+```
+
+Start up your Keystone project, and you should see Custom Navigation with a route to the KeystoneJS docs in the Admin UI.
+![finished custom navigation example](/assets/guides/custom-admin-ui-navigation/final-result.png)
+
+The rest of this guide will elaborate on some of the details around the helper components Keystone provides and the Navigation props that we glossed over in the main guide.
+
+## Navigation props
+
+This section is to provide more granular information around the props that Keystone passes to your Custom Navigation component.
+
+```tsx
+export const CustomNavigation = ({ lists, authenticatedItem }) => {}
+```
 
 Keystone passes the following props to your custom Navigation component:
 
@@ -17,19 +175,20 @@ type NavigationProps {
 }
 ```
 
-`lists` is an array of list objects that include amongst other things routing information to be rendered by the custom Navigation component.
+`lists` is an array of keystone list objects. Internally Keystone filters through your lists and ensures that only visible lists are passed through to you in the `lists` array prop.
 
-```ts
+```typescript
 type ListMeta = {
-  // key is used as the unique key for each navigation item in React.
+  /** Used for optimising the generated list of NavItems in React */
   key: string;
-  // href to the list route in the Admin-UI.
+  /** Used as the href for each list generated NavItem */
   path: string;
-  // Used as the label for each navigation item.
+  /** Used as the label for each list generated NavItem */
   label: string;
-  /** There are other properties as well */
+  /** Other properties exists, but these are the ones that are relevant to the Navigation implementation */
 };
 
+type Lists = ListMeta[];
 ```
 
 `authenticatedItem` is a union of potential authentication states, expanded on below:
@@ -48,7 +207,7 @@ The `authenticatedItem` props is rendered automatically when you pass it into th
 
 ?> If you render the `authenticatedItem` yourself, make sure you handle all of the possible states.
 
-### Components
+## Components
 
 Keystone exposes a variety of helper components to make building out your custom Admin UI Navigation component easier. These are:
 
@@ -57,7 +216,7 @@ Keystone exposes a variety of helper components to make building out your custom
 - [ListNavItem](#list-nav-item)
 - [NavItem](#nav-item)
 
-#### NavigationContainer
+### NavigationContainer
 
 This component renders containing markup around your navigation links, as well as as the different states of the `authenticatedItem` prop.
 
@@ -65,7 +224,7 @@ This component renders containing markup around your navigation links, as well a
 import { NavigationContainer} from '@keystone-next/keystone/admin-ui/components'
 ```
 
-#### ListNavItems
+### ListNavItems
 
 This component takes the provided Array of `lists` and renders a list of NavItems.
 
@@ -104,7 +263,9 @@ const CustomNavigation = ({lists}) => (
 
 ![example of navigation without include prop values](/assets/guides/custom-admin-ui-navigation/listNavItems-without-include.png)
 
-#### ListNavItem
+### ListNavItem
+
+!> This component wasn't mentiond in the core guide as for most use cases you'll want to use `ListNavItems` or `NavItem` instead.
 
 The ListNavItem component takes a single `list` object and renders a `NavItem`. This is a thin wrapper around `NavItem`, that automates the association of list properties to NavItem.
 It also adds a custom `isSelected` expression optimised for keystone lists.
@@ -125,9 +286,33 @@ The idea behind `ListNavItem` is to have a higher-level abstraction that makes i
 This is especially relevant for future feature additions to the nav. (i.e. if we add icon support, that would work out of the box from a dependency bump for users of ListNavItem, whereas you'd have to add that icon prop manually with a lower level component.)
 
 Use this component when you want to have more granular control over rendering nav items from lists prop provided to the `Navigation` component by keystone,
-but would still like to not have to worry about which list properties need to be associated with each NavItem prop.
+but would still like to not have to worry about which list properties need to be associated with each NavItem prop. Below is an example of how you might do this:
 
-#### NavItem
+```tsx
+// admin/components/CustomNavigation.tsx
+import { NavigationContainer, NavItem, ListNavItem } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard</NavItem>
+      {lists.map(list => (
+        <>
+          {/* Some additional custom markup here */}
+          <ListNavItem list={list} />
+        </>
+      ))}
+      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
+        Navigation Guide
+      </NavItem>
+    </NavigationContainer>
+  )
+}
+
+```
+
+### NavItem
 
 This component is a thin styling and accessibility wrapper around the Link component from Next.js
 
@@ -149,89 +334,5 @@ type NavItemProps = {
 ```
 
 By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
-
-### Piecing it all together
-
-The code snippet below shows how to use these three components in conjunction to create a custom Navigation component that:
-
-a) Has the styling constraints of the default Admin UI navigation
-
-b) Renders out all the necessary routes generated from our Keystone `lists`
-
-c) Adds a new custom route to take us to the `keystonejs docs`.
-
-d) Renders additional UI based on whether or not the user has signed in provided by the `authenticatedItem` prop.
-
-```tsx
-// admin/components/CustomNavigation.tsx
-import { NavigationContainer, NavItem, ListNavItems } from '@keystone-next/keystone/admin-ui/components';
-import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
-
-export function CustomNavigation({ authenticatedItem, routes }: NavigationProps) {
-  return (
-    <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={lists}/>
-      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
-        Navigation Guide
-      </NavItem>
-    </NavigationContainer>
-  )
-}
-```
-
-!> **Note** When opting into a custom Navigation component you will need to specify a NavItem for the `Dashboard` page (the index route). Keysone doesn't provide this to you out of the box, as it's not strictly a list concern, but doing so is straight-forward as seen in the snippet above.
-
-If you want a custom order to your list based NavItems or want to insert custom markup but would still prefer not to pass list properties to `NavItem` yourself, you can use the exported `ListNavItem` component as below:
-
-```tsx
-// admin/components/CustomNavigation.tsx
-import { NavigationContainer, NavItem, ListNavItem } from '@keystone-next/keystone/admin-ui/components';
-import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
-
-export function CustomNavigation({ authenticatedItem, routes }: NavigationProps) {
-  return (
-    <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      {lists.map(list => (
-        <>
-          {/* Some additional custom markup here */}
-          <ListNavItem list={list} />
-        </>
-      ))}
-      <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
-        Navigation Guide
-      </NavItem>
-    </NavigationContainer>
-  )
-}
-
-```
-
-## Adding the custom navigation component to the Admin UI
-
-Keystone is made aware of custom components it needs to render in the Admin UI via the `/admin/config.ts` file in your project root.
-Below is the expected type for the component export:
-
-```ts
-export type AdminConfig = {
-  components?: {
-    Logo?: (props: {}) => ReactElement;
-    Navigation?: (props: NavigationProps) => ReactElement;
-  };
-};
-```
-
-Reference your custom Navigation component in the export as so, the exported component can either be declared inline or imported from elsewhere in your project.
-
-```ts
-import { CustomNavigation } from './components/CustomNavigation';
-export  const component: AdminConfig['components'] = {
-    Navigation: CustomNavigation
-}
-```
-
-Once this is done, you should see your custom navigation component in your Admin-UI Navigation
-![finished custom navigation example](/assets/guides/custom-admin-ui-navigation/final-result.png)
 
 export default ({ children }) => <Markdown>{children}</Markdown>
