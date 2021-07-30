@@ -298,6 +298,26 @@ This is especially relevant for future feature additions to the nav. (i.e. if we
 Use this component when you want to have more granular control over rendering nav items from lists prop provided to the `Navigation` component by Keystone,
 but would still like to not have to worry about which list properties need to be associated with each `NavItem` prop. Below is an example of how you might do this:
 
+```tsx
+import { ListNavItem } from '@keystone-next/keystone/admin-ui/components';
+
+export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard</NavItem>
+      {lists.map(list => {
+        return (
+          <>
+          {/** Some additional mark up here */}
+          <ListNavItem list={list} />
+          </>
+        )
+      })}
+    </NavigationContainer>
+  )
+}
+```
+
 ### NavItem
 
 This component is a thin styling and accessibility wrapper around the Link component from Next.js
