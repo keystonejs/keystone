@@ -200,15 +200,14 @@ input PostUpdateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
+  author: UserRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input TagRelateToManyForUpdateInput {
@@ -228,8 +227,13 @@ input PostCreateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
+  author: UserRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input TagRelateToManyForCreateInput {

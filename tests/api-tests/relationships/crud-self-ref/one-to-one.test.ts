@@ -361,30 +361,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
           where: { id: user.id },
-          data: { friend: { disconnect: { id: friend.id } } },
-          query: 'id friend { id name }',
-        });
-
-        expect(_user.id).toEqual(user.id);
-        expect(_user.friend).toBe(null);
-
-        // Check the link has been broken
-        const result = await getUserAndFriend(context, user.id, friend.id);
-        expect(result.User.friend).toBe(null);
-        expect(result.Friend.friendOf).toBe(null);
-      })
-    );
-
-    test(
-      'With set: []',
-      runner(async ({ context }) => {
-        // Manually setup a connected Company <-> Location
-        const { user, friend } = await createUserAndFriend(context);
-
-        // Run the query to disconnect the location from company
-        const _user = await context.lists.User.updateOne({
-          where: { id: user.id },
-          data: { friend: { set: [] } },
+          data: { friend: { disconnect: true } },
           query: 'id friend { id name }',
         });
 

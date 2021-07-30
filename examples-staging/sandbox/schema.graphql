@@ -76,15 +76,14 @@ enum OrderDirection {
 input TodoUpdateInput {
   label: String
   isComplete: Boolean
-  assignedTo: UserRelateToOneInput
+  assignedTo: UserRelateToOneForUpdateInput
   finishBy: String
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input TodoUpdateArgs {
@@ -95,8 +94,13 @@ input TodoUpdateArgs {
 input TodoCreateInput {
   label: String
   isComplete: Boolean
-  assignedTo: UserRelateToOneInput
+  assignedTo: UserRelateToOneForCreateInput
   finishBy: String
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 type User {

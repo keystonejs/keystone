@@ -794,7 +794,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
           where: { id: company.id },
-          data: { location: { disconnect: { id: location.id } } },
+          data: { location: { disconnect: true } },
           query: 'id location { id name }',
         });
         expect(_company.id).toEqual(company.id);
@@ -816,51 +816,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _location = await context.lists.Location.updateOne({
           where: { id: location.id },
-          data: { company: { disconnect: { id: company.id } } },
-          query: 'id company { id name }',
-        });
-
-        expect(_location.id).toEqual(location.id);
-        expect(_location.company).toBe(null);
-
-        // Check the link has been broken
-        const result = await getCompanyAndLocation(context, company.id, location.id);
-        expect(result.Company.location).toBe(null);
-        expect(result.Location.company).toBe(null);
-      })
-    );
-    test(
-      'With set: [] A',
-      runner(async ({ context }) => {
-        // Manually setup a connected Company <-> Location
-        const { location, company } = await createCompanyAndLocation(context);
-
-        // Run the query to disconnect the location from company
-        const _company = await context.lists.Company.updateOne({
-          where: { id: company.id },
-          data: { location: { set: [] } },
-          query: 'id location { id name }',
-        });
-        expect(_company.id).toEqual(company.id);
-        expect(_company.location).toBe(null);
-
-        // Check the link has been broken
-        const result = await getCompanyAndLocation(context, company.id, location.id);
-        expect(result.Company.location).toBe(null);
-        expect(result.Location.company).toBe(null);
-      })
-    );
-
-    test(
-      'With set: [] B',
-      runner(async ({ context }) => {
-        // Manually setup a connected Company <-> Location
-        const { location, company } = await createLocationAndCompany(context);
-
-        // Run the query to disconnect the location from company
-        const _location = await context.lists.Location.updateOne({
-          where: { id: location.id },
-          data: { company: { set: [] } },
+          data: { company: { disconnect: true } },
           query: 'id company { id name }',
         });
         expect(_location.id).toEqual(location.id);

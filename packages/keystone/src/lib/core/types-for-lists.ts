@@ -197,18 +197,29 @@ export function initialiseLists(
       },
     });
 
-    const relateToOne = schema.inputObject({
-      name: names.relateToOneInputName,
+    const relateToOneForCreate = schema.inputObject({
+      name: names.relateToOneForCreateInputName,
       fields: () => {
         const list = lists[listKey];
-
         return {
           ...(list.access.create !== false && {
             create: schema.arg({ type: create }),
           }),
           connect: schema.arg({ type: uniqueWhere }),
-          disconnect: schema.arg({ type: uniqueWhere }),
-          disconnectAll: schema.arg({ type: schema.Boolean }),
+        };
+      },
+    });
+
+    const relateToOneForUpdate = schema.inputObject({
+      name: names.relateToOneForUpdateInputName,
+      fields: () => {
+        const list = lists[listKey];
+        return {
+          ...(list.access.create !== false && {
+            create: schema.arg({ type: create }),
+          }),
+          connect: schema.arg({ type: uniqueWhere }),
+          disconnect: schema.arg({ type: schema.Boolean }),
         };
       },
     });
@@ -224,7 +235,7 @@ export function initialiseLists(
         findManyArgs,
         relateTo: {
           many: { create: relateToManyForCreate, update: relateToManyForUpdate },
-          one: { create: relateToOne, update: relateToOne },
+          one: { create: relateToOneForCreate, update: relateToOneForUpdate },
         },
       },
     };

@@ -51,14 +51,13 @@ input TodoUpdateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
+  assignedTo: PersonRelateToOneForUpdateInput
 }
 
-input PersonRelateToOneInput {
+input PersonRelateToOneForUpdateInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input TodoUpdateArgs {
@@ -70,7 +69,12 @@ input TodoCreateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
+  assignedTo: PersonRelateToOneForCreateInput
+}
+
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
 }
 
 type Person {
@@ -138,15 +142,14 @@ input PersonUpdateInput {
   name: String
   email: String
   password: String
-  role: RoleRelateToOneInput
+  role: RoleRelateToOneForUpdateInput
   tasks: TodoRelateToManyForUpdateInput
 }
 
-input RoleRelateToOneInput {
+input RoleRelateToOneForUpdateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input TodoRelateToManyForUpdateInput {
@@ -165,8 +168,13 @@ input PersonCreateInput {
   name: String
   email: String
   password: String
-  role: RoleRelateToOneInput
+  role: RoleRelateToOneForCreateInput
   tasks: TodoRelateToManyForCreateInput
+}
+
+input RoleRelateToOneForCreateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
 }
 
 input TodoRelateToManyForCreateInput {

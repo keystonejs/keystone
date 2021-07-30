@@ -239,16 +239,15 @@ input PhoneNumberOrderByInput {
 }
 
 input PhoneNumberUpdateInput {
-  user: UserRelateToOneInput
+  user: UserRelateToOneForUpdateInput
   type: String
   value: String
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input PhoneNumberUpdateArgs {
@@ -257,9 +256,14 @@ input PhoneNumberUpdateArgs {
 }
 
 input PhoneNumberCreateInput {
-  user: UserRelateToOneInput
+  user: UserRelateToOneForCreateInput
   type: String
   value: String
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 type Post {
@@ -324,7 +328,7 @@ input PostUpdateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
+  author: UserRelateToOneForUpdateInput
 }
 
 input PostUpdateArgs {
@@ -337,7 +341,7 @@ input PostCreateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
+  author: UserRelateToOneForCreateInput
 }
 
 """

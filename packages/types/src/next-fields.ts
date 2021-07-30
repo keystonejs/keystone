@@ -357,13 +357,6 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
 
 type AnyInputObj = schema.InputObjectType<Record<string, schema.Arg<schema.InputType, any>>>;
 
-type RelateToOneInput = schema.InputObjectType<{
-  create?: schema.Arg<TypesForList['create']>;
-  connect: schema.Arg<TypesForList['uniqueWhere']>;
-  disconnect: schema.Arg<TypesForList['uniqueWhere']>;
-  disconnectAll: schema.Arg<typeof schema.Boolean>;
-}>;
-
 export type TypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
@@ -386,8 +379,15 @@ export type TypesForList = {
       }>;
     };
     one: {
-      create: RelateToOneInput;
-      update: RelateToOneInput;
+      create: schema.InputObjectType<{
+        create?: schema.Arg<TypesForList['create']>;
+        connect: schema.Arg<TypesForList['uniqueWhere']>;
+      }>;
+      update: schema.InputObjectType<{
+        create?: schema.Arg<TypesForList['create']>;
+        connect: schema.Arg<TypesForList['uniqueWhere']>;
+        disconnect: schema.Arg<typeof schema.Boolean>;
+      }>;
     };
   };
 };

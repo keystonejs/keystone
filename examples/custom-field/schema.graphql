@@ -84,14 +84,13 @@ input PostUpdateInput {
   content: String
   rating: Int
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForUpdateInput
 }
 
-input AuthorRelateToOneInput {
+input AuthorRelateToOneForUpdateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -105,7 +104,12 @@ input PostCreateInput {
   content: String
   rating: Int
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForCreateInput
+}
+
+input AuthorRelateToOneForCreateInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
 }
 
 type Author {
