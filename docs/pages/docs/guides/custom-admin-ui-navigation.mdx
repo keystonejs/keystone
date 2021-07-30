@@ -273,6 +273,29 @@ const CustomNavigation = ({ lists }) => (
 
 ![example of navigation without include prop values](/assets/guides/custom-admin-ui-navigation/listNavItems-without-include.png)
 
+### NavItem
+
+This component is a thin styling and accessibility wrapper around the Link component from Next.js
+
+```tsx
+import { NavItem } from '@keystone-next/keystone/admin-ui/components'
+```
+
+It expects the following props:
+
+```ts
+type NavItemProps = {
+   // The path or URL to navigate to
+  href: string,
+  // React children of the component
+  children: ReactNode,
+  // Toggles on the selected style and aria-current attribute of the NavItem
+  isSelected: boolean
+}
+```
+
+By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
+
 ### ListNavItem
 
 !> This component wasn't mentiond in the core guide as for most use cases you'll want to use `ListNavItems` or `NavItem` instead.
@@ -317,28 +340,5 @@ export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) 
   )
 }
 ```
-
-### NavItem
-
-This component is a thin styling and accessibility wrapper around the Link component from Next.js
-
-```tsx
-import { NavItem } from '@keystone-next/keystone/admin-ui/components'
-```
-
-It expects the following props:
-
-```ts
-type NavItemProps = {
-   // The path or URL to navigate to
-  href: string,
-  // React children of the component
-  children: ReactNode,
-  // Toggles on the selected style and aria-current attribute of the NavItem
-  isSelected: boolean
-}
-```
-
-By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
 
 export default ({ children }) => <Markdown>{children}</Markdown>
