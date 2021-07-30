@@ -219,11 +219,11 @@ describe('no access control', () => {
         data: [
           {
             where: { id: createUser.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
+            data: { notes: { set: [{ id: createNote.id }] } },
           },
           {
             where: { id: createUser2.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
+            data: { notes: { set: [{ id: createNote2.id }] } },
           },
         ],
         query: 'id notes { id content }',
@@ -290,7 +290,10 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ updateUser: null });
       expectRelationshipError(errors, [
-        { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+        {
+          path: ['updateUser'],
+          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+        },
       ]);
     })
   );
@@ -364,7 +367,8 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })
