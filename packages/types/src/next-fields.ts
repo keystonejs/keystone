@@ -364,13 +364,6 @@ type RelateToOneInput = schema.InputObjectType<{
   disconnectAll: schema.Arg<typeof schema.Boolean>;
 }>;
 
-type RelateToManyInput = schema.InputObjectType<{
-  create?: schema.Arg<schema.ListType<TypesForList['create']>>;
-  connect: schema.Arg<schema.ListType<TypesForList['uniqueWhere']>>;
-  disconnect: schema.Arg<schema.ListType<TypesForList['uniqueWhere']>>;
-  disconnectAll: schema.Arg<typeof schema.Boolean>;
-}>;
-
 export type TypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
@@ -381,8 +374,16 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
-      create: RelateToManyInput;
-      update: RelateToManyInput;
+      create: schema.InputObjectType<{
+        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
+      }>;
+      update: schema.InputObjectType<{
+        disconnect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        set: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
+      }>;
     };
     one: {
       create: RelateToOneInput;

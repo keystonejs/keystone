@@ -4,8 +4,6 @@ import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
 
-const isNotNull = <T>(arg: T): arg is Exclude<T, null> => arg !== null;
-
 type _CreateValueType = Exclude<
   schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>,
   null | undefined
@@ -16,31 +14,7 @@ type _UpdateValueType = Exclude<
   null | undefined
 >;
 
-async function getDisconnects(
-  uniqueInputs: (UniqueInputFilter | null)[],
-  context: KeystoneContext,
-  foreignList: InitialisedList
-): Promise<UniquePrismaFilter[]> {
-  return (
-    await Promise.all(
-      uniqueInputs.map(async uniqueInput => {
-        if (uniqueInput === null) return [];
-        let uniqueWhere;
-        try {
-          // Validate and resolve the input filter
-          uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
-          // Check whether the item exists
-          await context.sudo().db.lists[foreignList.listKey].findOne({ where: uniqueInput });
-        } catch (err) {
-          return [];
-        }
-        return [uniqueWhere];
-      })
-    )
-  ).flat();
-}
-
-function getConnects(
+function getResolvedUniqueWheres(
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList
@@ -55,51 +29,12 @@ function getConnects(
 }
 
 async function resolveCreateAndConnect(
-  value: _UpdateValueType,
+  value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
   target: string
-) {
-  // Perform queries for the connections
-  const connects = Promise.allSettled(
-    getConnects((value.connect || []).filter(isNotNull), context, foreignList)
-  );
-
-  // Perform nested mutations for the creations
-  const creates = Promise.allSettled(
-    (value.create || []).filter(isNotNull).map(x => nestedMutationState.create(x, foreignList))
-  );
-
-  const [connectResult, createResult] = await Promise.all([connects, creates]);
-
-  // Collect all the errors
-  const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
-    x => x.reason
-  );
-  if (errors.length) {
-    throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
-  }
-
-  const result = { connect: connectResult.filter(isFulfilled).map(x => x.value) };
-  for (const createData of createResult.filter(isFulfilled).map(x => x.value)) {
-    result.connect.push({ id: createData.id });
-  }
-
-  // Perform queries for the connections
-  return result;
-}
-
-function assertValidManyOperation(val: _UpdateValueType, target: string) {
-  if (
-    !Array.isArray(val.connect) &&
-    !Array.isArray(val.create) &&
-    !Array.isArray(val.disconnect) &&
-    !val.disconnectAll
-  ) {
-    throw new Error(`Nested mutation operation invalid for ${target}`);
-  }
-}
+) {}
 
 export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
@@ -108,8 +43,38 @@ export function resolveRelateToManyForCreateInput(
   target: string
 ) {
   return async (value: _CreateValueType) => {
-    assertValidManyOperation(value, target);
-    return resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target);
+    if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
+      throw new Error(
+        `You must provide at least one field in to-many relationship fields but none were provided at ${target}`
+      );
+    }
+
+    // Perform queries for the connections
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList)
+    );
+
+    // Perform nested mutations for the creations
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    );
+
+    const [connectResult, createResult] = await Promise.all([connects, creates]);
+
+    // Collect all the errors
+    const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
+      x => x.reason
+    );
+    if (errors.length) {
+      throw new Error(`Unable to create, connect ${errors.length} ${target}`);
+    }
+
+    const result = {
+      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
+    };
+
+    // Perform queries for the connections
+    return result;
   };
 }
 
@@ -120,18 +85,28 @@ export function resolveRelateToManyForUpdateInput(
   target: string
 ) {
   return async (value: _UpdateValueType) => {
-    assertValidManyOperation(value, target);
-    const disconnects = getDisconnects(
-      value.disconnectAll ? [] : value.disconnect || [],
-      context,
-      foreignList
-    );
+    if (
+      !Array.isArray(value.connect) &&
+      !Array.isArray(value.create) &&
+      !Array.isArray(value.disconnect) &&
+      !Array.isArray(value.set)
+    ) {
+      throw new Error(
+        `You must provide at least one field in to-many relationship fields but none were provided at ${target}`
+      );
+    }
+    if (value.set && value.disconnect) {
+      throw new Error(
+        `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
+      );
+    }
+    const disconnects = getResolvedUniqueWheres(value.disconnect || [], context, foreignList);
 
     const [disconnect, connect] = await Promise.all([
       disconnects,
       resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
     ]);
 
-    return { set: value.disconnectAll ? [] : undefined, disconnect, ...connect };
+    return { set: value.set ? [] : undefined, disconnect, ...connect };
   };
 }

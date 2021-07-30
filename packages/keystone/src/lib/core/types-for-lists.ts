@@ -169,17 +169,30 @@ export function initialiseLists(
       skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
     };
 
-    const relateToMany = schema.inputObject({
-      name: names.relateToManyInputName,
+    const relateToManyForCreate = schema.inputObject({
+      name: names.relateToManyForCreateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(create) }),
+            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
           }),
-          connect: schema.arg({ type: schema.list(uniqueWhere) }),
-          disconnect: schema.arg({ type: schema.list(uniqueWhere) }),
-          disconnectAll: schema.arg({ type: schema.Boolean }),
+          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+        };
+      },
+    });
+
+    const relateToManyForUpdate = schema.inputObject({
+      name: names.relateToManyForUpdateInputName,
+      fields: () => {
+        const list = lists[listKey];
+        return {
+          disconnect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          set: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          ...(list.access.create !== false && {
+            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
+          }),
+          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
         };
       },
     });
@@ -210,7 +223,7 @@ export function initialiseLists(
         update,
         findManyArgs,
         relateTo: {
-          many: { create: relateToMany, update: relateToMany },
+          many: { create: relateToManyForCreate, update: relateToManyForUpdate },
           one: { create: relateToOne, update: relateToOne },
         },
       },
