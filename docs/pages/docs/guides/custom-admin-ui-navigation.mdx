@@ -244,8 +244,10 @@ import { ListNavItems } from '@keystone-next/keystone/admin-ui/components'
 As mentioned above the lists object has the following type:
 
 ```typescript
-type lists = ListMeta[]
-type include = string[]
+type ListNavItemProps = {
+  lists: ListMeta[]
+  include: string[]
+}
 ```
 
 If an include prop is supplied, the component will only render out lists that match the list `keys` specified in the include array.
