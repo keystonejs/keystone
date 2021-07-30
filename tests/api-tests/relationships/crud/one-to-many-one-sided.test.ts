@@ -278,7 +278,7 @@ describe(`One-to-many relationships`, () => {
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
           where: { id: company.id },
-          data: { location: { disconnect: { id: location.id } } },
+          data: { location: { disconnect: true } },
           query: 'id location { id name }',
         });
         expect(_company.id).toEqual(company.id);
