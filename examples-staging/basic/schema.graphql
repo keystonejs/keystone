@@ -72,7 +72,6 @@ type LocalFileFieldOutput implements FileFieldOutput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-<<<<<<< HEAD
   NOT: [UserWhereInput!]
   id: IDFilter
   name: StringNullableFilter
@@ -164,43 +163,6 @@ input PostManyRelationFilter {
   every: PostWhereInput
   some: PostWhereInput
   none: PostWhereInput
-=======
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
-  roles: String
-  roles_not: String
-  roles_contains: String
-  roles_not_contains: String
-  roles_in: [String]
-  roles_not_in: [String]
-  phoneNumbers_every: PhoneNumberWhereInput
-  phoneNumbers_some: PhoneNumberWhereInput
-  phoneNumbers_none: PhoneNumberWhereInput
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
->>>>>>> master
 }
 
 input UserWhereUniqueInput {
@@ -302,14 +264,9 @@ input PhoneNumberWhereInput {
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
   id: IDFilter
-  user: UserOneRelationFilter
+  user: UserWhereInput
   type: StringNullableFilter
   value: StringNullableFilter
-}
-
-input UserOneRelationFilter {
-  is: UserWhereInput
-  isNot: UserWhereInput
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -371,7 +328,7 @@ input PostWhereInput {
   title: StringNullableFilter
   status: StringNullableFilter
   publishDate: DateTimeNullableFilter
-  author: UserOneRelationFilter
+  author: UserWhereInput
 }
 
 input DateTimeNullableFilter {
@@ -603,11 +560,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUISort {
