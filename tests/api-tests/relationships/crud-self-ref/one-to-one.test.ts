@@ -376,7 +376,7 @@ describe(`One-to-one relationships`, () => {
     );
 
     test(
-      'With disconnectAll',
+      'With set: []',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { user, friend } = await createUserAndFriend(context);
@@ -384,7 +384,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
           where: { id: user.id },
-          data: { friend: { disconnectAll: true } },
+          data: { friend: { set: [] } },
           query: 'id friend { id name }',
         });
 

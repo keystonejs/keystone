@@ -28,14 +28,6 @@ function getResolvedUniqueWheres(
   });
 }
 
-async function resolveCreateAndConnect(
-  value: _CreateValueType,
-  nestedMutationState: NestedMutationState,
-  context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
-) {}
-
 export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
@@ -66,7 +58,7 @@ export function resolveRelateToManyForCreateInput(
       x => x.reason
     );
     if (errors.length) {
-      throw new Error(`Unable to create, connect ${errors.length} ${target}`);
+      throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
     }
 
     const result = {
@@ -100,13 +92,46 @@ export function resolveRelateToManyForUpdateInput(
         `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
       );
     }
-    const disconnects = getResolvedUniqueWheres(value.disconnect || [], context, foreignList);
 
-    const [disconnect, connect] = await Promise.all([
+    // Perform queries for the connections
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList)
+    );
+
+    const disconnects = Promise.allSettled(
+      getResolvedUniqueWheres(value.disconnect || [], context, foreignList)
+    );
+
+    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList));
+
+    // Perform nested mutations for the creations
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    );
+
+    const [connectResult, createResult, disconnectResult, setResult] = await Promise.all([
+      connects,
+      creates,
       disconnects,
-      resolveCreateAndConnect(value, nestedMutationState, context, foreignList, target),
+      sets,
     ]);
 
-    return { set: value.set ? [] : undefined, disconnect, ...connect };
+    // Collect all the errors
+    const errors = [
+      ...connectResult.filter(isRejected),
+      ...createResult.filter(isRejected),
+      ...disconnectResult.filter(isRejected),
+      ...setResult.filter(isRejected),
+    ];
+    if (errors.length) {
+      throw new Error(`Unable to create, connect, disconnect or set ${errors.length} ${target}`);
+    }
+
+    return {
+      // unlike all the other operations, an empty array isn't a no-op for set
+      set: value.set ? setResult.filter(isFulfilled) : undefined,
+      disconnect: disconnectResult.filter(isFulfilled).map(x => x.value),
+      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
+    };
   };
 }

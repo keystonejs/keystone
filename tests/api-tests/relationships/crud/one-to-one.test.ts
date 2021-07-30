@@ -830,7 +830,7 @@ describe(`One-to-one relationships`, () => {
       })
     );
     test(
-      'With disconnectAll A',
+      'With set: [] A',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createCompanyAndLocation(context);
@@ -838,7 +838,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
           where: { id: company.id },
-          data: { location: { disconnectAll: true } },
+          data: { location: { set: [] } },
           query: 'id location { id name }',
         });
         expect(_company.id).toEqual(company.id);
@@ -852,7 +852,7 @@ describe(`One-to-one relationships`, () => {
     );
 
     test(
-      'With disconnectAll B',
+      'With set: [] B',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createLocationAndCompany(context);
@@ -860,7 +860,7 @@ describe(`One-to-one relationships`, () => {
         // Run the query to disconnect the location from company
         const _location = await context.lists.Location.updateOne({
           where: { id: location.id },
-          data: { company: { disconnectAll: true } },
+          data: { company: { set: [] } },
           query: 'id company { id name }',
         });
         expect(_location.id).toEqual(location.id);

@@ -219,11 +219,11 @@ describe('no access control', () => {
         data: [
           {
             where: { id: createUser.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
+            data: { notes: { set: [{ id: createNote.id }] } },
           },
           {
             where: { id: createUser2.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
+            data: { notes: { set: [{ id: createNote2.id }] } },
           },
         ],
         query: 'id notes { id content }',

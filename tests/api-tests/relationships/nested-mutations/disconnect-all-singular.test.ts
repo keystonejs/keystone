@@ -59,7 +59,7 @@ describe('no access control', () => {
       // Update the item and link the relationship field
       const event = await context.lists.Event.updateOne({
         where: { id: createEvent.id },
-        data: { group: { disconnectAll: true } },
+        data: { group: { set: [] } },
         query: 'id group { id }',
       });
 
@@ -80,7 +80,7 @@ describe('no access control', () => {
     runner(async ({ context }) => {
       // Create an item that does the linking
       const event = await context.lists.Event.createOne({
-        data: { group: { disconnectAll: true } },
+        data: { group: { set: [] } },
         query: 'id group { id }',
       });
 
@@ -97,7 +97,7 @@ describe('no access control', () => {
       // Create an item that does the linking
       const event = await context.lists.Event.updateOne({
         where: { id: createEvent.id },
-        data: { group: { disconnectAll: true } },
+        data: { group: { set: [] } },
         query: 'id group { id }',
       });
 
@@ -109,7 +109,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
-      'has no effect when using disconnectAll',
+      'has no effect when using set: []',
       runner(async ({ context }) => {
         const groupName = sampleOne(alphanumGenerator);
 
@@ -131,7 +131,7 @@ describe('with access control', () => {
         // Update the item and link the relationship field
         await context.lists.EventToGroupNoRead.updateOne({
           where: { id: createEvent.id },
-          data: { group: { disconnectAll: true } },
+          data: { group: { set: [] } },
         });
 
         // Avoid false-positives by checking the database directly

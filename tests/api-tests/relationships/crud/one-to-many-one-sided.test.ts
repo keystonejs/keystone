@@ -291,7 +291,7 @@ describe(`One-to-many relationships`, () => {
     );
 
     test(
-      'With disconnectAll',
+      'With set: []',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createCompanyAndLocation(context);
@@ -299,7 +299,7 @@ describe(`One-to-many relationships`, () => {
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
           where: { id: company.id },
-          data: { location: { disconnectAll: true } },
+          data: { location: { set: [] } },
           query: 'id location { id name }',
         });
         expect(_company.id).toEqual(company.id);

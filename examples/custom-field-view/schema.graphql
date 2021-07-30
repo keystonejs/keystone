@@ -141,14 +141,14 @@ input PersonOrderByInput {
 
 input PersonUpdateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForUpdateInput
 }
 
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
-  disconnectAll: Boolean
+input TaskRelateToManyForUpdateInput {
+  disconnect: [TaskWhereUniqueInput!]
+  set: [TaskWhereUniqueInput!]
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
 }
 
 input PersonUpdateArgs {
@@ -158,7 +158,12 @@ input PersonUpdateArgs {
 
 input PersonCreateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForCreateInput
+}
+
+input TaskRelateToManyForCreateInput {
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
 }
 
 """

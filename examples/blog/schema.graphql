@@ -151,14 +151,14 @@ input AuthorOrderByInput {
 input AuthorUpdateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input AuthorUpdateArgs {
@@ -169,7 +169,12 @@ input AuthorUpdateArgs {
 input AuthorCreateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 """

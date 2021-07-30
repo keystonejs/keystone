@@ -76,7 +76,7 @@ describe('no access control', () => {
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
         where: { id: createUser.id },
-        data: { username: 'A thing', notes: { disconnectAll: true } },
+        data: { username: 'A thing', notes: { set: [] } },
         query: 'id notes { id content }',
       });
 
@@ -89,7 +89,7 @@ describe('no access control', () => {
     runner(async ({ context }) => {
       // Create an item that does the linking
       const user = await context.lists.User.createOne({
-        data: { notes: { disconnectAll: true } },
+        data: { notes: { set: [] } },
         query: 'id notes { id }',
       });
 
@@ -101,7 +101,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
-      'has no effect when specifying disconnectAll',
+      'has no effect when specifying set: []',
       runner(async ({ context }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
@@ -121,7 +121,7 @@ describe('with access control', () => {
         // Update the item and link the relationship field
         await context.lists.UserToNotesNoRead.updateOne({
           where: { id: createUser.id },
-          data: { username: 'A thing', notes: { disconnectAll: true } },
+          data: { username: 'A thing', notes: { set: [] } },
         });
 
         const data = await context.sudo().lists.UserToNotesNoRead.findOne({

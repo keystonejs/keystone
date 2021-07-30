@@ -135,8 +135,8 @@ input UserUpdateInput {
   password: String
   isAdmin: Boolean
   roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
+  phoneNumbers: PhoneNumberRelateToManyForUpdateInput
+  posts: PostRelateToManyForUpdateInput
 }
 
 input ImageFieldInput {
@@ -154,18 +154,18 @@ input FileFieldInput {
   ref: String
 }
 
-input PhoneNumberRelateToManyInput {
-  create: [PhoneNumberCreateInput]
-  connect: [PhoneNumberWhereUniqueInput]
-  disconnect: [PhoneNumberWhereUniqueInput]
-  disconnectAll: Boolean
+input PhoneNumberRelateToManyForUpdateInput {
+  disconnect: [PhoneNumberWhereUniqueInput!]
+  set: [PhoneNumberWhereUniqueInput!]
+  create: [PhoneNumberCreateInput!]
+  connect: [PhoneNumberWhereUniqueInput!]
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -181,8 +181,18 @@ input UserCreateInput {
   password: String
   isAdmin: Boolean
   roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
+  phoneNumbers: PhoneNumberRelateToManyForCreateInput
+  posts: PostRelateToManyForCreateInput
+}
+
+input PhoneNumberRelateToManyForCreateInput {
+  create: [PhoneNumberCreateInput!]
+  connect: [PhoneNumberWhereUniqueInput!]
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 type PhoneNumber {
