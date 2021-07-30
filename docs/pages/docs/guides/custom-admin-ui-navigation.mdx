@@ -11,7 +11,6 @@ In this guide, we'll show you how to create a custom Navigation component to be 
 
 The first thing you'll need to do is to specify an `/admin/config.ts` file in the root of your Keystone project.
 
-
 Reference your custom Navigation component in the export as so.
 
 ```ts
@@ -150,11 +149,9 @@ export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) 
 
 // admin/config.ts
 import { AdminConfig } from '@keystone-next/types';
-export type AdminConfig = {
-  components?: {
-    Logo?: (props: {}) => ReactElement;
-    Navigation?: (props: NavigationProps) => ReactElement;
-  };
+import { CustomNavigation } from '@keystone-next/keystone/admin-ui/components';
+export const components: AdminConfig['components'] = {
+    Navigation: CustomNavigation
 };
 ```
 
