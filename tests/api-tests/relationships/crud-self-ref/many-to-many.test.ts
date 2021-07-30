@@ -360,7 +360,7 @@ describe(`Many-to-many relationships`, () => {
     );
 
     test(
-      'With disconnectAll',
+      'With set: []',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { user, friend } = await createUserAndFriend(context);
@@ -368,7 +368,7 @@ describe(`Many-to-many relationships`, () => {
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
           where: { id: user.id },
-          data: { friends: { disconnectAll: true } },
+          data: { friends: { set: [] } },
           query: 'id friends { id name }',
         });
         expect(_user.id).toEqual(user.id);

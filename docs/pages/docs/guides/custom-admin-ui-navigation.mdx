@@ -28,7 +28,7 @@ export const component: AdminConfig['components'] = {
 The next step is to create our `CustomNavigation` React component.
 In the root of your project create a new tsx file at `/admin/components/CustomNavigation.tsx`.
 
-Here we'll export our CustomNavigation component as a named export.
+Here we'll export our `CustomNavigation` component as a named export.
 
 ```tsx
 // ./admin/components/CustomNavigation.tsx
@@ -111,7 +111,7 @@ import type { NavigationProps } from '@keystone-next/keystone/admin-ui/component
 export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard<NavItem>
+      <NavItem href="/">Dashboard</NavItem>
       <ListNavItems lists={lists}/>
       <NavItem href="https://keystonejs.com/guides/custom-navigation-guide">
         Navigation Guide
