@@ -37,7 +37,7 @@ export function resolveRelateToManyForCreateInput(
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
       throw new Error(
-        `You must provide at least one field in to-many relationship fields but none were provided at ${target}`
+        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
 
@@ -84,7 +84,7 @@ export function resolveRelateToManyForUpdateInput(
       !Array.isArray(value.set)
     ) {
       throw new Error(
-        `You must provide at least one field in to-many relationship fields but none were provided at ${target}`
+        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
     if (value.set && value.disconnect) {
@@ -124,12 +124,14 @@ export function resolveRelateToManyForUpdateInput(
       ...setResult.filter(isRejected),
     ];
     if (errors.length) {
-      throw new Error(`Unable to create, connect, disconnect or set ${errors.length} ${target}`);
+      throw new Error(
+        `Unable to create, connect, disconnect and/or set ${errors.length} ${target}`
+      );
     }
 
     return {
       // unlike all the other operations, an empty array isn't a no-op for set
-      set: value.set ? setResult.filter(isFulfilled) : undefined,
+      set: value.set ? setResult.filter(isFulfilled).map(x => x.value) : undefined,
       disconnect: disconnectResult.filter(isFulfilled).map(x => x.value),
       connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
     };
