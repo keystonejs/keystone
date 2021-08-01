@@ -124,10 +124,6 @@ export const SegmentedControl = ({
       <Root
         css={css`
           border: 1px solid #e1e5e9;
-          &:focus-within {
-            box-shadow: 0 0 0 2px #bfdbfe;
-            border: 1px solid #166bff;
-          }
         `}
         fill={fill}
         size={size}
