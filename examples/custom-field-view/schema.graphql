@@ -34,18 +34,7 @@ input IDFilter {
   lte: ID
   gt: ID
   gte: ID
-  not: NestedIDFilter
-}
-
-input NestedIDFilter {
-  equals: ID
-  in: [ID!]
-  notIn: [ID!]
-  lt: ID
-  lte: ID
-  gt: ID
-  gte: ID
-  not: NestedIDFilter
+  not: IDFilter
 }
 
 input StringNullableFilter {

@@ -43,7 +43,7 @@ const idParsers = {
   },
 };
 
-const commonFields = {
+const nonCircularFields = {
   equals: schema.arg({ type: schema.ID }),
   in: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
   notIn: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
@@ -53,25 +53,17 @@ const commonFields = {
   gte: schema.arg({ type: schema.ID }),
 };
 
-const IDFilter = schema.inputObject({
-  name: 'IDFilter',
-  fields: () => ({
-    ...commonFields,
-    not: schema.arg({ type: NestedIDFilter }),
-  }),
-});
-
-type NestedIDFilterType = schema.InputObjectType<
-  typeof commonFields & {
-    not: schema.Arg<typeof NestedIDFilter, undefined>;
+type IDFilterType = schema.InputObjectType<
+  typeof nonCircularFields & {
+    not: schema.Arg<typeof IDFilter, undefined>;
   }
 >;
 
-const NestedIDFilter: NestedIDFilterType = schema.inputObject({
-  name: 'NestedIDFilter',
+const IDFilter: IDFilterType = schema.inputObject({
+  name: 'IDFilter',
   fields: () => ({
-    ...commonFields,
-    not: schema.arg({ type: NestedIDFilter }),
+    ...nonCircularFields,
+    not: schema.arg({ type: IDFilter }),
   }),
 });
 
