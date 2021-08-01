@@ -17,8 +17,10 @@ The default export of every file in this directory is expected to be a valid Rea
 // admin/pages/MyCustomPage.tsx
 export default function () {
     return (
-        <h1>This is a custom Admin UI Page</h1>
-        <p>It can be accessed via the route '/MyCustomPage'</p>
+        <>
+            <h1>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route '/MyCustomPage'</p>
+        </>
     )
 }
 ```
@@ -32,10 +34,12 @@ If you have styling constraints, we recommend using the jsx export from the `@ke
 import { jsx } from '@keystone-ui/core';
 export default function () {
     return (
-        <h1 css={{
-            fontSize: '3rem'
-        }}>This is a custom Admin UI Page</h1>
-        <p>It can be accessed via the route '/MyCustomPage'</p>
+        <>
+            <h1 css={{
+                fontSize: '3rem'
+            }}>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route '/MyCustomPage'</p>
+        </>
     )
 }
 ```
