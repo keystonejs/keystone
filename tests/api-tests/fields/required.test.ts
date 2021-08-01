@@ -65,7 +65,12 @@ testModules
                   }`,
             });
             expect(data).toEqual({ createTest: null });
-            expectValidationError(errors, [{ path: ['createTest'] }]);
+            expectValidationError(errors, [
+              {
+                path: ['createTest'],
+                messages: ['Test.testField: Required field "testField" is null or undefined.'],
+              },
+            ]);
           })
         );
 
@@ -85,7 +90,12 @@ testModules
                   }`,
             });
             expect(data).toEqual({ updateTest: null });
-            expectValidationError(errors, [{ path: ['updateTest'] }]);
+            expectValidationError(errors, [
+              {
+                path: ['updateTest'],
+                messages: ['Test.testField: Required field "testField" is null or undefined.'],
+              },
+            ]);
           })
         );
 
