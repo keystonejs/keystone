@@ -2,8 +2,10 @@ import { ApolloError } from 'apollo-server-errors';
 
 export const accessDeniedError = () => new ApolloError('You do not have access to this resource');
 
-export const validationFailureError = () =>
-  new ApolloError('You attempted to perform an invalid mutation');
+export const validationFailureError = (messages: string[]) => {
+  const s = messages.map(m => `  - ${m}`).join('\n');
+  return new ApolloError(`You provided invalid data for this operation.\n${s}`);
+};
 
 // FIXME: In an upcoming PR we will use these args to construct a better
 // error message, so leaving the, here for now. - TL
