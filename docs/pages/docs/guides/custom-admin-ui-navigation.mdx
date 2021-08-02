@@ -219,6 +219,12 @@ Keystone exposes a variety of helper components to make building out your custom
 
 This component renders containing markup around your navigation links, as well as as the different states of the `authenticatedItem` prop.
 
+```typescript
+type NavigationContainerProps = {
+  authenticatedItem?: AuthenticatedItem;
+}
+```
+
 !> For the shape of the `authenticatedItem` prop, please see the [Navigation Props](#navigation-props) section above.
 
 ```tsx
