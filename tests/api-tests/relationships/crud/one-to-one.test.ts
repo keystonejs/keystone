@@ -118,10 +118,10 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { location, company } = await createCompanyAndLocation(context);
         const locations = await context.lists.Location.findMany({
-          where: { company: { name: company.name } },
+          where: { company: { name: { equals: company.name } } },
         });
         const companies = await context.lists.Company.findMany({
-          where: { location: { name: location.name } },
+          where: { location: { name: { equals: location.name } } },
         });
         expect(locations.length).toEqual(1);
         expect(locations[0].id).toEqual(location.id);
@@ -135,10 +135,10 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { location, company } = await createLocationAndCompany(context);
         const locations = await context.lists.Location.findMany({
-          where: { company: { name: company.name } },
+          where: { company: { name: { equals: company.name } } },
         });
         const companies = await context.lists.Company.findMany({
-          where: { location: { name: location.name } },
+          where: { location: { name: { equals: location.name } } },
         });
         expect(locations.length).toEqual(1);
         expect(locations[0].id).toEqual(location.id);
@@ -224,10 +224,10 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { location, company } = await createCompanyAndLocation(context);
         const locationsCount = await context.lists.Location.count({
-          where: { company: { name: company.name } },
+          where: { company: { name: { equals: company.name } } },
         });
         const companiesCount = await context.lists.Company.count({
-          where: { location: { name: location.name } },
+          where: { location: { name: { equals: location.name } } },
         });
         expect(companiesCount).toEqual(1);
         expect(locationsCount).toEqual(1);
@@ -239,10 +239,10 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { location, company } = await createLocationAndCompany(context);
         const locationsCount = await context.lists.Location.count({
-          where: { company: { name: company.name } },
+          where: { company: { name: { equals: company.name } } },
         });
         const companiesCount = await context.lists.Company.count({
-          where: { location: { name: location.name } },
+          where: { location: { name: { equals: location.name } } },
         });
         expect(companiesCount).toEqual(1);
         expect(locationsCount).toEqual(1);

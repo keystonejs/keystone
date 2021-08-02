@@ -149,7 +149,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations: { every: { name: { equals: { name } } } } },
+              where: { locations: { every: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -182,7 +182,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const _count = await context.lists.Company.count({
-              where: { locations: { some: { name: { equals: { name } } } } },
+              where: { locations: { some: { name: { equals: name } } } },
             });
             expect(_count).toEqual(count);
           })
@@ -220,7 +220,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const _count = await context.lists.Company.count({
-              where: { locations: { every: { name: { equals: { name } } } } },
+              where: { locations: { every: { name: { equals: name } } } },
             });
             expect(_count).toEqual(count);
           })

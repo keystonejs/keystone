@@ -157,7 +157,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations: { some: { equals: name } } },
+              where: { locations: { some: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -195,7 +195,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations: { every: { name: { equals: { name } } } } },
+              where: { locations: { every: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })

@@ -99,7 +99,7 @@ export async function resolveWhereInput(
                   if (val === null) {
                     return null;
                   }
-                  whereResolver(val);
+                  return whereResolver(val);
                 };
               })()
             )

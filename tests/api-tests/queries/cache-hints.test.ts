@@ -177,7 +177,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            users(where: { name: "nope" })  {
+            users(where: { name: { equals: "nope" } })  {
               name
             }
           }
@@ -270,7 +270,7 @@ describe('cache hints', () => {
           query: `
           query {
             posts {
-              author(where: { name: "nope" }) {
+              author(where: { name: { equals: "nope" } }) {
                 name
               }
             }
