@@ -33,7 +33,7 @@ describe('controller', () => {
           dateValue: formatISO(new Date(), { representation: 'date' }),
           timeValue: '',
         })
-      ).toBe(false);
+      ).toBe(true);
     });
   });
   describe('serialize', () => {
