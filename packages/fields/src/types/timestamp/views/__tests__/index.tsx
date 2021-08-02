@@ -61,11 +61,15 @@ describe('controller', () => {
         [STUBCONFIG.path]: null,
       });
     });
-    it('should return null if no timeValue is specified', () => {
+    it('should return a valid ISO8601 string if no timeValue is specified but a valid date value is specified', () => {
       const { serialize } = controller(STUBCONFIG);
-      expect(serialize({ dateValue: '2020-10-20', timeValue: '' })).toStrictEqual({
-        [STUBCONFIG.path]: null,
-      });
+      expect(
+        Boolean(
+          parseISO(
+            serialize({ dateValue: '2020-10-20', timeValue: '' })[STUBCONFIG.path]
+          ).toISOString()
+        )
+      ).toBe(true);
     });
     it('should return a valid ISO8601 string if a valid time and date value are specified', () => {
       const { serialize } = controller(STUBCONFIG);
