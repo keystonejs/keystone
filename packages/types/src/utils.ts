@@ -5,12 +5,12 @@ export type BaseGeneratedListTypes = {
   inputs: {
     create: GraphQLInput;
     update: GraphQLInput;
-    where: Record<string, object | null>;
+    where: GraphQLInput;
     uniqueWhere: { readonly id?: string | null } & GraphQLInput;
   };
   args: {
     listQuery: {
-      readonly where?: Record<string, object | null> | null;
+      readonly where?: GraphQLInput | null;
       readonly first?: number | null;
       readonly skip?: number;
       readonly orderBy?:
