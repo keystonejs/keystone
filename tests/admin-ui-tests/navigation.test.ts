@@ -24,6 +24,17 @@ adminUITests('./tests/test-projects/basic', browserType => {
     const ariaCurrent = await element?.getAttribute('aria-current');
     expect(ariaCurrent).toBe('location');
   });
+  test('Can access all list pages via the navigation', async () => {
+    await page.goto('http://localhost:3000');
+    await Promise.all([page.waitForNavigation(), page.click('nav a:has-text("Tasks")')]);
+    expect(page.url()).toBe('http://localhost:3000/tasks');
+    await Promise.all([page.waitForNavigation(), page.click('nav a:has-text("People")')]);
+    expect(page.url()).toBe('http://localhost:3000/people');
+  });
+  test('Can not access hidden lists via the navigation', async () => {
+    await page.goto('http://localhost:3000');
+    await page.waitForSelector('nav a:has-text("Tasks")', { state: 'detached' });
+  });
   test('When navigated to an Item view, the representative list NavItem is selected', async () => {
     await page.goto('http://localhost:3000');
     await page.click('button[title="Create Task"]');
