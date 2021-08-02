@@ -12,8 +12,8 @@ input TodoWhereInput {
   NOT: [TodoWhereInput!]
   id: IDFilter
   label: StringNullableFilter
-  isComplete: BoolNullableFilter
-  isPrivate: BoolNullableFilter
+  isComplete: BooleanNullableFilter
+  isPrivate: BooleanNullableFilter
   assignedTo: PersonWhereInput
 }
 
@@ -56,14 +56,9 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input TodoWhereUniqueInput {
@@ -232,12 +227,12 @@ input RoleWhereInput {
   NOT: [RoleWhereInput!]
   id: IDFilter
   name: StringNullableFilter
-  canCreateTodos: BoolNullableFilter
-  canManageAllTodos: BoolNullableFilter
-  canSeeOtherPeople: BoolNullableFilter
-  canEditOtherPeople: BoolNullableFilter
-  canManagePeople: BoolNullableFilter
-  canManageRoles: BoolNullableFilter
+  canCreateTodos: BooleanNullableFilter
+  canManageAllTodos: BooleanNullableFilter
+  canSeeOtherPeople: BooleanNullableFilter
+  canEditOtherPeople: BooleanNullableFilter
+  canManagePeople: BooleanNullableFilter
+  canManageRoles: BooleanNullableFilter
   assignedTo: PersonManyRelationFilter
 }
 

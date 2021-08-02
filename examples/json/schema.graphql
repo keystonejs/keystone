@@ -12,7 +12,7 @@ input PackageWhereInput {
   NOT: [PackageWhereInput!]
   id: IDFilter
   label: StringNullableFilter
-  isPrivate: BoolNullableFilter
+  isPrivate: BooleanNullableFilter
   ownedBy: PersonWhereInput
 }
 
@@ -55,14 +55,9 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input PackageWhereUniqueInput {

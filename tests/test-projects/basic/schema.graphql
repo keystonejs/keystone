@@ -20,7 +20,7 @@ input TaskWhereInput {
   id: IDFilter
   label: StringNullableFilter
   priority: TaskPriorityTypeNullableFilter
-  isComplete: BoolNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: PersonWhereInput
   finishBy: DateTimeNullableFilter
 }
@@ -71,14 +71,9 @@ input TaskPriorityTypeNullableFilter {
   not: TaskPriorityTypeNullableFilter
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input DateTimeNullableFilter {
@@ -89,18 +84,7 @@ input DateTimeNullableFilter {
   lte: String
   gt: String
   gte: String
-  not: NestedDateTimeNullableFilter
-}
-
-input NestedDateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
+  not: DateTimeNullableFilter
 }
 
 input TaskWhereUniqueInput {

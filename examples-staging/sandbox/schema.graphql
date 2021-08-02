@@ -14,7 +14,7 @@ input TodoWhereInput {
   NOT: [TodoWhereInput!]
   id: IDFilter
   label: StringNullableFilter
-  isComplete: BoolNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: UserWhereInput
   finishBy: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
@@ -60,14 +60,9 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input DateTimeNullableFilter {
@@ -78,18 +73,7 @@ input DateTimeNullableFilter {
   lte: String
   gt: String
   gte: String
-  not: NestedDateTimeNullableFilter
-}
-
-input NestedDateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
+  not: DateTimeNullableFilter
 }
 
 input TodoWhereUniqueInput {

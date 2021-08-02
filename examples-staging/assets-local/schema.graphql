@@ -106,18 +106,7 @@ input DateTimeNullableFilter {
   lte: String
   gt: String
   gte: String
-  not: NestedDateTimeNullableFilter
-}
-
-input NestedDateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
+  not: DateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {

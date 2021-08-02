@@ -18,7 +18,7 @@ input UserWhereInput {
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
-  isAdmin: BoolNullableFilter
+  isAdmin: BooleanNullableFilter
 }
 
 input IDFilter {
@@ -64,14 +64,9 @@ input PasswordFilter {
   isSet: Boolean!
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input UserWhereUniqueInput {

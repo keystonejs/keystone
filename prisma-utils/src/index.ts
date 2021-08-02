@@ -1,4 +1,9 @@
+// this file generates the GraphQL filter types for most of our fields.
+// generating them from the prisma information isn't really about time or convenience.
+// it's about clearly showing what the rules for getting the filters are and what the exceptions are.
+
 import { deepStrictEqual } from 'assert';
+import { isDeepStrictEqual } from 'util';
 import fs from 'fs-extra';
 import { DMMF } from '@prisma/generator-helper';
 import { getDMMF } from '@prisma/sdk';
@@ -82,6 +87,9 @@ ${
       }
       return types;
     });
+    for (const typeName of Object.keys(types)) {
+      replaceNestedNotFilterTypes(types, typeName);
+    }
     const referencedTypes = new Set<string>();
     for (const typeName of rootTypes) {
       collectReferencedTypes(types, typeName, referencedTypes);
@@ -110,7 +118,7 @@ ${
 
 ${provider !== 'sqlite' ? `import { QueryMode } from '../..'` : ''}
 
-${[...referencedTypes].map(typeName => printInputTypeForTSGQL(typeName, types)).join('\n\n')}
+${[...referencedTypes].map(typeName => printInputTypeForGraphQLTS(typeName, types)).join('\n\n')}
 
 ${getScalarTypesForProvider(provider)
   .map(scalar => {
@@ -139,6 +147,27 @@ function assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {
     debugger;
     throw new Error(`assertion failed${message === undefined ? '' : `: ${message}`}`);
+  }
+}
+
+function replaceNestedNotFilterTypes(
+  inputTypesByName: Record<string, DMMF.InputType>,
+  inputTypeName: string
+) {
+  // we want to not replace the nested filter for strings because we don't replace it on postgresql
+  // and we want the naming to be the same on SQLite
+  if (inputTypeName.includes('String')) return;
+  const inputType = inputTypesByName[inputTypeName];
+  for (const field of inputType.fields) {
+    if (field.name === 'not') {
+      const objectInput = field.inputTypes.find(input => input.namespace === 'prisma');
+      if (
+        typeof objectInput?.type === 'string' &&
+        isDeepStrictEqual(inputType.fields, inputTypesByName[objectInput.type].fields)
+      ) {
+        objectInput.type = inputTypeName;
+      }
+    }
   }
 }
 
@@ -220,7 +249,7 @@ function pickInputTypeForField(field: DMMF.SchemaArg): TransformedInputTypeField
   };
 }
 
-function printInputTypeForTSGQL(
+function printInputTypeForGraphQLTS(
   inputTypeName: string,
   inputTypesByName: Record<string, DMMF.InputType>
 ) {
@@ -244,7 +273,10 @@ function printInputTypeForTSGQL(
   }>
   
   const ${inputTypeName}: ${nameOfInputObjectTypeType} = schema.inputObject({
-    name: '${inputTypeName}',
+    name: '${
+      // we want to use Boolean instead of Bool because GraphQL calls it Boolean
+      inputTypeName.replace('Bool', 'Boolean')
+    }',
     fields: () => ({
       ${fields
         .map(([name, field]) => {

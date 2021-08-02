@@ -77,7 +77,7 @@ input UserWhereInput {
   name: StringNullableFilter
   email: StringNullableFilter
   password: PasswordFilter
-  isAdmin: BoolNullableFilter
+  isAdmin: BooleanNullableFilter
   roles: StringNullableFilter
   phoneNumbers: PhoneNumberManyRelationFilter
   posts: PostManyRelationFilter
@@ -132,14 +132,9 @@ input PasswordFilter {
   isSet: Boolean!
 }
 
-input BoolNullableFilter {
+input BooleanNullableFilter {
   equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: BooleanNullableFilter
 }
 
 input PhoneNumberManyRelationFilter {
@@ -328,18 +323,7 @@ input DateTimeNullableFilter {
   lte: String
   gt: String
   gte: String
-  not: NestedDateTimeNullableFilter
-}
-
-input NestedDateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: NestedDateTimeNullableFilter
+  not: DateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {
