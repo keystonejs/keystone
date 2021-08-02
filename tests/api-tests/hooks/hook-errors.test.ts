@@ -103,8 +103,8 @@ const runner = setupTestRunner({
 
         // Returns null and throws an error
         expect(data).toEqual({ createUser: null });
-        expectExtensionError(errors, [
-          { path: ['createUser'], message: `Simulated error: ${phase}Change` },
+        expectExtensionError(errors, `${phase}Change`, [
+          { path: ['createUser'], messages: [`User: Simulated error: ${phase}Change`] },
         ]);
 
         // Only the original user should exist for 'before', both exist for 'after'
@@ -130,8 +130,8 @@ const runner = setupTestRunner({
 
         // Returns null and throws an error
         expect(data).toEqual({ updateUser: null });
-        expectExtensionError(errors, [
-          { path: ['updateUser'], message: `Simulated error: ${phase}Change` },
+        expectExtensionError(errors, `${phase}Change`, [
+          { path: ['updateUser'], messages: [`User: Simulated error: ${phase}Change`] },
         ]);
 
         // User should have its original name for 'before', and the new name for 'after'.
@@ -160,8 +160,8 @@ const runner = setupTestRunner({
 
         // Returns null and throws an error
         expect(data).toEqual({ deleteUser: null });
-        expectExtensionError(errors, [
-          { path: ['deleteUser'], message: `Simulated error: ${phase}Delete` },
+        expectExtensionError(errors, `${phase}Delete`, [
+          { path: ['deleteUser'], messages: [`User: Simulated error: ${phase}Delete`] },
         ]);
 
         // Bad users should still be in the database for 'before', deleted for 'after'.
@@ -200,9 +200,9 @@ const runner = setupTestRunner({
           ],
         });
         // The invalid creates should have errors which point to the nulls in their path
-        expectExtensionError(errors, [
-          { path: ['createUsers', 1], message: `Simulated error: ${phase}Change` },
-          { path: ['createUsers', 3], message: `Simulated error: ${phase}Change` },
+        expectExtensionError(errors, `${phase}Change`, [
+          { path: ['createUsers', 1], messages: [`User: Simulated error: ${phase}Change`] },
+          { path: ['createUsers', 3], messages: [`User: Simulated error: ${phase}Change`] },
         ]);
 
         // Three users should exist in the database for 'before,' five for 'after'.
@@ -256,9 +256,9 @@ const runner = setupTestRunner({
           ],
         });
         // The invalid updates should have errors which point to the nulls in their path
-        expectExtensionError(errors, [
-          { path: ['updateUsers', 1], message: `Simulated error: ${phase}Change` },
-          { path: ['updateUsers', 3], message: `Simulated error: ${phase}Change` },
+        expectExtensionError(errors, `${phase}Change`, [
+          { path: ['updateUsers', 1], messages: [`User: Simulated error: ${phase}Change`] },
+          { path: ['updateUsers', 3], messages: [`User: Simulated error: ${phase}Change`] },
         ]);
 
         // All users should still exist in the database, un-changed for `before`, changed for `after`.
@@ -307,9 +307,9 @@ const runner = setupTestRunner({
           ],
         });
         // The invalid deletes should have errors which point to the nulls in their path
-        expectExtensionError(errors, [
-          { path: ['deleteUsers', 1], message: `Simulated error: ${phase}Delete` },
-          { path: ['deleteUsers', 3], message: `Simulated error: ${phase}Delete` },
+        expectExtensionError(errors, `${phase}Delete`, [
+          { path: ['deleteUsers', 1], messages: [`User: Simulated error: ${phase}Delete`] },
+          { path: ['deleteUsers', 3], messages: [`User: Simulated error: ${phase}Delete`] },
         ]);
 
         // Three users should still exist in the database for `before`, only 1 for `after`.
@@ -343,8 +343,14 @@ const runner = setupTestRunner({
             data: { title: `trigger ${phase}`, content: `trigger ${phase}` },
           },
         });
-        expectExtensionError(errors, [
-          { path: ['updatePost'], message: `Simulated error: title: ${phase}Change` },
+        expectExtensionError(errors, `${phase}Change`, [
+          {
+            path: ['updatePost'],
+            messages: [
+              `Post.title: Simulated error: title: ${phase}Change`,
+              `Post.content: Simulated error: content: ${phase}Change`,
+            ],
+          },
         ]);
         expect(data).toEqual({ updatePost: null });
 
@@ -371,8 +377,14 @@ const runner = setupTestRunner({
           query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
           variables: { id: post.id },
         });
-        expectExtensionError(errors, [
-          { path: ['deletePost'], message: `Simulated error: title: ${phase}Delete` },
+        expectExtensionError(errors, `${phase}Delete`, [
+          {
+            path: ['deletePost'],
+            messages: [
+              `Post.title: Simulated error: title: ${phase}Delete`,
+              `Post.content: Simulated error: content: ${phase}Delete`,
+            ],
+          },
         ]);
         expect(data).toEqual({ deletePost: null });
 
