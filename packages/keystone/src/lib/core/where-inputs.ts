@@ -95,7 +95,12 @@ export async function resolveWhereInput(
                     );
                   };
                 }
-                return whereResolver;
+                return (val: any) => {
+                  if (val === null) {
+                    return null;
+                  }
+                  whereResolver(val);
+                };
               })()
             )
           : value;

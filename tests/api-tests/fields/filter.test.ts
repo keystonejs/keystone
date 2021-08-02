@@ -115,12 +115,14 @@ testModules
           if (mod.supportedFilters(provider).includes('null_equality')) {
             test(
               'Equals null',
-              withKeystone(({ context }) => match(context, { [`${fieldName}`]: null }, [5, 6]))
+              withKeystone(({ context }) =>
+                match(context, { [`${fieldName}`]: { equals: null } }, [5, 6])
+              )
             );
             test(
               'Not Equals null',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not`]: null }, [0, 1, 2, 3, 4])
+                match(context, { [`${fieldName}`]: { not: { equals: null } } }, [0, 1, 2, 3, 4])
               )
             );
           }
@@ -128,7 +130,7 @@ testModules
             test(
               'Equals',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}`]: storedValues[3][fieldName] }, [3])
+                match(context, { [`${fieldName}`]: { equals: storedValues[3][fieldName] } }, [3])
               )
             );
             test(
@@ -136,7 +138,12 @@ testModules
               withKeystone(({ context }) =>
                 match(
                   context,
-                  { [`${fieldName}_not`]: storedValues[3][fieldName] },
+                  {
+                    OR: [
+                      { NOT: { [`${fieldName}`]: { equals: storedValues[3][fieldName] } } },
+                      { [`${fieldName}`]: { equals: null } },
+                    ],
+                  },
                   [0, 1, 2, 4, 5, 6]
                 )
               )
@@ -146,14 +153,29 @@ testModules
             test(
               `Equals - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_i`]: storedValues[3][fieldName] }, [2, 3, 4])
+                match(
+                  context,
+                  {
+                    [`${fieldName}`]: { equals: storedValues[3][fieldName], mode: 'insensitive' },
+                  },
+                  [2, 3, 4]
+                )
               )
             );
 
             test(
               `Not Equals - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_i`]: storedValues[3][fieldName] }, [0, 1, 5, 6])
+                match(
+                  context,
+                  {
+                    [`${fieldName}`]: {
+                      mode: 'insensitive',
+                      not: { equals: storedValues[3][fieldName] },
+                    },
+                  },
+                  [0, 1, 5, 6]
+                )
               )
             );
           }
@@ -161,37 +183,41 @@ testModules
             test(
               `Contains`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_contains`]: 'oo' }, [3, 4])
+                match(context, { [`${fieldName}`]: { contains: 'oo' } }, [3, 4])
               )
             );
             test(
               `Not Contains`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_contains`]: 'oo' }, [0, 1, 2, 5, 6])
+                match(context, { [`${fieldName}`]: { not: { contains: 'oo' } } }, [0, 1, 2, 5, 6])
               )
             );
             test(
               `Starts With`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_starts_with`]: 'foo' }, [3, 4])
+                match(context, { [`${fieldName}`]: { startsWith: 'foo' } }, [3, 4])
               )
             );
             test(
               `Not Starts With`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_starts_with`]: 'foo' }, [0, 1, 2, 5, 6])
+                match(
+                  context,
+                  { [`${fieldName}`]: { not: { startsWith: 'foo' } } },
+                  [0, 1, 2, 5, 6]
+                )
               )
             );
             test(
               `Ends With`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_ends_with`]: 'BAR' }, [2, 3])
+                match(context, { [`${fieldName}`]: { endsWith: 'BAR' } }, [2, 3])
               )
             );
             test(
               `Not Ends With`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_ends_with`]: 'BAR' }, [0, 1, 4, 5, 6])
+                match(context, { [`${fieldName}`]: { not: { endsWith: 'BAR' } } }, [0, 1, 4, 5, 6])
               )
             );
           }
@@ -199,42 +225,68 @@ testModules
             test(
               `Contains - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_contains_i`]: 'oo' }, [2, 3, 4])
+                match(
+                  context,
+                  { [`${fieldName}`]: { mode: 'insensitive', contains: 'oo' } },
+                  [2, 3, 4]
+                )
               )
             );
 
             test(
               `Not Contains - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_contains_i`]: 'oo' }, [0, 1, 5, 6])
+                match(
+                  context,
+                  { [`${fieldName}`]: { mode: 'insensitive', not: { contains: 'oo' } } },
+                  [0, 1, 5, 6]
+                )
               )
             );
 
             test(
               `Starts With - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_starts_with_i`]: 'foo' }, [2, 3, 4])
+                match(
+                  context,
+                  { [`${fieldName}`]: { mode: 'insensitive', startsWith: 'foo' } },
+                  [2, 3, 4]
+                )
               )
             );
 
             test(
               `Not Starts With - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_starts_with_i`]: 'foo' }, [0, 1, 5, 6])
+                match(
+                  context,
+                  { [`${fieldName}`]: { mode: 'insensitive', not: { startsWith: 'foo' } } },
+                  [0, 1, 5, 6]
+                )
               )
             );
 
             test(
               `Ends With - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_ends_with_i`]: 'BAR' }, [2, 3, 4])
+                match(
+                  context,
+                  { [`${fieldName}`]: { mode: 'insensitive', endsWith: 'BAR' } },
+                  [2, 3, 4]
+                )
               )
             );
 
             test(
               `Not Ends With - Case Insensitive`,
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_ends_with_i`]: 'BAR' }, [0, 1, 5, 6])
+                match(
+                  context,
+                  {
+                    [`${fieldName}`]: { mode: 'insensitive', not: { endsWith: 'BAR' } },
+                  },
+                  [0, 1, 5, 6]
+                )
               )
             );
           }
@@ -242,50 +294,38 @@ testModules
             test(
               'Less than',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_lt`]: storedValues[2][fieldName] }, [0, 1])
+                match(context, { [`${fieldName}`]: { lt: storedValues[2][fieldName] } }, [0, 1])
               )
             );
             test(
               'Less than or equal',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_lte`]: storedValues[2][fieldName] }, [0, 1, 2])
+                match(context, { [`${fieldName}`]: { lte: storedValues[2][fieldName] } }, [0, 1, 2])
               )
             );
             test(
               'Greater than',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_gt`]: storedValues[2][fieldName] }, [3, 4])
+                match(context, { [`${fieldName}`]: { gt: storedValues[2][fieldName] } }, [3, 4])
               )
             );
             test(
               'Greater than or equal',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_gte`]: storedValues[2][fieldName] }, [2, 3, 4])
+                match(context, { [`${fieldName}`]: { gte: storedValues[2][fieldName] } }, [2, 3, 4])
               )
             );
           }
           if (mod.supportedFilters(provider).includes('in_empty_null')) {
             test(
               'In - Empty List',
-              withKeystone(({ context }) => match(context, { [`${fieldName}_in`]: [] }, []))
+              withKeystone(({ context }) => match(context, { [`${fieldName}`]: { in: [] } }, []))
             );
 
             test(
               'Not In - Empty List',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_in`]: [] }, [0, 1, 2, 3, 4, 5, 6])
-              )
-            );
-
-            test(
-              'In - null',
-              withKeystone(({ context }) => match(context, { [`${fieldName}_in`]: [null] }, [5, 6]))
-            );
-
-            test(
-              'Not In - null',
-              withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_not_in`]: [null] }, [0, 1, 2, 3, 4])
+                match(context, { [`${fieldName}`]: { notIn: [] } }, [0, 1, 2, 3, 4, 5, 6])
               )
             );
           }
@@ -296,11 +336,13 @@ testModules
                 match(
                   context,
                   {
-                    [`${fieldName}_in`]: [
-                      storedValues[0][fieldName],
-                      storedValues[2][fieldName],
-                      storedValues[4][fieldName],
-                    ],
+                    [`${fieldName}`]: {
+                      in: [
+                        storedValues[0][fieldName],
+                        storedValues[2][fieldName],
+                        storedValues[4][fieldName],
+                      ],
+                    },
                   },
                   [0, 2, 4]
                 )
@@ -312,11 +354,13 @@ testModules
                 match(
                   context,
                   {
-                    [`${fieldName}_not_in`]: [
-                      storedValues[0][fieldName],
-                      storedValues[2][fieldName],
-                      storedValues[4][fieldName],
-                    ],
+                    [`${fieldName}`]: {
+                      notIn: [
+                        storedValues[0][fieldName],
+                        storedValues[2][fieldName],
+                        storedValues[4][fieldName],
+                      ],
+                    },
                   },
                   [1, 3, 5, 6]
                 )
@@ -327,13 +371,13 @@ testModules
             test(
               'Is Set - true',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_is_set`]: true }, [0, 2, 3, 4])
+                match(context, { [`${fieldName}`]: { isSet: true } }, [0, 2, 3, 4])
               )
             );
             test(
               'Is Set - false',
               withKeystone(({ context }) =>
-                match(context, { [`${fieldName}_is_set`]: false }, [1, 5, 6])
+                match(context, { [`${fieldName}`]: { isSet: false } }, [1, 5, 6])
               )
             );
           }

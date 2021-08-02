@@ -114,7 +114,7 @@ const runner = setupTestRunner({
 describe(`Many-to-many relationships`, () => {
   describe('Read', () => {
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -125,7 +125,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_some: { name } },
+              where: { locations: { some: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -133,7 +133,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -144,7 +144,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 9],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_none: { name } },
+              where: { locations: { none: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -152,7 +152,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -163,7 +163,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_every: { name } },
+              where: { locations: { every: { name: { equals: { name } } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -184,7 +184,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -195,7 +195,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const _count = await context.lists.Company.count({
-              where: { locations_some: { name } },
+              where: { locations: { some: { name: { equals: name } } } },
             });
             expect(_count).toEqual(count);
           })
@@ -203,7 +203,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -214,7 +214,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 9],
           ].map(async ([name, count]) => {
             const _count = await context.lists.Company.count({
-              where: { locations_none: { name } },
+              where: { locations: { none: { name: { equals: name } } } },
             });
             expect(_count).toEqual(count);
           })
@@ -222,7 +222,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -233,7 +233,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const _count = await context.lists.Company.count({
-              where: { locations_every: { name } },
+              where: { locations: { every: { name: { equals: { name } } } } },
             });
             expect(_count).toEqual(count);
           })

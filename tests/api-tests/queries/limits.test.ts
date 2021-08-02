@@ -54,7 +54,7 @@ describe('maxResults Limit', () => {
           query: `
           query {
             users(
-              where: { name_contains: "J" },
+              where: { name: { contains: "J" } },
               orderBy: { name: asc },
             ) {
               name
@@ -165,7 +165,7 @@ describe('maxResults Limit', () => {
         context.totalResults = 0;
         // A basic query that should work
         let posts = await context.lists.Post.findMany({
-          where: { title: 'One author' },
+          where: { equals: { title: 'One author' } },
           query: 'title author { name }',
         });
 
@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
         // Reset the count for each query
         context.totalResults = 0;
         posts = await context.lists.Post.findMany({
-          where: { title: 'Three authors' },
+          where: { equals: { title: 'Three authors' } },
           query: 'title',
         });
 
