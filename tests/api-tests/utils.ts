@@ -83,6 +83,16 @@ export const expectValidationError = (
   );
 };
 
+export const expectExtensionError = (
+  errors: readonly any[] | undefined,
+  args: { path: (string | number)[]; message: string }[]
+) => {
+  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
+    ...unpacked,
+  }));
+  expect(unpackedErrors).toEqual(args.map(({ path, message }) => ({ path, message })));
+};
+
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
   args: { path: any[]; message: string }[]
