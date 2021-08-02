@@ -16,7 +16,7 @@
     "typescript": "^4.3.5"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v12.22.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/playground"
 }
