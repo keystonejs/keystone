@@ -138,12 +138,7 @@ testModules
               withKeystone(({ context }) =>
                 match(
                   context,
-                  {
-                    OR: [
-                      { NOT: { [`${fieldName}`]: { equals: storedValues[3][fieldName] } } },
-                      { [`${fieldName}`]: { equals: null } },
-                    ],
-                  },
+                  { NOT: { [`${fieldName}`]: { equals: storedValues[3][fieldName] } } },
                   [0, 1, 2, 4, 5, 6]
                 )
               )
