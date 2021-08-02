@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.8",
-    "@graphql-tools/merge": "^6.2.14",
+    "@graphql-tools/merge": "^6.2.16",
     "@keystone-next/admin-ui-utils": "^5.0.5",
     "@keystone-next/fields": "^13.0.0",
     "@keystone-next/types": "^23.0.0",
