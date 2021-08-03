@@ -1,4 +1,4 @@
-import { permissionsList } from './schemas/fields';
+import { Permission, permissionsList } from './schemas/fields';
 import { ListAccessArgs } from './types';
 // At it's simplest, the access control returns a yes or no value depending on the users session
 
@@ -13,7 +13,7 @@ const generatedPermissions = Object.fromEntries(
       return !!session?.data.role?.[permission];
     },
   ])
-);
+) as Record<Permission, ({ session }: ListAccessArgs) => boolean>;
 
 // Permissions check if someone meets a criteria - yes or no.
 export const permissions = {
