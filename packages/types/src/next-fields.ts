@@ -7,18 +7,6 @@ import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
 
-export const QueryMeta = schema.object<{ getCount: () => Promise<number> }>()({
-  name: '_QueryMeta',
-  fields: {
-    count: schema.field({
-      type: schema.Int,
-      resolve({ getCount }) {
-        return getCount();
-      },
-    }),
-  },
-});
-
 // CacheScope and CacheHint are sort of duplicated from apollo-cache-control
 // because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
 // so we have a copy of it but using a union of string literals instead of an enum
@@ -206,7 +194,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
       one: () => Promise<ItemRootValue>;
       many: {
         findMany(args: FindManyArgsValue): Promise<ItemRootValue[]>;
-        count(args: FindManyArgsValue): Promise<number>;
+        count(args: { where: FindManyArgsValue['where'] }): Promise<number>;
       };
     }[Mode]
   : TDBField extends EnumDBField<infer Value, infer Mode>
@@ -369,20 +357,6 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
 
 type AnyInputObj = schema.InputObjectType<Record<string, schema.Arg<schema.InputType, any>>>;
 
-type RelateToOneInput = schema.InputObjectType<{
-  create?: schema.Arg<TypesForList['create']>;
-  connect: schema.Arg<TypesForList['uniqueWhere']>;
-  disconnect: schema.Arg<TypesForList['uniqueWhere']>;
-  disconnectAll: schema.Arg<typeof schema.Boolean>;
-}>;
-
-type RelateToManyInput = schema.InputObjectType<{
-  create?: schema.Arg<schema.ListType<TypesForList['create']>>;
-  connect: schema.Arg<schema.ListType<TypesForList['uniqueWhere']>>;
-  disconnect: schema.Arg<schema.ListType<TypesForList['uniqueWhere']>>;
-  disconnectAll: schema.Arg<typeof schema.Boolean>;
-}>;
-
 export type TypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
@@ -393,12 +367,27 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
-      create: RelateToManyInput;
-      update: RelateToManyInput;
+      create: schema.InputObjectType<{
+        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
+      }>;
+      update: schema.InputObjectType<{
+        disconnect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        set: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
+      }>;
     };
     one: {
-      create: RelateToOneInput;
-      update: RelateToOneInput;
+      create: schema.InputObjectType<{
+        create?: schema.Arg<TypesForList['create']>;
+        connect: schema.Arg<TypesForList['uniqueWhere']>;
+      }>;
+      update: schema.InputObjectType<{
+        create?: schema.Arg<TypesForList['create']>;
+        connect: schema.Arg<TypesForList['uniqueWhere']>;
+        disconnect: schema.Arg<typeof schema.Boolean>;
+      }>;
     };
   };
 };
@@ -408,10 +397,6 @@ export type FindManyArgs = {
   orderBy: schema.Arg<
     schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
-  >;
-  search: schema.Arg<typeof schema.String>;
-  sortBy: schema.Arg<
-    schema.ListType<schema.NonNullType<schema.EnumType<Record<string, schema.EnumValue<string>>>>>
   >;
   first: schema.Arg<typeof schema.Int>;
   skip: schema.Arg<schema.NonNullType<typeof schema.Int>, number>;

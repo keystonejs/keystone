@@ -36,7 +36,12 @@ export default function ForDevelopers() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="KeystoneJS for Developers">
+    <Page
+      title={'KeystoneJS for Developers'}
+      description={
+        'How the Keystone developer experience gives you the power to design APIs on the fly, build custom editing experiences, and deliver content to any frontend framework. All in version controllable code.'
+      }
+    >
       <MWrapper>
         <Pill grad="grad3">Keystone for developers</Pill>
         <IntroWrapper>

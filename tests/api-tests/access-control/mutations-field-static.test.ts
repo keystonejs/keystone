@@ -45,7 +45,7 @@ describe('Access control - Imperative => static', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: UserCreateInput) { createUser(data: $data) { id } }`,
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'bad', other: 'b' } },
       });
 
@@ -66,11 +66,14 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better', other: 'b' } });
+      await context.lists.User.updateOne({
+        where: { id: user.id },
+        data: { name: 'better', other: 'b' },
+      });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID! $data: UserUpdateInput) { updateUser(id: $id data: $data) { id } }`,
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
         variables: { id: user.id, data: { name: 'bad', other: 'c' } },
       });
 
@@ -91,14 +94,14 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersCreateInput]) { createUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { data: { name: 'good 1', other: 'a' } },
-            { data: { name: 'bad', other: 'a' } },
-            { data: { name: 'good 2', other: 'a' } },
-            { data: { name: 'bad', other: 'a' } },
-            { data: { name: 'good 3', other: 'a' } },
+            { name: 'good 1', other: 'a' },
+            { name: 'bad', other: 'a' },
+            { name: 'good 2', other: 'a' },
+            { name: 'bad', other: 'a' },
+            { name: 'good 3', other: 'a' },
           ],
         },
       });
@@ -136,24 +139,24 @@ describe('Access control - Imperative => static', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1', other: 'a' } },
-          { data: { name: 'good 2', other: 'a' } },
-          { data: { name: 'good 3', other: 'a' } },
-          { data: { name: 'good 4', other: 'a' } },
-          { data: { name: 'good 5', other: 'a' } },
+          { name: 'good 1', other: 'a' },
+          { name: 'good 2', other: 'a' },
+          { name: 'good 3', other: 'a' },
+          { name: 'good 4', other: 'a' },
+          { name: 'good 5', other: 'a' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersUpdateInput]) { updateUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserUpdateArgs!]!) { updateUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { id: users[0].id, data: { name: 'still good 1', other: 'b' } },
-            { id: users[1].id, data: { name: 'bad', other: 'b' } },
-            { id: users[2].id, data: { name: 'still good 3', other: 'b' } },
-            { id: users[3].id, data: { name: 'bad', other: 'b' } },
+            { where: { id: users[0].id }, data: { name: 'still good 1', other: 'b' } },
+            { where: { id: users[1].id }, data: { name: 'bad', other: 'b' } },
+            { where: { id: users[2].id }, data: { name: 'still good 3', other: 'b' } },
+            { where: { id: users[3].id }, data: { name: 'bad', other: 'b' } },
           ],
         },
       });

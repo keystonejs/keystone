@@ -57,7 +57,9 @@ describe('Example tests using test runner', () => {
       expect(data!.createPerson).toBe(null);
       expect(errors).toHaveLength(1);
       expect(errors![0].path).toEqual(['createPerson']);
-      expect(errors![0].message).toEqual('You attempted to perform an invalid mutation');
+      expect(errors![0].message).toEqual(
+        'You provided invalid data for this operation.\n  - Person.name: Required field "name" is null or undefined.'
+      );
     })
   );
 
@@ -71,8 +73,8 @@ describe('Example tests using test runner', () => {
       // Create some users
       const [alice, bob] = await context.lists.Person.createMany({
         data: [
-          { data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' } },
-          { data: { name: 'Bob', email: 'bob@example.com', password: 'super-secret' } },
+          { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+          { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
         ],
         query: 'id name',
       });
@@ -98,7 +100,7 @@ describe('Example tests using test runner', () => {
       {
         const { data, errors } = await context.graphql.raw({
           query: `mutation update($id: ID!) {
-            updateTask(id: $id data: { isComplete: true }) {
+            updateTask(where: { id: $id }, data: { isComplete: true }) {
               id
             }
           }`,
@@ -116,7 +118,7 @@ describe('Example tests using test runner', () => {
           .withSession({ itemId: alice.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
-              updateTask(id: $id data: { isComplete: true }) {
+              updateTask(where: { id: $id }, data: { isComplete: true }) {
                 id
               }
             }`,
@@ -132,7 +134,7 @@ describe('Example tests using test runner', () => {
           .withSession({ itemId: bob.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
-              updateTask(id: $id data: { isComplete: true }) {
+              updateTask(where: { id: $id }, data: { isComplete: true }) {
                 id
               }
             }`,
@@ -184,7 +186,7 @@ describe('Example tests using test environment', () => {
 
   test('Update the persons email address', async () => {
     const { email } = await context.lists.Person.updateOne({
-      id: person.id,
+      where: { id: person.id },
       data: { email: 'new-email@example.com' },
       query: 'email',
     });

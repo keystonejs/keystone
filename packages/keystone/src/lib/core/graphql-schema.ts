@@ -14,7 +14,6 @@ export function getGraphQLSchema(
     fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
   });
 
-  const createManyByList: Record<string, schema.InputObjectType<any>> = {};
   const updateManyByList: Record<string, schema.InputObjectType<any>> = {};
 
   const mutation = schema.object()({
@@ -22,8 +21,7 @@ export function getGraphQLSchema(
     fields: Object.assign(
       {},
       ...Object.values(lists).map(list => {
-        const { mutations, createManyInput, updateManyInput } = getMutationsForList(list, provider);
-        createManyByList[list.listKey] = createManyInput;
+        const { mutations, updateManyInput } = getMutationsForList(list, provider);
         updateManyByList[list.listKey] = updateManyInput;
         return mutations;
       })
@@ -32,14 +30,13 @@ export function getGraphQLSchema(
   const graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    types: collectTypes(lists, createManyByList, updateManyByList),
+    types: collectTypes(lists, updateManyByList),
   });
   return graphQLSchema;
 }
 
 function collectTypes(
   lists: Record<string, InitialisedList>,
-  createManyByList: Record<string, schema.InputObjectType<any>>,
   updateManyByList: Record<string, schema.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = [];
@@ -61,7 +58,6 @@ function collectTypes(
       }
       collectedTypes.push(list.types.where.graphQLType);
       collectedTypes.push(list.types.uniqueWhere.graphQLType);
-      collectedTypes.push(list.types.findManyArgs.sortBy.type.of.of.graphQLType);
       collectedTypes.push(list.types.orderBy.graphQLType);
     }
     if (list.access.update) {
@@ -70,7 +66,6 @@ function collectTypes(
     }
     if (list.access.create) {
       collectedTypes.push(list.types.create.graphQLType);
-      collectedTypes.push(createManyByList[list.listKey].graphQLType);
     }
   }
   // this is not necessary, just about ordering

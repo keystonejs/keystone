@@ -24,27 +24,20 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   const createOne = schema.field({
     type: list.types.output,
-    args: { data: schema.arg({ type: list.types.create }) },
+    args: { data: schema.arg({ type: schema.nonNull(list.types.create) }) },
     resolve(_rootVal, { data }, context) {
-      return createAndUpdate.createOne({ data: data ?? {} }, list, context);
+      return createAndUpdate.createOne({ data }, list, context);
     },
   });
 
-  const createManyInput = schema.inputObject({
-    name: names.createManyInputName,
-    fields: { data: schema.arg({ type: list.types.create }) },
-  });
   const createMany = schema.field({
     type: schema.list(list.types.output),
-    args: { data: schema.arg({ type: schema.list(createManyInput) }) },
+    args: {
+      data: schema.arg({ type: schema.nonNull(schema.list(schema.nonNull(list.types.create))) }),
+    },
     resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.createMany(
-          { data: (args.data || []).map(input => input?.data ?? {}) },
-          list,
-          context,
-          provider
-        )
+        createAndUpdate.createMany(args, list, context, provider)
       );
     },
   });
@@ -52,59 +45,51 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
   const updateOne = schema.field({
     type: list.types.output,
     args: {
-      id: schema.arg({ type: schema.nonNull(schema.ID) }),
-      data: schema.arg({ type: list.types.update }),
+      where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }),
+      data: schema.arg({ type: schema.nonNull(list.types.update) }),
     },
-    resolve(_rootVal, { data, id }, context) {
-      return createAndUpdate.updateOne({ data: data ?? {}, where: { id } }, list, context);
+    resolve(_rootVal, args, context) {
+      return createAndUpdate.updateOne(args, list, context);
     },
   });
 
   const updateManyInput = schema.inputObject({
     name: names.updateManyInputName,
     fields: {
-      id: schema.arg({ type: schema.nonNull(schema.ID) }),
-      data: schema.arg({ type: list.types.update }),
+      where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }),
+      data: schema.arg({ type: schema.nonNull(list.types.update) }),
     },
   });
   const updateMany = schema.field({
     type: schema.list(list.types.output),
-    args: { data: schema.arg({ type: schema.list(updateManyInput) }) },
-    resolve(_rootVal, { data }, context) {
+    args: {
+      data: schema.arg({ type: schema.nonNull(schema.list(schema.nonNull(updateManyInput))) }),
+    },
+    resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.updateMany(
-          {
-            data: (data || [])
-              .filter((x): x is NonNullable<typeof x> => x !== null)
-              .map(({ id, data }) => ({ where: { id: id }, data: data ?? {} })),
-          },
-          list,
-          context,
-          provider
-        )
+        createAndUpdate.updateMany(args, list, context, provider)
       );
     },
   });
 
   const deleteOne = schema.field({
     type: list.types.output,
-    args: { id: schema.arg({ type: schema.nonNull(schema.ID) }) },
-    resolve(rootVal, { id }, context) {
-      return deletes.deleteOne({ id }, list, context);
+    args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
+    resolve(rootVal, { where }, context) {
+      return deletes.deleteOne(where, list, context);
     },
   });
 
   const deleteMany = schema.field({
     type: schema.list(list.types.output),
-    args: { ids: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }) },
-    resolve(rootVal, { ids }, context) {
+    args: {
+      where: schema.arg({
+        type: schema.nonNull(schema.list(schema.nonNull(list.types.uniqueWhere))),
+      }),
+    },
+    resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany(
-          (ids || []).map(id => ({ id })),
-          list,
-          context,
-          provider
-        )
+        deletes.deleteMany(where, list, context, provider)
       );
     },
   });
@@ -125,6 +110,5 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
       }),
     },
     updateManyInput,
-    createManyInput,
   };
 }

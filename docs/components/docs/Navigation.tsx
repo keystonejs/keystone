@@ -152,6 +152,12 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/custom-admin-ui-logo">
           Custom Admin UI Logo <Badge look="success">New</Badge>
         </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-pages">
+          Custom Admin UI Pages <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-navigation">
+          Custom Admin UI Navigation <Badge look="success">New</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
@@ -201,13 +207,15 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
       <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
-      <Section label="Recent Releases">
-        {releases.map(name => (
-          <NavItem key={name} href={`/releases/${name}`}>
-            {format(parseISO(name), 'do LLL yyyy')}
-          </NavItem>
-        ))}
-      </Section>
+      {releases.length ? (
+        <Section label="Recent Releases">
+          {releases.map(name => (
+            <NavItem key={name} href={`/releases/${name}`}>
+              {format(parseISO(name), 'do LLL yyyy')}
+            </NavItem>
+          ))}
+        </Section>
+      ) : null}
     </nav>
   );
 }

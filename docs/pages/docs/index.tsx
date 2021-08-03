@@ -13,7 +13,12 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Keystone Docs Home'}
+      description={'Developer docs for KeystoneJS: The superpowered headless CMS for developers.'}
+    >
       <Type as="h1" look="heading64">
         Keystone Docs
       </Type>
