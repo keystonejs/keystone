@@ -10,9 +10,6 @@
 </div>
 <br>
 
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/keystonejs.svg?style=social&label=Follow%20us%20%40keystonejs)](https://twitter.com/keystonejs)
-
-
 <!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
 
 <!-- [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/) -->
@@ -34,7 +31,6 @@
 To learn more, check out our [What's next for KeystoneJS](https://github.com/keystonejs/keystone/issues/4962) announcement post.
 
 You can learn more about the next version, which is now [in preview](https://next.keystonejs.com/roadmap).
-
 
 ## ⚜️ Keystone 5 
 
@@ -107,6 +103,3 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduc
 ## ©  License 
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
-
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/keystonejs.svg?style=social&label=Follow%20us%20%40keystonejs)](https://twitter.com/keystonejs)
-
