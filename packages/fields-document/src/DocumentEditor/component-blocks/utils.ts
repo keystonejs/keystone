@@ -103,11 +103,11 @@ export function getDocumentFeaturesForChildField(
   const inlineMarks =
     inlineMarksFromOptions === 'inherit'
       ? 'inherit'
-      : Object.fromEntries(
+      : (Object.fromEntries(
           Object.keys(editorDocumentFeatures.formatting.inlineMarks).map(mark => {
             return [mark as Mark, !!(inlineMarksFromOptions || {})[mark as Mark]];
           })
-        );
+        ) as Record<Mark, boolean>);
   if (options.kind === 'inline') {
     return {
       kind: 'inline',

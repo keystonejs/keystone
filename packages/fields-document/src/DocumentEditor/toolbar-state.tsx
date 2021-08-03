@@ -121,7 +121,7 @@ export const createToolbarState = (
     match: node => node.type !== 'code' && Editor.isBlock(editor, node),
   });
   const editorMarks = Editor.marks(editor) || {};
-  const marks: ToolbarState['marks'] = Object.fromEntries(
+  const marks = Object.fromEntries(
     allMarks.map(mark => [
       mark,
       {
@@ -132,7 +132,7 @@ export const createToolbarState = (
         isSelected: !!editorMarks[mark],
       },
     ])
-  );
+  ) as ToolbarState['marks'];
 
   // Editor.marks is "what are the marks that would be applied if text was inserted now"
   // that's not really the UX we want, if we have some a document like this
