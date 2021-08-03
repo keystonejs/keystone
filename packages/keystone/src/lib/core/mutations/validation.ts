@@ -1,27 +1,19 @@
 import { validationFailureError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { promiseAllRejectWithAllErrors } from '../utils';
 
-type ValidationError = { msg: string; data: {}; internalData: {} };
+type AddValidationError = (msg: string) => void;
 
-type AddValidationError = (msg: string, data?: {}, internalData?: {}) => void;
-
-export async function validationHook(
-  listKey: string,
-  operation: 'create' | 'update' | 'delete',
-  originalInput: Record<string, string> | undefined,
-  validationHook: (addValidationError: AddValidationError) => void | Promise<void>
+async function validationHook(
+  _validationHook: (addValidationError: AddValidationError) => void | Promise<void>
 ) {
-  const errors: ValidationError[] = [];
+  const messages: string[] = [];
 
-  await validationHook((msg, data = {}, internalData = {}) => {
-    errors.push({ msg, data, internalData });
+  await _validationHook(msg => {
+    messages.push(msg);
   });
 
-  if (errors.length) {
-    // FIXME: We will incorporate the `msg` values, which are currently being lost
-    // into the error message in an upcoming change. -TL
-    throw validationFailureError();
+  if (messages.length) {
+    throw validationFailureError(messages);
   }
 }
 
@@ -35,10 +27,12 @@ export async function validateUpdateCreate({
   list: InitialisedList;
   hookArgs: Omit<UpdateCreateHookArgs, 'addValidationError'>;
 }) {
-  const { operation, resolvedData, originalInput } = hookArgs;
-  // Check isRequired
-  await validationHook(list.listKey, operation, originalInput, addValidationError => {
+  const { operation, resolvedData } = hookArgs;
+  await validationHook(async _addValidationError => {
+    // Check isRequired
     for (const [fieldKey, field] of Object.entries(list.fields)) {
+      const addValidationError = (msg: string) =>
+        _addValidationError(`${list.listKey}.${fieldKey}: ${msg}`);
       // yes, this is a massive hack, it's just to make image and file fields work well enough
       let val = resolvedData[fieldKey];
       if (field.dbField.kind === 'multi') {
@@ -53,27 +47,20 @@ export async function validateUpdateCreate({
         field.__legacy?.isRequired &&
         ((operation === 'create' && val == null) || (operation === 'update' && val === null))
       ) {
-        addValidationError(
-          `Required field "${fieldKey}" is null or undefined.`,
-          { resolvedData, operation, originalInput },
-          {}
-        );
+        addValidationError(`Required field "${fieldKey}" is null or undefined.`);
       }
     }
-  });
 
-  // Field validation hooks
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldPath, field]) => {
-        // @ts-ignore
-        await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldPath });
-      })
-    );
-  });
+    // Field validation hooks
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
+      const addValidationError = (msg: string) =>
+        _addValidationError(`${list.listKey}.${fieldPath}: ${msg}`);
+      // @ts-ignore
+      await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldPath });
+    }
 
-  // List validation hooks
-  await validationHook(list.listKey, operation, originalInput, async addValidationError => {
+    // List validation hooks
+    const addValidationError = (msg: string) => _addValidationError(`${list.listKey}: ${msg}`);
     // @ts-ignore
     await list.hooks.validateInput?.({ ...hookArgs, addValidationError });
   });
@@ -87,17 +74,16 @@ export async function validateDelete({
   list: InitialisedList;
   hookArgs: Omit<DeleteHookArgs, 'addValidationError'>;
 }) {
-  // Field validation
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldPath, field]) => {
-        await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldPath });
-      })
-    );
-  });
+  await validationHook(async _addValidationError => {
+    // Field validation
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
+      const addValidationError = (msg: string) =>
+        _addValidationError(`${list.listKey}.${fieldPath}: ${msg}`);
+      await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldPath });
+    }
 
-  // List validation
-  await validationHook(list.listKey, 'delete', undefined, async addValidationError => {
+    // List validation
+    const addValidationError = (msg: string) => _addValidationError(`${list.listKey}: ${msg}`);
     await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
   });
 }

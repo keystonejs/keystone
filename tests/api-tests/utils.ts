@@ -22,6 +22,8 @@ const unpackErrors = (errors: readonly any[] | undefined) =>
     ...unpacked,
   }));
 
+const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');
+
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
   args: { path: any[]; message: string }[]
@@ -67,16 +69,31 @@ export const expectAccessDenied = (
 
 export const expectValidationError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: (string | number)[]; messages: string[] }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }));
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
+    args.map(({ path, messages }) => ({
       extensions: { code: undefined },
       path,
-      message: 'You attempted to perform an invalid mutation',
+      message: `You provided invalid data for this operation.\n${j(messages)}`,
+    }))
+  );
+};
+
+export const expectExtensionError = (
+  errors: readonly any[] | undefined,
+  extensionName: string,
+  args: { path: (string | number)[]; messages: string[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages }) => ({
+      extensions: { code: undefined },
+      path,
+      message: `An error occured while running "${extensionName}".\n${j(messages)}`,
     }))
   );
 };
