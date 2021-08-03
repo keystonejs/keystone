@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 23.0.3
+
+### Patch Changes
+
+- [#6251](https://github.com/keystonejs/keystone/pull/6251) [`b5ceeaa3e`](https://github.com/keystonejs/keystone/commit/b5ceeaa3ecb44997e4c6cc241bdc24cb18663687) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - `@apollo/client` pinned at `3.3.21` until bug with `3.4.2` is resolved.
+
 ## 23.0.2
 
 ### Patch Changes
