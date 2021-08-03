@@ -1,16 +1,15 @@
 /** @jsx jsx */
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
-import { HTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
 
-import { AnchorHTMLAttributes } from 'react';
+import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
-import { useMediaQuery } from '../../lib/media';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -25,9 +24,11 @@ export function Section({ label, children }: SectionProps) {
         as="h3"
         look="body16bold"
         margin="var(--space-xlarge) 0 var(--space-large) 0"
-        font-weight="700"
         color="var(--text-heading)"
-        css={{ textTransform: 'uppercase' }}
+        css={{
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
       >
         {label}
       </Type>
@@ -56,7 +57,12 @@ export function NavItem({ href, isActive: _isActive, isPlaceholder, ...props }: 
         css={mq({
           display: 'block',
           textDecoration: 'none',
-          padding: ['0 0 var(--space-medium) 0', '0 0 var(--space-large) var(--space-medium)'],
+          padding: [
+            '0 0 var(--space-medium) 0 var(--space-medium)',
+            '0 0 var(--space-medium) var(--space-medium)',
+            null,
+            '0 0 var(--space-large) var(--space-medium)',
+          ],
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
@@ -78,16 +84,20 @@ type PrimaryNavItemProps = {
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   let isActive = pathname === href;
+  const ctx = useHeaderContext();
+  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+
   return (
     <Link href={href} passHref>
       <a
+        tabIndex={isOpen ? 0 : -1}
         css={{
           display: 'block',
           fontSize: '1rem',
           color: isActive ? 'var(--link)' : 'var(--text-heading)',
-          marginBottom: '1.25rem',
+          marginBottom: '1rem',
           alignItems: 'center',
-          fontWeight: 600,
+          fontWeight: 700,
           ':hover': {
             color: 'var(--link)',
           },
@@ -123,7 +133,7 @@ export function DocsNavigation() {
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
       <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
-        <NavItem href="/docs/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
+        <NavItem href="/docs/guides/keystone-5-vs-keystone-6-preview">Keystone 5 vs 6</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">Query Filters</NavItem>
@@ -136,6 +146,18 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/testing">
           Testing <Badge look="success">New</Badge>
         </NavItem>
+        <NavItem href="/docs/guides/custom-fields">
+          Custom Fields <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-logo">
+          Custom Admin UI Logo <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-pages">
+          Custom Admin UI Pages <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-navigation">
+          Custom Admin UI Navigation <Badge look="success">New</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
@@ -147,9 +169,6 @@ export function DocsNavigation() {
         </NavItem>
         <NavItem href="/docs/guides/internal-items" isPlaceholder>
           Internal Items
-        </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-pages" isPlaceholder>
-          Custom Admin UI Pages
         </NavItem>
         <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views
@@ -188,13 +207,15 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
       <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
-      <Section label="Recent Releases">
-        {releases.map(name => (
-          <NavItem key={name} href={`/releases/${name}`}>
-            {format(parseISO(name), 'do LLL yyyy')}
-          </NavItem>
-        ))}
-      </Section>
+      {releases.length ? (
+        <Section label="Recent Releases">
+          {releases.map(name => (
+            <NavItem key={name} href={`/releases/${name}`}>
+              {format(parseISO(name), 'do LLL yyyy')}
+            </NavItem>
+          ))}
+        </Section>
+      ) : null}
     </nav>
   );
 }

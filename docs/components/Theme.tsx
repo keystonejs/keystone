@@ -20,7 +20,7 @@ export function Theme() {
     if (detectedTheme !== 'light') {
       setTheme(detectedTheme);
     }
-  });
+  }, []);
 
   return (
     <Global

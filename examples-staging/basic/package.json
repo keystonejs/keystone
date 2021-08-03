@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/examples-app-basic",
-  "version": "4.0.3",
+  "version": "4.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,20 +9,20 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
-    "@graphql-tools/merge": "^6.2.14",
-    "@keystone-next/auth": "^28.0.0",
-    "@keystone-next/document-renderer": "^3.0.0",
-    "@keystone-next/fields": "^11.0.2",
-    "@keystone-next/fields-document": "^7.0.1",
-    "@keystone-next/keystone": "^21.0.0",
-    "@keystone-next/types": "^21.0.0",
-    "@keystone-ui/core": "^3.1.0",
+    "@babel/runtime": "^7.14.8",
+    "@graphql-tools/merge": "^6.2.16",
+    "@keystone-next/auth": "^30.0.0",
+    "@keystone-next/document-renderer": "^4.0.0",
+    "@keystone-next/fields": "^13.0.0",
+    "@keystone-next/fields-document": "^7.0.3",
+    "@keystone-next/keystone": "^23.0.0",
+    "@keystone-next/types": "^23.0.0",
+    "@keystone-ui/core": "^3.1.1",
     "@keystone-ui/fields": "^4.1.1",
     "@keystone-ui/icons": "^4.0.0",
-    "@keystone-ui/tooltip": "^4.0.0",
+    "@keystone-ui/tooltip": "^4.0.1",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.11",
+    "@types/react": "^17.0.15",
     "apollo-server-micro": "^2.25.2",
     "graphql": "^15.5.1",
     "graphql-tag": "^2.12.5",
@@ -31,7 +31,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

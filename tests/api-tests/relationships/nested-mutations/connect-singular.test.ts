@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -121,7 +121,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const _event = await context.lists.Event.updateOne({
-        id: event.id,
+        where: { id: event.id },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
       });
@@ -138,10 +138,10 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting an item which cannot be found during creating',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 createEvent(data: {
@@ -154,24 +154,27 @@ describe('non-matching filter', () => {
               }`,
       });
 
-      expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
+      expect(data).toEqual({ createEvent: null });
+      expectRelationshipError(errors, [
+        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
+      ]);
     })
   );
 
   test(
     'errors if connecting an item which cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item to link against
       const createEvent = await context.lists.Event.createOne({ data: {} });
 
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 updateEvent(
-                  id: "${createEvent.id}",
+                  where: { id: "${createEvent.id}" },
                   data: {
                     group: {
                       connect: { id: "${FAKE_ID}" }
@@ -182,8 +185,10 @@ describe('non-matching filter', () => {
                 }
               }`,
       });
-
-      expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
+      expect(data).toEqual({ updateEvent: null });
+      expectRelationshipError(errors, [
+        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
+      ]);
     })
   );
 });
@@ -239,7 +244,7 @@ describe('with access control', () => {
 
             // Update the item and link the relationship field
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
             });
@@ -278,11 +283,11 @@ describe('with access control', () => {
             expect(eventModel.id).toBeTruthy();
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.exitSudo().graphql.raw({
               query: `
                     mutation {
                       updateEventTo${group.name}(
-                        id: "${eventModel.id}"
+                        where: { id: "${eventModel.id}" }
                         data: {
                           title: "A thing",
                           group: { connect: { id: "${groupModel.id}" } }
@@ -292,13 +297,13 @@ describe('with access control', () => {
                       }
                     }`,
             });
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              `Unable to connect a EventTo${group.name}.group<${group.name}>`
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual(`updateEventTo${group.name}`);
+            expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
+            expectRelationshipError(errors, [
+              {
+                path: [`updateEventTo${group.name}`],
+                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+              },
+            ]);
           })
         );
 
@@ -314,7 +319,7 @@ describe('with access control', () => {
             expect(id).toBeTruthy();
 
             // Create an item that does the linking
-            const { errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.exitSudo().graphql.raw({
               query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -325,13 +330,14 @@ describe('with access control', () => {
                       }
                     }`,
             });
-            expect(errors).toHaveLength(1);
-            const error = errors![0];
-            expect(error.message).toEqual(
-              `Unable to connect a EventTo${group.name}.group<${group.name}>`
-            );
-            expect(error.path).toHaveLength(1);
-            expect(error.path![0]).toEqual(`createEventTo${group.name}`);
+
+            expect(data).toEqual({ [`createEventTo${group.name}`]: null });
+            expectRelationshipError(errors, [
+              {
+                path: [`createEventTo${group.name}`],
+                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+              },
+            ]);
           })
         );
       }

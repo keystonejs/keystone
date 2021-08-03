@@ -4,9 +4,17 @@ import { Status } from '../../components/primitives/Status';
 
 # Release Notes
 
-## 30th June 2021
+## 29th July 2021
 
 <Status look="latestRelease" />
+
+Custom **navigation**, **pages** and **logo** in this big **Admin UI** themed release! <Emoji symbol="🎛️" alt="Control knobs" /> — [read more](/releases/2021-07-29)
+
+## 13th July 2021
+
+More examples, types, and UI rendering tweaks as we push forward towards a general availability release! <Emoji symbol="🚀" alt="Rocket" /> — [read more](/releases/2021-07-13)
+
+## 30th June 2021
 
 We fixed an issue with `cloudinaryImage` and `relationship` fields. <Emoji symbol="🔥" alt="Fire" /> — [read more](/releases/2021-06-30)
 
@@ -70,5 +78,5 @@ Prisma migrations <Emoji symbol="🚚" alt="Truck"/>, Noteworthy bug-squashing <
 
 ?> 🔎 You can also find all the **Keystone 6** releases on [GitHub](https://github.com/keystonejs/keystone/releases)!
 
-export default ({ children, ...props }) => <Markdown {...props} noRightNav>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown description="A complete timeline of KeystoneJS releases." {...props} noRightNav>{children}</Markdown>;
 export { getServerSideProps }

@@ -2,7 +2,7 @@ import { integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { KeystoneContext } from '@keystone-next/types';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -21,15 +21,15 @@ const initialiseData = async ({ context }: { context: KeystoneContext }) => {
   // Use shuffled data to ensure that ordering is actually happening.
   await context.lists.User.createMany({
     data: [
-      { data: { a: 1, b: 10 } },
-      { data: { a: 1, b: 30 } },
-      { data: { a: 1, b: 20 } },
-      { data: { a: 3, b: 30 } },
-      { data: { a: 3, b: 10 } },
-      { data: { a: 3, b: 20 } },
-      { data: { a: 2, b: 30 } },
-      { data: { a: 2, b: 20 } },
-      { data: { a: 2, b: 10 } },
+      { a: 1, b: 10 },
+      { a: 1, b: 30 },
+      { a: 1, b: 20 },
+      { a: 3, b: 30 },
+      { a: 3, b: 10 },
+      { a: 3, b: 20 },
+      { a: 2, b: 30 },
+      { a: 2, b: 20 },
+      { a: 2, b: 10 },
     ],
   });
 };
@@ -251,15 +251,16 @@ describe('Ordering by a single field', () => {
 
   test(
     'Multi filter, bad format throws error ',
-    runner(async ({ context }) => {
+    runner(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
 
-      const { data, errors } = await context.graphql.raw({
-        query: 'query { allUsers(orderBy: [{ a: asc, b: asc }]) { id } }',
+      const { body } = await graphQLRequest({
+        query: 'query { users(orderBy: [{ a: asc, b: asc }]) { id } }',
       });
-      expect(data?.allUsers).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('Only a single key must be passed to UserOrderByInput');
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
+      ]);
     })
   );
 });

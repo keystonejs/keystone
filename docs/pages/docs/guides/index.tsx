@@ -11,30 +11,34 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Guides">
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Guides'}
+      description={
+        'Practical explanations of Keystone’s fundamental building blocks. Learn how to think about, and get the most out of Keystone’s many features.'
+      }
+    >
       <Type as="h1" look="heading64">
         Keystone Guides
       </Type>
-
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
         Practical explanations of Keystone’s fundamental building blocks. When you’re trying to get
         something done, Keystone guides show you how to think about, and get the most out of each
         feature.
       </Type>
-
       <CommunitySlackCTA />
-
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr 1fr'],
+          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
           gap: 'var(--space-xlarge)',
         })}
       >
         <Well
           grad="grad2"
           heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-next"
+          href="/docs/guides/keystone-5-vs-keystone-6-preview"
         >
           We’re transitioning to Keystone 6 soon. If you’re wondering which version to start a new
           project with today, this guide is for you.

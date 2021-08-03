@@ -5,6 +5,25 @@ import { Markdown } from '../../../components/Markdown';
 When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
 In this guide we'll show you how to use the `@keystone-next/testing` package and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
 
+## Running tests
+
+In order to run tests using the `@keystone-next/testing` package, we recommend adding the following script to your `package.json` file.
+
+```json
+"scripts": {
+  "test": "jest --runInBand --testTimeout=60000"
+}
+```
+
+This will let you run your tests with the command
+
+```shell
+yarn test
+```
+
+?> It is important to use [`--runInBand`](https://jestjs.io/docs/cli#--runinband) when running your tests. This tells Jest not to run your tests in parallel.
+Each test shares the same database, so it's important that multiple tests aren't trying to manipulate the data at the same time.
+
 ## Test runner
 
 The first step to writing a test for your Keystone system is to setup a test runner with `setupTestRunner`.
@@ -31,8 +50,9 @@ This ensures that all tests are run in a known state.
 The test runner then sets up a partial Keystone system for you, including an Apollo server to handle GraphQL requests.
 The system does not include an Admin UI, and does not open a network port to listen for requests.
 
-Finally, the runner sets up two APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
-The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library
+Finally, the runner sets up three APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
+The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library.
+The third is an [`express.Express`](https://expressjs.com/) value named `app` which lets you access any of the endpoints of the Express server using `supertest`.
 
 x> The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
 
@@ -74,7 +94,9 @@ runner(async ({ context }) => {
   expect(data.createPerson).toBe(null);
   expect(errors).toHaveLength(1);
   expect(errors[0].path).toEqual(['createPerson']);
-  expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
+  expect(errors[0].message).toEqual(
+    'You provided invalid data for this operation.\n  - Person.name: Required field "name" is null or undefined.'
+  );
 })
 ```
 
@@ -147,6 +169,23 @@ runner(async ({ graphQLRequest }) => {
 
 See the [`supertest`](https://github.com/visionmedia/supertest) docs for full details on the methods available with `graphQLRequest`.
 
+### Express `app`
+
+There are some situations where you might want to directly interact with specific endpoints of the Express server.
+The underlying Express application is exposed as `app`, and you can use `supertest` to interact with it.
+For example, if you wanted to check the `/_healthcheck` endpoint, you could do the following:
+
+```
+runner(async ({ app }) => {
+  const { text } = await supertest(app)
+    .get('/_healthcheck')
+    .set('Accept', 'application/json')
+    .expect('Content-Type', /json/)
+    .expect(200);
+  expect(JSON.parse(text)).toMatchObject({ status: 'pass' });
+})
+```
+
 ## Test environment
 
 The test runner function resets the database to a clean state for every test.
@@ -195,4 +234,4 @@ describe('Example tests using test environment', () => {
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to use the `@keystone-next/testing` package and Jest to write tests that check the behaviour of your GraphQL API.">{children}</Markdown>;

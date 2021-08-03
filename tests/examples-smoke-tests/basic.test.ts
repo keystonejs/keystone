@@ -8,7 +8,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3000');
   });
   initFirstItemTest(() => page);
   test('sign out and sign in', async () => {
@@ -32,7 +32,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
       body: JSON.stringify({
         query: `
           query {
-            allUsers {
+            users {
               id
               name
             }
@@ -45,7 +45,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
     }).then(res => res.json());
     expect(usersResponse).toEqual({
       data: {
-        allUsers: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
+        users: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
       },
     });
   });

@@ -30,7 +30,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         // If you accidentally use `context.lists.Post` here you can expect problems
         // when accessing the fields in your GraphQL client.
         return context.db.lists.Post.updateOne({
-          id,
+          where: { id },
           data: { status: 'published', publishDate: new Date().toUTCString() },
         });
       },

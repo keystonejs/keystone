@@ -68,6 +68,9 @@ Options:
 
 - `labelField`: Selects the field which will be used as the label column in the Admin UI.
   By default looks for a field called `'label'`, then falls back to `'name'`, then `'title'`, and finally `'id'`, which is guaranteed to exist.
+- `searchFields`: The fields used by the Admin UI when searching this list.
+  It is always possible to search by an id and `'id'` should not be specified in this option.
+  By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
 - `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
 - `isHidden` (default: `false`): Controls whether the list is visible in the navigation elements of the Admin UI.
   Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
@@ -106,6 +109,7 @@ export default config({
       fields: { name: text({ /* ... */ }) },
       ui: {
         labelField: 'name',
+        searchFields: ['name', 'alternativeName'],
         description: '...',
         isHidden: ({ session }) => false,
         hideCreate: ({ session }) => false,
@@ -205,4 +209,4 @@ export default config({
 The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Reference docs for Keystone’s Schema API, which defines the data model of your system.">{children}</Markdown>;

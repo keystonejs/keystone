@@ -11,11 +11,11 @@
     "react": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@keystone-ui/core": "^3.0.0",
     "@keystone-ui/fields": "^4.1.2",
     "@keystone-ui/icons": "^4.0.0",
-    "@types/react-select": "^4.0.16",
+    "@types/react-select": "^4.0.17",
     "react-select": "^4.3.1"
   },
   "engines": {

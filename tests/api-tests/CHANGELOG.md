@@ -1,5 +1,29 @@
 # @keystonejs/api-tests
 
+## 11.0.6
+
+### Patch Changes
+
+- [#6096](https://github.com/keystonejs/keystone/pull/6096) [`fbe698461`](https://github.com/keystonejs/keystone/commit/fbe6984616de7a302db7c2b0082851db89c2e314) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma dependencies to `2.27.0`.
+
+- Updated dependencies [[`93f1e5d30`](https://github.com/keystonejs/keystone/commit/93f1e5d302701c610b6cba74e0c5c86a3ac8aacc), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`14cb7c5c4`](https://github.com/keystonejs/keystone/commit/14cb7c5c40456cd0d2c8408ed46823d2695614cc), [`e4e6cf9b5`](https://github.com/keystonejs/keystone/commit/e4e6cf9b59eec461d2b53acfa3b350e4f5a06fc4)]:
+  - @keystone-next/types@23.0.0
+  - @keystone-next/testing@1.1.0
+  - @keystone-next/utils@1.0.3
+
+## 11.0.5
+
+### Patch Changes
+
+- [#6087](https://github.com/keystonejs/keystone/pull/6087) [`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951) Thanks [@JedWatson](https://github.com/JedWatson)! - Move source code from the `packages-next` to the `packages` directory.
+
+* [#6040](https://github.com/keystonejs/keystone/pull/6040) [`890e3d0a5`](https://github.com/keystonejs/keystone/commit/890e3d0a500ecc30cc88946ba53438812b11b2a4) Thanks [@timleslie](https://github.com/timleslie)! - Fixed the behaviour of `document(hydrateRelationships: true)` when a related item no longer exists or read access is denied.
+  The resolver will now set the relationship data to be `{ id }`, leaving the `label` and `data` properties undefined.
+* Updated dependencies [[`38b78f2ae`](https://github.com/keystonejs/keystone/commit/38b78f2aeaf4c5d8176a1751ad8cb5a7acce2790), [`5f3d407d7`](https://github.com/keystonejs/keystone/commit/5f3d407d79171f04ae877e8eaed9a7f9d5671705), [`139d7a8de`](https://github.com/keystonejs/keystone/commit/139d7a8def263d40c0d1d5353d2744842d9a0951)]:
+  - @keystone-next/types@22.0.0
+  - @keystone-next/testing@1.0.2
+  - @keystone-next/utils@1.0.2
+
 ## 11.0.4
 
 ### Patch Changes

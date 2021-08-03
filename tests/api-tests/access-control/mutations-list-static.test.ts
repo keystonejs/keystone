@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -40,15 +40,13 @@ describe('Access control - Imperative => static', () => {
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: UserCreateInput) { createUser(data: $data) { id } }`,
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'bad' } },
       });
 
       // Returns null and throws an error
-      expect(data!.createUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUser']);
+      expect(data).toEqual({ createUser: null });
+      expectAccessDenied(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -62,19 +60,17 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ id: user.id, data: { name: 'better' } });
+      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID! $data: UserUpdateInput) { updateUser(id: $id data: $data) { id } }`,
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
         variables: { id: user.id, data: { name: 'bad' } },
       });
 
       // Returns null and throws an error
-      expect(data!.updateUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUser']);
+      expect(data).toEqual({ updateUser: null });
+      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -89,19 +85,17 @@ describe('Access control - Imperative => static', () => {
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ id: user1.id });
+      await context.lists.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($id: ID!) { deleteUser(id: $id) { id } }`,
+        query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
         variables: { id: user2.id },
       });
 
       // Returns null and throws an error
-      expect(data!.deleteUser).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['deleteUser']);
+      expect(data).toEqual({ deleteUser: null });
+      expectAccessDenied(errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -115,33 +109,31 @@ describe('Access control - Imperative => static', () => {
       context = context.exitSudo();
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersCreateInput]) { createUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { data: { name: 'good 1' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 2' } },
-            { data: { name: 'bad' } },
-            { data: { name: 'good 3' } },
+            { name: 'good 1' },
+            { name: 'bad' },
+            { name: 'good 2' },
+            { name: 'bad' },
+            { name: 'good 3' },
           ],
         },
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.createUsers).toEqual([
-        { id: expect.any(String), name: 'good 1' },
-        null,
-        { id: expect.any(String), name: 'good 2' },
-        null,
-        { id: expect.any(String), name: 'good 3' },
-      ]);
+      expect(data).toEqual({
+        createUsers: [
+          { id: expect.any(String), name: 'good 1' },
+          null,
+          { id: expect.any(String), name: 'good 2' },
+          null,
+          { id: expect.any(String), name: 'good 3' },
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['createUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['createUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // The good users should exist in the database
       const users = await context.lists.User.findMany();
@@ -159,24 +151,24 @@ describe('Access control - Imperative => static', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'good 2' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'good 4' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'good 2' },
+          { name: 'good 3' },
+          { name: 'good 4' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($data: [UsersUpdateInput]) { updateUsers(data: $data) { id name } }`,
+        query: `mutation ($data: [UserUpdateArgs!]!) { updateUsers(data: $data) { id name } }`,
         variables: {
           data: [
-            { id: users[0].id, data: { name: 'still good 1' } },
-            { id: users[1].id, data: { name: 'bad' } },
-            { id: users[2].id, data: { name: 'still good 3' } },
-            { id: users[3].id, data: { name: 'bad' } },
+            { where: { id: users[0].id }, data: { name: 'still good 1' } },
+            { where: { id: users[1].id }, data: { name: 'bad' } },
+            { where: { id: users[2].id }, data: { name: 'still good 3' } },
+            { where: { id: users[3].id }, data: { name: 'bad' } },
           ],
         },
       });
@@ -190,11 +182,7 @@ describe('Access control - Imperative => static', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['updateUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['updateUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -218,19 +206,21 @@ describe('Access control - Imperative => static', () => {
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
-          { data: { name: 'good 1' } },
-          { data: { name: 'no delete 1' } },
-          { data: { name: 'good 3' } },
-          { data: { name: 'no delete 2' } },
-          { data: { name: 'good 5' } },
+          { name: 'good 1' },
+          { name: 'no delete 1' },
+          { name: 'good 3' },
+          { name: 'no delete 2' },
+          { name: 'good 5' },
         ],
         query: 'id name',
       });
 
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
-        query: `mutation ($ids: [ID!]) { deleteUsers(ids: $ids) { id name } }`,
-        variables: { ids: [users[0].id, users[1].id, users[2].id, users[3].id] },
+        query: `mutation ($where: [UserWhereUniqueInput!]!) { deleteUsers(where: $where) { id name } }`,
+        variables: {
+          where: [users[0].id, users[1].id, users[2].id, users[3].id].map(id => ({ id })),
+        },
       });
 
       // Valid users are returned, invalid come back as null
@@ -242,11 +232,7 @@ describe('Access control - Imperative => static', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expect(errors).toHaveLength(2);
-      expect(errors![0].message).toEqual('You do not have access to this resource');
-      expect(errors![0].path).toEqual(['deleteUsers', 1]);
-      expect(errors![1].message).toEqual('You do not have access to this resource');
-      expect(errors![1].path).toEqual(['deleteUsers', 3]);
+      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       const _users = await context.lists.User.findMany({
         orderBy: { name: 'asc' },

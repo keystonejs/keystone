@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
@@ -8,70 +5,25 @@ type User {
   password: PasswordState
   cart(
     where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [CartItem!]
-  _cartMeta(
-    where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [CartItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use cartCount instead."
-    )
   cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]
-  _ordersMeta(
-    where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use ordersCount instead."
-    )
   ordersCount(where: OrderWhereInput! = {}): Int
   role: Role
   products(
     where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Product!]
-  _productsMeta(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
-    )
   productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken: PasswordState
   passwordResetIssuedAt: String
@@ -80,10 +32,6 @@ type User {
 
 type PasswordState {
   isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input UserWhereInput {
@@ -110,52 +58,16 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   cart_every: CartItemWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   cart_some: CartItemWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   cart_none: CartItemWhereInput
-
-  """
-   condition must be true for all nodes
-  """
   orders_every: OrderWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   orders_some: OrderWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   orders_none: OrderWhereInput
   role: RoleWhereInput
   role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   products_every: ProductWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   products_some: ProductWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   products_none: ProductWhereInput
   passwordResetToken_is_set: Boolean
   passwordResetIssuedAt: String
@@ -181,19 +93,6 @@ input UserWhereUniqueInput {
   email: String
 }
 
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  passwordResetIssuedAt_ASC
-  passwordResetIssuedAt_DESC
-  passwordResetRedeemedAt_ASC
-  passwordResetRedeemedAt_DESC
-}
-
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -211,68 +110,80 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
-  products: ProductRelateToManyInput
+  cart: CartItemRelateToManyForUpdateInput
+  orders: OrderRelateToManyForUpdateInput
+  role: RoleRelateToOneForUpdateInput
+  products: ProductRelateToManyForUpdateInput
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
 
-input CartItemRelateToManyInput {
-  create: [CartItemCreateInput]
-  connect: [CartItemWhereUniqueInput]
-  disconnect: [CartItemWhereUniqueInput]
-  disconnectAll: Boolean
+input CartItemRelateToManyForUpdateInput {
+  disconnect: [CartItemWhereUniqueInput!]
+  set: [CartItemWhereUniqueInput!]
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
-input OrderRelateToManyInput {
-  create: [OrderCreateInput]
-  connect: [OrderWhereUniqueInput]
-  disconnect: [OrderWhereUniqueInput]
-  disconnectAll: Boolean
+input OrderRelateToManyForUpdateInput {
+  disconnect: [OrderWhereUniqueInput!]
+  set: [OrderWhereUniqueInput!]
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
 }
 
-input RoleRelateToOneInput {
+input RoleRelateToOneForUpdateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input ProductRelateToManyInput {
-  create: [ProductCreateInput]
-  connect: [ProductWhereUniqueInput]
-  disconnect: [ProductWhereUniqueInput]
-  disconnectAll: Boolean
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
   name: String
   email: String
   password: String
-  cart: CartItemRelateToManyInput
-  orders: OrderRelateToManyInput
-  role: RoleRelateToOneInput
-  products: ProductRelateToManyInput
+  cart: CartItemRelateToManyForCreateInput
+  orders: OrderRelateToManyForCreateInput
+  role: RoleRelateToOneForCreateInput
+  products: ProductRelateToManyForCreateInput
   passwordResetToken: String
   passwordResetIssuedAt: String
   passwordResetRedeemedAt: String
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input CartItemRelateToManyForCreateInput {
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
-"""
- A keystone list
-"""
+input OrderRelateToManyForCreateInput {
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
+}
+
+input RoleRelateToOneForCreateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
+}
+
 type Product {
   id: ID!
   name: String
@@ -328,19 +239,6 @@ input ProductWhereUniqueInput {
   id: ID
 }
 
-enum SortProductsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  status_ASC
-  status_DESC
-  price_ASC
-  price_DESC
-}
-
 input ProductOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -352,47 +250,48 @@ input ProductOrderByInput {
 input ProductUpdateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForUpdateInput
   status: String
   price: Int
-  user: UserRelateToOneInput
+  user: UserRelateToOneForUpdateInput
 }
 
-input ProductImageRelateToOneInput {
+input ProductImageRelateToOneForUpdateInput {
   create: ProductImageCreateInput
   connect: ProductImageWhereUniqueInput
-  disconnect: ProductImageWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input ProductsUpdateInput {
-  id: ID!
-  data: ProductUpdateInput
+input ProductUpdateArgs {
+  where: ProductWhereUniqueInput!
+  data: ProductUpdateInput!
 }
 
 input ProductCreateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForCreateInput
   status: String
   price: Int
-  user: UserRelateToOneInput
+  user: UserRelateToOneForCreateInput
 }
 
-input ProductsCreateInput {
-  data: ProductCreateInput
+input ProductImageRelateToOneForCreateInput {
+  create: ProductImageCreateInput
+  connect: ProductImageWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
 type ProductImage {
   id: ID!
   image: CloudinaryImage_File
@@ -478,13 +377,6 @@ input ProductImageWhereUniqueInput {
   id: ID
 }
 
-enum SortProductImagesBy {
-  id_ASC
-  id_DESC
-  altText_ASC
-  altText_DESC
-}
-
 input ProductImageOrderByInput {
   id: OrderDirection
   altText: OrderDirection
@@ -493,7 +385,7 @@ input ProductImageOrderByInput {
 input ProductImageUpdateInput {
   image: Upload
   altText: String
-  product: ProductRelateToOneInput
+  product: ProductRelateToOneForUpdateInput
 }
 
 """
@@ -501,31 +393,28 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
-input ProductRelateToOneInput {
+input ProductRelateToOneForUpdateInput {
   create: ProductCreateInput
   connect: ProductWhereUniqueInput
-  disconnect: ProductWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input ProductImagesUpdateInput {
-  id: ID!
-  data: ProductImageUpdateInput
+input ProductImageUpdateArgs {
+  where: ProductImageWhereUniqueInput!
+  data: ProductImageUpdateInput!
 }
 
 input ProductImageCreateInput {
   image: Upload
   altText: String
-  product: ProductRelateToOneInput
+  product: ProductRelateToOneForCreateInput
 }
 
-input ProductImagesCreateInput {
-  data: ProductImageCreateInput
+input ProductRelateToOneForCreateInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type CartItem {
   id: ID!
   quantity: Int
@@ -562,13 +451,6 @@ input CartItemWhereUniqueInput {
   id: ID
 }
 
-enum SortCartItemsBy {
-  id_ASC
-  id_DESC
-  quantity_ASC
-  quantity_DESC
-}
-
 input CartItemOrderByInput {
   id: OrderDirection
   quantity: OrderDirection
@@ -576,28 +458,21 @@ input CartItemOrderByInput {
 
 input CartItemUpdateInput {
   quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
+  product: ProductRelateToOneForUpdateInput
+  user: UserRelateToOneForUpdateInput
 }
 
-input CartItemsUpdateInput {
-  id: ID!
-  data: CartItemUpdateInput
+input CartItemUpdateArgs {
+  where: CartItemWhereUniqueInput!
+  data: CartItemUpdateInput!
 }
 
 input CartItemCreateInput {
   quantity: Int
-  product: ProductRelateToOneInput
-  user: UserRelateToOneInput
+  product: ProductRelateToOneForCreateInput
+  user: UserRelateToOneForCreateInput
 }
 
-input CartItemsCreateInput {
-  data: CartItemCreateInput
-}
-
-"""
- A keystone list
-"""
 type OrderItem {
   id: ID!
   name: String
@@ -657,19 +532,6 @@ input OrderItemWhereUniqueInput {
   id: ID
 }
 
-enum SortOrderItemsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  description_ASC
-  description_DESC
-  price_ASC
-  price_DESC
-  quantity_ASC
-  quantity_DESC
-}
-
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -681,65 +543,47 @@ input OrderItemOrderByInput {
 input OrderItemUpdateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForUpdateInput
   price: Int
   quantity: Int
-  order: OrderRelateToOneInput
+  order: OrderRelateToOneForUpdateInput
 }
 
-input OrderRelateToOneInput {
+input OrderRelateToOneForUpdateInput {
   create: OrderCreateInput
   connect: OrderWhereUniqueInput
-  disconnect: OrderWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input OrderItemsUpdateInput {
-  id: ID!
-  data: OrderItemUpdateInput
+input OrderItemUpdateArgs {
+  where: OrderItemWhereUniqueInput!
+  data: OrderItemUpdateInput!
 }
 
 input OrderItemCreateInput {
   name: String
   description: String
-  photo: ProductImageRelateToOneInput
+  photo: ProductImageRelateToOneForCreateInput
   price: Int
   quantity: Int
-  order: OrderRelateToOneInput
+  order: OrderRelateToOneForCreateInput
 }
 
-input OrderItemsCreateInput {
-  data: OrderItemCreateInput
+input OrderRelateToOneForCreateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type Order {
   id: ID!
   label: String
   total: Int
   items(
     where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
-  _itemsMeta(
-    where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use itemsCount instead."
-    )
   itemsCount(where: OrderItemWhereInput! = {}): Int
   user: User
   charge: String
@@ -764,20 +608,8 @@ input OrderWhereInput {
   total_gte: Int
   total_in: [Int]
   total_not_in: [Int]
-
-  """
-   condition must be true for all nodes
-  """
   items_every: OrderItemWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   items_some: OrderItemWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   items_none: OrderItemWhereInput
   user: UserWhereInput
   user_is_null: Boolean
@@ -793,15 +625,6 @@ input OrderWhereUniqueInput {
   id: ID
 }
 
-enum SortOrdersBy {
-  id_ASC
-  id_DESC
-  total_ASC
-  total_DESC
-  charge_ASC
-  charge_DESC
-}
-
 input OrderOrderByInput {
   id: OrderDirection
   total: OrderDirection
@@ -810,37 +633,35 @@ input OrderOrderByInput {
 
 input OrderUpdateInput {
   total: Int
-  items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
+  items: OrderItemRelateToManyForUpdateInput
+  user: UserRelateToOneForUpdateInput
   charge: String
 }
 
-input OrderItemRelateToManyInput {
-  create: [OrderItemCreateInput]
-  connect: [OrderItemWhereUniqueInput]
-  disconnect: [OrderItemWhereUniqueInput]
-  disconnectAll: Boolean
+input OrderItemRelateToManyForUpdateInput {
+  disconnect: [OrderItemWhereUniqueInput!]
+  set: [OrderItemWhereUniqueInput!]
+  create: [OrderItemCreateInput!]
+  connect: [OrderItemWhereUniqueInput!]
 }
 
-input OrdersUpdateInput {
-  id: ID!
-  data: OrderUpdateInput
+input OrderUpdateArgs {
+  where: OrderWhereUniqueInput!
+  data: OrderUpdateInput!
 }
 
 input OrderCreateInput {
   total: Int
-  items: OrderItemRelateToManyInput
-  user: UserRelateToOneInput
+  items: OrderItemRelateToManyForCreateInput
+  user: UserRelateToOneForCreateInput
   charge: String
 }
 
-input OrdersCreateInput {
-  data: OrderCreateInput
+input OrderItemRelateToManyForCreateInput {
+  create: [OrderItemCreateInput!]
+  connect: [OrderItemWhereUniqueInput!]
 }
 
-"""
- A keystone list
-"""
 type Role {
   id: ID!
   name: String
@@ -852,25 +673,10 @@ type Role {
   canManageOrders: Boolean
   assignedTo(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-  _assignedToMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use assignedToCount instead."
-    )
   assignedToCount(where: UserWhereInput! = {}): Int
 }
 
@@ -903,44 +709,13 @@ input RoleWhereInput {
   canManageCart_not: Boolean
   canManageOrders: Boolean
   canManageOrders_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   assignedTo_every: UserWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   assignedTo_some: UserWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   assignedTo_none: UserWhereInput
 }
 
 input RoleWhereUniqueInput {
   id: ID
-}
-
-enum SortRolesBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  canManageProducts_ASC
-  canManageProducts_DESC
-  canSeeOtherUsers_ASC
-  canSeeOtherUsers_DESC
-  canManageUsers_ASC
-  canManageUsers_DESC
-  canManageRoles_ASC
-  canManageRoles_DESC
-  canManageCart_ASC
-  canManageCart_DESC
-  canManageOrders_ASC
-  canManageOrders_DESC
 }
 
 input RoleOrderByInput {
@@ -962,19 +737,19 @@ input RoleUpdateInput {
   canManageRoles: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
+  assignedTo: UserRelateToManyForUpdateInput
 }
 
-input UserRelateToManyInput {
-  create: [UserCreateInput]
-  connect: [UserWhereUniqueInput]
-  disconnect: [UserWhereUniqueInput]
-  disconnectAll: Boolean
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
+input RoleUpdateArgs {
+  where: RoleWhereUniqueInput!
+  data: RoleUpdateInput!
 }
 
 input RoleCreateInput {
@@ -985,11 +760,12 @@ input RoleCreateInput {
   canManageRoles: Boolean
   canManageCart: Boolean
   canManageOrders: Boolean
-  assignedTo: UserRelateToManyInput
+  assignedTo: UserRelateToManyForCreateInput
 }
 
-input RolesCreateInput {
-  data: RoleCreateInput
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 """
@@ -1001,215 +777,60 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single User item.
-  """
-  createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
-  deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
-  deleteUsers(ids: [ID!]): [User]
-
-  """
-   Create a single Product item.
-  """
-  createProduct(data: ProductCreateInput): Product
-
-  """
-   Create multiple Product items.
-  """
-  createProducts(data: [ProductsCreateInput]): [Product]
-
-  """
-   Update a single Product item by ID.
-  """
-  updateProduct(id: ID!, data: ProductUpdateInput): Product
-
-  """
-   Update multiple Product items by ID.
-  """
-  updateProducts(data: [ProductsUpdateInput]): [Product]
-
-  """
-   Delete a single Product item by ID.
-  """
-  deleteProduct(id: ID!): Product
-
-  """
-   Delete multiple Product items by ID.
-  """
-  deleteProducts(ids: [ID!]): [Product]
-
-  """
-   Create a single ProductImage item.
-  """
-  createProductImage(data: ProductImageCreateInput): ProductImage
-
-  """
-   Create multiple ProductImage items.
-  """
-  createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
-
-  """
-   Update a single ProductImage item by ID.
-  """
-  updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
-
-  """
-   Update multiple ProductImage items by ID.
-  """
-  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
-
-  """
-   Delete a single ProductImage item by ID.
-  """
-  deleteProductImage(id: ID!): ProductImage
-
-  """
-   Delete multiple ProductImage items by ID.
-  """
-  deleteProductImages(ids: [ID!]): [ProductImage]
-
-  """
-   Create a single CartItem item.
-  """
-  createCartItem(data: CartItemCreateInput): CartItem
-
-  """
-   Create multiple CartItem items.
-  """
-  createCartItems(data: [CartItemsCreateInput]): [CartItem]
-
-  """
-   Update a single CartItem item by ID.
-  """
-  updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
-
-  """
-   Update multiple CartItem items by ID.
-  """
-  updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
-
-  """
-   Delete a single CartItem item by ID.
-  """
-  deleteCartItem(id: ID!): CartItem
-
-  """
-   Delete multiple CartItem items by ID.
-  """
-  deleteCartItems(ids: [ID!]): [CartItem]
-
-  """
-   Create a single OrderItem item.
-  """
-  createOrderItem(data: OrderItemCreateInput): OrderItem
-
-  """
-   Create multiple OrderItem items.
-  """
-  createOrderItems(data: [OrderItemsCreateInput]): [OrderItem]
-
-  """
-   Update a single OrderItem item by ID.
-  """
-  updateOrderItem(id: ID!, data: OrderItemUpdateInput): OrderItem
-
-  """
-   Update multiple OrderItem items by ID.
-  """
-  updateOrderItems(data: [OrderItemsUpdateInput]): [OrderItem]
-
-  """
-   Delete a single OrderItem item by ID.
-  """
-  deleteOrderItem(id: ID!): OrderItem
-
-  """
-   Delete multiple OrderItem items by ID.
-  """
-  deleteOrderItems(ids: [ID!]): [OrderItem]
-
-  """
-   Create a single Order item.
-  """
-  createOrder(data: OrderCreateInput): Order
-
-  """
-   Create multiple Order items.
-  """
-  createOrders(data: [OrdersCreateInput]): [Order]
-
-  """
-   Update a single Order item by ID.
-  """
-  updateOrder(id: ID!, data: OrderUpdateInput): Order
-
-  """
-   Update multiple Order items by ID.
-  """
-  updateOrders(data: [OrdersUpdateInput]): [Order]
-
-  """
-   Delete a single Order item by ID.
-  """
-  deleteOrder(id: ID!): Order
-
-  """
-   Delete multiple Order items by ID.
-  """
-  deleteOrders(ids: [ID!]): [Order]
-
-  """
-   Create a single Role item.
-  """
-  createRole(data: RoleCreateInput): Role
-
-  """
-   Create multiple Role items.
-  """
-  createRoles(data: [RolesCreateInput]): [Role]
-
-  """
-   Update a single Role item by ID.
-  """
-  updateRole(id: ID!, data: RoleUpdateInput): Role
-
-  """
-   Update multiple Role items by ID.
-  """
-  updateRoles(data: [RolesUpdateInput]): [Role]
-
-  """
-   Delete a single Role item by ID.
-  """
-  deleteRole(id: ID!): Role
-
-  """
-   Delete multiple Role items by ID.
-  """
-  deleteRoles(ids: [ID!]): [Role]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createProduct(data: ProductCreateInput!): Product
+  createProducts(data: [ProductCreateInput!]!): [Product]
+  updateProduct(
+    where: ProductWhereUniqueInput!
+    data: ProductUpdateInput!
+  ): Product
+  updateProducts(data: [ProductUpdateArgs!]!): [Product]
+  deleteProduct(where: ProductWhereUniqueInput!): Product
+  deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
+  createProductImage(data: ProductImageCreateInput!): ProductImage
+  createProductImages(data: [ProductImageCreateInput!]!): [ProductImage]
+  updateProductImage(
+    where: ProductImageWhereUniqueInput!
+    data: ProductImageUpdateInput!
+  ): ProductImage
+  updateProductImages(data: [ProductImageUpdateArgs!]!): [ProductImage]
+  deleteProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+  deleteProductImages(where: [ProductImageWhereUniqueInput!]!): [ProductImage]
+  createCartItem(data: CartItemCreateInput!): CartItem
+  createCartItems(data: [CartItemCreateInput!]!): [CartItem]
+  updateCartItem(
+    where: CartItemWhereUniqueInput!
+    data: CartItemUpdateInput!
+  ): CartItem
+  updateCartItems(data: [CartItemUpdateArgs!]!): [CartItem]
+  deleteCartItem(where: CartItemWhereUniqueInput!): CartItem
+  deleteCartItems(where: [CartItemWhereUniqueInput!]!): [CartItem]
+  createOrderItem(data: OrderItemCreateInput!): OrderItem
+  createOrderItems(data: [OrderItemCreateInput!]!): [OrderItem]
+  updateOrderItem(
+    where: OrderItemWhereUniqueInput!
+    data: OrderItemUpdateInput!
+  ): OrderItem
+  updateOrderItems(data: [OrderItemUpdateArgs!]!): [OrderItem]
+  deleteOrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+  deleteOrderItems(where: [OrderItemWhereUniqueInput!]!): [OrderItem]
+  createOrder(data: OrderCreateInput!): Order
+  createOrders(data: [OrderCreateInput!]!): [Order]
+  updateOrder(where: OrderWhereUniqueInput!, data: OrderUpdateInput!): Order
+  updateOrders(data: [OrderUpdateArgs!]!): [Order]
+  deleteOrder(where: OrderWhereUniqueInput!): Order
+  deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
+  createRole(data: RoleCreateInput!): Role
+  createRoles(data: [RoleCreateInput!]!): [Role]
+  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
+  updateRoles(data: [RoleUpdateArgs!]!): [Role]
+  deleteRole(where: RoleWhereUniqueInput!): Role
+  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -1289,249 +910,61 @@ enum PasswordResetRedemptionErrorCode {
 }
 
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
-  User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-
-  """
-   Search for all Product items which match the where clause.
-  """
-  allProducts(
+  products(
     where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Product!]
-
-  """
-   Search for the Product item with the matching ID.
-  """
-  Product(where: ProductWhereUniqueInput!): Product
-
-  """
-   Perform a meta-query on all Product items which match the where clause.
-  """
-  _allProductsMeta(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
-    )
+  product(where: ProductWhereUniqueInput!): Product
   productsCount(where: ProductWhereInput! = {}): Int
-
-  """
-   Search for all ProductImage items which match the where clause.
-  """
-  allProductImages(
+  productImages(
     where: ProductImageWhereInput! = {}
-    search: String
-    sortBy: [SortProductImagesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [ProductImageOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [ProductImage!]
-
-  """
-   Search for the ProductImage item with the matching ID.
-  """
-  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
-
-  """
-   Perform a meta-query on all ProductImage items which match the where clause.
-  """
-  _allProductImagesMeta(
-    where: ProductImageWhereInput! = {}
-    search: String
-    sortBy: [SortProductImagesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductImageOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productImagesCount instead."
-    )
+  productImage(where: ProductImageWhereUniqueInput!): ProductImage
   productImagesCount(where: ProductImageWhereInput! = {}): Int
-
-  """
-   Search for all CartItem items which match the where clause.
-  """
-  allCartItems(
+  cartItems(
     where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [CartItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [CartItem!]
-
-  """
-   Search for the CartItem item with the matching ID.
-  """
-  CartItem(where: CartItemWhereUniqueInput!): CartItem
-
-  """
-   Perform a meta-query on all CartItem items which match the where clause.
-  """
-  _allCartItemsMeta(
-    where: CartItemWhereInput! = {}
-    search: String
-    sortBy: [SortCartItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [CartItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use cartItemsCount instead."
-    )
+  cartItem(where: CartItemWhereUniqueInput!): CartItem
   cartItemsCount(where: CartItemWhereInput! = {}): Int
-
-  """
-   Search for all OrderItem items which match the where clause.
-  """
-  allOrderItems(
+  orderItems(
     where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderItemOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [OrderItem!]
-
-  """
-   Search for the OrderItem item with the matching ID.
-  """
-  OrderItem(where: OrderItemWhereUniqueInput!): OrderItem
-
-  """
-   Perform a meta-query on all OrderItem items which match the where clause.
-  """
-  _allOrderItemsMeta(
-    where: OrderItemWhereInput! = {}
-    search: String
-    sortBy: [SortOrderItemsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use orderItemsCount instead."
-    )
+  orderItem(where: OrderItemWhereUniqueInput!): OrderItem
   orderItemsCount(where: OrderItemWhereInput! = {}): Int
-
-  """
-   Search for all Order items which match the where clause.
-  """
-  allOrders(
+  orders(
     where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [OrderOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Order!]
-
-  """
-   Search for the Order item with the matching ID.
-  """
-  Order(where: OrderWhereUniqueInput!): Order
-
-  """
-   Perform a meta-query on all Order items which match the where clause.
-  """
-  _allOrdersMeta(
-    where: OrderWhereInput! = {}
-    search: String
-    sortBy: [SortOrdersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [OrderOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use ordersCount instead."
-    )
+  order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
-
-  """
-   Search for all Role items which match the where clause.
-  """
-  allRoles(
+  roles(
     where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [RoleOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Role!]
-
-  """
-   Search for the Role item with the matching ID.
-  """
-  Role(where: RoleWhereUniqueInput!): Role
-
-  """
-   Perform a meta-query on all Role items which match the where clause.
-  """
-  _allRolesMeta(
-    where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [RoleOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use rolesCount instead."
-    )
+  role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(
@@ -1581,6 +1014,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -1609,6 +1043,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

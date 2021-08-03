@@ -30,7 +30,7 @@ After months of work deep in the codebase, it’ll be much easier for us to ship
 
 The core of Keystone has been re-implemented to make building fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage <Emoji symbol="🤖" alt="Robot" />.
 
-⚠️ If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` [package](https://github.com/keystonejs/keystone/tree/master/packages-next/fields) for inspiration on how to do this.
+⚠️ If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` [package](https://github.com/keystonejs/keystone/tree/master/packages/fields) for inspiration on how to do this.
 
 ### Password tweaks <Emoji symbol="🔒" alt="Padlock" />
 
@@ -92,5 +92,5 @@ We've updated our Prisma dependencies to `2.24.1`, check out the [Prisma release
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-15) on GitHub.
 
-export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown description="Keystone 6 now has a new core. It’ll now easier for us to ship roadmap features like custom field types, GraphQL Schema extensions, and more." {...props}>{children}</Markdown>;
 export { getServerSideProps }

@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -107,7 +107,7 @@ describe('no access control', () => {
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
@@ -139,7 +139,7 @@ describe('errors on incomplete data', () => {
     'when neither id or create data passed',
     runner(async ({ context }) => {
       // Create an item that does the linking
-      const { errors } = await context.graphql.raw({
+      const { data, errors } = await context.graphql.raw({
         query: `
               mutation {
                 createUser(data: { notes: {} }) {
@@ -148,8 +148,13 @@ describe('errors on incomplete data', () => {
               }`,
       });
 
-      expect(errors).toMatchObject([
-        { message: 'Nested mutation operation invalid for User.notes<Note>' },
+      expect(data).toEqual({ createUser: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['createUser'],
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+        },
       ]);
     })
   );
@@ -169,7 +174,7 @@ describe('with access control', () => {
         });
 
         // Create an item that does the linking
-        const { errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.exitSudo().graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -184,13 +189,13 @@ describe('with access control', () => {
                 }`,
         });
 
-        expect(errors).toHaveLength(1);
-        const error = errors![0];
-        expect(error.message).toEqual(
-          'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-        );
-        expect(error.path).toHaveLength(1);
-        expect(error.path![0]).toEqual('createUserToNotesNoRead');
+        expect(data).toEqual({ createUserToNotesNoRead: null });
+        expectRelationshipError(errors, [
+          {
+            path: ['createUserToNotesNoRead'],
+            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+          },
+        ]);
       })
     );
 
@@ -211,11 +216,11 @@ describe('with access control', () => {
         });
 
         // Update the item and link the relationship field
-        const { errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.exitSudo().graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: {
@@ -229,13 +234,14 @@ describe('with access control', () => {
                 }`,
         });
 
-        expect(errors).toHaveLength(1);
-        const error = errors![0];
-        expect(error.message).toEqual(
-          'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
-        );
-        expect(error.path).toHaveLength(1);
-        expect(error.path![0]).toEqual('updateUserToNotesNoRead');
+        expect(data).toEqual({ updateUserToNotesNoRead: null });
+        expectRelationshipError(errors, [
+          {
+            path: ['updateUserToNotesNoRead'],
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+          },
+        ]);
       })
     );
   });

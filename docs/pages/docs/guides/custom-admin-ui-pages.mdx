@@ -1,8 +1,51 @@
 import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
+import { Alert } from '../../../components/primitives/Alert';
 
 # Custom Admin UI Pages
 
-<ComingSoon/>
+In this guide we'll show you how to add custom pages to the Keystone Admin UI.
+As the Admin UI is built on top of Next.js, it exposes the same pages directory for adding custom pages.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+!> **Note:** This feature will improve over time. It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
+
+To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
+Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
+The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
+
+```tsx
+// admin/pages/MyCustomPage.tsx
+export default function () {
+    return (
+        <>
+            <h1>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route '/MyCustomPage'</p>
+        </>
+    )
+}
+```
+
+If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
+
+```tsx
+// admin/pages/MyCustomPage.tsx
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@keystone-ui/core';
+export default function () {
+    return (
+        <>
+            <h1 css={{
+                fontSize: '3rem'
+            }}>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route '/MyCustomPage'</p>
+        </>
+    )
+}
+```
+
+Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
+
+x> **Not all Next.js exports are available:** Keystone **only** supports the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` are not supported.
+
+export default ({ children }) => <Markdown description="Learn how to add custom pages to the Keystone Admin UI.">{children}</Markdown>;

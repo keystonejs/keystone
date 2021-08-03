@@ -2,8 +2,8 @@ import { text } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '../../../../packages-next/types/src';
-import { apiTestConfig } from '../../utils';
+import { KeystoneContext } from '../../../../packages/types/src';
+import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -215,7 +215,7 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context });
-      await context.lists.Author.deleteOne({ id: bob.id });
+      await context.lists.Author.deleteOne({ where: { id: bob.id } });
       const _post = await context.lists.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: true) }',
@@ -254,7 +254,7 @@ describe('Document field type', () => {
 
   test(
     'hydrateRelationships: true - selection has bad fields',
-    runner(async ({ context }) => {
+    runner(async ({ context, graphQLRequest }) => {
       const { alice } = await initData({ context });
       const badBob = await context.lists.Author.createOne({
         data: {
@@ -277,17 +277,19 @@ describe('Document field type', () => {
         },
       });
 
-      const { data, errors } = await context.graphql.raw({
+      const { body } = await graphQLRequest({
         query:
-          'query ($id: ID!){ Author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
+          'query ($id: ID!){ author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
       });
-      expect(data!.Author.badBio).toBe(null);
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual(
-        'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?'
-      );
-      expect(errors![0].path).toEqual(['Author', 'badBio', 'document']);
+      // FIXME: The path doesn't match the null field here!
+      expect(body.data).toEqual({ author: { badBio: null } });
+      expectInternalServerError(body.errors, [
+        {
+          path: ['author', 'badBio', 'document'],
+          message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
+        },
+      ]);
     })
   );
 });

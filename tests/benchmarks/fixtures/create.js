@@ -45,10 +45,10 @@ range(15).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}` } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}` })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({ provider, time, success, name: `Create-many, N=${N}` });
     },

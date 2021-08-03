@@ -24,6 +24,7 @@ function List(props: HTMLAttributes<HTMLElement>) {
         },
         '& a': {
           color: 'var(--muted)',
+          lineHeight: 1.4,
         },
       }}
       {...props}
@@ -143,7 +144,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/keystonejs/keystone/blob/master/code-of-conduct.md"
+                  href="https://github.com/keystonejs/keystone/blob/master/CODE-OF-CONDUCT.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -176,8 +177,6 @@ export function Footer() {
           </div>
           <div
             css={mq({
-              borderLeft: [null, null, null, '1px solid var(--border)'],
-              paddingLeft: [null, null, null, '3rem'],
               gridColumn: [null, '1 / 5', null, 'inherit'],
             })}
           >

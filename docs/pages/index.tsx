@@ -42,9 +42,13 @@ import deployTargets from '../public/assets/deploy-targets.png';
 
 export default function IndexPage() {
   const mq = useMediaQuery();
-
   return (
-    <Page>
+    <Page
+      title={'KeystoneJS: The superpowered Node.js Headless CMS for developers'}
+      description={
+        'Build faster and scale further with the programmable open source GraphQL API back-end for structured content projects.'
+      }
+    >
       <MWrapper>
         <IntroWrapper>
           <IntroHeading>
@@ -87,7 +91,7 @@ export default function IndexPage() {
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '0.85fr 1.15fr'],
-            gap: ['1rem', '2rem', '4rem'],
+            gap: ['1rem', '2rem', '6rem'],
           })}
         >
           <div>
@@ -97,18 +101,18 @@ export default function IndexPage() {
             <div
               css={{
                 display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
+                gridTemplateColumns: '1fr auto',
                 gap: '1rem',
               }}
             >
-              <Thinkmill css={{ height: '3.75rem' }} />
               <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. <br />
+                big products at scale for names you know. <br css={{ padding: '0 0 2rem 0' }} />
                 <Link href="/why-keystone">
                   <a>Why we built Keystone</a>
                 </Link>
               </Type>
+              <Thinkmill css={{ height: '3.75rem' }} />
             </div>
           </div>
           <div>
@@ -116,17 +120,24 @@ export default function IndexPage() {
               Open Source & trusted
             </Type>
             <ul
-              css={{
+              css={mq({
                 listStyle: 'none',
-                margin: 0,
+                margin: '0 auto',
                 padding: 0,
                 display: 'grid',
-                gridTemplateColumns: 'auto auto auto',
-              }}
+                gridTemplateColumns: 'max-content',
+                gap: '1.5rem',
+                width: '7.5rem',
+                '@media(min-width: 420px)': {
+                  gridTemplateColumns: 'auto auto auto',
+                  width: 'auto',
+                  gap: 0,
+                },
+              })}
             >
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">1m+</Highlight>
+                  <Highlight look="grad1">1m+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> Installs
@@ -134,7 +145,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">160+</Highlight>
+                  <Highlight look="grad1">160+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   Contributors
@@ -142,7 +153,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">2013</Highlight>
+                  <Highlight look="grad1">2013</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   First Commit
@@ -165,16 +176,22 @@ export default function IndexPage() {
             So impressive what the team have done in version 6! ...and it works perfectly with
             GraphCDN, just use it already!
           </TweetBox>
+          <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
+            I use Keystone in my{' '}
+            <a
+              href="https://advancedreact.com/friend/KEYSTONE"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Advanced React
+            </a>{' '}
+            course because it’s super quick to get my content types up and running, add custom
+            server-side cart & checkout logic, and the fine grain access control is just fantastic!
+          </TweetBox>
           <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
             As someone who lives on the frontend, I love how Keystone lets me define content models
             and gives me the backend I need. I get a sweet GraphQL API, and can stay focused on
             building the UI <Emoji symbol="😍" alt="Love" />
-          </TweetBox>
-          <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad2">
-            Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-            schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev experience
-            feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
-            <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
         </Section>
 

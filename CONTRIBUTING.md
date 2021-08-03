@@ -21,7 +21,7 @@ If you develop custom fields, adapters, apps or any other Keystone feature, (or 
 
 ## Code of Conduct
 
-KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduct.md).
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
 
 ## Repository Setup
 

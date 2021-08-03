@@ -1,0 +1,18 @@
+{
+  "name": "@keystone-next/utils",
+  "description": "Common utility functions used throughout @keystone-next packages.",
+  "version": "1.0.3",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "main": "dist/utils.cjs.js",
+  "module": "dist/utils.esm.js",
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.14.8",
+    "@keystone-next/types": "^23.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/utils"
+}

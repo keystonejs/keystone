@@ -5,15 +5,15 @@
   "main": "dist/modals.cjs.js",
   "module": "dist/modals.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.11"
+    "@types/react": "^17.0.15"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
+    "@babel/runtime": "^7.14.8",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.0.0",
     "react": "^17.0.2",
-    "react-focus-lock": "^2.5.1",
-    "react-remove-scroll": "^2.4.2",
+    "react-focus-lock": "^2.5.2",
+    "react-remove-scroll": "^2.4.3",
     "react-transition-group": "^4.4.2"
   },
   "engines": {

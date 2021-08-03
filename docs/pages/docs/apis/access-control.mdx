@@ -198,15 +198,13 @@ export default config({
     ListKey: list({
       fields: {
         fieldName: text({
+          // Concise access control definition
+          access: true,
+          // Verbose access control definition
           access: {
-            // Concise access control definition
-            access: true,
-            // Verbose access control definition
-            access: {
-              create: true,
-              read: true,
-              update: true,
-            },
+            create: true,
+            read: true,
+            update: true,
           },
         }),
       },
@@ -321,4 +319,4 @@ export default config({
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Complete reference docs for Keystone’s Access Control API. Configure who can read, create, update, and delete items in your Keystone system.">{children}</Markdown>;
