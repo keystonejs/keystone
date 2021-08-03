@@ -83,7 +83,7 @@ export type ListAdminUIConfig<
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
-  labelField?: keyof Fields;
+  labelField?: 'id' | keyof Fields;
   /**
    * The fields used by the Admin UI when searching this list.
    * It is always possible to search by id and `id` should not be specified in this option.
@@ -157,9 +157,9 @@ export type ListAdminUIConfig<
      * Users of the Admin UI can select different columns to show in the UI.
      * @default the first three fields in the list
      */
-    initialColumns?: (keyof Fields)[];
+    initialColumns?: ('id' | keyof Fields)[];
     // was previously top-level defaultSort
-    initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
+    initialSort?: { field: 'id' | keyof Fields; direction: 'ASC' | 'DESC' };
     // was previously defaultPageSize
     pageSize?: number; // default number of items to display per page on the list screen
     // note: we are removing maximumPageSize
