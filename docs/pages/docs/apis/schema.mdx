@@ -1,0 +1,212 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Schema API
+
+The `lists` property of the [system configuration](./config) object is where you define the data model, or schema, of your Keystone system.
+To setup the `lists` property of the system configuration you need to use the `createSchema()` function.
+This function accepts an object with list names as keys, and `list()` configurations as values.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: { /* ... */ },
+      access: { /* ... */ },
+      ui: { /* ... */ },
+      hooks: { /* ... */ },
+      graphql: { /* ... */ },
+      db: { /* ... */ },
+      description: '...',
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+This document will explain the configuration options which can be used with the `list()` function.
+
+## fields
+
+The `fields` option defines the names, types, and configuration of the fields in the list.
+This configuration option takes an object with field names as keys, and configured field types as values.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: text({ /* ... */ }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+For full details on the available field types and their configuration options please see the [Fields API](./fields).
+
+## access
+
+The `access` option defines the [Access Control](../guides/access-control) rules for the list.
+These rules determine which of the CRUD (create, read, update, delete) operations users are allowed to perform.
+
+See the [Access Control API](./access-control) for full details on the available access control options.
+
+## ui
+
+The `ui` option controls how the list is displayed and interacted with in the Admin UI.
+
+Options:
+
+- `labelField`: Selects the field which will be used as the label column in the Admin UI.
+  By default looks for a field called `'label'`, then falls back to `'name'`, then `'title'`, and finally `'id'`, which is guaranteed to exist.
+- `searchFields`: The fields used by the Admin UI when searching this list.
+  It is always possible to search by an id and `'id'` should not be specified in this option.
+  By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
+- `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
+- `isHidden` (default: `false`): Controls whether the list is visible in the navigation elements of the Admin UI.
+  Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
+- `hideCreate` (default: `false`): Controls whether the `create` button is available in the Admin UI for this list.
+  Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
+- `hideDelete` (default: `false`): Controls whether the `delete` button is available in the Admin UI for this list.
+  Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
+- `createView`: Controls the create view page of the Admin UI.
+  - `defaultFieldMode` (default: `'edit'`):
+    Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
+    See the [Fields API](./fields#common-configuration) for details.
+    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
+- `itemView`: Controls the item view page of the Admin UI.
+  - `defaultFieldMode` (default: `'edit'`):
+    Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
+    See the [Fields API](./fields#common-configuration) for details.
+    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, item }` that returns one of `['edit', 'read', 'hidden']`.
+- `listView`: Controls the list view page of the Admin UI.
+  - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
+    Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
+    See the [Fields API](./fields#common-configuration) for details.
+    Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
+  - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
+  - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
+    Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
+    If undefined then data will be unsorted.
+  - `pageSize` (default: `50`): Sets the number of items to show per page in the list view.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields`;
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: { name: text({ /* ... */ }) },
+      ui: {
+        labelField: 'name',
+        searchFields: ['name', 'alternativeName'],
+        description: '...',
+        isHidden: ({ session }) => false,
+        hideCreate: ({ session }) => false,
+        hideDelete: ({ session }) => false,
+        createView: {
+          defaultFieldMode: ({ session }) => 'edit',
+        },
+        itemView: {
+          defaultFieldMode: ({ session, item }) => 'edit',
+        },
+        listView: {
+          defaultFieldMode: ({ session }) => 'read',
+          initialColumns: ['name', /* ... */],
+          initialSort: { field: 'name', direction: 'ASC' },
+          pageSize: 50,
+        },
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+## hooks
+
+The `hooks` option defines [hook](../guides/hooks) functions for the list.
+Hooks allow you to execute code at different stages of the mutation lifecycle.
+
+See the [Hooks API](./hooks) for full details on the available hook options.
+
+## graphql
+
+The `graphql` config option allows you to configures certain aspects of the GraphQL API.
+
+Options:
+
+- `description` (default: `undefined`): Sets the description of the associated GraphQL type in the generated GraphQL API documentation.
+  Overrides the list-level `description` config option.
+- `plural`: (default: Pluralised list key, e.g. `'Users'`): Overrides the name used in multiple mutations and queries (e.g. `allUsers`, `updateUsers`, etc).
+- `queryLimits` (default: `undefined`): Allows you to limit the number of results returned from a query to this list in the GraphQL API.
+  See also the global `graphql.queryLimits` option in the [System Configuration API](./config).
+- `cacheHint` (default: `undefined`): Allows you to specific the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this this list.
+
+```typescript
+import { CacheScope } from 'apollo-cache-control';
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      graphql: {
+        description: '...',
+        itemQueryName: '...',
+        listQueryName: '...',
+        queryLimits: { maxResults: 100 },
+        cacheHint: { maxAge: 60, scope: CacheScope.Private }
+      },
+      /* ... */
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+## db
+
+The `db` config option allows you to configures certain aspects of the database connection specific to this list.
+
+Options:
+
+- `searchField` (default: `"name"`): The name of the field to use when performing `search` filters in the GraphQL API.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  The default across all lists can be changed at the root-level `db.idField` config.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      db: {
+        searchField: 'email',
+        idField: { kind: 'uuid' },
+      },
+      /* ... */
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+## description
+
+The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
+This option can be individually overridden by the `graphql.description` or `ui.description` options.
+
+export default ({ children }) => <Markdown description="Reference docs for Keystone’s Schema API, which defines the data model of your system.">{children}</Markdown>;

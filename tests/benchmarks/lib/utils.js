@@ -1,12 +1,9 @@
-const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
-const { runCustomQuery } = require('@keystone-next/server-side-graphql-client-legacy');
-
 const timeQuery = async ({ context, query, variables, repeat = 1 }) => {
   const t0_us = process.hrtime.bigint();
   const allErrors = [];
   for (let i = 0; i < repeat; i++) {
     try {
-      await runCustomQuery({ context, query, variables });
+      await context.graphql.run({ query, variables });
     } catch (error) {
       allErrors.push(error);
     }
@@ -18,13 +15,8 @@ const timeQuery = async ({ context, query, variables, repeat = 1 }) => {
   return { time: Number(t1_us - t0_us) / 1e9, success: !allErrors.length };
 };
 
-const fixture = async (setupKeystone, fn) => {
-  const subfixtures = multiAdapterRunners().map(({ runner, adapterName }) =>
-    runner(setupKeystone, args => fn({ ...args, adapterName }))
-  );
-  for (let i = 0; i < subfixtures.length; i++) {
-    await subfixtures[i]();
-  }
+const fixture = async (runner, fn) => {
+  await runner(args => fn({ ...args, provider: process.env.TEST_ADAPTER }));
 };
 const range = N =>
   Array(N)
@@ -34,8 +26,8 @@ const range = N =>
 const populate = (N, f) => range(N).map(i => f(i));
 
 class FixtureGroup {
-  constructor(setupKeystone) {
-    this.setupKeystone = setupKeystone;
+  constructor(runner) {
+    this.runner = runner;
     this.fixtures = [];
   }
 
@@ -52,7 +44,7 @@ class FixtureGroup {
       fixturesToRun = this.fixtures.filter(fixture => !fixture.skip);
     }
     for (let i = 0; i < fixturesToRun.length; i++) {
-      await fixture(this.setupKeystone, fixturesToRun[i].fn);
+      await fixture(this.runner, fixturesToRun[i].fn);
     }
     return true;
   }

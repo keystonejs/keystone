@@ -1,0 +1,5 @@
+{
+  "packages": ["packages/*"],
+  "sandboxes": ["/examples/sandbox"],
+  "node": "14"
+}

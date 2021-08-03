@@ -87,6 +87,10 @@ package-lock.json
 
 dist/
 
+# Used by the image field type tests as a storage target
+tmp_test_images/
+tmp_test_files/
+
 # Created by https://www.gitignore.io/api/vim
 # Edit at https://www.gitignore.io/?templates=vim
 
@@ -115,4 +119,9 @@ tags
 projects/
 temp/
 
-.api-test-prisma-clients
+# SQLite databases
+*.db
+
+# Generated files from build process
+robots.txt
+sitemap.xml

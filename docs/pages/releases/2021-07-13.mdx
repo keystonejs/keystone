@@ -1,0 +1,72 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 13th July 2021
+
+## What's New
+
+More examples, types, and UI rendering tweaks as we push forward towards a general availability release! <Emoji symbol="🚀" alt="Rocket" />
+
+```sh
+"@keystone-ui/core": "3.1.1",
+"@keystone-next/admin-ui-utils": "5.0.4",
+"@keystone-next/auth": "29.0.0",
+"@keystone-next/cloudinary": "6.0.4",
+"@keystone-next/document-renderer": "4.0.0",
+"@keystone-next/fields": "12.0.0",
+"@keystone-next/fields-document": "7.0.2",
+"@keystone-next/keystone": "22.0.0",
+"@keystone-next/session-store-redis": "3.0.2",
+"@keystone-next/testing": "1.0.2",
+"@keystone-next/types": "22.0.0",
+"@keystone-next/utils": "1.0.2",
+```
+
+## New Examples <Emoji symbol="📖" alt="Book" />
+
+### Custom Field Views
+
+We have a [new example for custom field views](https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view), demonstrating how to create a custom field view for a JSON field. This example allows users to add, edit and remove navigation items from a list:
+
+<img width="534" alt="Screenshot of Custom Field View" src="https://user-images.githubusercontent.com/737821/125416760-ad68037b-7978-4c98-9d03-c877dadb98c3.png" />
+
+### Inline Relationship in Document Field
+
+Rendering an inline relationship for the document field has been added to the existing [example project](https://github.com/keystonejs/keystone/blob/b21b4e0595e65d44d5863417f9e49981f1f8da54/examples/document-field/schema.ts#L28) as well as our [docs page](https://keystonejs.com/docs/guides/document-fields#inline-relationships):
+
+<img width="288" alt="Screenshot of Inline Relationship in Document Field" src="https://user-images.githubusercontent.com/737821/125416705-70d8cfb8-2275-440a-9720-c7e6e56e2b8b.png" />
+
+Be sure to check out all the [examples](https://github.com/keystonejs/keystone/tree/master/examples), with more to come.
+
+## Document Rendering Improvements <Emoji symbol="📇" alt="Cards" />
+
+If an item referenced in a document field is deleted from Keystone, the document field now handles this gracefully. Before an error would be returned when querying the field, which prevents the user from being able to manage the issue.
+
+This release fixes this to simply return `null` for the missing item. This also covers the behavior for when a user doesn't have read access for an item.
+
+## UI Fixes <Emoji symbol="⚙️" alt="Gear" />
+
+A variety of UI fixes are in this release when rendering fields in the Admin UI:
+
+- The value of `data` passed to the inline relationship renderer now matches the data returned by the GraphQL query.
+- Falsey values of `data.label` are no longer set to `data.id` and falsey values of `data.data` are no longer set to `{}`.
+- Fixed the relationship name not being passed to the inline relationship renderer.
+- Fixed confusing error when providing fields that don't exist to `ui.cardFields`, `ui.inlineCreate.fields` and `ui.inlineEdit.fields`.
+- Fixed `relationship` field with `displayMode: 'cards'` not using labels for related items in the cell view.
+
+## Types for `KeystoneContext`, `KeystoneListsAPI` and `KeystoneDbAPI` <Emoji symbol="🪢" alt="Knot" />
+
+We've added generated types for `KeystoneContext`, `KeystoneListsAPI` and `KeystoneDbAPI`.
+
+You can now import these from `.keystone/types` (instead of `@keystone-next/types`) to get types that are pre-bound to your project's schema.
+
+## Housekeeping <Emoji symbol="🧹" alt="Broom" />
+
+Another update for Prisma, version `2.26.0`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.26.0) for more details.
+
+Our `packages-next` folder has moved over to `packages` as part of our push to a general availability release in the near future!
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-13) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="More examples, types, and UI rendering tweaks as we push forward towards a general availability release." {...props}>{children}</Markdown>;
+export { getServerSideProps }

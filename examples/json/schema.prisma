@@ -1,0 +1,26 @@
+datasource sqlite {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model Package {
+  id        String   @id @default(cuid())
+  label     String?
+  pkgjson   String?
+  isPrivate Boolean?
+  ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
+  ownedById String?  @map("ownedBy")
+
+  @@index([ownedById])
+}
+
+model Person {
+  id       String    @id @default(cuid())
+  name     String?
+  packages Package[] @relation("Package_ownedBy")
+}

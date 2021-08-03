@@ -1,5 +1,35 @@
 # @keystone-ui/core
 
+## 3.1.1
+
+### Patch Changes
+
+- [#6061](https://github.com/keystonejs/keystone/pull/6061) [`5f3d407d7`](https://github.com/keystonejs/keystone/commit/5f3d407d79171f04ae877e8eaed9a7f9d5671705) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed TypeScript errors in declarations
+
+## 3.1.0
+
+### Minor Changes
+
+- [#5858](https://github.com/keystonejs/keystone/pull/5858) [`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added functionality to ensure that Stack elements that are 'ul' or 'ol' automaticaly wrap children in 'li' rather than 'div'.
+
+## 3.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+## 2.0.3
+
+### Patch Changes
+
+- [#5642](https://github.com/keystonejs/keystone/pull/5642) [`dbe831976`](https://github.com/keystonejs/keystone/commit/dbe831976eeee876f3722d4b96e1b752b67cb945) Thanks [@malitov](https://github.com/malitov)! - Added hover state to the `OptionPrimitive` in Admin UI and updated css colors
+
+## 2.0.2
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
 ## 2.0.1
 
 ### Patch Changes

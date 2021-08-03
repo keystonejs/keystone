@@ -1,0 +1,53 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 22nd March 2021
+
+```typescript
+"@keystone-next/access-control-legacy": "9.0.0",
+"@keystone-next/adapter-prisma-legacy": "4.0.0",
+"@keystone-next/admin-ui-utils": "3.0.2",
+"@keystone-next/adapter-knex-legacy": "13.2.2",
+"@keystone-next/adapter-mongoose-legacy": "11.1.2",
+"@keystone-next/app-admin-ui-legacy": "7.4.3",
+"@keystone-next/app-static-legacy": "5.1.5",
+"@keystone-next/auth": "18.0.0",
+"@keystone-next/cloudinary": "3.0.4",
+"@keystone-next/document-renderer": "2.0.2",
+"@keystone-next/field-views-loader-legacy": "6.0.3",
+"@keystone-next/fields": "5.3.0",
+"@keystone-next/fields-document": "3.1.0",
+"@keystone-next/fields-legacy": "23.1.0",
+"@keystone-next/fields-auto-increment-legacy": "8.2.0",
+"@keystone-next/fields-cloudinary-image-legacy": "3.1.0",
+"@keystone-next/fields-color-legacy": "1.1.0",
+"@keystone-next/fields-markdown-legacy": "5.3.0",
+"@keystone-next/fields-oembed-legacy": "4.1.0",
+"@keystone-next/fields-unsplash-legacy": "4.1.0",
+"@keystone-next/fields-wysiwyg-tinymce-legacy": "5.4.0",
+"@keystone-next/fields-location-google-legacy": "3.3.4",
+"@keystone-next/fields-mongoid-legacy": "9.1.7",
+"@keystone-next/keystone": "13.0.0",
+"@keystone-next/keystone-legacy": "21.0.0",
+"@keystone-next/session-store-redis": "1.0.2",
+"@keystone-next/test-utils-legacy": "14.0.0",
+"@keystone-next/types": "15.0.0",
+```
+
+## Prisma migrations <Emoji symbol="🚚" alt="Moving truck"/>
+
+- We updated `keystone-next dev` with the Prisma adapter so that it interactively prompts for creating and applying migrations.
+- `createKeystone` and `createSystem` also accept a migration mode now instead of a script.
+- `keystone-next generate` now uses Prisma's programmatic APIs to generate migrations and it accepts the following options as command line arguments or as prompts:
+  - `--name` to set the name of the migration
+  - `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
+  - `--allow-empty` to create an empty migration when there are no changes to the schema.
+
+## Noteworthy bug-squashing <Emoji symbol="🐛" alt="Bug"/>
+
+Now you can include negative values for `float`, `decimal` and `integer` fields. <Emoji symbol="🎉" alt="Party popper"/>
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-22) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="Prisma migration improvements. Negative values now available for float, decimal and integer fields." {...props}>{children}</Markdown>;
+export { getServerSideProps }

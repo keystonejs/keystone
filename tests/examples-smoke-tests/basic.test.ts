@@ -1,20 +1,20 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initFirstItemTest } from './utils';
 import fetch from 'node-fetch';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 
-exampleProjectTests('basic', browserType => {
+exampleProjectTests('../examples-staging/basic', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3000');
   });
   initFirstItemTest(() => page);
   test('sign out and sign in', async () => {
     await page.click('[aria-label="Links and signout"]');
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign out")')]);
-    await page.fill('[placeholder="Email Address"]', 'admin@keystonejs.com');
+    await page.fill('[placeholder="email"]', 'admin@keystonejs.com');
     await page.fill('[placeholder="password"]', 'password');
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign In")')]);
   });
@@ -32,7 +32,7 @@ exampleProjectTests('basic', browserType => {
       body: JSON.stringify({
         query: `
           query {
-            allUsers {
+            users {
               id
               name
             }
@@ -45,7 +45,7 @@ exampleProjectTests('basic', browserType => {
     }).then(res => res.json());
     expect(usersResponse).toEqual({
       data: {
-        allUsers: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
+        users: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
       },
     });
   });

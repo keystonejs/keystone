@@ -1,0 +1,99 @@
+datasource sqlite {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model User {
+  id                      String     @id @default(cuid())
+  name                    String?
+  email                   String?    @unique
+  password                String?
+  cart                    CartItem[] @relation("CartItem_user")
+  orders                  Order[]    @relation("Order_user")
+  role                    Role?      @relation("User_role", fields: [roleId], references: [id])
+  roleId                  String?    @map("role")
+  products                Product[]  @relation("Product_user")
+  passwordResetToken      String?
+  passwordResetIssuedAt   DateTime?
+  passwordResetRedeemedAt DateTime?
+
+  @@index([roleId])
+}
+
+model Product {
+  id                    String        @id @default(cuid())
+  name                  String?
+  description           String?
+  photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
+  photoId               String?       @unique @map("photo")
+  status                String?
+  price                 Int?
+  user                  User?         @relation("Product_user", fields: [userId], references: [id])
+  userId                String?       @map("user")
+  from_CartItem_product CartItem[]    @relation("CartItem_product")
+
+  @@index([userId])
+}
+
+model ProductImage {
+  id                   String      @id @default(cuid())
+  image                String?
+  altText              String?
+  product              Product?    @relation("Product_photo")
+  from_OrderItem_photo OrderItem[] @relation("OrderItem_photo")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  quantity  Int?
+  product   Product? @relation("CartItem_product", fields: [productId], references: [id])
+  productId String?  @map("product")
+  user      User?    @relation("CartItem_user", fields: [userId], references: [id])
+  userId    String?  @map("user")
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String        @id @default(cuid())
+  name        String?
+  description String?
+  photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
+  photoId     String?       @map("photo")
+  price       Int?
+  quantity    Int?
+  order       Order?        @relation("OrderItem_order", fields: [orderId], references: [id])
+  orderId     String?       @map("order")
+
+  @@index([photoId])
+  @@index([orderId])
+}
+
+model Order {
+  id     String      @id @default(cuid())
+  total  Int?
+  items  OrderItem[] @relation("OrderItem_order")
+  user   User?       @relation("Order_user", fields: [userId], references: [id])
+  userId String?     @map("user")
+  charge String?
+
+  @@index([userId])
+}
+
+model Role {
+  id                String   @id @default(cuid())
+  name              String?
+  canManageProducts Boolean?
+  canSeeOtherUsers  Boolean?
+  canManageUsers    Boolean?
+  canManageRoles    Boolean?
+  canManageCart     Boolean?
+  canManageOrders   Boolean?
+  assignedTo        User[]   @relation("User_role")
+}

@@ -50,11 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - docs-next
-          - tests/test-projects/basic
-          - tests/test-projects/login
-          - tests/test-projects/access-control
-          - tests/test-projects/client-validation
+          - docs
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -112,13 +108,11 @@ jobs:
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
-    env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
     strategy:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['mongoose', 'knex', 'prisma_postgresql']
+        adapter: ['postgresql', 'sqlite']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -151,18 +145,15 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1 api-tests
+        run: yarn jest --ci --runInBand api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
-          UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
-          UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   non-api-tests:
     name: Package Unit Tests
@@ -207,30 +198,73 @@ jobs:
       - name: Install Dependencies
         run: yarn
       - name: Unit tests
-        run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests
+        run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
+
+  example-testing:
+    name: Testing example project
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 14.x
+        uses: actions/setup-node@main
+        with:
+          node-version: 14.x
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v4-
+
+      - name: Install Dependencies
+        run: yarn
+      - name: Unit tests
+        run: cd examples/testing; yarn test
 
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
     needs: should_run_tests
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
     env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
+      DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['auth.test.ts', 'basic.test.ts', 'roles.test.ts', 'todo.test.ts']
+        test:
+          [
+            'auth.test.ts',
+            'basic.test.ts',
+            'blog.test.ts',
+            'document-field.test.ts',
+            'default-values.test.ts',
+            'extend-graphql-schema.test.ts',
+            'json.test.ts',
+            'roles.test.ts',
+            'task-manager.test.ts',
+            'testing.test.ts',
+            'with-auth.test.ts',
+            'custom-field-view.test.ts',
+            'custom-field.test.ts',
+            'custom-admin-ui-pages.test.ts',
+            'custom-admin-ui-logo.test.ts',
+            'custom-admin-ui-navigation.test.ts',
+          ]
       fail-fast: false
     steps:
       - name: Checkout Repo
@@ -270,7 +304,57 @@ jobs:
         run: node ./node_modules/playwright/install.js
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1 tests/examples-smoke-tests/${{ matrix.test }}
+        run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
+
+  admin_ui_integration_tests:
+    name: Integration tests for Admin UI
+    runs-on: ubuntu-latest
+    needs: should_run_tests
+    env:
+      DATABASE_URL: 'file:./test.db'
+    strategy:
+      matrix:
+        test: ['init.test.ts']
+      fail-fast: false
+    steps:
+      - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 14.x
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/setup-node@main
+        with:
+          node-version: 14.x
+
+      - name: Get yarn cache directory path
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v4-
+
+      - name: Install Dependencies
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn
+      - name: Install Dependencies of Browsers
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: microsoft/playwright-github-action@v1
+      - name: Install Browsers for Playwright
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: node ./node_modules/playwright/install.js
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
 
   linting:
     name: Linting
@@ -310,3 +394,5 @@ jobs:
         run: yarn build
       - name: Remark
         run: yarn lint:markdown
+      - name: Example schemas
+        run: yarn lint:examples

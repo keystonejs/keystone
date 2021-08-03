@@ -1,0 +1,27 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 17th May 2021
+
+```typescript
+"@keystone-next/admin-ui": "14.1.3",
+"@keystone-next/auth": "24.0.0",
+"@keystone-next/keystone": "17.2.0",
+"@keystone-next/test-utils-legacy": "18.0.0",
+"@keystone-next/types": "17.1.0",
+```
+
+## What's New
+
+Apollo [cache hinting](https://keystonejs.com/docs/apis/schema#graphql) can now be configured on a per list or field basis — which can dramatically improve your applications performance.
+
+Implementing basic authentication? We've got [another example](https://github.com/keystonejs/keystone/tree/master/examples/with-auth) using `withAuth` from the `auth` package to get you started <Emoji symbol="🔒" alt="Lock"/>.
+
+Focus control is now handled better in the Keystone UI, see [the PR](https://github.com/keystonejs/keystone/pull/5670) for the before and after.
+
+Thanks to @cameronbraid for spotting a [session issue](https://github.com/keystonejs/keystone/pull/5727/files) and resolving it <Emoji symbol="🐛" alt="Bug"/>.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-17) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="Apollo cache hinting now configurable on a per list or field basis. New Auth example project. Focus control improvements to Admin UI." {...props}>{children}</Markdown>;
+export { getServerSideProps }

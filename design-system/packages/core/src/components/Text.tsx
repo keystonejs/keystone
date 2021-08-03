@@ -2,11 +2,11 @@
 
 import { jsx } from '../emotion';
 
-import { Box, BoxProps } from './Box';
 import { Theme } from '../types';
 import { forwardRefWithAs } from '../utils';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useTheme } from '../theme';
+import { Box, BoxProps } from './Box';
 
 type TextProps = {
   /** The leading of the text. */

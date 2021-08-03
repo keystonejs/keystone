@@ -3,7 +3,12 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
-import ReactSelect, { OptionProps, components as reactSelectComponents, Props } from 'react-select';
+import ReactSelect, {
+  OptionProps,
+  components as reactSelectComponents,
+  Props,
+  NamedProps,
+} from 'react-select';
 
 export const CheckMark = ({
   isDisabled,
@@ -73,6 +78,7 @@ export const CheckMark = ({
 export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
   children,
   isDisabled,
+  isFocused,
   innerProps,
   innerRef,
   className,
@@ -84,18 +90,27 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
       className={className}
       css={{
         alignItems: 'center',
-        color: isDisabled ? theme.colors.foregroundDim : undefined,
+        color: isDisabled
+          ? theme.colors.foregroundDim
+          : isFocused
+          ? theme.colors.linkHoverColor
+          : undefined,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
         fontWeight: 500,
         justifyContent: 'space-between',
+        background: isFocused ? theme.colors.backgroundHover : undefined,
         outline: 0,
-        padding: `${theme.spacing.small}px 0`,
+        padding: `${theme.spacing.small}px`,
         pointerEvents: isDisabled ? 'none' : undefined,
 
         '&:not(:first-of-type)': {
           borderTop: `1px solid ${theme.colors.backgroundDim}`,
+        },
+        ':hover': {
+          background: theme.colors.backgroundHover,
+          color: theme.colors.linkHoverColor,
         },
       }}
       {...innerProps}
@@ -133,17 +148,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K;
-} extends { [_ in keyof T]: infer U }
-  ? U
-  : never;
-
-// this removes [key: string]: any from Props
-type OptionsProps = Pick<
-  Props<{ label: string; value: string; isDisabled?: boolean }, boolean>,
-  KnownKeys<Props>
->;
+type OptionsProps = NamedProps<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(

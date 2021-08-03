@@ -1,0 +1,41 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 6th April 2021
+
+```typescript
+"@keystone-next/adapter-prisma-legacy": "5.0.0",
+"@keystone-next/admin-ui-utils": "3.0.3",
+"@keystone-next/auth": "20.0.0",
+"@keystone-next/cloudinary": "3.0.6",
+"@keystone-next/fields": "6.0.0",
+"@keystone-next/fields-document": "4.0.0",
+"@keystone-next/fields-legacy": "25.0.0",
+"@keystone-next/fields-auto-increment-legacy": "10.0.0",
+"@keystone-next/fields-cloudinary-image-legacy": "5.0.0",
+"@keystone-next/keystone": "15.0.0",
+"@keystone-next/keystone-legacy": "23.0.0",
+"@keystone-next/server-side-graphql-client-legacy": "3.0.1",
+"@keystone-next/test-utils-legacy": "16.0.0",
+"@keystone-next/types": "16.0.0",
+```
+
+## What's New
+
+### Controlled code demolition <Emoji symbol="🏗️" alt="Construction crane"/> <Emoji symbol="👷‍♀️" alt="Female with work hat"/>
+
+We pruned a lot of code from the Keystone garden – cutting out the dead wood to make way for a more efficient and productive core in Keystone 6. Notable changes include:
+
+- Removed Keystone‘s DB adapters and the `db.adapter` config option (now that Keystone 6 uses [Prisma](https://www.prisma.io/) under the hood).
+- Said goodbye to a bunch of redundant methods and arguments for the same reasons as above.
+- Exchanged `deploy`, `reset` and `generate` commands for `keystone-next prisma` e.g:
+  - `keystone-next deploy` -> `keystone-next prisma migrate deploy`
+
+### Better pagination in Admin UI <Emoji symbol="✨" alt="Sparkle"/>
+
+Pagination in the Admin UI has fresh styles and is easier to use.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-04-06) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="We pruned a lot of code to make way for a more efficient and productive core in Keystone 6. Better pagination in Admin UI." {...props}>{children}</Markdown>;
+export { getServerSideProps }

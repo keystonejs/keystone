@@ -8,10 +8,12 @@ import {
   forwardRef,
   useEffect,
   useState,
+  useRef,
   useCallback,
   CSSProperties,
   useMemo,
 } from 'react';
+import * as focusTrapModule from 'focus-trap';
 import { Options, Placement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import { jsx, Portal, useTheme } from '@keystone-ui/core';
@@ -194,10 +196,31 @@ type DialogProps = {
 export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
   ({ isVisible, children, arrow, ...props }, consumerRef) => {
     const { elevation, radii, shadow, colors } = useTheme();
+    const focusTrapRef = useRef<HTMLDivElement | null>(null);
+    const focusTrap = useRef<focusTrapModule.FocusTrap | null>(null);
+
+    useEffect(() => {
+      if (focusTrapRef?.current) {
+        focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current);
+      }
+    }, [focusTrapRef]);
+
+    useEffect(() => {
+      if (focusTrap?.current) {
+        if (isVisible) {
+          focusTrap.current.activate();
+        } else {
+          focusTrap.current.deactivate();
+        }
+      }
+    }, [isVisible, focusTrap]);
 
     return (
       <Portal>
         <div
+          role="dialog"
+          aria-hidden={isVisible ? 'false' : 'true'}
+          aria-modal="true"
           ref={consumerRef}
           css={{
             background: colors.background,
@@ -211,8 +234,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           {...props}
         >
           <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-
-          {children}
+          <div ref={focusTrapRef}>{isVisible ? children : null}</div>
         </div>
       </Portal>
     );

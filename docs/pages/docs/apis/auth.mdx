@@ -1,0 +1,478 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Authentication API
+
+Keystone allows you to extend your Keystone system to support authentication against a `password` field using the `createAuth()` function in the `@keystone-next/auth` package.
+Additional options to this function provide support for creating an initial item in your database, sending password reset tokens, and sending one-time authentication tokens.
+
+For examples of how to use authentication in your system please see the [authentication guide](../guides/auth).
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, password, checkbox } from '@keystone-next/fields';
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  // Required options
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+
+  // Additional options
+  sessionData: 'id name email`,
+  initFirstItem: {
+    fields: ['email', 'password'],
+    itemData: { isAdmin: true },
+    skipKeystoneWelcome: false,
+  },
+  passwordResetLink: {
+    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    tokensValidForMins: 60,
+  },
+  magicAuthLink: {
+    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    tokensValidForMins: 60,
+  },
+});
+
+export default withAuth(
+  config({
+    lists: createSchema({
+      User: list({
+        fields: {
+          email: text({ isUnique: true }),
+          password: password(),
+          isAdmin: checkbox(),
+        },
+      }),
+      session: { /* ... */ },
+    }),
+  })
+);
+```
+
+The function `createAuth` returns a function `withAuth` which should be used to wrap your `config()`.
+This wrapper function will modify the config object to inject extra fields, extra GraphQL queries and mutations, and custom Admin UI functionality into the system.
+The `createAuth` function must be used in conjunction with a [session](./session) configuration.
+
+## Required options
+
+The core functionality of the authentication system provides a GraphQL mutation to authenticate a user and then start a session, and a sign in page in the Admin UI.
+
+- `listKey`: The name of the list to authenticate against.
+- `identityField`: The name of the field to use as an identity field. This field must have `{ isUnique: true }` set.
+- `secretField`: The name of the field to use as a secret. This field must be a `password()` field type.
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+});
+```
+
+#### GraphQL API
+
+The following elements will be added to the GraphQL API.
+
+```graphql
+Mutation {
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult!
+}
+
+Query {
+  authenticatedItem: AuthenticatedItem
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND // Unused
+  SECRET_NOT_SET // Unused
+  MULTIPLE_IDENTITY_MATCHES // Unused
+  SECRET_MISMATCH // Unused
+}
+```
+
+##### authenticateUserWithPassword
+
+This mutation will check the supplied credentials and start a new [session](./session) if the credentials are valid.
+The argument names for this function are the values of `identityField` and `secretField`.
+
+On success the session handler will start a new session and return the encoded session cookie data as `sessionToken`.
+The authenticated item will be returned as `item`.
+
+On failure the values `{ code: FAILURE, message: "Authentication failed." }` will be returned.
+
+##### authenticatedItem
+
+This query will return the currently logged in user, based on the `session` data.
+
+#### Admin UI
+
+A sign in page at the path `/signin` will be added to the Admin UI.
+If a user tries to access the Admin UI without having logged in they will be redirected back to `/signin`.
+This page uses the `authenticateUserWithPassword` mutation to let users sign in to the Admin UI.
+
+## Additional options
+
+The following options add extra functionality to your Keystone authentication system.
+By default they are disabled.
+
+### sessionData
+
+This option adds support for setting a custom `session.data` value based on the authenticated user.
+
+The authentication mutations will set the values `{ listKey, itemId }` on the `context.session` object.
+You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/access-control) or using [hooks](../guides/hooks).
+Configuring `sessionData` will add an `session.data` based on the `itemId`, populated by the fields given in `sessionData.query`.
+
+The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id name isAdmin',
+});
+```
+
+### initFirstItem
+
+This option adds support for bootstrapping the first user into the system via the Admin UI.
+If this option is enabled and there are no users in the system, the Admin UI will present a form to create an initial user in the system.
+Once the user is created, they will be presented with a Keystone Welcome screen, and prompted to sign up to the Keystone mailing list to receive updates about the project.
+
+#### Options
+
+- `fields` (required): A list of fields to include in the initial user form.
+- `itemData` (default: `{}`): An object containing extra data to add to the initial user.
+- `skipKeystoneWelcome` (default: `false`): A flag to skip display of the Keystone Welcome screen.
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+
+  initFirstItem: {
+    fields: ['email', 'password'],
+    itemData: { isAdmin: true },
+    skipKeystoneWelcome: false,
+  },
+});
+```
+
+#### GraphQL API
+
+Enabling `initFirstItem` will add the following elements to the GraphQL API.
+
+```graphql
+Mutation {
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+```
+
+##### createInitialUser
+
+This mutation will create a new user in the system.
+If a user already exists an error will be returned.
+The available input fields are based on the `fields` options.
+This mutation is used by the Admin UI's initial user screen and should generally not be called directly.
+
+#### Admin UI
+
+The initial user screen is added at `/init`, and users are redirected here if there is no active session and no users in the system.
+
+### passwordResetLink
+
+This option adds support for sending password reset links to users.
+The mutation `sendUserPasswordResetLink` allows you to send a reset token to a user.
+The mutation `redeemUserPasswordResetToken` lets the user reset their password by redeeming the token.
+You need to provide a `sendToken` function which can be used by `sendUserPasswordResetLink` to send the generated token to the user.
+It is expected that you will use these mutations as part of a password reset workflow within your frontend application.
+
+#### Options
+
+- `sendToken`: This function is invoked by the `sendUserPasswordResetLink` mutation.
+  It should use an appropriate mechanism (e.g email, Twitter, Slack, carrier pigeon) to provide the user with the password reset token.
+  It should include an appropriate way to submit the token to the `redeemUserPasswordResetToken` mutation (e.g. a link to a password reset form).
+  The following arguments are provided to `sendToken`:
+  - `itemId`: The ID of the user requesting the password reset.
+  - `identity`: The identity value provided to the `sendUserPasswordResetLink` mutation.
+  - `token`: The token the user must supply to use `redeemUserPasswordResetToken`.
+  - `context`: A [`KeystoneContext`](./context) object.
+- `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+
+  passwordResetLink: {
+    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    tokensValidForMins: 60,
+  },
+});
+```
+
+#### Additional fields
+
+Enabling `passwordResetLink` will add the following fields to the configuration of the list `listKey`.
+
+```typescript
+const fieldConfig = {
+  access: () => false,
+  ui: {
+    createView: { fieldMode: 'hidden' },
+    itemView: { fieldMode: 'hidden' },
+    listView: { fieldMode: 'hidden' },
+  },
+} as const;
+const fields = {
+  passwordResetToken: password(fieldConfig),
+  passwordResetIssuedAt: timestamp(fieldConfig),
+  passwordResetRedeemedAt: timestamp(fieldConfig),
+};
+```
+
+- `passwordResetToken` stores the token generated by `sendUserPasswordResetLink`.
+- `passwordResetIssuedAt` records the time that the token was generated.
+- `passwordResetRedeemedAt` records the time that the token was redeemed.
+
+#### GraphQL API
+
+Enabling `passwordResetLink` will add the following elements to the GraphQL API.
+
+```graphql
+Mutation {
+  sendUserPasswordResetLink(email: String!): SendUserPasswordResetLinkResult
+  redeemUserPasswordResetToken(email: String!, token: String!, password: String!): RedeemUserPasswordResetTokenResult
+}
+
+Query {
+  validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult
+}
+
+// Unused
+type SendUserPasswordResetLinkResult {
+  code: PasswordResetRequestErrorCode!
+  message: String!
+}
+
+// Unused
+enum PasswordResetRequestErrorCode {
+  IDENTITY_NOT_FOUND
+  MULTIPLE_IDENTITY_MATCHES
+}
+
+type ValidateUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
+
+type RedeemUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
+
+enum PasswordResetRedemptionErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND // Unused
+  MULTIPLE_IDENTITY_MATCHES // Unused
+  TOKEN_NOT_SET // Unused
+  TOKEN_MISMATCH // Unused
+  TOKEN_EXPIRED
+  TOKEN_REDEEMED
+}
+```
+
+##### sendUserPasswordResetLink
+
+This mutation verifies that the supplied identity exists and, if it does, generates a new token and calls `sendToken()`.
+The token and the the current time are stored in the fields `passwordResetToken` and `passwordResetIssuedAt` respectively.
+The argument name for this function is the value of `identityField`.
+This mutation always returns `null`.
+
+##### redeemUserPasswordResetToken
+
+This mutation validates the provided token and then resets the user's password.
+The argument names for this function are the values of `identityField` and `secretField`.
+This mutation returns `null` on success.
+
+If the provided `identity` and `token` do not match then the value `{ code: FAILURE, message: 'Auth token redemption failed.'}` is returned.
+
+If the `identity` and `token` values match, but the value of `passwordResetRedeemedAt` on the item is not `null` then the value `{ code: TOKEN_REDEEMED, message: 'Auth tokens are single use and the auth token provided has already been redeemed.' }` is returned.
+
+If the `identity` and `token` values match and the token has not already been redeemed then the value of `passwordResetIssuedAt` is compared against `tokensValidForMins`.
+If the token has expired the value `{ code: TOKEN_EXPIRED, message: 'The auth token provided has expired.' }` is returned.
+
+If the token is valid, then the value of `passwordResetRedeemedAt` will be set to the current time, and then the new password value will be saved.
+The password will be validated before being saved.
+If the password is invalid the token will still be considered as redeemed and the user must restart the password reset flow.
+A `ValidationFailureError` will be returned as an `error` if the password is invalid.
+
+If the password is successfully saved then the mutation will return `null`.
+
+##### validateUserPasswordResetToken
+
+This query performs all the same validation steps as `redeemUserPasswordResetToken`, but does not update the password or `passwordResetRedeemedAt` field.
+The return values are the same as `redeemUserPasswordResetToken`.
+
+### magicAuthLink
+
+This option adds support for sending a one-time authentication link to users.
+One-time authentication links allow a user to start an authenticated session without needing to know their password.
+The mutation `sendUserMagicAuthLink` allows you to send a one-time authentication link token to a user.
+The mutation `redeemUserMagicAuthToken` lets the user start an authenticated session by redeeming the token.
+You need to provide a `sendToken` function which can be used by `sendUserMagicAuthLink` to send the generated token to the user.
+It is expected that you will use these mutations as part of a one-time authentication workflow within your frontend application.
+
+#### Options
+
+- `sendToken`: This function is invoked by the `sendUserMagicAuthLink` mutation.
+  It should use an appropriate mechanism (e.g email, Twitter, Slack, carrier pigeon) to provide the user with their one-time authentication token.
+  It should include an appropriate way to submit the token to the `redeemUserMagicAuthToken` mutation (e.g. a link to a route which executes the mutation on their behalf).
+  The following arguments are provided to `sendToken`:
+  - `itemId`: The ID of the user requesting the one-time authentication link.
+  - `identity`: The identity value provided to the `sendUserMagicAuthLink` mutation.
+  - `token`: The token the user must supply to use `redeemUserMagicAuthToken`.
+  - `context`: A [`KeystoneContext`](./context) object.
+- `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
+
+```typescript
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+
+  magicAuthLink: {
+    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    tokensValidForMins: 60,
+  },
+});
+```
+
+#### Additional fields
+
+Enabling `magicAuthLink` will add the following fields to the configuration of the list `listKey`.
+
+```typescript
+const fieldConfig = {
+  access: () => false,
+  ui: {
+    createView: { fieldMode: 'hidden' },
+    itemView: { fieldMode: 'hidden' },
+    listView: { fieldMode: 'hidden' },
+  },
+} as const;
+const fields = {
+  magicAuthToken: password(fieldConfig),
+  magicAuthIssuedAt: timestamp(fieldConfig),
+  magicAuthRedeemedAt: timestamp(fieldConfig),
+};
+```
+
+- `magicAuthToken` stores the token generated by `sendUserMagicAuthLink`.
+- `magicAuthIssuedAt` records the time that the token was generated.
+- `magicAuthRedeemedAt` records the time that the token was redeemed.
+
+#### GraphQL API
+
+Enabling `magicAuthLink` will add the following elements to the GraphQL API.
+
+```graphql
+Mutation {
+  sendUserMagicAuthLink(email: String!): SendUserMagicAuthLinkResult
+  redeemUserMagicAuthToken(email: String!, token: String!): RedeemUserMagicAuthTokenResult!
+}
+
+// Unused
+type SendUserMagicAuthLinkResult {
+  code: MagicLinkRequestErrorCode!
+  message: String!
+}
+
+// Unused
+enum MagicLinkRequestErrorCode {
+  IDENTITY_NOT_FOUND
+  MULTIPLE_IDENTITY_MATCHES
+}
+
+union RedeemUserMagicAuthTokenResult = RedeemUserMagicAuthTokenSuccess | RedeemUserMagicAuthTokenFailure
+
+type RedeemUserMagicAuthTokenSuccess {
+  token: String!
+  item: User!
+}
+
+type RedeemUserMagicAuthTokenFailure {
+  code: MagicLinkRedemptionErrorCode!
+  message: String!
+}
+
+enum MagicLinkRedemptionErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND // Unused
+  MULTIPLE_IDENTITY_MATCHES // Unused
+  TOKEN_NOT_SET // Unused
+  TOKEN_MISMATCH // Unused
+  TOKEN_EXPIRED
+  TOKEN_REDEEMED
+}
+```
+
+##### sendUserMagicAuthLink
+
+This mutation verifies that the supplied identity exists and, if it does, generates a new token and calls `sendToken()`.
+The token and the the current time are stored in the fields `magicAuthToken` and `magicAuthIssuedAt` respectively.
+The argument name for this function is the value of `identityField`.
+This mutation always returns `null`.
+
+##### redeemUserMagicAuthToken
+
+This mutation validates the provided token and then starts an authenticated session as the identified user.
+The argument name for this function is the value of `identityField`.
+
+If the provided `identity` and `token` do not match then the value `{ code: FAILURE, message: 'Auth token redemption failed.'}` is returned.
+
+If the `identity` and `token` values match, but the value of `magicAuthRedeemedAt` on the item is not `null` then the value `{ code: TOKEN_REDEEMED, message: 'Auth tokens are single use and the auth token provided has already been redeemed.' }` is returned.
+
+If the `identity` and `token` values match and the token has not already been redeemed then the value of `magicAuthRedeemedAt` is compared against `tokensValidForMins`.
+If the token has expired the value `{ code: TOKEN_EXPIRED, message: 'The auth token provided has expired.' }` is returned.
+
+If the token is valid then the session handler will start a new session and return the encoded session cookie data as `sessionToken`.
+The authenticated item will be returned as `item`.
+
+export default ({ children }) => <Markdown description="API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-next/auth` package.">{children}</Markdown>;

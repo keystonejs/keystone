@@ -1,0 +1,51 @@
+datasource sqlite {
+  url      = env("DATABASE_URL")
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  name                String?
+  email               String?       @unique
+  avatar_filesize     Int?
+  avatar_extension    String?
+  avatar_width        Int?
+  avatar_height       Int?
+  avatar_mode         String?
+  avatar_id           String?
+  attachment_filesize Int?
+  attachment_mode     String?
+  attachment_filename String?
+  password            String?
+  isAdmin             Boolean?
+  roles               String?
+  phoneNumbers        PhoneNumber[] @relation("PhoneNumber_user")
+  posts               Post[]        @relation("Post_author")
+}
+
+model PhoneNumber {
+  id     String  @id @default(cuid())
+  user   User?   @relation("PhoneNumber_user", fields: [userId], references: [id])
+  userId String? @map("user")
+  type   String?
+  value  String?
+
+  @@index([userId])
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  title       String?
+  status      String?
+  content     String?
+  publishDate DateTime?
+  author      User?     @relation("Post_author", fields: [authorId], references: [id])
+  authorId    String?   @map("author")
+
+  @@index([authorId])
+}

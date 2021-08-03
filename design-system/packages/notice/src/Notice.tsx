@@ -9,9 +9,9 @@ import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
 import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon';
 import { HelpCircleIcon } from '@keystone-ui/icons/icons/HelpCircleIcon';
 
+import { Button, ButtonProvider } from '@keystone-ui/button';
 import { useNoticeStyles, useNoticeTokens, ToneKey } from './hooks/notice';
 import { useButtonTokens } from './hooks/button';
-import { Button, ButtonProvider } from '@keystone-ui/button';
 
 const symbols: { [key in ToneKey]: ReactNode } = {
   active: <InfoIcon />,
@@ -65,6 +65,7 @@ export const Notice = ({
           flex: 1,
           flexDirection: 'row',
           outline: 0,
+          'white-space': 'pre-wrap',
           ...styles.box,
         }}
         tabIndex={0}

@@ -9,10 +9,8 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "docs-next": "manypkg run @keystone-next/website dev",
-    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
-    "cypress:run": "status=0; yarn workspace @keystone-next/cypress-project-basic-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-twitter-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-access-control-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-client-validation-legacy run cypress:run || status=$?; exit $status",
-    "cypress:open": "status=0; yarn workspace @keystone-next/cypress-project-basic-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-login-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-twitter-login-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-access-control-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-client-validation-legacy run cypress:open || status=$?; exit $status",
+    "docs": "manypkg run @keystone-next/website dev",
+    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -22,54 +20,62 @@
     "lint:markdown": "remark . --frail --quiet",
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
-    "test": "yarn lint && yarn test:unit && yarn cypress:run",
-    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --maxWorkers=1 --logHeapUsage",
+    "test": "yarn lint && yarn test:unit",
+    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
+    "test:admin-ui": "yarn jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
     "version-packages": "changeset version",
     "build": "preconstruct build",
-    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide",
-    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
+    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && cd examples-staging/basic && yarn keystone-next postinstall",
+    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
-    "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
+    "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
+    "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done",
+    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done"
   },
   "dependencies": {
-    "@babel/core": "^7.13.10",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.14.7",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
-    "@babel/preset-react": "^7.12.13",
-    "@babel/preset-typescript": "^7.13.0",
-    "@changesets/changelog-github": "^0.3.0",
-    "@changesets/cli": "^2.14.1",
-    "@jest/test-sequencer": "^26.6.3",
-    "@manypkg/cli": "^0.17.0",
-    "@preconstruct/cli": "2.0.6",
-    "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.17.0",
-    "@typescript-eslint/parser": "^4.17.0",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.9",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
+    "@changesets/changelog-github": "^0.4.0",
+    "@changesets/cli": "^2.16.0",
+    "@jest/test-sequencer": "^27.0.6",
+    "@manypkg/cli": "^0.18.0",
+    "@preconstruct/cli": "2.1.0",
+    "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@types/jest": "^26.0.24",
+    "@types/node-fetch": "^2.5.12",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.21.0",
-    "eslint-plugin-cypress": "^2.11.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.2.0",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "is-ci": "^2.0.0",
-    "jest": "^26.6.3",
-    "prettier": "^2.2.1",
+    "is-ci": "^3.0.0",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "remark-cli": "^6.0.1",
     "remark-frontmatter": "^1.3.3",
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
-    "terminal-link-cli": "^2.0.0",
-    "typescript": "^4.2.3"
+    "terminal-link-cli": "^3.0.0",
+    "typescript": "^4.3.5"
   },
   "prettier": {
     "proseWrap": "preserve",
@@ -77,12 +83,14 @@
     "trailingComma": "es5",
     "printWidth": 100,
     "arrowParens": "avoid",
-    "overrides": [{
-      "files": "docs-next/**",
-      "options": {
-        "embeddedLanguageFormatting": "off"
+    "overrides": [
+      {
+        "files": "docs/**",
+        "options": {
+          "embeddedLanguageFormatting": "off"
+        }
       }
-    }]
+    ]
   },
   "remarkConfig": {
     "settings": {
@@ -99,17 +107,17 @@
   },
   "workspaces": {
     "packages": [
+      "design-system/packages/*",
+      "design-system/website",
+      "docs",
+      "examples-staging/*",
+      "examples/*",
       "packages/*",
-      "tests/test-projects/*",
+      "tests/admin-ui-tests",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "projects/*",
-      "examples-next/*",
-      "packages-next/*",
-      "design-system/packages/*",
-      "design-system/website",
-      "docs-next"
+      "tests/test-projects/*"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -117,30 +125,14 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/access-control",
-      "packages/session",
-      "packages/test-utils",
-      "packages/utils",
-      "packages/fields-authed-relationship",
-      "packages/fields-auto-increment",
-      "packages/fields-oembed",
-      "packages/fields-unsplash",
-      "packages/fields-cloudinary-image",
-      "packages/fields-markdown",
-      "packages/fields-mongoid",
-      "packages/fields-location-google",
-      "packages/fields-wysiwyg-tinymce",
-      "packages/fields-color",
-      "packages/fields",
-      "packages/adapter-prisma",
-      "packages-next/*",
+      "packages/*",
       "design-system/packages/*"
     ],
     "distFilenameStrategy": "unscoped-package-name"
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./tests/jest/setup.js"
+      "./tests/jest/setup.ts"
     ],
     "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
@@ -149,16 +141,13 @@
     ],
     "transformIgnorePatterns": [
       "/node_modules/",
-      "\\.pnp\\.[^\\/]+$",
-      ".api-test-prisma-clients/"
+      "\\.pnp\\.[^\\/]+$"
     ],
     "collectCoverageFrom": [
-      "packages/**/*.js",
+      "packages/**/*.{js,ts,tsx}",
+      "!**/*.d.ts",
       "!packages/**/dist/**",
-      "!packages/app-admin-ui/client/**",
-      "!packages/core/tests/default-entry/index.js",
-      "!packages/fields/**/views/**",
-      "!packages/fields/**/test-fixtures.js",
+      "!packages/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },
@@ -166,6 +155,6 @@
     "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": "^12.20 || >= 14.13"
   }
 }

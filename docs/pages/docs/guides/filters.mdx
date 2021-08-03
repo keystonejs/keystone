@@ -1,0 +1,158 @@
+import { Markdown } from '../../../components/Markdown';
+
+# GraphQL Queries - Filters
+
+Keystone provides a powerful GraphQL API for querying the data in your system.
+At the core of this API are **query filters**.
+This guide will show you how to use filters to get data you need.
+
+!> The filter references in this guide are based on the schema defined in the [Task Manager](https://github.com/keystonejs/keystone/tree/master/examples/task-manager) example project.
+
+## Scalar Filters
+
+If we want to find all the `Tasks` in our system, we can use the query `allTasks()`.
+
+```graphql
+{
+  allTasks {
+    id
+    label
+  }
+}
+```
+
+In general we don't want to grab all the tasks at once, but want to find a particular set of tasks which match a certain condition.
+In Keystone we can do this by passing a `where` argument to the `allTasks()` query.
+
+If we want to find all the tasks with a label equal to `"Hello"` we can write:
+
+```graphql
+{
+  allTasks(where: { label: "Hello" }) {
+    id
+    label
+  }
+}
+```
+
+Keystone provides a wide range of different filters. If we want to find all those tasks which **don't** have a label of `"Hello"` we can write:
+
+```graphql
+{
+  allTasks(where: { label_not: "Hello" }) {
+    id
+    label
+  }
+}
+```
+
+The `text()` field type also supports searching for sub-strings within a field:
+
+```graphql
+{
+  allTasks(where: { label_contains: "He" }) {
+    id
+    label
+  }
+}
+```
+
+Different field types support different filters. The field `finishBy: timestamp()`, for example, lets you filter by tasks with a due date after a particular point in time:
+
+```graphql
+{
+  allTasks(where: { finishBy_gt: "2022-01-01T00:00:00.000Z" }) {
+    id
+    label
+  }
+}
+```
+
+For a full list of the different filters provided by each field type, please check the [Query Filter API](../apis/filters).
+
+For more complex queries, you can combine multiple filters, and only those items which match all conditions will be returned.
+
+```graphql
+{
+  allTasks(where: {
+    label_contains: "He",
+    finishBy_gt: "2022-01-01T00:00:00.000Z"
+  }) {
+    id
+    label
+  }
+}
+```
+
+## Combined Filters
+
+For more advanced queries, you might need to explicitly combine different filters.
+
+### AND
+
+The `AND` operater accepts a list of sub-filters, and will only return those items which match all of these conditions.
+
+```graphql
+{
+  allTasks(where: { AND: [
+    { label_contains: "H" },
+    { label_contains: "ll" }
+  ] }) {
+    id
+    label
+  }
+}
+```
+
+### OR
+
+The `OR` operater accepts a list of sub-filters, and will only return those items which match at least one of these conditions.
+
+```graphql
+{
+  allTasks(where: { OR: [
+    { label_contains: "H" },
+    { label_contains: "ll" }
+  ] }) {
+    id
+    label
+  }
+}
+```
+
+## Relationship Filters
+
+As well as filtering by scalar fields, you can also filter against relationship fields.
+Relationship filters will depend on whether you have `many: true` or `many: false` [configured on the field](./relationships).
+
+### One
+
+If you have `many: false` configured on the relationship field, then you can find items based on a `where` filter using the fields from the related list.
+
+For example, to find all the tasks where the task is assigned to a used named `"Alice"`, we can run the following query.
+
+```graphql
+{
+  allTasks(where: { assignedTo: { name: "Alice" } }) {
+    id
+    label
+  }
+}
+```
+
+### Many
+
+If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `all` of the related items match a `where` filter using the fields from the related list.
+
+For example, to find all the people which have `some` posts with the label `"Hello"`, we can run the following query:
+
+```graphql
+{
+  allPeople(where: { tasks_some: { label: "Hello" } }) {
+    id
+    name
+  }
+}
+```
+
+export default ({ children }) => <Markdown description="Learn how to use query filters get the data you need from Keystone’s powerful GraphQL API.">{children}</Markdown>;

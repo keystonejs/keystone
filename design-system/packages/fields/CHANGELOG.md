@@ -1,5 +1,76 @@
 # @keystone-ui/fields
 
+## 4.1.2
+
+### Patch Changes
+
+- [#5848](https://github.com/keystonejs/keystone/pull/5848) [`4e5634b86`](https://github.com/keystonejs/keystone/commit/4e5634b86a26819cecec5b10c18f9d231b5434e2) Thanks [@renovate](https://github.com/apps/renovate)! - Updated TypeScript to 4.3.2
+
+- Updated dependencies [[`972e04514`](https://github.com/keystonejs/keystone/commit/972e045145711e39fd6fa167cb87fa05e062272c), [`0afacf621`](https://github.com/keystonejs/keystone/commit/0afacf621f922b5f47f7314ead9be94960b9859a), [`eab130f30`](https://github.com/keystonejs/keystone/commit/eab130f30d79b82c18b3cce0bc054abe2c1b58fd)]:
+  - @keystone-ui/popover@4.0.2
+
+## 4.1.1
+
+### Patch Changes
+
+- [#5893](https://github.com/keystonejs/keystone/pull/5893) [`df7d7b6f6`](https://github.com/keystonejs/keystone/commit/df7d7b6f6f2830573393560f4a1ec35234889947) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Applied a11y fixes to DatePicker component.
+
+- Updated dependencies [[`8958704ec`](https://github.com/keystonejs/keystone/commit/8958704ec9819cd27ad1cae251628ad38dad1c79)]:
+  - @keystone-ui/core@3.1.0
+
+## 4.1.0
+
+### Minor Changes
+
+- [#5761](https://github.com/keystonejs/keystone/pull/5761) [`3a7acc2c5`](https://github.com/keystonejs/keystone/commit/3a7acc2c5114fbcbde994d1f4c6cc0b21c572ec0) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added as prop to FieldContainer component.
+
+### Patch Changes
+
+- Updated dependencies [[`fe5b463ed`](https://github.com/keystonejs/keystone/commit/fe5b463ed07c2a524a3cde554ac07575d31e6712)]:
+  - @keystone-ui/popover@4.0.1
+
+## 4.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+### Patch Changes
+
+- Updated dependencies [[`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d)]:
+  - @keystone-ui/core@3.0.0
+  - @keystone-ui/icons@4.0.0
+  - @keystone-ui/popover@4.0.0
+
+## 3.0.0
+
+### Major Changes
+
+- [#5397](https://github.com/keystonejs/keystone/pull/5397) [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b) Thanks [@bladey](https://github.com/bladey)! - Updated Node engine version to 12.x due to 10.x reaching EOL on 2021-04-30.
+
+### Patch Changes
+
+- Updated dependencies [[`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b)]:
+  - @keystone-ui/icons@3.0.0
+  - @keystone-ui/popover@3.0.0
+
+## 2.1.0
+
+### Minor Changes
+
+- [#5322](https://github.com/keystonejs/keystone/pull/5322) [`d93bab17b`](https://github.com/keystonejs/keystone/commit/d93bab17b69c76e57580dc00e41314215da6d49b) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added styles prop to @keystone-ui/fields select components to enable style customisations to propagate to the underlying reaect-select implementation.
+
+## 2.0.2
+
+### Patch Changes
+
+- [#4717](https://github.com/keystonejs/keystone/pull/4717) [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency react-select to v4
+
+* [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* Updated dependencies [[`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-ui/core@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes

@@ -89,6 +89,7 @@ const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <Portal>
       <div
+        role="alert"
         css={{
           position: 'fixed',
           right: spacing.medium,
@@ -164,6 +165,7 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
         width: 380, // less than desirable magic number, but not sure if this needs to be in theme...
         maxWidth: '100%',
         padding: spacing.large,
+        'white-space': 'pre-wrap',
       }}
       {...rest}
     >

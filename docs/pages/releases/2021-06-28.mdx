@@ -1,0 +1,67 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 28th June 2021
+
+## What's New
+
+An assortment of good things in this release! A new package to help test the behaviour of your GraphQL API, a document field example, better error messages, accessibility updates and another Prisma update! <Emoji symbol="🍱" alt="Bento box" />
+
+```sh
+"@keystone-ui/fields": "4.1.2",
+"@keystone-ui/options": "4.0.1",
+"@keystone-ui/pill": "5.0.0",
+"@keystone-ui/popover": "4.0.2",
+"@keystone-ui/toast": "4.0.1",
+"@keystone-next/cloudinary": "6.0.1",
+"@keystone-next/fields": "11.0.1",
+"@keystone-next/keystone": "20.0.1",
+"@keystone-next/testing": "1.0.0",
+"@keystone-next/types": "20.0.1",
+"@keystone-next/utils": "1.0.0",
+```
+
+### Testing Package <Emoji symbol="🧪" alt="Test tube" />
+
+We’ve shipped a new package called `@keystone-next/testing` to help you write tests for your GraphQL API!
+
+Check out the guide on the [Keystone website](https://keystonejs.com/docs/guides/testing) for more details.
+
+### Document Field Example ✍️
+
+We have a [new example project for the document field](https://github.com/keystonejs/keystone/tree/master/examples/document-field) which covers the basic use case of configuring the toolbar, rendering the document field in a front end, and providing custom renderers for the built in data.
+
+Another example showing advanced use cases is in-progress and will be available soon!
+
+### Error Messages <Emoji symbol="❗" alt="Exclamation" />
+
+GraphQL error messages are far more helpful when running queries. You will now get relevant error messages instead of getting `Cannot assign to read only property 'path' of object '#<Object>'"` back.
+
+Thanks [@tjbp](https://github.com/tjbp) for contributing this fix!
+
+### Improved Types for `KeystoneContext` <Emoji symbol="📜" alt="Scroll" />
+
+⚠️ We've tweaked `lists` and `db.lists` APIs on `KeystoneContext` to have improved types. If you're using the generated `KeystoneListsTypeInfo` type like this:
+
+```ts
+const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
+```
+
+You will have to change it to use `as` like this:
+
+```ts
+const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
+```
+
+### UI Accessibility <Emoji symbol="🏷" alt="Tag" />
+
+Another set of accessibility improvements in the Admin UI in this release including assorted quality of life and screen reader improvements to Filter pills and dialogs, as well as labels and descriptions.
+
+### Prisma update <Emoji symbol="⬆️" alt="Arrow up" />
+
+We've updated our Prisma dependencies to `2.25.0`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.25.0) for more information.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-28) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="A new package to help test the behaviour of your GraphQL API, a document field example, better error messages, accessibility updates and another Prisma update." {...props}>{children}</Markdown>;
+export { getServerSideProps }
