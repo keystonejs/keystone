@@ -28,13 +28,18 @@ export function Markdown({
   description: string;
 }) {
   const headings = getHeadings(children);
+  const firstHeading = headings[0]?.label;
+
+  if (!firstHeading) {
+    throw new Error('The DocsPage component requires a `title` prop');
+  }
 
   if (!description) {
-    throw new Error('description prop is required');
+    throw new Error('The DocsPage component requires a `description` prop');
   }
 
   return (
-    <DocsPage headings={headings} title={headings[0].label} description={description} {...props}>
+    <DocsPage headings={headings} title={firstHeading} description={description} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );
