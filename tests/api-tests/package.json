@@ -15,6 +15,7 @@
     "@keystone-next/auth": "*",
     "@keystone-next/fields-document": "*",
     "@keystone-next/keystone": "*",
+    "apollo-server-types": "^3.2.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.4",
@@ -26,7 +27,6 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
-    "apollo-cache-control": "^0.14.0",
     "express": "^4.17.1"
   }
 }
