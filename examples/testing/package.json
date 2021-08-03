@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.14.8",
-    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-env": "^7.14.9",
     "@babel/preset-typescript": "^7.14.5",
     "@keystone-next/auth": "^30.0.0",
     "@keystone-next/fields": "^13.0.0",

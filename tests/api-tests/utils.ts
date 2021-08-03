@@ -83,6 +83,21 @@ export const expectValidationError = (
   );
 };
 
+export const expectExtensionError = (
+  errors: readonly any[] | undefined,
+  extensionName: string,
+  args: { path: (string | number)[]; messages: string[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages }) => ({
+      extensions: { code: undefined },
+      path,
+      message: `An error occured while running "${extensionName}".\n${j(messages)}`,
+    }))
+  );
+};
+
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
   args: { path: any[]; message: string }[]
