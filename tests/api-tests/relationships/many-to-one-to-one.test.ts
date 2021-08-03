@@ -12,27 +12,26 @@ type IdType = any;
 const createInitialData = async (context: KeystoneContext) => {
   const companies = (await context.lists.Company.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   })) as { id: IdType }[];
   const locations = (await context.lists.Location.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   })) as { id: IdType }[];
   const owners = await context.lists.Owner.createMany({
-    data: companies.map(({ id }) => ({
-      data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
-    })),
+    data: companies.map(({ id }) => ({ name: `Owner_of_${id}`, companies: { connect: [{ id }] } })),
   });
   const custodians = await context.lists.Custodian.createMany({
     data: locations.map(({ id }) => ({
-      data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
+      name: `Custodian_of_${id}`,
+      locations: { connect: [{ id }] },
     })),
   });
   return { locations, companies, owners, custodians };
@@ -40,10 +39,7 @@ const createInitialData = async (context: KeystoneContext) => {
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
   const [cu1, cu2] = await context.lists.Custodian.createMany({
-    data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-    ],
+    data: [{ name: sampleOne(alphanumGenerator) }, { name: sampleOne(alphanumGenerator) }],
   });
 
   return context.lists.Owner.createOne({

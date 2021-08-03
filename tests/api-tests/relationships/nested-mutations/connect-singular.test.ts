@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -121,7 +121,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const _event = await context.lists.Event.updateOne({
-        id: event.id,
+        where: { id: event.id },
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id name }',
       });
@@ -155,7 +155,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
       ]);
     })
@@ -174,7 +174,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateEvent(
-                  id: "${createEvent.id}",
+                  where: { id: "${createEvent.id}" },
                   data: {
                     group: {
                       connect: { id: "${FAKE_ID}" }
@@ -186,7 +186,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
       ]);
     })
@@ -244,7 +244,7 @@ describe('with access control', () => {
 
             // Update the item and link the relationship field
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { connect: { id: groupModel.id } } },
               query: 'id group { id name }',
             });
@@ -287,7 +287,7 @@ describe('with access control', () => {
               query: `
                     mutation {
                       updateEventTo${group.name}(
-                        id: "${eventModel.id}"
+                        where: { id: "${eventModel.id}" }
                         data: {
                           title: "A thing",
                           group: { connect: { id: "${groupModel.id}" } }
@@ -298,7 +298,7 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectRelationshipError(errors, [
               {
                 path: [`updateEventTo${group.name}`],
                 message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
@@ -332,7 +332,7 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            expectNestedError(errors, [
+            expectRelationshipError(errors, [
               {
                 path: [`createEventTo${group.name}`],
                 message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,

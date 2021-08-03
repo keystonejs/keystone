@@ -19,11 +19,27 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export function Markdown({ children, ...props }: { children: ReactNode }) {
+export function Markdown({
+  children,
+  description,
+  ...props
+}: {
+  children: ReactNode;
+  description: string;
+}) {
   const headings = getHeadings(children);
+  const firstHeading = headings[0]?.label;
+
+  if (!firstHeading) {
+    throw new Error('The DocsPage component requires a `title` prop');
+  }
+
+  if (!description) {
+    throw new Error('The DocsPage component requires a `description` prop');
+  }
 
   return (
-    <DocsPage headings={headings} title={headings[0].label} {...props}>
+    <DocsPage headings={headings} title={firstHeading} description={description} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );

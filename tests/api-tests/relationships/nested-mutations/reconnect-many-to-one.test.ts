@@ -30,12 +30,7 @@ describe('Reconnect', () => {
     runner(async ({ context }) => {
       // Create some notes
       const [noteA, noteB, noteC, noteD] = await context.lists.Note.createMany({
-        data: [
-          { data: { title: 'A' } },
-          { data: { title: 'B' } },
-          { data: { title: 'C' } },
-          { data: { title: 'D' } },
-        ],
+        data: [{ title: 'A' }, { title: 'B' }, { title: 'C' }, { title: 'D' }],
       });
 
       // Create some users that does the linking
@@ -60,7 +55,7 @@ describe('Reconnect', () => {
       await (async () => {
         type T = { id: IdType; notes: { id: IdType; title: string }[] };
         const user = (await context.lists.User.updateOne({
-          id: bob.id,
+          where: { id: bob.id },
           data: { notes: { connect: [{ id: noteB.id }] } },
           query: 'id notes(orderBy: { title: asc }) { id title }',
         })) as T;

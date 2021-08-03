@@ -15,15 +15,9 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
   if (errors?.length) {
     return (
       <Stack gap="small">
-        {errors.map(err => {
-          const errButAny: any = err;
-          if (err.name === 'ValidationFailureError' && errButAny.data?.messages?.length) {
-            return errButAny.data.messages.map((message: string) => (
-              <Notice tone="negative">{message}</Notice>
-            ));
-          }
-          return <Notice tone="negative">{err.message}</Notice>;
-        })}
+        {errors.map(err => (
+          <Notice tone="negative">{err.message}</Notice>
+        ))}
       </Stack>
     );
   }

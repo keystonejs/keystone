@@ -76,7 +76,7 @@ function ItemForm({
 
   const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
-      item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
+      item: ${list.gqlNames.updateMutationName}(where: { id: $id }, data: $data) {
         ${selectedFields}
       }
     }`,
@@ -225,7 +225,7 @@ function DeleteButton({
   const toasts = useToasts();
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
-      ${list.gqlNames.deleteMutationName}(id: $id) {
+      ${list.gqlNames.deleteMutationName}(where: { id: $id }) {
         id
       }
     }`,

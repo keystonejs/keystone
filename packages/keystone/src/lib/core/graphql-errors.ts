@@ -1,23 +1,19 @@
-import { createError } from 'apollo-errors';
+import { ApolloError } from 'apollo-server-errors';
 
-export const AccessDeniedError = createError('AccessDeniedError', {
-  message: 'You do not have access to this resource',
-  options: { showPath: true },
-});
-export const ValidationFailureError = createError('ValidationFailureError', {
-  message: 'You attempted to perform an invalid mutation',
-  options: { showPath: true },
-});
-export const LimitsExceededError = createError('LimitsExceededError', {
-  message: 'Your request exceeded server limits',
-  options: { showPath: true },
-});
+export const accessDeniedError = () => new ApolloError('You do not have access to this resource');
 
-export const accessDeniedError = (
-  type: 'query' | 'mutation',
-  target?: string,
-  internalData = {},
-  extraData = {}
-) => {
-  return new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
+export const validationFailureError = (messages: string[]) => {
+  const s = messages.map(m => `  - ${m}`).join('\n');
+  return new ApolloError(`You provided invalid data for this operation.\n${s}`);
 };
+
+export const extensionError = (extension: string, messages: string[]) => {
+  const s = messages.map(m => `  - ${m}`).join('\n');
+  return new ApolloError(`An error occured while running "${extension}".\n${s}`);
+};
+
+// FIXME: In an upcoming PR we will use these args to construct a better
+// error message, so leaving the, here for now. - TL
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
+  new ApolloError('Your request exceeded server limits');

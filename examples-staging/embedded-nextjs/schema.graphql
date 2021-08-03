@@ -40,17 +40,6 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  slug_ASC
-  slug_DESC
-  content_ASC
-  content_DESC
-}
-
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -69,19 +58,15 @@ input PostUpdateInput {
   content: String
 }
 
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
   title: String
   slug: String
   content: String
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
 }
 
 """
@@ -92,42 +77,23 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type _QueryMeta {
-  count: Int
-}
-
 type Mutation {
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
-  updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
 }
 
 type Query {
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

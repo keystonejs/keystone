@@ -11,13 +11,11 @@ export type BaseGeneratedListTypes = {
   args: {
     listQuery: {
       readonly where?: GraphQLInput | null;
-      readonly search?: string | null;
       readonly first?: number | null;
-      readonly skip?: number | null;
+      readonly skip?: number;
       readonly orderBy?:
         | Record<string, 'asc' | 'desc' | null>
         | readonly Record<string, 'asc' | 'desc' | null>[];
-      readonly sortBy?: string | ReadonlyArray<string> | null;
     };
   };
 };
@@ -38,9 +36,7 @@ export type GqlNames = {
   outputTypeName: string;
   itemQueryName: string;
   listQueryName: string;
-  listQueryMetaName: string;
   listQueryCountName: string;
-  listSortName: string;
   listOrderName: string;
   deleteMutationName: string;
   updateMutationName: string;
@@ -53,9 +49,10 @@ export type GqlNames = {
   updateInputName: string;
   createInputName: string;
   updateManyInputName: string;
-  createManyInputName: string;
-  relateToManyInputName: string;
-  relateToOneInputName: string;
+  relateToManyForCreateInputName: string;
+  relateToManyForUpdateInputName: string;
+  relateToOneForCreateInputName: string;
+  relateToOneForUpdateInputName: string;
 };
 
 export type MaybePromise<T> = T | Promise<T>;

@@ -2,7 +2,7 @@ import { Markdown } from '../../../components/Markdown';
 
 # Context API
 
-The `KeystoneContext` object is the primary API entry point for all of the run-time functionally of your Keystone system.
+The `KeystoneContext` object is the primary API entry point for all of the run-time functionality of your Keystone system.
 In GraphQL, a [`context`](https://graphql.org/learn/execution/#root-fields-resolvers) is a value which is provided to every resolver and holds important contextual information such as the currently logged in user, or access to a database.
 Keystone makes a `KeystoneContext` object available as the context of all resolvers in the system.
 The APIs provided by the `KeystoneContext` object can be used to write the business logic for things like [access control](../guides/access-control), [hooks](../guides/hooks), [testing](../guides/testing) and GraphQL [schema extensions](../guides/schema-extension).
@@ -161,4 +161,4 @@ They will be removed in future releases.
 
 `gqlNames`: A function which takes a `listKey` and returns an object containing the GraphQL query, mutation and type names related to that list.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="The KeystoneContext object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions.">{children}</Markdown>;

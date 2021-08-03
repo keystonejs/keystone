@@ -125,7 +125,7 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   );
 };
 
-export type NavigationContainerProps = Pick<NavigationProps, 'authenticatedItem'> & {
+export type NavigationContainerProps = Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
   children: ReactNode;
 };
 
@@ -139,7 +139,7 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
         justifyContent: 'center',
       }}
     >
-      {authenticatedItem.state === 'authenticated' && (
+      {authenticatedItem?.state === 'authenticated' && (
         <AuthenticatedItem item={authenticatedItem} />
       )}
       <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
