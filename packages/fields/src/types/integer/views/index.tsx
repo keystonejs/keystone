@@ -75,13 +75,13 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
         const valueWithoutWhitespace = value.replace(/\s/g, '');
         const parsed =
           type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',').map(x => parseFloat(x))
-            : parseFloat(valueWithoutWhitespace);
+            ? valueWithoutWhitespace.split(',').map(x => parseInt(x))
+            : parseInt(valueWithoutWhitespace);
         if (type === 'not') {
           return { [config.path]: { not: { equals: parsed } } };
         }
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
-        return { [config.path]: { [key]: value } };
+        return { [config.path]: { [key]: parsed } };
       },
       Label({ label, value, type }) {
         let renderedValue = value;

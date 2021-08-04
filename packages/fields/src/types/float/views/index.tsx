@@ -71,8 +71,8 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
         const valueWithoutWhitespace = value.replace(/\s/g, '');
         const parsed =
           type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',').map(x => parseInt(x))
-            : parseInt(valueWithoutWhitespace);
+            ? valueWithoutWhitespace.split(',').map(x => parseFloat(x))
+            : parseFloat(valueWithoutWhitespace);
         if (type === 'not') {
           return { [config.path]: { not: { equals: parsed } } };
         }
