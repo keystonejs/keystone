@@ -72,14 +72,16 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
       },
 
       graphql: ({ type, value }) => {
-        const key = type === 'is' ? config.path : `${config.path}_${type}`;
         const valueWithoutWhitespace = value.replace(/\s/g, '');
-
-        return {
-          [key]: ['in', 'not_in'].includes(type)
-            ? valueWithoutWhitespace.split(',').map(i => parseInt(i))
-            : parseInt(valueWithoutWhitespace),
-        };
+        const parsed =
+          type === 'in' || type === 'not_in'
+            ? valueWithoutWhitespace.split(',').map(x => parseFloat(x))
+            : parseFloat(valueWithoutWhitespace);
+        if (type === 'not') {
+          return { [config.path]: { not: { equals: parsed } } };
+        }
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
+        return { [config.path]: { [key]: value } };
       },
       Label({ label, value, type }) {
         let renderedValue = value;

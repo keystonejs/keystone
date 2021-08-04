@@ -49,7 +49,10 @@ export const text =
       output: schema.field({ type: schema.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
-        return { displayMode: config.ui?.displayMode ?? 'input' };
+        return {
+          displayMode: config.ui?.displayMode ?? 'input',
+          shouldUseModeInsensitive: meta.provider === 'postgresql',
+        };
       },
       __legacy: {
         filters: {
