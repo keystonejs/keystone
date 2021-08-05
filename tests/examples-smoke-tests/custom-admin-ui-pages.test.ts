@@ -12,7 +12,7 @@ exampleProjectTests('custom-admin-ui-pages', browserType => {
   test('Load list', async () => {
     await page.goto('http://localhost:3000/custom-page');
     const content = await page.textContent('body h1');
-    expect(content).toBe('Hello this is a custom page');
+    expect(content).toBe('This is a custom Admin UI page');
   });
   afterAll(async () => {
     await browser.close();
