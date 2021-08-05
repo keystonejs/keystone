@@ -7,7 +7,7 @@ import { Alert } from '../../../components/primitives/Alert';
 ## Getting Started
 
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
-As the Admin UI is built on top of Next.js, it exposes the same pages directory for adding custom pages.
+As the Admin UI is built on top of [Next.js](https://nextjs.org/docs/basic-features/pages), it exposes the same pages directory for adding custom pages.
 
 !> **Note:** This feature will improve over time. It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
 
@@ -56,9 +56,8 @@ export default function CustomPage () {
 With the above snippet, our custom page looks a lot more like the other pages in the Admin UI.
 ![example of the custom Admin UI page with the PageContainer component](/assets/guides/custom-admin-ui-pages/custom-page-w-page-container.png)
 
-There's still a problems though, the header doesn't look right.
+There's still a problems though, the header doesn't look right. If we compare the header of our custom-page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
 ![example of the Dashboard header element](/assets/guides/custom-admin-ui-pages/header-prop.png)
-If we compare the header of our custom-page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
 
 Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package to style the header, so lets use this to give our header the same styling.
 
