@@ -11,8 +11,7 @@ exampleProjectTests('custom-admin-ui-pages', browserType => {
   });
   test('Load list', async () => {
     await page.goto('http://localhost:3000/custom-page');
-    const content = await page.textContent('body h1');
-    expect(content).toBe('This is a custom Admin UI page');
+    await page.waitForSelector('main h1:has-text("This is a custom Admin UI page")');
   });
   afterAll(async () => {
     await browser.close();
