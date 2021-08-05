@@ -84,14 +84,15 @@ export const expectValidationError = (
 };
 
 export const expectExtensionError = (
+  mode: 'dev' | 'production',
   errors: readonly any[] | undefined,
   extensionName: string,
-  args: { path: (string | number)[]; messages: string[] }[]
+  args: { path: (string | number)[]; messages: string[]; errors: any[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path, messages }) => ({
-      extensions: { code: undefined },
+    args.map(({ path, messages, errors }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR', ...(mode !== 'production' ? { errors } : {}) },
       path,
       message: `An error occured while running "${extensionName}".\n${j(messages)}`,
     }))
