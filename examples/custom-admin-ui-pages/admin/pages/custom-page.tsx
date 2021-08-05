@@ -13,14 +13,14 @@ export default function CustomPage() {
           textAlign: 'center',
         }}
       >
-        Hello this is a custom page
+        This is a custom Admin UI Page
       </h1>
       <p
         css={{
           textAlign: 'center',
         }}
       >
-        This is a custom page added to the Admin UI, leveraging <em>@keystone-ui/core</em>
+        It can be accessed via the route <a href="/custom-page">/custom-page</a>
       </p>
     </PageContainer>
   );
