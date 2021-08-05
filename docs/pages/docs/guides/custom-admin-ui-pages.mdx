@@ -14,8 +14,8 @@ Much like with Next.js, all files in this directory will be added as routes to t
 The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
 
 ```tsx
-// admin/pages/MyCustomPage.tsx
-export default function () {
+// admin/pages/custom-page.tsx
+export default function CustomPage () {
     return (
         <>
             <h1>This is a custom Admin UI Page</h1>
@@ -25,21 +25,123 @@ export default function () {
 }
 ```
 
+With this in place, we now have a nice simple custom Admin UI page at `http://localhost:3000/custom-page`.
+[!example of a simple custom-page in the Admin UI](/assets/guides/custom-admin-ui-pages/simple-custom-page.png)
+
+At the moment though, this page is pretty barebones. We probably want our page to look a little bit more like an Admin UI page.
+Keystone helps us do this via the `PageContainer` component export
+from the `@keystone-next/keystone/admin-ui/components` entrypoint. The page container takes a `header` prop, which is expected to be a `ReactElement`.
+This `header` prop is rendered out as the page title at the top of the page as below.
+[!example of a rendered out header prop](/assets/guides/custom-admin-ui-pages/header-prop.png)
+
+```tsx
+// admin/pages/custom-page.tsx
+import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
+export default function CustomPage () {
+    return (
+        <PageContainer header="Custom Page">
+            <h1>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route `/custom-page`</p>
+        </PageContainer>
+    )
+}
+```
+
+With the above snippet, our custom page looks a lot more like the other pages in the Admin UI.
+[!example of the custom Admin UI page with the PageContainer component](/assets/guides/custom-admin-ui-pages/custom-page-w-page-container).
+
+There are still a few problems we need to fix though. The first is that the header doesn't really look right.
+If we compare the header of our custom-page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
+Keystone internally leverages the `Heading` component from the `@keystone-ui/core` package for most of its pages, so lets use this to give our header the same styling.
+
+```tsx
+// admin/pages/custom-page.tsx
+import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
+import { Heading } from '@keystone-ui/core';
+export default function CustomPage () {
+    return (
+        <PageContainer header={<Heading type="h3">Custom Page</Heading>}>
+            <h1>This is a custom Admin UI Page</h1>
+            <p>It can be accessed via the route `/custom-page`</p>
+        </PageContainer>
+    )
+}
+```
+
+Much better!
+[!custom page with correctly styled header](/assets/guides/custom-admin-ui-pages/custom-page-with-styled-header.png)
+
+The second problem we need to fix is navigation. Though our custom page is looking much more like an Admin UI page, it's not visible as a navigation item.
+We can fix this by adding a custom Navigation component with a route pointing to our cusotm page.
+
+We'll skip over the specifics for this guide, as you can find more detail on creating a custom Navigation component via the [Custom Admin UI Navigation guide](https://keystonejs.com/docs/guides/custom-admin-ui-navigation)
+Create the following snippets in your `/admin` directory in the root of your Keystone project.
+
+```tsx
+// admin/config.ts
+import type { AdminConfig } from '@keystone-next/types';
+import { CustomNavigation } from './components/CustomNavigation';
+export const components: AdminConfig['components']= {
+    Navigation: CustomNavigation
+};
+```
+
+```tsx
+// admin/components/CustomNavigation.tsx
+import { NavigationContainer, ListNavItems, NavItem } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
+    return (
+        <NavigationContainer authenticatedItem={authenticatedItem}>
+            <NavItem href="/">Dashboard</NavItem>
+            <ListNavItems lists={lists} />
+        </NavigationContainer>
+    )
+}
+```
+
+Lastly we'll add our new route to the newly created `CustomNavigation` component.
+
+```tsx
+import { NavigationContainer, ListNavItems, NavItem } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
+    return (
+        <NavigationContainer authenticatedItem={authenticatedItem}>
+            <NavItem href="/">Dashboard</NavItem>
+            <ListNavItems lists={lists} />
+            <NavItem href="/custom-page">Custom Page</NavItem>
+        </NavigationContainer>
+    )
+}
+```
+
+!> Under the hood Keystone's Admin UI is powered by Next.js, so the route to our custom page is the filename of our custom page component, in this case its `/custom-page`
+
+With all that in place, our custom Admin UI page is complete.
+[!completed custom Admin UI page](/assets/guides/custom-admin-ui-pages/custom-page-completed)
+
+!>This concludes the main part of the Custom Admin UI Pages guide
+
+## Styline
+
 If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
 
 ```tsx
-// admin/pages/MyCustomPage.tsx
+// admin/pages/custom-page.tsx
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-export default function () {
+import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
+
+export default function CustomPage () {
     return (
-        <>
+        <PageContainer>
             <h1 css={{
                 fontSize: '3rem'
             }}>This is a custom Admin UI Page</h1>
-            <p>It can be accessed via the route '/MyCustomPage'</p>
-        </>
+            <p>It can be accessed via the route `/custom-page`</p>
+        </PageContainer>
     )
 }
 ```
