@@ -11,7 +11,7 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
       <ListNavItems lists={lists} />
-      <NavItem href="/custom-page">Custom Pages</NavItem>
+      <NavItem href="/custom-page">Custom Page</NavItem>
     </NavigationContainer>
   );
 }
