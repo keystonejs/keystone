@@ -4,6 +4,8 @@ import { Alert } from '../../../components/primitives/Alert';
 
 # Custom Admin UI Pages
 
+## Getting Started
+
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of Next.js, it exposes the same pages directory for adding custom pages.
 
@@ -26,13 +28,16 @@ export default function CustomPage () {
 ```
 
 With this in place, we now have a nice simple custom Admin UI page at `http://localhost:3000/custom-page`.
-[!example of a simple custom-page in the Admin UI](/assets/guides/custom-admin-ui-pages/simple-custom-page.png)
+![example of a simple custom-page in the Admin UI](/assets/guides/custom-admin-ui-pages/simple-custom-page.png)
+
+## Adding Admin UI layout
 
 At the moment though, this page is pretty barebones. We probably want our page to look a little bit more like an Admin UI page.
-Keystone helps us do this via the `PageContainer` component export
-from the `@keystone-next/keystone/admin-ui/components` entrypoint. The page container takes a `header` prop, which is expected to be a `ReactElement`.
+Keystone helps us do this via the `PageContainer` component export from the `@keystone-next/keystone/admin-ui/components` entrypoint.
+
+The page container takes a `header` prop, which is expected to be a `ReactElement`.
 This `header` prop is rendered out as the page title at the top of the page as below.
-[!example of a rendered out header prop](/assets/guides/custom-admin-ui-pages/header-prop.png)
+![example of a rendered out header prop](/assets/guides/custom-admin-ui-pages/header-prop.png)
 
 ```tsx
 // admin/pages/custom-page.tsx
@@ -48,16 +53,18 @@ export default function CustomPage () {
 ```
 
 With the above snippet, our custom page looks a lot more like the other pages in the Admin UI.
-[!example of the custom Admin UI page with the PageContainer component](/assets/guides/custom-admin-ui-pages/custom-page-w-page-container).
+![example of the custom Admin UI page with the PageContainer component](/assets/guides/custom-admin-ui-pages/custom-page-w-page-container.png)
 
-There are still a few problems we need to fix though. The first is that the header doesn't really look right.
+There's still a problems we need to fix though, the header doesn't really look right.
 If we compare the header of our custom-page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
-Keystone internally leverages the `Heading` component from the `@keystone-ui/core` package for most of its pages, so lets use this to give our header the same styling.
+
+Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package, so lets use this to give our header the same styling.
 
 ```tsx
 // admin/pages/custom-page.tsx
 import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
+
 export default function CustomPage () {
     return (
         <PageContainer header={<Heading type="h3">Custom Page</Heading>}>
@@ -68,14 +75,15 @@ export default function CustomPage () {
 }
 ```
 
-Much better!
-[!custom page with correctly styled header](/assets/guides/custom-admin-ui-pages/custom-page-with-styled-header.png)
+Much better, our custom page looks and feels like an Admin UI page now.
+![custom page with correctly styled header](/assets/guides/custom-admin-ui-pages/custom-page-with-styled-header.png)
 
-The second problem we need to fix is navigation. Though our custom page is looking much more like an Admin UI page, it's not visible as a navigation item.
-We can fix this by adding a custom Navigation component with a route pointing to our cusotm page.
+## Custom route in Admin UI Navigation
 
-We'll skip over the specifics for this guide, as you can find more detail on creating a custom Navigation component via the [Custom Admin UI Navigation guide](https://keystonejs.com/docs/guides/custom-admin-ui-navigation)
-Create the following snippets in your `/admin` directory in the root of your Keystone project.
+Yes, our custom page is looking pretty great, and much more like an Admin UI page, but it's not visible as a navigation item.
+We can fix this by adding a custom Navigation component with a route pointing to our custom page.
+
+First add the following files to the `/admin` directory in the root of your Keystone project.
 
 ```tsx
 // admin/config.ts
@@ -100,9 +108,12 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
 }
 ```
 
+!> We've skipped over the specifics for this guide, if you're interested in more detail on creating a custom Navigation component check out the [Custom Admin UI Navigation](/docs/guides/custom-admin-ui-navigation) guide.
+
 Lastly we'll add our new route to the newly created `CustomNavigation` component.
 
 ```tsx
+// admin/components/CustomNavigation.tsx
 import { NavigationContainer, ListNavItems, NavItem } from '@keystone-next/keystone/admin-ui/components';
 import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
 export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
@@ -118,35 +129,50 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
 
 !> Under the hood Keystone's Admin UI is powered by Next.js, so the route to our custom page is the filename of our custom page component, in this case its `/custom-page`
 
-With all that in place, our custom Admin UI page is complete.
-[!completed custom Admin UI page](/assets/guides/custom-admin-ui-pages/custom-page-completed)
+With all that in place, our custom Admin UI page is now navigable from the Admin UI Navigation component, and we can access it from other pages in the Admin UI.
+![completed custom Admin UI page](/assets/guides/custom-admin-ui-pages/custom-page-completed.png)
 
-!>This concludes the main part of the Custom Admin UI Pages guide
+!> This concludes the main part of the Custom Admin UI Pages guide
 
-## Styline
+## Styling
 
-If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
+Undoubtably there are other styling considerations to adding a custom-page to the Admin UI that go beyond making it _look_ and _feel_ like an Admin UI page.
+In these situations, we recommend using the `jsx` runtime export from the `@keystone-ui/core` package, as this will ensure that the version of [emotion](https://emotion.sh/docs/introduction) you're using conforms with the version of emotion used internally used by Keystone.
+
+The snippet below uses the emotion `jsx` runtime exported from `@keystone-ui/core` to help add some basic allignment and layout styling to the contents of our Admin UI custom page.
 
 ```tsx
 // admin/pages/custom-page.tsx
 /** @jsxRuntime classic */
 /** @jsx jsx */
+
 import { jsx } from '@keystone-ui/core';
 import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
+import { Heading } from '@keystone-ui/core';
 
 export default function CustomPage () {
     return (
-        <PageContainer>
+        <PageContainer
+            header={(
+                <Heading type="h3">
+                    Custom Page
+                </Heading>
+            )}>
             <h1 css={{
-                fontSize: '3rem'
-            }}>This is a custom Admin UI Page</h1>
-            <p>It can be accessed via the route `/custom-page`</p>
+                width: '100%',
+                textAlign: 'center',
+            }}>
+                This is a custom Admin UI Page
+            </h1>
+            <p css={{ textAlign: 'center' }}>
+                It can be accessed via the route <a href="/custom-page">/custom-page</a>
+            </p>
         </PageContainer>
     )
 }
 ```
 
-Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
+Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration currently outside of the scope of this guide.
 
 x> **Not all Next.js exports are available:** Keystone **only** supports the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` are not supported.
 
