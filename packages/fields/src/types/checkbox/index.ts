@@ -17,6 +17,34 @@ export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     isRequired?: boolean;
   };
 
+function resolveBooleanFilter(
+  filter: Exclude<
+    Partial<
+      schema.InferValueFromArg<
+        schema.Arg<typeof filters[keyof typeof filters]['Boolean']['optional']>
+      >
+    >,
+    undefined
+  >
+): any {
+  if (filter === null) {
+    return null;
+  }
+  if (filter.equals != null) {
+    const { equals, ...rest } = filter;
+    return {
+      AND: [{ equals: filter.equals }, { not: { equals: null } }, resolveBooleanFilter(rest)],
+    };
+  }
+  if (filter.not != null) {
+    const { not, ...rest } = filter;
+    return {
+      AND: [{ NOT: resolveBooleanFilter(not) }, resolveBooleanFilter(rest)],
+    };
+  }
+  return filter;
+}
+
 export const checkbox =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isRequired,
@@ -31,7 +59,10 @@ export const checkbox =
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].Boolean.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Boolean.optional }),
+          resolve: resolveBooleanFilter,
+        },
         create: { arg: schema.arg({ type: schema.Boolean }) },
         update: { arg: schema.arg({ type: schema.Boolean }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
