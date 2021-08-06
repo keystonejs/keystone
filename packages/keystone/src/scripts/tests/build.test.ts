@@ -76,18 +76,17 @@ test('build works with typescript without the user defining a babel config', asy
     ✨ Generating Admin UI code
     ✨ Generating Keystone config code
     ✨ Building Admin UI
-    [36minfo[39m  - Using webpack 4. Reason: custom webpack configuration in next.config.js https://nextjs.org/docs/messages/webpack5
-    [33mwarn[39m  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
-    [36minfo[39m  - Checking validity of types...
-    [36minfo[39m  - Creating an optimized production build...
-    [36minfo[39m  - Compiled successfully
-    [36minfo[39m  - Collecting page data...
-    [36minfo[39m  - Generating static pages (0/6)
-    [36minfo[39m  - Generating static pages (1/6)
-    [36minfo[39m  - Generating static pages (2/6)
-    [36minfo[39m  - Generating static pages (4/6)
-    [36minfo[39m  - Generating static pages (6/6)
-    [36minfo[39m  - Finalizing page optimization...
+    info  - Using webpack 4. Reason: custom webpack configuration in next.config.js https://nextjs.org/docs/messages/webpack5
+    info  - Skipping validation of types...
+    info  - Creating an optimized production build...
+    info  - Compiled successfully
+    info  - Collecting page data...
+    info  - Generating static pages (0/6)
+    info  - Generating static pages (1/6)
+    info  - Generating static pages (2/6)
+    info  - Generating static pages (4/6)
+    info  - Generating static pages (6/6)
+    info  - Finalizing page optimization...
 
     [4mPage[24m                                                           [4mSize[24m     [4mFirst Load JS[24m
     ┌ ○ /                                                          size         [31m[1msize[22m[39m
