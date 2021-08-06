@@ -17,21 +17,24 @@ export const apiTestConfig = (
 });
 
 const unpackErrors = (errors: readonly any[] | undefined) =>
-  (errors || []).map(({ locations, extensions: { exception, ...extensions }, ...unpacked }) => ({
-    extensions,
-    ...unpacked,
-  }));
+  (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
 const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');
 
+// FIXME: It's not clear to me right now why sometimes
+// we get an expcetion, and other times we don't - TL
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
+  expectException: boolean,
   args: { path: any[]; message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        ...(expectException ? { exception: { locations: [expect.any(Object)], message } } : {}),
+      },
       path,
       message,
     }))
@@ -85,28 +88,47 @@ export const expectValidationError = (
 
 export const expectExtensionError = (
   mode: 'dev' | 'production',
+  httpQuery: boolean,
   errors: readonly any[] | undefined,
   extensionName: string,
   args: { path: (string | number)[]; messages: string[]; errors: any[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path, messages, errors }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR', ...(mode !== 'production' ? { errors } : {}) },
-      path,
-      message: `An error occured while running "${extensionName}".\n${j(messages)}`,
-    }))
+    args.map(({ path, messages, errors }) => {
+      const message = `An error occured while running "${extensionName}".\n${j(messages)}`;
+      const stacktrace = message.split('\n');
+      stacktrace[0] = `Error: ${stacktrace[0]}`;
+      return {
+        extensions: {
+          code: 'INTERNAL_SERVER_ERROR',
+          ...(httpQuery && mode !== 'production'
+            ? { exception: { errors, stacktrace: expect.arrayContaining(stacktrace) } }
+            : {}),
+          ...(mode !== 'production' ? { errors } : {}),
+        },
+        path,
+        message,
+      };
+    })
   );
 };
 
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[]; message: string; code: string; target: string[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+    args.map(({ path, message, code, target }) => ({
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        exception: {
+          clientVersion: '2.28.0',
+          code,
+          meta: { target },
+        },
+      },
       path,
       message,
     }))
