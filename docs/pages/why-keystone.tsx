@@ -14,6 +14,7 @@ import { Automated } from '../components/icons/Automated';
 import { Migration } from '../components/icons/Migration';
 import { Section } from '../components/content/Section';
 import { Button } from '../components/primitives/Button';
+import { AdvancedReactCta } from '../components/content/AdvancedReactCta';
 import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
 import { Updates } from '../components/icons/Updates';
@@ -89,7 +90,7 @@ export default function WhyKeystonePage() {
             margin: '1rem 0',
           }}
         >
-          <Image src={adminUi} alt="TODO" width={3710} height={2195} />
+          <Image src={adminUi} alt="Depiction of Keystone’s Admin UI" width={3710} height={2195} />
         </div>
 
         <ul
@@ -367,12 +368,11 @@ export default function WhyKeystonePage() {
           <ul
             css={mq({
               display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '1.5rem',
+              gridTemplateColumns: ['1fr', '1fr 1fr'],
+              gap: '3rem',
               listStyle: 'none',
               padding: 0,
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
               '& svg': {
                 height: '2rem',
               },
@@ -423,28 +423,51 @@ export default function WhyKeystonePage() {
                 Try the Blog example →
               </a>
             </li>
-            <li>
-              <Type as="h3" look="heading36" id="ecommerce">
-                eCommerce
-              </Type>
-              <Type as="p" look="body18">
-                Keystone gives you the power and control you need to build a complete backend for
-                eCommerce, while making it easy to integrate platforms like Shopify and Stripe to
-                get things done. API first, make Keystone a key player in your eCommerce content
-                mesh.
-              </Type>
-              <a
-                href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try the eCommerce example →
-              </a>
-            </li>
           </ul>
         </Section>
 
-        {/* <Section>TODO: WES BOS COURSE LINK...</Section> */}
+        <Section
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
+            gap: '3rem',
+          })}
+        >
+          <div>
+            <Type as="h3" look="heading36" id="ecommerce">
+              eCommerce
+            </Type>
+            <Type as="p" look="body18" margin="1rem 0">
+              Keystone gives you the power and control you need to build a complete backend for
+              eCommerce, while making it easy to integrate platforms like Shopify and Stripe to get
+              things done. API first, make Keystone a key player in your eCommerce content mesh.
+            </Type>
+            <a
+              href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Try the eCommerce example →
+            </a>
+          </div>
+          <div>
+            <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
+              I use Keystone in my{' '}
+              <a
+                href="https://advancedreact.com/friend/KEYSTONE"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Advanced React
+              </a>{' '}
+              course because it’s super quick to get my content types up and running, add custom
+              server-side cart & checkout logic, and the fine grain access control is just
+              fantastic!
+            </TweetBox>
+          </div>
+        </Section>
+
+        <AdvancedReactCta />
 
         <Section
           css={mq({
