@@ -156,7 +156,7 @@ export const lists = createSchema({
             kind: 'prop',
             listKey: 'User',
             many: true,
-            selection: `posts(first: 10) {
+            selection: `posts(take: 10) {
             title
           }`,
           },

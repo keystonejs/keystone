@@ -106,7 +106,7 @@ type Person {
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
@@ -197,7 +197,7 @@ type Query {
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
   task(where: TaskWhereUniqueInput!): Task
@@ -205,7 +205,7 @@ type Query {
   people(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person
