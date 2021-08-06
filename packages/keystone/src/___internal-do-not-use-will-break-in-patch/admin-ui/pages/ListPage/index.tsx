@@ -467,20 +467,23 @@ function DeleteManyButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItems({
-                variables: { where: [...selectedItems].map(id => ({ id })) },
-              }).catch(err => {
-                toasts.addToast({
+              try {
+                await deleteItems({
+                  variables: { where: [...selectedItems].map(id => ({ id })) },
+                });
+              } catch (e) {
+                return toasts.addToast({
                   title: 'Failed to delete items',
-                  message: err.message,
+                  message: e.message,
                   tone: 'negative',
                 });
-              });
+              }
+
               toasts.addToast({
                 title: 'Deleted items successfully',
                 tone: 'positive',
               });
-              refetch();
+              return refetch();
             },
           },
           cancel: {
