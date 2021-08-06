@@ -69,7 +69,10 @@ export const select =
       })({
         ...commonConfig,
         input: {
-          where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }) },
+          where: {
+            arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+            resolve: filters.resolveCommon,
+          },
           create: { arg: schema.arg({ type: schema.Int }) },
           update: { arg: schema.arg({ type: schema.Int }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -98,7 +101,10 @@ export const select =
       )({
         ...commonConfig,
         input: {
-          where: { arg: schema.arg({ type: filters[meta.provider].enum(graphQLType).optional }) },
+          where: {
+            arg: schema.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
+            resolve: filters.resolveCommon,
+          },
           create: { arg: schema.arg({ type: graphQLType }) },
           update: { arg: schema.arg({ type: graphQLType }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -112,7 +118,10 @@ export const select =
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
       ...commonConfig,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].String.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          resolve: filters.resolveString,
+        },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

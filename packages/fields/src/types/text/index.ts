@@ -41,7 +41,10 @@ export const text =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.String }) } : undefined,
-        where: { arg: schema.arg({ type: filters[meta.provider].String.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          resolve: filters.resolveString,
+        },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

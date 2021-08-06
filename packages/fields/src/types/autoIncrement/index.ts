@@ -49,7 +49,10 @@ export const autoIncrement =
       ...config,
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          arg: schema.arg({
+            type: filters[meta.provider].Int.optional,
+          }),
+          resolve: filters.resolveCommon,
         },
         uniqueWhere: isUnique ? { arg: schema.arg({ type }), resolve: x => Number(x) } : undefined,
         create: { arg: schema.arg({ type }), resolve: inputResolver },

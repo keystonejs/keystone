@@ -37,7 +37,10 @@ export const float =
     })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].Float.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Float.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Float }) },
         update: { arg: schema.arg({ type: schema.Float }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

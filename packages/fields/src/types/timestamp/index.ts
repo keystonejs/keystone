@@ -43,7 +43,10 @@ export const timestamp =
     })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].DateTime.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].DateTime.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
         update: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

@@ -67,7 +67,10 @@ export const decimal =
     })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].Decimal.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Decimal.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: {
           arg: schema.arg({ type: schema.String }),
           resolve(val) {

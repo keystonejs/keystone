@@ -38,7 +38,10 @@ export const integer =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
-        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }) },
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
