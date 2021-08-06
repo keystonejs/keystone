@@ -76,6 +76,8 @@ testModules
                 message: expect.stringMatching(
                   /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
                 ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })
@@ -104,6 +106,8 @@ testModules
                 message: expect.stringMatching(
                   /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
                 ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })

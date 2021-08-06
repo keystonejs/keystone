@@ -115,7 +115,7 @@ const runner = setupTestRunner({
             // Returns null and throws an error
             expect(data).toEqual({ createUser: null });
             const message = `Simulated error: ${phase}Change`;
-            expectExtensionError(mode, errors, `${phase}Change`, [
+            expectExtensionError(mode, false, errors, `${phase}Change`, [
               {
                 path: ['createUser'],
                 messages: [`User: Simulated error: ${phase}Change`],
@@ -157,7 +157,7 @@ const runner = setupTestRunner({
             // Returns null and throws an error
             expect(data).toEqual({ updateUser: null });
             const message = `Simulated error: ${phase}Change`;
-            expectExtensionError(mode, errors, `${phase}Change`, [
+            expectExtensionError(mode, false, errors, `${phase}Change`, [
               {
                 path: ['updateUser'],
                 messages: [`User: ${message}`],
@@ -199,7 +199,7 @@ const runner = setupTestRunner({
             // Returns null and throws an error
             expect(data).toEqual({ deleteUser: null });
             const message = `Simulated error: ${phase}Delete`;
-            expectExtensionError(mode, errors, `${phase}Delete`, [
+            expectExtensionError(mode, false, errors, `${phase}Delete`, [
               {
                 path: ['deleteUser'],
                 messages: [`User: ${message}`],
@@ -251,7 +251,7 @@ const runner = setupTestRunner({
             });
             // The invalid creates should have errors which point to the nulls in their path
             const message = `Simulated error: ${phase}Change`;
-            expectExtensionError(mode, errors, `${phase}Change`, [
+            expectExtensionError(mode, false, errors, `${phase}Change`, [
               {
                 path: ['createUsers', 1],
                 messages: [`User: ${message}`],
@@ -330,7 +330,7 @@ const runner = setupTestRunner({
             });
             // The invalid updates should have errors which point to the nulls in their path
             const message = `Simulated error: ${phase}Change`;
-            expectExtensionError(mode, errors, `${phase}Change`, [
+            expectExtensionError(mode, false, errors, `${phase}Change`, [
               {
                 path: ['updateUsers', 1],
                 messages: [`User: ${message}`],
@@ -404,7 +404,7 @@ const runner = setupTestRunner({
             });
             // The invalid deletes should have errors which point to the nulls in their path
             const message = `Simulated error: ${phase}Delete`;
-            expectExtensionError(mode, errors, `${phase}Delete`, [
+            expectExtensionError(mode, false, errors, `${phase}Delete`, [
               {
                 path: ['deleteUsers', 1],
                 messages: [`User: ${message}`],
@@ -464,7 +464,7 @@ const runner = setupTestRunner({
             });
             const message1 = `Simulated error: title: ${phase}Change`;
             const message2 = `Simulated error: content: ${phase}Change`;
-            expectExtensionError(mode, errors, `${phase}Change`, [
+            expectExtensionError(mode, false, errors, `${phase}Change`, [
               {
                 path: ['updatePost'],
                 messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
@@ -512,7 +512,7 @@ const runner = setupTestRunner({
             const { data, errors } = body;
             const message1 = `Simulated error: title: ${phase}Delete`;
             const message2 = `Simulated error: content: ${phase}Delete`;
-            expectExtensionError(mode, errors, `${phase}Delete`, [
+            expectExtensionError(mode, true, errors, `${phase}Delete`, [
               {
                 path: ['deletePost'],
                 messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],

@@ -70,13 +70,15 @@ describe('extendGraphqlSchema', () => {
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
-              query {
-                quads(x: 10)
-              }
-            `,
+          query {
+            quads(x: 10)
+          }
+        `,
       });
       expect(body.data).toEqual({ quads: null });
-      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }]);
+      expectInternalServerError(body.errors, false, [
+        { path: ['quads'], message: 'Access denied' },
+      ]);
     })
   );
   it(
