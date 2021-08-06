@@ -7,9 +7,18 @@ export const validationFailureError = (messages: string[]) => {
   return new ApolloError(`You provided invalid data for this operation.\n${s}`);
 };
 
-export const extensionError = (extension: string, messages: string[]) => {
-  const s = messages.map(m => `  - ${m}`).join('\n');
-  return new ApolloError(`An error occured while running "${extension}".\n${s}`);
+export const extensionError = (extension: string, things: { error: Error; tag: string }[]) => {
+  const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n');
+  return new ApolloError(
+    `An error occured while running "${extension}".\n${s}`,
+    'INTERNAL_SERVER_ERROR',
+    // Make the original stack traces available in non-production modes.
+    // TODO: We need to have a way to make these stack traces available
+    // for logging in production mode.
+    process.env.NODE_ENV !== 'production'
+      ? { errors: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })) }
+      : undefined
+  );
 };
 
 // FIXME: In an upcoming PR we will use these args to construct a better
