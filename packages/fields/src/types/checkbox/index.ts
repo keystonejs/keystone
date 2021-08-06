@@ -33,13 +33,13 @@ function resolveBooleanFilter(
   if (filter.equals != null) {
     const { equals, ...rest } = filter;
     return {
-      AND: [{ equals: filter.equals }, { not: { equals: null } }, resolveBooleanFilter(rest)],
+      AND: [{ equals: filter.equals }, { not: null }, resolveBooleanFilter(rest)],
     };
   }
   if (filter.not != null) {
     const { not, ...rest } = filter;
     return {
-      AND: [{ NOT: resolveBooleanFilter(not) }, resolveBooleanFilter(rest)],
+      AND: [{ NOT: [resolveBooleanFilter(not)] }, resolveBooleanFilter(rest)],
     };
   }
   return filter;

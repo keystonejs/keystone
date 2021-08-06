@@ -110,15 +110,18 @@ export async function resolveWhereInput(
           }
           return { [fieldKey]: null };
         }
-        const { AND, OR, NOT, ...rest } = ret;
-        return {
-          AND: AND?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          OR: OR?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          NOT: NOT?.map((value: any) => nestWithAppropiateField(fieldKey, dbField, value)),
-          ...nestWithAppropiateField(fieldKey, dbField, rest),
-        };
+        return handleOperators(fieldKey, dbField, ret);
       })
     ),
+  };
+}
+
+function handleOperators(fieldKey: string, dbField: DBField, { AND, OR, NOT, ...rest }: any) {
+  return {
+    AND: AND?.map((value: any) => handleOperators(fieldKey, dbField, value)),
+    OR: OR?.map((value: any) => handleOperators(fieldKey, dbField, value)),
+    NOT: NOT?.map((value: any) => handleOperators(fieldKey, dbField, value)),
+    ...nestWithAppropiateField(fieldKey, dbField, rest),
   };
 }
 
