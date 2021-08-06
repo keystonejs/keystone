@@ -118,7 +118,7 @@ testModules
                 `No Filter`,
                 withKeystone(({ context }) => match(context, undefined, [0, 1, 2, 3, 4, 5, 6]))
               );
-              // arguably this should maybe return [] when negated
+              // arguably this should return [] when negated
               // but i assume prisma is like "this things empty, let's just ignore it"
               // this is fine imo since "i want to query this api and have it definitely return no results"
               // isn't really very useful

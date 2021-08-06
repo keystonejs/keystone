@@ -1,9 +1,5 @@
-import { schema } from '@graphql-ts/schema';
-
-import * as postgresql from './providers/postgresql';
-import * as sqlite from './providers/sqlite';
-
-export { postgresql, sqlite };
+export * as postgresql from './providers/postgresql';
+export * as sqlite from './providers/sqlite';
 
 type EntriesAssumingNoExtraProps<T> = {
   [Key in keyof T]-?: [Key, T[Key]];
@@ -85,18 +81,9 @@ export function resolveCommon(val: CommonFilter<any> | null) {
 }
 
 export function resolveString(
-  val: schema.InferValueFromArg<
-    schema.Arg<
-      schema.NonNullType<
-        typeof postgresql['String']['optional'] | typeof sqlite['String']['optional']
-      >
-    >
-  > | null
+  val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
 ) {
   if (val == null) return null;
-  let mode = undefined;
-  if ('mode' in val) {
-    ({ mode, ...val } = val);
-  }
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), mode as any);
+  let { mode, ...rest } = val;
+  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(rest), mode as any);
 }
