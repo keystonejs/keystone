@@ -133,7 +133,7 @@ type Query {
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
   user(where: UserWhereUniqueInput!): User

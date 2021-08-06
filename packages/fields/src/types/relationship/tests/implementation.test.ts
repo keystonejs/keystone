@@ -123,7 +123,7 @@ describe('Type Generation', () => {
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
   id: ID!
-  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
+  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], take: Int, skip: Int! = 0): [Zip!]
   fooCount(where: ZipWhereInput! = {}): Int
 }"
 `);
@@ -135,7 +135,7 @@ describe('Type Generation', () => {
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
   id: ID!
-  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], first: Int, skip: Int! = 0): [Zip!]
+  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], take: Int, skip: Int! = 0): [Zip!]
 }"
 `);
   });

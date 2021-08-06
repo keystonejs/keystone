@@ -94,7 +94,7 @@ export type TodoListTypeInfo = {
     listQuery: {
       readonly where?: TodoWhereInput;
       readonly orderBy?: ReadonlyArray<TodoOrderByInput> | TodoOrderByInput;
-      readonly first?: Scalars['Int'] | null;
+      readonly take?: Scalars['Int'] | null;
       readonly skip?: Scalars['Int'];
     };
   };

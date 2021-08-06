@@ -398,7 +398,7 @@ export type FindManyArgs = {
     schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
     Record<string, any>[]
   >;
-  first: schema.Arg<typeof schema.Int>;
+  take: schema.Arg<typeof schema.Int>;
   skip: schema.Arg<schema.NonNullType<typeof schema.Int>, number>;
 };
 
