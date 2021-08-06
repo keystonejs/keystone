@@ -166,7 +166,7 @@ export function initialiseLists(
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      first: schema.arg({ type: schema.Int }),
+      take: schema.arg({ type: schema.Int }),
       skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
     };
 

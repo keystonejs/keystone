@@ -116,7 +116,7 @@ type Person {
   tasks(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Todo!]
   tasksCount(where: TodoWhereInput! = {}): Int
@@ -215,7 +215,7 @@ type Role {
   assignedTo(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
   assignedToCount(where: PersonWhereInput! = {}): Int
@@ -367,7 +367,7 @@ type Query {
   todos(
     where: TodoWhereInput! = {}
     orderBy: [TodoOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Todo!]
   todo(where: TodoWhereUniqueInput!): Todo
@@ -375,7 +375,7 @@ type Query {
   people(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person
@@ -383,7 +383,7 @@ type Query {
   roles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Role!]
   role(where: RoleWhereUniqueInput!): Role

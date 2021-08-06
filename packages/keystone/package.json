@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/keystone",
-  "version": "23.0.2",
+  "version": "23.0.3",
   "license": "MIT",
   "main": "dist/keystone.cjs.js",
   "module": "dist/keystone.esm.js",
@@ -22,12 +22,12 @@
     "keystone-next": "bin/cli.js"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.21",
+    "@apollo/client": "^3.4.5",
     "@babel/core": "^7.14.8",
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
     "@babel/runtime": "^7.14.8",
     "@emotion/hash": "^0.8.0",
-    "@graphql-tools/merge": "^6.2.16",
+    "@graphql-tools/merge": "^7.0.0",
     "@hapi/iron": "^6.0.0",
     "@keystone-next/admin-ui-utils": "^5.0.5",
     "@keystone-next/fields": "^13.0.0",

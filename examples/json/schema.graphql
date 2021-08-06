@@ -111,7 +111,7 @@ type Person {
   packages(
     where: PackageWhereInput! = {}
     orderBy: [PackageOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Package!]
   packagesCount(where: PackageWhereInput! = {}): Int
@@ -198,7 +198,7 @@ type Query {
   packages(
     where: PackageWhereInput! = {}
     orderBy: [PackageOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Package!]
   package(where: PackageWhereUniqueInput!): Package
@@ -206,7 +206,7 @@ type Query {
   people(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person

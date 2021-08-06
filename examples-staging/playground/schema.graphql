@@ -98,7 +98,7 @@ type Query {
   notes(
     where: NoteWhereInput! = {}
     orderBy: [NoteOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Note!]
   note(where: NoteWhereUniqueInput!): Note

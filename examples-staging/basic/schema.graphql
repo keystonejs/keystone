@@ -10,14 +10,14 @@ type User {
   phoneNumbers(
     where: PhoneNumberWhereInput! = {}
     orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -438,7 +438,7 @@ type Query {
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
   user(where: UserWhereUniqueInput!): User
@@ -446,7 +446,7 @@ type Query {
   phoneNumbers(
     where: PhoneNumberWhereInput! = {}
     orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [PhoneNumber!]
   phoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
@@ -454,7 +454,7 @@ type Query {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   post(where: PostWhereUniqueInput!): Post

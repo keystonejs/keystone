@@ -59,7 +59,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         });
         const { posts } = await context.lists.Author.findOne({
           where: { id },
-          query: 'posts(first: 1, orderBy: { publishDate: desc }) { id }',
+          query: 'posts(take: 1, orderBy: { publishDate: desc }) { id }',
         });
         return { draft, published, latestPostId: posts ? posts[0].id : null };
       },

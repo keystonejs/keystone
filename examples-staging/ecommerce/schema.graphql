@@ -6,14 +6,14 @@ type User {
   cart(
     where: CartItemWhereInput! = {}
     orderBy: [CartItemOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [CartItem!]
   cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
     orderBy: [OrderOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
@@ -21,7 +21,7 @@ type User {
   products(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
@@ -536,7 +536,7 @@ type Order {
   items(
     where: OrderItemWhereInput! = {}
     orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [OrderItem!]
   itemsCount(where: OrderItemWhereInput! = {}): Int
@@ -614,7 +614,7 @@ type Role {
   assignedTo(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
   assignedToCount(where: UserWhereInput! = {}): Int
@@ -845,7 +845,7 @@ type Query {
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
   user(where: UserWhereUniqueInput!): User
@@ -853,7 +853,7 @@ type Query {
   products(
     where: ProductWhereInput! = {}
     orderBy: [ProductOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Product!]
   product(where: ProductWhereUniqueInput!): Product
@@ -861,7 +861,7 @@ type Query {
   productImages(
     where: ProductImageWhereInput! = {}
     orderBy: [ProductImageOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [ProductImage!]
   productImage(where: ProductImageWhereUniqueInput!): ProductImage
@@ -869,7 +869,7 @@ type Query {
   cartItems(
     where: CartItemWhereInput! = {}
     orderBy: [CartItemOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [CartItem!]
   cartItem(where: CartItemWhereUniqueInput!): CartItem
@@ -877,7 +877,7 @@ type Query {
   orderItems(
     where: OrderItemWhereInput! = {}
     orderBy: [OrderItemOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [OrderItem!]
   orderItem(where: OrderItemWhereUniqueInput!): OrderItem
@@ -885,7 +885,7 @@ type Query {
   orders(
     where: OrderWhereInput! = {}
     orderBy: [OrderOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Order!]
   order(where: OrderWhereUniqueInput!): Order
@@ -893,7 +893,7 @@ type Query {
   roles(
     where: RoleWhereInput! = {}
     orderBy: [RoleOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Role!]
   role(where: RoleWhereUniqueInput!): Role

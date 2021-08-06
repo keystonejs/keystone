@@ -6,7 +6,7 @@ type User {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -139,7 +139,7 @@ type Post {
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
@@ -241,7 +241,7 @@ type Tag {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -351,7 +351,7 @@ type Query {
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
   user(where: UserWhereUniqueInput!): User
@@ -359,7 +359,7 @@ type Query {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   post(where: PostWhereUniqueInput!): Post
@@ -367,7 +367,7 @@ type Query {
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag

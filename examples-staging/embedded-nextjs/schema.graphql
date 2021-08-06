@@ -108,7 +108,7 @@ type Query {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   post(where: PostWhereUniqueInput!): Post

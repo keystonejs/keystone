@@ -141,7 +141,7 @@ type Author {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -230,7 +230,7 @@ type Query {
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
   post(where: PostWhereUniqueInput!): Post
@@ -238,7 +238,7 @@ type Query {
   authors(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
