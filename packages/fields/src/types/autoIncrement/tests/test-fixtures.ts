@@ -35,8 +35,8 @@ export const storedValues = () => [
   { name: 'product3', orderNumber: 3 },
   { name: 'product4', orderNumber: 4 },
   { name: 'product5', orderNumber: 5 },
-  { name: 'product6', orderNumber: 6 },
-  { name: 'product7', orderNumber: 7 },
+  { name: 'product6', orderNumber: null },
+  { name: 'product7', orderNumber: null },
 ];
 
 export const supportedFilters = () => [
