@@ -105,10 +105,10 @@ export const RelationshipSelect = ({
 
   const QUERY: TypedDocumentNode<
     { items: { [idField]: string; [labelField]: string | null }[]; count: number },
-    { where: Record<string, any>; first: number; skip: number }
+    { where: Record<string, any>; take: number; skip: number }
   > = gql`
-    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $first: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}(where: $where, first: $first, skip: $skip) {
+    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
+      items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
         ${idField}: id
         ${labelField}: ${list.labelField}
         ${extraSelection}
@@ -121,7 +121,7 @@ export const RelationshipSelect = ({
 
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { where, first: initialItemsToLoad, skip: 0 },
+    variables: { where, take: initialItemsToLoad, skip: 0 },
   });
 
   const count = data?.count || 0;
@@ -146,10 +146,10 @@ export const RelationshipSelect = ({
       if (!loading && isIntersecting && options.length < count) {
         const QUERY: TypedDocumentNode<
           { items: { [idField]: string; [labelField]: string | null }[] },
-          { where: Record<string, any>; first: number; skip: number }
+          { where: Record<string, any>; take: number; skip: number }
         > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $first: Int!, $skip: Int!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, first: $first, skip: $skip) {
+              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
+                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
                   ${labelField}: ${list.labelField}
                   ${idField}: id
                   ${extraSelection}
@@ -160,7 +160,7 @@ export const RelationshipSelect = ({
           query: QUERY,
           variables: {
             where,
-            first: subsequentItemsToLoad,
+            take: subsequentItemsToLoad,
             skip: data!.items.length,
           },
           updateQuery: (prev, { fetchMoreResult }) => {

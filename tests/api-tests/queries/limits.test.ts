@@ -90,11 +90,11 @@ describe('maxResults Limit', () => {
         expect(data).toHaveProperty('usersCount');
         expect(data.usersCount).toBe(users.length);
 
-        // This query is only okay because of the "first" parameter
+        // This query is only okay because of the "take" parameter
         data = await context.graphql.run({
           query: `
           query {
-            users(first: 1) {
+            users(take: 1) {
               name
             }
           }
@@ -118,13 +118,13 @@ describe('maxResults Limit', () => {
 
         expectLimitsExceededError(errors, [{ path: ['users'] }]);
 
-        // The query results don't break the limits, but the "first" parameter does
+        // The query results don't break the limits, but the "take" parameter does
         ({ errors } = await context.graphql.raw({
           query: `
           query {
             users(
               where: { name: "Nope" },
-              first: 100000
+              take: 100000
             ) {
               name
             }
