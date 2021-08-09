@@ -118,7 +118,6 @@ describe('Auth testing', () => {
   });
 
   describe('logged in', () => {
-    // eslint-disable-next-line jest/no-disabled-tests
     test(
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
