@@ -9,8 +9,6 @@ import { Alert } from '../../../components/primitives/Alert';
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of [Next.js](https://nextjs.org/docs/basic-features/pages), it exposes the same pages directory for adding custom pages.
 
-!> **Note:** This feature will improve over time. It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
-
 To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
 Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
 The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
@@ -59,7 +57,7 @@ With the above snippet, our custom page looks a lot more like the other pages in
 There's still a problem though, the header doesn't look right. If we compare the header of our custom page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
 ![example of the Dashboard header element](/assets/guides/custom-admin-ui-pages/header-prop.png)
 
-Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package to style the header, so lets use this to give our header the same styling.
+Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package to style the header, so let's use this to give our header the same styling.
 
 ```tsx
 // admin/pages/custom-page.tsx
@@ -109,7 +107,7 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
 }
 ```
 !> You will need to restart your Keystone system after adding `admin/config.ts` for the custom Navigation component to be loaded.
-!> We've skipped over the specifics for this guide. If you're interested in more details on creating a custom Navigation component check out the [Custom Admin UI Navigation](/docs/guides/custom-admin-ui-navigation) guide.
+!> If you're interested in more details on creating a custom Navigation component check out the [Custom Admin UI Navigation](/docs/guides/custom-admin-ui-navigation) guide.
 
 Lastly we'll add our new route to the newly created `CustomNavigation` component.
 
