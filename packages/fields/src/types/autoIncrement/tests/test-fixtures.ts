@@ -10,6 +10,8 @@ export const fieldName = 'orderNumber';
 export const skipCreateTest = false;
 export const skipUpdateTest = true;
 
+export const unSupportedAdapterList = ['sqlite'];
+
 export const getTestFields = () => ({
   name: text(),
   orderNumber: autoIncrement(),
