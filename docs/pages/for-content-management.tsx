@@ -110,6 +110,16 @@ export default function ForOrganisations() {
             />
           </div>
         </SideBySideSection>
+        <Quote
+          name="Wes Bos"
+          img="/assets/wesbos-square.jpg"
+          title="Javascript developer. Host of Syntax.FM podcast"
+          grad="grad5"
+        >
+          I love how Keystone’s access control lets me declare every single Create, Read, Update,
+          and Delete operation at both the <strong>model</strong> and <strong>field</strong> level.
+          It’s my favorite way of implementing Auth.
+        </Quote>
 
         <SideBySideSection>
           <div>
@@ -261,7 +271,12 @@ export default function ForOrganisations() {
           </ul>
         </Section>
 
-        <Quote name="@mxstbr" img="/assets/mxstbr.jpg" grad="grad5">
+        <Quote
+          name="Max Stoiber"
+          img="/assets/mxstbr.jpg"
+          title="Co-Founder Graph CDN. Formerly GatsbyJS & Github"
+          grad="grad5"
+        >
           The new @KeystoneJS rich text editor has incredible inline React component support,
           including editing props and everything!
         </Quote>
@@ -309,9 +324,6 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            {/*<Link href="/TODO" passHref>
-              <a css={{ display: 'block', margin: '1rem 0' }}>Try the example →</a>
-            </Link>*/}
             <Link href="/docs/guides/relationships">
               <a>Relationships guide →</a>
             </Link>
