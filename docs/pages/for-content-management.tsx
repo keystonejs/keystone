@@ -113,7 +113,7 @@ export default function ForOrganisations() {
         <Quote
           name="Wes Bos"
           img="/assets/wesbos-square.jpg"
-          title="Javascript developer. Host of Syntax.FM podcast"
+          title="Javascript developer. Host of Syntax.FM podcast."
           grad="grad5"
         >
           I love how Keystone’s access control lets me declare every single Create, Read, Update,
@@ -274,7 +274,7 @@ export default function ForOrganisations() {
         <Quote
           name="Max Stoiber"
           img="/assets/mxstbr.jpg"
-          title="Co-Founder Graph CDN. Formerly GatsbyJS & Github"
+          title="Co-Founder Graph CDN. Formerly GatsbyJS & Github."
           grad="grad5"
         >
           The new @KeystoneJS rich text editor has incredible inline React component support,
