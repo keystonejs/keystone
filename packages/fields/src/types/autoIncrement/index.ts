@@ -38,9 +38,9 @@ export const autoIncrement =
           ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
         },
         impls: {
-          ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-          ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-          ...legacyFilters.impls.inConditions(meta.fieldKey),
+          ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
+          ...legacyFilters.impls.orderingConditions(meta.fieldKey, x => Number(x) || -1),
+          ...inConditions(meta.fieldKey, x => x.map((xx: any) => Number(xx) || -1)),
         },
       },
     };
@@ -63,3 +63,23 @@ export const autoIncrement =
       __legacy,
     });
   };
+
+function equalityConditions<T>(fieldKey: string, f: (a: any) => any) {
+  return {
+    [fieldKey]: (value: T) => ({ [fieldKey]: f(value) }),
+    [`${fieldKey}_not`]: (value: T) => ({ NOT: { [fieldKey]: f(value) } }),
+  };
+}
+
+function inConditions<T>(fieldKey: string, f: (a: any) => any) {
+  return {
+    [`${fieldKey}_in`]: (value: (T | null)[]) =>
+      value.includes(null)
+        ? { [fieldKey]: { in: f(value.filter(x => x !== null)) } }
+        : { [fieldKey]: { in: f(value) } },
+    [`${fieldKey}_not_in`]: (value: (T | null)[]) =>
+      value.includes(null)
+        ? { AND: [{ NOT: { [fieldKey]: { in: f(value.filter(x => x !== null)) } } }] }
+        : { NOT: { [fieldKey]: { in: f(value) } } },
+  };
+}
