@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { SubscribeForm } from '../../components/SubscribeForm';
 import { Badge } from '../../components/primitives/Badge';
 import { Emoji } from '../../components/primitives/Emoji';
@@ -58,4 +58,4 @@ We also have new reference examples for how to use advanced features, like imple
 roles-based access control system.
 
 export default ({ children, ...props }) => <Markdown description="What's new in Keystone 6" {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }

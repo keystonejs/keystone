@@ -3,7 +3,7 @@ import { HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
-import { getServerSideProps } from '../../components/Markdown';
+import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
 import { Button } from '../../components/primitives/Button';
 import { Alert } from '../../components/primitives/Alert';
@@ -214,7 +214,7 @@ export default function WhatsNew() {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <a href="https://github.com/keystonejs/prisma-day-2021-workshop">
             Follow along in with the repo
@@ -271,7 +271,7 @@ export default function WhatsNew() {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </Box>
         <Timeline date="29th June 2021" />
@@ -421,4 +421,4 @@ export default function WhatsNew() {
   );
 }
 
-export { getServerSideProps };
+export { getStaticProps };

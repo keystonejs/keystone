@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 28th June 2021
@@ -64,4 +64,4 @@ We've updated our Prisma dependencies to `2.25.0`, check out the [Prisma release
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-28) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="A new package to help test the behaviour of your GraphQL API, a document field example, better error messages, accessibility updates and another Prisma update." {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }

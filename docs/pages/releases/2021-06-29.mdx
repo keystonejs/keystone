@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 29th June 2021
@@ -64,4 +64,4 @@ config({
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-29) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="The ID Field option has been revamped with cuid, uuid and autoincrement options." {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }
