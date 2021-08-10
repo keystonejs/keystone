@@ -2,7 +2,7 @@
 import { ComponentProps, Fragment, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 
-import { getServerSideProps } from '../../components/Markdown';
+import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
 import { Button } from '../../components/primitives/Button';
 import { Highlight } from '../../components/primitives/Highlight';
@@ -416,4 +416,4 @@ export default function Roadmap() {
   );
 }
 
-export { getServerSideProps };
+export { getStaticProps };

@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 22nd March 2021
@@ -50,4 +50,4 @@ Now you can include negative values for `float`, `decimal` and `integer` fields.
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-03-22) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="Prisma migration improvements. Negative values now available for float, decimal and integer fields." {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }
