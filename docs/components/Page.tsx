@@ -18,8 +18,8 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      Keystone 6 is in Community Preview! What does that mean? see our{' '}
-      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
+      Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
+      visit{' '}
       <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
         v5.keystonejs.com
       </a>
