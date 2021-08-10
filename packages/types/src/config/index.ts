@@ -143,6 +143,40 @@ export type GraphQLConfig = {
    *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
    */
   apolloConfig?: Config;
+  /*
+   * When an error is returned from the GraphQL API, Apollo can include a stacktrace
+   * indicating where the error occurred. When Keystone is processing mutations, it
+   * will sometimes captures more than one error at a time, and then group these into
+   * a single error returned from the GraphQL API. Each of these errors will include
+   * a stacktrace.
+   *
+   * In general both categories of stacktrace are useful for debugging while developing,
+   * but should not be exposed in production, and this is the default behaviour of Keystone.
+   *
+   * You can use the `debug` option to change this behaviour. A use case for this
+   * would be if you need to send the stacktraces to a log, but do not want to return them
+   * from the API. In this case you could set `debug: true` and use
+   * `apolloConfig.formatError` to log the stacktraces and then strip them out before
+   * returning the error.
+   *
+   * ```
+   * graphql: {
+   *   debug: true,
+   *   apolloConfig: {
+   *     formatError: err => {
+   *       console.error(err);
+   *       delete err.extensions?.errors;
+   *       delete err.extensions?.exception?.errors;
+   *       delete err.extensions?.exception?.stacktrace;
+   *       return err;
+   *     },
+   *   },
+   * }
+   * ```
+   *   *
+   * Default: process.env.NODE_ENV !== 'production'
+   */
+  debug?: boolean;
 };
 
 // config.extendGraphqlSchema

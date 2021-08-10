@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 29th July 2021
@@ -97,4 +97,4 @@ Updated Prisma dependencies to `2.27.0`, check out the [Prisma releases page](ht
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="Custom navigation, pages and logo in this big Admin UI themed release!" {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }
