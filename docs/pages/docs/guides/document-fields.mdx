@@ -97,11 +97,11 @@ type Post_content_DocumentField {
 }
 ```
 
-To query the content we can run the following GraphQL query, which will return the JSON representation of the content in `allPosts.content.document`.
+To query the content we can run the following GraphQL query, which will return the JSON representation of the content in `posts.content.document`.
 
 ```graphql
 query {
-  allPosts {
+  posts {
     content {
       document
     }
@@ -229,7 +229,7 @@ To obtain more useful data, we can pass the `hydrateRelationships: true` option 
 
 ```graphql
 query {
-  allPosts {
+  posts {
     content {
       document(hydrateRelationships: true)
     }

@@ -24,16 +24,15 @@ This system will generate the following GraphQL API.
 
 ```graphql
 type Query {
-  User(where: UserWhereUniqueInput!): User
-  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
-  _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
+  user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User]
 }
 
 type Mutation {
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(id: ID!): User
   deleteUsers(ids: [ID!]): [User]
 }
@@ -133,7 +132,7 @@ type User {
 
 ```graphql
 type Query {
-  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
+  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User]
 }
 
 input UserWhereInput {
