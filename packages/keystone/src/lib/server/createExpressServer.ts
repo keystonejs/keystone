@@ -1,9 +1,13 @@
-import type { Config } from 'apollo-server-express';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
-import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
+import type {
+  KeystoneConfig,
+  CreateContext,
+  SessionStrategy,
+  GraphQLConfig,
+} from '@keystone-next/types';
 import { createAdminUIServer } from '../../admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
@@ -16,20 +20,20 @@ const addApolloServer = ({
   graphQLSchema,
   createContext,
   sessionStrategy,
-  apolloConfig,
+  graphqlConfig,
 }: {
   server: express.Express;
   config: KeystoneConfig;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
-  apolloConfig?: Config;
+  graphqlConfig?: GraphQLConfig;
 }) => {
   const apolloServer = createApolloServerExpress({
     graphQLSchema,
     createContext,
     sessionStrategy,
-    apolloConfig,
+    graphqlConfig,
   });
 
   const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
@@ -68,7 +72,7 @@ export const createExpressServer = async (
     graphQLSchema,
     createContext,
     sessionStrategy: config.session,
-    apolloConfig: config.graphql?.apolloConfig,
+    graphqlConfig: config.graphql,
   });
 
   if (config.ui?.isDisabled) {
