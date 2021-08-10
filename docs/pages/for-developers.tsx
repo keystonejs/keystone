@@ -167,9 +167,11 @@ export default function ForDevelopers() {
               doesn’t limit what you can put in an API. It’s flexible by design: tell Keystone what
               you want in your schema and get the matching APIs you need in return.
             </Type>
-            <Link href="/docs/apis/schema">
-              <a>Schema API reference →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/apis/schema">
+                <a>Schema API reference →</a>
+              </Link>
+            </Type>
           </div>
           <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad3">
             Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
@@ -188,9 +190,11 @@ export default function ForDevelopers() {
               configurable CMS built in. Program with JavaScript, store changes in version control,
               and integrate with your preferred CI tools.
             </Type>
-            <Link href="/for-content-management">
-              <a>Keystone for content management →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/for-content-management">
+                <a>Keystone for content management →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -247,9 +251,11 @@ export default function ForDevelopers() {
                 </Type>
               </li>
             </ul>
-            <Link href="/docs/guides/document-field-demo">
-              <a>Try the demo →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/guides/document-field-demo">
+                <a>Try the demo →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -293,9 +299,11 @@ export default function ForDevelopers() {
                 Build your own roles-based access controls. No limits on the amount and kind of
                 roles you can configure.
               </Type>
-              <Link href="/docs/apis/access-control">
-                <a>Access control API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/access-control">
+                  <a>Access control API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Relational grad="grad3" />
@@ -305,9 +313,11 @@ export default function ForDevelopers() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 One to one. One to many. Many to many. Self-referential. It's all there.
               </Type>
-              <Link href="/docs/guides/relationships">
-                <a>Relationships guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/relationships">
+                  <a>Relationships guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Cli grad="grad3" />
@@ -318,9 +328,11 @@ export default function ForDevelopers() {
                 Kick start new projects and try examples on for size from the comfort of your
                 terminal.
               </Type>
-              <Link href="/docs/guides/cli">
-                <a>CLI guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/cli">
+                  <a>CLI guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Typescript grad="grad3" />
