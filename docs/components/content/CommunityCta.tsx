@@ -54,7 +54,7 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
         <Type as="h2" look="heading30">
           Learn with others in a supportive community
         </Type>
-        <Type as="p" look="body18" margin="1rem 0">
+        <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
           Share your work and get the help you need in the Keystone community Slack: an inclusive
           space to share ideas and explore what‘s possible.
         </Type>
@@ -88,11 +88,15 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
         >
           <li>
             <Tick grad="grad4" />
-            <Type look="body16">2000+ members</Type>
+            <Type look="body18" color="var(--muted)">
+              2000+ members
+            </Type>
           </li>
           <li>
             <Tick grad="grad4" />
-            <Type look="body16">Personalised support</Type>
+            <Type look="body18" color="var(--muted)">
+              Personalised support
+            </Type>
           </li>
         </ul>
       </div>
