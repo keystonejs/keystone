@@ -81,19 +81,19 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
         >
           <li>
             <Tick grad="grad2" />
-            <Type look="body16" color="var(--muted)">
+            <Type look="body18" color="var(--muted)">
               11 modules
             </Type>
           </li>
           <li>
             <Tick grad="grad2" />
-            <Type look="body16" color="var(--muted)">
+            <Type look="body18" color="var(--muted)">
               70 videos
             </Type>
           </li>
           <li>
             <Tick grad="grad2" />
-            <Type look="body16" color="var(--muted)">
+            <Type look="body18" color="var(--muted)">
               28,000 students
             </Type>
           </li>
