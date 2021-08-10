@@ -22,10 +22,88 @@ This system will generate the following GraphQL API.
 
 **Note:** The names and types of the generated queries and mutations are based on the names of the lists and fields in the system config.
 
-```graphql
+````graphql
 type Query {
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User]
+  usersCount(where: UserWhereInput! = {}): Int
+}
+
+type User {
+  id: ID!
+  name: String
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
 }
 
 type Mutation {
@@ -33,137 +111,111 @@ type Mutation {
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
   updateUsers(data: [UserUpdateArgs!]!): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
-}
-
-type User {
-  id: ID!
-  name: String
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-}
-
-input UserWhereUniqueInput {
-  id: ID
-}
-
-input UserOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
 
 input UserUpdateInput {
   name: String
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
   name: String
 }
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-type _QueryMeta {
-  count: Int
-}
 ```
 
 ## Queries
 
-### User
+### `user`
 
 ```graphql
 type Query {
-  User(where: UserWhereUniqueInput!): User
-}
-
-input UserWhereUniqueInput {
-  id: ID
+  user(where: UserWhereUniqueInput!): User
 }
 
 type User {
   id: ID!
   name: String
 }
-```
 
-### allUsers
+input UserWhereUniqueInput {
+  id: ID
+}
+````
+
+### users
 
 ```graphql
 type Query {
-  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User]
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+}
+
+type User {
+  id: ID!
+  name: String
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input UserOrderByInput {
@@ -174,11 +226,6 @@ input UserOrderByInput {
 enum OrderDirection {
   asc
   desc
-}
-
-type User {
-  id: ID!
-  name: String
 }
 ```
 
@@ -186,52 +233,60 @@ type User {
 
 ```graphql
 type Query {
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
 }
 
-input UserOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
 }
 
-enum OrderDirection {
-  asc
-  desc
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
 }
 
-type _QueryMeta {
-  count: Int
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 ```
 
@@ -241,7 +296,7 @@ type _QueryMeta {
 
 ```graphql
 type Mutation {
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput!): User
 }
 
 input UserCreateInput {
@@ -258,11 +313,7 @@ type User {
 
 ```graphql
 type Mutation {
-  createUsers(data: [UsersCreateInput]): [User]
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
+  createUsers(data: [UserCreateInput!]!): [User]
 }
 
 input UserCreateInput {
@@ -279,7 +330,11 @@ type User {
 
 ```graphql
 type Mutation {
-  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 input UserUpdateInput {
@@ -296,12 +351,16 @@ type User {
 
 ```graphql
 type Mutation {
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs!]!): [User]
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 input UserUpdateInput {
@@ -318,7 +377,11 @@ type User {
 
 ```graphql
 type Mutation {
-  deleteUser(id: ID!): User
+  deleteUser(where: UserWhereUniqueInput!): User
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 type User {
@@ -331,7 +394,11 @@ type User {
 
 ```graphql
 type Mutation {
-  deleteUsers(ids: [ID!]): [User]
+  deleteUsers(ids: [UserWhereUniqueInput!]!): [User]
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 type User {
