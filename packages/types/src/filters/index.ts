@@ -34,7 +34,6 @@ function internalResolveFilter(
       AND: [{ [key]: val }, internalResolveFilter(entries, mode)],
     };
   }
-  // note the is because TypeScript narrowing of entry[1] based on entry[0]
   switch (key) {
     case 'equals':
     case 'lt':
@@ -76,14 +75,14 @@ function internalResolveFilter(
 }
 
 export function resolveCommon(val: CommonFilter<any> | null) {
-  if (val == null) return null;
+  if (val === null) return null;
   return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), undefined);
 }
 
 export function resolveString(
   val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
 ) {
-  if (val == null) return null;
+  if (val === null) return null;
   let { mode, ...rest } = val;
   return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(rest), mode as any);
 }
