@@ -299,6 +299,9 @@ jobs:
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: npx playwright install-deps
+      - name: Install Browsers
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: npx playwright install
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
