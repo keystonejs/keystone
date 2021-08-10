@@ -15,7 +15,7 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
     graphQLSchema,
     createContext: keystone.createContext,
     sessionStrategy: initializedKeystoneConfig.session,
-    apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
+    graphqlConfig: initializedKeystoneConfig.graphql,
     connectionPromise: keystone.connect(),
   });
 

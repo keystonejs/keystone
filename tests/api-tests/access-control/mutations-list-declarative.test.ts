@@ -40,7 +40,7 @@ describe('Access control - Imperative => declarative', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied('dev', false, undefined, errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -65,7 +65,7 @@ describe('Access control - Imperative => declarative', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectAccessDenied(errors, [{ path: ['deleteUser'] }]);
+      expectAccessDenied('dev', false, undefined, errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -120,7 +120,10 @@ describe('Access control - Imperative => declarative', () => {
           null,
         ],
       });
-      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectAccessDenied('dev', false, undefined, errors, [
+        { path: ['updateUsers', 1] },
+        { path: ['updateUsers', 3] },
+      ]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -161,7 +164,10 @@ describe('Access control - Imperative => declarative', () => {
         },
       });
 
-      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
+      expectAccessDenied('dev', false, undefined, errors, [
+        { path: ['deleteUsers', 1] },
+        { path: ['deleteUsers', 3] },
+      ]);
 
       // Valid users are returned, invalid come back as null
       // The invalid deletes should have errors which point to the nulls in their path

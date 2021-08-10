@@ -12,12 +12,8 @@ export const extensionError = (extension: string, things: { error: Error; tag: s
   return new ApolloError(
     `An error occured while running "${extension}".\n${s}`,
     'INTERNAL_SERVER_ERROR',
-    // Make the original stack traces available in non-production modes.
-    // TODO: We need to have a way to make these stack traces available
-    // for logging in production mode.
-    process.env.NODE_ENV !== 'production'
-      ? { errors: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })) }
-      : undefined
+    // Make the original stack traces available.
+    { debug: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })) }
   );
 };
 

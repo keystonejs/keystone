@@ -1,22 +1,22 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLError, GraphQLSchema } from 'graphql';
 import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
 import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import type { Config } from 'apollo-server-express';
-import type { CreateContext, SessionStrategy } from '@keystone-next/types';
+import type { CreateContext, GraphQLConfig, SessionStrategy } from '@keystone-next/types';
 import { createSessionContext } from '../../session';
 
 export const createApolloServerMicro = ({
   graphQLSchema,
   createContext,
   sessionStrategy,
-  apolloConfig,
+  graphqlConfig,
   connectionPromise,
 }: {
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
-  apolloConfig?: Config;
+  graphqlConfig?: GraphQLConfig;
   connectionPromise: Promise<any>;
 }) => {
   const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) => {
@@ -28,7 +28,7 @@ export const createApolloServerMicro = ({
       req,
     });
   };
-  const serverConfig = _createApolloServerConfig({ graphQLSchema, apolloConfig });
+  const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
   return new ApolloServerMicro({ ...serverConfig, context });
 };
 
@@ -36,12 +36,12 @@ export const createApolloServerExpress = ({
   graphQLSchema,
   createContext,
   sessionStrategy,
-  apolloConfig,
+  graphqlConfig,
 }: {
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
-  apolloConfig?: Config;
+  graphqlConfig?: GraphQLConfig;
 }) => {
   const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
     createContext({
@@ -50,18 +50,19 @@ export const createApolloServerExpress = ({
         : undefined,
       req,
     });
-  const serverConfig = _createApolloServerConfig({ graphQLSchema, apolloConfig });
+  const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
   return new ApolloServerExpress({ ...serverConfig, context });
 };
 
 const _createApolloServerConfig = ({
   graphQLSchema,
-  apolloConfig,
+  graphqlConfig,
 }: {
   graphQLSchema: GraphQLSchema;
-  apolloConfig?: Config;
+  graphqlConfig?: GraphQLConfig;
 }) => {
   // Playground config, is /api/graphql available?
+  const apolloConfig = graphqlConfig?.apolloConfig;
   const pp = apolloConfig?.playground;
   let playground: Config['playground'];
   const settings = { 'request.credentials': 'same-origin' };
@@ -86,6 +87,7 @@ const _createApolloServerConfig = ({
   return {
     uploads: false,
     schema: graphQLSchema,
+    debug: graphqlConfig?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }
@@ -97,10 +99,32 @@ const _createApolloServerConfig = ({
     //       tracing: dev,
     //     }),
     ...apolloConfig,
+    formatError: formatError(graphqlConfig),
     // Carefully inject the playground
     playground,
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
     // maxFiles: 5,
+  };
+};
+
+const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
+  return (err: GraphQLError) => {
+    let debug = graphqlConfig?.debug;
+    if (debug === undefined) {
+      debug = process.env.NODE_ENV !== 'production';
+    }
+
+    if (!debug && err.extensions) {
+      // Strip out any `debug` extensions
+      delete err.extensions.debug;
+      delete err.extensions.exception;
+    }
+
+    if (graphqlConfig?.apolloConfig?.formatError) {
+      return graphqlConfig.apolloConfig.formatError(err);
+    } else {
+      return err;
+    }
   };
 };

@@ -20,7 +20,7 @@ const expectNoAccess = <N extends string>(
   name: N
 ) => {
   expect(data?.[name]).toBe(null);
-  expectAccessDenied(errors, [{ path: [name] }]);
+  expectAccessDenied('dev', false, undefined, errors, [{ path: [name] }]);
 };
 
 type IdType = any;
@@ -136,7 +136,7 @@ describe(`Not authed`, () => {
               const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [createMutationName]: null });
-              expectAccessDenied(errors, [{ path: [createMutationName] }]);
+              expectAccessDenied('dev', false, undefined, errors, [{ path: [createMutationName] }]);
             });
           });
       });
@@ -163,7 +163,7 @@ describe(`Not authed`, () => {
               const query = `query { ${countName} }`;
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [countName]: null });
-              expectAccessDenied(errors, [{ path: [countName] }]);
+              expectAccessDenied('dev', false, undefined, errors, [{ path: [countName] }]);
             });
 
             test(`single denied: ${JSON.stringify(access)}`, async () => {
@@ -197,7 +197,9 @@ describe(`Not authed`, () => {
               });
               const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expectAccessDenied(errors, [{ path: [singleQueryName, fieldName] }]);
+              expectAccessDenied('dev', false, undefined, errors, [
+                { path: [singleQueryName, fieldName] },
+              ]);
               expect(data).toEqual({ [singleQueryName]: { id: item.id, [fieldName]: null } });
             });
             test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
@@ -217,7 +219,7 @@ describe(`Not authed`, () => {
               });
               const query = `query { ${allQueryName} { id ${fieldName} } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expectAccessDenied(errors, [
+              expectAccessDenied('dev', false, undefined, errors, [
                 { path: [allQueryName, 0, fieldName] },
                 { path: [allQueryName, 1, fieldName] },
               ]);
@@ -351,7 +353,7 @@ describe(`Not authed`, () => {
               const query = `mutation { ${updateMutationName}(where: { id: "${item.id}" }, data: { ${fieldName}: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [updateMutationName]: null });
-              expectAccessDenied(errors, [{ path: [updateMutationName] }]);
+              expectAccessDenied('dev', false, undefined, errors, [{ path: [updateMutationName] }]);
             });
           });
       });
@@ -377,7 +379,9 @@ describe(`Not authed`, () => {
               const { data, errors } = await context.graphql.raw({ query });
 
               expect(data).toEqual({ [multiDeleteMutationName]: [null] });
-              expectAccessDenied(errors, [{ path: [multiDeleteMutationName, 0] }]);
+              expectAccessDenied('dev', false, undefined, errors, [
+                { path: [multiDeleteMutationName, 0] },
+              ]);
             });
           });
       });
