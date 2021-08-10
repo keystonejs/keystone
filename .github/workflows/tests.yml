@@ -298,10 +298,10 @@ jobs:
         run: yarn
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: microsoft/playwright-github-action@v1
-      - name: Install Browsers for Playwright
+        run: npx playwright install-deps
+      - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: node ./node_modules/playwright/install.js
+        run: npx playwright install
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
