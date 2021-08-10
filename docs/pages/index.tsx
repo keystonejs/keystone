@@ -199,7 +199,7 @@ export default function IndexPage() {
           <Type as="h2" look="heading48">
             Batteries included. <Highlight look="grad5">No limitations.</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+          <Type as="p" look="body20" color="var(--muted)" margin="0.5rem 0 1.5rem 0">
             Ship a backend easily without surrendering control.
             <br />
             Keystone has all you need to start fast and scale on your terms.
@@ -221,61 +221,61 @@ export default function IndexPage() {
           >
             <li>
               <WhyKeystone grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 All the field types
               </Type>
             </li>
             <li>
               <Shield grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Access Control
               </Type>
             </li>
             <li>
               <Watch grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Session Management
               </Type>
             </li>
             <li>
               <Custom grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Custom Schema
               </Type>
             </li>
             <li>
               <Migration grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Database Migrations
               </Type>
             </li>
             <li>
               <Typescript grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 TypeScript Support
               </Type>
             </li>
             <li>
               <Filter grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Powerful Filters
               </Type>
             </li>
             <li>
               <Relational grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Relational Data
               </Type>
             </li>
             <li>
               <Automated grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Automated CRUD
               </Type>
             </li>
             <li>
               <Updates grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Event Hooks
               </Type>
             </li>
@@ -289,7 +289,7 @@ export default function IndexPage() {
           <Type as="h2" look="heading48" id="how-it-works">
             How it works
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+          <Type as="p" look="body20" color="var(--muted)" margin="0.5rem 0 1.5rem 0">
             Enable a content culture that’s productive, collaborative, and fun.
             <br />
             Open, flexible, and natural. A tool your team can grow with.
@@ -377,7 +377,7 @@ export default function IndexPage() {
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Rapidly spec your backend with all the primitive and advanced field types you need.
               </Type>
-              <Type as="p" look="body18" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Add logic, access control, and custom queries & mutations to create an API that's
                 unique to your app.
               </Type>
@@ -662,6 +662,7 @@ export const lists = createSchema({
           <Type
             as="p"
             look="body20"
+            color="var(--muted)"
             css={{
               display: 'block',
               maxWidth: '34.25rem',
@@ -758,7 +759,13 @@ export const lists = createSchema({
           <Type as="h2" look="heading48">
             Unify your <Highlight look="grad3">team dynamic</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
+          <Type
+            as="p"
+            look="body20"
+            margin="0.5rem 0 1.5rem 0"
+            color="var(--muted)"
+            css={{ maxWidth: '37.5rem' }}
+          >
             Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
             natural. A tool your team can grow with.
           </Type>
@@ -784,40 +791,46 @@ export const lists = createSchema({
               <Type as="h3" look="heading24">
                 Developers
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
                 at home with the tools you know and love.
               </Type>
-              <Link href="/for-developers">
-                <a>Keystone for Developers →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-developers">
+                  <a>Keystone for Developers →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Content grad="grad3" />
               <Type as="h3" look="heading24">
                 Content people
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Get the fields, forms, and workflows you need to do your best work. Tell the full
                 story with a rich text editor that can be configured for any content need.
               </Type>
-              <Link href="/for-content-management">
-                <a>Keystone for Content Management →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-content-management">
+                  <a>Keystone for Content Management →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Organization grad="grad3" />
               <Type as="h3" look="heading24">
                 Organisations
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Realise your vision with a backend you can shape to fit your logic. Own your data,
                 cultivate a productive content culture, send your message anywhere, and scale on
                 your terms.
               </Type>
-              <Link href="/for-organisations">
-                <a>Keystone for Organisations →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-organisations">
+                  <a>Keystone for Organisations →</a>
+                </Link>
+              </Type>
             </li>
           </ul>
         </Section>
