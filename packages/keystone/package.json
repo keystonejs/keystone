@@ -22,9 +22,9 @@
     "keystone-next": "bin/cli.js"
   },
   "dependencies": {
-    "@apollo/client": "^3.4.5",
-    "@babel/core": "^7.14.8",
-    "@babel/plugin-transform-modules-commonjs": "^7.14.5",
+    "@apollo/client": "^3.4.7",
+    "@babel/core": "^7.15.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.15.0",
     "@babel/runtime": "^7.14.8",
     "@emotion/hash": "^0.8.0",
     "@graphql-tools/merge": "^7.0.0",
