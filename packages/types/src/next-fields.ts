@@ -395,10 +395,7 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     UpdateArg extends schema.Arg<schema.InputType>,
     UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined>,
     OrderByArg extends schema.Arg<schema.NullableInputType, undefined>,
-    FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
-      schema.NullableInputType,
-      undefined
-    >
+    FilterArg extends schema.Arg<schema.NullableInputType, undefined>
   >(
     stuff: FieldTypeWithoutDBField<
       TDBField,
