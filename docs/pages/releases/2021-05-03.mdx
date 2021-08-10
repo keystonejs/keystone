@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 3rd May 2021
@@ -27,4 +27,4 @@ This release involved a bunch of busywork behind the scenes in Keystone 6. Strip
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-03) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="File field type added to Keystone 6. Includes a `maxFileSize` property for easier project config." {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export { getStaticProps }
