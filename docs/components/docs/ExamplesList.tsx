@@ -124,6 +124,7 @@ export function Examples() {
         users rate items on a 5-star scale. Builds on the Blog starter project.
       </Well>
       <Well
+        grad="grad3"
         heading="Custom Admin UI Pages"
         href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-pages"
         target="_blank"
@@ -141,7 +142,7 @@ export function Examples() {
         Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
       </Well>
       <Well
-        grad="grad2"
+        grad="grad3"
         heading="Custom Admin UI Navigation"
         href="/docs/guides/custom-admin-ui-navigation"
       >
