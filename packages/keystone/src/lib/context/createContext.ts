@@ -107,6 +107,17 @@ export function makeCreateContext({
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
       itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
     }
+    if (config.graphql?.extendContext) {
+      const newContext = config.graphql.extendContext(contextToReturn);
+      // We have functions which are bound to the `contextToReturn` object, so we
+      // need to make sure that we're not creating a new object here, otherwise
+      // those functions won't behave as expected.
+      if (newContext !== contextToReturn) {
+        throw Error(
+          'config.graphql.extendContext must return the modified context object. You cannot return a new object.'
+        );
+      }
+    }
     return contextToReturn;
   };
 

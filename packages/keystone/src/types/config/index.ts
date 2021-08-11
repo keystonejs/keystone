@@ -24,7 +24,7 @@ export type KeystoneConfig = {
   ui?: AdminUIConfig;
   server?: ServerConfig;
   session?: SessionStrategy<any>;
-  graphql?: GraphQLConfig;
+  graphql?: GraphQLConfig<any>;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   files?: FilesConfig;
   images?: ImagesConfig;
@@ -108,7 +108,7 @@ export type ServerConfig = {
 
 // config.graphql
 
-export type GraphQLConfig = {
+export type GraphQLConfig<T extends KeystoneContext> = {
   // The path of the GraphQL API endpoint. Default: '/api/graphql'.
   path?: string;
   // The CORS configuration to use on the GraphQL API endpoint.
@@ -156,6 +156,7 @@ export type GraphQLConfig = {
    * Default: process.env.NODE_ENV !== 'production'
    */
   debug?: boolean;
+  extendContext?: (context: KeystoneContext) => T;
 };
 
 // config.extendGraphqlSchema
