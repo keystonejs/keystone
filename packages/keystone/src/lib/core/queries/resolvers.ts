@@ -72,12 +72,7 @@ export async function findOne(
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere);
 
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
-
-  if (item === null) {
-    throw accessDeniedError();
-  }
-  return item;
+  return await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
 }
 
 export async function findMany(

@@ -148,10 +148,9 @@ async function getStringifiedItemIdFromUniqueWhereInput(
   if (uniqueInput.id !== undefined) {
     return uniqueInput.id;
   }
-  try {
-    const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
-    return item.id;
-  } catch (err) {
+  const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
+  if (item === null) {
     throw accessDeniedError();
   }
+  return item.id;
 }

@@ -248,6 +248,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
             where: { id: session.itemId },
             query: sessionData || 'id',
           });
+          if (data === null) {
+            return;
+          }
           return { ...session, itemId: session.itemId, listKey, data };
         } catch (e) {
           // TODO: This swallows all errors, we need a way to differentiate between "not found" and

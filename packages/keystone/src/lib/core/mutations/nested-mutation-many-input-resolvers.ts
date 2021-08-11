@@ -27,6 +27,7 @@ function getResolvedUniqueWheres(
     // Validate and resolve the input filter
     const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
     // Check whether the item exists
+    // FIXME
     await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
     return uniqueWhere;
   });
