@@ -6,9 +6,6 @@ Each field type provides its own set of filters which can be used with [queries]
 This page lists all the filters available for each field type.
 For more details on how to use filters in queries please consult to the [GraphQL Queries - Filters](../guides/filters) guide.
 
-Keystone filters are typically named after the field they are filtering. For example, a `text` field called `foo` would have filters named `foo_starts_with`, `foo_contains`, etc.
-In all the examples below we will use a field named `foo` as the base of the filter names.
-
 ## Scalar types
 
 ### checkbox
@@ -56,28 +53,31 @@ The `json` field type does not support filters.
 
 ### select
 
-| **Filter name** | **Type**   | **Description**     |
-| --------------- | ---------- | ------------------- |
-| `foo`           | `String`   | Equals              |
-| `foo_not`       | `String`   | Does not equal      |
-| `foo_in`        | `[String]` | Is in the array     |
-| `foo_not_in`    | `[String]` | Is not in the array |
+- If the `dataType` is `string`(the default), the same filters as `text` will be available.
+- If the `dataType` is `integer`, the same filters as `integer` will be available.
+- If the `dataType` is `enum`, the following filters will be available:
+  | **Filter name** | **Type** | **Description** |
+  | --------------- | ---------- | ------------------- |
+  | `equals` | `ListKeyFieldKeyType` | Equals |
+  | `in` | `[ListKeyFieldKeyType!]` | Is in the array |
+  | `notIn` | `[ListKeyFieldKeyType!]` | Is not in the array |
+  | `not` | `ListKeyFieldKeyTypeNullableFilter` | Does not match the inner filter |
 
 ### text
 
-| **Filter name** | **Type**                                 | **Description**                                       | ** Notes **       |
-| --------------- | ---------------------------------------- | ----------------------------------------------------- | ----------------- |
+| **Filter name** | **Type**                                 | **Description**                                       | ** Notes **                                                                                                                  |
+| --------------- | ---------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `equals`        | `String`                                 | Equals                                                |
 | `lt`            | `String`                                 | Less than                                             |
 | `lte`           | `String`                                 | Less than or equal                                    |
 | `gt`            | `String`                                 | Greater than                                          |
 | `gte`           | `String`                                 | Greater than or equal                                 |
-| `contains`      | `String`                                 | Contains                                              |
-| `startsWith`    | `String`                                 | Starts with                                           |
-| `endsWith`      | `String`                                 | Ends with                                             |
+| `contains`      | `String`                                 | Contains                                              | Will follow the setting of the `mode` on `postgresql` and will be case insensitive but only for ASCII characters on `sqlite` |
+| `startsWith`    | `String`                                 | Starts with                                           | Will follow the setting of the `mode` on `postgresql` and will be case insensitive but only for ASCII characters on `sqlite` |
+| `endsWith`      | `String`                                 | Ends with                                             | Will follow the setting of the `mode` on `postgresql` and will be case insensitive but only for ASCII characters on `sqlite` |
 | `in`            | `[String!]`                              | Is in the array                                       |
 | `notIn`         | `[String!]`                              | Is not in the array                                   |
-| `mode`          | `QueryMode` (`default` or `insensitive`) | Whether the filters should be case insensitive or not | `postgresql` only |
+| `mode`          | `QueryMode` (`default` or `insensitive`) | Whether the filters should be case insensitive or not | `postgresql` only                                                                                                            |
 | `not`           | `NestedStringNullableFilter`             | Does not match the inner filter                       |
 
 ### timestamp
