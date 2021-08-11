@@ -44,7 +44,7 @@ const users = await context.lists.User.findMany({
   where: { name: { startsWith: 'A' } },
   take: 10,
   skip: 20,
-  orderBY: [{ name: 'asc' }],
+  orderBy: [{ name: 'asc' }],
   query: 'id name posts { id title }',
 });
 ```
