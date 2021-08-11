@@ -27,7 +27,7 @@
     "@keystone-ui/toast": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.1",
     "@types/bcryptjs": "^2.4.2",
-    "@types/react": "^17.0.15",
+    "@types/react": "^17.0.16",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
