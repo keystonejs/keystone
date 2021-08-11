@@ -310,7 +310,7 @@ type Query {
   secretPlans(
     where: SecretPlanWhereInput! = {}
     orderBy: [SecretPlanOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [SecretPlan!]
   secretPlan(where: SecretPlanWhereUniqueInput!): SecretPlan
