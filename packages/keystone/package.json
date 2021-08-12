@@ -27,7 +27,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.15.0",
     "@babel/runtime": "^7.14.8",
     "@emotion/hash": "^0.8.0",
-    "@graphql-tools/merge": "^7.0.0",
+    "@graphql-tools/schema": "^8.1.0",
     "@hapi/iron": "^6.0.0",
     "@keystone-next/admin-ui-utils": "^5.0.5",
     "@keystone-next/fields": "^13.0.0",
