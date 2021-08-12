@@ -59,7 +59,7 @@ export async function accessControlledFilter(
 
   // Merge declarative access control
   if (typeof access === 'object') {
-    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list, context)] };
   }
 
   return resolvedWhere;
@@ -96,7 +96,7 @@ export async function findMany(
 
   applyEarlyMaxResults(take, list);
 
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  let resolvedWhere = await resolveWhereInput(where, list, context);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
   const results = await runWithPrisma(context, list, model =>
@@ -166,7 +166,7 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  let resolvedWhere = await resolveWhereInput(where, list, context);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
   const count = await runWithPrisma(context, list, model =>

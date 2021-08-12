@@ -32,14 +32,14 @@ export const rules = {
       // Can see all todos that are: assigned to them, or not private
       return {
         OR: [
-          { assignedTo: { id: session.itemId } },
-          { assignedTo_is_null: true, isPrivate: true },
-          { isPrivate_not: true },
+          { assignedTo: { id: { equals: session.itemId } } },
+          { assignedTo: null, isPrivate: { equals: true } },
+          { NOT: { isPrivate: { equals: true } } },
         ],
       };
     } else {
       // Can only see their own todos
-      return { assignedTo: { id: session.itemId } };
+      return { assignedTo: { id: { equals: session.itemId } } };
     }
   },
   canManageTodos: ({ session }: ListAccessArgs) => {
@@ -51,7 +51,7 @@ export const rules = {
       return true;
     } else {
       // Can only manage their own todos
-      return { assignedTo: { id: session.itemId } };
+      return { assignedTo: { id: { equals: session.itemId } } };
     }
   },
   canReadPeople: ({ session }: ListAccessArgs) => {
@@ -63,7 +63,7 @@ export const rules = {
       return true;
     } else {
       // Can only see yourself
-      return { id: session.itemId };
+      return { id: { equals: session.itemId } };
     }
   },
   canUpdatePeople: ({ session }: ListAccessArgs) => {
@@ -75,7 +75,7 @@ export const rules = {
       return true;
     } else {
       // Can update yourself
-      return { id: session.itemId };
+      return { id: { equals: session.itemId } };
     }
   },
 };
