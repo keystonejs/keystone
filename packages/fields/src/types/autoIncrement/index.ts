@@ -7,6 +7,7 @@ import {
   legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -28,22 +29,6 @@ export const autoIncrement =
     ...config
   }: AutoIncrementFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    const __legacy = {
-      isRequired,
-      defaultValue,
-      filters: {
-        fields: {
-          ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-          ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-          ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-        },
-        impls: {
-          ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
-          ...legacyFilters.impls.orderingConditions(meta.fieldKey, x => Number(x) || -1),
-          ...inConditions(meta.fieldKey, x => x.map((xx: any) => Number(xx) || -1)),
-        },
-      },
-    };
     return fieldType({
       kind: 'scalar',
       mode: 'optional',
@@ -53,6 +38,12 @@ export const autoIncrement =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({
+            type: filters[meta.provider].Int.optional,
+          }),
+          resolve: filters.resolveCommon,
+        },
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
@@ -60,7 +51,22 @@ export const autoIncrement =
       },
       output: schema.field({ type: schema.Int }),
       views: resolveView('integer/views'),
-      __legacy,
+      __legacy: {
+        isRequired,
+        defaultValue,
+        filters: {
+          fields: {
+            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
+            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
+          },
+          impls: {
+            ...equalityConditions(meta.fieldKey, x => Number(x) || -1),
+            ...legacyFilters.impls.orderingConditions(meta.fieldKey, x => Number(x) || -1),
+            ...inConditions(meta.fieldKey, x => x.map((xx: any) => Number(xx) || -1)),
+          },
+        },
+      },
     });
   };
 

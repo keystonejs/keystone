@@ -116,31 +116,9 @@ export const controller = (
           />
         );
       },
-
-      graphql: ({ type, value: options }) => {
-        const inverted = type === 'not_matches';
-
-        if (!options.length) {
-          return {
-            [`${config.path}${inverted ? '_not' : ''}`]: null,
-          };
-        }
-
-        const isMulti = options.length > 1;
-
-        let key = config.path;
-        if (isMulti && inverted) {
-          key = `${config.path}_not_in`;
-        } else if (isMulti) {
-          key = `${config.path}_in`;
-        } else if (inverted) {
-          key = `${config.path}_not`;
-        }
-
-        const value = isMulti ? options.map(x => t(x.value)) : t(options[0].value);
-
-        return { [key]: value };
-      },
+      graphql: ({ type, value: options }) => ({
+        [config.path]: { [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value)) },
+      }),
       Label({ type, value }) {
         if (!value.length) {
           return type === 'not_matches' ? `is set` : `has no value`;
