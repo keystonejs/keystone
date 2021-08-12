@@ -8,3 +8,4 @@ coverage
 **/.keystone
 docs/public/assets/
 .keystone/tests
+prisma-utils/src/generated
