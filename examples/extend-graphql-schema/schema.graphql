@@ -1,3 +1,31 @@
+type Mutation {
+  """
+   Publish a post
+  """
+  publishPost(id: ID!): Post
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createAuthor(data: AuthorCreateInput!): Author
+  createAuthors(data: [AuthorCreateInput!]!): [Author]
+  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
+  updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
+  deleteAuthor(where: AuthorWhereUniqueInput!): Author
+  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
+}
+
+"""
+ A custom type to represent statistics for a user
+"""
+type Statistics {
+  draft: Int
+  published: Int
+  latest: Post
+}
+
 type Post {
   id: ID!
   title: String
@@ -207,36 +235,16 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type Mutation {
-  createPost(data: PostCreateInput!): Post
-  createPosts(data: [PostCreateInput!]!): [Post]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostUpdateArgs!]!): [Post]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createAuthor(data: AuthorCreateInput!): Author
-  createAuthors(data: [AuthorCreateInput!]!): [Author]
-  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
-  updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
-  deleteAuthor(where: AuthorWhereUniqueInput!): Author
-  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
-
-  """
-   Publish a post
-  """
-  publishPost(id: ID!): Post
-}
-
-"""
- A custom type to represent statistics for a user
-"""
-type Statistics {
-  draft: Int
-  published: Int
-  latest: Post
-}
-
 type Query {
+  """
+   Return all posts for a user from the last <days> days
+  """
+  recentPosts(id: ID!, days: Int! = 7): [Post]
+
+  """
+   Compute statistics for a user
+  """
+  stats(id: ID!): Statistics
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -253,16 +261,6 @@ type Query {
   ): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
-
-  """
-   Return all posts for a user from the last <days> days
-  """
-  recentPosts(id: ID!, days: Int! = 7): [Post]
-
-  """
-   Compute statistics for a user
-  """
-  stats(id: ID!): Statistics
   keystone: KeystoneMeta!
 }
 

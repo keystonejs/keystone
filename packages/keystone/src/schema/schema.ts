@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/merge';
+import { mergeSchemas } from '@graphql-tools/schema';
 
 import type {
   BaseFields,
