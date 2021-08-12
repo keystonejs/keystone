@@ -19,7 +19,7 @@
     "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx}\"",
     "lint:markdown": "remark . --frail --quiet",
     "lint:types": "tsc",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types && yarn lint:filters",
     "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
@@ -35,7 +35,9 @@
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
     "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done",
-    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done"
+    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done",
+    "generate-filters": "cd prisma-utils && yarn generate",
+    "lint:filters": "cd prisma-utils && yarn verify"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
