@@ -476,7 +476,9 @@ function DeleteManyButton({
     if (successfulItems?.length) {
       toasts.addToast({
         tone: 'positive',
-        title: `Deleted ${successfulItems.length} items successful`,
+        title: `Deleted ${successfulItems.length} of ${
+          data[list.gqlNames.deleteManyMutationName].length
+        } ${list.plural} successful`,
         message: successfulItems.join(', '),
       });
     }
@@ -485,7 +487,7 @@ function DeleteManyButton({
         tone: 'negative',
         title: `Failed to delete ${unsuccessfulItems.length} of ${
           data[list.gqlNames.deleteManyMutationName].length
-        } items`,
+        } ${list.plural}`,
         message: errors
           .reduce((acc, error) => {
             if (acc.indexOf(error.message) < 0) {
