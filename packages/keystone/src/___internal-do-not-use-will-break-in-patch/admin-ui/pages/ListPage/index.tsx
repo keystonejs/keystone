@@ -31,7 +31,6 @@ import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { useSort } from './useSort';
-import { AddTypenameToAbstract } from 'apollo-server-express';
 
 type ListPageProps = {
   listKey: string;
@@ -280,7 +279,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
                           <DeleteManyButton
                             list={list}
-                            selectedItemsArray={selectedItemsState.itemsFromServer}
                             selectedItems={selectedItems}
                             refetch={refetch}
                           />
@@ -429,7 +427,6 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
 
 function DeleteManyButton({
   selectedItems,
-  selectedItemsArray,
   list,
   refetch,
 }: {
@@ -460,40 +457,44 @@ function DeleteManyButton({
     const { data, errors } = await deleteItems({
       variables: { where: [...selectedItems].map(id => ({ id })) },
     });
-    const successfulItems = data[list.gqlNames.deleteManyMutationName].filter(i => i);
+    const { successfulItems, unsuccessfulItems } = data[
+      list.gqlNames.deleteManyMutationName
+    ].reduce(
+      (acc: { successfulItems: any[]; unsuccessfulItems: any[] }, curr: any) => {
+        if (curr) {
+          acc.successfulItems.push(curr[list.labelField]);
+        } else {
+          acc.unsuccessfulItems.push(curr);
+        }
+        return acc;
+      },
+      { successfulItems: [], unsuccessfulItems: [] } as {
+        successfulItems: any[];
+        unsuccessfulItems: any[];
+      }
+    );
 
     if (successfulItems?.length) {
       toasts.addToast({
         tone: 'positive',
-        title: 'Deleted items successful',
-        message: successfulItems.reduce((acc: string, curr: any) => {
-          return acc ? `${acc}, ${curr[list.labelField]}` : curr[list.labelField];
-        }, ''),
+        title: `Deleted ${successfulItems.length} items successful`,
+        message: successfulItems.join(', '),
       });
     }
     if (errors?.length) {
-      errors?.forEach(error => {
-        if (
-          error.path &&
-          error.path[0] === list.gqlNames.deleteManyMutationName &&
-          typeof error.path[1] === 'number'
-        ) {
-          const [mutationType, selectedItemsIndex]: readonly (string | number)[] = error.path;
-          const selectedItemLabel = selectedItemsArray.find((item: any) => {
-            return item.id === [...selectedItems][selectedItemsIndex];
-          })[list.labelField];
-          toasts.addToast({
-            tone: 'negative',
-            title: `Failed to delete item "${selectedItemLabel}"`,
-            message: error.message,
-          });
-        } else {
-          toasts.addToast({
-            tone: 'negative',
-            title: 'Failed to delete an item',
-            message: error.message,
-          });
-        }
+      toasts.addToast({
+        tone: 'negative',
+        title: `Failed to delete ${unsuccessfulItems.length} of ${
+          data[list.gqlNames.deleteManyMutationName].length
+        } items`,
+        message: errors
+          .reduce((acc, error) => {
+            if (acc.indexOf(error.message) < 0) {
+              acc.push(error.message);
+            }
+            return acc;
+          }, [] as string[])
+          .join('\n'),
       });
     }
     return refetch();

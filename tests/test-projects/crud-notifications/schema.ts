@@ -10,7 +10,8 @@ export const lists = createSchema({
           where: { id: itemId },
           query: 'label',
         });
-        return !['do not delete', 'do not destroy', 'do not kill'].includes(item.label);
+        const matchString = item.label.replace(/([\d])+/g, '').trim();
+        return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
       },
     },
     fields: {

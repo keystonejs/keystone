@@ -7,26 +7,15 @@ export default config({
     url: process.env.DATABASE_URL || 'file:./test.db',
     async onConnect(context) {
       await context.lists.Task.createMany({
-        data: [
-          {
-            label: 'do not delete',
-          },
-          {
-            label: 'delete',
-          },
-          {
-            label: 'do not destroy',
-          },
-          {
-            label: 'destroy',
-          },
-          {
-            label: 'do not kill',
-          },
-          {
-            label: 'gently lay to rest',
-          },
-        ],
+        data: [...Array.from(Array(50).keys())].map(key => {
+          return { label: `do not delete ${key}` };
+        }),
+      });
+
+      await context.lists.Task.createMany({
+        data: [...Array.from(Array(25).keys())].map(key => {
+          return { label: `deletable ${key}` };
+        }),
       });
     },
   },
