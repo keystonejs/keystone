@@ -10,25 +10,25 @@ This guide will show you how to use filters to get data you need.
 
 ## Scalar Filters
 
-If we want to find all the `Tasks` in our system, we can use the query `allTasks()`.
+If we want to find all the `Tasks` in our system, we can use the query `tasks()`.
 
 ```graphql
 {
-  allTasks {
+  tasks {
     id
     label
   }
 }
 ```
 
-In general we don't want to grab all the tasks at once, but want to find a particular set of tasks which match a certain condition.
-In Keystone we can do this by passing a `where` argument to the `allTasks()` query.
+In general we don't want to grab all the tasks at once, but we want to find a particular set of tasks which match a certain condition.
+In Keystone we can do this by passing a `where` argument to the `tasks()` query.
 
 If we want to find all the tasks with a label equal to `"Hello"` we can write:
 
 ```graphql
 {
-  allTasks(where: { label: "Hello" }) {
+  tasks(where: { label: { equals: "Hello" } }) {
     id
     label
   }
@@ -39,7 +39,7 @@ Keystone provides a wide range of different filters. If we want to find all thos
 
 ```graphql
 {
-  allTasks(where: { label_not: "Hello" }) {
+  tasks(where: { label: { not: { equals: "Hello" } } }) {
     id
     label
   }
@@ -50,7 +50,7 @@ The `text()` field type also supports searching for sub-strings within a field:
 
 ```graphql
 {
-  allTasks(where: { label_contains: "He" }) {
+  tasks(where: { label: { contains: "He" } }) {
     id
     label
   }
@@ -61,7 +61,7 @@ Different field types support different filters. The field `finishBy: timestamp(
 
 ```graphql
 {
-  allTasks(where: { finishBy_gt: "2022-01-01T00:00:00.000Z" }) {
+  tasks(where: { finishBy: { gt: "2022-01-01T00:00:00.000Z" } }) {
     id
     label
   }
@@ -74,9 +74,9 @@ For more complex queries, you can combine multiple filters, and only those items
 
 ```graphql
 {
-  allTasks(where: {
-    label_contains: "He",
-    finishBy_gt: "2022-01-01T00:00:00.000Z"
+  tasks(where: {
+    label: { contains: "He" },
+    finishBy: { gt: "2022-01-01T00:00:00.000Z" }
   }) {
     id
     label
@@ -94,9 +94,9 @@ The `AND` operater accepts a list of sub-filters, and will only return those ite
 
 ```graphql
 {
-  allTasks(where: { AND: [
-    { label_contains: "H" },
-    { label_contains: "ll" }
+  tasks(where: { AND: [
+    { label: { contains: "H" } },
+    { label: { contains: "ll" } }
   ] }) {
     id
     label
@@ -110,10 +110,26 @@ The `OR` operater accepts a list of sub-filters, and will only return those item
 
 ```graphql
 {
-  allTasks(where: { OR: [
-    { label_contains: "H" },
-    { label_contains: "ll" }
+  tasks(where: { OR: [
+    { label: { contains: "H" } },
+    { label: { contains: "ll" } }
   ] }) {
+    id
+    label
+  }
+}
+```
+
+### NOT
+
+The `NOT` operater accepts a list of sub-filters, and will only return those items which don't match the conditions.
+You'll generally only pass a single filter to `NOT` rather than a list but if you do a pass a list, they're `AND`ed together.
+
+```graphql
+{
+  tasks(where: { NOT: {
+    label: { contains: "H" }
+  } }) {
     id
     label
   }
@@ -133,7 +149,7 @@ For example, to find all the tasks where the task is assigned to a used named `"
 
 ```graphql
 {
-  allTasks(where: { assignedTo: { name: "Alice" } }) {
+  tasks(where: { assignedTo: { name: { equals: "Alice" } } }) {
     id
     label
   }
@@ -142,13 +158,13 @@ For example, to find all the tasks where the task is assigned to a used named `"
 
 ### Many
 
-If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `all` of the related items match a `where` filter using the fields from the related list.
+If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `every` of the related items match a `where` filter using the fields from the related list.
 
 For example, to find all the people which have `some` posts with the label `"Hello"`, we can run the following query:
 
 ```graphql
 {
-  allPeople(where: { tasks_some: { label: "Hello" } }) {
+  people(where: { tasks: { some: { label: { equals: "Hello" } } } }) {
     id
     name
   }

@@ -54,8 +54,8 @@ In Keystone it’s possible to define relationships from one, or both sides of t
 Our example above is one-sided: the `Post` list relates to the `User` list via the `authors` field. This kind of relationship will let us query for the `authors` of a post in our GraphQL API like so:
 
 ```graphql
-Query {
-  allPosts {
+query {
+  posts {
     title
     content
     authors {
@@ -86,8 +86,8 @@ export default config({
       fields: {
         title: text(),
         content: text(),
-                // relates authors to posts
-                authors: relationship({ ref: 'User.posts', many: true }),
+        // relates authors to posts
+        authors: relationship({ ref: 'User.posts', many: true }),
       },
     }),
   }),
@@ -101,8 +101,8 @@ In the example above we added a `posts` field to the `User` list, and changed th
 Now that our relationship is two-sided we can query all the posts written by each user like so:
 
 ```graphql
-Query {
-  allUsers {
+query {
+  users {
     name
     posts {
       title

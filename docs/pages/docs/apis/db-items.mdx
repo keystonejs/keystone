@@ -16,14 +16,14 @@ For each list in your system the following API is available at `context.db.lists
 ```
 {
   findOne({ where: { id } }),
-  findMany({ where, first, skip, sortBy }),
-  count({ where, first, skip }),
+  findMany({ where, take, skip, orderBy }),
+  count({ where }),
   createOne({ data }),
   createMany({ data }),
-  updateOne({ id, data }),
+  updateOne({ where, data }),
   updateMany({ data }),
-  deleteOne({ id }),
-  deleteMany({ ids }),
+  deleteOne({ where }),
+  deleteMany({ where }),
 }
 ```
 
@@ -44,10 +44,10 @@ All arguments are optional.
 
 ```typescript
 const users = await context.db.lists.User.findMany({
-  where: { name_starts_with: 'A' },
-  first: 10,
+  where: { name: { startsWith: 'A' } },
+  take: 10,
   skip: 20,
-  sortBy: ['name_ASC'],
+  orderBy: [{ name: 'asc' }],
 });
 ```
 
@@ -57,9 +57,7 @@ All arguments are optional.
 
 ```typescript
 const count = await context.db.lists.User.count({
-  where: { name_starts_with: 'A' },
-  first: 10,
-  skip: 20,
+  where: { name: { startsWith: 'A' } },
 });
 ```
 
@@ -80,16 +78,12 @@ const user = await context.db.lists.User.createOne({
 const users = await context.db.lists.User.createMany({
   data: [
     {
-      data: {
-        name: 'Alice',
-        posts: [{ create: { title: 'Alices first post' } }],
-      },
+      name: 'Alice',
+      posts: [{ create: { title: 'Alices first post' } }],
     },
     {
-      data: {
-        name: 'Bob',
-        posts: [{ create: { title: 'Bobs first post' } }],
-      },
+      name: 'Bob',
+      posts: [{ create: { title: 'Bobs first post' } }],
     },
   ],
 });
@@ -99,7 +93,7 @@ const users = await context.db.lists.User.createMany({
 
 ```typescript
 const user = await context.db.lists.User.updateOne({
-  id: '...',
+  where: { id: '...' },
   data: {
     name: 'Alice',
     posts: { create: [{ title: 'My first post' }] },
@@ -113,14 +107,14 @@ const user = await context.db.lists.User.updateOne({
 const users = await context.db.lists.User.updateMany({
   data: [
     {
-      id: '...',
+      where: { id: '...' },
       data: {
         name: 'Alice',
         posts: [{ create: { title: 'Alices first post' } }],
       },
     },
     {
-      id: '...',
+      where: { id: '...' },
       data: {
         name: 'Bob',
         posts: [{ create: { title: 'Bobs first post' } }],
@@ -134,15 +128,15 @@ const users = await context.db.lists.User.updateMany({
 
 ```typescript
 const user = await context.db.lists.User.deleteOne({
-  id: '...',
+  where: { id: '...' },
 });
 ```
 
 ### deleteMany
 
 ```typescript
-const user = await context.db.lists.User.deleteMany({
-  ids: ['...', '...'],
+const users = await context.db.lists.User.deleteMany({
+  where: [{ id: '...' }, { id: '...' }],
 });
 ```
 

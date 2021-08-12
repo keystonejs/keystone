@@ -29,7 +29,7 @@ import {
   fieldType,
   schema,
   orderDirectionEnum,
-  legacyFilters,
+  filters,
   FieldDefaultValue,
 } from '@keystone-next/types';
 
@@ -58,6 +58,7 @@ export const myInt =
     })({
       ...config,
       input: {
+        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -65,18 +66,6 @@ export const myInt =
       output: schema.field({ type: schema.Int }),
       views: require.resolve('./view.tsx'),
       __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
         isRequired,
         defaultValue,
       },
@@ -94,6 +83,7 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
+  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: schema.arg({ type: schema.Int }) },
   update: { arg: schema.arg({ type: schema.Int }) },
   orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -104,6 +94,7 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
+  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
   update: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
   orderBy: { arg: schema.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },

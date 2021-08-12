@@ -576,7 +576,7 @@ Some code...`}
           <WindowWrapper>
             <WindowL>
               {`{
-  allPosts (first: 2, where: { title_contains: "content" }) {
+  posts(take: 2, where: { title: { contains: "content" } }) {
     title
     author {
       name
@@ -587,7 +587,7 @@ Some code...`}
             <WindowR>
               {`{
   "data": {
-    "allPosts": [
+    "posts": [
       {
         "title": "How structured content gives you superpowers",
         "author": {

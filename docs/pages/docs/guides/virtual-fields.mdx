@@ -42,7 +42,7 @@ We can now run a GraphQL query and request the `hello` field on one of our `Exam
 
 ```graphql
 {
-  Example(where: { id: "1" }) {
+  example(where: { id: "1" }) {
     id
     hello
   }
@@ -52,7 +52,7 @@ We can now run a GraphQL query and request the `hello` field on one of our `Exam
 which gives the response:
 
 ```javascript
-{ Example: { id: "1", hello: "Hello, world! } }
+{ example: { id: "1", hello: "Hello, world! } }
 ```
 
 The value of `hello` is generated from the `resolve` function, which returns the string `"Hello, world!"`.
@@ -170,9 +170,9 @@ type Post {
 
 We can now perform the following query to get all the excerpts without over-fetching on the client.
 
-```
+```graphql
 {
-  allPosts {
+  posts {
     id
     excerpt(length: 100)
   }
@@ -284,7 +284,7 @@ export const lists = createSchema({
                 where: { id: item.id.toString() },
                 query: `posts(
                     orderBy: { publishDate: desc }
-                    first: 1
+                    take: 1
                   ) { id }`,
               });
               if (posts.length > 0) {

@@ -109,8 +109,8 @@ runner(async ({ context }) => {
   // Create some users
   const [alice, bob] = await context.lists.Person.createMany({
     data: [
-      { data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' } },
-      { data: { name: 'Bob', email: 'bob@example.com', password: 'super-secret' } },
+      { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+      { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
     ],
   });
 
@@ -129,7 +129,7 @@ runner(async ({ context }) => {
     .withSession({ itemId: bob.id, data: {} })
     .graphql.raw({
       query: `mutation update($id: ID!) {
-        updateTask(id: $id data: { isComplete: true }) {
+        updateTask(where: { id: $id }, data: { isComplete: true }) {
           id
         }
       }`,

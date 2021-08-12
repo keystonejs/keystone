@@ -182,7 +182,6 @@ The `db` config option allows you to configures certain aspects of the database 
 
 Options:
 
-- `searchField` (default: `"name"`): The name of the field to use when performing `search` filters in the GraphQL API.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   The default across all lists can be changed at the root-level `db.idField` config.
 
@@ -193,7 +192,6 @@ export default config({
   lists: createSchema({
     ListName: list({
       db: {
-        searchField: 'email',
         idField: { kind: 'uuid' },
       },
       /* ... */
