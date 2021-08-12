@@ -139,7 +139,9 @@ export {enumFilters as enum } from '../enum-filter'
     if (process.env.VERIFY) {
       const contents = await fs.readFile(filepath, 'utf8');
       if (contents !== newContent) {
-        throw new Error(`The file at ${filepath} is inconsistent`);
+        throw new Error(
+          `The file at ${filepath} is inconsistent with the expected generated contents, please run \`yarn generate-filters\` from the root to update it`
+        );
       }
     } else {
       await fs.outputFile(filepath, newContent);
