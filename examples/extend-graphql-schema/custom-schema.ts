@@ -47,15 +47,15 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         // If you accidentally use `context.lists.Post` here you can expect problems
         // when accessing the fields in your GraphQL client.
         return context.db.lists.Post.findMany({
-          where: { author: { id }, publishDate_gt: cutoff },
+          where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
         });
       },
       stats: async (root, { id }, context) => {
         const draft = await context.lists.Post.count({
-          where: { author: { id }, status: 'draft' },
+          where: { author: { id: { equals: id } }, status: { equals: 'draft' } },
         });
         const published = await context.lists.Post.count({
-          where: { author: { id }, status: 'published' },
+          where: { author: { id: { equals: id } }, status: { equals: 'published' } },
         });
         const { posts } = await context.lists.Author.findOne({
           where: { id },

@@ -46,7 +46,7 @@ const runner = setupTestRunner({
             },
           }),
         },
-        access: { read: { name_not: 'Charlie' } },
+        access: { read: { name: { not: { equals: 'Charlie' } } } },
       }),
     }),
   }),

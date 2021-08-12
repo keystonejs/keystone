@@ -11,48 +11,69 @@ type Todo {
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  isComplete: Boolean
-  isComplete_not: Boolean
+  NOT: [TodoWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: UserWhereInput
-  assignedTo_is_null: Boolean
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
-  createdAt: String
-  createdAt_not: String
-  createdAt_lt: String
-  createdAt_lte: String
-  createdAt_gt: String
-  createdAt_gte: String
-  createdAt_in: [String]
-  createdAt_not_in: [String]
-  updatedAt: String
-  updatedAt_not: String
-  updatedAt_lt: String
-  updatedAt_lte: String
-  updatedAt_gt: String
-  updatedAt_gte: String
-  updatedAt_in: [String]
-  updatedAt_not_in: [String]
+  finishBy: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input TodoWhereUniqueInput {
@@ -126,46 +147,24 @@ type PasswordState {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  tasks_every: TodoWhereInput
-  tasks_some: TodoWhereInput
-  tasks_none: TodoWhereInput
-  createdAt: String
-  createdAt_not: String
-  createdAt_lt: String
-  createdAt_lte: String
-  createdAt_gt: String
-  createdAt_gte: String
-  createdAt_in: [String]
-  createdAt_not_in: [String]
-  updatedAt: String
-  updatedAt_not: String
-  updatedAt_lt: String
-  updatedAt_lte: String
-  updatedAt_gt: String
-  updatedAt_gte: String
-  updatedAt_in: [String]
-  updatedAt_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  tasks: TodoManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
 }
 
 input UserWhereUniqueInput {

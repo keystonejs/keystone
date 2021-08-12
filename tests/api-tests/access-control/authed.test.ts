@@ -220,7 +220,7 @@ describe('Authed', () => {
 
             test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
               const _items = await context.lists[listKey].findMany({
-                where: { id_in: [FAKE_ID[provider], FAKE_ID_2[provider]] },
+                where: { id: { in: [FAKE_ID[provider], FAKE_ID_2[provider]] } },
               });
               expect(_items).toHaveLength(0);
             });

@@ -50,7 +50,10 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
+type Config = FieldControllerConfig<{
+  displayMode: 'input' | 'textarea';
+  shouldUseModeInsensitive: boolean;
+}>;
 
 export const controller = (
   config: Config
@@ -80,13 +83,25 @@ export const controller = (
       },
 
       graphql: ({ type, value }) => {
-        const key = type === 'is_i' ? `${config.path}_i` : `${config.path}_${type}`;
-        return { [key]: value };
+        const isNot = type.startsWith('not_');
+        const key =
+          type === 'is_i' || type === 'not_i'
+            ? 'equals'
+            : type
+                .replace(/_i$/, '')
+                .replace('not_', '')
+                .replace(/_([a-z])/g, (_, char: string) => char.toUpperCase());
+        const filter = { [key]: value };
+        return {
+          [config.path]: {
+            ...(isNot ? { not: filter } : filter),
+            mode: config.fieldMeta.shouldUseModeInsensitive ? 'insensitive' : undefined,
+          },
+        };
       },
       Label({ label, value }) {
         return `${label.toLowerCase()}: "${value}"`;
       },
-      // FIXME: Not all of these options will work with prisma_sqlite
       types: {
         contains_i: {
           label: 'Contains',

@@ -12,8 +12,8 @@ const runner = setupTestRunner({
         access: {
           read: true,
           create: true,
-          update: () => ({ name_not: 'bad' }),
-          delete: async () => ({ name_not_contains: 'no delete' }),
+          update: () => ({ name: { not: { equals: 'bad' } } }),
+          delete: async () => ({ name: { not: { contains: 'no delete' } } }),
         },
       }),
     }),

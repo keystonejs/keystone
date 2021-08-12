@@ -27,7 +27,7 @@ export function addRelationshipData(
         let val = await graphQLAPI.run({
           query: `query($ids: [ID!]!) {items:${
             gqlNames(relationship.listKey).listQueryName
-          }(where: {id_in:$ids}) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
+          }(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
             relationship.selection || ''
           }}}`,
           variables: { ids },

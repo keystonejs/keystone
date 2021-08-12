@@ -129,7 +129,7 @@ test(
   runner(async ({ context }) => {
     await createInitialData(context);
     const employees = await context.lists.Employee.findMany({
-      where: { company: { employees_some: { role: { name: 'RoleA' } } } },
+      where: { company: { employees: { some: { role: { name: { equals: 'RoleA' } } } } } },
       query: 'id name',
     });
     expect(employees).toHaveLength(1);

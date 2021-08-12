@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
   legacyFilters,
   FieldDefaultValue,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -36,6 +37,10 @@ export const float =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Float.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Float }) },
         update: { arg: schema.arg({ type: schema.Float }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },

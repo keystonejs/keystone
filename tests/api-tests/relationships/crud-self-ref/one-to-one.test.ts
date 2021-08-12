@@ -79,7 +79,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user, friend } = await createUserAndFriend(context);
         const users = await context.lists.User.findMany({
-          where: { friend: { name: friend.name } },
+          where: { friend: { name: { equals: friend.name } } },
         });
         expect(users.length).toEqual(1);
         expect(users[0].id).toEqual(user.id);
@@ -92,45 +92,45 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user, friend } = await createUserAndFriend(context);
         const users = await context.lists.User.findMany({
-          where: { friendOf: { name: user.name } },
+          where: { friendOf: { name: { equals: user.name } } },
         });
         expect(users.length).toEqual(1);
         expect(users[0].id).toEqual(friend.id);
       })
     );
     test(
-      'Where friend: is_null: true',
+      'Where friend: is null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+        const users = await context.lists.User.findMany({ where: { friend: null } });
         expect(users.length).toEqual(4);
       })
     );
     test(
-      'Where friendOf: is_null: true',
+      'Where friendOf: is null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+        const users = await context.lists.User.findMany({ where: { friendOf: null } });
         expect(users.length).toEqual(4);
       })
     );
     test(
-      'Where friend: is_null: false',
+      'Where friend: is not null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
+        const users = await context.lists.User.findMany({ where: { NOT: { friend: null } } });
         expect(users.length).toEqual(1);
       })
     );
     test(
-      'Where friendOf: is_null: false',
+      'Where friendOf: is not null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+        const users = await context.lists.User.findMany({ where: { NOT: { friendOf: null } } });
         expect(users.length).toEqual(1);
       })
     );
@@ -150,7 +150,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { friend } = await createUserAndFriend(context);
         const count = await context.lists.User.count({
-          where: { friend: { name: friend.name } },
+          where: { friend: { name: { equals: friend.name } } },
         });
         expect(count).toEqual(1);
       })
@@ -162,7 +162,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user } = await createUserAndFriend(context);
         const count = await context.lists.User.count({
-          where: { friendOf: { name: user.name } },
+          where: { friendOf: { name: { equals: user.name } } },
         });
         expect(count).toEqual(1);
       })
@@ -172,7 +172,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const count = await context.lists.User.count({ where: { friend_is_null: true } });
+        const count = await context.lists.User.count({ where: { friend: null } });
         expect(count).toEqual(4);
       })
     );
@@ -182,7 +182,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+        const count = await context.lists.User.count({ where: { friendOf: null } });
         expect(count).toEqual(4);
       })
     );

@@ -99,7 +99,7 @@ const runner = setupTestRunner({
 describe(`Many-to-many relationships`, () => {
   describe('Read', () => {
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -110,7 +110,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const _users = await context.lists.User.findMany({
-              where: { friends_some: { name } },
+              where: { friends: { some: { name: { equals: name } } } },
             });
             expect(_users.length).toEqual(count);
           })
@@ -118,7 +118,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -129,7 +129,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 9],
           ].map(async ([name, count]) => {
             const _users = await context.lists.User.findMany({
-              where: { friends_none: { name } },
+              where: { friends: { none: { name: { equals: name } } } },
             });
             expect(_users.length).toEqual(count);
           })
@@ -137,7 +137,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -148,7 +148,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friends_every: { name } },
+              where: { friends: { every: { name: { equals: name } } } },
             });
             expect(users.length).toEqual(count);
           })

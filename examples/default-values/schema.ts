@@ -30,7 +30,7 @@ export const lists = createSchema({
         // Dynamic default: Find an anonymous user and assign the task to them
         defaultValue: async ({ context }) => {
           const anonymous = await context.lists.Person.findMany({
-            where: { name: 'Anonymous' },
+            where: { name: { equals: 'Anonymous' } },
           });
           if (anonymous.length > 0) {
             return { connect: { id: anonymous[0].id } };

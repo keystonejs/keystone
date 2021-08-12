@@ -47,7 +47,7 @@ describe('Querying with relationship filters', () => {
 
         // Create an item that does the linking
         const allPosts = await context.lists.Post.findMany({
-          where: { author: { name_contains: 'J' } },
+          where: { author: { name: { contains: 'J' } } },
           query: 'id title',
         });
         expect(allPosts).toHaveLength(3);
@@ -74,7 +74,7 @@ describe('Querying with relationship filters', () => {
 
         // Create an item that does the linking
         const _posts = await context.lists.Post.findMany({
-          where: { author: { name_contains: 'J' } },
+          where: { author: { name: { contains: 'J' } } },
           query: 'id title author { id name }',
         });
         expect(_posts).toMatchObject([{ id: posts[0].id, title: posts[0].title }]);
@@ -110,7 +110,7 @@ describe('Querying with relationship filters', () => {
     };
 
     test(
-      '_every condition',
+      'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -118,7 +118,7 @@ describe('Querying with relationship filters', () => {
 
         // EVERY
         const _users = await context.lists.User.findMany({
-          where: { feed_every: { title_contains: 'J' } },
+          where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         });
 
@@ -127,7 +127,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_some condition',
+      'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -135,7 +135,7 @@ describe('Querying with relationship filters', () => {
 
         // SOME
         const _users = await context.lists.User.findMany({
-          where: { feed_some: { title_contains: 'J' } },
+          where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id feed(orderBy: { title: asc }) { title }',
         });
 
@@ -150,7 +150,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_none condition',
+      'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -158,7 +158,7 @@ describe('Querying with relationship filters', () => {
 
         // NONE
         const _users = await context.lists.User.findMany({
-          where: { feed_none: { title_contains: 'J' } },
+          where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         });
 
@@ -191,7 +191,7 @@ describe('Querying with relationship filters', () => {
     };
 
     test(
-      '_every condition',
+      'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -199,7 +199,7 @@ describe('Querying with relationship filters', () => {
 
         // EVERY
         const _users = await context.lists.User.findMany({
-          where: { feed_every: { title_contains: 'J' } },
+          where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         });
 
@@ -210,7 +210,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_some condition',
+      'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -218,7 +218,7 @@ describe('Querying with relationship filters', () => {
 
         // SOME
         const _users = await context.lists.User.findMany({
-          where: { feed_some: { title_contains: 'J' } },
+          where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id name feed(orderBy: { title: asc }) { id title }',
         });
 
@@ -230,7 +230,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_none condition',
+      'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -238,7 +238,7 @@ describe('Querying with relationship filters', () => {
 
         // NONE
         const _users = await context.lists.User.findMany({
-          where: { feed_none: { title_contains: 'J' } },
+          where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         });
 
@@ -264,7 +264,7 @@ describe('Querying with relationship filters', () => {
     };
 
     test(
-      '_every condition',
+      'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -272,7 +272,7 @@ describe('Querying with relationship filters', () => {
 
         // EVERY
         const _users = await context.lists.User.findMany({
-          where: { feed_every: { title_contains: 'J' } },
+          where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         });
 
@@ -286,7 +286,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_some condition',
+      'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -294,7 +294,7 @@ describe('Querying with relationship filters', () => {
 
         // SOME
         const _users = await context.lists.User.findMany({
-          where: { feed_some: { author: { id: users[0].id } } },
+          where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
           query: 'id name feed { id title }',
         });
         expect(_users).toEqual([]);
@@ -302,7 +302,7 @@ describe('Querying with relationship filters', () => {
     );
 
     test(
-      '_none condition',
+      'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
           context.lists[listKey].createOne({ data });
@@ -310,7 +310,7 @@ describe('Querying with relationship filters', () => {
 
         // NONE
         const _users = await context.lists.User.findMany({
-          where: { feed_none: { title_contains: 'J' } },
+          where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         });
 

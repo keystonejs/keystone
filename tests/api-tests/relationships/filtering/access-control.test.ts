@@ -24,7 +24,7 @@ const runner = setupTestRunner({
         },
         access: {
           // Limit read access to the first post only
-          read: { name_in: [postNames[1]] },
+          read: { name: { in: [postNames[1]] } },
         },
       }),
     }),
@@ -97,7 +97,7 @@ describe('relationship filtering with access control', () => {
         where: { id: user.id },
         // Knowingly filter to an ID I don't have read access to
         // to see if the filter is correctly "AND"d with the access control
-        query: `id username posts(where: { id_in: ["${postIds[2]}"] }) { id }`,
+        query: `id username posts(where: { id: { in: ["${postIds[2]}"] } }) { id }`,
       });
 
       expect(item).toMatchObject({ id: expect.any(String), username, posts: [] });

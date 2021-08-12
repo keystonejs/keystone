@@ -396,3 +396,5 @@ jobs:
         run: yarn lint:markdown
       - name: Example schemas
         run: yarn lint:examples
+      - name: Prisma Filters
+        run: yarn lint:filters

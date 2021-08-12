@@ -36,7 +36,7 @@ describe('relationship filtering', () => {
       });
 
       const users = (await context.lists.User.findMany({
-        query: `id posts (where: { content_contains: "hi" }){ id content }`,
+        query: `id posts (where: { content: { contains: "hi" } }){ id content }`,
       })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
       expect(users).toHaveLength(2);
       users[0].posts = users[0].posts.map(({ id }) => id).sort();
@@ -86,7 +86,7 @@ describe('relationship filtering', () => {
 
       const users = await context.lists.User.findMany({
         query:
-          'id posts(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] }){ id }',
+          'id posts(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] }){ id }',
       });
 
       expect(users).toContainEqual({ id: user.id, posts: [ids[2]] });
@@ -110,7 +110,7 @@ describe('relationship filtering', () => {
 
       const users = await context.lists.User.findMany({
         query:
-          'id posts(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] }){ id content }',
+          'id posts(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] }){ id content }',
       });
       expect(users).toContainEqual({
         id: user.id,
@@ -129,7 +129,7 @@ describe('relationship filtering', () => {
       await context.lists.User.createOne({ data: {} });
 
       const users = await context.lists.User.findMany({
-        where: { posts_some: { content_contains: 'foo' } },
+        where: { posts: { some: { content: { contains: 'foo' } } } },
         query: 'posts { id }',
       });
       expect(users).toHaveLength(0);
@@ -174,7 +174,7 @@ describe('relationship meta filtering', () => {
       });
 
       const users = await context.lists.User.findMany({
-        query: 'id postsCount(where: { content_contains: "hi" })',
+        query: 'id postsCount(where: { content: { contains: "hi" } })',
       });
       expect(users).toHaveLength(2);
       expect(users).toContainEqual({ id: user.id, postsCount: 2 });
@@ -197,7 +197,7 @@ describe('relationship meta filtering', () => {
       });
 
       const users = await context.lists.User.findMany({
-        query: `id postsCount(where: { AND: [{ content_contains: "hi" }, { content_contains: "lo" }] })`,
+        query: `id postsCount(where: { AND: [{ content: { contains: "hi" } }, { content: { contains: "lo" } }] })`,
       });
 
       expect(users).toHaveLength(2);
@@ -222,7 +222,7 @@ describe('relationship meta filtering', () => {
 
       const users = await context.lists.User.findMany({
         query:
-          'id postsCount(where: { OR: [{ content_contains: "i w" }, { content_contains: "? O" }] })',
+          'id postsCount(where: { OR: [{ content: { contains: "i w" } }, { content: { contains: "? O" } }] })',
       });
       expect(users).toHaveLength(2);
       expect(users).toContainEqual({ id: user.id, postsCount: 2 });

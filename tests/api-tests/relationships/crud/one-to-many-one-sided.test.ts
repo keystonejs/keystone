@@ -131,7 +131,7 @@ describe(`One-to-many relationships`, () => {
             ['E', 0],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { location: { name_contains: name } },
+              where: { location: { name: { contains: name } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -139,21 +139,21 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      'is_null: true',
+      'is null',
       runner(async ({ context }) => {
         await createComplexData(context);
         const companies = await context.lists.Company.findMany({
-          where: { location_is_null: true },
+          where: { location: null },
         });
         expect(companies.length).toEqual(1);
       })
     );
     test(
-      'is_null: false',
+      'is not null',
       runner(async ({ context }) => {
         await createComplexData(context);
         const companies = await context.lists.Company.findMany({
-          where: { location_is_null: false },
+          where: { NOT: { location: null } },
         });
         expect(companies.length).toEqual(4);
       })

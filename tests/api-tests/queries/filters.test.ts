@@ -23,14 +23,16 @@ describe('filtering on field name', () => {
   test(
     'filter works when there is no dash in field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({ where: { noDash: 'aValue' } });
+      const users = await context.lists.User.findMany({ where: { noDash: { equals: 'aValue' } } });
       expect(users).toEqual([]);
     })
   );
   test(
     'filter works when there is one dash in field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({ where: { single_dash: 'aValue' } });
+      const users = await context.lists.User.findMany({
+        where: { single_dash: { equals: 'aValue' } },
+      });
       expect(users).toEqual([]);
     })
   );
@@ -38,7 +40,7 @@ describe('filtering on field name', () => {
     'filter works when there are multiple dashes in field name',
     runner(async ({ context }) => {
       const users = await context.lists.User.findMany({
-        where: { many_many_many_dashes: 'aValue' },
+        where: { many_many_many_dashes: { equals: 'aValue' } },
       });
       expect(users).toEqual([]);
     })
@@ -46,7 +48,9 @@ describe('filtering on field name', () => {
   test(
     'filter works when there are multiple dashes in a row in a field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({ where: { multi____dash: 'aValue' } });
+      const users = await context.lists.User.findMany({
+        where: { multi____dash: { equals: 'aValue' } },
+      });
       expect(users).toEqual([]);
     })
   );
@@ -54,7 +58,7 @@ describe('filtering on field name', () => {
     'filter works when there is one dash in field name as part of a relationship',
     runner(async ({ context }) => {
       const secondaries = await context.lists.SecondaryList.findMany({
-        where: { someUser_is_null: false },
+        where: { NOT: { someUser: null } },
       });
       expect(secondaries).toEqual([]);
     })

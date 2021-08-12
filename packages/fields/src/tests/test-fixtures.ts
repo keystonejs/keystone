@@ -63,20 +63,20 @@ export const filterTests = (withKeystone: any) => {
   );
 
   test(
-    'Filter: id',
+    'Filter: equals',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
       const id = IDs['person2'];
-      return match(context, { id }, [{ id: IDs['person2'], name: 'person2' }]);
+      return match(context, { id: { equals: id } }, [{ id: IDs['person2'], name: 'person2' }]);
     })
   );
 
   test(
-    'Filter: id_not',
+    'Filter: not equals',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
       const id = IDs['person2'];
-      return match(context, { id_not: id }, [
+      return match(context, { id: { not: { equals: id } } }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
@@ -85,12 +85,12 @@ export const filterTests = (withKeystone: any) => {
   );
 
   test(
-    'Filter: id_in',
+    'Filter: in',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
       const id2 = IDs['person2'];
       const id3 = IDs['person3'];
-      return match(context, { id_in: [id2, id3] }, [
+      return match(context, { id: { in: [id2, id3] } }, [
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
       ]);
@@ -98,27 +98,27 @@ export const filterTests = (withKeystone: any) => {
   );
 
   test(
-    'Filter: id_in - empty list',
+    'Filter: in - empty list',
     withKeystone(({ context }: { context: KeystoneContext }) => {
-      return match(context, { id_in: [] }, []);
+      return match(context, { id: { in: [] } }, []);
     })
   );
 
   test(
-    'Filter: id_in - missing id',
+    'Filter: in - missing id',
     withKeystone(({ context }: { context: KeystoneContext }) => {
       const fakeID = 'cdafasdfasd';
-      return match(context, { id_in: [fakeID] }, []);
+      return match(context, { id: { in: [fakeID] } }, []);
     })
   );
 
   test(
-    'Filter: id_not_in',
+    'Filter: not in',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
       const id2 = IDs['person2'];
       const id3 = IDs['person3'];
-      return match(context, { id_not_in: [id2, id3] }, [
+      return match(context, { id: { not: { in: [id2, id3] } } }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person4'], name: 'person4' },
       ]);
@@ -126,10 +126,10 @@ export const filterTests = (withKeystone: any) => {
   );
 
   test(
-    'Filter: id_not_in - empty list',
+    'Filter: not in - empty list',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
-      return match(context, { id_not_in: [] }, [
+      return match(context, { id: { not: { in: [] } } }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
@@ -139,11 +139,11 @@ export const filterTests = (withKeystone: any) => {
   );
 
   test(
-    'Filter: id_not_in - missing id',
+    'Filter: not in - missing id',
     withKeystone(async ({ context }: { context: KeystoneContext }) => {
       const IDs = await getIDs(context);
       const fakeID = 'cdafasdfasd';
-      return match(context, { id_not_in: [fakeID] }, [
+      return match(context, { id: { not: { in: [fakeID] } } }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },

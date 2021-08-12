@@ -19,28 +19,48 @@ type Scalars = {
 export type TodoWhereInput = {
   readonly AND?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
-  readonly id?: Scalars['ID'] | null;
-  readonly id_not?: Scalars['ID'] | null;
-  readonly id_lt?: Scalars['ID'] | null;
-  readonly id_lte?: Scalars['ID'] | null;
-  readonly id_gt?: Scalars['ID'] | null;
-  readonly id_gte?: Scalars['ID'] | null;
-  readonly id_in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
-  readonly id_not_in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
-  readonly title?: Scalars['String'] | null;
-  readonly title_not?: Scalars['String'] | null;
-  readonly title_contains?: Scalars['String'] | null;
-  readonly title_not_contains?: Scalars['String'] | null;
-  readonly title_in?:
-    | ReadonlyArray<Scalars['String'] | null>
-    | Scalars['String']
-    | null
-    | null;
-  readonly title_not_in?:
-    | ReadonlyArray<Scalars['String'] | null>
-    | Scalars['String']
-    | null
-    | null;
+  readonly NOT?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
+  readonly id?: IDFilter | null;
+  readonly title?: StringNullableFilter | null;
+};
+
+export type IDFilter = {
+  readonly equals?: Scalars['ID'] | null;
+  readonly in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
+  readonly lt?: Scalars['ID'] | null;
+  readonly lte?: Scalars['ID'] | null;
+  readonly gt?: Scalars['ID'] | null;
+  readonly gte?: Scalars['ID'] | null;
+  readonly not?: IDFilter | null;
+};
+
+export type StringNullableFilter = {
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
+  readonly not?: NestedStringNullableFilter | null;
+};
+
+export type NestedStringNullableFilter = {
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
+  readonly not?: NestedStringNullableFilter | null;
 };
 
 export type TodoWhereUniqueInput = {

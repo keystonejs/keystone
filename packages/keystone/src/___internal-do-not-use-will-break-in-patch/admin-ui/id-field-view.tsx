@@ -53,13 +53,18 @@ export const controller = (
       },
 
       graphql: ({ type, value }) => {
-        const key = type === 'is' ? config.path : `${config.path}_${type}`;
+        if (type === 'not') {
+          return { [config.path]: { not: { equals: value } } };
+        }
         const valueWithoutWhitespace = value.replace(/\s/g, '');
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
 
         return {
-          [key]: ['in', 'not_in'].includes(type)
-            ? valueWithoutWhitespace.split(',')
-            : valueWithoutWhitespace,
+          [config.path]: {
+            [key]: ['in', 'not_in'].includes(type)
+              ? valueWithoutWhitespace.split(',')
+              : valueWithoutWhitespace,
+          },
         };
       },
       Label({ label, value, type }) {

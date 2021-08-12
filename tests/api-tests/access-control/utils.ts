@@ -38,7 +38,7 @@ const getDeclarativeListName = (access: BooleanAccess) => `${getPrefix(access)}D
     }), {}));
   }
   */
-const listAccessVariations: BooleanAccess[] = [
+const listAccessVariations: (BooleanAccess & { delete: boolean })[] = [
   { create: false, read: false, update: false, delete: false },
   { create: true, read: false, update: false, delete: false },
   { create: false, read: true, update: false, delete: false },
@@ -129,9 +129,9 @@ listAccessVariations.forEach(access => {
     access: {
       create: access.create,
       // arbitrarily restrict the data to a single item (see data.js)
-      read: () => access.read && { name: 'Hello' },
-      update: () => access.update && { name: 'Hello' },
-      delete: () => access.delete && { name: 'Hello' },
+      read: () => access.read && { name: { equals: 'Hello' } },
+      update: () => access.update && { name: { equals: 'Hello' } },
+      delete: () => access.delete && { name: { equals: 'Hello' } },
     },
   });
 });

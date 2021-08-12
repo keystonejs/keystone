@@ -105,7 +105,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friendOf: { name_contains: name } },
+              where: { friendOf: { name: { contains: name } } },
             });
             expect(users.length).toEqual(count);
           })
@@ -113,23 +113,23 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      'is_null: true',
+      'is null',
       runner(async ({ context }) => {
         await createReadData(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+        const users = await context.lists.User.findMany({ where: { friendOf: null } });
         expect(users.length).toEqual(5);
       })
     );
     test(
-      'is_null: false',
+      'is not null',
       runner(async ({ context }) => {
         await createReadData(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+        const users = await context.lists.User.findMany({ where: { NOT: { friendOf: null } } });
         expect(users.length).toEqual(6);
       })
     );
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -140,7 +140,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friends_some: { name } },
+              where: { friends: { some: { name: { equals: name } } } },
             });
             expect(users.length).toEqual(count);
           })
@@ -148,7 +148,7 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -159,7 +159,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 4 + 7],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friends_none: { name } },
+              where: { friends: { none: { name: { equals: name } } } },
             });
             expect(users.length).toEqual(count);
           })
@@ -167,7 +167,7 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -178,7 +178,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 1 + 7],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friends_every: { name } },
+              where: { friends: { every: { name: { equals: name } } } },
             });
             expect(users.length).toEqual(count);
           })
