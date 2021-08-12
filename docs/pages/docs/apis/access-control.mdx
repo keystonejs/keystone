@@ -105,7 +105,7 @@ export default config({
     ListKey: list({
       fields: { isLocked: checkbox() },
       // Declarative access control definition
-      access: { isLocked: false },
+      access: { isLocked: { equals: false } },
     }),
   }),
 });
