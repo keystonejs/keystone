@@ -123,7 +123,11 @@ describe(`One-to-one relationships`, () => {
         const owner = await createCompanyAndLocation(context);
         const name1 = owner.companies[0].location.custodians[0].name;
         const owners = await context.lists.Owner.findMany({
-          where: { companies_some: { location: { custodians_some: { name: name1 } } } },
+          where: {
+            companies: {
+              some: { location: { custodians: { some: { name: { equals: name1 } } } } },
+            },
+          },
           query: 'id companies { location { custodians { name } } }',
         });
         expect(owners.length).toEqual(1);
@@ -137,7 +141,9 @@ describe(`One-to-one relationships`, () => {
         const owner = await createCompanyAndLocation(context);
         const name1 = owner.name;
         const custodians = await context.lists.Custodian.findMany({
-          where: { locations_some: { company: { owners_some: { name: name1 } } } },
+          where: {
+            locations: { some: { company: { owners: { some: { name: { equals: name1 } } } } } },
+          },
           query: 'id locations { company { owners { name } } }',
         });
         expect(custodians.length).toEqual(2);
@@ -151,10 +157,16 @@ describe(`One-to-one relationships`, () => {
         const name1 = owner.name;
         const owners = await context.lists.Owner.findMany({
           where: {
-            companies_some: {
-              location: {
-                custodians_some: {
-                  locations_some: { company: { owners_some: { name: name1 } } },
+            companies: {
+              some: {
+                location: {
+                  custodians: {
+                    some: {
+                      locations: {
+                        some: { company: { owners: { some: { name: { equals: name1 } } } } },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -174,10 +186,16 @@ describe(`One-to-one relationships`, () => {
 
         const custodians = await context.lists.Custodian.findMany({
           where: {
-            locations_some: {
-              company: {
-                owners_some: {
-                  companies_some: { location: { custodians_some: { name: name1 } } },
+            locations: {
+              some: {
+                company: {
+                  owners: {
+                    some: {
+                      companies: {
+                        some: { location: { custodians: { some: { name: { equals: name1 } } } } },
+                      },
+                    },
+                  },
                 },
               },
             },

@@ -1,4 +1,4 @@
-import { JSONValue, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
+import { JSONValue, QueryMode, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -6,7 +6,7 @@ import {
   ListMetaRootVal,
   FieldMetaRootVal,
 } from '@keystone-next/types';
-import { GraphQLSchema, GraphQLObjectType, assertScalarType } from 'graphql';
+import { GraphQLSchema, GraphQLObjectType, assertScalarType, assertEnumType } from 'graphql';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
 const schema = {
@@ -35,6 +35,10 @@ export function getAdminMetaSchema({
   const jsonScalar = jsonScalarType
     ? schema.scalar<JSONValue>(assertScalarType(jsonScalarType))
     : schemaAPIFromTypesPkg.JSON;
+  const queryModeEnumType = graphQLSchema.getType('QueryMode');
+  const queryModeEnum = queryModeEnumType
+    ? { ...QueryMode, graphQLType: assertEnumType(graphQLSchema.getType('QueryMode')) }
+    : QueryMode;
 
   const KeystoneAdminUIFieldMeta = schema.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
@@ -153,10 +157,7 @@ export function getAdminMetaSchema({
         }),
       }),
       search: schema.field({
-        type: schema.enum({
-          name: 'QueryMode',
-          values: schema.enumValues(['default', 'insensitive']),
-        }),
+        type: queryModeEnum,
       }),
     },
   });

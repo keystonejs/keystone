@@ -44,7 +44,6 @@ export const supportedFilters = () => [];
 
 export const filterTests = (withKeystone: (arg: any) => any) => {
   const _storedValues = storedValues();
-  const _f = (x: any) => x;
   const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>
     expect(
       await context.lists.Test.findMany({
@@ -55,93 +54,79 @@ export const filterTests = (withKeystone: (arg: any) => any) => {
     ).toEqual(expected.map(i => _storedValues[i]));
 
   test(
-    'Filter: orderNumber',
+    'Filter: equals',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber: _f(1) }, [0])
+      match(context, { orderNumber: { equals: 1 } }, [0])
     )
   );
 
   test(
-    'Filter: orderNumber_not',
+    'Filter: not',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_not: _f(1) }, [1, 2, 3, 4, 5, 6])
+      match(context, { orderNumber: { not: { equals: 1 } } }, [1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
-    'Filter: orderNumber_not null',
+    'Filter: not null',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_not: null }, [0, 1, 2, 3, 4, 5, 6])
+      match(context, { orderNumber: { not: null } }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
-    'Filter: orderNumber_lt',
+    'Filter: lt',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_lt: _f(2) }, [0])
+      match(context, { orderNumber: { lt: 2 } }, [0])
     )
   );
 
   test(
-    'Filter: orderNumber_lte',
+    'Filter: lte',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_lte: _f(2) }, [0, 1])
+      match(context, { orderNumber: { lte: 2 } }, [0, 1])
     )
   );
 
   test(
-    'Filter: orderNumber_gt',
+    'Filter: gt',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_gt: _f(2) }, [2, 3, 4, 5, 6])
+      match(context, { orderNumber: { gt: 2 } }, [2, 3, 4, 5, 6])
     )
   );
 
   test(
-    'Filter: orderNumber_gte',
+    'Filter: gte',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_gte: _f(2) }, [1, 2, 3, 4, 5, 6])
+      match(context, { orderNumber: { gte: 2 } }, [1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
-    'Filter: orderNumber_in (empty list)',
+    'Filter: in (empty list)',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_in: [] }, [])
+      match(context, { orderNumber: { in: [] } }, [])
     )
   );
 
   test(
-    'Filter: orderNumber_not_in (empty list)',
+    'Filter: not in (empty list)',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_not_in: [] }, [0, 1, 2, 3, 4, 5, 6])
+      match(context, { orderNumber: { notIn: [] } }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
-    'Filter: orderNumber_in',
+    'Filter: in',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_in: ([1, 2, 3] as const).map(_f) }, [0, 1, 2])
+      match(context, { orderNumber: { in: [1, 2, 3] } }, [0, 1, 2])
     )
   );
 
   test(
-    'Filter: orderNumber_not_in',
+    'Filter: not in',
     withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_not_in: [1, 2, 3].map(_f) }, [3, 4, 5, 6])
-    )
-  );
-
-  test(
-    'Filter: orderNumber_in null',
-    withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_in: [null] }, [])
-    )
-  );
-
-  test(
-    'Filter: orderNumber_not_in null',
-    withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber_not_in: [null] }, [0, 1, 2, 3, 4, 5, 6])
+      match(context, { orderNumber: { notIn: [1, 2, 3] } }, [3, 4, 5, 6])
     )
   );
 };

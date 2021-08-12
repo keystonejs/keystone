@@ -72,41 +72,75 @@ type LocalFileFieldOutput implements FileFieldOutput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
-  roles: String
-  roles_not: String
-  roles_contains: String
-  roles_not_contains: String
-  roles_in: [String]
-  roles_not_in: [String]
-  phoneNumbers_every: PhoneNumberWhereInput
-  phoneNumbers_some: PhoneNumberWhereInput
-  phoneNumbers_none: PhoneNumberWhereInput
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  isAdmin: BooleanNullableFilter
+  roles: StringNullableFilter
+  phoneNumbers: PhoneNumberManyRelationFilter
+  posts: PostManyRelationFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input PhoneNumberManyRelationFilter {
+  every: PhoneNumberWhereInput
+  some: PhoneNumberWhereInput
+  none: PhoneNumberWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -206,26 +240,11 @@ type PhoneNumber {
 input PhoneNumberWhereInput {
   AND: [PhoneNumberWhereInput!]
   OR: [PhoneNumberWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
+  NOT: [PhoneNumberWhereInput!]
+  id: IDFilter
   user: UserWhereInput
-  user_is_null: Boolean
-  type: String
-  type_not: String
-  type_in: [String]
-  type_not_in: [String]
-  value: String
-  value_not: String
-  value_contains: String
-  value_not_contains: String
-  value_in: [String]
-  value_not_in: [String]
+  type: StringNullableFilter
+  value: StringNullableFilter
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -282,34 +301,23 @@ type Post_content_DocumentField {
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  title: StringNullableFilter
+  status: StringNullableFilter
+  publishDate: DateTimeNullableFilter
   author: UserWhereInput
-  author_is_null: Boolean
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {

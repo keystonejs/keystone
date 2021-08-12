@@ -22,7 +22,6 @@ import {
 } from './access-control';
 import { getNamesFromList } from './utils';
 import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
-import { InputFilter, PrismaFilter, resolveWhereInput } from './where-inputs';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
@@ -37,7 +36,6 @@ export type InitialisedList = {
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
-  filterImpls: Record<string, (input: InputFilter[string]) => PrismaFilter>;
   types: TypesForList;
   access: ResolvedListAccessControl;
   hooks: ListHooks<BaseGeneratedListTypes>;
@@ -111,9 +109,12 @@ export function initialiseLists(
           {
             AND: schema.arg({ type: schema.list(schema.nonNull(where)) }),
             OR: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            NOT: schema.arg({ type: schema.list(schema.nonNull(where)) }),
           },
-          ...Object.values(fields).map(field =>
-            field.access.read === false ? {} : field.__legacy?.filters?.fields ?? {}
+          ...Object.entries(fields).map(
+            ([fieldKey, field]) =>
+              field.input?.where?.arg &&
+              field.access.read !== false && { [fieldKey]: field.input?.where?.arg }
           )
         );
       },
@@ -234,7 +235,18 @@ export function initialiseLists(
         update,
         findManyArgs,
         relateTo: {
-          many: { create: relateToManyForCreate, update: relateToManyForUpdate },
+          many: {
+            where: schema.inputObject({
+              name: `${listKey}ManyRelationFilter`,
+              fields: {
+                every: schema.arg({ type: where }),
+                some: schema.arg({ type: where }),
+                none: schema.arg({ type: where }),
+              },
+            }),
+            create: relateToManyForCreate,
+            update: relateToManyForUpdate,
+          },
           one: { create: relateToOneForCreate, update: relateToOneForUpdate },
         },
       },
@@ -304,27 +316,6 @@ export function initialiseLists(
       ...listInfos[listKey],
       ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
-      filterImpls: Object.assign(
-        {},
-        ...Object.values(list.fields).map(field => {
-          if (field.dbField.kind === 'relation' && field.__legacy?.filters) {
-            const foreignListKey = field.dbField.list;
-            return Object.fromEntries(
-              Object.entries(field.__legacy.filters.impls).map(([key, resolve]) => {
-                return [
-                  key,
-                  (val: any) =>
-                    resolve(val, foreignListWhereInput =>
-                      resolveWhereInput(foreignListWhereInput, lists[foreignListKey])
-                    ),
-                ];
-              })
-            );
-          } else {
-            return field.__legacy?.filters?.impls ?? {};
-          }
-        })
-      ),
       cacheHint: (() => {
         const cacheHint = listsConfig[listKey].graphql?.cacheHint;
         if (cacheHint === undefined) {
