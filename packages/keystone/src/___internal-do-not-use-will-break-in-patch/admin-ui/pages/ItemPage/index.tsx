@@ -257,7 +257,7 @@ function DeleteButton({
                 await deleteItem();
               } catch (err) {
                 return toasts.addToast({
-                  title: 'Failed to delete item',
+                  title: `Failed to delete ${list.labelField} item`,
                   message: err.message,
                   tone: 'negative',
                 });
@@ -265,7 +265,7 @@ function DeleteButton({
               router.push(`/${list.path}`);
               return toasts.addToast({
                 title: itemLabel,
-                message: 'Deleted successfully',
+                message: `Deleted ${itemLabel} successfully`,
                 tone: 'positive',
               });
             },
