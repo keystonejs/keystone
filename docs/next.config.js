@@ -1,6 +1,5 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
-const withImages = require('next-images');
 const mdxHints = require('remark-hint');
 const gfm = require('remark-gfm');
 
@@ -20,7 +19,6 @@ const redirects = {
 
 module.exports = withPlugins([
   withPreconstruct,
-  withImages,
   [
     withMDX,
     {
