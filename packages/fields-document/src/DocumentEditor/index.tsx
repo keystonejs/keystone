@@ -245,6 +245,12 @@ export function DocumentEditor({
           right: 0,
           top: 0,
           zIndex: 100,
+          // when you click on anywhere in the (expanded) editable area the cursor gets placed
+          // also pulls editable area in from left edge where the cursor was a bit lost
+          '& > div:nth-child(2)': {
+            height: '100%',
+            padding: '1rem',
+          }
         }
       }
     >
