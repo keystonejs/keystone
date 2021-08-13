@@ -7,21 +7,21 @@ import { QueryMode } from '../..';
 
 type StringNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.String, undefined>;
+  equals: schema.Arg<typeof schema.String>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  contains: schema.Arg<typeof schema.String, undefined>;
-  startsWith: schema.Arg<typeof schema.String, undefined>;
-  endsWith: schema.Arg<typeof schema.String, undefined>;
-  mode: schema.Arg<typeof QueryMode, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  contains: schema.Arg<typeof schema.String>;
+  startsWith: schema.Arg<typeof schema.String>;
+  endsWith: schema.Arg<typeof schema.String>;
+  mode: schema.Arg<typeof QueryMode>;
   // can be null
-  not: schema.Arg<typeof NestedStringNullableFilter, undefined>;
+  not: schema.Arg<typeof NestedStringNullableFilter>;
 }>;
 
 const StringNullableFilter: StringNullableFilterType = schema.inputObject({
@@ -48,20 +48,20 @@ const StringNullableFilter: StringNullableFilterType = schema.inputObject({
 
 type NestedStringNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.String, undefined>;
+  equals: schema.Arg<typeof schema.String>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  contains: schema.Arg<typeof schema.String, undefined>;
-  startsWith: schema.Arg<typeof schema.String, undefined>;
-  endsWith: schema.Arg<typeof schema.String, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  contains: schema.Arg<typeof schema.String>;
+  startsWith: schema.Arg<typeof schema.String>;
+  endsWith: schema.Arg<typeof schema.String>;
   // can be null
-  not: schema.Arg<typeof NestedStringNullableFilter, undefined>;
+  not: schema.Arg<typeof NestedStringNullableFilter>;
 }>;
 
 const NestedStringNullableFilter: NestedStringNullableFilterType = schema.inputObject({
@@ -86,18 +86,18 @@ const NestedStringNullableFilter: NestedStringNullableFilterType = schema.inputO
 });
 
 type StringFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.String, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  contains: schema.Arg<typeof schema.String, undefined>;
-  startsWith: schema.Arg<typeof schema.String, undefined>;
-  endsWith: schema.Arg<typeof schema.String, undefined>;
-  mode: schema.Arg<typeof QueryMode, undefined>;
-  not: schema.Arg<typeof NestedStringFilter, undefined>;
+  equals: schema.Arg<typeof schema.String>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  contains: schema.Arg<typeof schema.String>;
+  startsWith: schema.Arg<typeof schema.String>;
+  endsWith: schema.Arg<typeof schema.String>;
+  mode: schema.Arg<typeof QueryMode>;
+  not: schema.Arg<typeof NestedStringFilter>;
 }>;
 
 const StringFilter: StringFilterType = schema.inputObject({
@@ -119,17 +119,17 @@ const StringFilter: StringFilterType = schema.inputObject({
 });
 
 type NestedStringFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.String, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  contains: schema.Arg<typeof schema.String, undefined>;
-  startsWith: schema.Arg<typeof schema.String, undefined>;
-  endsWith: schema.Arg<typeof schema.String, undefined>;
-  not: schema.Arg<typeof NestedStringFilter, undefined>;
+  equals: schema.Arg<typeof schema.String>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  contains: schema.Arg<typeof schema.String>;
+  startsWith: schema.Arg<typeof schema.String>;
+  endsWith: schema.Arg<typeof schema.String>;
+  not: schema.Arg<typeof NestedStringFilter>;
 }>;
 
 const NestedStringFilter: NestedStringFilterType = schema.inputObject({
@@ -151,12 +151,12 @@ const NestedStringFilter: NestedStringFilterType = schema.inputObject({
 
 type StringNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  has: schema.Arg<typeof schema.String, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.String>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const StringNullableListFilter: StringNullableListFilterType = schema.inputObject({
@@ -174,9 +174,9 @@ const StringNullableListFilter: StringNullableListFilterType = schema.inputObjec
 
 type BoolNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.Boolean, undefined>;
+  equals: schema.Arg<typeof schema.Boolean>;
   // can be null
-  not: schema.Arg<typeof BoolNullableFilter, undefined>;
+  not: schema.Arg<typeof BoolNullableFilter>;
 }>;
 
 const BoolNullableFilter: BoolNullableFilterType = schema.inputObject({
@@ -190,8 +190,8 @@ const BoolNullableFilter: BoolNullableFilterType = schema.inputObject({
 });
 
 type BoolFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.Boolean, undefined>;
-  not: schema.Arg<typeof BoolFilter, undefined>;
+  equals: schema.Arg<typeof schema.Boolean>;
+  not: schema.Arg<typeof BoolFilter>;
 }>;
 
 const BoolFilter: BoolFilterType = schema.inputObject({
@@ -204,12 +204,12 @@ const BoolFilter: BoolFilterType = schema.inputObject({
 
 type BoolNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>>;
   // can be null
-  has: schema.Arg<typeof schema.Boolean, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.Boolean>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Boolean>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const BoolNullableListFilter: BoolNullableListFilterType = schema.inputObject({
@@ -227,17 +227,17 @@ const BoolNullableListFilter: BoolNullableListFilterType = schema.inputObject({
 
 type IntNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.Int, undefined>;
+  equals: schema.Arg<typeof schema.Int>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
-  lt: schema.Arg<typeof schema.Int, undefined>;
-  lte: schema.Arg<typeof schema.Int, undefined>;
-  gt: schema.Arg<typeof schema.Int, undefined>;
-  gte: schema.Arg<typeof schema.Int, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
+  lt: schema.Arg<typeof schema.Int>;
+  lte: schema.Arg<typeof schema.Int>;
+  gt: schema.Arg<typeof schema.Int>;
+  gte: schema.Arg<typeof schema.Int>;
   // can be null
-  not: schema.Arg<typeof IntNullableFilter, undefined>;
+  not: schema.Arg<typeof IntNullableFilter>;
 }>;
 
 const IntNullableFilter: IntNullableFilterType = schema.inputObject({
@@ -259,14 +259,14 @@ const IntNullableFilter: IntNullableFilterType = schema.inputObject({
 });
 
 type IntFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.Int, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
-  lt: schema.Arg<typeof schema.Int, undefined>;
-  lte: schema.Arg<typeof schema.Int, undefined>;
-  gt: schema.Arg<typeof schema.Int, undefined>;
-  gte: schema.Arg<typeof schema.Int, undefined>;
-  not: schema.Arg<typeof IntFilter, undefined>;
+  equals: schema.Arg<typeof schema.Int>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
+  lt: schema.Arg<typeof schema.Int>;
+  lte: schema.Arg<typeof schema.Int>;
+  gt: schema.Arg<typeof schema.Int>;
+  gte: schema.Arg<typeof schema.Int>;
+  not: schema.Arg<typeof IntFilter>;
 }>;
 
 const IntFilter: IntFilterType = schema.inputObject({
@@ -285,12 +285,12 @@ const IntFilter: IntFilterType = schema.inputObject({
 
 type IntNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
   // can be null
-  has: schema.Arg<typeof schema.Int, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.Int>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Int>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const IntNullableListFilter: IntNullableListFilterType = schema.inputObject({
@@ -308,17 +308,17 @@ const IntNullableListFilter: IntNullableListFilterType = schema.inputObject({
 
 type FloatNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.Float, undefined>;
+  equals: schema.Arg<typeof schema.Float>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
-  lt: schema.Arg<typeof schema.Float, undefined>;
-  lte: schema.Arg<typeof schema.Float, undefined>;
-  gt: schema.Arg<typeof schema.Float, undefined>;
-  gte: schema.Arg<typeof schema.Float, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
+  lt: schema.Arg<typeof schema.Float>;
+  lte: schema.Arg<typeof schema.Float>;
+  gt: schema.Arg<typeof schema.Float>;
+  gte: schema.Arg<typeof schema.Float>;
   // can be null
-  not: schema.Arg<typeof FloatNullableFilter, undefined>;
+  not: schema.Arg<typeof FloatNullableFilter>;
 }>;
 
 const FloatNullableFilter: FloatNullableFilterType = schema.inputObject({
@@ -340,14 +340,14 @@ const FloatNullableFilter: FloatNullableFilterType = schema.inputObject({
 });
 
 type FloatFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.Float, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
-  lt: schema.Arg<typeof schema.Float, undefined>;
-  lte: schema.Arg<typeof schema.Float, undefined>;
-  gt: schema.Arg<typeof schema.Float, undefined>;
-  gte: schema.Arg<typeof schema.Float, undefined>;
-  not: schema.Arg<typeof FloatFilter, undefined>;
+  equals: schema.Arg<typeof schema.Float>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
+  lt: schema.Arg<typeof schema.Float>;
+  lte: schema.Arg<typeof schema.Float>;
+  gt: schema.Arg<typeof schema.Float>;
+  gte: schema.Arg<typeof schema.Float>;
+  not: schema.Arg<typeof FloatFilter>;
 }>;
 
 const FloatFilter: FloatFilterType = schema.inputObject({
@@ -366,12 +366,12 @@ const FloatFilter: FloatFilterType = schema.inputObject({
 
 type FloatNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
   // can be null
-  has: schema.Arg<typeof schema.Float, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.Float>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.Float>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const FloatNullableListFilter: FloatNullableListFilterType = schema.inputObject({
@@ -389,17 +389,17 @@ const FloatNullableListFilter: FloatNullableListFilterType = schema.inputObject(
 
 type DateTimeNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.String, undefined>;
+  equals: schema.Arg<typeof schema.String>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
   // can be null
-  not: schema.Arg<typeof DateTimeNullableFilter, undefined>;
+  not: schema.Arg<typeof DateTimeNullableFilter>;
 }>;
 
 const DateTimeNullableFilter: DateTimeNullableFilterType = schema.inputObject({
@@ -421,14 +421,14 @@ const DateTimeNullableFilter: DateTimeNullableFilterType = schema.inputObject({
 });
 
 type DateTimeFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.String, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  not: schema.Arg<typeof DateTimeFilter, undefined>;
+  equals: schema.Arg<typeof schema.String>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  not: schema.Arg<typeof DateTimeFilter>;
 }>;
 
 const DateTimeFilter: DateTimeFilterType = schema.inputObject({
@@ -447,12 +447,12 @@ const DateTimeFilter: DateTimeFilterType = schema.inputObject({
 
 type DateTimeNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  has: schema.Arg<typeof schema.String, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.String>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const DateTimeNullableListFilter: DateTimeNullableListFilterType = schema.inputObject({
@@ -470,9 +470,9 @@ const DateTimeNullableListFilter: DateTimeNullableListFilterType = schema.inputO
 
 type JsonNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.JSON, undefined>;
+  equals: schema.Arg<typeof schema.JSON>;
   // can be null
-  not: schema.Arg<typeof schema.JSON, undefined>;
+  not: schema.Arg<typeof schema.JSON>;
 }>;
 
 const JsonNullableFilter: JsonNullableFilterType = schema.inputObject({
@@ -486,8 +486,8 @@ const JsonNullableFilter: JsonNullableFilterType = schema.inputObject({
 });
 
 type JsonFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.JSON, undefined>;
-  not: schema.Arg<typeof schema.JSON, undefined>;
+  equals: schema.Arg<typeof schema.JSON>;
+  not: schema.Arg<typeof schema.JSON>;
 }>;
 
 const JsonFilter: JsonFilterType = schema.inputObject({
@@ -500,12 +500,12 @@ const JsonFilter: JsonFilterType = schema.inputObject({
 
 type JsonNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>>;
   // can be null
-  has: schema.Arg<typeof schema.JSON, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.JSON>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.JSON>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const JsonNullableListFilter: JsonNullableListFilterType = schema.inputObject({
@@ -523,17 +523,17 @@ const JsonNullableListFilter: JsonNullableListFilterType = schema.inputObject({
 
 type DecimalNullableFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<typeof schema.String, undefined>;
+  equals: schema.Arg<typeof schema.String>;
   // can be null
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
   // can be null
-  not: schema.Arg<typeof DecimalNullableFilter, undefined>;
+  not: schema.Arg<typeof DecimalNullableFilter>;
 }>;
 
 const DecimalNullableFilter: DecimalNullableFilterType = schema.inputObject({
@@ -555,14 +555,14 @@ const DecimalNullableFilter: DecimalNullableFilterType = schema.inputObject({
 });
 
 type DecimalFilterType = schema.InputObjectType<{
-  equals: schema.Arg<typeof schema.String, undefined>;
-  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  lt: schema.Arg<typeof schema.String, undefined>;
-  lte: schema.Arg<typeof schema.String, undefined>;
-  gt: schema.Arg<typeof schema.String, undefined>;
-  gte: schema.Arg<typeof schema.String, undefined>;
-  not: schema.Arg<typeof DecimalFilter, undefined>;
+  equals: schema.Arg<typeof schema.String>;
+  in: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  notIn: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  lt: schema.Arg<typeof schema.String>;
+  lte: schema.Arg<typeof schema.String>;
+  gt: schema.Arg<typeof schema.String>;
+  gte: schema.Arg<typeof schema.String>;
+  not: schema.Arg<typeof DecimalFilter>;
 }>;
 
 const DecimalFilter: DecimalFilterType = schema.inputObject({
@@ -581,12 +581,12 @@ const DecimalFilter: DecimalFilterType = schema.inputObject({
 
 type DecimalNullableListFilterType = schema.InputObjectType<{
   // can be null
-  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
+  equals: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
   // can be null
-  has: schema.Arg<typeof schema.String, undefined>;
-  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>, undefined>;
-  isEmpty: schema.Arg<typeof schema.Boolean, undefined>;
+  has: schema.Arg<typeof schema.String>;
+  hasEvery: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  hasSome: schema.Arg<schema.ListType<schema.NonNullType<typeof schema.String>>>;
+  isEmpty: schema.Arg<typeof schema.Boolean>;
 }>;
 
 const DecimalNullableListFilter: DecimalNullableListFilterType = schema.inputObject({
