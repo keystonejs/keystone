@@ -1535,10 +1535,10 @@
   dependencies:
     tslib "~2.3.0"
 
-"@graphql-ts/schema@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.1.2.tgz#71b04cc88ff61f5c19a81ac70f878b1e36f617da"
-  integrity sha512-ZP4Nj70B18q1Y7B4WHeJR5gMyoH8oX9umnpmT9gu6kUD9rmTZfqHE9cGHRisw+ZOlWBnx6rPrx0BmUROFQFORA==
+"@graphql-ts/schema@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.2.0.tgz#1fc11a985cd5b0534de6616abcf05b0b493b8252"
+  integrity sha512-4hLQW5RfJkSkqia3Tl/LRVjsIGziTN/fHsUEuSIg1quD0y3pPpQxisDAIt4nkevY53q+JuGSVG1isJz+v8Ym/g==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
