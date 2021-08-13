@@ -1,3 +1,56 @@
+input CreateInitialPersonInput {
+  name: String
+  email: String
+  password: String
+}
+
+type Mutation {
+  createInitialPerson(
+    data: CreateInitialPersonInput!
+  ): PersonAuthenticationWithPasswordSuccess!
+  authenticatePersonWithPassword(
+    email: String!
+    password: String!
+  ): PersonAuthenticationWithPasswordResult!
+  createTask(data: TaskCreateInput!): Task
+  createTasks(data: [TaskCreateInput!]!): [Task]
+  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  updateTasks(data: [TaskUpdateArgs!]!): [Task]
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  endSession: Boolean!
+}
+
+union AuthenticatedItem = Person
+
+union PersonAuthenticationWithPasswordResult =
+    PersonAuthenticationWithPasswordSuccess
+  | PersonAuthenticationWithPasswordFailure
+
+type PersonAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: Person!
+}
+
+type PersonAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
 type Task {
   id: ID!
   label: String
@@ -225,60 +278,8 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type Mutation {
-  createTask(data: TaskCreateInput!): Task
-  createTasks(data: [TaskCreateInput!]!): [Task]
-  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
-  updateTasks(data: [TaskUpdateArgs!]!): [Task]
-  deleteTask(where: TaskWhereUniqueInput!): Task
-  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
-  createPerson(data: PersonCreateInput!): Person
-  createPeople(data: [PersonCreateInput!]!): [Person]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PersonUpdateArgs!]!): [Person]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
-  authenticatePersonWithPassword(
-    email: String!
-    password: String!
-  ): PersonAuthenticationWithPasswordResult!
-  createInitialPerson(
-    data: CreateInitialPersonInput!
-  ): PersonAuthenticationWithPasswordSuccess!
-  endSession: Boolean!
-}
-
-union AuthenticatedItem = Person
-
-union PersonAuthenticationWithPasswordResult =
-    PersonAuthenticationWithPasswordSuccess
-  | PersonAuthenticationWithPasswordFailure
-
-type PersonAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: Person!
-}
-
-type PersonAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialPersonInput {
-  name: String
-  email: String
-  password: String
-}
-
 type Query {
+  authenticatedItem: AuthenticatedItem
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
@@ -295,7 +296,6 @@ type Query {
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
-  authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }
 
