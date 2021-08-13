@@ -227,8 +227,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
     selectedItems: new Set() as ReadonlySet<string>,
   }));
 
-  console.log(selectedItemsState);
-
   // this removes the selected items which no longer exist when the data changes
   // because someone goes to another page, changes filters or etc.
   if (data && data.items && selectedItemsState.itemsFromServer !== data.items) {
