@@ -55,7 +55,7 @@ const nonCircularFields = {
 
 type IDFilterType = schema.InputObjectType<
   typeof nonCircularFields & {
-    not: schema.Arg<typeof IDFilter, undefined>;
+    not: schema.Arg<typeof IDFilter>;
   }
 >;
 

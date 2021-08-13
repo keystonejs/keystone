@@ -280,7 +280,7 @@ function printInputTypeForGraphQLTS(
           field.isList
             ? `schema.ListType<schema.NonNullType<typeof ${field.type}>>`
             : `typeof ${field.type}`
-        }, undefined>`;
+        }>`;
       })
       .join(',\n')}
   }>

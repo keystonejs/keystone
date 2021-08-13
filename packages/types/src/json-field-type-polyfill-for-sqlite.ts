@@ -98,8 +98,8 @@ export function jsonFieldTypePolyfilledForSQLite<
     ScalarDBField<'Json', 'optional'>,
     CreateArg,
     UpdateArg,
-    schema.Arg<schema.NullableInputType, undefined>,
-    schema.Arg<schema.NullableInputType, undefined>
+    schema.Arg<schema.NullableInputType, false>,
+    schema.Arg<schema.NullableInputType, false>
   > & {
     input?: {
       uniqueWhere?: undefined;

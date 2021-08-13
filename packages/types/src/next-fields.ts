@@ -39,17 +39,17 @@ export type NextFieldType<
     | schema.Arg<schema.InputType>
     | undefined,
   UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >
 > = {
   dbField: TDBField;
@@ -351,17 +351,17 @@ export type FieldTypeWithoutDBField<
     | schema.Arg<schema.InputType>
     | undefined,
   UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  FilterArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >
 > = {
   input?: {
@@ -393,9 +393,9 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends schema.Arg<schema.InputType> | undefined,
     UpdateArg extends schema.Arg<schema.InputType>,
-    UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined>,
-    OrderByArg extends schema.Arg<schema.NullableInputType, undefined>,
-    FilterArg extends schema.Arg<schema.NullableInputType, undefined>
+    UniqueWhereArg extends schema.Arg<schema.NullableInputType, false>,
+    OrderByArg extends schema.Arg<schema.NullableInputType, false>,
+    FilterArg extends schema.Arg<schema.NullableInputType, false>
   >(
     stuff: FieldTypeWithoutDBField<
       TDBField,
@@ -453,13 +453,13 @@ export type TypesForList = {
 };
 
 export type FindManyArgs = {
-  where: schema.Arg<schema.NonNullType<TypesForList['where']>, {}>;
+  where: schema.Arg<schema.NonNullType<TypesForList['where']>, true>;
   orderBy: schema.Arg<
     schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
-    Record<string, any>[]
+    true
   >;
   take: schema.Arg<typeof schema.Int>;
-  skip: schema.Arg<schema.NonNullType<typeof schema.Int>, number>;
+  skip: schema.Arg<schema.NonNullType<typeof schema.Int>, true>;
 };
 
 export type FindManyArgsValue = schema.InferValueFromArgs<FindManyArgs>;
