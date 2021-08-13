@@ -452,54 +452,6 @@ function DeleteManyButton({
   );
   const [isOpen, setIsOpen] = useState(false);
   const toasts = useToasts();
-  const newDeletionLogic = async () => {
-    const { data, errors } = await deleteItems({
-      variables: { where: [...selectedItems].map(id => ({ id })) },
-    });
-    const { successfulItems, unsuccessfulItems } = data[
-      list.gqlNames.deleteManyMutationName
-    ].reduce(
-      (acc: { successfulItems: any[]; unsuccessfulItems: any[] }, curr: any) => {
-        if (curr) {
-          acc.successfulItems.push(curr[list.labelField]);
-        } else {
-          acc.unsuccessfulItems.push(curr);
-        }
-        return acc;
-      },
-      { successfulItems: [], unsuccessfulItems: [] } as {
-        successfulItems: any[];
-        unsuccessfulItems: any[];
-      }
-    );
-
-    if (successfulItems?.length) {
-      toasts.addToast({
-        tone: 'positive',
-        title: `Deleted ${successfulItems.length} of ${
-          data[list.gqlNames.deleteManyMutationName].length
-        } ${list.plural} successful`,
-        message: successfulItems.join(', '),
-      });
-    }
-    if (errors?.length) {
-      toasts.addToast({
-        tone: 'negative',
-        title: `Failed to delete ${unsuccessfulItems.length} of ${
-          data[list.gqlNames.deleteManyMutationName].length
-        } ${list.plural}`,
-        message: errors
-          .reduce((acc, error) => {
-            if (acc.indexOf(error.message) < 0) {
-              acc.push(error.message);
-            }
-            return acc;
-          }, [] as string[])
-          .join('\n'),
-      });
-    }
-    return refetch();
-  };
   return (
     <Fragment>
       <Button
