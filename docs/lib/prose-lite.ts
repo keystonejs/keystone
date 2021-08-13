@@ -153,6 +153,21 @@ export const proseStyles = {
     marginBottom: '2rem',
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.7142857,
+    maxWidth: '100%',
+    overflowX: 'auto',
+    display: 'block',
+    // Visual help for overflow if we need it ↓
+    // Needs TLC
+    // position: 'relative',
+    // '::after': {
+    //   content: '""',
+    //   width: '1rem',
+    //   height: '100%',
+    //   background: 'linear-gradient(to right, rgba(255,255,255,0.0) 0%, rgba(255,255,255,1) 100%);',
+    //   position: 'absolute',
+    //   top: '0',
+    //   right: '0',
+    // }
   },
   thead: {
     color: 'var(--text)',
@@ -173,6 +188,9 @@ export const proseStyles = {
     paddingRight: '0.5714285714em',
     paddingBottom: '0.5714285714em',
     paddingLeft: '0.5714285714em',
+    '> code': {
+      whiteSpace: 'nowrap',
+    }
   },
   fontSize: 'var(--font-small)',
   lineHeight: 1.75,
