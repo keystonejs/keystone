@@ -23,7 +23,7 @@
     "@keystone-next/types": "^23.0.0",
     "@types/nodemailer": "^6.4.4",
     "dotenv": "^10.0.0",
-    "next": "^10.2.3",
+    "next": "^11.1.0",
     "nodemailer": "^6.6.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

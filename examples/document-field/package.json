@@ -15,7 +15,7 @@
     "@keystone-next/fields-document": "^7.0.3",
     "@keystone-next/keystone": "^23.0.0",
     "@preconstruct/next": "^3.0.0",
-    "next": "^10.2.3",
+    "next": "^11.1.0",
     "react": "^17.0.2"
   },
   "devDependencies": {
