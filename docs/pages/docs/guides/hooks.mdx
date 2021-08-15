@@ -157,7 +157,7 @@ export default config({
        },
       hooks: {
         afterChange: ({ operation, updatedItem }) => {
-          if (operation === 'create) {
+          if (operation === 'create') {
             sendWelcomeEmail(updatedItem.name, updatedItem.email);
           }
         }
