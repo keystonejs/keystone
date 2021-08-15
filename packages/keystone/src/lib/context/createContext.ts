@@ -9,6 +9,7 @@ import {
 } from '../../types';
 
 import { PrismaClient } from '../core/utils';
+import { InitialisedList } from '../core/types-for-lists';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
@@ -19,12 +20,14 @@ export function makeCreateContext({
   prismaClient,
   gqlNamesByList,
   config,
+  lists,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   config: KeystoneConfig;
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
+  lists: Record<string, InitialisedList>;
 }) {
   const images = createImagesContext(config);
   const files = createFilesContext(config);
@@ -96,6 +99,7 @@ export function makeCreateContext({
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => gqlNamesByList[listKey],
+      initialisedLists: config.experimental?.contextInitialisedLists ? lists : {},
       images,
       files,
     };

@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
+import { InitialisedList } from '../lib/core/types-for-lists';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
@@ -20,6 +21,8 @@ export type KeystoneContext = {
   schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
+  /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true. */
+  initialisedLists: Record<string, InitialisedList>;
 } & Partial<SessionContext<any>>;
 
 // List item API
