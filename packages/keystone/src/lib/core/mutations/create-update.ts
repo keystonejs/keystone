@@ -180,21 +180,32 @@ async function getResolvedData(
     );
   }
 
-  // Apply field type input resolvers
+  // Apply non-relationship field type input resolvers
   resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
-        if (inputResolver) {
+        if (inputResolver && field.dbField.kind !== 'relation') {
+          input = await inputResolver(input, context, undefined);
+        }
+        return [fieldKey, input] as const;
+      })
+    )
+  );
+
+  // Apply relationship field type input resolvers
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        const inputResolver = field.input?.[operation]?.resolve;
+        let input = resolvedData[fieldKey];
+        if (inputResolver && field.dbField.kind === 'relation') {
           input = await inputResolver(
             input,
             context,
+            // This third argument only applies to relationship fields
             (() => {
-              // This third argument only applies to relationship fields
-              if (field.dbField.kind !== 'relation') {
-                return undefined;
-              }
               if (input === undefined) {
                 // No-op: This is what we want
                 return () => undefined;
