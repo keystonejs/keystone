@@ -5,7 +5,6 @@ import {
   fieldType,
   schema,
   orderDirectionEnum,
-  legacyFilters,
   FieldDefaultValue,
   filters,
 } from '@keystone-next/types';
@@ -47,20 +46,5 @@ export const float =
       },
       output: schema.field({ type: schema.Float }),
       views: resolveView('float/views'),
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Float),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Float),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Float),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });

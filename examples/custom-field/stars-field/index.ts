@@ -4,7 +4,6 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   schema,
 } from '@keystone-next/types';
@@ -95,22 +94,7 @@ export const stars =
       getAdminMeta() {
         return { maxStars };
       },
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });
 
 function getIndexType({

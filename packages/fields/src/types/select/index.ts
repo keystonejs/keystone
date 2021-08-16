@@ -1,11 +1,9 @@
 import {
   BaseGeneratedListTypes,
-  FieldData,
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   schema,
   filters,
@@ -78,7 +76,7 @@ export const select =
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
         },
         output: schema.field({ type: schema.Int }),
-        __legacy: { filters: getFilters(meta, schema.Int), defaultValue, isRequired },
+        __legacy: { defaultValue, isRequired },
       });
     }
     if (config.dataType === 'enum') {
@@ -112,7 +110,7 @@ export const select =
         output: schema.field({
           type: graphQLType,
         }),
-        __legacy: { filters: getFilters(meta, graphQLType), defaultValue, isRequired },
+        __legacy: { defaultValue, isRequired },
       });
     }
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
@@ -129,17 +127,6 @@ export const select =
       output: schema.field({
         type: schema.String,
       }),
-      __legacy: { filters: getFilters(meta, schema.String), defaultValue, isRequired },
+      __legacy: { defaultValue, isRequired },
     });
   };
-
-const getFilters = (meta: FieldData, type: schema.ScalarType<any> | schema.EnumType<any>) => ({
-  fields: {
-    ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
-    ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
-  },
-  impls: {
-    ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-    ...legacyFilters.impls.inConditions(meta.fieldKey),
-  },
-});
