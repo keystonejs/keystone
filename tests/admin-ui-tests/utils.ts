@@ -42,6 +42,7 @@ export const adminUITests = (
 
     afterAll(async () => {
       await cleanupKeystoneProcess();
+      deleteAllData(projectDir);
     });
 
     async function startKeystone(command: 'start' | 'dev') {
@@ -67,6 +68,8 @@ export const adminUITests = (
       keystoneProcess.stdout!.on('data', listener);
       keystoneProcess.stderr!.on('data', listener);
 
+      deleteAllData(projectDir);
+
       cleanupKeystoneProcess = async () => {
         keystoneProcess.stdout!.off('data', listener);
         keystoneProcess.stderr!.off('data', listener);
@@ -83,36 +86,36 @@ export const adminUITests = (
       });
     }
 
-    if (mode === 'prod') {
-      test('build keystone', async () => {
-        let keystoneBuildProcess = execa('yarn', ['build'], {
-          cwd: projectDir,
-          env: process.env,
-        });
-        if (process.env.VERBOSE) {
-          const logChunk = (chunk: any) => {
-            console.log(chunk.toString('utf8'));
-          };
-          keystoneBuildProcess.stdout!.on('data', logChunk);
-          keystoneBuildProcess.stderr!.on('data', logChunk);
-        }
-        await keystoneBuildProcess;
-      });
-      test('start keystone in prod', async () => {
-        await startKeystone('start');
-      });
-    }
+    // if (mode === 'prod') {
+    //   test('build keystone', async () => {
+    //     let keystoneBuildProcess = execa('yarn', ['build'], {
+    //       cwd: projectDir,
+    //       env: process.env,
+    //     });
+    //     if (process.env.VERBOSE) {
+    //       const logChunk = (chunk: any) => {
+    //         console.log(chunk.toString('utf8'));
+    //       };
+    //       keystoneBuildProcess.stdout!.on('data', logChunk);
+    //       keystoneBuildProcess.stderr!.on('data', logChunk);
+    //     }
+    //     await keystoneBuildProcess;
+    //   });
+    //   test('start keystone in prod', async () => {
+    //     await startKeystone('start');
+    //   });
+    // }
 
     describe.each([
       'chromium',
-      'firefox',
-      // we don't run the tests on webkit in production
-      // because unlike chromium and firefox
-      // webkit doesn't treat localhost as a secure context
-      // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      // 'firefox',
+      // // we don't run the tests on webkit in production
+      // // because unlike chromium and firefox
+      // // webkit doesn't treat localhost as a secure context
+      // // and we enable secure cookies in production
+      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
-      beforeAll(async () => {
+      afterAll(async () => {
         await deleteAllData(projectDir);
       });
       tests(playwright[browserName]);
