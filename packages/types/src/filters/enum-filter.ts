@@ -11,14 +11,14 @@ export type EnumNullableFilter<Enum extends schema.EnumType<any>> = schema.Input
   // can be null
   notIn: schema.Arg<schema.ListType<schema.NonNullType<Enum>>>;
   // can be null
-  not: schema.Arg<EnumNullableFilter<Enum>, undefined>;
+  not: schema.Arg<EnumNullableFilter<Enum>>;
 }>;
 
 export type EnumFilter<Enum extends schema.EnumType<any>> = schema.InputObjectType<{
   equals: schema.Arg<Enum>;
   in: schema.Arg<schema.ListType<schema.NonNullType<Enum>>>;
   notIn: schema.Arg<schema.ListType<schema.NonNullType<Enum>>>;
-  not: schema.Arg<EnumFilter<Enum>, undefined>;
+  not: schema.Arg<EnumFilter<Enum>>;
 }>;
 
 type EnumNullableListFilterType<Enum extends schema.EnumType<any>> = schema.InputObjectType<{

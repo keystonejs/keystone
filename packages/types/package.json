@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.8",
-    "@graphql-ts/schema": "0.1.2",
+    "@graphql-ts/schema": "0.2.0",
     "@keystone-next/fields": "^13.0.0",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
