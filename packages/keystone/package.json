@@ -90,7 +90,7 @@
     "next": "^10.2.3",
     "node-fetch": "^2.6.1",
     "object-hash": "^2.2.0",
-    "p-limit": "^2.3.0",
+    "p-limit": "^4.0.0",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
     "prettier": "^2.3.2",
