@@ -190,7 +190,7 @@ export const proseStyles = {
     paddingLeft: '0.5714285714em',
     '> code': {
       whiteSpace: 'nowrap',
-    }
+    },
   },
   fontSize: 'var(--font-small)',
   lineHeight: 1.75,
