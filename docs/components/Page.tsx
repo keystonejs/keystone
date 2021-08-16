@@ -100,6 +100,7 @@ export function DocsPage({
         <Wrapper
           css={mq({
             display: ['block', null, 'grid'],
+            marginTop: '2.5rem',
             gridTemplateColumns: noRightNav
               ? '15rem minmax(0, auto)'
               : [
