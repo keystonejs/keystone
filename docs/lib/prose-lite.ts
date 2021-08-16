@@ -156,18 +156,6 @@ export const proseStyles = {
     maxWidth: '100%',
     overflowX: 'auto' as const,
     display: 'block',
-    // Visual help for overflow if we need it ↓
-    // Needs TLC
-    // position: 'relative',
-    // '::after': {
-    //   content: '""',
-    //   width: '1rem',
-    //   height: '100%',
-    //   background: 'linear-gradient(to right, rgba(255,255,255,0.0) 0%, rgba(255,255,255,1) 100%);',
-    //   position: 'absolute',
-    //   top: '0',
-    //   right: '0',
-    // }
   },
   thead: {
     color: 'var(--text)',
@@ -189,7 +177,7 @@ export const proseStyles = {
     paddingBottom: '0.5714285714em',
     paddingLeft: '0.5714285714em',
     '> code': {
-      whiteSpace: 'nowrap',
+      whiteSpace: 'nowrap' as const,
     },
   },
   fontSize: 'var(--font-small)',
