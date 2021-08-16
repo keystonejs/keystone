@@ -1,4 +1,4 @@
-import { mergeSchemas } from '@graphql-tools/merge';
+import { mergeSchemas } from '@graphql-tools/schema';
 import { ExtendGraphqlSchema } from '@keystone-next/types';
 
 import {
