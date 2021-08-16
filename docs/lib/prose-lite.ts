@@ -153,6 +153,9 @@ export const proseStyles = {
     marginBottom: '2rem',
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.7142857,
+    maxWidth: '100%',
+    overflowX: 'auto' as const,
+    display: 'block',
   },
   thead: {
     color: 'var(--text)',
@@ -173,6 +176,9 @@ export const proseStyles = {
     paddingRight: '0.5714285714em',
     paddingBottom: '0.5714285714em',
     paddingLeft: '0.5714285714em',
+    '> code': {
+      whiteSpace: 'nowrap' as const,
+    },
   },
   fontSize: 'var(--font-small)',
   lineHeight: 1.75,
