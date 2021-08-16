@@ -41,7 +41,7 @@ function OpenGraph({
     ogImage = `${siteUrl}/og-image-landscape.png`;
   }
   return (
-    <Fragment>
+    <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta key="og:site_name" property="og:site_name" content={title} />
@@ -53,7 +53,7 @@ function OpenGraph({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${ogImage}`} />
-    </Fragment>
+    </Head>
   );
 }
 
@@ -85,9 +85,7 @@ export function DocsPage({
 
   return (
     <Fragment>
-      <Head>
-        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      </Head>
+      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       <div
         css={{
           gridArea: 'main',
@@ -148,9 +146,7 @@ export function Page({
   const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`;
   return (
     <Fragment>
-      <Head>
-        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      </Head>
+      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       <div
         css={{
           gridArea: 'main',
