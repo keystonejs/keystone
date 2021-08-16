@@ -154,7 +154,7 @@ export const proseStyles = {
     fontSize: 'var(--font-xsmall)',
     lineHeight: 1.7142857,
     maxWidth: '100%',
-    overflowX: 'auto',
+    overflowX: 'auto' as const,
     display: 'block',
     // Visual help for overflow if we need it ↓
     // Needs TLC
