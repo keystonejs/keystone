@@ -184,7 +184,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
 
         <SubHeading>GraphQL</SubHeading>
-        <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
+        <NavItem href="/docs/apis/graphql">
+          GraphQL API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/filters">
           Query Filter API <Badge look="success">Updated</Badge>
         </NavItem>
