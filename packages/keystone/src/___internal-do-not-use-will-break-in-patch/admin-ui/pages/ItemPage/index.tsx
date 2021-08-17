@@ -253,17 +253,19 @@ function DeleteButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItem().catch(err => {
-                toasts.addToast({
-                  title: 'Failed to delete item',
+              try {
+                await deleteItem();
+              } catch (err) {
+                return toasts.addToast({
+                  title: `Failed to delete ${list.singular} item: ${itemLabel}`,
                   message: err.message,
                   tone: 'negative',
                 });
-              });
+              }
               router.push(`/${list.path}`);
-              toasts.addToast({
+              return toasts.addToast({
                 title: itemLabel,
-                message: 'Deleted successfully',
+                message: `Deleted ${list.singular} item successfully`,
                 tone: 'positive',
               });
             },
