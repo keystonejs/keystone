@@ -458,7 +458,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldPath>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
-- `defaultValue` (default: `undefined`): Can be either a relationship input value or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
+- `defaultValue` (default: `undefined`): Can be either a relationship input value `{ connect: { id: ID } }` or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.

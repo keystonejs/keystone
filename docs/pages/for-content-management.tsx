@@ -97,9 +97,11 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            <Link href="/docs/apis/access-control">
-              <a>Access control API →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/apis/access-control">
+                <a>Access control API →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -110,6 +112,16 @@ export default function ForOrganisations() {
             />
           </div>
         </SideBySideSection>
+        <Quote
+          name="Wes Bos"
+          img="/assets/wesbos-square.jpg"
+          title="Javascript developer. Host of Syntax.FM podcast."
+          grad="grad5"
+        >
+          I love how Keystone’s access control lets me declare every single Create, Read, Update,
+          and Delete operation at both the <strong>model</strong> and <strong>field</strong> level.
+          It’s my favorite way of implementing Auth.
+        </Quote>
 
         <SideBySideSection>
           <div>
@@ -154,9 +166,11 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            <Link href="/docs/apis/fields">
-              <a>Fields API →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/apis/fields">
+                <a>Fields API →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -189,14 +203,18 @@ export default function ForOrganisations() {
               </Type>
               <Button
                 as="a"
+                // look="soft"
+                size="large"
                 href="/docs/guides/document-fields#try-the-demo"
                 css={{ margin: '1.5rem 1rem 1rem 0' }}
               >
                 Try the demo <ArrowR />
               </Button>
-              <Link href="/docs/guides/document-fields">
-                <a>Read the guide →</a>
-              </Link>
+              <Type look="body18">
+                <Link href="/docs/guides/document-fields">
+                  <a>Read the guide →</a>
+                </Link>
+              </Type>
             </div>
             <div>
               <Image
@@ -213,7 +231,7 @@ export default function ForOrganisations() {
               padding: 0,
               margin: 0,
               display: 'grid',
-              marginTop: '2rem',
+              marginTop: '5rem',
               gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr 1fr'],
               gap: '3rem',
               '& li': {
@@ -261,7 +279,12 @@ export default function ForOrganisations() {
           </ul>
         </Section>
 
-        <Quote name="@mxstbr" img="/assets/mxstbr.jpg" grad="grad5">
+        <Quote
+          name="Max Stoiber"
+          img="/assets/mxstbr.jpg"
+          title="Co-Founder Graph CDN. Formerly GatsbyJS & Github."
+          grad="grad5"
+        >
           The new @KeystoneJS rich text editor has incredible inline React component support,
           including editing props and everything!
         </Quote>
@@ -309,12 +332,11 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            {/*<Link href="/TODO" passHref>
-              <a css={{ display: 'block', margin: '1rem 0' }}>Try the example →</a>
-            </Link>*/}
-            <Link href="/docs/guides/relationships">
-              <a>Relationships guide →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/guides/relationships">
+                <a>Relationships guide →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image

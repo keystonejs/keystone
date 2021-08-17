@@ -18,8 +18,8 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      Keystone 6 is in Community Preview! What does that mean? see our{' '}
-      <Link href="/updates/roadmap">Roadmap</Link>. For Keystone 5 docs, visit{' '}
+      Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
+      visit{' '}
       <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
         v5.keystonejs.com
       </a>
@@ -41,7 +41,7 @@ function OpenGraph({
     ogImage = `${siteUrl}/og-image-landscape.png`;
   }
   return (
-    <Fragment>
+    <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta key="og:site_name" property="og:site_name" content={title} />
@@ -53,7 +53,7 @@ function OpenGraph({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${ogImage}`} />
-    </Fragment>
+    </Head>
   );
 }
 
@@ -85,9 +85,7 @@ export function DocsPage({
 
   return (
     <Fragment>
-      <Head>
-        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      </Head>
+      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       <div
         css={{
           gridArea: 'main',
@@ -100,6 +98,7 @@ export function DocsPage({
         <Wrapper
           css={mq({
             display: ['block', null, 'grid'],
+            marginTop: '2.5rem',
             gridTemplateColumns: noRightNav
               ? '15rem minmax(0, auto)'
               : [
@@ -147,9 +146,7 @@ export function Page({
   const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`;
   return (
     <Fragment>
-      <Head>
-        <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      </Head>
+      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       <div
         css={{
           gridArea: 'main',
