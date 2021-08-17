@@ -377,13 +377,6 @@ export type FieldTypeWithoutDBField<
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
   __legacy?: {
-    filters?: {
-      fields: Record<string, schema.Arg<any>>;
-      impls: Record<
-        string,
-        (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
-      >;
-    };
     isRequired?: boolean;
     defaultValue?: FieldDefaultValue<any, BaseGeneratedListTypes>;
   };
