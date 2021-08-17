@@ -59,12 +59,17 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
     restApiEndpoint = '',
   } = experimental?.keystoneCloud || {};
 
+  const { adapter } = files;
+
   if (isLocalAsset(files.upload)) {
     fs.mkdirSync(storagePath, { recursive: true });
   }
 
   return {
     getSrc: async (mode, filename) => {
+      if (adapter) {
+        return adapter.getSrc(filename);
+      }
       if (isKeystoneCloudAsset(mode)) {
         return await buildKeystoneCloudFileSrc({ apiKey, graphqlApiEndpoint, filename });
       }
@@ -72,6 +77,9 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async (ref: string) => {
+      if (adapter) {
+        return adapter.getDataFromRef(ref);
+      }
       const fileRef = parseFileRef(ref);
 
       if (!fileRef) {
@@ -95,6 +103,9 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       return { filesize, ...fileRef };
     },
     getDataFromStream: async (stream, originalFilename) => {
+      if (adapter) {
+        return adapter.getDataFromStream(stream, originalFilename);
+      }
       const { upload: mode } = files;
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 

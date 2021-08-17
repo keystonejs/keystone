@@ -1,6 +1,7 @@
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
+import { FileAdapter } from '@keystone-next/file-adapters';
 
 import type { AssetMode, KeystoneContext } from '..';
 
@@ -200,6 +201,7 @@ export type FilesConfig = {
      */
     baseUrl?: string;
   };
+  adapter?: FileAdapter;
 };
 
 // config.images
@@ -218,6 +220,7 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
+  adapter?: FileAdapter;
 };
 
 // config.experimental.keystoneCloud

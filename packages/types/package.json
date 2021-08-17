@@ -11,6 +11,7 @@
     "@babel/runtime": "^7.15.3",
     "@graphql-ts/schema": "0.2.0",
     "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/file-adapters": "^0.1.0",
     "apollo-server-types": "^0.9.0",
     "cors": "^2.8.5",
     "decimal.js": "10.3.1",
