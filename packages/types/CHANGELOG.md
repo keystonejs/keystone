@@ -1,5 +1,131 @@
 # @keystone-next/types
 
+## 24.0.0
+
+### Major Changes
+
+- [#6196](https://github.com/keystonejs/keystone/pull/6196) [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `_ListKeyMeta` and `_toManyRelationshipFieldMeta` fields. You should use `listKeyCount` and `toManyRelationshipFieldCount` instead
+
+* [#6196](https://github.com/keystonejs/keystone/pull/6196) [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed all arguments from `context.lists.List.count` and `context.db.lists.List.count` except for `where`.
+
+- [#6266](https://github.com/keystonejs/keystone/pull/6266) [`b696a9579`](https://github.com/keystonejs/keystone/commit/b696a9579b503db86f42776381e247c4e1a7409f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Renamed `first` argument in find many queries to `take` to align with Prisma.
+
+  ```graphql
+  type Query {
+    users(
+      where: UserWhereInput! = {}
+      orderBy: [UserOrderByInput!]! = []
+      # previously was first: Int
+      take: Int
+      skip: Int! = 0
+    ): [User!]
+    # ...
+  }
+
+  type User {
+    # ...
+    posts(
+      where: PostWhereInput! = {}
+      orderBy: [PostOrderByInput!]! = []
+      # previously was first: Int
+      take: Int
+      skip: Int! = 0
+    ): [Post!]
+    # ...
+  }
+  ```
+
+* [#6208](https://github.com/keystonejs/keystone/pull/6208) [`092df6678`](https://github.com/keystonejs/keystone/commit/092df6678cea18d639be16ad250ec4ecc9250f5a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The create one mutation now requires a non-null `data` argument and the create many mutation accepts a list of `ItemCreateInput` directly instead of being nested inside of an object with the `ItemCreateInput` in a `data` field.
+
+  If you have a list called `Item`, `createItem` now looks like `createItem(data: ItemCreateInput!): Item` and `createItems` now looks like `createItems(data: [ItemCreateInput!]!): [Item]`.
+
+- [#6196](https://github.com/keystonejs/keystone/pull/6196) [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `search` argument from the GraphQL API for finding many items, Lists/DB API and to-many relationship fields. You should use `contains` filters instead.
+
+* [#6095](https://github.com/keystonejs/keystone/pull/6095) [`272b97b3a`](https://github.com/keystonejs/keystone/commit/272b97b3a10c0dfada782171d55ef7ac6f47c98f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated filters to be nested instead of flattened and add top-level `NOT` operator. See the [Query Filter API docs](https://keystonejs.com/docs/apis/filters) and the upgrade guide for more information.
+
+  ```graphql
+  query {
+    posts(where: { title: { contains: "Something" } }) {
+      title
+      content
+    }
+  }
+  ```
+
+- [#6196](https://github.com/keystonejs/keystone/pull/6196) [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `sortBy` argument from the GraphQL API for finding many items, Lists/DB API and to-many relationship fields. You should use `orderBy` instead.
+
+* [#6312](https://github.com/keystonejs/keystone/pull/6312) [`56044e2a4`](https://github.com/keystonejs/keystone/commit/56044e2a425f4256b66475fd3b1a6342cd6c3bf9) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated `@graphql-ts/schema`. The second type parameter of `schema.Arg` exported from `@keystone-next/types` is now a boolean that defines whether or not the arg has a default value to make it easier to define circular input objects.
+
+- [#6217](https://github.com/keystonejs/keystone/pull/6217) [`874f2c405`](https://github.com/keystonejs/keystone/commit/874f2c4058c9cf006213e84b9ffcf39c5bf144e8) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - `disconnectAll` has been renamed to `disconnect` in to-one relationship inputs and the old `disconnect` field has been removed. There are also seperate input types for create and update where the input for create doesn't have `disconnect`. It's also now required that if you provide a to-one relationship input, you must provide exactly one field to the input.
+
+  If you have a list called `Item`, the to-one relationship inputs now look like this:
+
+  ```graphql
+  input ItemRelateToOneForCreateInput {
+    create: ItemCreateInput
+    connect: ItemWhereUniqueInput
+  }
+  input ItemRelateToOneForUpdateInput {
+    create: ItemCreateInput
+    connect: ItemWhereUniqueInput
+    disconnect: Boolean
+  }
+  ```
+
+* [#6224](https://github.com/keystonejs/keystone/pull/6224) [`3564b342d`](https://github.com/keystonejs/keystone/commit/3564b342d6dc2127ae591d7ac055af9eae90543c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - `disconnectAll` has been replaced by `set` in to-many relationship inputs, the equivalent to `disconnectAll: true` is now `set: []`. There are also seperate input types for create and update where the input for create doesn't have `disconnect` or `set`. The inputs in the lists in the input field are now also non-null.
+
+  If you have a list called `Item`, the to-many relationship inputs now look like this:
+
+  ```graphql
+  input ItemRelateToManyForCreateInput {
+    create: [ItemCreateInput!]
+    connect: [ItemWhereUniqueInput!]
+  }
+  input ItemRelateToManyForUpdateInput {
+    disconnect: [ItemWhereUniqueInput!]
+    set: [ItemWhereUniqueInput!]
+    create: [ItemCreateInput!]
+    connect: [ItemWhereUniqueInput!]
+  }
+  ```
+
+- [#6197](https://github.com/keystonejs/keystone/pull/6197) [`4d9f89f88`](https://github.com/keystonejs/keystone/commit/4d9f89f884e2bf984fdd74ca2cbb7874b25b9cda) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The generated CRUD queries, and some of the input types, in the GraphQL API have been renamed.
+
+  If you have a list called `Item`, the query for multiple values, `allItems` will be renamed to `items`. The query for a single value, `Item`, will be renamed to `item`.
+
+  Also, the input type used in the `updateItems` mutation has been renamed from `ItemsUpdateInput` to `ItemUpdateArgs`.
+
+* [#6211](https://github.com/keystonejs/keystone/pull/6211) [`d214e2f72`](https://github.com/keystonejs/keystone/commit/d214e2f72bae1c798e2415a38410d6063c333e2e) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The update mutations now accept `where` unique inputs instead of only an `id` and the `where` and `data` arguments are non-null.
+
+  If you have a list called `Item`, the update mutations now look like this:
+
+  ```graphql
+  type Mutation {
+    updateItem(where: ItemWhereUniqueInput!, data: ItemUpdateInput!): Item
+    updateItems(data: [ItemUpdateArgs!]!): [Item]
+  }
+
+  input ItemUpdateArgs {
+    where: ItemWhereUniqueInput!
+    data: ItemUpdateInput!
+  }
+  ```
+
+- [#6206](https://github.com/keystonejs/keystone/pull/6206) [`f5e64af37`](https://github.com/keystonejs/keystone/commit/f5e64af37df2eb460c89d89fa3c8924fb34970ed) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The delete mutations now accept `where` unique inputs instead of only an `id`.
+
+  If you have a list called `Item`, `deleteItem` now looks like `deleteItem(where: ItemWhereUniqueInput!): Item` and `deleteItems` now looks like `deleteItems(where: [ItemWhereUniqueInput!]!): [Item]`
+
+### Minor Changes
+
+- [#6267](https://github.com/keystonejs/keystone/pull/6267) [`1030296d1`](https://github.com/keystonejs/keystone/commit/1030296d1f304dc44246e895089ac1f992e80590) Thanks [@timleslie](https://github.com/timleslie)! - Added `config.graphql.debug` option, which can be used to control whether debug information such as stack traces are included in the errors returned by the GraphQL API.
+
+### Patch Changes
+
+- [#6249](https://github.com/keystonejs/keystone/pull/6249) [`8187ea019`](https://github.com/keystonejs/keystone/commit/8187ea019a212874f3c602573af3382c6f3bd3b2) Thanks [@timleslie](https://github.com/timleslie)! - Updated types to allow the `'id'` field in `ui.labelField`, `ui.listView.initialColumns`, and `ui.listView.initialSort`.
+
+- Updated dependencies [[`e9f3c42d5`](https://github.com/keystonejs/keystone/commit/e9f3c42d5b9d42872cecbd18fbe9bf9d7d53ed82), [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3), [`b696a9579`](https://github.com/keystonejs/keystone/commit/b696a9579b503db86f42776381e247c4e1a7409f), [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3), [`4f4f0351a`](https://github.com/keystonejs/keystone/commit/4f4f0351a056dea9d1614aa2a3a4789d66bb402d), [`272b97b3a`](https://github.com/keystonejs/keystone/commit/272b97b3a10c0dfada782171d55ef7ac6f47c98f), [`5cd8ffd6c`](https://github.com/keystonejs/keystone/commit/5cd8ffd6cb822dbee8555b47846a5019c4d2b1c3), [`874f2c405`](https://github.com/keystonejs/keystone/commit/874f2c4058c9cf006213e84b9ffcf39c5bf144e8), [`3564b342d`](https://github.com/keystonejs/keystone/commit/3564b342d6dc2127ae591d7ac055af9eae90543c), [`4d9f89f88`](https://github.com/keystonejs/keystone/commit/4d9f89f884e2bf984fdd74ca2cbb7874b25b9cda), [`d214e2f72`](https://github.com/keystonejs/keystone/commit/d214e2f72bae1c798e2415a38410d6063c333e2e)]:
+  - @keystone-next/fields@14.0.0
+
 ## 23.0.0
 
 ### Major Changes
