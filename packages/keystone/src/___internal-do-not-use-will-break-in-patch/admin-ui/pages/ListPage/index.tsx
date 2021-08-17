@@ -494,8 +494,8 @@ function DeleteManyButton({
                     acc.successfulItems++;
                     acc.successMessage =
                       acc.successMessage === ''
-                        ? (acc.successMessage += curr.label)
-                        : (acc.successMessage += `, ${curr.label}`);
+                        ? (acc.successMessage += curr[list.labelField])
+                        : (acc.successMessage += `, ${curr[list.labelField]}`);
                   } else {
                     acc.unsuccessfulItems++;
                   }
