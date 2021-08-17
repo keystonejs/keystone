@@ -54,7 +54,7 @@ describe('maxResults Limit', () => {
           query: `
           query {
             users(
-              where: { name_contains: "J" },
+              where: { name: { contains: "J" } },
               orderBy: { name: asc },
             ) {
               name
@@ -71,7 +71,7 @@ describe('maxResults Limit', () => {
           query: `
           query {
             users(
-              where: { name: "Nope" }
+              where: { name: { equals: "Nope" } }
             ) {
               name
             }
@@ -90,11 +90,11 @@ describe('maxResults Limit', () => {
         expect(data).toHaveProperty('usersCount');
         expect(data.usersCount).toBe(users.length);
 
-        // This query is only okay because of the "first" parameter
+        // This query is only okay because of the "take" parameter
         data = await context.graphql.run({
           query: `
           query {
-            users(first: 1) {
+            users(take: 1) {
               name
             }
           }
@@ -118,13 +118,13 @@ describe('maxResults Limit', () => {
 
         expectLimitsExceededError(errors, [{ path: ['users'] }]);
 
-        // The query results don't break the limits, but the "first" parameter does
+        // The query results don't break the limits, but the "take" parameter does
         ({ errors } = await context.graphql.raw({
           query: `
           query {
             users(
-              where: { name: "Nope" },
-              first: 100000
+              where: { name: { equals: "Nope" } },
+              take: 100000
             ) {
               name
             }
@@ -165,7 +165,7 @@ describe('maxResults Limit', () => {
         context.totalResults = 0;
         // A basic query that should work
         let posts = await context.lists.Post.findMany({
-          where: { title: 'One author' },
+          where: { title: { equals: 'One author' } },
           query: 'title author { name }',
         });
 
@@ -176,7 +176,7 @@ describe('maxResults Limit', () => {
         // Each subquery is within the limit (even though the total isn't)
         posts = await context.lists.Post.findMany({
           where: {
-            OR: [{ title: 'One author' }, { title: 'Two authors' }],
+            OR: [{ title: { equals: 'One author' } }, { title: { equals: 'Two authors' } }],
           },
           orderBy: { title: 'asc' },
           query: 'title author(orderBy: { name: asc }) { name }',
@@ -194,7 +194,7 @@ describe('maxResults Limit', () => {
           query: `
           query {
             posts(
-              where: { title: "Three authors" },
+              where: { title: { equals: "Three authors" } },
             ) {
               title
               author {
@@ -211,7 +211,7 @@ describe('maxResults Limit', () => {
         // Reset the count for each query
         context.totalResults = 0;
         posts = await context.lists.Post.findMany({
-          where: { title: 'Three authors' },
+          where: { title: { equals: 'Three authors' } },
           query: 'title',
         });
 
@@ -241,7 +241,7 @@ describe('maxResults Limit', () => {
         ({ errors } = await context.graphql.raw({
           query: `
           query {
-            posts(where: { title: "Two authors" }) {
+            posts(where: { title: { equals: "Two authors" } }) {
               title
               author {
                 posts {

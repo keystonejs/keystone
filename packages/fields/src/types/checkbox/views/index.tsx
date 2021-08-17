@@ -72,9 +72,8 @@ export const controller = (config: FieldControllerConfig): CheckboxController =>
       Filter() {
         return null;
       },
-      graphql({ type, value }) {
-        const key = type === 'is' ? `${config.path}` : `${config.path}_${type}`;
-        return { [key]: value };
+      graphql({ type }) {
+        return { [config.path]: { equals: type === 'is' } };
       },
       Label({ label }) {
         return label.toLowerCase();

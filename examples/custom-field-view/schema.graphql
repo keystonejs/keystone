@@ -17,36 +17,75 @@ enum TaskPriorityType {
 input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  priority: TaskPriorityType
-  priority_not: TaskPriorityType
-  priority_in: [TaskPriorityType]
-  priority_not_in: [TaskPriorityType]
-  isComplete: Boolean
-  isComplete_not: Boolean
+  NOT: [TaskWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+  priority: TaskPriorityTypeNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: PersonWhereInput
-  assignedTo_is_null: Boolean
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
+  finishBy: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input TaskPriorityTypeNullableFilter {
+  equals: TaskPriorityType
+  in: [TaskPriorityType!]
+  notIn: [TaskPriorityType!]
+  not: TaskPriorityTypeNullableFilter
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input TaskWhereUniqueInput {
@@ -106,7 +145,7 @@ type Person {
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
@@ -115,23 +154,16 @@ type Person {
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  tasks_every: TaskWhereInput
-  tasks_some: TaskWhereInput
-  tasks_none: TaskWhereInput
+  NOT: [PersonWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  tasks: TaskManyRelationFilter
+}
+
+input TaskManyRelationFilter {
+  every: TaskWhereInput
+  some: TaskWhereInput
+  none: TaskWhereInput
 }
 
 input PersonWhereUniqueInput {
@@ -197,7 +229,7 @@ type Query {
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
   task(where: TaskWhereUniqueInput!): Task
@@ -205,7 +237,7 @@ type Query {
   people(
     where: PersonWhereInput! = {}
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person

@@ -565,8 +565,8 @@ export const lists = createSchema({
                   <WindowL>
                     <SourceCode>
                       {`{
-  allPosts (first: 2, where: {
-    title_contains: "content"
+  posts(take: 2, where: {
+    title: { contains: "content" }
   }) {
     title
     author {
@@ -580,7 +580,7 @@ export const lists = createSchema({
                     <SourceCode>
                       {`{
   "data": {
-    "allPosts": [
+    "posts": [
       {
         "title": "How structured content gives you superpowers",
         "author": {

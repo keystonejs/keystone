@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-virtual-field",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,9 +9,9 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/fields": "^13.0.0",
-    "@keystone-next/keystone": "^23.0.0",
-    "@keystone-next/types": "^23.0.0"
+    "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/keystone": "^24.0.0",
+    "@keystone-next/types": "^24.0.0"
   },
   "devDependencies": {
     "typescript": "^4.3.5"

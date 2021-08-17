@@ -11,7 +11,7 @@ export type BaseGeneratedListTypes = {
   args: {
     listQuery: {
       readonly where?: GraphQLInput | null;
-      readonly first?: number | null;
+      readonly take?: number | null;
       readonly skip?: number;
       readonly orderBy?:
         | Record<string, 'asc' | 'desc' | null>

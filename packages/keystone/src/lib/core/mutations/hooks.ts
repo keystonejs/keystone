@@ -31,14 +31,13 @@ export async function runSideEffectOnlyHook<
   }
 
   // Field hooks
-  const fieldsErrors = [];
+  const fieldsErrors: { error: Error; tag: string }[] = [];
   for (const [fieldPath, field] of Object.entries(list.fields)) {
     if (shouldRunFieldLevelHook(fieldPath)) {
       try {
-        // @ts-ignore
         await field.hooks[hookName]?.({ fieldPath, ...args });
-      } catch (err) {
-        fieldsErrors.push(`${list.listKey}.${fieldPath}: ${err.message}`);
+      } catch (error) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
       }
     }
   }
@@ -49,7 +48,7 @@ export async function runSideEffectOnlyHook<
   // List hooks
   try {
     await list.hooks[hookName]?.(args);
-  } catch (err) {
-    throw extensionError(hookName, [`${list.listKey}: ${err.message}`]);
+  } catch (error) {
+    throw extensionError(hookName, [{ error, tag: list.listKey }]);
   }
 }

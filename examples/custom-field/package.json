@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-custom-field",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,9 +9,9 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/fields": "^13.0.0",
-    "@keystone-next/keystone": "^23.0.0",
-    "@keystone-next/types": "^23.0.0",
+    "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/keystone": "^24.0.0",
+    "@keystone-next/types": "^24.0.0",
     "@keystone-ui/fields": "^4.1.2",
     "react": "^17.0.2"
   },

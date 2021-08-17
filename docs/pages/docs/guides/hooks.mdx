@@ -27,7 +27,7 @@ export default config({
       hooks: {
         afterChange: ({ operation, updatedItem }) => {
           if (operation === 'create') {
-            console.log('New user created. Name: ${updatedItem.name}, Email: ${updatedItem.email});
+            console.log(`New user created. Name: ${updatedItem.name}, Email: ${updatedItem.email}`);
           }
         }
       },
@@ -209,7 +209,7 @@ export default config({
             validateInput: ({ addValidationError, resolvedData, fieldPath }) => {
               const email = resolvedData[fieldPath];
               if (email !== undefined && email !== null && !email.includes('@')) {
-                addValidationError('The email address ${email} provided for the field ${fieldPath} must contain an '@' character);
+                addValidationError(`The email address ${email} provided for the field ${fieldPath} must contain an '@' character`);
               }
             },
           },

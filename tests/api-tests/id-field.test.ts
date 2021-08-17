@@ -35,7 +35,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     'Filtering an item with an invalid id throws an error',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
-        query: `{ users(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
+        query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
       });
       expect(body.data).toEqual({ users: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
