@@ -187,21 +187,7 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 // config.files
 
 export type FilesConfig = {
-  upload: AssetMode;
-  transformFilename?: (str: string) => string;
-  local?: {
-    /**
-     * The path local files are uploaded to.
-     * @default 'public/files'
-     */
-    storagePath?: string;
-    /**
-     * The base of the URL local files will be served from, outside of keystone.
-     * @default '/files'
-     */
-    baseUrl?: string;
-  };
-  adapter?: FileAdapter;
+  adapter: FileAdapter;
 };
 
 // config.images
@@ -220,7 +206,6 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
-  adapter?: FileAdapter;
 };
 
 // config.experimental.keystoneCloud
