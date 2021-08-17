@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-testing",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,11 +13,11 @@
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
-    "@keystone-next/auth": "^30.0.0",
-    "@keystone-next/fields": "^13.0.0",
-    "@keystone-next/keystone": "^23.0.0",
-    "@keystone-next/testing": "^1.1.0",
-    "@keystone-next/types": "^23.0.0"
+    "@keystone-next/auth": "^31.0.0",
+    "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/keystone": "^24.0.0",
+    "@keystone-next/testing": "^1.1.1",
+    "@keystone-next/types": "^24.0.0"
   },
   "devDependencies": {
     "babel-jest": "^27.0.6",

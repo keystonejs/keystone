@@ -1,5 +1,11 @@
 # @keystone-ui/segmented-control
 
+## 4.0.2
+
+### Patch Changes
+
+- [#6235](https://github.com/keystonejs/keystone/pull/6235) [`6cd7ab78e`](https://github.com/keystonejs/keystone/commit/6cd7ab78e018fa0ffaddc1258426d23da19cd854) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed segmented-control focus style.
+
 ## 4.0.1
 
 ### Patch Changes
