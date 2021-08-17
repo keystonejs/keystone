@@ -4,9 +4,9 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 
 // this field is based on the integer field
@@ -56,6 +56,10 @@ export const stars =
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: {
           arg: schema.arg({ type: schema.Int }),
           // this field type doesn't need to do anything special
@@ -96,18 +100,6 @@ export const stars =
         return { maxStars };
       },
       __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
         isRequired,
         defaultValue,
       },
