@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 24.0.1
+
+### Patch Changes
+
+- [#6350](https://github.com/keystonejs/keystone/pull/6350) [`9ca1c41cd`](https://github.com/keystonejs/keystone/commit/9ca1c41cd6cc34b4cf4393abfbe2e4b43a275401) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed delete toast not leveraging labelField property.
+
 ## 24.0.0
 
 ### Major Changes
