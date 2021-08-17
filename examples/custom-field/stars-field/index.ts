@@ -6,6 +6,7 @@ import {
   CommonFieldConfig,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 
 // this field is based on the integer field
@@ -55,6 +56,10 @@ export const stars =
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: {
           arg: schema.arg({ type: schema.Int }),
           // this field type doesn't need to do anything special
@@ -94,7 +99,10 @@ export const stars =
       getAdminMeta() {
         return { maxStars };
       },
-      __legacy: { isRequired, defaultValue },
+      __legacy: {
+        isRequired,
+        defaultValue,
+      },
     });
 
 function getIndexType({
