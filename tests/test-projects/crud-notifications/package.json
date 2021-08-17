@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/test-projects-basic",
+  "name": "@keystone-next/test-projects-crud-notifications",
   "version": "0.0.3",
   "private": true,
   "license": "MIT",
@@ -18,5 +18,5 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/test-projects/basic"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/test-projects/crud-notifications"
 }
