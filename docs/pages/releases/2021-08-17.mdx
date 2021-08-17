@@ -1,0 +1,74 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 17th August 2021
+
+A major milestone in the path to a `General Availability` status for **Keystone 6**, this release includes:
+
+- **A new and improved GraphQL API** <Emoji symbol="🎉" alt="Celebration" /> <Emoji symbol="✨" alt="Sparkles" />
+- Enhancements to Custom Admin UI Pages
+- Better deletion notifications
+- And more…
+
+**⚠️ &nbsp; This release contains breaking changes, please see below!**
+
+```json
+"@keystone-ui/notice": "4.0.1",
+"@keystone-ui/segmented-control": "4.0.2",
+"@keystone-ui/toast": "4.0.2",
+"@keystone-next/admin-ui-utils": "5.0.6",
+"@keystone-next/auth": "31.0.0",
+"@keystone-next/cloudinary": "6.0.6",
+"@keystone-next/fields": "14.0.0",
+"@keystone-next/fields-document": "8.0.0",
+"@keystone-next/keystone": "24.0.0",
+"@keystone-next/testing": "1.1.1",
+"@keystone-next/types": "24.0.0",
+"@keystone-next/utils": "1.0.4",
+```
+
+### A new & improved GraphQL API <Emoji symbol="✨" alt="Sparkles" />
+
+We’ve made the experience of working with Keystone’s GraphQL API easier to program and reason about:
+
+- **Queries:** the names of top-level queries are now easier to understand. We also removed deprecated and unused legacy features.
+- **Filters:** the arguments used in queries have been updated to accept a filter object for each field, rather than having all the filter options available at the top level.
+- **Mutations:** all generated CRUD mutations have the same names and return types, but their inputs have changed.
+- **Input Types:** we’ve updated the input types used for relationship fields in `update` and `create` operations, removing obsolete options and making the syntax between the two operations easier to differentiate.
+
+#### Upgrade guidance
+
+We've [written a complete guide](https://keystonejs.com/updates/new-graphql-api) to the improvements we've made, and it includes [a checklist of the steps you need to take to upgrade your Keystone projects](https://keystonejs.com/updates/new-graphql-api#upgrade-checklist). Be sure to check it out!
+
+> <Emoji symbol="💡" alt="Lightbulb" /> While there are a lot of changes to this API, if you approach the upgrade process systematically your experience should be pretty smooth. If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com) to get the help you need.
+
+<img width="1091" alt="Screen Shot 2021-08-17 at 11 28 56 am" src="https://user-images.githubusercontent.com/737821/129649252-ababdd69-2649-4027-9189-c8f908e59946.png" />
+
+## Custom Admin UI Pages <Emoji symbol="📃" alt="Paper" />
+
+Our [Custom Admin UI Pages](https://keystonejs.com/docs/guides/custom-admin-ui-pages) guide has been expanded, with an example to make your custom pages look more like the Admin UI, as well as adding links to your custom pages from the Admin UI Navigation!
+
+<img width="1091" alt="Screen Shot 2021-08-17 at 11 30 39 am" src="https://user-images.githubusercontent.com/737821/129649357-c292252a-f202-449d-a7e1-b0f765738b0b.png" />
+
+## Improved Deletion Notifications <Emoji symbol="🗑" alt="Trashcan" />
+
+When items are deleted via the Admin UI, we now display all the items that were successfully deleted, and any that failed, instead of displaying multiple notifications without any context.
+
+<img width="1091" alt="Screen Shot 2021-08-17 at 11 04 47 am" src="https://user-images.githubusercontent.com/737821/129647660-32d421f4-a060-4b65-b17d-c446149906ee.png" />
+
+## Deeper GraphQL Errors <Emoji symbol="🚧" alt="Roadblock" />
+
+A `config.graphql.debug` option has been added, which can be used to control whether debug information such as stack traces are included in the errors returned by the GraphQL API.
+
+## Prisma Update <Emoji symbol="⬆️" alt="Arrow up" />
+
+Updated Prisma dependencies from `2.27.0` to `2.29.0`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.29.0) for more details.
+
+## Credits <Emoji symbol="💫" alt="Swirling star" />
+
+Added option for `Bearer` token auth when using session, thanks to [@gautamsi](https://github.com/gautamsi)!
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-08-17) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="A major milestone in the path to a General Availability status for Keystone 6." {...props}>{children}</Markdown>;
+export { getStaticProps }

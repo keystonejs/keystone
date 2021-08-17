@@ -10,6 +10,7 @@ import { Alert } from '../../components/primitives/Alert';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
+import { Emoji } from '../../components/primitives/Emoji';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -165,7 +166,23 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="29th July 2021" isLatest />
+        <Timeline date="17th August 2021" isLatest />
+        <Box heading="A new and improved GraphQL API">
+          A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
+          for <strong>Keystone 6</strong>, we've just released:
+          <ul>
+            <li>
+              A new and improved GraphQL API <Emoji symbol="🎉" alt="Celebration" />{' '}
+              <Emoji symbol="✨" alt="Sparkles" />
+            </li>
+            <li>Enhancements to Custom Admin UI Pages</li>
+            <li>Better deletion notifications</li>
+            <li>And more…</li>
+          </ul>
+          Check out all the details on in our latest{' '}
+          <a href="/releases/2021-08-17">release notes</a>!
+        </Box>
+        <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
           We're opening Admin UI up to support a more personal content experience. Now you can:
           <ul>
