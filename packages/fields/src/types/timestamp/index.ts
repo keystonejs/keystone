@@ -5,7 +5,6 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  legacyFilters,
   FieldDefaultValue,
   filters,
 } from '@keystone-next/types';
@@ -59,21 +58,6 @@ export const timestamp =
         },
       }),
       views: resolveView('timestamp/views'),
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.String),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });
   };

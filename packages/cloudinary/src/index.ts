@@ -6,7 +6,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
   schema,
   FieldDefaultValue,
-  legacyFilters,
 } from '@keystone-next/types';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
@@ -174,19 +173,6 @@ export const cloudinaryImage =
         path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
         'views'
       ),
-      __legacy: {
-        isRequired,
-        defaultValue,
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-      },
+      __legacy: { isRequired, defaultValue },
     });
   };

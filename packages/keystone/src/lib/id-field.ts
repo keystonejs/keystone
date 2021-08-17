@@ -3,7 +3,6 @@ import {
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   ScalarDBField,
   schema,
@@ -137,50 +136,5 @@ export const idFieldType =
           fieldMode: 'hidden',
         },
       },
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.ID),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.ID),
-            [`${meta.fieldKey}_in`]: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
-            [`${meta.fieldKey}_not_in`]: schema.arg({
-              type: schema.list(schema.nonNull(schema.ID)),
-            }),
-          },
-          impls: {
-            ...equalityConditions(meta.fieldKey, parseVal),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey, parseVal),
-            ...inConditions(meta.fieldKey, parseVal),
-          },
-        },
-      },
     });
   };
-
-function equalityConditions(fieldKey: string, f: (a: string | null) => any) {
-  return {
-    [fieldKey]: (value: string | null) => ({ [fieldKey]: f(value) }),
-    [`${fieldKey}_not`]: (value: string | null) => ({ NOT: { [fieldKey]: f(value) } }),
-  };
-}
-
-function inConditions(fieldKey: string, f: (a: string | null) => any) {
-  return {
-    [`${fieldKey}_in`]: (value: string[] | null) => {
-      if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_in filters`);
-      }
-      return {
-        [fieldKey]: { in: value.map(x => f(x)) },
-      };
-    },
-    [`${fieldKey}_not_in`]: (value: string[] | null) => {
-      if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_not_in filters`);
-      }
-      return {
-        NOT: { [fieldKey]: { in: value.map(x => f(x)) } },
-      };
-    },
-  };
-}

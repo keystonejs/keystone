@@ -4,7 +4,6 @@ import {
   CommonFieldConfig,
   fieldType,
   FieldTypeFunc,
-  legacyFilters,
   orderDirectionEnum,
   schema,
   filters,
@@ -43,13 +42,6 @@ export const checkbox =
         type: schema.Boolean,
       }),
       views: resolveView('checkbox/views'),
-      __legacy: {
-        filters: {
-          fields: legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Boolean),
-          impls: legacyFilters.impls.equalityConditions(meta.fieldKey),
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });
   };
