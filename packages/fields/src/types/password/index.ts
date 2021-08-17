@@ -138,15 +138,6 @@ export const password =
         },
       }),
       __legacy: {
-        filters: {
-          fields: {
-            [`${meta.fieldKey}_is_set`]: schema.arg({ type: schema.Boolean }),
-          },
-          impls: {
-            [`${meta.fieldKey}_is_set`]: value =>
-              value ? { NOT: { [meta.fieldKey]: null } } : { [meta.fieldKey]: null },
-          },
-        },
         isRequired,
         defaultValue,
       },

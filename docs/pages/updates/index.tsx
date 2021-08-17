@@ -143,6 +143,7 @@ export default function WhatsNew() {
         , and subscribe to notifications on
         <a href="https://github.com/keystonejs/keystone"> GitHub</a>.
       </Type>
+
       <Alert look="tip" css={{ margin: '2rem 0' }}>
         <span
           css={{

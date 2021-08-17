@@ -6,7 +6,6 @@ import {
   schema,
   orderDirectionEnum,
   FieldTypeFunc,
-  legacyFilters,
   filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
@@ -57,39 +56,5 @@ export const text =
           shouldUseModeInsensitive: meta.provider === 'postgresql',
         };
       },
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
-            ...(meta.provider === 'sqlite'
-              ? legacyFilters.fields.containsInputFields(meta.fieldKey, schema.String)
-              : {
-                  ...legacyFilters.fields.stringInputFields(meta.fieldKey, schema.String),
-                  ...legacyFilters.fields.equalityInputFieldsInsensitive(
-                    meta.fieldKey,
-                    schema.String
-                  ),
-                  ...legacyFilters.fields.stringInputFieldsInsensitive(
-                    meta.fieldKey,
-                    schema.String
-                  ),
-                }),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...(meta.provider === 'sqlite'
-              ? legacyFilters.impls.containsConditions(meta.fieldKey)
-              : {
-                  ...legacyFilters.impls.stringConditions(meta.fieldKey),
-                  ...legacyFilters.impls.equalityConditionsInsensitive(meta.fieldKey),
-                  ...legacyFilters.impls.stringConditionsInsensitive(meta.fieldKey),
-                }),
-            // These have no case-insensitive counter parts
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        defaultValue,
-        isRequired,
-      },
+      __legacy: { defaultValue, isRequired },
     });
