@@ -35,7 +35,7 @@
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
     "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done",
-    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done",
+    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../../..; done",
     "generate-filters": "cd prisma-utils && yarn generate",
     "lint:filters": "cd prisma-utils && yarn verify"
   },
