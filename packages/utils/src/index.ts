@@ -6,7 +6,7 @@ const FILEREGEX = /^(local|keystone-cloud):file:([^\\\/:\n]+)/;
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;
 
-export const getFileRef = (mode: AssetMode, name: string) => `${mode}:file:${name}`;
+export const getFileRef = (name: string) => `file:${name}`;
 export const parseFileRef = (ref: string) => {
   const match = ref.match(FILEREGEX);
   if (match) {

@@ -9,14 +9,8 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
   const { adapter } = files;
 
   return {
-    getSrc: async (mode, filename) => {
-      return adapter.getSrc(filename);
-    },
-    getDataFromRef: async (ref: string) => {
-      return adapter.getDataFromRef(ref);
-    },
-    getDataFromStream: async (stream, originalFilename) => {
-      return adapter.getDataFromStream(stream, originalFilename);
-    },
+    getSrc: adapter.getSrc,
+    getDataFromRef: adapter.getDataFromRef,
+    getDataFromStream: adapter.getDataFromStream,
   };
 }

@@ -159,13 +159,12 @@ export type AssetMode = 'local' | 'keystone-cloud';
 // Files API
 
 export type FileData = {
-  mode: AssetMode;
   filename: string;
   filesize: number;
 };
 
 export type FilesContext = {
-  getSrc: (mode: AssetMode, filename: string) => Promise<string>;
+  getSrc: (filename: string) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };

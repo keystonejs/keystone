@@ -34,7 +34,7 @@ const fileFields = schema.fields<FileData>()({
   ref: schema.field({
     type: schema.nonNull(schema.String),
     resolve(data) {
-      return getFileRef(data.mode, data.filename);
+      return getFileRef(data.filename);
     },
   }),
   src: schema.field({
@@ -45,7 +45,7 @@ const fileFields = schema.fields<FileData>()({
           'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
         );
       }
-      return context.files.getSrc(data.mode, data.filename);
+      return context.files.getSrc(data.filename);
     },
   }),
 });
@@ -64,7 +64,7 @@ const LocalFileFieldOutput = schema.object<FileData>()({
 
 async function inputResolver(data: FileFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { mode: data, filename: data, filesize: data };
+    return { filename: data, filesize: data };
   }
 
   if (data.ref) {
@@ -95,7 +95,6 @@ export const file =
       kind: 'multi',
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
@@ -106,16 +105,11 @@ export const file =
       },
       output: schema.field({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename, mode } }) {
-          if (
-            filesize === null ||
-            filename === null ||
-            mode === null ||
-            (mode !== 'local' && mode !== 'keystone-cloud')
-          ) {
+        resolve({ value: { filesize, filename } }) {
+          if (filesize === null || filename === null) {
             return null;
           }
-          return { mode, filename, filesize };
+          return { filename, filesize };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
