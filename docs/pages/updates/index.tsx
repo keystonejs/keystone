@@ -169,18 +169,21 @@ export default function WhatsNew() {
         <Timeline date="17th August 2021" isLatest />
         <Box heading="A new and improved GraphQL API">
           A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
-          for <strong>Keystone 6</strong>, we've just released:
-          <ul>
-            <li>
-              A new and improved GraphQL API <Emoji symbol="🎉" alt="Celebration" />{' '}
-              <Emoji symbol="✨" alt="Sparkles" />
-            </li>
-            <li>Enhancements to Custom Admin UI Pages</li>
-            <li>Better deletion notifications</li>
-            <li>And more…</li>
-          </ul>
-          Check out all the details on in our latest{' '}
-          <a href="/releases/2021-08-17">release notes</a>!
+          for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
+          <Emoji symbol="🎉" alt="Celebration" />
+          <br />
+          <br />
+          We’ve made the experience of working with Keystone’s GraphQL API easier to program and
+          reason about: We've{' '}
+          <a href="https://keystonejs.com/updates/new-graphql-api">written a complete guide</a> to
+          the improvements we've made, and it includes a{' '}
+          <a href="https://keystonejs.com/updates/new-graphql-api#upgrade-checklist">
+            checklist of the steps you need to take to upgrade your Keystone projects
+          </a>
+          .
+          <br />
+          <br />
+          Be sure to check it out!
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
