@@ -183,7 +183,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
-        <NavItem href="/docs/apis/access-control">Access Control API</NavItem>
+        <NavItem href="/docs/apis/access-control">
+          Access Control API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>

@@ -12,15 +12,15 @@ const runner = setupTestRunner({
           other: text(),
           name: text({
             access: {
-              read: true,
-              create: ({ originalInput }) => {
+              read: () => true,
+              create: ({ originalInput }: any) => {
                 if (Array.isArray(originalInput)) {
                   return !originalInput.some(item => item.data.name === 'bad');
                 } else {
                   return (originalInput as any).name !== 'bad';
                 }
               },
-              update: ({ originalInput }) => {
+              update: ({ originalInput }: any) => {
                 if (Array.isArray(originalInput)) {
                   return !originalInput.some(item => item.data.name === 'bad');
                 } else {
@@ -36,7 +36,7 @@ const runner = setupTestRunner({
   }),
 });
 
-describe('Access control - Imperative => static', () => {
+describe('Access control', () => {
   test(
     'createOne',
     runner(async ({ context }) => {

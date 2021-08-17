@@ -2,7 +2,7 @@ import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectAccessDenied, expectExtensionError } from '../utils';
+import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = (debug: boolean | undefined) =>
   setupTestRunner({
@@ -562,7 +562,7 @@ const runner = (debug: boolean | undefined) =>
                     post: { title: 'trigger before delete', content: 'trigger before delete' },
                   });
                 } else {
-                  expectAccessDenied(mode, useHttp, debug, result.errors, [{ path: ['post'] }]);
+                  expect(result.errors).toBe(undefined);
                   expect(result.data).toEqual({ post: null });
                 }
               })

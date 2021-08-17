@@ -23,8 +23,10 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          // Limit read access to the first post only
-          read: { name: { in: [postNames[1]] } },
+          filter: {
+            // Limit read access to the first post only
+            query: { name: { in: [postNames[1]] } },
+          },
         },
       }),
     }),

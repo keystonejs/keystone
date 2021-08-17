@@ -6,10 +6,12 @@ import formatMoney from '../lib/formatMoney';
 
 export const Order = list({
   access: {
-    create: isSignedIn,
-    read: rules.canOrder,
-    update: () => false,
-    delete: () => false,
+    operation: {
+      create: isSignedIn,
+      update: () => false,
+      delete: () => false,
+    },
+    filter: { query: rules.canOrder },
   },
   fields: {
     label: virtual({
