@@ -671,7 +671,6 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      position: 'relative',
                     }}
                   >
                     <CheckboxControl
@@ -799,7 +798,6 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
         padding: spacing.small,
         textAlign: 'left',
         position: 'sticky',
-        zIndex: 1,
         top: 0,
       }}
       {...props}
