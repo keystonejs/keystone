@@ -48,7 +48,7 @@ export const lists = createSchema({
 
 ## Query
 
-We’ve changed the names of our top-level queries easier understand.
+We’ve changed the names of our top-level queries so they’re easier to understand.
 We also took this opportunity to remove deprecated and unused legacy features.
 
 ### Changes
@@ -138,7 +138,8 @@ tasks(
 ) { id }
 ```
 
-There is a one-to-one correspondence between the old filters and the new filters, so you can make a simple systematic set of changes to bring your filters up to date.
+There is a one-to-one correspondence between the old filters and the new filters.
+No filter functionality has been removed or added, however the individual filters are now in a nested object, and the names have changed from `snake_case` to `camelCase`.
 
 ?> **Note:** The old filter syntax used `{ fieldName: value }` to test for equality. The new syntax requires you to make this explicit, and write `{ fieldName: { equals: value} }`.
 
@@ -386,7 +387,7 @@ input TagRelateToManyForCreateInput {
 
 ## Upgrade Checklist
 
-While there are a lot of changes to this API, if you approach the upgrade process systematically your experience should be pretty smooth. If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com/) to get the help you need.
+While there are a lot of changes to this API, we've put a lot of effort into making the upgrade process as smooth as possible. If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com/) to get the help you need.
 
 ?> Before you begin: check that your project doesn't rely on any of the features we've marked as deprecated in this document, or the `search` argument to filters. If you do, apply the recommended substitute.
 
