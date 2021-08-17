@@ -131,7 +131,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: user1.notes.map(({ id }) => id) },
+        where: { id: { in: user1.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(user1.notes.length);
 
@@ -187,7 +187,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: _user.notes.map(({ id }) => id) },
+        where: { id: { in: _user.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(_user.notes.length);
     })
@@ -218,7 +218,9 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: null } });
-        expectAccessDenied(errors, [{ path: ['createUserToNotesNoRead', 'notes'] }]);
+        expectAccessDenied('dev', false, undefined, errors, [
+          { path: ['createUserToNotesNoRead', 'notes'] },
+        ]);
       })
     );
 
@@ -307,10 +309,10 @@ describe('with access control', () => {
 
         // Confirm it didn't insert either of the records anyway
         const allNoteNoCreates = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         const allUserToNotesNoCreates = await context.lists.UserToNotesNoCreate.findMany({
-          where: { username: userName },
+          where: { username: { equals: userName } },
         });
         expect(allNoteNoCreates).toMatchObject([]);
         expect(allUserToNotesNoCreates).toMatchObject([]);
@@ -355,7 +357,7 @@ describe('with access control', () => {
 
         // Confirm it didn't insert the record anyway
         const items = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         expect(items).toMatchObject([]);
       })

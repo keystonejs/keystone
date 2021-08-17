@@ -1,5 +1,11 @@
 # @keystone-ui/notice
 
+## 4.0.1
+
+### Patch Changes
+
+- [#6220](https://github.com/keystonejs/keystone/pull/6220) [`c2bb6a9a5`](https://github.com/keystonejs/keystone/commit/c2bb6a9a596fc52a3c61ec5d91c79758e417e61d) Thanks [@timleslie](https://github.com/timleslie)! - Updated css to preserve whitespace formatting of error messages.
+
 ## 4.0.0
 
 ### Major Changes

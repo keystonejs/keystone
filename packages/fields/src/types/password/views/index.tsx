@@ -200,8 +200,8 @@ export const controller = (
           />
         );
       },
-      graphql: ({ type, value }) => {
-        return { [`${config.path}_${type}`]: value };
+      graphql: ({ value }) => {
+        return { [config.path]: { isSet: value } };
       },
       Label({ value }) {
         return value ? 'is set' : 'is not set';

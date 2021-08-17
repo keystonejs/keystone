@@ -17,21 +17,24 @@ export const apiTestConfig = (
 });
 
 const unpackErrors = (errors: readonly any[] | undefined) =>
-  (errors || []).map(({ locations, extensions: { exception, ...extensions }, ...unpacked }) => ({
-    extensions,
-    ...unpacked,
-  }));
+  (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
 const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');
 
+// FIXME: It's not clear to me right now why sometimes
+// we get an expcetion, and other times we don't - TL
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
+  expectException: boolean,
   args: { path: any[]; message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        ...(expectException ? { exception: { locations: [expect.any(Object)], message } } : {}),
+      },
       path,
       message,
     }))
@@ -52,17 +55,36 @@ export const expectGraphQLValidationError = (
 };
 
 export const expectAccessDenied = (
+  mode: 'dev' | 'production',
+  httpQuery: boolean,
+  _debug: boolean | undefined,
   errors: readonly any[] | undefined,
   args: { path: (string | number)[] }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }));
+  const message = 'You do not have access to this resource';
+  // We expect to see debug details if:
+  //   - httpQuery is false
+  //   - graphql.debug is true or
+  //   - graphql.debug is undefined and mode !== production or
+  const expectDebug =
+    _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+  // We expect to see the Apollo exception under the same conditions, but only if
+  // httpQuery is also true.
+  const expectException = httpQuery && expectDebug;
+
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
-      extensions: { code: undefined },
+      extensions: {
+        code: httpQuery ? 'INTERNAL_SERVER_ERROR' : undefined,
+        ...(expectException
+          ? { exception: { stacktrace: expect.arrayContaining([`Error: ${message}`]) } }
+          : {}),
+      },
       path,
-      message: 'You do not have access to this resource',
+      message,
     }))
   );
 };
@@ -84,28 +106,56 @@ export const expectValidationError = (
 };
 
 export const expectExtensionError = (
+  mode: 'dev' | 'production',
+  httpQuery: boolean,
+  _debug: boolean | undefined,
   errors: readonly any[] | undefined,
   extensionName: string,
-  args: { path: (string | number)[]; messages: string[] }[]
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path, messages }) => ({
-      extensions: { code: undefined },
-      path,
-      message: `An error occured while running "${extensionName}".\n${j(messages)}`,
-    }))
+    args.map(({ path, messages, debug }) => {
+      const message = `An error occured while running "${extensionName}".\n${j(messages)}`;
+      const stacktrace = message.split('\n');
+      stacktrace[0] = `Error: ${stacktrace[0]}`;
+
+      // We expect to see debug details if:
+      //   - httpQuery is false
+      //   - graphql.debug is true or
+      //   - graphql.debug is undefined and mode !== production or
+      const expectDebug =
+        _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+      // We expect to see the Apollo exception under the same conditions, but only if
+      // httpQuery is also true.
+      const expectException = httpQuery && expectDebug;
+
+      return {
+        extensions: {
+          code: 'INTERNAL_SERVER_ERROR',
+          ...(expectException
+            ? { exception: { debug, stacktrace: expect.arrayContaining(stacktrace) } }
+            : {}),
+          ...(expectDebug ? { debug } : {}),
+        },
+        path,
+        message,
+      };
+    })
   );
 };
 
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[]; message: string; code: string; target: string[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
-    args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+    args.map(({ path, message, code, target }) => ({
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        exception: { clientVersion: '2.29.1', code, meta: { target } },
+      },
       path,
       message,
     }))

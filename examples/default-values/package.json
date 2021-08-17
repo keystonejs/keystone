@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-default-values",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/fields": "^13.0.0",
-    "@keystone-next/keystone": "^23.0.0"
+    "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/keystone": "^24.0.0"
   },
   "devDependencies": {
     "typescript": "^4.3.5"

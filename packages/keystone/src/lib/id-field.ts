@@ -43,6 +43,63 @@ const idParsers = {
   },
 };
 
+const nonCircularFields = {
+  equals: schema.arg({ type: schema.ID }),
+  in: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
+  notIn: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
+  lt: schema.arg({ type: schema.ID }),
+  lte: schema.arg({ type: schema.ID }),
+  gt: schema.arg({ type: schema.ID }),
+  gte: schema.arg({ type: schema.ID }),
+};
+
+type IDFilterType = schema.InputObjectType<
+  typeof nonCircularFields & {
+    not: schema.Arg<typeof IDFilter>;
+  }
+>;
+
+const IDFilter: IDFilterType = schema.inputObject({
+  name: 'IDFilter',
+  fields: () => ({
+    ...nonCircularFields,
+    not: schema.arg({ type: IDFilter }),
+  }),
+});
+
+const filterArg = schema.arg({ type: IDFilter });
+
+function resolveVal(
+  input: Exclude<schema.InferValueFromArg<typeof filterArg>, undefined>,
+  kind: IdFieldConfig['kind']
+): any {
+  if (input === null) {
+    throw new Error('id filter cannot be null');
+  }
+  const idParser = idParsers[kind];
+  const obj: any = {};
+  for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
+    const val = input[key];
+    if (val !== undefined) {
+      const parsed = idParser(val);
+      obj[key] = parsed;
+    }
+  }
+  for (const key of ['in', 'notIn'] as const) {
+    const val = input[key];
+    if (val !== undefined) {
+      if (val === null) {
+        throw new Error(`${key} id filter cannot be null`);
+      }
+      obj[key] = val.map(x => idParser(x));
+    }
+  }
+  if (input.not !== undefined) {
+    obj.not = resolveVal(input.not, kind);
+  }
+  return obj;
+}
+
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
@@ -55,6 +112,12 @@ export const idFieldType =
       default: { kind: config.kind },
     })({
       input: {
+        where: {
+          arg: filterArg,
+          resolve(val) {
+            return resolveVal(val, config.kind);
+          },
+        },
         uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
