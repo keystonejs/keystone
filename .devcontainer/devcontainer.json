@@ -1,0 +1,25 @@
+{
+  "name": "Keystone",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "14"
+    }
+  },
+
+  "settings": {},
+
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "gamunu.vscode-yarn",
+    "prisma.prisma"
+  ],
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  "postCreateCommand": "yarn install",
+
+  "remoteUser": "node"
+}
