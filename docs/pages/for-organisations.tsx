@@ -109,12 +109,16 @@ export default function ForOrganisations() {
                 </Type>
               </li>
             </ul>
-            <Link href="/for-developers" passHref>
-              <a css={{ display: 'block', margin: '1rem 0' }}>Keystone for developers →</a>
-            </Link>
-            <Link href="/for-content-management">
-              <a>Keystone for content management →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/for-developers" passHref>
+                <a>Keystone for developers →</a>
+              </Link>
+            </Type>
+            <Type as="p" look="body18">
+              <Link href="/for-content-management">
+                <a>Keystone for content management →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -154,9 +158,11 @@ export default function ForOrganisations() {
               don’t need a separate back-end for every site and app you run. Manage your message
               from a single source of truth and expose it to any frontend application.
             </Type>
-            <Link href="/why-keystone#solutions">
-              <a>See all solutions →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/why-keystone#solutions">
+                <a>See all solutions →</a>
+              </Link>
+            </Type>
           </div>
           <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad4">
             Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
@@ -210,6 +216,7 @@ export default function ForOrganisations() {
           <Type
             as="p"
             look="body20"
+            color="var(--muted)"
             css={{
               display: 'block',
               maxWidth: '40rem',

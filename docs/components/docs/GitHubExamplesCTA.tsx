@@ -18,6 +18,8 @@ export function GitHubExamplesCTA() {
       </span>
       <Button
         as="a"
+        look="secondary"
+        size="small"
         href="https://github.com/keystonejs/keystone/tree/master/examples"
         target="_blank"
         rel="noopener noreferrer"
