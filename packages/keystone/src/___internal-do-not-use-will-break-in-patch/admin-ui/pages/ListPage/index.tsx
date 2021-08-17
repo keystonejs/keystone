@@ -244,7 +244,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
-
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
@@ -582,7 +581,6 @@ function ListTable({
   const { query } = useRouter();
   const shouldShowLinkIcon =
     !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo;
-
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
@@ -673,7 +671,7 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      // cursor: 'pointer',
+                      position: 'relative',
                     }}
                   >
                     <CheckboxControl
@@ -801,6 +799,7 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
         padding: spacing.small,
         textAlign: 'left',
         position: 'sticky',
+        zIndex: 1,
         top: 0,
       }}
       {...props}
