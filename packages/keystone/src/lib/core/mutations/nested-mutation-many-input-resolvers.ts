@@ -27,7 +27,10 @@ function getResolvedUniqueWheres(
     // Validate and resolve the input filter
     const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
     // Check whether the item exists
-    await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    const item = await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    if (item === null) {
+      throw new Error('Sorry but nope');
+    }
     return uniqueWhere;
   });
 }

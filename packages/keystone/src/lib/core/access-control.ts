@@ -1,81 +1,47 @@
-import { GraphQLInputObjectType } from 'graphql';
 import {
   BaseGeneratedListTypes,
-  CreateAccessControl,
-  DeleteListAccessControl,
+  CreateListItemAccessControl,
   FieldAccessControl,
-  FieldCreateAccessArgs,
-  FieldReadAccessArgs,
-  FieldUpdateAccessArgs,
   IndividualFieldAccessControl,
-  KeystoneContext,
   ListAccessControl,
-  ReadListAccessControl,
-  UpdateListAccessControl,
+  DeleteListItemAccessControl,
+  FieldCreateItemAccessArgs,
+  FieldReadItemAccessArgs,
+  FieldUpdateItemAccessArgs,
+  UpdateListItemAccessControl,
+  ListOperationAccessControl,
+  ListFilterAccessControl,
+  KeystoneContext,
 } from '../../types';
-import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
+import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
-export async function validateNonCreateListAccessControl<
-  Args extends {
-    listKey: string;
-    context: KeystoneContext;
-    operation: 'read' | 'update' | 'delete';
-  }
->({
-  access,
-  args,
-}: {
-  access: ((args: Args) => boolean | Record<string, any>) | boolean | Record<string, any>;
-  args: Args;
-}): Promise<InputFilter | boolean> {
-  const result = typeof access === 'function' ? await access(args) : access;
-
-  if (result === null || (typeof result !== 'object' && typeof result !== 'boolean')) {
-    throw new Error(
-      `Must return an object or boolean from Imperative or Declarative access control function. Got ${typeof result}`
-    );
-  }
-
-  if (typeof result === 'object') {
-    const internalSchema = args.context.sudo().graphql.schema;
-    const whereInputType = internalSchema.getType(
-      `${args.listKey}WhereInput`
-    ) as GraphQLInputObjectType;
-    const coercedResult = coerceAndValidateForGraphQLInput(internalSchema, whereInputType, result);
-    if (coercedResult.kind === 'error') {
-      throw new Error(
-        `An invalid filter was provided in ${args.listKey}.access.${args.operation}: ${coercedResult.error.message}`
-      );
-    }
-    return coercedResult.value;
-  }
-
-  return result;
+export async function checkOperationAccess(
+  list: InitialisedList,
+  context: KeystoneContext,
+  operation: 'delete' | 'create' | 'update' | 'query'
+) {
+  const args = { operation, session: context.session, listKey: list.listKey, context };
+  // Check the mutation access
+  const access = list.access.operation[operation];
+  // @ts-ignore
+  return !!(await access(args));
 }
 
-export async function validateCreateListAccessControl<Args extends { listKey: string }>({
-  access,
-  args,
-}: {
-  access: ((args: Args) => Promise<boolean> | boolean) | boolean;
-  args: Args;
-}) {
-  const result = typeof access === 'function' ? await access(args) : access;
-
-  if (typeof result !== 'boolean') {
-    throw new Error(
-      `${
-        args.listKey
-      }.access.create() must return a boolean but it got a ${typeof result}. (NOTE: 'create' cannot have a Declarative access control config)`
-    );
-  }
-
-  return result;
+export async function getAccessFilters(
+  list: InitialisedList,
+  context: KeystoneContext,
+  operation: 'update' | 'query' | 'delete'
+): Promise<boolean | InputFilter> {
+  const args = { operation, session: context.session, listKey: list.listKey, context };
+  // Check the mutation access
+  const access = list.access.filter[operation];
+  // @ts-ignore
+  return typeof access === 'function' ? await access(args) : access;
 }
 
 export async function validateFieldAccessControl<
-  Args extends { listKey: string; fieldKey: string; operation: 'read' | 'create' | 'update' }
+  Args extends { listKey: string; fieldKey: string; operation: 'query' | 'create' | 'update' }
 >({
   access,
   args,
@@ -98,40 +64,89 @@ export function parseFieldAccessControl(
   access: FieldAccessControl<BaseGeneratedListTypes> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'boolean' || typeof access === 'function') {
-    return { create: access, read: access, update: access };
+    return { create: access, query: access, update: access };
   }
   // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
   return {
-    create: access?.create ?? true,
-    read: access?.read ?? true,
-    update: access?.update ?? true,
+    create: access?.create ?? (() => true),
+    query: access?.query ?? (() => true),
+    update: access?.update ?? (() => true),
+    // delete: not supported
   };
 }
 
 export type ResolvedFieldAccessControl = {
-  read: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>;
-  create: IndividualFieldAccessControl<FieldCreateAccessArgs<BaseGeneratedListTypes>>;
-  update: IndividualFieldAccessControl<FieldUpdateAccessArgs<BaseGeneratedListTypes>>;
+  query: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseGeneratedListTypes>>;
+  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseGeneratedListTypes>>;
+  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseGeneratedListTypes>>;
 };
 
 export function parseListAccessControl(
   access: ListAccessControl<BaseGeneratedListTypes> | undefined
 ): ResolvedListAccessControl {
-  if (typeof access === 'boolean' || typeof access === 'function') {
-    return { create: access, read: access, update: access, delete: access };
+  let item, filter, operation;
+
+  if (typeof access?.operation === 'function') {
+    operation = {
+      create: access.operation,
+      query: access.operation,
+      update: access.operation,
+      delete: access.operation,
+    };
+  } else {
+    // Note I'm intentionally not using spread here because typescript can't express
+    // an optional property which cannot be undefined so spreading would mean there
+    // is a possibility that someone could pass { access: undefined } or
+    // { access: { read: undefined } } and bad things would happen.
+    operation = {
+      create: access?.operation?.create ?? (() => true),
+      query: access?.operation?.query ?? (() => true),
+      update: access?.operation?.update ?? (() => true),
+      delete: access?.operation?.delete ?? (() => true),
+    };
   }
-  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
-  return {
-    create: access?.create ?? true,
-    read: access?.read ?? true,
-    update: access?.update ?? true,
-    delete: access?.delete ?? true,
-  };
+
+  if (typeof access?.filter === 'boolean' || typeof access?.filter === 'function') {
+    filter = { query: access.filter, update: access.filter, delete: access.filter };
+  } else {
+    filter = {
+      // create: not supported
+      query: access?.filter?.query ?? true,
+      update: access?.filter?.update ?? true,
+      delete: access?.filter?.delete ?? true,
+    };
+  }
+
+  if (typeof access?.item === 'boolean' || typeof access?.item === 'function') {
+    item = { create: access.item, update: access.item, delete: access.item };
+  } else {
+    item = {
+      create: access?.item?.create ?? (() => true),
+      // read: not supported
+      update: access?.item?.update ?? (() => true),
+      delete: access?.item?.delete ?? (() => true),
+    };
+  }
+  return { operation, filter, item };
 }
 
 export type ResolvedListAccessControl = {
-  read: ReadListAccessControl<BaseGeneratedListTypes>;
-  create: CreateAccessControl<BaseGeneratedListTypes>;
-  update: UpdateListAccessControl<BaseGeneratedListTypes>;
-  delete: DeleteListAccessControl<BaseGeneratedListTypes>;
+  operation: {
+    create: ListOperationAccessControl<'create'>;
+    query: ListOperationAccessControl<'query'>;
+    update: ListOperationAccessControl<'update'>;
+    delete: ListOperationAccessControl<'delete'>;
+  };
+  filter: {
+    // create: not supported
+    query: ListFilterAccessControl<'query', BaseGeneratedListTypes>;
+    update: ListFilterAccessControl<'update', BaseGeneratedListTypes>;
+    delete: ListFilterAccessControl<'delete', BaseGeneratedListTypes>;
+  };
+  item: {
+    create: CreateListItemAccessControl<BaseGeneratedListTypes>;
+    // query: not supported
+    update: UpdateListItemAccessControl<BaseGeneratedListTypes>;
+    delete: DeleteListItemAccessControl<BaseGeneratedListTypes>;
+  };
 };

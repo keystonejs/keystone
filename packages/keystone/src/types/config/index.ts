@@ -238,14 +238,15 @@ export type KeystoneCloudConfig = {
 export type { ListHooks, ListAccessControl, FieldAccessControl };
 
 export type {
-  FieldCreateAccessArgs,
-  FieldReadAccessArgs,
-  FieldUpdateAccessArgs,
+  FieldCreateItemAccessArgs,
+  FieldReadItemAccessArgs,
+  FieldUpdateItemAccessArgs,
   IndividualFieldAccessControl,
-  CreateAccessControl,
-  ReadListAccessControl,
-  DeleteListAccessControl,
-  UpdateListAccessControl,
+  CreateListItemAccessControl,
+  UpdateListItemAccessControl,
+  DeleteListItemAccessControl,
+  ListOperationAccessControl,
+  ListFilterAccessControl,
 } from './access-control';
 export type { CommonFieldConfig } from './fields';
 export type { CacheHintArgs, IdFieldConfig } from './lists';

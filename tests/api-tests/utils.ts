@@ -69,11 +69,13 @@ export const expectAccessDenied = (
   //   - httpQuery is false
   //   - graphql.debug is true or
   //   - graphql.debug is undefined and mode !== production or
-  const expectDebug =
-    _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+  // const expectDebug =
+  //   _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
   // We expect to see the Apollo exception under the same conditions, but only if
   // httpQuery is also true.
-  const expectException = httpQuery && expectDebug;
+  const expectException = false;
+  // httpQuery && expectDebug;
+  // console.log({ expectDebug, httpQuery, expectException });
 
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({

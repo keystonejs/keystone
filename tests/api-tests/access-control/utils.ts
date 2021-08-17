@@ -10,24 +10,32 @@ const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
 
-type BooleanAccess = { create: boolean; read: boolean; update: boolean; delete?: boolean };
+type BooleanAccess = { create: boolean; query: boolean; update: boolean; delete?: boolean };
 
 const getPrefix = (access: BooleanAccess) => {
   // prettier-ignore
-  let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update`;
+  let prefix = `${yesNo(access.create)}Create${yesNo(access.query)}Query${yesNo(access.update)}Update`;
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
     prefix = `${prefix}${yesNo(access.delete)}Delete`;
   }
   return prefix;
 };
 
-const getStaticListName = (access: BooleanAccess) => `${getPrefix(access)}StaticList`;
-const getImperativeListName = (access: BooleanAccess) => `${getPrefix(access)}ImperativeList`;
-const getDeclarativeListName = (access: BooleanAccess) => `${getPrefix(access)}DeclarativeList`;
+// Operation tests
+const getOperationListName = (access: BooleanAccess) => `${getPrefix(access)}OperationList`;
+
+// Filter tests
+const getFilterListName = (access: BooleanAccess) => `${getPrefix(access)}FilterList`;
+
+// Filter - boolean tests
+const getFilterBoolListName = (access: BooleanAccess) => `${getPrefix(access)}FilterBoolList`;
+
+/// Item tests
+const getItemListName = (access: BooleanAccess) => `${getPrefix(access)}ItemList`;
 
 /* Generated with:
   const result = [];
-  const options = ['create', 'read', 'update', 'delete'];
+  const options = ['create', 'query', 'update', 'delete'];
   // All possible combinations are contained in the set 0..2^n-1
   for(let flags = 0; flags < Math.pow(2, options.length); flags++) {
     // Generate an object of true/false values for the particular combination
@@ -39,50 +47,57 @@ const getDeclarativeListName = (access: BooleanAccess) => `${getPrefix(access)}D
   }
   */
 const listAccessVariations: (BooleanAccess & { delete: boolean })[] = [
-  { create: false, read: false, update: false, delete: false },
-  { create: true, read: false, update: false, delete: false },
-  { create: false, read: true, update: false, delete: false },
-  { create: true, read: true, update: false, delete: false },
-  { create: false, read: false, update: true, delete: false },
-  { create: true, read: false, update: true, delete: false },
-  { create: false, read: true, update: true, delete: false },
-  { create: true, read: true, update: true, delete: false },
-  { create: false, read: false, update: false, delete: true },
-  { create: true, read: false, update: false, delete: true },
-  { create: false, read: true, update: false, delete: true },
-  { create: true, read: true, update: false, delete: true },
-  { create: false, read: false, update: true, delete: true },
-  { create: true, read: false, update: true, delete: true },
-  { create: false, read: true, update: true, delete: true },
-  { create: true, read: true, update: true, delete: true },
+  { create: false, query: false, update: false, delete: false },
+  { create: true, query: false, update: false, delete: false },
+  { create: false, query: true, update: false, delete: false },
+  { create: true, query: true, update: false, delete: false },
+  { create: false, query: false, update: true, delete: false },
+  { create: true, query: false, update: true, delete: false },
+  { create: false, query: true, update: true, delete: false },
+  { create: true, query: true, update: true, delete: false },
+  { create: false, query: false, update: false, delete: true },
+  { create: true, query: false, update: false, delete: true },
+  { create: false, query: true, update: false, delete: true },
+  { create: true, query: true, update: false, delete: true },
+  { create: false, query: false, update: true, delete: true },
+  { create: true, query: false, update: true, delete: true },
+  { create: false, query: true, update: true, delete: true },
+  { create: true, query: true, update: true, delete: true },
 ];
 
 const fieldMatrix: BooleanAccess[] = [
-  { create: false, read: false, update: false },
-  { create: true, read: false, update: false },
-  { create: false, read: true, update: false },
-  { create: true, read: true, update: false },
-  { create: false, read: false, update: true },
-  { create: true, read: false, update: true },
-  { create: false, read: true, update: true },
-  { create: true, read: true, update: true },
+  { create: false, query: false, update: false },
+  { create: true, query: false, update: false },
+  { create: false, query: true, update: false },
+  { create: true, query: true, update: false },
+  { create: false, query: false, update: true },
+  { create: true, query: false, update: true },
+  { create: false, query: true, update: true },
+  { create: true, query: true, update: true },
 ];
 const getFieldName = (access: BooleanAccess) => getPrefix(access);
 
 const nameFn = {
-  imperative: getImperativeListName,
-  declarative: getDeclarativeListName,
-  static: getStaticListName,
+  item: getItemListName,
+  filter: getFilterListName,
+  filterBool: getFilterBoolListName,
+  operation: getOperationListName,
 };
 
 const createFieldStatic = (fieldAccess: BooleanAccess) => ({
-  [getFieldName(fieldAccess)]: text({ access: fieldAccess }),
+  [getFieldName(fieldAccess)]: text({
+    access: {
+      create: () => fieldAccess.create,
+      query: () => fieldAccess.query,
+      update: () => fieldAccess.update,
+    },
+  }),
 });
 const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
     access: {
       create: () => fieldAccess.create,
-      read: () => fieldAccess.read,
+      query: () => fieldAccess.query,
       update: () => fieldAccess.update,
     },
   }),
@@ -94,44 +109,59 @@ const lists = createSchema({
       name: text(),
       email: text({ isIndexed: 'unique', isFilterable: true }),
       password: password(),
-      noRead: text({ access: { read: () => false } }),
-      yesRead: text({ access: { read: () => true } }),
+      noRead: text({ access: { query: () => false } }),
+      yesRead: text({ access: { query: () => true } }),
     },
   }),
 });
 
 listAccessVariations.forEach(access => {
-  lists[getStaticListName(access)] = list({
+  lists[getOperationListName(access)] = list({
     fields: Object.assign(
-      {
-        name: text(),
-      },
+      { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
     ),
-    access,
-  });
-  lists[getImperativeListName(access)] = list({
-    fields: Object.assign(
-      {
-        name: text(),
+    access: {
+      operation: {
+        create: () => access.create,
+        query: () => access.query,
+        update: () => access.update,
+        delete: () => access.delete,
       },
+    },
+  });
+  lists[getFilterListName(access)] = list({
+    fields: { name: text() },
+    access: {
+      filter: {
+        // arbitrarily restrict the data to a single item (see data.js)
+        query: () => access.query && { name: { equals: 'Hello' } },
+        update: () => access.update && { name: { equals: 'Hello' } },
+        delete: () => access.delete && { name: { equals: 'Hello' } },
+      },
+    },
+  });
+  lists[getFilterBoolListName(access)] = list({
+    fields: { name: text() },
+    access: {
+      filter: {
+        query: () => access.query,
+        update: () => access.update,
+        delete: () => access.delete,
+      },
+    },
+  });
+  lists[getItemListName(access)] = list({
+    fields: Object.assign(
+      { name: text() },
       ...fieldMatrix.map(variation => createFieldImperative(variation))
     ),
     access: {
-      create: () => access.create,
-      read: () => access.read,
-      update: () => access.update,
-      delete: () => access.delete,
-    },
-  });
-  lists[getDeclarativeListName(access)] = list({
-    fields: { name: text({ isFilterable: true }) },
-    access: {
-      create: access.create,
-      // arbitrarily restrict the data to a single item (see data.js)
-      read: () => access.read && { name: { equals: 'Hello' } },
-      update: () => access.update && { name: { equals: 'Hello' } },
-      delete: () => access.delete && { name: { equals: 'Hello' } },
+      item: {
+        create: () => access.create,
+        update: () => access.update,
+        delete: () => access.delete,
+      },
     },
   });
 });
@@ -152,9 +182,10 @@ const config = auth.withAuth(
 export {
   FAKE_ID,
   FAKE_ID_2,
-  getStaticListName,
-  getImperativeListName,
-  getDeclarativeListName,
+  getOperationListName,
+  getItemListName,
+  getFilterListName,
+  getFilterBoolListName,
   listAccessVariations,
   fieldMatrix,
   nameFn,
