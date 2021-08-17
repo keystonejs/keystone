@@ -54,8 +54,8 @@ In Keystone it’s possible to define relationships from one, or both sides of t
 Our example above is one-sided: the `Post` list relates to the `User` list via the `authors` field. This kind of relationship will let us query for the `authors` of a post in our GraphQL API like so:
 
 ```graphql
-Query {
-  allPosts {
+query {
+  posts {
     title
     content
     authors {
@@ -86,8 +86,8 @@ export default config({
       fields: {
         title: text(),
         content: text(),
-                // relates authors to posts
-                authors: relationship({ ref: 'User.posts', many: true }),
+        // relates authors to posts
+        authors: relationship({ ref: 'User.posts', many: true }),
       },
     }),
   }),
@@ -101,8 +101,8 @@ In the example above we added a `posts` field to the `User` list, and changed th
 Now that our relationship is two-sided we can query all the posts written by each user like so:
 
 ```graphql
-Query {
-  allUsers {
+query {
+  users {
     name
     posts {
       title
@@ -314,4 +314,4 @@ export default config({
 
 Keystone relationships are managed using the [relationship](../apis/fields#relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to reason about and configure relationships in Keystone so you can bring value to your project through structured content.">{children}</Markdown>;

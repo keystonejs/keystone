@@ -35,7 +35,7 @@ export default function NotFoundPage() {
   const { asPath } = useRouter();
   const tryV5Link = v5PathList.some(i => asPath.startsWith(i));
   return (
-    <Page title="Page Not Found (404)">
+    <Page title={'Page Not Found (404)'} description={'Page Not Found (404)'}>
       <div
         css={{
           display: 'grid',

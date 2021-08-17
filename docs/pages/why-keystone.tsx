@@ -14,6 +14,7 @@ import { Automated } from '../components/icons/Automated';
 import { Migration } from '../components/icons/Migration';
 import { Section } from '../components/content/Section';
 import { Button } from '../components/primitives/Button';
+import { AdvancedReactCta } from '../components/content/AdvancedReactCta';
 import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
 import { Updates } from '../components/icons/Updates';
@@ -39,7 +40,12 @@ export default function WhyKeystonePage() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="Why KeystoneJS">
+    <Page
+      title={'Why KeystoneJS'}
+      description={
+        'More than a backend framework, and more than a Headless CMS, discover why Keystone is the platform for next-gen development workflows and evolution.'
+      }
+    >
       <MWrapper>
         <IntroHeading>
           Why <Highlight look="grad2">Keystone</Highlight>
@@ -54,10 +60,10 @@ export default function WhyKeystonePage() {
         >
           <div>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
-              Keystone is a Thinkmill product. We’ve spent years shipping sophisticated solutions
-              for large companies like Atlassian, Samsung, Qantas, Breville, and the Australian
-              Government. We’ve also helped startups get off the ground in a way that lets them
-              deliver immediate value and change as they learn.
+              Keystone is a <a href="https://thinkmill.com.au">Thinkmill</a> product. We’ve spent
+              years shipping sophisticated solutions for large companies like Atlassian, Samsung,
+              Qantas, Breville, and the Australian Government. We’ve also helped startups get off
+              the ground in a way that lets them deliver immediate value and change as they learn.
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
               Keystone solves for this spectrum of needs in a way that other backend tools and
@@ -84,7 +90,7 @@ export default function WhyKeystonePage() {
             margin: '1rem 0',
           }}
         >
-          <Image src={adminUi} alt="TODO" width={3710} height={2195} />
+          <Image src={adminUi} alt="Depiction of Keystone’s Admin UI" width={3710} height={2195} />
         </div>
 
         <ul
@@ -167,7 +173,13 @@ export default function WhyKeystonePage() {
           <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What’s in <Highlight look="grad2">the box?</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '45rem' }}>
+          <Type
+            as="p"
+            look="body20"
+            margin="0.5rem 0 1.5rem 0"
+            color="var(--muted)"
+            css={{ maxWidth: '45rem' }}
+          >
             Everything you need to start fast and scale sustainably. We’ve done the heavy lifting so
             you can work on what matters without getting boxed in.
           </Type>
@@ -194,9 +206,11 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 Out of the box data ops for every field type. A powerful GraphQL API from day one.
               </Type>
-              <Link href="/docs/apis/access-control">
-                <a>Access control API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/access-control">
+                  <a>Access control API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Custom grad="grad2" />
@@ -207,13 +221,15 @@ export default function WhyKeystonePage() {
                 Extend the CRUD API for more control over what you do. Customise it to your frontend
                 needs.
               </Type>
-              <a
-                href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try the example →
-              </a>
+              <Type as="p" look="body18">
+                <a
+                  href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Try the example →
+                </a>
+              </Type>
             </li>
             <li>
               <Editor grad="grad2" />
@@ -224,9 +240,11 @@ export default function WhyKeystonePage() {
                 Highly configurable. Design systems friendly. BYO custom React components.
                 Structured JSON output.
               </Type>
-              <Link href="/docs/guides/document-field-demo">
-                <a>Try the editor →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/document-field-demo">
+                  <a>Try the editor →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Watch grad="grad2" />
@@ -236,9 +254,11 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 Start and end sessions from the GraphQL API. Secure your data using access control.
               </Type>
-              <Link href="/docs/apis/session">
-                <a>Session API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/session">
+                  <a>Session API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Typescript grad="grad2" />
@@ -259,9 +279,11 @@ export default function WhyKeystonePage() {
                 Build your own roles-based access controls. No limits on the amount and kind of
                 roles you can configure.
               </Type>
-              <Link href="/docs/apis/access-control">
-                <a>Access Control API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/access-control">
+                  <a>Access Control API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Relationship grad="grad2" />
@@ -271,9 +293,11 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 One to one. One to many. Many to many. Self referential. It’s all there.
               </Type>
-              <Link href="/docs/guides/relationships">
-                <a>Relationships guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/relationships">
+                  <a>Relationships guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Filter grad="grad2" />
@@ -283,9 +307,11 @@ export default function WhyKeystonePage() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 Find what you need when you need it with intuitive filters.
               </Type>
-              <Link href="/docs/guides/filters">
-                <a>Query Filters guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/filters">
+                  <a>Query Filters guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Migration grad="grad2" />
@@ -305,9 +331,11 @@ export default function WhyKeystonePage() {
                 An editing environment you can shape to the needs of any project. No boilerplate.
                 Everything as you make it.
               </Type>
-              <Link href="/docs/apis/fields">
-                <a>Fields API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/fields">
+                  <a>Fields API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Updates grad="grad2" />
@@ -318,9 +346,11 @@ export default function WhyKeystonePage() {
                 Put custom logic in your data ops. Modify data, trigger events, validate inputs –
                 it’s up to you.
               </Type>
-              <Link href="/docs/guides/hooks">
-                <a>Hooks guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/hooks">
+                  <a>Hooks guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Cli grad="grad2" />
@@ -331,9 +361,11 @@ export default function WhyKeystonePage() {
                 Kickstart new projects and try examples on for size from the comfort of your
                 terminal.
               </Type>
-              <Link href="/docs/guides/cli">
-                <a>CLI guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/cli">
+                  <a>CLI guide →</a>
+                </Link>
+              </Type>
             </li>
           </ul>
         </Section>
@@ -356,18 +388,23 @@ export default function WhyKeystonePage() {
           <Type as="h2" look="heading48" margin="1rem 0 0 0">
             What will you <Highlight look="grad2">build?</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
+          <Type
+            as="p"
+            look="body20"
+            margin="0.5rem 0 1.5rem 0"
+            color="var(--muted)"
+            css={{ maxWidth: '37.5rem' }}
+          >
             Naturally, it’s up to you. Here’s some things we've used Keystone for:
           </Type>
           <ul
             css={mq({
               display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '1.5rem',
+              gridTemplateColumns: ['1fr', '1fr 1fr'],
+              gap: '3rem',
               listStyle: 'none',
               padding: 0,
               margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
               '& svg': {
                 height: '2rem',
               },
@@ -380,54 +417,68 @@ export default function WhyKeystonePage() {
               <Type as="h3" look="heading36" id="apps">
                 Apps
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 A programmable backend you can rely on for Web and Native apps of all sizes. Start
                 with Keystone’s built-in features then add your own, and integrate 3rd-party systems
                 or microservices.
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 You can control data input exclusively from your frontend, or use Keystone’s
                 intuitive and customisable CMS when you need it.
               </Type>
-              <a
-                href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try the Task Manager example →
-              </a>
+              <Type as="p" look="body18">
+                <a
+                  href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Try the Task Manager example →
+                </a>
+              </Type>
             </li>
             <li>
               <Type as="h3" look="heading36" id="websites">
                 Websites
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 From simple blog, to complex multi-brand site networks, Keystone’s the backend fit
                 for modern web experiences. It’s a CMS that ships with no hard opinions, so you can
                 build the fields and types you actually need. And a WYSIWIG you can plug custom
                 components into, that outputs structured JSON.
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Give your content people the tools they need to do their best work.
               </Type>
-              <a
-                href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try the Blog example →
-              </a>
-            </li>
-            <li>
-              <Type as="h3" look="heading36" id="ecommerce">
-                eCommerce
-              </Type>
               <Type as="p" look="body18">
-                Keystone gives you the power and control you need to build a complete backend for
-                eCommerce, while making it easy to integrate platforms like Shopify and Stripe to
-                get things done. API first, make Keystone a key player in your eCommerce content
-                mesh.
+                <a
+                  href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Try the Blog example →
+                </a>
               </Type>
+            </li>
+          </ul>
+        </Section>
+
+        <Section
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
+            gap: '3rem',
+          })}
+        >
+          <div>
+            <Type as="h3" look="heading36" id="ecommerce">
+              eCommerce
+            </Type>
+            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+              Keystone gives you the power and control you need to build a complete backend for
+              eCommerce, while making it easy to integrate platforms like Shopify and Stripe to get
+              things done. API first, make Keystone a key player in your eCommerce content mesh.
+            </Type>
+            <Type as="p" look="body18">
               <a
                 href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
                 target="_blank"
@@ -435,11 +486,26 @@ export default function WhyKeystonePage() {
               >
                 Try the eCommerce example →
               </a>
-            </li>
-          </ul>
+            </Type>
+          </div>
+          <div>
+            <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
+              I use Keystone in my{' '}
+              <a
+                href="https://advancedreact.com/friend/KEYSTONE"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Advanced React
+              </a>{' '}
+              course because it’s super quick to get my content types up and running, add custom
+              server-side cart & checkout logic, and the fine grain access control is just
+              fantastic!
+            </TweetBox>
+          </div>
         </Section>
 
-        {/* <Section>TODO: WES BOS COURSE LINK...</Section> */}
+        <AdvancedReactCta />
 
         <Section
           css={mq({
@@ -502,40 +568,46 @@ export default function WhyKeystonePage() {
               <Type as="h3" look="heading24">
                 Developers
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
                 at home with the tools you know and love.
               </Type>
-              <Link href="/for-developers">
-                <a>Keystone for Developers →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-developers">
+                  <a>Keystone for Developers →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Content grad="grad2" />
               <Type as="h3" look="heading24">
                 Content people
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Get the fields, forms, and workflows you need to do your best work. Tell the full
                 story with a rich text editor that can be configured for any content need.
               </Type>
-              <Link href="/for-content-management">
-                <a>Keystone for Content Management →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-content-management">
+                  <a>Keystone for Content Management →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Organization grad="grad2" />
               <Type as="h3" look="heading24">
                 Organisations
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Realise your vision with a backend you can shape to fit your logic. Own your data,
                 cultivate a productive content culture, send your message anywhere, and scale on
                 your terms.
               </Type>
-              <Link href="/for-organisations">
-                <a>Keystone for Organisations →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-organisations">
+                  <a>Keystone for Organisations →</a>
+                </Link>
+              </Type>
             </li>
           </ul>
         </Section>

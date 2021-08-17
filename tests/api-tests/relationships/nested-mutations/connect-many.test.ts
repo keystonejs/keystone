@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -105,8 +105,8 @@ describe('no access control', () => {
       // Create an item that does the linking
       const users = await context.lists.User.createMany({
         data: [
-          { data: { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } } },
-          { data: { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } } },
+          { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
+          { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
         ],
       });
 
@@ -131,7 +131,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
       });
@@ -143,7 +143,7 @@ describe('no access control', () => {
 
       // Update the item and link multiple relationship fields
       const _user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
@@ -179,7 +179,7 @@ describe('no access control', () => {
 
       // Update the item and link the relationship field
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
       });
@@ -218,12 +218,12 @@ describe('no access control', () => {
       const users = await context.lists.User.updateMany({
         data: [
           {
-            id: createUser.id,
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
+            where: { id: createUser.id },
+            data: { notes: { set: [{ id: createNote.id }] } },
           },
           {
-            id: createUser2.id,
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
+            where: { id: createUser2.id },
+            data: { notes: { set: [{ id: createNote2.id }] } },
           },
         ],
         query: 'id notes { id content }',
@@ -241,7 +241,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during creating',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -257,7 +257,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
       ]);
     })
@@ -266,7 +266,7 @@ describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = 100;
+      const FAKE_ID = 'cabc123';
 
       // Create an item to link against
       const createUser = await context.lists.User.createOne({ data: {} });
@@ -276,7 +276,7 @@ describe('non-matching filter', () => {
         query: `
               mutation {
                 updateUser(
-                  id: "${createUser.id}",
+                  where: { id: "${createUser.id}" },
                   data: {
                     notes: {
                       connect: [{ id: "${FAKE_ID}" }]
@@ -289,8 +289,11 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectNestedError(errors, [
-        { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      expectRelationshipError(errors, [
+        {
+          path: ['updateUser'],
+          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+        },
       ]);
     })
   );
@@ -321,7 +324,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
@@ -350,7 +353,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { connect: [{ id: "${createNote.id}" }] }
@@ -361,10 +364,11 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })
@@ -408,7 +412,7 @@ describe('with access control', () => {
 
         // Update the item and link the relationship field
         const data = await context.lists.UserToNotesNoCreate.updateOne({
-          id: createUser.id,
+          where: { id: createUser.id },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         });
 

@@ -2,6 +2,7 @@
 import { Fragment, useState, ReactNode, SyntheticEvent, HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
 
+import { useMediaQuery } from '../lib/media';
 import { Button } from './primitives/Button';
 import { Field } from './primitives/Field';
 import { Stack } from './primitives/Stack';
@@ -24,6 +25,7 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const mq = useMediaQuery();
 
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
@@ -89,12 +91,16 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
             placeholder="Your email address"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            css={mq({
+              maxWidth: '25rem',
+              margin: ['0 auto', 0],
+            })}
           />
-          <Button loading={loading} type={'submit'}>
+          <Button look="secondary" size="small" loading={loading} type={'submit'}>
             {error ? 'Try again' : 'Subscribe'}
           </Button>
         </Stack>
-        {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
+        {error ? <p css={{ margin: '0.5rem, 0', color: 'red' }}>{error}</p> : null}
       </form>
     </Fragment>
   ) : (

@@ -127,6 +127,9 @@ export function Header() {
           apiKey: '211e94c001e6b4c6744ae72fb252eaba',
           indexName: 'keystonejs',
           inputSelector: '#search-field',
+          algoliaOptions: {
+            facetFilters: ['tags:stable'],
+          },
         });
       } else if (searchAttempt >= 10) {
         // @ts-ignore

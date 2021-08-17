@@ -414,7 +414,7 @@ export default config({
 
 ### timestamp
 
-A `timestamp` field represents a time value.
+A `timestamp` field represents a time value in ISO8601 format.
 
 Options:
 
@@ -458,7 +458,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldPath>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
-- `defaultValue` (default: `undefined`): Can be either a relationship input value or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
+- `defaultValue` (default: `undefined`): Can be either a relationship input value `{ connect: { id: ID } }` or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
@@ -732,4 +732,4 @@ export default config({
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="A reference of Keystoneâ€™s field types, and the configuration options they accept.">{children}</Markdown>;

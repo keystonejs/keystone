@@ -12,9 +12,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   const users = await context.lists.User.createMany({
     data: [
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
-      { data: { name: sampleOne(alphanumGenerator) } },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
+      { name: sampleOne(alphanumGenerator) },
     ],
   });
 
@@ -50,8 +50,8 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
   const { data } = (await context.graphql.raw({
     query: `
       {
-        User(where: { id: "${userId}"} ) { id friend { id } }
-        Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
+        User: user(where: { id: "${userId}"} ) { id friend { id } }
+        Friend: user(where: { id: "${friendId}"} ) { id friendOf { id } }
       }`,
   })) as T;
   return data;
@@ -79,7 +79,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user, friend } = await createUserAndFriend(context);
         const users = await context.lists.User.findMany({
-          where: { friend: { name: friend.name } },
+          where: { friend: { name: { equals: friend.name } } },
         });
         expect(users.length).toEqual(1);
         expect(users[0].id).toEqual(user.id);
@@ -92,45 +92,45 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user, friend } = await createUserAndFriend(context);
         const users = await context.lists.User.findMany({
-          where: { friendOf: { name: user.name } },
+          where: { friendOf: { name: { equals: user.name } } },
         });
         expect(users.length).toEqual(1);
         expect(users[0].id).toEqual(friend.id);
       })
     );
     test(
-      'Where friend: is_null: true',
+      'Where friend: is null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+        const users = await context.lists.User.findMany({ where: { friend: null } });
         expect(users.length).toEqual(4);
       })
     );
     test(
-      'Where friendOf: is_null: true',
+      'Where friendOf: is null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+        const users = await context.lists.User.findMany({ where: { friendOf: null } });
         expect(users.length).toEqual(4);
       })
     );
     test(
-      'Where friend: is_null: false',
+      'Where friend: is not null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
+        const users = await context.lists.User.findMany({ where: { NOT: { friend: null } } });
         expect(users.length).toEqual(1);
       })
     );
     test(
-      'Where friendOf: is_null: false',
+      'Where friendOf: is not null',
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+        const users = await context.lists.User.findMany({ where: { NOT: { friendOf: null } } });
         expect(users.length).toEqual(1);
       })
     );
@@ -150,7 +150,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { friend } = await createUserAndFriend(context);
         const count = await context.lists.User.count({
-          where: { friend: { name: friend.name } },
+          where: { friend: { name: { equals: friend.name } } },
         });
         expect(count).toEqual(1);
       })
@@ -162,7 +162,7 @@ describe(`One-to-one relationships`, () => {
         await createInitialData(context);
         const { user } = await createUserAndFriend(context);
         const count = await context.lists.User.count({
-          where: { friendOf: { name: user.name } },
+          where: { friendOf: { name: { equals: user.name } } },
         });
         expect(count).toEqual(1);
       })
@@ -172,7 +172,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const count = await context.lists.User.count({ where: { friend_is_null: true } });
+        const count = await context.lists.User.count({ where: { friend: null } });
         expect(count).toEqual(4);
       })
     );
@@ -182,7 +182,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         await createInitialData(context);
         await createUserAndFriend(context);
-        const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+        const count = await context.lists.User.count({ where: { friendOf: null } });
         expect(count).toEqual(4);
       })
     );
@@ -320,7 +320,7 @@ describe(`One-to-one relationships`, () => {
         expect(friend.friendOf).not.toBe(expect.anything());
 
         await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { connect: { id: friend.id } } },
           query: 'id friend { id }',
         });
@@ -339,7 +339,7 @@ describe(`One-to-one relationships`, () => {
         let user = users[0];
         const friendName = sampleOne(alphanumGenerator);
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: { create: { name: friendName } } },
           query: 'id friend { id name }',
         });
@@ -360,31 +360,8 @@ describe(`One-to-one relationships`, () => {
 
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
-          id: user.id,
-          data: { friend: { disconnect: { id: friend.id } } },
-          query: 'id friend { id name }',
-        });
-
-        expect(_user.id).toEqual(user.id);
-        expect(_user.friend).toBe(null);
-
-        // Check the link has been broken
-        const result = await getUserAndFriend(context, user.id, friend.id);
-        expect(result.User.friend).toBe(null);
-        expect(result.Friend.friendOf).toBe(null);
-      })
-    );
-
-    test(
-      'With disconnectAll',
-      runner(async ({ context }) => {
-        // Manually setup a connected Company <-> Location
-        const { user, friend } = await createUserAndFriend(context);
-
-        // Run the query to disconnect the location from company
-        const _user = await context.lists.User.updateOne({
-          id: user.id,
-          data: { friend: { disconnectAll: true } },
+          where: { id: user.id },
+          data: { friend: { disconnect: true } },
           query: 'id friend { id name }',
         });
 
@@ -406,7 +383,7 @@ describe(`One-to-one relationships`, () => {
 
         // Run the query with a null operation
         const _user = await context.lists.User.updateOne({
-          id: user.id,
+          where: { id: user.id },
           data: { friend: null },
           query: 'id friend { id name }',
         });
@@ -427,7 +404,7 @@ describe(`One-to-one relationships`, () => {
         const { user, friend } = await createUserAndFriend(context);
 
         // Run the query to disconnect the location from company
-        const _user = await context.lists.User.deleteOne({ id: user.id });
+        const _user = await context.lists.User.deleteOne({ where: { id: user.id } });
         expect(_user?.id).toBe(user.id);
 
         // Check the link has been broken

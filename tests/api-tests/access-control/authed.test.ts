@@ -22,8 +22,8 @@ const expectNoAccess = <N extends string>(
   errors: readonly GraphQLError[] | undefined,
   name: N
 ) => {
+  expectAccessDenied('dev', false, undefined, errors, [{ path: [name] }]);
   expect(data?.[name]).toBe(null);
-  expectAccessDenied(errors, [{ path: [name] }]);
 };
 
 const expectNamedArray = <T extends { id: IdType }, N extends string>(
@@ -57,7 +57,7 @@ const afterConnect = async ({ context }: { context: KeystoneContext }) => {
   const items: Record<string, T> = {};
   for (const [listKey, _items] of Object.entries(initialData)) {
     items[listKey] = (await context.lists[listKey].createMany({
-      data: _items.map(x => ({ data: x })),
+      data: _items,
       query: 'id name',
     })) as T;
   }
@@ -99,7 +99,7 @@ describe('Authed', () => {
               const item = await context.lists[listKey].createOne({ data });
               expect(item).not.toBe(null);
               expect(item.id).not.toBe(null);
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -124,7 +124,7 @@ describe('Authed', () => {
               } else {
                 expect(item[fieldName]).toBe(undefined);
               }
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -143,7 +143,7 @@ describe('Authed', () => {
               });
               expect(item).not.toBe(null);
               expect(item.id).not.toBe(null);
-              await context.sudo().lists[listKey].deleteOne({ id: item.id });
+              await context.sudo().lists[listKey].deleteOne({ where: { id: item.id } });
             });
           });
       });
@@ -158,7 +158,9 @@ describe('Authed', () => {
       expect(data).toEqual({
         authenticatedItem: { id: user.id, yesRead: user.yesRead, noRead: null },
       });
-      expectAccessDenied(errors, [{ path: ['authenticatedItem', 'noRead'] }]);
+      expectAccessDenied('dev', false, undefined, errors, [
+        { path: ['authenticatedItem', 'noRead'] },
+      ]);
     });
 
     (['imperative', 'declarative'] as const).forEach(mode => {
@@ -194,29 +196,31 @@ describe('Authed', () => {
             });
 
             test(`single not allowed: ${JSON.stringify(access)}`, async () => {
+              const { itemQueryName } = context.gqlNames(listKey);
               const invalidId = items[listKey].find(({ name }) => name !== 'Hello')?.id;
-              const query = `query { ${listKey}(where: { id: "${invalidId}" }) { id } }`;
+              const query = `query { ${itemQueryName}(where: { id: "${invalidId}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 // Imperative should work
                 expect(errors).toBe(undefined);
-                expect(data?.[listKey]).not.toBe(null);
-                expect(data?.[listKey].id).toEqual(invalidId);
+                expect(data?.[itemQueryName]).not.toBe(null);
+                expect(data?.[itemQueryName].id).toEqual(invalidId);
               } else {
                 // but declarative should not
-                expectNoAccess(data, errors, listKey);
+                expectNoAccess(data, errors, itemQueryName);
               }
             });
 
             test(`single not existing: ${JSON.stringify(access)}`, async () => {
-              const query = `query { ${listKey}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
+              const { itemQueryName } = context.gqlNames(listKey);
+              const query = `query { ${itemQueryName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expectNoAccess(data, errors, listKey);
+              expectNoAccess(data, errors, itemQueryName);
             });
 
             test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
               const _items = await context.lists[listKey].findMany({
-                where: { id_in: [FAKE_ID[provider], FAKE_ID_2[provider]] },
+                where: { id: { in: [FAKE_ID[provider], FAKE_ID_2[provider]] } },
               });
               expect(_items).toHaveLength(0);
             });
@@ -238,9 +242,10 @@ describe('Authed', () => {
               const listKey = nameFn[mode](listAccess);
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
-              await context
-                .sudo()
-                .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'hello' } });
+              await context.sudo().lists[listKey].updateOne({
+                where: { id: item.id },
+                data: { [fieldName]: 'hello' },
+              });
               const _item = await context.lists[listKey].findOne({
                 where: { id: item.id },
                 query: `id ${fieldName}`,
@@ -255,7 +260,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               await context.sudo().lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'hello' },
               });
               const _items = await context.lists[listKey].findMany({ query: `id ${fieldName}` });
@@ -283,7 +288,7 @@ describe('Authed', () => {
           .forEach(access => {
             test(`denies missing: ${JSON.stringify(access)}`, async () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
-              const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[provider]}", data: { name: "bar" }) { id } }`;
+              const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID[provider]}" }, data: { name: "bar" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, updateMutationName);
             });
@@ -292,7 +297,7 @@ describe('Authed', () => {
               const updateMutationName = `update${nameFn[mode](access)}`;
               const singleQueryName = nameFn[mode](access);
               const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello')?.id;
-              const query = `mutation { ${updateMutationName}(id: "${invalidId}", data: { name: "bar" }) { id name } }`;
+              const query = `mutation { ${updateMutationName}(where: { id: "${invalidId}" }, data: { name: "bar" }) { id name } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expect(errors).toBe(undefined);
@@ -301,7 +306,7 @@ describe('Authed', () => {
                 expect(data?.[updateMutationName].name).toEqual('bar');
                 // Reset data
                 await context.sudo().graphql.raw({
-                  query: `mutation { ${updateMutationName}(id: "${invalidId}", data: { name: "Hello" }) { id name } }`,
+                  query: `mutation { ${updateMutationName}(where: { id: "${invalidId}" }, data: { name: "Hello" }) { id name } }`,
                 });
               } else {
                 expectNoAccess(data, errors, updateMutationName);
@@ -314,7 +319,7 @@ describe('Authed', () => {
               const listKey = nameFn[mode](access);
               const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
               const item = await context.lists[listKey].updateOne({
-                id: validId,
+                where: { id: validId },
                 data: { name: 'bar' },
                 query: 'id name',
               });
@@ -323,7 +328,7 @@ describe('Authed', () => {
               expect(item.name).toEqual('bar');
               // Reset data
               await context.sudo().graphql.raw({
-                query: `mutation { ${updateMutationName}(id: "${validId}", data: { name: "Hello" }) { id name } }`,
+                query: `mutation { ${updateMutationName}(where: { id: "${validId}" }, data: { name: "Hello" }) { id name } }`,
               });
             });
           });
@@ -345,7 +350,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
                 query: `id ${access.read ? fieldName : ''}`,
               });
@@ -371,7 +376,7 @@ describe('Authed', () => {
               const item = items[listKey][0];
               const fieldName = getFieldName(access);
               const _item = await context.lists[listKey].updateOne({
-                id: item.id,
+                where: { id: item.id },
                 data: { [fieldName]: 'bar' },
               });
               expect(_item).not.toBe(null);
@@ -393,7 +398,9 @@ describe('Authed', () => {
 
             test(`single allowed: ${JSON.stringify(access)}`, async () => {
               const { id } = await create({ name: 'Hello' });
-              const deleted = await context.lists[nameFn[mode](access)].deleteOne({ id });
+              const deleted = await context.lists[nameFn[mode](access)].deleteOne({
+                where: { id },
+              });
               expect(deleted).not.toBe(null);
               expect(deleted!.id).toEqual(id);
             });
@@ -401,7 +408,7 @@ describe('Authed', () => {
             test(`single denies: ${JSON.stringify(access)}`, async () => {
               const { id: invalidId } = await create({ name: 'hi' });
               const deleteMutationName = `delete${nameFn[mode](access)}`;
-              const query = `mutation { ${deleteMutationName}(id: "${invalidId}") { id } }`;
+              const query = `mutation { ${deleteMutationName}(where: { id: "${invalidId}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expect(errors).toBe(undefined);
@@ -414,7 +421,7 @@ describe('Authed', () => {
 
             test(`single denies missing: ${JSON.stringify(access)}`, async () => {
               const deleteMutationName = `delete${nameFn[mode](access)}`;
-              const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
+              const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNoAccess(data, errors, deleteMutationName);
             });
@@ -423,7 +430,7 @@ describe('Authed', () => {
               const { id: validId1 } = await create({ name: 'Hello' });
               const { id: validId2 } = await create({ name: 'Hello' });
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${validId2}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}" }, { id: "${validId2}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
             });
@@ -432,12 +439,12 @@ describe('Authed', () => {
               const { id: validId1 } = await create({ name: 'hi' });
               const { id: validId2 } = await create({ name: 'hi' });
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${validId2}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}" }, { id: "${validId2}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, validId2]);
               } else {
-                expectAccessDenied(errors, [
+                expectAccessDenied('dev', false, undefined, errors, [
                   { path: [multiDeleteMutationName, 0] },
                   { path: [multiDeleteMutationName, 1] },
                 ]);
@@ -449,21 +456,23 @@ describe('Authed', () => {
               const { id: validId1 } = await create({ name: 'Hello' });
               const { id: invalidId } = await create({ name: 'hi' });
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${invalidId}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${validId1}" }, { id: "${invalidId}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
               if (mode === 'imperative') {
                 expectNamedArray(data, errors, multiDeleteMutationName, [validId1, invalidId]);
               } else {
-                expectAccessDenied(errors, [{ path: [multiDeleteMutationName, 1] }]);
+                expectAccessDenied('dev', false, undefined, errors, [
+                  { path: [multiDeleteMutationName, 1] },
+                ]);
                 expect(data).toEqual({ [multiDeleteMutationName]: [{ id: validId1 }, null] });
               }
             });
 
             test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
               const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-              const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}", "${FAKE_ID_2[provider]}"]) { id } }`;
+              const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID[provider]}" }, { id: "${FAKE_ID_2[provider]}" }]) { id } }`;
               const { data, errors } = await context.graphql.raw({ query });
-              expectAccessDenied(errors, [
+              expectAccessDenied('dev', false, undefined, errors, [
                 { path: [multiDeleteMutationName, 0] },
                 { path: [multiDeleteMutationName, 1] },
               ]);

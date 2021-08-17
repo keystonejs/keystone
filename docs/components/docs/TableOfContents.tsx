@@ -30,7 +30,6 @@ export function TableOfContents({
   container: React.RefObject<HTMLElement | null>;
   headings: Heading[];
 }) {
-  let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
 
@@ -40,6 +39,7 @@ export function TableOfContents({
 
   useEffect(() => {
     if (container.current) {
+      let allIds = headings.map(h => h.id);
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId: string | null = entry.target.getAttribute('id');
@@ -57,7 +57,7 @@ export function TableOfContents({
       });
       return () => observer.disconnect();
     }
-  }, [container]);
+  }, [container, headings]);
 
   // catch if we're in a long gap between headings and resolve to the last available.
   let activeId = visibleIds[0] || lastVisibleId;

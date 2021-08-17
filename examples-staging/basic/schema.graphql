@@ -1,6 +1,71 @@
-"""
- A keystone list
-"""
+type RandomNumber {
+  number: Int
+  generatedAt: Int
+}
+
+type Mutation {
+  createRandomPosts: [Post!]!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createPhoneNumber(data: PhoneNumberCreateInput!): PhoneNumber
+  createPhoneNumbers(data: [PhoneNumberCreateInput!]!): [PhoneNumber]
+  updatePhoneNumber(
+    where: PhoneNumberWhereUniqueInput!
+    data: PhoneNumberUpdateInput!
+  ): PhoneNumber
+  updatePhoneNumbers(data: [PhoneNumberUpdateArgs!]!): [PhoneNumber]
+  deletePhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  deletePhoneNumbers(where: [PhoneNumberWhereUniqueInput!]!): [PhoneNumber]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  endSession: Boolean!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
 type User {
   id: ID!
   name: String
@@ -12,47 +77,17 @@ type User {
   roles: String
   phoneNumbers(
     where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [PhoneNumber!]
-  _phoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
-    )
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
@@ -85,10 +120,6 @@ type PasswordState {
   isSet: Boolean!
 }
 
-type _QueryMeta {
-  count: Int
-}
-
 type LocalImageFieldOutput implements ImageFieldOutput {
   id: ID!
   filesize: Int!
@@ -109,83 +140,80 @@ type LocalFileFieldOutput implements FileFieldOutput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  isAdmin: Boolean
-  isAdmin_not: Boolean
-  roles: String
-  roles_not: String
-  roles_contains: String
-  roles_not_contains: String
-  roles_in: [String]
-  roles_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  isAdmin: BooleanNullableFilter
+  roles: StringNullableFilter
+  phoneNumbers: PhoneNumberManyRelationFilter
+  posts: PostManyRelationFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  phoneNumbers_every: PhoneNumberWhereInput
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
 
-  """
-   condition must be true for at least 1 node
-  """
-  phoneNumbers_some: PhoneNumberWhereInput
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
 
-  """
-   condition must be false for all nodes
-  """
-  phoneNumbers_none: PhoneNumberWhereInput
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
+input PasswordFilter {
+  isSet: Boolean!
+}
 
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
 
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
+input PhoneNumberManyRelationFilter {
+  every: PhoneNumberWhereInput
+  some: PhoneNumberWhereInput
+  none: PhoneNumberWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input UserWhereUniqueInput {
   id: ID
   email: String
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  isAdmin_ASC
-  isAdmin_DESC
-  roles_ASC
-  roles_DESC
 }
 
 input UserOrderByInput {
@@ -209,8 +237,8 @@ input UserUpdateInput {
   password: String
   isAdmin: Boolean
   roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
+  phoneNumbers: PhoneNumberRelateToManyForUpdateInput
+  posts: PostRelateToManyForUpdateInput
 }
 
 input ImageFieldInput {
@@ -228,23 +256,23 @@ input FileFieldInput {
   ref: String
 }
 
-input PhoneNumberRelateToManyInput {
-  create: [PhoneNumberCreateInput]
-  connect: [PhoneNumberWhereUniqueInput]
-  disconnect: [PhoneNumberWhereUniqueInput]
-  disconnectAll: Boolean
+input PhoneNumberRelateToManyForUpdateInput {
+  disconnect: [PhoneNumberWhereUniqueInput!]
+  set: [PhoneNumberWhereUniqueInput!]
+  create: [PhoneNumberCreateInput!]
+  connect: [PhoneNumberWhereUniqueInput!]
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
@@ -255,17 +283,20 @@ input UserCreateInput {
   password: String
   isAdmin: Boolean
   roles: String
-  phoneNumbers: PhoneNumberRelateToManyInput
-  posts: PostRelateToManyInput
+  phoneNumbers: PhoneNumberRelateToManyForCreateInput
+  posts: PostRelateToManyForCreateInput
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input PhoneNumberRelateToManyForCreateInput {
+  create: [PhoneNumberCreateInput!]
+  connect: [PhoneNumberWhereUniqueInput!]
 }
 
-"""
- A keystone list
-"""
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
 type PhoneNumber {
   id: ID!
   label: String
@@ -277,39 +308,15 @@ type PhoneNumber {
 input PhoneNumberWhereInput {
   AND: [PhoneNumberWhereInput!]
   OR: [PhoneNumberWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
+  NOT: [PhoneNumberWhereInput!]
+  id: IDFilter
   user: UserWhereInput
-  user_is_null: Boolean
-  type: String
-  type_not: String
-  type_in: [String]
-  type_not_in: [String]
-  value: String
-  value_not: String
-  value_contains: String
-  value_not_contains: String
-  value_in: [String]
-  value_not_in: [String]
+  type: StringNullableFilter
+  value: StringNullableFilter
 }
 
 input PhoneNumberWhereUniqueInput {
   id: ID
-}
-
-enum SortPhoneNumbersBy {
-  id_ASC
-  id_DESC
-  type_ASC
-  type_DESC
-  value_ASC
-  value_DESC
 }
 
 input PhoneNumberOrderByInput {
@@ -319,36 +326,33 @@ input PhoneNumberOrderByInput {
 }
 
 input PhoneNumberUpdateInput {
-  user: UserRelateToOneInput
+  user: UserRelateToOneForUpdateInput
   type: String
   value: String
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input PhoneNumbersUpdateInput {
-  id: ID!
-  data: PhoneNumberUpdateInput
+input PhoneNumberUpdateArgs {
+  where: PhoneNumberWhereUniqueInput!
+  data: PhoneNumberUpdateInput!
 }
 
 input PhoneNumberCreateInput {
-  user: UserRelateToOneInput
+  user: UserRelateToOneForCreateInput
   type: String
   value: String
 }
 
-input PhoneNumbersCreateInput {
-  data: PhoneNumberCreateInput
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -365,49 +369,27 @@ type Post_content_DocumentField {
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  title: StringNullableFilter
+  status: StringNullableFilter
+  publishDate: DateTimeNullableFilter
   author: UserWhereInput
-  author_is_null: Boolean
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {
   id: ID
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  publishDate_ASC
-  publishDate_DESC
 }
 
 input PostOrderByInput {
@@ -422,12 +404,12 @@ input PostUpdateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
+  author: UserRelateToOneForUpdateInput
 }
 
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
@@ -435,11 +417,7 @@ input PostCreateInput {
   status: String
   content: JSON
   publishDate: String
-  author: UserRelateToOneInput
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
+  author: UserRelateToOneForCreateInput
 }
 
 """
@@ -450,249 +428,33 @@ scalar JSON
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
-type Mutation {
-  """
-   Create a single User item.
-  """
-  createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
-  deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
-  deleteUsers(ids: [ID!]): [User]
-
-  """
-   Create a single PhoneNumber item.
-  """
-  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
-
-  """
-   Create multiple PhoneNumber items.
-  """
-  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
-
-  """
-   Update a single PhoneNumber item by ID.
-  """
-  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
-
-  """
-   Update multiple PhoneNumber items by ID.
-  """
-  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
-
-  """
-   Delete a single PhoneNumber item by ID.
-  """
-  deletePhoneNumber(id: ID!): PhoneNumber
-
-  """
-   Delete multiple PhoneNumber items by ID.
-  """
-  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
-
-  """
-   Create a single Post item.
-  """
-  createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
-  deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  createRandomPosts: [Post!]!
-  endSession: Boolean!
-}
-
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
-  message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
-}
-
-type RandomNumber {
-  number: Int
-  generatedAt: Int
-}
-
 type Query {
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
+  randomNumber: RandomNumber
+  authenticatedItem: AuthenticatedItem
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
-  User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-
-  """
-   Search for all PhoneNumber items which match the where clause.
-  """
-  allPhoneNumbers(
+  phoneNumbers(
     where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [PhoneNumber!]
-
-  """
-   Search for the PhoneNumber item with the matching ID.
-  """
-  PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
-
-  """
-   Perform a meta-query on all PhoneNumber items which match the where clause.
-  """
-  _allPhoneNumbersMeta(
-    where: PhoneNumberWhereInput! = {}
-    search: String
-    sortBy: [SortPhoneNumbersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PhoneNumberOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use phoneNumbersCount instead."
-    )
+  phoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  authenticatedItem: AuthenticatedItem
-  randomNumber: RandomNumber
   keystone: KeystoneMeta!
 }
 
@@ -736,6 +498,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -764,6 +527,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

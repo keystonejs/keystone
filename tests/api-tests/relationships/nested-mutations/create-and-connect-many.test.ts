@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectNestedError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -84,7 +84,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const allNotes = await context.lists.Note.findMany({
-        where: { id_in: user.notes.map(({ id }) => id) },
+        where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
 
@@ -107,7 +107,7 @@ describe('no access control', () => {
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
@@ -125,7 +125,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const allNotes = await context.lists.Note.findMany({
-        where: { id_in: user.notes.map(({ id }) => id) },
+        where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
 
@@ -149,10 +149,11 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createUser: null });
-      expectNestedError(errors, [
+      expectRelationshipError(errors, [
         {
           path: ['createUser'],
-          message: 'Nested mutation operation invalid for User.notes<Note>',
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
         },
       ]);
     })
@@ -189,7 +190,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoRead'],
             message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
@@ -219,7 +220,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: {
@@ -234,10 +235,11 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })

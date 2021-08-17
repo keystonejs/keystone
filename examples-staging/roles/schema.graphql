@@ -1,497 +1,35 @@
-"""
- A keystone list
-"""
-type Todo {
-  id: ID!
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: Person
-}
-
-input TodoWhereInput {
-  AND: [TodoWhereInput!]
-  OR: [TodoWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  isComplete: Boolean
-  isComplete_not: Boolean
-  isPrivate: Boolean
-  isPrivate_not: Boolean
-  assignedTo: PersonWhereInput
-  assignedTo_is_null: Boolean
-}
-
-input TodoWhereUniqueInput {
-  id: ID
-}
-
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  isComplete_ASC
-  isComplete_DESC
-  isPrivate_ASC
-  isPrivate_DESC
-}
-
-input TodoOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  isPrivate: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
-}
-
-input TodoUpdateInput {
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
-}
-
-input PersonRelateToOneInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
-}
-
-input TodoCreateInput {
-  label: String
-  isComplete: Boolean
-  isPrivate: Boolean
-  assignedTo: PersonRelateToOneInput
-}
-
-input TodosCreateInput {
-  data: TodoCreateInput
-}
-
-"""
- A keystone list
-"""
-type Person {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  role: Role
-  tasks(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
-  tasksCount(where: TodoWhereInput! = {}): Int
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
-type _QueryMeta {
-  count: Int
-}
-
-input PersonWhereInput {
-  AND: [PersonWhereInput!]
-  OR: [PersonWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  role: RoleWhereInput
-  role_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  tasks_every: TodoWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  tasks_some: TodoWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  tasks_none: TodoWhereInput
-}
-
-input PersonWhereUniqueInput {
-  id: ID
-}
-
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-}
-
-input PersonOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-}
-
-input PersonUpdateInput {
+input CreateInitialPersonInput {
   name: String
   email: String
   password: String
-  role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
 }
-
-input RoleRelateToOneInput {
-  create: RoleCreateInput
-  connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
-}
-
-input PersonCreateInput {
-  name: String
-  email: String
-  password: String
-  role: RoleRelateToOneInput
-  tasks: TodoRelateToManyInput
-}
-
-input PeopleCreateInput {
-  data: PersonCreateInput
-}
-
-"""
- A keystone list
-"""
-type Role {
-  id: ID!
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Person!]
-  _assignedToMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use assignedToCount instead."
-    )
-  assignedToCount(where: PersonWhereInput! = {}): Int
-}
-
-input RoleWhereInput {
-  AND: [RoleWhereInput!]
-  OR: [RoleWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  canCreateTodos: Boolean
-  canCreateTodos_not: Boolean
-  canManageAllTodos: Boolean
-  canManageAllTodos_not: Boolean
-  canSeeOtherPeople: Boolean
-  canSeeOtherPeople_not: Boolean
-  canEditOtherPeople: Boolean
-  canEditOtherPeople_not: Boolean
-  canManagePeople: Boolean
-  canManagePeople_not: Boolean
-  canManageRoles: Boolean
-  canManageRoles_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  assignedTo_every: PersonWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  assignedTo_some: PersonWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  assignedTo_none: PersonWhereInput
-}
-
-input RoleWhereUniqueInput {
-  id: ID
-}
-
-enum SortRolesBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  canCreateTodos_ASC
-  canCreateTodos_DESC
-  canManageAllTodos_ASC
-  canManageAllTodos_DESC
-  canSeeOtherPeople_ASC
-  canSeeOtherPeople_DESC
-  canEditOtherPeople_ASC
-  canEditOtherPeople_DESC
-  canManagePeople_ASC
-  canManagePeople_DESC
-  canManageRoles_ASC
-  canManageRoles_DESC
-}
-
-input RoleOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  canCreateTodos: OrderDirection
-  canManageAllTodos: OrderDirection
-  canSeeOtherPeople: OrderDirection
-  canEditOtherPeople: OrderDirection
-  canManagePeople: OrderDirection
-  canManageRoles: OrderDirection
-}
-
-input RoleUpdateInput {
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
-}
-
-input PersonRelateToManyInput {
-  create: [PersonCreateInput]
-  connect: [PersonWhereUniqueInput]
-  disconnect: [PersonWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
-}
-
-input RoleCreateInput {
-  name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
-  assignedTo: PersonRelateToManyInput
-}
-
-input RolesCreateInput {
-  data: RoleCreateInput
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
 
 type Mutation {
-  """
-   Create a single Todo item.
-  """
-  createTodo(data: TodoCreateInput): Todo
-
-  """
-   Create multiple Todo items.
-  """
-  createTodos(data: [TodosCreateInput]): [Todo]
-
-  """
-   Update a single Todo item by ID.
-  """
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
-
-  """
-   Update multiple Todo items by ID.
-  """
-  updateTodos(data: [TodosUpdateInput]): [Todo]
-
-  """
-   Delete a single Todo item by ID.
-  """
-  deleteTodo(id: ID!): Todo
-
-  """
-   Delete multiple Todo items by ID.
-  """
-  deleteTodos(ids: [ID!]): [Todo]
-
-  """
-   Create a single Person item.
-  """
-  createPerson(data: PersonCreateInput): Person
-
-  """
-   Create multiple Person items.
-  """
-  createPeople(data: [PeopleCreateInput]): [Person]
-
-  """
-   Update a single Person item by ID.
-  """
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
-
-  """
-   Update multiple Person items by ID.
-  """
-  updatePeople(data: [PeopleUpdateInput]): [Person]
-
-  """
-   Delete a single Person item by ID.
-  """
-  deletePerson(id: ID!): Person
-
-  """
-   Delete multiple Person items by ID.
-  """
-  deletePeople(ids: [ID!]): [Person]
-
-  """
-   Create a single Role item.
-  """
-  createRole(data: RoleCreateInput): Role
-
-  """
-   Create multiple Role items.
-  """
-  createRoles(data: [RolesCreateInput]): [Role]
-
-  """
-   Update a single Role item by ID.
-  """
-  updateRole(id: ID!, data: RoleUpdateInput): Role
-
-  """
-   Update multiple Role items by ID.
-  """
-  updateRoles(data: [RolesUpdateInput]): [Role]
-
-  """
-   Delete a single Role item by ID.
-  """
-  deleteRole(id: ID!): Role
-
-  """
-   Delete multiple Role items by ID.
-  """
-  deleteRoles(ids: [ID!]): [Role]
+  createInitialPerson(
+    data: CreateInitialPersonInput!
+  ): PersonAuthenticationWithPasswordSuccess!
   authenticatePersonWithPassword(
     email: String!
     password: String!
   ): PersonAuthenticationWithPasswordResult!
-  createInitialPerson(
-    data: CreateInitialPersonInput!
-  ): PersonAuthenticationWithPasswordSuccess!
+  createTodo(data: TodoCreateInput!): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  createRole(data: RoleCreateInput!): Role
+  createRoles(data: [RoleCreateInput!]!): [Role]
+  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
+  updateRoles(data: [RoleUpdateArgs!]!): [Role]
+  deleteRole(where: RoleWhereUniqueInput!): Role
+  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
 }
 
@@ -519,118 +57,338 @@ enum PasswordAuthErrorCode {
   SECRET_MISMATCH
 }
 
-input CreateInitialPersonInput {
+type Todo {
+  id: ID!
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: Person
+}
+
+input TodoWhereInput {
+  AND: [TodoWhereInput!]
+  OR: [TodoWhereInput!]
+  NOT: [TodoWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+  isComplete: BooleanNullableFilter
+  isPrivate: BooleanNullableFilter
+  assignedTo: PersonWhereInput
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input TodoWhereUniqueInput {
+  id: ID
+}
+
+input TodoOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  isPrivate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input TodoUpdateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneForUpdateInput
+}
+
+input PersonRelateToOneForUpdateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TodoUpdateArgs {
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
+}
+
+input TodoCreateInput {
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
+  assignedTo: PersonRelateToOneForCreateInput
+}
+
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
+}
+
+type Person {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  role: Role
+  tasks(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Todo!]
+  tasksCount(where: TodoWhereInput! = {}): Int
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+input PersonWhereInput {
+  AND: [PersonWhereInput!]
+  OR: [PersonWhereInput!]
+  NOT: [PersonWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  role: RoleWhereInput
+  tasks: TodoManyRelationFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
+}
+
+input PersonWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+input PersonOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+}
+
+input PersonUpdateInput {
   name: String
   email: String
   password: String
+  role: RoleRelateToOneForUpdateInput
+  tasks: TodoRelateToManyForUpdateInput
 }
 
-type Query {
-  """
-   Search for all Todo items which match the where clause.
-  """
-  allTodos(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Todo!]
+input RoleRelateToOneForUpdateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: Boolean
+}
 
-  """
-   Search for the Todo item with the matching ID.
-  """
-  Todo(where: TodoWhereUniqueInput!): Todo
+input TodoRelateToManyForUpdateInput {
+  disconnect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
+}
 
-  """
-   Perform a meta-query on all Todo items which match the where clause.
-  """
-  _allTodosMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use todosCount instead."
-    )
-  todosCount(where: TodoWhereInput! = {}): Int
+input PersonUpdateArgs {
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
+}
 
-  """
-   Search for all Person items which match the where clause.
-  """
-  allPeople(
+input PersonCreateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneForCreateInput
+  tasks: TodoRelateToManyForCreateInput
+}
+
+input RoleRelateToOneForCreateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
+}
+
+type Role {
+  id: ID!
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo(
     where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
+  assignedToCount(where: PersonWhereInput! = {}): Int
+}
 
-  """
-   Search for the Person item with the matching ID.
-  """
-  Person(where: PersonWhereUniqueInput!): Person
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  NOT: [RoleWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  canCreateTodos: BooleanNullableFilter
+  canManageAllTodos: BooleanNullableFilter
+  canSeeOtherPeople: BooleanNullableFilter
+  canEditOtherPeople: BooleanNullableFilter
+  canManagePeople: BooleanNullableFilter
+  canManageRoles: BooleanNullableFilter
+  assignedTo: PersonManyRelationFilter
+}
 
-  """
-   Perform a meta-query on all Person items which match the where clause.
-  """
-  _allPeopleMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
+input PersonManyRelationFilter {
+  every: PersonWhereInput
+  some: PersonWhereInput
+  none: PersonWhereInput
+}
+
+input RoleWhereUniqueInput {
+  id: ID
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  canCreateTodos: OrderDirection
+  canManageAllTodos: OrderDirection
+  canSeeOtherPeople: OrderDirection
+  canEditOtherPeople: OrderDirection
+  canManagePeople: OrderDirection
+  canManageRoles: OrderDirection
+}
+
+input RoleUpdateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyForUpdateInput
+}
+
+input PersonRelateToManyForUpdateInput {
+  disconnect: [PersonWhereUniqueInput!]
+  set: [PersonWhereUniqueInput!]
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
+}
+
+input RoleUpdateArgs {
+  where: RoleWhereUniqueInput!
+  data: RoleUpdateInput!
+}
+
+input RoleCreateInput {
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
+  assignedTo: PersonRelateToManyForCreateInput
+}
+
+input PersonRelateToManyForCreateInput {
+  create: [PersonCreateInput!]
+  connect: [PersonWhereUniqueInput!]
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type Query {
+  authenticatedItem: AuthenticatedItem
+  todos(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    take: Int
     skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use peopleCount instead."
-    )
+  ): [Todo!]
+  todo(where: TodoWhereUniqueInput!): Todo
+  todosCount(where: TodoWhereInput! = {}): Int
+  people(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Person!]
+  person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
-
-  """
-   Search for all Role items which match the where clause.
-  """
-  allRoles(
+  roles(
     where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [RoleOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Role!]
-
-  """
-   Search for the Role item with the matching ID.
-  """
-  Role(where: RoleWhereUniqueInput!): Role
-
-  """
-   Perform a meta-query on all Role items which match the where clause.
-  """
-  _allRolesMeta(
-    where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [RoleOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use rolesCount instead."
-    )
+  role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
-  authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }
 
@@ -674,6 +432,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -702,6 +461,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

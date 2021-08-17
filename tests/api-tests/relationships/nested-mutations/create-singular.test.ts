@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectNestedError } from '../../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -142,7 +142,7 @@ describe('no access control', () => {
 
       // Update an item that does the nested create
       const event = await context.lists.Event.updateOne({
-        id: createEvent.id,
+        where: { id: createEvent.id },
         data: { title: 'A thing', group: { create: { name: groupName } } },
         query: 'id group { id name }',
       });
@@ -207,7 +207,7 @@ describe('with access control', () => {
 
             // Update an item that does the nested create
             const data = await context.lists[`EventTo${group.name}`].updateOne({
-              id: eventModel.id,
+              where: { id: eventModel.id },
               data: { title: 'A thing', group: { create: { name: groupName } } },
             });
 
@@ -248,7 +248,7 @@ describe('with access control', () => {
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
               expectGraphQLValidationError(body.errors, [
                 {
-                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneForCreateInput".`,
                 },
               ]);
             } else {
@@ -256,7 +256,7 @@ describe('with access control', () => {
 
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectRelationshipError(errors, [
                 {
                   path: [`createEventTo${group.name}`],
                   message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
@@ -265,14 +265,14 @@ describe('with access control', () => {
             }
             // Confirm it didn't insert either of the records anyway
             const data1 = await context.lists[group.name].findMany({
-              where: { name: groupName },
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(data1).toMatchObject([]);
 
             // Confirm it didn't insert either of the records anyway
             const data2 = await context.lists[`EventTo${group.name}`].findMany({
-              where: { title: eventName },
+              where: { title: { equals: eventName } },
               query: 'id title',
             });
             expect(data2).toMatchObject([]);
@@ -293,7 +293,7 @@ describe('with access control', () => {
             const query = `
               mutation {
                 updateEventTo${group.name}(
-                  id: "${eventModel.id}"
+                  where: { id: "${eventModel.id}" }
                   data: {
                     title: "A thing",
                     group: { create: { name: "${groupName}" } }
@@ -310,13 +310,13 @@ describe('with access control', () => {
 
               expectGraphQLValidationError(body.errors, [
                 {
-                  message: `Field "create" is not defined by type "${group.name}RelateToOneInput".`,
+                  message: `Field "create" is not defined by type "${group.name}RelateToOneForUpdateInput".`,
                 },
               ]);
             } else {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-              expectNestedError(errors, [
+              expectRelationshipError(errors, [
                 {
                   path: [`updateEventTo${group.name}`],
                   message: `Unable to create a EventTo${group.name}.group<${group.name}>`,
@@ -326,7 +326,7 @@ describe('with access control', () => {
 
             // Confirm it didn't insert the record anyway
             const groups = await context.lists[group.name].findMany({
-              where: { name: groupName },
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(groups).toMatchObject([]);

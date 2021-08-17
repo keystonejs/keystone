@@ -2,7 +2,7 @@ import { text } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '../../../../packages-next/types/src';
+import { KeystoneContext } from '../../../../packages/types/src';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -46,7 +46,7 @@ const runner = setupTestRunner({
             },
           }),
         },
-        access: { read: { name_not: 'Charlie' } },
+        access: { read: { name: { not: { equals: 'Charlie' } } } },
       }),
     }),
   }),
@@ -215,7 +215,7 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context });
-      await context.lists.Author.deleteOne({ id: bob.id });
+      await context.lists.Author.deleteOne({ where: { id: bob.id } });
       const _post = await context.lists.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: true) }',
@@ -279,14 +279,14 @@ describe('Document field type', () => {
 
       const { body } = await graphQLRequest({
         query:
-          'query ($id: ID!){ Author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
+          'query ($id: ID!){ author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
       });
       // FIXME: The path doesn't match the null field here!
-      expect(body.data).toEqual({ Author: { badBio: null } });
-      expectInternalServerError(body.errors, [
+      expect(body.data).toEqual({ author: { badBio: null } });
+      expectInternalServerError(body.errors, true, [
         {
-          path: ['Author', 'badBio', 'document'],
+          path: ['author', 'badBio', 'document'],
           message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
         },
       ]);

@@ -50,8 +50,9 @@ This ensures that all tests are run in a known state.
 The test runner then sets up a partial Keystone system for you, including an Apollo server to handle GraphQL requests.
 The system does not include an Admin UI, and does not open a network port to listen for requests.
 
-Finally, the runner sets up two APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
-The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library
+Finally, the runner sets up three APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
+The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library.
+The third is an [`express.Express`](https://expressjs.com/) value named `app` which lets you access any of the endpoints of the Express server using `supertest`.
 
 x> The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
 
@@ -93,7 +94,9 @@ runner(async ({ context }) => {
   expect(data.createPerson).toBe(null);
   expect(errors).toHaveLength(1);
   expect(errors[0].path).toEqual(['createPerson']);
-  expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
+  expect(errors[0].message).toEqual(
+    'You provided invalid data for this operation.\n  - Person.name: Required field "name" is null or undefined.'
+  );
 })
 ```
 
@@ -106,8 +109,8 @@ runner(async ({ context }) => {
   // Create some users
   const [alice, bob] = await context.lists.Person.createMany({
     data: [
-      { data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' } },
-      { data: { name: 'Bob', email: 'bob@example.com', password: 'super-secret' } },
+      { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+      { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
     ],
   });
 
@@ -126,7 +129,7 @@ runner(async ({ context }) => {
     .withSession({ itemId: bob.id, data: {} })
     .graphql.raw({
       query: `mutation update($id: ID!) {
-        updateTask(id: $id data: { isComplete: true }) {
+        updateTask(where: { id: $id }, data: { isComplete: true }) {
           id
         }
       }`,
@@ -165,6 +168,23 @@ runner(async ({ graphQLRequest }) => {
 ```
 
 See the [`supertest`](https://github.com/visionmedia/supertest) docs for full details on the methods available with `graphQLRequest`.
+
+### Express `app`
+
+There are some situations where you might want to directly interact with specific endpoints of the Express server.
+The underlying Express application is exposed as `app`, and you can use `supertest` to interact with it.
+For example, if you wanted to check the `/_healthcheck` endpoint, you could do the following:
+
+```
+runner(async ({ app }) => {
+  const { text } = await supertest(app)
+    .get('/_healthcheck')
+    .set('Accept', 'application/json')
+    .expect('Content-Type', /json/)
+    .expect(200);
+  expect(JSON.parse(text)).toMatchObject({ status: 'pass' });
+})
+```
 
 ## Test environment
 
@@ -214,4 +234,4 @@ describe('Example tests using test environment', () => {
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to use the `@keystone-next/testing` package and Jest to write tests that check the behaviour of your GraphQL API.">{children}</Markdown>;

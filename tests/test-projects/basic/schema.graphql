@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Task {
   id: ID!
   label: String
@@ -19,53 +16,79 @@ enum TaskPriorityType {
 input TaskWhereInput {
   AND: [TaskWhereInput!]
   OR: [TaskWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  priority: TaskPriorityType
-  priority_not: TaskPriorityType
-  priority_in: [TaskPriorityType]
-  priority_not_in: [TaskPriorityType]
-  isComplete: Boolean
-  isComplete_not: Boolean
+  NOT: [TaskWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+  priority: TaskPriorityTypeNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: PersonWhereInput
-  assignedTo_is_null: Boolean
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
+  finishBy: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input TaskPriorityTypeNullableFilter {
+  equals: TaskPriorityType
+  in: [TaskPriorityType!]
+  notIn: [TaskPriorityType!]
+  not: TaskPriorityTypeNullableFilter
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input TaskWhereUniqueInput {
   id: ID
-}
-
-enum SortTasksBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  priority_ASC
-  priority_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
 }
 
 input TaskOrderByInput {
@@ -85,111 +108,63 @@ input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
+  assignedTo: PersonRelateToOneForUpdateInput
   finishBy: String
 }
 
-input PersonRelateToOneInput {
+input PersonRelateToOneForUpdateInput {
   create: PersonCreateInput
   connect: PersonWhereUniqueInput
-  disconnect: PersonWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input TasksUpdateInput {
-  id: ID!
-  data: TaskUpdateInput
+input TaskUpdateArgs {
+  where: TaskWhereUniqueInput!
+  data: TaskUpdateInput!
 }
 
 input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneInput
+  assignedTo: PersonRelateToOneForCreateInput
   finishBy: String
 }
 
-input TasksCreateInput {
-  data: TaskCreateInput
+input PersonRelateToOneForCreateInput {
+  create: PersonCreateInput
+  connect: PersonWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type Person {
   id: ID!
   name: String
   tasks(
     where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
-  _tasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
   tasksCount(where: TaskWhereInput! = {}): Int
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   OR: [PersonWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [PersonWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  tasks: TaskManyRelationFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  tasks_every: TaskWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  tasks_some: TaskWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  tasks_none: TaskWhereInput
+input TaskManyRelationFilter {
+  every: TaskWhereInput
+  some: TaskWhereInput
+  none: TaskWhereInput
 }
 
 input PersonWhereUniqueInput {
   id: ID
-}
-
-enum SortPeopleBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
 }
 
 input PersonOrderByInput {
@@ -199,28 +174,29 @@ input PersonOrderByInput {
 
 input PersonUpdateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForUpdateInput
 }
 
-input TaskRelateToManyInput {
-  create: [TaskCreateInput]
-  connect: [TaskWhereUniqueInput]
-  disconnect: [TaskWhereUniqueInput]
-  disconnectAll: Boolean
+input TaskRelateToManyForUpdateInput {
+  disconnect: [TaskWhereUniqueInput!]
+  set: [TaskWhereUniqueInput!]
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
 }
 
-input PeopleUpdateInput {
-  id: ID!
-  data: PersonUpdateInput
+input PersonUpdateArgs {
+  where: PersonWhereUniqueInput!
+  data: PersonUpdateInput!
 }
 
 input PersonCreateInput {
   name: String
-  tasks: TaskRelateToManyInput
+  tasks: TaskRelateToManyForCreateInput
 }
 
-input PeopleCreateInput {
-  data: PersonCreateInput
+input TaskRelateToManyForCreateInput {
+  create: [TaskCreateInput!]
+  connect: [TaskWhereUniqueInput!]
 }
 
 """
@@ -232,136 +208,36 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Task item.
-  """
-  createTask(data: TaskCreateInput): Task
-
-  """
-   Create multiple Task items.
-  """
-  createTasks(data: [TasksCreateInput]): [Task]
-
-  """
-   Update a single Task item by ID.
-  """
-  updateTask(id: ID!, data: TaskUpdateInput): Task
-
-  """
-   Update multiple Task items by ID.
-  """
-  updateTasks(data: [TasksUpdateInput]): [Task]
-
-  """
-   Delete a single Task item by ID.
-  """
-  deleteTask(id: ID!): Task
-
-  """
-   Delete multiple Task items by ID.
-  """
-  deleteTasks(ids: [ID!]): [Task]
-
-  """
-   Create a single Person item.
-  """
-  createPerson(data: PersonCreateInput): Person
-
-  """
-   Create multiple Person items.
-  """
-  createPeople(data: [PeopleCreateInput]): [Person]
-
-  """
-   Update a single Person item by ID.
-  """
-  updatePerson(id: ID!, data: PersonUpdateInput): Person
-
-  """
-   Update multiple Person items by ID.
-  """
-  updatePeople(data: [PeopleUpdateInput]): [Person]
-
-  """
-   Delete a single Person item by ID.
-  """
-  deletePerson(id: ID!): Person
-
-  """
-   Delete multiple Person items by ID.
-  """
-  deletePeople(ids: [ID!]): [Person]
+  createTask(data: TaskCreateInput!): Task
+  createTasks(data: [TaskCreateInput!]!): [Task]
+  updateTask(where: TaskWhereUniqueInput!, data: TaskUpdateInput!): Task
+  updateTasks(data: [TaskUpdateArgs!]!): [Task]
+  deleteTask(where: TaskWhereUniqueInput!): Task
+  deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
+  createPerson(data: PersonCreateInput!): Person
+  createPeople(data: [PersonCreateInput!]!): [Person]
+  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
+  updatePeople(data: [PersonUpdateArgs!]!): [Person]
+  deletePerson(where: PersonWhereUniqueInput!): Person
+  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
 }
 
 type Query {
-  """
-   Search for all Task items which match the where clause.
-  """
-  allTasks(
+  tasks(
     where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TaskOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Task!]
-
-  """
-   Search for the Task item with the matching ID.
-  """
-  Task(where: TaskWhereUniqueInput!): Task
-
-  """
-   Perform a meta-query on all Task items which match the where clause.
-  """
-  _allTasksMeta(
-    where: TaskWhereInput! = {}
-    search: String
-    sortBy: [SortTasksBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TaskOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
+  task(where: TaskWhereUniqueInput!): Task
   tasksCount(where: TaskWhereInput! = {}): Int
-
-  """
-   Search for all Person items which match the where clause.
-  """
-  allPeople(
+  people(
     where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PersonOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Person!]
-
-  """
-   Search for the Person item with the matching ID.
-  """
-  Person(where: PersonWhereUniqueInput!): Person
-
-  """
-   Perform a meta-query on all Person items which match the where clause.
-  """
-  _allPeopleMeta(
-    where: PersonWhereInput! = {}
-    search: String
-    sortBy: [SortPeopleBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PersonOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use peopleCount instead."
-    )
+  person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
@@ -406,6 +282,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -434,6 +311,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

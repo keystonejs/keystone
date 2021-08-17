@@ -119,13 +119,15 @@ The `sqlite` provider is not intended to be used in production systems, and has 
 
 - `decimal`: The `decimal` field type is not supported.
 - `timestamp`: The `timestamp` field type only supports times within the range `1970 - 2038`.
-- `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.
-- `autoIncrement`: The `autoIncrement` field type can only be used as an `id` field.
+- `text`: The `text` field type does not support setting a filter as case sensitive or insensitive.
+  Assuming default collation, all the filters except `contains`, `startsWith` and `endsWith` will be case sensitive
+  and `contains`, `startsWith` and `endsWith` will be case insensitive but only for ASCII characters.
+- `autoIncrement`: The `autoIncrement` field type is not supported.
 - `select`: Using the `dataType: 'enum'` will use a GraphQL `String` type, rather than an `Enum` type.
 
 ## ui
 
-```
+```ts
 import type { AdminUIConfig } from '@keystone-next/types';
 ```
 
@@ -196,16 +198,52 @@ Options:
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
+- `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
 
 ```typescript
 export default config({
   server: {
-    cors: { origin: ['http://localhost:7777'], credentials: true }:
-    port: 3000
-    maxFileSize: 200 * 1024 * 1024
+    cors: { origin: ['http://localhost:7777'], credentials: true },
+    port: 3000,
+    maxFileSize: 200 * 1024 * 1024,
+    healthCheck: true,
   },
   /* ... */
 });
+```
+
+### healthCheck
+
+If set to `true`, a `/_healthcheck` endpoint will be added to your server which will respond with `{ status: 'pass', timestamp: Date.now() }`.
+
+You can configure the health check with a custom path and JSON data:
+
+```typescript
+config({
+  server: {
+    healthCheck: {
+      path: '/my-health-check',
+      data: { status: 'healthy' },
+    }
+  }
+})
+```
+
+Or use a function for the `data` config to return real-time information:
+
+```typescript
+config({
+  server: {
+    healthCheck: {
+      path: '/my-health-check',
+      data: () => ({
+        status: 'healthy',
+        timestamp: Date.now(),
+        uptime: process.uptime(),
+      }),
+    }
+  }
+})
 ```
 
 ## session
@@ -241,16 +279,24 @@ It has a TypeScript type of `GraphQLConfig`.
 
 Options:
 
+- `debug` (default: `process.env.NODE_ENV !== 'production'`): If `true`, stacktraces from both Apollo errors and Keystone errors will be included in the errors returned from the GraphQL API.
+  These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
 - `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
-  See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for supported options.
+  - `playground` (default: `process.env.NODE_ENV !== 'production'`): If truthy, will enable the GraphQL Playground for testing queries and mutations in the browser.
+    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings).
+  - See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
 
 ```typescript
 export default config({
   graphql: {
+    debug: process.env.NODE_ENV !== 'production',
     queryLimits: { maxTotalResults: 100 },
-    apolloConfig: { /* ... */ },
+    apolloConfig: {
+      playground: process.env.NODE_ENV !== 'production',
+      /* ... */
+    },
   },
   /* ... */
 });
@@ -358,4 +404,4 @@ Options:
 - `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
 - `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options.">{children}</Markdown>;

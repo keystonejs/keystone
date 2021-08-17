@@ -67,7 +67,7 @@ content: document({
     },
     alignment: {
       center: true,
-      unordered: true,
+      end: true,
     },
     headingLevels: [1, 2, 3, 4, 5, 6],
     blockTypes: {
@@ -97,11 +97,11 @@ type Post_content_DocumentField {
 }
 ```
 
-To query the content we can run the following GraphQL query, which will return the JSON representation of the content in `allPosts.content.document`.
+To query the content we can run the following GraphQL query, which will return the JSON representation of the content in `posts.content.document`.
 
 ```graphql
 query {
-  allPosts {
+  posts {
     content {
       document
     }
@@ -219,7 +219,7 @@ If you query for the document, the inline relationship block will include the ID
       "id": "ckqk4hkcg0030f5mu6le6xydu"
     },
     "relationship": "mention",
-    "children": [{ "text": "" }
+    "children": [{ "text": "" }]
   },
 ...
 ```
@@ -229,7 +229,7 @@ To obtain more useful data, we can pass the `hydrateRelationships: true` option 
 
 ```graphql
 query {
-  allPosts {
+  posts {
     content {
       document(hydrateRelationships: true)
     }
@@ -676,4 +676,4 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 <DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to configure Keystone’s highly customizable Rich Text editor. The Document field is built with Slate and stores your content as JSON-structured data.">{children}</Markdown>;

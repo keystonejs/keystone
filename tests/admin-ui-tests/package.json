@@ -2,7 +2,7 @@
   "name": "@keystone-next/admin-ui-tests",
   "description": "A set of tests for the KeystoneJS Admin UI.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -16,7 +16,7 @@
     "@keystone-next/keystone": "*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
-    "playwright": "^1.12.3",
+    "playwright": "^1.14.0",
     "treekill": "^1.0.0"
   },
   "scripts": {
@@ -25,9 +25,9 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/testing": "^1.0.0",
-    "@keystone-next/types": "^21.0.1",
-    "@keystone-next/utils": "^1.0.0",
+    "@keystone-next/testing": "^1.1.1",
+    "@keystone-next/types": "^24.0.0",
+    "@keystone-next/utils": "^1.0.4",
     "@manypkg/find-root": "^1.1.0",
     "dotenv": "^10.0.0",
     "tree-kill": "^1.2.2"

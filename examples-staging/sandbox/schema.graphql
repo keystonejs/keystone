@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Todo {
   id: ID!
   label: String
@@ -14,67 +11,73 @@ type Todo {
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_in: [String]
-  label_not_in: [String]
-  isComplete: Boolean
-  isComplete_not: Boolean
+  NOT: [TodoWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+  isComplete: BooleanNullableFilter
   assignedTo: UserWhereInput
-  assignedTo_is_null: Boolean
-  finishBy: String
-  finishBy_not: String
-  finishBy_lt: String
-  finishBy_lte: String
-  finishBy_gt: String
-  finishBy_gte: String
-  finishBy_in: [String]
-  finishBy_not_in: [String]
-  createdAt: String
-  createdAt_not: String
-  createdAt_lt: String
-  createdAt_lte: String
-  createdAt_gt: String
-  createdAt_gte: String
-  createdAt_in: [String]
-  createdAt_not_in: [String]
-  updatedAt: String
-  updatedAt_not: String
-  updatedAt_lt: String
-  updatedAt_lte: String
-  updatedAt_gt: String
-  updatedAt_gte: String
-  updatedAt_in: [String]
-  updatedAt_not_in: [String]
+  finishBy: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input BooleanNullableFilter {
+  equals: Boolean
+  not: BooleanNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input TodoWhereUniqueInput {
   id: ID
-}
-
-enum SortTodosBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-  isComplete_ASC
-  isComplete_DESC
-  finishBy_ASC
-  finishBy_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 input TodoOrderByInput {
@@ -94,36 +97,33 @@ enum OrderDirection {
 input TodoUpdateInput {
   label: String
   isComplete: Boolean
-  assignedTo: UserRelateToOneInput
+  assignedTo: UserRelateToOneForUpdateInput
   finishBy: String
 }
 
-input UserRelateToOneInput {
+input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input TodosUpdateInput {
-  id: ID!
-  data: TodoUpdateInput
+input TodoUpdateArgs {
+  where: TodoWhereUniqueInput!
+  data: TodoUpdateInput!
 }
 
 input TodoCreateInput {
   label: String
   isComplete: Boolean
-  assignedTo: UserRelateToOneInput
+  assignedTo: UserRelateToOneForCreateInput
   finishBy: String
 }
 
-input TodosCreateInput {
-  data: TodoCreateInput
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
@@ -131,25 +131,10 @@ type User {
   password: PasswordState
   tasks(
     where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Todo!]
-  _tasksMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tasksCount instead."
-    )
   tasksCount(where: TodoWhereInput! = {}): Int
   createdAt: String
   updatedAt: String
@@ -159,82 +144,31 @@ type PasswordState {
   isSet: Boolean!
 }
 
-type _QueryMeta {
-  count: Int
-}
-
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  password: PasswordFilter
+  tasks: TodoManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  tasks_every: TodoWhereInput
+input PasswordFilter {
+  isSet: Boolean!
+}
 
-  """
-   condition must be true for at least 1 node
-  """
-  tasks_some: TodoWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  tasks_none: TodoWhereInput
-  createdAt: String
-  createdAt_not: String
-  createdAt_lt: String
-  createdAt_lte: String
-  createdAt_gt: String
-  createdAt_gte: String
-  createdAt_in: [String]
-  createdAt_not_in: [String]
-  updatedAt: String
-  updatedAt_not: String
-  updatedAt_lt: String
-  updatedAt_lte: String
-  updatedAt_gt: String
-  updatedAt_gte: String
-  updatedAt_in: [String]
-  updatedAt_not_in: [String]
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
 }
 
 input UserWhereUniqueInput {
   id: ID
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 input UserOrderByInput {
@@ -249,30 +183,31 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForUpdateInput
 }
 
-input TodoRelateToManyInput {
-  create: [TodoCreateInput]
-  connect: [TodoWhereUniqueInput]
-  disconnect: [TodoWhereUniqueInput]
-  disconnectAll: Boolean
+input TodoRelateToManyForUpdateInput {
+  disconnect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
   name: String
   email: String
   password: String
-  tasks: TodoRelateToManyInput
+  tasks: TodoRelateToManyForCreateInput
 }
 
-input UsersCreateInput {
-  data: UserCreateInput
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 """
@@ -284,136 +219,36 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Todo item.
-  """
-  createTodo(data: TodoCreateInput): Todo
-
-  """
-   Create multiple Todo items.
-  """
-  createTodos(data: [TodosCreateInput]): [Todo]
-
-  """
-   Update a single Todo item by ID.
-  """
-  updateTodo(id: ID!, data: TodoUpdateInput): Todo
-
-  """
-   Update multiple Todo items by ID.
-  """
-  updateTodos(data: [TodosUpdateInput]): [Todo]
-
-  """
-   Delete a single Todo item by ID.
-  """
-  deleteTodo(id: ID!): Todo
-
-  """
-   Delete multiple Todo items by ID.
-  """
-  deleteTodos(ids: [ID!]): [Todo]
-
-  """
-   Create a single User item.
-  """
-  createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
-  deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
-  deleteUsers(ids: [ID!]): [User]
+  createTodo(data: TodoCreateInput!): Todo
+  createTodos(data: [TodoCreateInput!]!): [Todo]
+  updateTodo(where: TodoWhereUniqueInput!, data: TodoUpdateInput!): Todo
+  updateTodos(data: [TodoUpdateArgs!]!): [Todo]
+  deleteTodo(where: TodoWhereUniqueInput!): Todo
+  deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
 
 type Query {
-  """
-   Search for all Todo items which match the where clause.
-  """
-  allTodos(
+  todos(
     where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [TodoOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Todo!]
-
-  """
-   Search for the Todo item with the matching ID.
-  """
-  Todo(where: TodoWhereUniqueInput!): Todo
-
-  """
-   Perform a meta-query on all Todo items which match the where clause.
-  """
-  _allTodosMeta(
-    where: TodoWhereInput! = {}
-    search: String
-    sortBy: [SortTodosBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TodoOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use todosCount instead."
-    )
+  todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
-
-  """
-   Search for all User items which match the where clause.
-  """
-  allUsers(
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
-  User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
+  user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
@@ -458,6 +293,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -486,6 +322,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

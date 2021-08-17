@@ -95,7 +95,10 @@ export default function DS() {
   let firstGrad: string;
 
   return (
-    <Page title="Design System Components and Tokens">
+    <Page
+      title={'Design System Components and Tokens'}
+      description={'Design System Components & Tokens for the KeystoneJS website'}
+    >
       <Type as="h1" look="heading92" margin={'var(--space-large) 0'}>
         Design System
       </Type>
@@ -573,7 +576,7 @@ Some code...`}
           <WindowWrapper>
             <WindowL>
               {`{
-  allPosts (first: 2, where: { title_contains: "content" }) {
+  posts(take: 2, where: { title: { contains: "content" } }) {
     title
     author {
       name
@@ -584,7 +587,7 @@ Some code...`}
             <WindowR>
               {`{
   "data": {
-    "allPosts": [
+    "posts": [
       {
         "title": "How structured content gives you superpowers",
         "author": {

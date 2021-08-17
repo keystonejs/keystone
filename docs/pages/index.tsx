@@ -42,9 +42,13 @@ import deployTargets from '../public/assets/deploy-targets.png';
 
 export default function IndexPage() {
   const mq = useMediaQuery();
-
   return (
-    <Page>
+    <Page
+      title={'KeystoneJS: The superpowered Node.js Headless CMS for developers'}
+      description={
+        'Build faster and scale further with the programmable open source GraphQL API back-end for structured content projects.'
+      }
+    >
       <MWrapper>
         <IntroWrapper>
           <IntroHeading>
@@ -87,7 +91,7 @@ export default function IndexPage() {
           css={mq({
             display: 'grid',
             gridTemplateColumns: ['1fr', null, '0.85fr 1.15fr'],
-            gap: ['1rem', '2rem', '4rem'],
+            gap: ['1rem', '2rem', '6rem'],
           })}
         >
           <div>
@@ -97,18 +101,18 @@ export default function IndexPage() {
             <div
               css={{
                 display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
+                gridTemplateColumns: '1fr auto',
                 gap: '1rem',
               }}
             >
-              <Thinkmill css={{ height: '3.75rem' }} />
               <Type as="p" look="body18" color="var(--muted)">
                 We're an Australian design + development consultancy with a long history working on
-                big products at scale for names you know. <br />
+                big products at scale for names you know. <br css={{ padding: '0 0 2rem 0' }} />
                 <Link href="/why-keystone">
                   <a>Why we built Keystone</a>
                 </Link>
               </Type>
+              <Thinkmill css={{ height: '3.75rem' }} />
             </div>
           </div>
           <div>
@@ -116,17 +120,24 @@ export default function IndexPage() {
               Open Source & trusted
             </Type>
             <ul
-              css={{
+              css={mq({
                 listStyle: 'none',
-                margin: 0,
+                margin: '0 auto',
                 padding: 0,
                 display: 'grid',
-                gridTemplateColumns: 'auto auto auto',
-              }}
+                gridTemplateColumns: 'max-content',
+                gap: '1.5rem',
+                width: '7.5rem',
+                '@media(min-width: 420px)': {
+                  gridTemplateColumns: 'auto auto auto',
+                  width: 'auto',
+                  gap: 0,
+                },
+              })}
             >
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">1m+</Highlight>
+                  <Highlight look="grad1">1m+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   <InlineCode>npm</InlineCode> Installs
@@ -134,7 +145,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">160+</Highlight>
+                  <Highlight look="grad1">160+</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   Contributors
@@ -142,7 +153,7 @@ export default function IndexPage() {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad5">2013</Highlight>
+                  <Highlight look="grad1">2013</Highlight>
                 </Type>
                 <Type as="p" look="body18" color="var(--muted)">
                   First Commit
@@ -165,16 +176,22 @@ export default function IndexPage() {
             So impressive what the team have done in version 6! ...and it works perfectly with
             GraphCDN, just use it already!
           </TweetBox>
+          <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
+            I use Keystone in my{' '}
+            <a
+              href="https://advancedreact.com/friend/KEYSTONE"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Advanced React
+            </a>{' '}
+            course because it’s super quick to get my content types up and running, add custom
+            server-side cart & checkout logic, and the fine grain access control is just fantastic!
+          </TweetBox>
           <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad2">
             As someone who lives on the frontend, I love how Keystone lets me define content models
             and gives me the backend I need. I get a sweet GraphQL API, and can stay focused on
             building the UI <Emoji symbol="😍" alt="Love" />
-          </TweetBox>
-          <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad2">
-            Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-            schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev experience
-            feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
-            <Emoji symbol="🚀" alt="Rocket ship" />
           </TweetBox>
         </Section>
 
@@ -182,7 +199,7 @@ export default function IndexPage() {
           <Type as="h2" look="heading48">
             Batteries included. <Highlight look="grad5">No limitations.</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+          <Type as="p" look="body20" color="var(--muted)" margin="0.5rem 0 1.5rem 0">
             Ship a backend easily without surrendering control.
             <br />
             Keystone has all you need to start fast and scale on your terms.
@@ -204,61 +221,61 @@ export default function IndexPage() {
           >
             <li>
               <WhyKeystone grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 All the field types
               </Type>
             </li>
             <li>
               <Shield grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Access Control
               </Type>
             </li>
             <li>
               <Watch grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Session Management
               </Type>
             </li>
             <li>
               <Custom grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Custom Schema
               </Type>
             </li>
             <li>
               <Migration grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Database Migrations
               </Type>
             </li>
             <li>
               <Typescript grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 TypeScript Support
               </Type>
             </li>
             <li>
               <Filter grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Powerful Filters
               </Type>
             </li>
             <li>
               <Relational grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Relational Data
               </Type>
             </li>
             <li>
               <Automated grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Automated CRUD
               </Type>
             </li>
             <li>
               <Updates grad="grad5" />
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Event Hooks
               </Type>
             </li>
@@ -272,7 +289,7 @@ export default function IndexPage() {
           <Type as="h2" look="heading48" id="how-it-works">
             How it works
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0">
+          <Type as="p" look="body20" color="var(--muted)" margin="0.5rem 0 1.5rem 0">
             Enable a content culture that’s productive, collaborative, and fun.
             <br />
             Open, flexible, and natural. A tool your team can grow with.
@@ -360,7 +377,7 @@ export default function IndexPage() {
               <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Rapidly spec your backend with all the primitive and advanced field types you need.
               </Type>
-              <Type as="p" look="body18" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
                 Add logic, access control, and custom queries & mutations to create an API that's
                 unique to your app.
               </Type>
@@ -548,8 +565,8 @@ export const lists = createSchema({
                   <WindowL>
                     <SourceCode>
                       {`{
-  allPosts (first: 2, where: {
-    title_contains: "content"
+  posts(take: 2, where: {
+    title: { contains: "content" }
   }) {
     title
     author {
@@ -563,7 +580,7 @@ export const lists = createSchema({
                     <SourceCode>
                       {`{
   "data": {
-    "allPosts": [
+    "posts": [
       {
         "title": "How structured content gives you superpowers",
         "author": {
@@ -645,6 +662,7 @@ export const lists = createSchema({
           <Type
             as="p"
             look="body20"
+            color="var(--muted)"
             css={{
               display: 'block',
               maxWidth: '34.25rem',
@@ -741,7 +759,13 @@ export const lists = createSchema({
           <Type as="h2" look="heading48">
             Unify your <Highlight look="grad3">team dynamic</Highlight>
           </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
+          <Type
+            as="p"
+            look="body20"
+            margin="0.5rem 0 1.5rem 0"
+            color="var(--muted)"
+            css={{ maxWidth: '37.5rem' }}
+          >
             Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
             natural. A tool your team can grow with.
           </Type>
@@ -767,40 +791,46 @@ export const lists = createSchema({
               <Type as="h3" look="heading24">
                 Developers
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
                 at home with the tools you know and love.
               </Type>
-              <Link href="/for-developers">
-                <a>Keystone for Developers →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-developers">
+                  <a>Keystone for Developers →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Content grad="grad3" />
               <Type as="h3" look="heading24">
                 Content people
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Get the fields, forms, and workflows you need to do your best work. Tell the full
                 story with a rich text editor that can be configured for any content need.
               </Type>
-              <Link href="/for-content-management">
-                <a>Keystone for Content Management →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-content-management">
+                  <a>Keystone for Content Management →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Organization grad="grad3" />
               <Type as="h3" look="heading24">
                 Organisations
               </Type>
-              <Type as="p" look="body18">
+              <Type as="p" look="body18" color="var(--muted)">
                 Realise your vision with a backend you can shape to fit your logic. Own your data,
                 cultivate a productive content culture, send your message anywhere, and scale on
                 your terms.
               </Type>
-              <Link href="/for-organisations">
-                <a>Keystone for Organisations →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/for-organisations">
+                  <a>Keystone for Organisations →</a>
+                </Link>
+              </Type>
             </li>
           </ul>
         </Section>

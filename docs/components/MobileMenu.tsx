@@ -30,7 +30,7 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
     return () => {
       document.body.removeEventListener('keydown', handleEsc);
     };
-  }, []);
+  }, [mobileNavIsOpen, handleClose]);
 
   return (
     <Fragment>

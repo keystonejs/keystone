@@ -156,7 +156,7 @@ export const lists = createSchema({
             kind: 'prop',
             listKey: 'User',
             many: true,
-            selection: `posts(first: 10) {
+            selection: `posts(take: 10) {
             title
           }`,
           },
@@ -211,7 +211,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       createRandomPosts(root, args, context) {
         // TODO: add a way to verify access control here, e.g
         // await context.verifyAccessControl(userIsAdmin);
-        const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
+        const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
         // note this usage of the type is important because it tests that the generated
         // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
         const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;

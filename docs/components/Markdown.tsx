@@ -19,23 +19,35 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export function Markdown({ children, ...props }: { children: ReactNode }) {
+export function Markdown({
+  children,
+  description,
+  ...props
+}: {
+  children: ReactNode;
+  description: string;
+}) {
   const headings = getHeadings(children);
+  const firstHeading = headings[0]?.label;
+
+  if (!firstHeading) {
+    throw new Error('The DocsPage component requires a `title` prop');
+  }
+
+  if (!description) {
+    throw new Error('The DocsPage component requires a `description` prop');
+  }
 
   return (
-    <DocsPage headings={headings} title={headings[0].label} {...props}>
+    <DocsPage headings={headings} title={firstHeading} description={description} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const { readdirSync } = require('fs');
-  const { normalize } = require('path');
-  const dir = __dirname.endsWith('/server')
-    ? normalize(`${__dirname}/../../pages/releases`)
-    : normalize(`${__dirname}/../../../pages/releases`);
-
+  const dir = __dirname.replace(/docs.+$/, 'docs/pages/releases');
   const releases = (readdirSync(dir, 'utf8') as Array<string>)
     .filter(name => !name.startsWith('.') && !name.startsWith('index'))
     .map(name => name.replace('.mdx', ''))

@@ -24,75 +24,76 @@ This system will generate the following GraphQL API.
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
-  User(where: UserWhereUniqueInput!): User
-
-  """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
-
-  """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): _QueryMeta
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  user(where: UserWhereUniqueInput!): User
+  usersCount(where: UserWhereInput! = {}): Int
 }
 
-type Mutation {
-  """ Create a single User item. """
-  createUser(data: UserCreateInput): User
-
-  """ Create multiple User items. """
-  createUsers(data: [UsersCreateInput]): [User]
-
-  """ Update a single User item by ID. """
-  updateUser(id: ID!, data: UserUpdateInput): User
-
-  """ Update multiple User items by ID. """
-  updateUsers(data: [UsersUpdateInput]): [User]
-
-  """ Delete a single User item by ID. """
-  deleteUser(id: ID!): User
-
-  """ Delete multiple User items by ID. """
-  deleteUsers(ids: [ID!]): [User]
-}
-
-""" A keystone list """
 type User {
   id: ID!
   name: String
 }
 
+input UserWhereUniqueInput {
+  id: ID
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
 }
 
-input UserWhereUniqueInput {
-  id: ID
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input UserOrderByInput {
@@ -103,87 +104,118 @@ input UserOrderByInput {
 enum OrderDirection {
   asc
   desc
+}
+
+type Mutation {
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
 }
 
 input UserUpdateInput {
   name: String
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
 input UserCreateInput {
   name: String
 }
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-type _QueryMeta {
-  count: Int
-}
 ```
 
 ## Queries
 
-### User
+### user
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
-  User(where: UserWhereUniqueInput!): User
-}
-
-input UserWhereUniqueInput {
-  id: ID
+  user(where: UserWhereUniqueInput!): User
 }
 
 type User {
   id: ID!
   name: String
 }
+
+input UserWhereUniqueInput {
+  id: ID
+}
 ```
 
-### allUsers
+### users
 
 ```graphql
 type Query {
-  """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, orderBy: [UserOrderByInput!]! = [], first: Int, skip: Int! = 0): [User]
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+}
+
+type User {
+  id: ID!
+  name: String
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input UserOrderByInput {
@@ -194,11 +226,6 @@ input UserOrderByInput {
 enum OrderDirection {
   asc
   desc
-}
-
-type User {
-  id: ID!
-  name: String
 }
 ```
 
@@ -206,52 +233,60 @@ type User {
 
 ```graphql
 type Query {
-  usersCount(where: UserWhereInput! = {}): Int!
+  usersCount(where: UserWhereInput! = {}): Int
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
 }
 
-input UserOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
 }
 
-enum OrderDirection {
-  asc
-  desc
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
 }
 
-type _QueryMeta {
-  count: Int
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 ```
 
@@ -261,8 +296,7 @@ type _QueryMeta {
 
 ```graphql
 type Mutation {
-  """ Create a single User item. """
-  createUser(data: UserCreateInput): User
+  createUser(data: UserCreateInput!): User
 }
 
 input UserCreateInput {
@@ -279,12 +313,7 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Create multiple User items. """
-  createUsers(data: [UsersCreateInput]): [User]
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
+  createUsers(data: [UserCreateInput!]!): [User]
 }
 
 input UserCreateInput {
@@ -301,8 +330,11 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update a single User item by ID. """
-  updateUser(id: ID!, data: UserUpdateInput): User
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 input UserUpdateInput {
@@ -319,13 +351,16 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update multiple User items by ID. """
-  updateUsers(data: [UsersUpdateInput]): [User]
+  updateUsers(data: [UserUpdateArgs!]!): [User]
 }
 
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 input UserUpdateInput {
@@ -342,8 +377,11 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete a single User item by ID. """
-  deleteUser(id: ID!): User
+  deleteUser(where: UserWhereUniqueInput!): User
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 type User {
@@ -356,8 +394,11 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete multiple User items by ID. """
-  deleteUsers(ids: [ID!]): [User]
+  deleteUsers(ids: [UserWhereUniqueInput!]!): [User]
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }
 
 type User {
@@ -366,4 +407,4 @@ type User {
 }
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown description="Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config.">{children}</Markdown>;

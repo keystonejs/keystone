@@ -2,7 +2,6 @@ import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneConfig } from '@keystone-next/types';
 import { apiTestConfig } from '../utils';
 
 const FAKE_ID = { postgresql: 'cdsfasfafafadfasdf', sqlite: 'cdsfasfafafadfasdf' } as const;
@@ -39,7 +38,7 @@ const getDeclarativeListName = (access: BooleanAccess) => `${getPrefix(access)}D
     }), {}));
   }
   */
-const listAccessVariations: BooleanAccess[] = [
+const listAccessVariations: (BooleanAccess & { delete: boolean })[] = [
   { create: false, read: false, update: false, delete: false },
   { create: true, read: false, update: false, delete: false },
   { create: false, read: true, update: false, delete: false },
@@ -93,7 +92,7 @@ const lists = createSchema({
   User: list({
     fields: {
       name: text(),
-      email: text(),
+      email: text({ isUnique: true }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),
@@ -130,9 +129,9 @@ listAccessVariations.forEach(access => {
     access: {
       create: access.create,
       // arbitrarily restrict the data to a single item (see data.js)
-      read: () => access.read && { name: 'Hello' },
-      update: () => access.update && { name: 'Hello' },
-      delete: () => access.delete && { name: 'Hello' },
+      read: () => access.read && { name: { equals: 'Hello' } },
+      update: () => access.update && { name: { equals: 'Hello' } },
+      delete: () => access.delete && { name: { equals: 'Hello' } },
     },
   });
 });
@@ -143,11 +142,11 @@ const auth = createAuth({
   sessionData: 'id',
 });
 
-const config = apiTestConfig(
-  auth.withAuth({
+const config = auth.withAuth(
+  apiTestConfig({
     lists,
     session: statelessSessions({ secret: COOKIE_SECRET }),
-  } as KeystoneConfig)
+  })
 );
 
 export {

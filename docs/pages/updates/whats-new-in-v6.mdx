@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { SubscribeForm } from '../../components/SubscribeForm';
 import { Badge } from '../../components/primitives/Badge';
 import { Emoji } from '../../components/primitives/Emoji';
@@ -57,5 +57,5 @@ anything from a simple blog to a complete e-Commerce app back-end.
 We also have new reference examples for how to use advanced features, like implementing your own
 roles-based access control system.
 
-export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export default ({ children, ...props }) => <Markdown description="What's new in Keystone 6" {...props}>{children}</Markdown>;
+export { getStaticProps }

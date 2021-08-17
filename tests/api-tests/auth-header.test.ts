@@ -2,26 +2,14 @@ import { text, timestamp, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
-import { setupTestRunner, TestArgs } from '@keystone-next/testing';
+import type { KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/testing';
 import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
   User: [
-    {
-      data: {
-        name: 'Boris Bozic',
-        email: 'boris@keystone.com',
-        password: 'correctbattery',
-      },
-    },
-    {
-      data: {
-        name: 'Jed Watson',
-        email: 'jed@keystone.com',
-        password: 'horsestaple',
-      },
-    },
+    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
   ],
 };
 
@@ -36,8 +24,8 @@ const auth = createAuth({
 });
 
 const runner = setupTestRunner({
-  config: apiTestConfig(
-    auth.withAuth({
+  config: auth.withAuth(
+    apiTestConfig({
       lists: createSchema({
         Post: list({
           fields: {
@@ -48,7 +36,7 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text(),
+            email: text({ isUnique: true }),
             password: password(),
           },
           access: {
@@ -60,7 +48,7 @@ const runner = setupTestRunner({
         }),
       }),
       session: statelessSessions({ secret: COOKIE_SECRET }),
-    } as KeystoneConfig)
+    })
   ),
 });
 
@@ -93,15 +81,44 @@ describe('Auth testing', () => {
       for (const [listKey, data] of Object.entries(initialData)) {
         await context.sudo().lists[listKey].createMany({ data });
       }
-      const { data, errors } = await context.graphql.raw({ query: '{ allUsers { id } }' });
-      expect(data).toEqual({ allUsers: null });
-      expectAccessDenied(errors, [{ path: ['allUsers'] }]);
+      const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
+      expect(data).toEqual({ users: null });
+      expectAccessDenied('dev', false, undefined, errors, [{ path: ['users'] }]);
     })
   );
 
+  test('Fails with useful error when identity field is not unique', async () => {
+    const auth = createAuth({
+      listKey: 'User',
+      identityField: 'email',
+      secretField: 'password',
+      sessionData: 'id',
+    });
+    await expect(
+      setupTestEnv({
+        config: auth.withAuth(
+          apiTestConfig({
+            lists: createSchema({
+              User: list({
+                fields: {
+                  name: text(),
+                  email: text(),
+                  password: password(),
+                },
+              }),
+            }),
+
+            session: statelessSessions({ secret: COOKIE_SECRET }),
+          })
+        ),
+      })
+    ).rejects.toMatchInlineSnapshot(
+      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true\` to the field at User.email]`
+    );
+  });
+
   describe('logged in', () => {
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip(
+    test(
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {
@@ -109,18 +126,18 @@ describe('Auth testing', () => {
         }
         const { sessionToken } = await login(
           graphQLRequest,
-          initialData.User[0].data.email,
-          initialData.User[0].data.password
+          initialData.User[0].email,
+          initialData.User[0].password
         );
 
         expect(sessionToken).toBeTruthy();
-        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
           'Authorization',
           `Bearer ${sessionToken}`
         );
         const { data, errors } = body;
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(initialData.User.length);
         expect(errors).toBe(undefined);
       })
     );
@@ -133,19 +150,19 @@ describe('Auth testing', () => {
         }
         const { sessionToken } = await login(
           graphQLRequest,
-          initialData.User[0].data.email,
-          initialData.User[0].data.password
+          initialData.User[0].email,
+          initialData.User[0].password
         );
 
         expect(sessionToken).toBeTruthy();
 
-        const { body } = await graphQLRequest({ query: '{ allUsers { id } }' }).set(
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
           'Cookie',
           `keystonejs-session=${sessionToken}`
         );
         const { data, errors } = body;
-        expect(data).toHaveProperty('allUsers');
-        expect(data.allUsers).toHaveLength(initialData.User.length);
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(initialData.User.length);
         expect(errors).toBe(undefined);
       })
     );

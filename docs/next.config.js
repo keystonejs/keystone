@@ -1,6 +1,5 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
-const withImages = require('next-images');
 const mdxHints = require('remark-hint');
 const gfm = require('remark-gfm');
 
@@ -20,7 +19,6 @@ const redirects = {
 
 module.exports = withPlugins([
   withPreconstruct,
-  withImages,
   [
     withMDX,
     {
@@ -31,9 +29,7 @@ module.exports = withPlugins([
     nextConfig.env = {
       siteUrl: 'https://keystonejs.com',
     };
-    nextConfig.future = {
-      webpack5: true,
-    };
+    nextConfig.eslint = { ignoreDuringBuilds: true };
     nextConfig.typescript = {
       ...nextConfig.typescript,
       // we run TS elsewhere, Next runs against a different TS config which it insists on existing

@@ -261,6 +261,9 @@ jobs:
             'with-auth.test.ts',
             'custom-field-view.test.ts',
             'custom-field.test.ts',
+            'custom-admin-ui-pages.test.ts',
+            'custom-admin-ui-logo.test.ts',
+            'custom-admin-ui-navigation.test.ts',
           ]
       fail-fast: false
     steps:
@@ -295,10 +298,10 @@ jobs:
         run: yarn
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: microsoft/playwright-github-action@v1
-      - name: Install Browsers for Playwright
+        run: npx playwright install-deps
+      - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: node ./node_modules/playwright/install.js
+        run: npx playwright install
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
@@ -393,3 +396,5 @@ jobs:
         run: yarn lint:markdown
       - name: Example schemas
         run: yarn lint:examples
+      - name: Prisma Filters
+        run: yarn lint:filters

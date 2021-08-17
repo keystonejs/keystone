@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-next/testing",
+  "description": "Tools to assist with testing Keystone projects",
+  "version": "1.1.1",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "main": "dist/testing.cjs.js",
+  "module": "dist/testing.esm.js",
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "dependencies": {
+    "@keystone-next/keystone": "^24.0.0",
+    "@types/supertest": "^2.0.11",
+    "express": "^4.17.1",
+    "memoize-one": "^5.2.1",
+    "supertest": "^6.1.5"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/testing"
+}

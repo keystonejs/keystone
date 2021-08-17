@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectAccessDenied, expectNestedError } from '../../utils';
+import { apiTestConfig, expectAccessDenied, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -131,7 +131,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: user1.notes.map(({ id }) => id) },
+        where: { id: { in: user1.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(user1.notes.length);
 
@@ -156,7 +156,7 @@ describe('no access control', () => {
 
       // Update an item that does the nested create
       const user = await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
       });
@@ -168,7 +168,7 @@ describe('no access control', () => {
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
       const _user = (await context.lists.User.updateOne({
-        id: createUser.id,
+        where: { id: createUser.id },
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -187,7 +187,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: _user.notes.map(({ id }) => id) },
+        where: { id: { in: _user.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(_user.notes.length);
     })
@@ -218,7 +218,9 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: null } });
-        expectAccessDenied(errors, [{ path: ['createUserToNotesNoRead', 'notes'] }]);
+        expectAccessDenied('dev', false, undefined, errors, [
+          { path: ['createUserToNotesNoRead', 'notes'] },
+        ]);
       })
     );
 
@@ -260,7 +262,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoRead(
-                    id: "${createUser.id}"
+                    where: { id: "${createUser.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: [{ content: "${noteContent}" }] }
@@ -298,7 +300,7 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['createUserToNotesNoCreate'],
             message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
@@ -307,10 +309,10 @@ describe('with access control', () => {
 
         // Confirm it didn't insert either of the records anyway
         const allNoteNoCreates = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         const allUserToNotesNoCreates = await context.lists.UserToNotesNoCreate.findMany({
-          where: { username: userName },
+          where: { username: { equals: userName } },
         });
         expect(allNoteNoCreates).toMatchObject([]);
         expect(allUserToNotesNoCreates).toMatchObject([]);
@@ -332,7 +334,7 @@ describe('with access control', () => {
           query: `
                 mutation {
                   updateUserToNotesNoCreate(
-                    id: "${createUserToNotesNoCreate.id}"
+                    where: { id: "${createUserToNotesNoCreate.id}" }
                     data: {
                       username: "A thing",
                       notes: { create: { content: "${noteContent}" } }
@@ -345,16 +347,17 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
-        expectNestedError(errors, [
+        expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoCreate'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>',
           },
         ]);
 
         // Confirm it didn't insert the record anyway
         const items = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         expect(items).toMatchObject([]);
       })

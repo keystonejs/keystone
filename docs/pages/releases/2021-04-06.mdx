@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 6th April 2021
@@ -37,5 +37,5 @@ Pagination in the Admin UI has fresh styles and is easier to use.
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-04-06) on GitHub.
 
-export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export default ({ children, ...props }) => <Markdown description="We pruned a lot of code to make way for a more efficient and productive core in Keystone 6. Better pagination in Admin UI." {...props}>{children}</Markdown>;
+export { getStaticProps }

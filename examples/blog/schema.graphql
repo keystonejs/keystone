@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -18,57 +15,74 @@ enum PostStatusType {
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_in: [String]
-  title_not_in: [String]
-  status: PostStatusType
-  status_not: PostStatusType
-  status_in: [PostStatusType]
-  status_not_in: [PostStatusType]
-  content: String
-  content_not: String
-  content_contains: String
-  content_not_contains: String
-  content_in: [String]
-  content_not_in: [String]
-  publishDate: String
-  publishDate_not: String
-  publishDate_lt: String
-  publishDate_lte: String
-  publishDate_gt: String
-  publishDate_gte: String
-  publishDate_in: [String]
-  publishDate_not_in: [String]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  title: StringNullableFilter
+  status: PostStatusTypeNullableFilter
+  content: StringNullableFilter
+  publishDate: DateTimeNullableFilter
   author: AuthorWhereInput
-  author_is_null: Boolean
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input PostStatusTypeNullableFilter {
+  equals: PostStatusType
+  in: [PostStatusType!]
+  notIn: [PostStatusType!]
+  not: PostStatusTypeNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
 }
 
 input PostWhereUniqueInput {
   id: ID
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  status_ASC
-  status_DESC
-  content_ASC
-  content_DESC
-  publishDate_ASC
-  publishDate_DESC
 }
 
 input PostOrderByInput {
@@ -89,19 +103,18 @@ input PostUpdateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForUpdateInput
 }
 
-input AuthorRelateToOneInput {
+input AuthorRelateToOneForUpdateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
-  disconnect: AuthorWhereUniqueInput
-  disconnectAll: Boolean
+  disconnect: Boolean
 }
 
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 input PostCreateInput {
@@ -109,100 +122,46 @@ input PostCreateInput {
   status: PostStatusType
   content: String
   publishDate: String
-  author: AuthorRelateToOneInput
+  author: AuthorRelateToOneForCreateInput
 }
 
-input PostsCreateInput {
-  data: PostCreateInput
+input AuthorRelateToOneForCreateInput {
+  create: AuthorCreateInput
+  connect: AuthorWhereUniqueInput
 }
 
-"""
- A keystone list
-"""
 type Author {
   id: ID!
   name: String
   email: String
   posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
   postsCount(where: PostWhereInput! = {}): Int
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input AuthorWhereInput {
   AND: [AuthorWhereInput!]
   OR: [AuthorWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_in: [String]
-  email_not_in: [String]
+  NOT: [AuthorWhereInput!]
+  id: IDFilter
+  name: StringNullableFilter
+  email: StringNullableFilter
+  posts: PostManyRelationFilter
+}
 
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input AuthorWhereUniqueInput {
   id: ID
   email: String
-}
-
-enum SortAuthorsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
 }
 
 input AuthorOrderByInput {
@@ -214,29 +173,30 @@ input AuthorOrderByInput {
 input AuthorUpdateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
-input AuthorsUpdateInput {
-  id: ID!
-  data: AuthorUpdateInput
+input AuthorUpdateArgs {
+  where: AuthorWhereUniqueInput!
+  data: AuthorUpdateInput!
 }
 
 input AuthorCreateInput {
   name: String
   email: String
-  posts: PostRelateToManyInput
+  posts: PostRelateToManyForCreateInput
 }
 
-input AuthorsCreateInput {
-  data: AuthorCreateInput
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 """
@@ -248,136 +208,36 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Post item.
-  """
-  createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
-  deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
-
-  """
-   Create a single Author item.
-  """
-  createAuthor(data: AuthorCreateInput): Author
-
-  """
-   Create multiple Author items.
-  """
-  createAuthors(data: [AuthorsCreateInput]): [Author]
-
-  """
-   Update a single Author item by ID.
-  """
-  updateAuthor(id: ID!, data: AuthorUpdateInput): Author
-
-  """
-   Update multiple Author items by ID.
-  """
-  updateAuthors(data: [AuthorsUpdateInput]): [Author]
-
-  """
-   Delete a single Author item by ID.
-  """
-  deleteAuthor(id: ID!): Author
-
-  """
-   Delete multiple Author items by ID.
-  """
-  deleteAuthors(ids: [ID!]): [Author]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createAuthor(data: AuthorCreateInput!): Author
+  createAuthors(data: [AuthorCreateInput!]!): [Author]
+  updateAuthor(where: AuthorWhereUniqueInput!, data: AuthorUpdateInput!): Author
+  updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
+  deleteAuthor(where: AuthorWhereUniqueInput!): Author
+  deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
 }
 
 type Query {
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
+  posts(
     where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [PostOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
+  post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-
-  """
-   Search for all Author items which match the where clause.
-  """
-  allAuthors(
+  authors(
     where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [AuthorOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Author!]
-
-  """
-   Search for the Author item with the matching ID.
-  """
-  Author(where: AuthorWhereUniqueInput!): Author
-
-  """
-   Perform a meta-query on all Author items which match the where clause.
-  """
-  _allAuthorsMeta(
-    where: AuthorWhereInput! = {}
-    search: String
-    sortBy: [SortAuthorsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AuthorOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use authorsCount instead."
-    )
+  author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
@@ -422,6 +282,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -450,6 +311,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {

@@ -1,4 +1,4 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 17th May 2021
@@ -23,5 +23,5 @@ Thanks to @cameronbraid for spotting a [session issue](https://github.com/keysto
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-05-17) on GitHub.
 
-export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
-export { getServerSideProps }
+export default ({ children, ...props }) => <Markdown description="Apollo cache hinting now configurable on a per list or field basis. New Auth example project. Focus control improvements to Admin UI." {...props}>{children}</Markdown>;
+export { getStaticProps }
