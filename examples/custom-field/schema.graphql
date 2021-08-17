@@ -21,6 +21,7 @@ input PostWhereInput {
   title: StringNullableFilter
   status: PostStatusTypeNullableFilter
   content: StringNullableFilter
+  rating: IntNullableFilter
   publishDate: DateTimeNullableFilter
   author: AuthorWhereInput
 }
@@ -69,6 +70,17 @@ input PostStatusTypeNullableFilter {
   in: [PostStatusType!]
   notIn: [PostStatusType!]
   not: PostStatusTypeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input DateTimeNullableFilter {
