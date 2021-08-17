@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode, useEffect, useState } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
@@ -10,6 +10,7 @@ import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
+import { BREAK_POINTS } from '../../lib/media';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -44,17 +45,52 @@ type NavItemProps = {
   alwaysVisible?: boolean;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function NavItem({ href, isActive: _isActive, isPlaceholder, alwaysVisible, ...props }: NavItemProps) {
+export function NavItem({
+  href,
+  isActive: _isActive,
+  isPlaceholder,
+  alwaysVisible,
+  ...props
+}: NavItemProps) {
   const { pathname } = useRouter();
   const mq = useMediaQuery();
   const isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
-  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
+
+  const [desktopOpenState, setDesktopOpenState] = useState(-1);
+
+  useEffect(() => {
+    const listener = () => {
+      const width = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      if (width > BREAK_POINTS.sm) {
+        console.log('width is bigger than md breakpoint');
+        if (desktopOpenState !== 0) {
+          setDesktopOpenState(0);
+        }
+      } else {
+        if (desktopOpenState !== -1) {
+          setDesktopOpenState(-1);
+        }
+      }
+    };
+    window.addEventListener('resize', listener);
+
+    return () => {
+      window.removeEventListener('resize', listener);
+    };
+  }, [setDesktopOpenState]);
 
   return (
     <Link href={href} passHref>
       <a
-        {...alwaysVisible ? {} : {tabIndex: isOpen ? 0 : -1}}
+        {...(alwaysVisible ? {} : { tabIndex: isMobileNavOpen ? 0 : desktopOpenState })}
         css={mq({
           display: 'block',
           textDecoration: 'none',
@@ -86,12 +122,41 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const { pathname } = useRouter();
   const isActive = pathname === href;
   const ctx = useHeaderContext();
-  const isOpen = ctx ? ctx.mobileNavIsOpen : true;
+  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
+
+  const [desktopOpenState, setDesktopOpenState] = useState(-1);
+
+  useEffect(() => {
+    const listener = () => {
+      const width = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      if (width > BREAK_POINTS.sm) {
+        console.log('width is bigger than md breakpoint');
+        if (desktopOpenState !== 0) {
+          setDesktopOpenState(0);
+        }
+      } else {
+        if (desktopOpenState !== -1) {
+          setDesktopOpenState(-1);
+        }
+      }
+    };
+    window.addEventListener('resize', listener);
+
+    return () => {
+      window.removeEventListener('resize', listener);
+    };
+  }, [setDesktopOpenState]);
 
   return (
     <Link href={href} passHref>
       <a
-        tabIndex={isOpen ? 0 : -1}
+        tabIndex={isMobileNavOpen ? 0 : desktopOpenState}
         css={{
           display: 'block',
           fontSize: '1rem',
