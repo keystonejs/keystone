@@ -10,6 +10,7 @@ import { Alert } from '../../components/primitives/Alert';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
+import { Emoji } from '../../components/primitives/Emoji';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -165,7 +166,26 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="29th July 2021" isLatest />
+        <Timeline date="17th August 2021" isLatest />
+        <Box heading="A new and improved GraphQL API">
+          A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
+          for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
+          <Emoji symbol="🎉" alt="Celebration" />
+          <br />
+          <br />
+          We’ve made the experience of working with Keystone’s GraphQL API easier to program and
+          reason about: We've{' '}
+          <a href="https://keystonejs.com/updates/new-graphql-api">written a complete guide</a> to
+          the improvements we've made, and it includes a{' '}
+          <a href="https://keystonejs.com/updates/new-graphql-api#upgrade-checklist">
+            checklist of the steps you need to take to upgrade your Keystone projects
+          </a>
+          .
+          <br />
+          <br />
+          Be sure to check it out!
+        </Box>
+        <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
           We're opening Admin UI up to support a more personal content experience. Now you can:
           <ul>
