@@ -244,7 +244,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
-
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
@@ -436,14 +435,18 @@ function DeleteManyButton({
     useMemo(
       () =>
         gql`
-  mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
-    ${list.gqlNames.deleteManyMutationName}(where: $where) {
-      id
-    }
-  }
+        mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
+          ${list.gqlNames.deleteManyMutationName}(where: $where) {
+            id
+            ${list.labelField}
+          }
+        }
 `,
       [list]
-    )
+    ),
+    {
+      errorPolicy: 'all',
+    }
   );
   const [isOpen, setIsOpen] = useState(false);
   const toasts = useToasts();
@@ -467,20 +470,75 @@ function DeleteManyButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItems({
+              const { data, errors } = await deleteItems({
                 variables: { where: [...selectedItems].map(id => ({ id })) },
-              }).catch(err => {
+              });
+              /*
+                Data returns an array where successful deletions are item objects
+                and unsuccessful deletions are null values.
+                Run a reduce to count success and failure as well as
+                to generate the success message to be passed to the success toast
+               */
+              const { successfulItems, unsuccessfulItems, successMessage } = data[
+                list.gqlNames.deleteManyMutationName
+              ].reduce(
+                (
+                  acc: {
+                    successfulItems: number;
+                    unsuccessfulItems: number;
+                    successMessage: string;
+                  },
+                  curr: any
+                ) => {
+                  if (curr) {
+                    acc.successfulItems++;
+                    acc.successMessage =
+                      acc.successMessage === ''
+                        ? (acc.successMessage += curr.label)
+                        : (acc.successMessage += `, ${curr.label}`);
+                  } else {
+                    acc.unsuccessfulItems++;
+                  }
+                  return acc;
+                },
+                { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
+                  successfulItems: number;
+                  unsuccessfulItems: number;
+                  successMessage: string;
+                }
+              );
+
+              // If there are errors
+              if (errors?.length) {
+                // Find out how many items failed to delete.
+                // Reduce error messages down to unique instances, and append to the toast as a message.
                 toasts.addToast({
-                  title: 'Failed to delete items',
-                  message: err.message,
                   tone: 'negative',
+                  title: `Failed to delete ${unsuccessfulItems} of ${
+                    data[list.gqlNames.deleteManyMutationName].length
+                  } ${list.plural}`,
+                  message: errors
+                    .reduce((acc, error) => {
+                      if (acc.indexOf(error.message) < 0) {
+                        acc.push(error.message);
+                      }
+                      return acc;
+                    }, [] as string[])
+                    .join('\n'),
                 });
-              });
-              toasts.addToast({
-                title: 'Deleted items successfully',
-                tone: 'positive',
-              });
-              refetch();
+              }
+
+              if (successfulItems) {
+                toasts.addToast({
+                  tone: 'positive',
+                  title: `Deleted ${successfulItems} of ${
+                    data[list.gqlNames.deleteManyMutationName].length
+                  } ${list.plural} successfully`,
+                  message: successMessage,
+                });
+              }
+
+              return refetch();
             },
           },
           cancel: {
@@ -523,7 +581,6 @@ function ListTable({
   const { query } = useRouter();
   const shouldShowLinkIcon =
     !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo;
-
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
@@ -614,7 +671,7 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      // cursor: 'pointer',
+                      position: 'relative',
                     }}
                   >
                     <CheckboxControl
@@ -742,6 +799,7 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
         padding: spacing.small,
         textAlign: 'left',
         position: 'sticky',
+        zIndex: 1,
         top: 0,
       }}
       {...props}

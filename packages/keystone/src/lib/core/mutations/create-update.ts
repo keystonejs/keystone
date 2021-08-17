@@ -9,6 +9,7 @@ import {
   runWithPrisma,
 } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
+import { extensionError } from '../graphql-errors';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -179,21 +180,32 @@ async function getResolvedData(
     );
   }
 
-  // Apply field type input resolvers
+  // Apply non-relationship field type input resolvers
   resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
-        if (inputResolver) {
+        if (inputResolver && field.dbField.kind !== 'relation') {
+          input = await inputResolver(input, context, undefined);
+        }
+        return [fieldKey, input] as const;
+      })
+    )
+  );
+
+  // Apply relationship field type input resolvers
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        const inputResolver = field.input?.[operation]?.resolve;
+        let input = resolvedData[fieldKey];
+        if (inputResolver && field.dbField.kind === 'relation') {
           input = await inputResolver(
             input,
             context,
+            // This third argument only applies to relationship fields
             (() => {
-              // This third argument only applies to relationship fields
-              if (field.dbField.kind !== 'relation') {
-                return undefined;
-              }
               if (input === undefined) {
                 // No-op: This is what we want
                 return () => undefined;
@@ -228,23 +240,37 @@ async function getResolvedData(
   );
 
   // Resolve input hooks
-  resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        if (field.hooks.resolveInput === undefined) {
-          return [fieldKey, resolvedData[fieldKey]];
-        }
-        const value = await field.hooks.resolveInput({
+  const hookName = 'resolveInput';
+  // Field hooks
+  let _resolvedData: Record<string, any> = {};
+  const fieldsErrors: { error: Error; tag: string }[] = [];
+  for (const [fieldPath, field] of Object.entries(list.fields)) {
+    if (field.hooks.resolveInput === undefined) {
+      _resolvedData[fieldPath] = resolvedData[fieldPath];
+    } else {
+      try {
+        _resolvedData[fieldPath] = await field.hooks.resolveInput({
           ...hookArgs,
           resolvedData,
-          fieldPath: fieldKey,
+          fieldPath,
         });
-        return [fieldKey, value];
-      })
-    )
-  );
+      } catch (error) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
+      }
+    }
+  }
+  if (fieldsErrors.length) {
+    throw extensionError(hookName, fieldsErrors);
+  }
+  resolvedData = _resolvedData;
+
+  // List hooks
   if (list.hooks.resolveInput) {
-    resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+    try {
+      resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+    } catch (error) {
+      throw extensionError(hookName, [{ error, tag: list.listKey }]);
+    }
   }
 
   return resolvedData;
