@@ -4,7 +4,7 @@ import { FileData } from '@keystone-next/types';
 import { parseFileRef } from '@keystone-next/utils';
 
 import fs from 'fs-extra';
-import { FileAdapter } from '..';
+import { FileAdapter } from '../FileAdapter';
 import { generateSafeFilename } from '../utils';
 
 export type LocalFileAdapterConfig = {
@@ -60,10 +60,13 @@ export class LocalFileAdapter extends FileAdapter {
     try {
       await pipeStreams;
       const { size: filesize } = await fs.stat(path.join(this.storagePath, filename));
-      return { mode: 'local', filesize, filename };
+      return { filesize, filename };
     } catch (e) {
       await fs.remove(path.join(this.storagePath, filename));
       throw e;
     }
+  }
+  override bootstrap() {
+    return fs.mkdir(this.storagePath, { recursive: true });
   }
 }

@@ -7,6 +7,9 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
 
   const { images } = config;
   const { adapter } = images;
+
+  adapter.bootstrap();
+
   return {
     getSrc: adapter.getSrc,
     getDataFromRef: adapter.getDataFromRef,

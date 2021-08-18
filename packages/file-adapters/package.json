@@ -8,6 +8,7 @@
     "node": "^12.20 || >= 14.13"
   },
   "dependencies": {
+    "@babel/runtime": "^7.15.3",
     "@keystone-next/types": "^24.0.0",
     "@keystone-next/utils": "^1.0.4",
     "@sindresorhus/slugify": "^1.1.2",

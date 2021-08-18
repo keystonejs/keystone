@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import { v4 as uuid } from 'uuid';
 import { ImageExtension, ImageData } from '@keystone-next/types';
 import { parseImageRef } from '@keystone-next/utils';
-import { ImageAdapter } from '..';
+import { ImageAdapter } from '../ImageAdapter';
 import { getImageMetadataFromBuffer } from '../utils';
 
 export type LocalImageAdapterConfig = {
@@ -22,8 +22,6 @@ export class LocalImageAdapter extends ImageAdapter {
     super();
     this.baseUrl = config.baseUrl || DEFAULT_BASE_URL;
     this.storagePath = config.storagePath || DEFAULT_STORAGE_PATH;
-
-    fs.mkdirSync(this.storagePath, { recursive: true });
   }
   getSrc(id: string, extension: ImageExtension) {
     const filename = `${id}.${extension}`;
@@ -58,5 +56,8 @@ export class LocalImageAdapter extends ImageAdapter {
     await fs.writeFile(path.join(this.storagePath, `${id}.${metadata.extension}`), buffer);
 
     return { id, ...metadata };
+  }
+  override bootstrap() {
+    return fs.mkdir(this.storagePath, { recursive: true });
   }
 }

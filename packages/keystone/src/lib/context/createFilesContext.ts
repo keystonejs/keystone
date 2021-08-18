@@ -8,6 +8,8 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
   const { files } = config;
   const { adapter } = files;
 
+  adapter.bootstrap();
+
   return {
     getSrc: adapter.getSrc,
     getDataFromRef: adapter.getDataFromRef,
