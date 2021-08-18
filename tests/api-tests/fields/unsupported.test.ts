@@ -1,7 +1,7 @@
 import path from 'path';
 import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestEnv } from '@keystone-next/testing';
+import { setupTestEnv } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
