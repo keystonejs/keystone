@@ -1,5 +1,5 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, password, relationship, text } from '@keystone-next/fields';
+import { checkbox, password, relationship, text } from '@keystone-next/keystone/fields';
 
 import { isSignedIn, permissions, rules } from './access';
 

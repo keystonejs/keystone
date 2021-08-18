@@ -3,7 +3,7 @@
 import { FieldProps } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
-import { controller } from '@keystone-next/fields/types/text/views';
+import { controller } from '@keystone-next/keystone/fields/types/text/views';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>

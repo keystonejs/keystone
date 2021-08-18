@@ -1,14 +1,5 @@
-export { autoIncrement } from './types/autoIncrement';
-export { checkbox } from './types/checkbox';
-export { decimal } from './types/decimal';
-export { file } from './types/file';
-export { float } from './types/float';
-export { integer } from './types/integer';
-export { image } from './types/image';
-export { json } from './types/json';
-export { password } from './types/password';
-export { relationship } from './types/relationship';
-export { select } from './types/select';
-export { text } from './types/text';
-export { timestamp } from './types/timestamp';
-export { virtual } from './types/virtual';
+throw new Error(
+  '`@keystone-next/fields` has been moved to `@keystone-next/keystone/fields`, please import from there instead.'
+);
+
+export {};

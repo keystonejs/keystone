@@ -15,7 +15,7 @@ Let's look at a basic example to log a message to the console whenever a new use
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -53,7 +53,7 @@ Let's write a hook which takes the data for a blog post and converts the first l
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -100,7 +100,7 @@ Let's use a validation hook to ensure that this value doesn't make it into our d
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -144,7 +144,7 @@ Let's send an email after a user is created.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 // Keystone leaves it up to you to decide how best to implement email in your system
 import { sendWelcomeEmail } from './lib/welcomeEmail';
 
@@ -197,7 +197,7 @@ You could always write this as a list hook, but it will make your code more clea
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({

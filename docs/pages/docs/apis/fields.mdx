@@ -33,7 +33,7 @@ import {
   // File types
   file,
   image,
-} from '@keystone-next/fields';
+} from '@keystone-next/keystone/fields';
 
 // Complex types
 import { document } from '@keystone-next/fields-document';
@@ -133,7 +133,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox } from '@keystone-next/fields';
+import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -167,7 +167,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { integer } from '@keystone-next/fields';
+import { integer } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -196,7 +196,7 @@ Currently the `json` field is non-orderable and non-filterable.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { json } from '@keystone-next/fields';
+import { json } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -229,7 +229,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { float } from '@keystone-next/fields';
+import { float } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -266,7 +266,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { decimal } from '@keystone-next/fields';
+import { decimal } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -302,7 +302,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { password } from '@keystone-next/fields';
+import { password } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -348,7 +348,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { select } from '@keystone-next/fields';
+import { select } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -391,7 +391,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -428,7 +428,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { timestamp } from '@keystone-next/fields';
+import { timestamp } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -478,7 +478,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { relationship } from '@keystone-next/fields';
+import { relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -529,7 +529,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { autoIncrement } from '@keystone-next/fields';
+import { autoIncrement } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -563,7 +563,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { virtual } from '@keystone-next/fields';
+import { virtual } from '@keystone-next/keystone/fields';
 import { schema } from '@keystone-next/types';
 
 export default config({
@@ -604,7 +604,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { file } from '@keystone-next/fields';
+import { file } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -634,7 +634,7 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { image } from '@keystone-next/fields';
+import { image } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({

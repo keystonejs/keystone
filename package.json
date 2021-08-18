@@ -151,8 +151,7 @@
       "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
       "!packages/**/dist/**",
-      "!packages/fields/**/test-fixtures.{js,ts}",
-      "!packages/fields/types.js"
+      "!packages/keystone/src/fields/**/test-fixtures.{js,ts}"
     ]
   },
   "resolutions": {

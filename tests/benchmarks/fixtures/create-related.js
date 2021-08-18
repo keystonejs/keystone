@@ -1,4 +1,4 @@
-const { text, relationship } = require('@keystone-next/fields');
+const { text, relationship } = require('@keystone-next/keystone/fields');
 const { list, createSchema } = require('@keystone-next/keystone/schema');
 const { setupTestRunner } = require('@keystone-next/keystone/testing');
 const { apiTestConfig } = require('../../utils.ts');

@@ -2,7 +2,7 @@ import fs from 'fs';
 import mime from 'mime';
 import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { DatabaseProvider } from '@keystone-next/types';
 import { cloudinaryImage } from './index';
 

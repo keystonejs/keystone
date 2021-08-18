@@ -9,7 +9,7 @@ import {
   virtual,
   image,
   file,
-} from '@keystone-next/fields';
+} from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneListsAPI, schema } from '@keystone-next/types';

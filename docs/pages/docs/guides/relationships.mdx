@@ -27,7 +27,7 @@ Relationships are made using the [`relationship`](../apis/fields#relationship) f
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -71,7 +71,7 @@ If we can find all the `authors` of a post, we can also find all the posts writt
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -120,7 +120,7 @@ Keystone also lets you define one, and two-sided **relationships that refer to t
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -138,7 +138,7 @@ Or change this into a _two-sided_ relationship to also access the followers of e
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -183,7 +183,7 @@ Let’s explore how to set up each type of cardinality in the context of our blo
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({

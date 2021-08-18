@@ -1,4 +1,4 @@
-import { text, integer, relationship } from '@keystone-next/fields';
+import { text, integer, relationship } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';

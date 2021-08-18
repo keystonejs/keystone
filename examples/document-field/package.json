@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@keystone-next/document-renderer": "^4.0.0",
-    "@keystone-next/fields": "^14.0.0",
     "@keystone-next/fields-document": "^8.0.0",
     "@keystone-next/keystone": "^24.0.0",
     "@preconstruct/next": "^3.0.0",
