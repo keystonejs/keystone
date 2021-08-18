@@ -27,6 +27,7 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }: Well
           color: 'var(--text)',
           overflow: 'hidden',
           transition: 'box-shadow 0.2s ease, transform 0.2s ease, padding 0.2s ease',
+          textDecoration: 'none !important',
           ':before': {
             content: '""',
             position: 'absolute',
@@ -47,8 +48,9 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }: Well
           as="h2"
           look="heading20bold"
           css={{
-            margin: '0 0 1rem 0',
+            margin: '0 0 1rem 0 !important',
             paddingRight: '2rem',
+            fontSize: '1.25rem !important',
           }}
         >
           {heading} →
