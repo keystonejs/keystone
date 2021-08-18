@@ -1,3 +1,4 @@
+import { LocalImageAdapter } from '@keystone-next/file-adapters';
 import { config } from '@keystone-next/keystone/schema';
 import { lists } from './schema';
 
@@ -8,6 +9,6 @@ export default config({
   },
   lists,
   images: {
-    upload: 'local',
+    adapter: new LocalImageAdapter(),
   },
 });

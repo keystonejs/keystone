@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@keystone-next/fields": "^14.0.0",
+    "@keystone-next/file-adapters": "^0.1.0",
     "@keystone-next/keystone": "^24.0.0"
   },
   "devDependencies": {

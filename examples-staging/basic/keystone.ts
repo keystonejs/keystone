@@ -1,6 +1,7 @@
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
+import { LocalFileAdapter, LocalImageAdapter } from '@keystone-next/file-adapters';
 
 import { lists, extendGraphqlSchema } from './schema';
 
@@ -38,8 +39,8 @@ export default auth.withAuth(
       // path: '/admin',
       // isAccessAllowed,
     },
-    images: { upload: 'local' },
-    files: { upload: 'local' },
+    images: { adapter: new LocalImageAdapter() },
+    files: { adapter: new LocalFileAdapter() },
     lists,
     extendGraphqlSchema,
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),

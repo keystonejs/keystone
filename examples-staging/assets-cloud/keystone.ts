@@ -1,4 +1,5 @@
 import { config } from '@keystone-next/keystone/schema';
+import { KeystoneCloudFileAdapter, KeystoneCloudImageAdapter } from '@keystone-next/keystone';
 import dotenv from 'dotenv';
 import { lists } from './schema';
 
@@ -18,17 +19,18 @@ export default config({
   },
   lists,
   images: {
-    upload: 'keystone-cloud',
-  },
-  files: {
-    upload: 'keystone-cloud',
-  },
-  experimental: {
-    keystoneCloud: {
+    adapter: new KeystoneCloudImageAdapter({
       apiKey: KEYSTONE_CLOUD_API_KEY,
       imagesDomain: KEYSTONE_CLOUD_IMAGES_DOMAIN,
       graphqlApiEndpoint: KEYSTONE_CLOUD_GRAPHQL_API_ENDPOINT,
       restApiEndpoint: KEYSTONE_CLOUD_REST_API_ENDPOINT,
-    },
+    }),
+  },
+  files: {
+    adapter: new KeystoneCloudFileAdapter({
+      apiKey: KEYSTONE_CLOUD_API_KEY,
+      graphqlApiEndpoint: KEYSTONE_CLOUD_GRAPHQL_API_ENDPOINT,
+      restApiEndpoint: KEYSTONE_CLOUD_REST_API_ENDPOINT,
+    }),
   },
 });
