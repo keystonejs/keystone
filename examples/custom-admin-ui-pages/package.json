@@ -9,7 +9,6 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/fields": "^14.0.0",
     "@keystone-next/keystone": "^24.0.0",
     "@keystone-next/types": "^24.0.0",
     "@keystone-ui/core": "^3.1.0",
