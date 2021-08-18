@@ -154,8 +154,6 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'keystone-cloud';
-
 // Files API
 
 export type FileData = {
@@ -181,12 +179,11 @@ export type ImageMetadata = {
 };
 
 export type ImageData = {
-  mode: AssetMode;
   id: string;
 } & ImageMetadata;
 
 export type ImagesContext = {
-  getSrc: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
+  getSrc: (id: string, extension: ImageExtension) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

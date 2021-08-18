@@ -38,7 +38,7 @@ const imageOutputFields = schema.fields<ImageData>()({
   ref: schema.field({
     type: schema.nonNull(schema.String),
     resolve(data) {
-      return getImageRef(data.mode, data.id, data.extension);
+      return getImageRef( data.id, data.extension);
     },
   }),
   src: schema.field({
@@ -47,7 +47,7 @@ const imageOutputFields = schema.fields<ImageData>()({
       if (!context.images) {
         throw new Error('Image context is undefined');
       }
-      return context.images.getSrc(data.mode, data.id, data.extension);
+      return context.images.getSrc(data.id, data.extension);
     },
   }),
 });
@@ -71,7 +71,7 @@ type ImageFieldInputType =
 
 async function inputResolver(data: ImageFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, mode: data, width: data };
+    return { extension: data, filesize: data, height: data, id: data, width: data };
   }
 
   if (data.ref) {
@@ -110,7 +110,6 @@ export const image =
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
@@ -121,20 +120,18 @@ export const image =
       },
       output: schema.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, mode, width } }) {
+        resolve({ value: { extension, filesize, height, id, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
             filesize === null ||
             height === null ||
             width === null ||
-            id === null ||
-            mode === null ||
-            (mode !== 'local' && mode !== 'keystone-cloud')
+            id === null
           ) {
             return null;
           }
-          return { mode, extension, filesize, height, width, id };
+          return { extension, filesize, height, width, id };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],

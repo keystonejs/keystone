@@ -1,9 +1,9 @@
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
-import { FileAdapter } from '@keystone-next/file-adapters';
+import { FileAdapter, ImageAdapter } from '@keystone-next/file-adapters';
 
-import type { AssetMode, KeystoneContext } from '..';
+import type { KeystoneContext } from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -193,19 +193,7 @@ export type FilesConfig = {
 // config.images
 
 export type ImagesConfig = {
-  upload: AssetMode;
-  local?: {
-    /**
-     * The path local images are uploaded to.
-     * @default 'public/images'
-     */
-    storagePath?: string;
-    /**
-     * The base of the URL local images will be served from, outside of keystone.
-     * @default '/images'
-     */
-    baseUrl?: string;
-  };
+  adapter: ImageAdapter;
 };
 
 // config.experimental.keystoneCloud

@@ -12,8 +12,12 @@
     "@keystone-next/utils": "^1.0.4",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/fs-extra": "^9.0.12",
+    "@types/uuid": "^8.3.1",
     "filenamify": "^4.3.0",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "^10.0.0",
+    "image-size": "^1.0.0",
+    "image-type": "^4.1.0",
+    "uuid": "^8.3.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/file-adapters"
 }
