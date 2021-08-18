@@ -38,7 +38,7 @@ const imageOutputFields = schema.fields<ImageData>()({
   ref: schema.field({
     type: schema.nonNull(schema.String),
     resolve(data) {
-      return getImageRef( data.id, data.extension);
+      return getImageRef(data.id, data.extension);
     },
   }),
   src: schema.field({
