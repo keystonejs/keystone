@@ -1,6 +1,6 @@
 import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import type { BaseFields } from '@keystone-next/types';
 import { apiTestConfig } from '../utils';
 

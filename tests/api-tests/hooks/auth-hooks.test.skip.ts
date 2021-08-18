@@ -4,7 +4,7 @@ import superagent from 'superagent';
 import express from 'express';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text, password } from '@keystone-next/keystone/fields';
-import { setupTestRunner } from '@keystone-next/testing';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({

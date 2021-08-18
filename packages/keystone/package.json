@@ -17,6 +17,7 @@
     "dist",
     "static",
     "admin-ui",
+    "testing",
     "fields"
   ],
   "bin": {
@@ -65,6 +66,7 @@
     "@types/prompts": "^2.0.14",
     "@types/react": "^17.0.18",
     "@types/source-map-support": "^0.5.4",
+    "@types/supertest": "^2.0.11",
     "@types/uid-safe": "^2.1.2",
     "@types/uuid": "^8.3.1",
     "apollo-server-errors": "^2.5.0",
@@ -97,6 +99,7 @@
     "image-type": "^4.1.0",
     "inflection": "^1.13.1",
     "intersection-observer": "^0.12.0",
+    "memoize-one": "^5.2.1",
     "meow": "^9.0.0",
     "next": "^10.2.3",
     "node-fetch": "^2.6.1",
@@ -111,6 +114,7 @@
     "react-dom": "^17.0.2",
     "resolve": "^1.20.0",
     "source-map-support": "^0.5.19",
+    "supertest": "^6.1.5",
     "typescript": "^4.3.5",
     "uid-safe": "^2.1.5",
     "uuid": "^8.3.2"
@@ -137,6 +141,7 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
       "artifacts.ts",
       "migrations.ts",
+      "testing.ts",
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts",
