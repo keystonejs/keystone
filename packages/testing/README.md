@@ -1,3 +1,3 @@
 # Testing
 
-This package provides tools to help you test your Keystone system.
+This exports of this package have been moved to `@keystone-next/keystone`

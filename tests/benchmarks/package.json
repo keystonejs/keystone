@@ -16,7 +16,6 @@
   "dependencies": {
     "@keystone-next/fields": "^14.0.0",
     "@keystone-next/keystone": "^24.0.0",
-    "@keystone-next/testing": "^1.1.1",
     "cookie-signature": "^1.1.0",
     "testcheck": "^1.0.0-rc.2"
   }
