@@ -6,7 +6,7 @@ import { text } from '../../text';
 import { file } from '..';
 
 const prepareFile = (_filePath: string) => {
-  const filePath = path.resolve(`packages/fields/src/types/file/test-files/${_filePath}`);
+  const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
   const upload = new Upload();
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),

@@ -1,6 +1,6 @@
-import { checkbox, text } from '@keystone-next/keystone/fields';
 import { ListSchemaConfig } from '@keystone-next/types';
 import fs from 'fs-extra';
+import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
 import { config, list } from '../../schema';
 import { ExitError } from '../utils';

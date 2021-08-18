@@ -1,4 +1,3 @@
-import path from 'path';
 import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
@@ -8,7 +7,6 @@ import { apiTestConfig } from '../utils';
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/src/tests/test-fixtures.ts'));
 
 const provider = process.env.TEST_ADAPTER;
 
