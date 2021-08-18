@@ -160,7 +160,7 @@ testModules
                   }),
                 }),
                 images: { adapter: new LocalImageAdapter({ storagePath: 'tmp_test_images' }) },
-                  files: { adapter: new LocalFileAdapter({ storagePath: 'tmp_test_files' }) },
+                files: { adapter: new LocalFileAdapter({ storagePath: 'tmp_test_files' }) },
               }),
             });
           } catch (error) {
