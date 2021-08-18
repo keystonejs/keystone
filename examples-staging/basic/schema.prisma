@@ -16,10 +16,8 @@ model User {
   avatar_extension    String?
   avatar_width        Int?
   avatar_height       Int?
-  avatar_mode         String?
   avatar_id           String?
   attachment_filesize Int?
-  attachment_mode     String?
   attachment_filename String?
   password            String?
   isAdmin             Boolean?
