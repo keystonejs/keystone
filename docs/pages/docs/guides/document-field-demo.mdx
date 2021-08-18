@@ -9,6 +9,9 @@ import {
   DocumentFeaturesProvider,
 } from '../../../components/docs/DocumentEditorDemo';
 import Intro from './_doc-field-intro.mdx';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 ## Configure the demo
 
@@ -51,3 +54,22 @@ export default ({ children }) => {
     </DocsPage>
   );
 };
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Document field Guide"
+    href="/docs/guides/document-field"
+  >
+  Learn how to configure Keystone’s powerful document field to meet the needs of your project
+  </Well>
+    <Well
+    heading="Document field example project"
+    href="/https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+  Get the document field running in your local dev environment
+  </Well>
+</RelatedContent>

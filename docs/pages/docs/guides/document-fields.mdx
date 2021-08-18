@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # How To Use Document Fields
 
@@ -675,5 +678,24 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 
 <DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Document field live demo"
+    href="/docs/guides/document-field-demo"
+  >
+  Experiment with the features of the Keystone Document field on this site
+  </Well>
+    <Well
+    heading="Document field example project"
+    href="/https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+  Get the document field running in your local dev environment
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to configure Keystone’s highly customizable Rich Text editor. The Document field is built with Slate and stores your content as JSON-structured data.">{children}</Markdown>;

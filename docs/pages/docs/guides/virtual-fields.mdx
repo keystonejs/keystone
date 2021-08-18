@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Virtual Fields
 
@@ -314,5 +317,18 @@ Another way to address this is to use a [scalar field](../apis/fields#scalar-typ
 
 The other main consideration is that it is not possible to filter on a virtual field, as each item calcutes its value dynamically, rather than having it stored in the database.
 Using a pre-calculated scalar field is the best solution to use if you need filtering for your field.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Virtual fields example"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/virtual-field"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+  A demo project that shows you how to add virtual fields to a Keystone list
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to extend your GraphQL API in powerful ways with the Virtual Fields feature.">{children}</Markdown>;

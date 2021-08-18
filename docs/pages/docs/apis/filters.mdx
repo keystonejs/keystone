@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Query Filter API
 
@@ -148,5 +151,16 @@ The `file` field type does not support filters.
 ### image
 
 The `image` field type does not support filters.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Query Filters Guide"
+    href="/docs/guides/filters"
+  >
+  Learn how to use Keystone’s query filters to get data you need
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering.">{children}</Markdown>;

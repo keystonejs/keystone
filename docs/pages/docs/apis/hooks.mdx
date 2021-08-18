@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Hooks API
 
@@ -437,5 +440,13 @@ The data resolving steps are applied in the following order:
 4. Field values (built in): Some fields types take the value given in the GraphQL operation and convert it into a different type or format to be saved to the database.
 5. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field, which will the current field value on `resolvedData`.
 6. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
+
+## Related resources
+
+<RelatedContent>
+  <Well heading="Hooks Guide" href="/docs/apis/hooks">
+  Learn how to use Keystone’s Hooks to enhance your core operations in different ways
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Hooks let you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.">{children}</Markdown>;
