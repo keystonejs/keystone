@@ -30,7 +30,6 @@
     "stripe": "^8.169.0"
   },
   "devDependencies": {
-    "@keystone-next/testing": "^1.1.1",
     "typescript": "^4.3.5"
   },
   "engines": {
