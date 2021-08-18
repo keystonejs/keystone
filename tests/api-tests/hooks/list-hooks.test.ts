@@ -1,4 +1,4 @@
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig, expectExtensionError } from '../utils';

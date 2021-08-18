@@ -1,4 +1,4 @@
-import { text, timestamp, password } from '@keystone-next/fields';
+import { text, timestamp, password } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';

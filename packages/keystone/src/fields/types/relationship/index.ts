@@ -76,7 +76,7 @@ export const relationship =
       getAdminMeta: (
         adminMetaRoot: AdminMetaRootVal
       ): Parameters<
-        typeof import('@keystone-next/fields/types/relationship/views').controller
+        typeof import('@keystone-next/keystone/fields/types/relationship/views').controller
       >[0]['fieldMeta'] => {
         if (!meta.lists[foreignListKey]) {
           throw new Error(

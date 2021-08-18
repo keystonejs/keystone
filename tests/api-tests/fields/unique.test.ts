@@ -1,6 +1,6 @@
 import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig, expectPrismaError } from '../utils';
 

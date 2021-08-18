@@ -1,4 +1,4 @@
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { document } from '..';
 
 export const name = 'Document';

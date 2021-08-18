@@ -44,12 +44,5 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "preconstruct": {
-    "entrypoints": [
-      "index.ts",
-      "types/*/views/index.tsx",
-      "types/relationship/views/RelationshipSelect.tsx"
-    ]
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields"
 }

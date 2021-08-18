@@ -1,5 +1,5 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 

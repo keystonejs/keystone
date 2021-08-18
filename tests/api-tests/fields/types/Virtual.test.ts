@@ -1,4 +1,4 @@
-import { integer, relationship, text, virtual } from '@keystone-next/fields';
+import { integer, relationship, text, virtual } from '@keystone-next/keystone/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { schema } from '@keystone-next/types';

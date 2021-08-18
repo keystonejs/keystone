@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 
-import { text, relationship } from '@keystone-next/fields';
+import { text, relationship } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestRunner } from '@keystone-next/testing';
 import { apiTestConfig } from '../utils';
