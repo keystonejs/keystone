@@ -20,10 +20,8 @@ model Post {
   hero_extension      String?
   hero_width          Int?
   hero_height         Int?
-  hero_mode           String?
   hero_id             String?
   attachment_filesize Int?
-  attachment_mode     String?
   attachment_filename String?
 
   @@index([authorId])
