@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import { CellContainer } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -17,6 +16,7 @@ import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+import { CellContainer } from '../../../../admin-ui/components';
 
 export const Field = ({
   field,

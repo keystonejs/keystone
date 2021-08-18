@@ -2,9 +2,6 @@
 
 import { Fragment, ReactNode, useState } from 'react';
 
-import { CellContainer, CreateItemDrawer } from '@keystone-next/keystone/admin-ui/components';
-import { useKeystone, useList } from '@keystone-next/keystone/admin-ui/context';
-import { Link } from '@keystone-next/keystone/admin-ui/router';
 import {
   CardValueComponent,
   CellComponent,
@@ -17,6 +14,9 @@ import { Button } from '@keystone-ui/button';
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
 import { DrawerController } from '@keystone-ui/modals';
+import { Link } from '../../../../../admin-ui/router';
+import { useKeystone, useList } from '../../../../../admin-ui/context';
+import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components';
 
 import { Cards } from './cards';
 import { RelationshipSelect } from './RelationshipSelect';

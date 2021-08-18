@@ -1,5 +1,4 @@
 /* @jsx jsx */
-import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -9,6 +8,7 @@ import {
 } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
+import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>

@@ -75,9 +75,7 @@ export const relationship =
       views: resolveView('relationship/views'),
       getAdminMeta: (
         adminMetaRoot: AdminMetaRootVal
-      ): Parameters<
-        typeof import('@keystone-next/keystone/fields/types/relationship/views').controller
-      >[0]['fieldMeta'] => {
+      ): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
         if (!meta.lists[foreignListKey]) {
           throw new Error(
             `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`

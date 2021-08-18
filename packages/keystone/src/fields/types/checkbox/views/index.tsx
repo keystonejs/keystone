@@ -1,6 +1,5 @@
 /* @jsx jsx */
 
-import { CellContainer } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -10,6 +9,7 @@ import {
 } from '@keystone-next/types';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Checkbox, FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { CellContainer } from '../../../../admin-ui/components';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   const { fields, typography } = useTheme();

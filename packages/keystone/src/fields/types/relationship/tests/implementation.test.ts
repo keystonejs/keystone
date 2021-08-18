@@ -1,6 +1,6 @@
-import { createSystem, initConfig } from '@keystone-next/keystone';
-import { config, list } from '@keystone-next/keystone/schema';
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';
+import { createSystem, initConfig } from '../../../../.';
+import { config, list } from '../../../../schema';
 import { relationship } from '..';
 import { text } from '../../text';
 

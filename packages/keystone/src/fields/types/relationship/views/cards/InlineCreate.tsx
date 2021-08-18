@@ -1,11 +1,9 @@
 /* @jsx jsx */
 
 import { useState } from 'react';
-import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';
 import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useToasts } from '@keystone-ui/toast';
-import { GraphQLErrorNotice } from '@keystone-next/keystone/admin-ui/components';
 import {
   ItemData,
   makeDataGetter,
@@ -17,6 +15,8 @@ import {
 import { Button } from '@keystone-ui/button';
 import { ListMeta } from '@keystone-next/types';
 import { Fields } from '@keystone-next/admin-ui-utils';
+import { gql, useMutation } from '../../../../../admin-ui/apollo';
+import { GraphQLErrorNotice } from '../../../../../admin-ui/components';
 import { useFieldsObj } from './useItemState';
 
 export function InlineCreate({

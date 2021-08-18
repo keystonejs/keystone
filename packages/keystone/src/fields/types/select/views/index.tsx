@@ -1,6 +1,5 @@
 /* @jsx jsx */
 import { Fragment } from 'react';
-import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -11,6 +10,7 @@ import {
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer as={field.displayMode === 'select' ? 'div' : 'fieldset'}>

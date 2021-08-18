@@ -1,6 +1,5 @@
 /* @jsx jsx */
 
-import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -10,6 +9,7 @@ import {
 } from '@keystone-next/types';
 import { jsx, Stack, Text } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
+import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
 export const Field = ({
   field,
