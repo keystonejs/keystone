@@ -52,6 +52,6 @@ export class KeystoneCloudFileAdapter extends FileAdapter {
       filename,
     });
 
-    return { mode: 'keystone-cloud', filesize, filename };
+    return { filesize, filename };
   }
 }
