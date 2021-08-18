@@ -16,7 +16,8 @@
     "session",
     "dist",
     "static",
-    "admin-ui"
+    "admin-ui",
+    "fields"
   ],
   "bin": {
     "keystone-next": "bin/cli.js"
@@ -132,7 +133,10 @@
       "admin-ui/apollo.tsx",
       "admin-ui/context.tsx",
       "admin-ui/router.tsx",
-      "admin-ui/image.tsx"
+      "admin-ui/image.tsx",
+      "fields/index.ts",
+      "fields/types/*/views/index.tsx",
+      "fields/types/relationship/views/RelationshipSelect.tsx"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
