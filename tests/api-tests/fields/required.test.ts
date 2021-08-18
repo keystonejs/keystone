@@ -2,6 +2,7 @@ import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 import { setupTestRunner } from '@keystone-next/testing';
+import { LocalImageAdapter, LocalFileAdapter } from '@keystone-next/file-adapters';
 import { apiTestConfig, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -50,8 +51,8 @@ testModules
                 },
               }),
             }),
-            images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-            files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+            images: { adapter: new LocalImageAdapter({ storagePath: 'tmp_test_images' }) },
+            files: { adapter: new LocalFileAdapter({ storagePath: 'tmp_test_files' }) },
           }),
         });
 

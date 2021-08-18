@@ -2,6 +2,7 @@ import path from 'path';
 import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { setupTestEnv } from '@keystone-next/testing';
+import { LocalFileAdapter, LocalImageAdapter } from '@keystone-next/file-adapters';
 import { apiTestConfig } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -49,8 +50,8 @@ if (unsupportedModules.length > 0) {
                   lists: createSchema({
                     [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                   }),
-                  images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-                  files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                  images: { adapter: new LocalImageAdapter({ storagePath: 'tmp_test_images' }) },
+                  files: { adapter: new LocalFileAdapter({ storagePath: 'tmp_test_files' }) },
                 }),
               })
           ).rejects.toThrow(Error);
