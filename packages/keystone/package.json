@@ -16,7 +16,8 @@
     "session",
     "dist",
     "static",
-    "admin-ui"
+    "admin-ui",
+    "testing"
   ],
   "bin": {
     "keystone-next": "bin/cli.js"
@@ -128,6 +129,7 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
       "artifacts.ts",
       "migrations.ts",
+      "testing.ts",
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts",
