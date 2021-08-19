@@ -18,7 +18,7 @@ import {
   Fields,
   serializeValueToObjByFieldKey,
   useInvalidFields,
-} from '@keystone-next/admin-ui-utils';
+} from '@keystone-next/keystone/admin-ui/utils';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';
 import { SigninContainer } from '../components/SigninContainer';
