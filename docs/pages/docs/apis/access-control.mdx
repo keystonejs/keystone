@@ -6,7 +6,7 @@ The `access` property of the [list configuration](./schema) and [field configura
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -98,7 +98,7 @@ For multi-item operations, e.g. `updateItems` or `deleteItems`, if the merged fi
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox } from '@keystone-next/fields';
+import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -191,7 +191,7 @@ Concise syntax provides a single access control rule which is used for all opera
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -233,7 +233,7 @@ The excluded operations can still be access by using [`context.sudo()`](./contex
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -261,7 +261,7 @@ If the function returns `true` then the operation will be allowed.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -293,7 +293,7 @@ Imperative access control functions are passed a collection of arguments which c
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({

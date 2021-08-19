@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
-import { setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import { expectAccessDenied } from '../utils';
 import {
   FAKE_ID,
