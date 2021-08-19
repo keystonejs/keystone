@@ -5,8 +5,8 @@ import filenamify from 'filenamify';
 import { KeystoneConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 
-import { parseFileRef, isLocalAsset, isKeystoneCloudAsset } from '@keystone-next/utils';
 import slugify from '@sindresorhus/slugify';
+import { parseFileRef } from '../../fields/types/file/utils';
 import {
   buildKeystoneCloudFileSrc,
   uploadFileToKeystoneCloud,
@@ -59,13 +59,13 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
     restApiEndpoint = '',
   } = experimental?.keystoneCloud || {};
 
-  if (isLocalAsset(files.upload)) {
+  if (files.upload === 'local') {
     fs.mkdirSync(storagePath, { recursive: true });
   }
 
   return {
     getSrc: async (mode, filename) => {
-      if (isKeystoneCloudAsset(mode)) {
+      if (mode === 'keystone-cloud') {
         return await buildKeystoneCloudFileSrc({ apiKey, graphqlApiEndpoint, filename });
       }
 
@@ -80,7 +80,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
 
       const { mode, filename } = fileRef;
 
-      if (isKeystoneCloudAsset(mode)) {
+      if (mode === 'keystone-cloud') {
         const { filesize } = await getFileFromKeystoneCloud({
           apiKey,
           filename,
@@ -98,7 +98,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const { upload: mode } = files;
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
-      if (isKeystoneCloudAsset(mode)) {
+      if (mode === 'keystone-cloud') {
         const { filesize } = await uploadFileToKeystoneCloud({
           apiKey,
           stream,

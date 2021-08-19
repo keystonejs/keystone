@@ -33,7 +33,6 @@
     "@graphql-tools/schema": "^8.1.1",
     "@hapi/iron": "^6.0.0",
     "@keystone-next/types": "^24.0.0",
-    "@keystone-next/utils": "^1.0.4",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.1",
     "@keystone-ui/fields": "^4.1.2",
@@ -154,7 +153,8 @@
       "admin-ui/utils/index.ts",
       "fields/index.ts",
       "fields/types/*/views/index.tsx",
-      "fields/types/relationship/views/RelationshipSelect.tsx"
+      "fields/types/relationship/views/RelationshipSelect.tsx",
+      "fields/types/{image,file}/utils.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
