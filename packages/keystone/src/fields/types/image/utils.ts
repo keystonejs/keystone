@@ -1,20 +1,6 @@
 import { AssetMode, ImageExtension } from '@keystone-next/types';
 
 const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
-const FILEREGEX = /^(local|keystone-cloud):file:([^\\\/:\n]+)/;
-
-export const getFileRef = (mode: AssetMode, name: string) => `${mode}:file:${name}`;
-export const parseFileRef = (ref: string) => {
-  const match = ref.match(FILEREGEX);
-  if (match) {
-    const [, mode, filename] = match;
-    return {
-      mode: mode as AssetMode,
-      filename: filename as string,
-    };
-  }
-  return undefined;
-};
 
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;
