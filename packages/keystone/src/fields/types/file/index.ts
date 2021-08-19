@@ -8,9 +8,9 @@ import {
   FileData,
   FieldDefaultValue,
 } from '@keystone-next/types';
-import { getFileRef } from '@keystone-next/utils';
 import { FileUpload } from 'graphql-upload';
 import { resolveView } from '../../resolve-view';
+import { getFileRef } from './utils';
 
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
