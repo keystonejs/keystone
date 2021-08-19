@@ -421,7 +421,7 @@ export default function IndexPage() {
                 <WindowL>
                   <SourceCode>
                     {`import { createSchema, list } from '@keystone-next/keystone/schema';
-import { document, text, timestamp, password, relationship } from '@keystone-next/fields';
+import { document, text, timestamp, password, relationship } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Post: list({

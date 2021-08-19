@@ -22,7 +22,7 @@ export const graphql = outdent;
 
 export const basicKeystoneConfig = js`
                                      import { config, list } from "@keystone-next/keystone/schema";
-                                     import { text } from "@keystone-next/fields";
+                                     import { text } from "@keystone-next/keystone/fields";
 
                                      export default config({
                                        db: { provider: "sqlite", url: "file:./app.db" },
@@ -115,7 +115,6 @@ export const symlinkKeystoneDeps = Object.fromEntries(
   [
     '@keystone-next/keystone',
     '@keystone-next/auth',
-    '@keystone-next/fields',
     '@keystone-next/types',
     '@prisma/engines',
     '@prisma/client',

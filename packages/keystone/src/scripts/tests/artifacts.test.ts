@@ -1,4 +1,4 @@
-import { text } from '@keystone-next/fields';
+import { text } from '../../fields';
 import { config, list } from '../../schema';
 import { ExitError } from '../utils';
 import {

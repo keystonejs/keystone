@@ -14,7 +14,7 @@ For examples of how to use hooks in your system please see the [hooks guide](../
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -79,7 +79,7 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -142,7 +142,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -197,7 +197,7 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -248,7 +248,7 @@ The `afterChange` function is used to perform side effects after the data for a 
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -308,7 +308,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -357,7 +357,7 @@ It is invoked after all `validateDelete` hooks have been run.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -395,7 +395,7 @@ The `afterDelete` function is used to perform side effects after the data for a 
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
