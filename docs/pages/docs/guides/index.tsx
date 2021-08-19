@@ -35,14 +35,6 @@ export default function Docs() {
           gap: 'var(--space-xlarge)',
         })}
       >
-        <Well
-          grad="grad2"
-          heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-6-preview"
-        >
-          We’re transitioning to Keystone 6 soon. If you’re wondering which version to start a new
-          project with today, this guide is for you.
-        </Well>
         <Well grad="grad2" heading="Command line foundations" href="/docs/guides/cli">
           Keystone’s CLI helps you develop, build, and deploy projects. This guide explains all you
           need to standup a new backend in the terminal.

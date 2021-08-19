@@ -101,7 +101,7 @@ export default function Docs() {
         <Well
           grad="grad2"
           heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-6-preview"
+          href="/updates/keystone-5-vs-keystone-6-preview"
         >
           We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
           with today, this guide is for you.

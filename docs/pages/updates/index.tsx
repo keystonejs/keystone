@@ -167,7 +167,7 @@ export default function WhatsNew() {
         })}
       >
         <Timeline date="17th August 2021" isLatest />
-        <Box heading="A new and improved GraphQL API">
+        <Box heading="New & improved GraphQL API">
           A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
           for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
           <Emoji symbol="🎉" alt="Celebration" />
@@ -412,7 +412,7 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="19th March 2021" isFirst />
         <Box
-          link="/docs/guides/keystone-5-vs-keystone-6-preview"
+          link="/updates/keystone-5-vs-keystone-6-preview"
           heading="Guidance on using Keystone 5 vs Keystone 6 "
         >
           Keystone 5 is now in maintenance mode while we focus all our efforts on building Keystone
