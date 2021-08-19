@@ -240,7 +240,7 @@ export default function Roadmap() {
 
       {/* <Alert css={{ margin: '2rem 0 4rem' }}>
         If you're assessing whether to start a project today on Keystone 5 or 6, check our{' '}
-        <Link href="/docs/guides/keystone-5-vs-keystone-6-preview">
+        <Link href="/updates/keystone-5-vs-keystone-6-preview">
           <a>Comparison Page</a>
         </Link>
       </Alert> */}
