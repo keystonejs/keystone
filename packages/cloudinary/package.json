@@ -16,6 +16,9 @@
     "graphql-upload": "^12.0.0",
     "react": "^17.0.2"
   },
+  "peerDependencies": {
+    "@keystone-next/keystone": "^24.0.0"
+  },
   "devDependencies": {
     "@keystone-next/keystone": "^24.0.0",
     "mime": "^2.5.2"

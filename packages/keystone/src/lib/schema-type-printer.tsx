@@ -12,7 +12,7 @@ import {
   InputValueDefinitionNode,
 } from 'graphql';
 import prettier from 'prettier';
-import { getGqlNames } from '../../types';
+import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
