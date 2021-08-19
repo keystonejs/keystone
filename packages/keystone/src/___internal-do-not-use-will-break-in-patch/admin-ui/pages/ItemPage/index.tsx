@@ -35,7 +35,7 @@ import {
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { useList } from '../../../../admin-ui/context';

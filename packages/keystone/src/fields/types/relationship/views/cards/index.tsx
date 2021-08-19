@@ -17,11 +17,11 @@ import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LoadingDots } from '@keystone-ui/loading';
+import { useEffect, useRef, useState } from 'react';
 import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
-} from '@keystone-next/admin-ui-utils';
-import { useEffect, useRef, useState } from 'react';
+} from '../../../../../admin-ui/utils';
 import { Link } from '../../../../../admin-ui/router';
 import { gql, useApolloClient } from '../../../../../admin-ui/apollo';
 import { controller } from '../index';

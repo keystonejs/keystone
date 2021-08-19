@@ -3,11 +3,11 @@
 import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 
 import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { makeDataGetter } from '@keystone-next/admin-ui-utils';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { DrawerController } from '@keystone-ui/modals';
 import { LoadingDots } from '@keystone-ui/loading';
 
+import { makeDataGetter } from '../../../../admin-ui/utils';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { gql, useQuery } from '../../../../admin-ui/apollo';
