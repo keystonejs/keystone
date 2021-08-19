@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
-import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
 import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
+import { FieldMeta, ListMeta } from '../../../../types';
 import { useRouter } from '../../../../admin-ui/router';
 import { Filter } from './useFilters';
 

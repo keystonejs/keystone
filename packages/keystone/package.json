@@ -18,7 +18,8 @@
     "static",
     "admin-ui",
     "testing",
-    "fields"
+    "fields",
+    "types"
   ],
   "bin": {
     "keystone-next": "bin/cli.js"
@@ -31,8 +32,8 @@
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@graphql-tools/schema": "^8.1.1",
+    "@graphql-ts/schema": "0.2.0",
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/types": "^24.0.0",
     "@keystone-ui/button": "^5.0.0",
     "@keystone-ui/core": "^3.1.1",
     "@keystone-ui/fields": "^4.1.2",
@@ -59,6 +60,7 @@
     "@types/form-data": "2.5.0",
     "@types/fs-extra": "^9.0.12",
     "@types/graphql-upload": "^8.0.6",
+    "@types/inflection": "^1.5.28",
     "@types/node-fetch": "^2.5.12",
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.3.2",
@@ -154,7 +156,8 @@
       "fields/index.ts",
       "fields/types/*/views/index.tsx",
       "fields/types/relationship/views/RelationshipSelect.tsx",
-      "fields/types/{image,file}/utils.ts"
+      "fields/types/{image,file}/utils.ts",
+      "types/index.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"

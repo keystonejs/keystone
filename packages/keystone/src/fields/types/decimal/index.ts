@@ -8,7 +8,7 @@ import {
   Decimal,
   FieldDefaultValue,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
 

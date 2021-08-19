@@ -1,15 +1,15 @@
 /* @jsx jsx */
 import { Fragment } from 'react';
+import { jsx } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
+import { SegmentedControl } from '@keystone-ui/segmented-control';
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
-import { SegmentedControl } from '@keystone-ui/segmented-control';
+} from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (

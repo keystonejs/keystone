@@ -1,12 +1,14 @@
-import { JSONValue, QueryMode, schema as schemaAPIFromTypesPkg } from '@keystone-next/types';
+import { GraphQLSchema, GraphQLObjectType, assertScalarType, assertEnumType } from 'graphql';
 import {
+  JSONValue,
+  QueryMode,
+  schema as schemaAPIFromTypesPkg,
   KeystoneContext,
   KeystoneConfig,
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
-} from '@keystone-next/types';
-import { GraphQLSchema, GraphQLObjectType, assertScalarType, assertEnumType } from 'graphql';
+} from '../../types';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
 const schema = {

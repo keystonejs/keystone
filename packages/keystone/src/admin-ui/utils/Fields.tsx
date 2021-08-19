@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, Stack } from '@keystone-ui/core';
-import { FieldMeta } from '@keystone-next/types';
 import { memo, useMemo } from 'react';
+import { FieldMeta } from '../../types';
 import { Value } from '.';
 
 type RenderFieldProps = {

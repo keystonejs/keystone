@@ -7,7 +7,7 @@ import {
   orderDirectionEnum,
   schema,
   filters,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range

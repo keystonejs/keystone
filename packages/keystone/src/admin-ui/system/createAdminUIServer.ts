@@ -1,6 +1,6 @@
 import url from 'url';
 import express from 'express';
-import type { KeystoneConfig, SessionStrategy, CreateContext } from '@keystone-next/types';
+import type { KeystoneConfig, SessionStrategy, CreateContext } from '../../types';
 import { createSessionContext } from '../../session';
 
 export const createAdminUIServer = async (

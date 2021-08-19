@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+import { sync as uid } from 'uid-safe';
 import {
   SessionStrategy,
   JSONValue,
@@ -9,9 +10,8 @@ import {
   SessionContext,
   CreateContext,
   schema,
-} from '@keystone-next/types';
+} from '../types';
 // uid-safe is what express-session uses so let's just use it
-import { sync as uid } from 'uid-safe';
 
 function generateSessionId() {
   return uid(24);

@@ -1,5 +1,5 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider, schema } from '@keystone-next/types';
+import { DatabaseProvider, schema } from '../../types';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';

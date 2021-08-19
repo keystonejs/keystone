@@ -2,12 +2,7 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
-import type {
-  KeystoneConfig,
-  CreateContext,
-  SessionStrategy,
-  GraphQLConfig,
-} from '@keystone-next/types';
+import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createAdminUIServer } from '../../admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';

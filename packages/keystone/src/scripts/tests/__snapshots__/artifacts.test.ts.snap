@@ -6,14 +6,14 @@ import {
   KeystoneListsAPI as GenericKeystoneListsAPI,
   KeystoneDbAPI as GenericKeystoneDbAPI,
   KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import('@keystone-next/types').JSONValue;
+  readonly JSON: import('@keystone-next/keystone/types').JSONValue;
 };
 
 export type TodoWhereInput = {

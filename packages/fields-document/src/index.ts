@@ -7,7 +7,7 @@ import {
   schema,
   JSONValue,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';

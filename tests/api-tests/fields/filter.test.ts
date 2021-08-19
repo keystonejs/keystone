@@ -1,6 +1,6 @@
 import globby from 'globby';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
