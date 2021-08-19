@@ -127,7 +127,7 @@ test(
 The function `setupTestEnv` is used to set up a test environment which can be used across multiple tests.
 
 ```typescript
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import config from './keystone';
 

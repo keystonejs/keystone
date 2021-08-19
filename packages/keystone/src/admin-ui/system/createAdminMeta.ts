@@ -1,5 +1,5 @@
-import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
 import { GraphQLString } from 'graphql';
+import type { KeystoneConfig, AdminMetaRootVal } from '../../../types';
 import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 

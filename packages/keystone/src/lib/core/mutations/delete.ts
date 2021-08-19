@@ -1,5 +1,5 @@
-import { KeystoneContext, DatabaseProvider } from '@keystone-next/types';
 import pLimit, { Limit } from 'p-limit';
+import { KeystoneContext, DatabaseProvider } from '../../../types';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
 import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';

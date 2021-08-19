@@ -1,4 +1,4 @@
-import { BaseGeneratedListTypes } from '@keystone-next/types';
+import { BaseGeneratedListTypes } from '@keystone-next/keystone/types';
 import { AuthConfig } from '../types';
 
 type InitTemplateArgs = {

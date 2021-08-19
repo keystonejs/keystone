@@ -1,14 +1,14 @@
 /* @jsx jsx */
 
+import { jsx } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+} from '../../../../types';
 
 import { PrettyData } from './PrettyData';
 

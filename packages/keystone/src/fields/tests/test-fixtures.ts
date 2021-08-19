@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '../../types';
 import { text } from '../types/text';
 
 export const name = 'ID';

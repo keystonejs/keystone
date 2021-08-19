@@ -1,5 +1,5 @@
-import { ItemRootValue, KeystoneConfig, KeystoneContext } from '@keystone-next/types';
 import pluralize from 'pluralize';
+import { ItemRootValue, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
 import { InitialisedList } from './types-for-lists';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';

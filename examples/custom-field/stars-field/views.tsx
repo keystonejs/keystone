@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { StarsInput } from './stars-input';
 
 // this is the component shown in the create modal and item page

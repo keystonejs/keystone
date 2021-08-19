@@ -1,5 +1,5 @@
-import { ListMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
+import { ListMeta } from '../../../../types';
 import { useRouter } from '../../../../admin-ui/router';
 
 export function useSort(list: ListMeta) {

@@ -2,10 +2,10 @@ import path from 'path';
 import crypto from 'crypto';
 import { pipeline } from 'stream';
 import filenamify from 'filenamify';
-import { KeystoneConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 
 import slugify from '@sindresorhus/slugify';
+import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
 import {
   buildKeystoneCloudFileSrc,

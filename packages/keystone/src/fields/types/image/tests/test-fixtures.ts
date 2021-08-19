@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '../../../../types';
 import { text } from '../../text';
 import { image } from '..';
 

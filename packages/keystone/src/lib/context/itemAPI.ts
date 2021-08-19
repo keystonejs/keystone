@@ -5,7 +5,7 @@ import {
   KeystoneListsAPI,
   KeystoneContext,
   GqlNames,
-} from '@keystone-next/types';
+} from '../../types';
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 

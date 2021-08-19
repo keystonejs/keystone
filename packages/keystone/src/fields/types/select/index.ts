@@ -1,3 +1,4 @@
+import inflection from 'inflection';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -7,9 +8,8 @@ import {
   orderDirectionEnum,
   schema,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 // @ts-ignore
-import inflection from 'inflection';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
 

@@ -5,7 +5,7 @@ import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useToasts } from '@keystone-ui/toast';
 import { Button } from '@keystone-ui/button';
-import { ListMeta } from '@keystone-next/types';
+import { ListMeta } from '../../../../../types';
 import {
   ItemData,
   makeDataGetter,

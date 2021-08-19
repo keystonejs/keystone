@@ -1,4 +1,4 @@
-import { DatabaseProvider } from '@keystone-next/types';
+import { DatabaseProvider } from '../../../../types';
 import { decimal } from '..';
 import { text } from '../../text';
 

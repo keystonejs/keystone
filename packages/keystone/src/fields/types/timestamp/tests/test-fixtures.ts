@@ -1,4 +1,4 @@
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
+import { DatabaseProvider, KeystoneContext } from '../../../../types';
 import { text } from '../../text';
 import { timestamp } from '..';
 

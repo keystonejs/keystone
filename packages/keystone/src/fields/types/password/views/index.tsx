@@ -2,13 +2,6 @@
 
 import { useState } from 'react';
 
-import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
@@ -16,6 +9,13 @@ import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+import {
+  CardValueComponent,
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+} from '../../../../types';
 import { CellContainer } from '../../../../admin-ui/components';
 
 export const Field = ({

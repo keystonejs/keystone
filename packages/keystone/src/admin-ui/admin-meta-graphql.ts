@@ -1,4 +1,4 @@
-import { JSONValue } from '@keystone-next/types';
+import { JSONValue } from '../types';
 import { gql } from './apollo';
 
 export const staticAdminMetaQuery = gql`

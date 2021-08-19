@@ -1,5 +1,5 @@
-import { KeystoneContext, DatabaseProvider, ItemRootValue } from '@keystone-next/types';
 import pLimit, { Limit } from 'p-limit';
+import { KeystoneContext, DatabaseProvider, ItemRootValue } from '../../../types';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {

@@ -1,10 +1,5 @@
-import {
-  FindManyArgsValue,
-  ItemRootValue,
-  KeystoneContext,
-  OrderDirection,
-} from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
+import { FindManyArgsValue, ItemRootValue, KeystoneContext, OrderDirection } from '../../../types';
 import { validateNonCreateListAccessControl } from '../access-control';
 import {
   PrismaFilter,

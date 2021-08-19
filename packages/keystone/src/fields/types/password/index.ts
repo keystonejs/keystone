@@ -1,3 +1,6 @@
+import bcryptjs from 'bcryptjs';
+// @ts-ignore
+import dumbPasswords from 'dumb-passwords';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -5,10 +8,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   schema,
-} from '@keystone-next/types';
-import bcryptjs from 'bcryptjs';
-// @ts-ignore
-import dumbPasswords from 'dumb-passwords';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

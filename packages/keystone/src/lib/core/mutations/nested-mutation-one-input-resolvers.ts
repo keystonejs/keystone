@@ -1,4 +1,4 @@
-import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, schema } from '../../../types';
 import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';

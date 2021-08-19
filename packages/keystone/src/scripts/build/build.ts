@@ -1,7 +1,7 @@
 import Path from 'path';
 import prettier from 'prettier';
 import fs from 'fs-extra';
-import { AdminFileToWrite } from '@keystone-next/types';
+import { AdminFileToWrite } from '../../types';
 import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';

@@ -2,6 +2,10 @@
 
 import { Fragment, ReactNode, useState } from 'react';
 
+import { Button } from '@keystone-ui/button';
+import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
+import { DrawerController } from '@keystone-ui/modals';
 import {
   CardValueComponent,
   CellComponent,
@@ -9,11 +13,7 @@ import {
   FieldControllerConfig,
   FieldProps,
   ListMeta,
-} from '@keystone-next/types';
-import { Button } from '@keystone-ui/button';
-import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
-import { DrawerController } from '@keystone-ui/modals';
+} from '../../../../types';
 import { Link } from '../../../../admin-ui/router';
 import { useKeystone, useList } from '../../../../admin-ui/context';
 import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components';

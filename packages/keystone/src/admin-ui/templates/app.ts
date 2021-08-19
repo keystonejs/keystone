@@ -10,7 +10,7 @@ import {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql';
-import { AdminMetaRootVal } from '@keystone-next/types';
+import { AdminMetaRootVal } from '../../types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import { serializePathForImport } from '../utils/serializePathForImport';
 

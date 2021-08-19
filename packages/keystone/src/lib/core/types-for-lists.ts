@@ -12,8 +12,8 @@ import {
   DatabaseProvider,
   FindManyArgs,
   CacheHintArgs,
-} from '@keystone-next/types';
-import { FieldHooks } from '@keystone-next/types/src/config/hooks';
+} from '../../types';
+import { FieldHooks } from '../../types/config/hooks';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,

@@ -1,5 +1,5 @@
-import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { useCallback, useMemo, useState } from 'react';
+import { FieldMeta, ListMeta } from '../../../../../types';
 import { DataGetter, makeDataGetter } from '../../../../../admin-ui/utils';
 import { gql, useQuery } from '../../../../../admin-ui/apollo';
 import { controller } from '../index';

@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { ImageMetadata } from '@keystone-next/types';
+import { ImageMetadata } from '../../types';
 
 /**
  * This function and request to the cloud API will not be necessary if we can

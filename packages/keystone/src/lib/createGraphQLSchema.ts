@@ -1,4 +1,4 @@
-import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
+import type { KeystoneConfig, AdminMetaRootVal } from '../types';
 import { getAdminMetaSchema } from '../admin-ui/system';
 import { sessionSchema } from '../session';
 import { InitialisedList } from './core/types-for-lists';

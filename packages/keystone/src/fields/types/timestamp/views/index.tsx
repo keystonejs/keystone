@@ -1,16 +1,16 @@
 /* @jsx jsx */
 import { useState } from 'react';
 
+import { jsx, Inline, Stack, VisuallyHidden } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
+import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
-import { jsx, Inline, Stack, VisuallyHidden } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
-import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
+} from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 import {
   isValidDate,

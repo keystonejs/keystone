@@ -24,7 +24,6 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/types": "^24.0.0",
     "@manypkg/find-root": "^1.1.0",
     "dotenv": "^10.0.0",
     "tree-kill": "^1.2.2"

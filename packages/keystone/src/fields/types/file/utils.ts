@@ -1,4 +1,4 @@
-import { AssetMode } from '@keystone-next/types';
+import { AssetMode } from '../../../types';
 
 const FILEREGEX = /^(local|keystone-cloud):file:([^\\\/:\n]+)/;
 

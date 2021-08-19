@@ -1,13 +1,13 @@
 /* @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '@keystone-next/types';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+} from '../../../../types';
 import { validateImage, validateRef, ImageWrapper } from './Field';
 
 export { Field } from './Field';

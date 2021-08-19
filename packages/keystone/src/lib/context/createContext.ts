@@ -6,7 +6,7 @@ import {
   KeystoneGraphQLAPI,
   GqlNames,
   KeystoneConfig,
-} from '@keystone-next/types';
+} from '../../types';
 
 import { PrismaClient } from '../core/utils';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';

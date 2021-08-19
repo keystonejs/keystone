@@ -1,6 +1,6 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
-import { schema } from '@keystone-next/types';
+import { schema } from '@keystone-next/keystone/types';
 
 export const lists = createSchema({
   Post: list({

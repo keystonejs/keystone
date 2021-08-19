@@ -1,3 +1,4 @@
+import { FileUpload } from 'graphql-upload';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -8,8 +9,7 @@ import {
   ImageExtension,
   KeystoneContext,
   schema,
-} from '@keystone-next/types';
-import { FileUpload } from 'graphql-upload';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 

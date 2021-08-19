@@ -1,5 +1,5 @@
-import { FieldMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
+import { FieldMeta } from '../../types';
 import { Value } from './item-form';
 
 export function useInvalidFields(

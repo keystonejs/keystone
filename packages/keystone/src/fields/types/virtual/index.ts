@@ -6,7 +6,7 @@ import {
   FieldTypeFunc,
   fieldType,
   ListInfo,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 type VirtualFieldGraphQLField = schema.Field<ItemRootValue, any, any, string>;

@@ -1,4 +1,3 @@
-import { KeystoneContext } from '@keystone-next/types';
 import {
   GraphQLScalarType,
   GraphQLObjectType,
@@ -25,6 +24,7 @@ import {
   GraphQLOutputType,
   astFromValue,
 } from 'graphql';
+import { KeystoneContext } from '../../types';
 
 function getNamedOrListTypeNodeForType(
   type:

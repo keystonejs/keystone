@@ -39,7 +39,7 @@ The exported components object is expected to have the following type signature:
 Keystone conveniently exports an AdminConfig type for DX.
 
 ```typescript
-import { AdminConfig } from '@keystone-next/types';
+import { AdminConfig } from '@keystone-next/keystone/types';
 export const components: AdminConfig['components'] = {
   Logo,
   Navigation,

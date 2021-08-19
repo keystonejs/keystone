@@ -1,14 +1,14 @@
 /* @jsx jsx */
 
+import { jsx, Stack, Text } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
-import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
+} from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
 export const Field = ({

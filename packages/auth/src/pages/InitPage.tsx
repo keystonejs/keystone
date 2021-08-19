@@ -7,7 +7,7 @@ import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
 import { useRawKeystone } from '@keystone-next/keystone/admin-ui/context';
-import { FieldMeta } from '@keystone-next/types';
+import { FieldMeta } from '@keystone-next/keystone/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { gql, useMutation } from '@keystone-next/keystone/admin-ui/apollo';

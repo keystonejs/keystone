@@ -1,4 +1,4 @@
-import { DBField, MultiDBField, NoDBField, ScalarishDBField } from '@keystone-next/types';
+import { DBField, MultiDBField, NoDBField, ScalarishDBField } from '../../types';
 
 type BaseResolvedRelationDBField = {
   kind: 'relation';

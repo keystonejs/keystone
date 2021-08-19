@@ -7,7 +7,7 @@ import {
   orderDirectionEnum,
   schema,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

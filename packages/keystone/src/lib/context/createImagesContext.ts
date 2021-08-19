@@ -1,9 +1,9 @@
 import path from 'path';
-import { KeystoneConfig, ImagesContext, ImageMetadata } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
+import { KeystoneConfig, ImagesContext, ImageMetadata } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
 import {
   buildKeystoneCloudImageSrc,

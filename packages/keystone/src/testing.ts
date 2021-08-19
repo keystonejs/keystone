@@ -4,7 +4,7 @@ import fs from 'fs';
 import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
-import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,

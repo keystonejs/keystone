@@ -9,7 +9,7 @@ import type {
   KeystoneConfig,
   ListConfig,
   ListSchemaConfig,
-} from '@keystone-next/types';
+} from '../types';
 
 export function createSchema(config: ListSchemaConfig) {
   return config;

@@ -1,4 +1,4 @@
-import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, schema } from '../../../types';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';

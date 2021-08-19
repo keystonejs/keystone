@@ -1,4 +1,4 @@
-import type { KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneConfig } from '../../types';
 import { idFieldType } from '../id-field';
 
 /* Validate lists config and default the id field */
