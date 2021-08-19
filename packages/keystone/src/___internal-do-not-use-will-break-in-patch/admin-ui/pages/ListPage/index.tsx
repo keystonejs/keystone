@@ -16,7 +16,7 @@ import {
   DataGetter,
   DeepNullable,
   makeDataGetter,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
