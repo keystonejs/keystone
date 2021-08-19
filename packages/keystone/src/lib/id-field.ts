@@ -1,4 +1,6 @@
 import path from 'path';
+import { validate } from 'uuid';
+import { isCuid } from 'cuid';
 import {
   fieldType,
   FieldTypeFunc,
@@ -6,9 +8,7 @@ import {
   orderDirectionEnum,
   ScalarDBField,
   schema,
-} from '@keystone-next/types';
-import { validate } from 'uuid';
-import { isCuid } from 'cuid';
+} from '../types';
 
 const views = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),

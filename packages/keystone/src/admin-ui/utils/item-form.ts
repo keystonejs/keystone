@@ -1,7 +1,7 @@
-import { FieldMeta } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
 import isDeepEqual from 'fast-deep-equal';
+import { FieldMeta } from '../../types';
 import { ItemData, deserializeValue, serializeValueToObjByFieldKey } from './serialization';
 import { DataGetter } from './dataGetter';
 

@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { FieldProps } from '@keystone-next/types';
+import { FieldProps } from '@keystone-next/keystone/types';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
 import { controller } from '@keystone-next/keystone/fields/types/text/views';

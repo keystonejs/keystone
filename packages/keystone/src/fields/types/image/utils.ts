@@ -1,4 +1,4 @@
-import { AssetMode, ImageExtension } from '@keystone-next/types';
+import { AssetMode, ImageExtension } from '../../../types';
 
 const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 

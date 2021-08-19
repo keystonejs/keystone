@@ -3,7 +3,7 @@ import { GraphQLError, GraphQLSchema } from 'graphql';
 import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
 import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import type { Config } from 'apollo-server-express';
-import type { CreateContext, GraphQLConfig, SessionStrategy } from '@keystone-next/types';
+import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
 import { createSessionContext } from '../../session';
 
 export const createApolloServerMicro = ({

@@ -6,7 +6,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
   schema,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
 import cloudinary from 'cloudinary';

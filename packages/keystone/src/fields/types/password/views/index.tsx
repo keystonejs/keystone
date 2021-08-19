@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
+} from '../../../../types';
 import { Button } from '@keystone-ui/button';
 import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';

@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx } from '@keystone-ui/core';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options';
 import { Popover } from '@keystone-ui/popover';
 import { useRouter } from 'next/router';
+import { ListMeta } from '../../../../types';
 import { useSelectedFields } from './useSelectedFields';
 
 function isArrayEqual(arrA: string[], arrB: string[]) {

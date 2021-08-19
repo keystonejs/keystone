@@ -1,4 +1,4 @@
-import { getGqlNames, schema } from '@keystone-next/types';
+import { getGqlNames, schema } from '../../../types';
 import { InitialisedList } from '../types-for-lists';
 import * as queries from './resolvers';
 
