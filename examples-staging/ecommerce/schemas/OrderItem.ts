@@ -10,7 +10,7 @@ export const OrderItem = list({
     delete: () => false,
   },
   fields: {
-    name: text({ isRequired: true }),
+    name: text({ isRequired: true, graphql: { isEnabled: { orderBy: true } } }),
     description: text({
       ui: {
         displayMode: 'textarea',

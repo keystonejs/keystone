@@ -194,6 +194,23 @@ export type ListGraphQLConfig = {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
+  // Setting any of these to `false` will remove the corresponding operations
+  // from the GraphQL schema.
+  //
+  // Default: true
+  isEnabled?:
+    | boolean // Completely remove everything, including the type. This makes it a DB only list (?), including from the point of view of relationships to this list. This would exclude the opposite field the opposite fields... type, and everything rleated to it.
+    | {
+        query?: boolean; // Does item()/items() exist? Can I read via a related item? (?). Will disable entirely in the admin UI if this is selected, because otherwise... pain.
+        // Mutations
+        create?: boolean; // Does createItem/createItems exist? Does `create` exist on the RelationshipInput types?
+        update?: boolean; // Does updateItem/updateItems exist?
+        delete?: boolean; // Does deleteItem/deleteItems exist?
+
+        // Defaults to apply to all fields. Default: false
+        filter?: boolean; // The default value to use for graphql.isEnabled.filter on all fields for this list
+        orderBy?: boolean; // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+      };
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };

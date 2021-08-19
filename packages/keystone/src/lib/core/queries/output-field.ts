@@ -74,7 +74,7 @@ function getValueForDBField(
 }
 
 export function outputTypeField(
-  output: NextFieldType['output'],
+  output: Exclude<NextFieldType['output'], undefined>,
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
   access: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>,

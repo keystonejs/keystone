@@ -110,6 +110,9 @@ export const idFieldType =
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
+      ...config,
+      // The ID field is always filterable and orderable.
+      graphql: { isEnabled: { filter: true, orderBy: true } },
       input: {
         where: {
           arg: filterArg,

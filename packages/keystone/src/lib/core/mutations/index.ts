@@ -98,15 +98,15 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   return {
     mutations: {
-      ...(list.access.create !== false && {
+      ...(list.graphql.isEnabled.create && {
         [names.createMutationName]: createOne,
         [names.createManyMutationName]: createMany,
       }),
-      ...(list.access.update !== false && {
+      ...(list.graphql.isEnabled.update && {
         [names.updateMutationName]: updateOne,
         [names.updateManyMutationName]: updateMany,
       }),
-      ...(list.access.delete !== false && {
+      ...(list.graphql.isEnabled.delete && {
         [names.deleteMutationName]: deleteOne,
         [names.deleteManyMutationName]: deleteMany,
       }),

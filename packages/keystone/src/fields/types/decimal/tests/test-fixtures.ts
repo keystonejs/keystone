@@ -1,6 +1,5 @@
 import { DatabaseProvider } from '../../../../types';
 import { decimal } from '..';
-import { text } from '../../text';
 
 export const name = 'Decimal';
 export const typeFunction = decimal;
@@ -11,8 +10,7 @@ export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  name: text(),
-  price: decimal({ scale: 2 }),
+  price: decimal({ scale: 2, graphql: { isEnabled: { filter: true } } }),
 });
 
 export const initItems = () => {

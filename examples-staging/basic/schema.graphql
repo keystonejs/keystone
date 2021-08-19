@@ -123,6 +123,11 @@ type PasswordState {
   isSet: Boolean!
 }
 
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
+
 type LocalImageFieldOutput implements ImageFieldOutput {
   id: ID!
   filesize: Int!
@@ -145,13 +150,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
   email: StringNullableFilter
-  password: PasswordFilter
-  isAdmin: BooleanNullableFilter
-  roles: StringNullableFilter
-  phoneNumbers: PhoneNumberManyRelationFilter
-  posts: PostManyRelationFilter
 }
 
 input IDFilter {
@@ -193,38 +192,8 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input BooleanNullableFilter {
-  equals: Boolean
-  not: BooleanNullableFilter
-}
-
-input PhoneNumberManyRelationFilter {
-  every: PhoneNumberWhereInput
-  some: PhoneNumberWhereInput
-  none: PhoneNumberWhereInput
-}
-
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
-input UserWhereUniqueInput {
-  id: ID
-  email: String
-}
-
 input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  isAdmin: OrderDirection
-  roles: OrderDirection
 }
 
 enum OrderDirection {
@@ -308,24 +277,19 @@ type PhoneNumber {
   value: String
 }
 
+input PhoneNumberWhereUniqueInput {
+  id: ID
+}
+
 input PhoneNumberWhereInput {
   AND: [PhoneNumberWhereInput!]
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
   id: IDFilter
-  user: UserWhereInput
-  type: StringNullableFilter
-  value: StringNullableFilter
-}
-
-input PhoneNumberWhereUniqueInput {
-  id: ID
 }
 
 input PhoneNumberOrderByInput {
   id: OrderDirection
-  type: OrderDirection
-  value: OrderDirection
 }
 
 input PhoneNumberUpdateInput {
@@ -369,37 +333,19 @@ type Post_content_DocumentField {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
+input PostWhereUniqueInput {
+  id: ID
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  title: StringNullableFilter
-  status: StringNullableFilter
-  publishDate: DateTimeNullableFilter
-  author: UserWhereInput
-}
-
-input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: DateTimeNullableFilter
-}
-
-input PostWhereUniqueInput {
-  id: ID
 }
 
 input PostOrderByInput {
   id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  publishDate: OrderDirection
 }
 
 input PostUpdateInput {
@@ -495,6 +441,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

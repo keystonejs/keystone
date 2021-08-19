@@ -78,15 +78,17 @@ type PasswordState {
   isSet: Boolean!
 }
 
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
   email: StringNullableFilter
-  password: PasswordFilter
-  posts: PostManyRelationFilter
 }
 
 input IDFilter {
@@ -134,25 +136,8 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
-input UserWhereUniqueInput {
-  id: ID
-  email: String
-}
-
 input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
 }
 
 enum OrderDirection {
@@ -211,44 +196,19 @@ type Post_content_DocumentField {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
+input PostWhereUniqueInput {
+  id: ID
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  title: StringNullableFilter
-  status: StringNullableFilter
-  publishDate: DateTimeNullableFilter
-  author: UserWhereInput
-  tags: TagManyRelationFilter
-}
-
-input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: DateTimeNullableFilter
-}
-
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
-}
-
-input PostWhereUniqueInput {
-  id: ID
 }
 
 input PostOrderByInput {
   id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  publishDate: OrderDirection
 }
 
 input PostUpdateInput {
@@ -309,22 +269,19 @@ type Tag {
   postsCount(where: PostWhereInput! = {}): Int
 }
 
+input TagWhereUniqueInput {
+  id: ID
+}
+
 input TagWhereInput {
   AND: [TagWhereInput!]
   OR: [TagWhereInput!]
   NOT: [TagWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
-  posts: PostManyRelationFilter
-}
-
-input TagWhereUniqueInput {
-  id: ID
 }
 
 input TagOrderByInput {
   id: OrderDirection
-  name: OrderDirection
 }
 
 input TagUpdateInput {
@@ -413,6 +370,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

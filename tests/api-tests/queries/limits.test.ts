@@ -9,13 +9,13 @@ const runner = setupTestRunner({
     lists: createSchema({
       Post: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
           author: relationship({ ref: 'User.posts', many: true }),
         },
       }),
       User: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
           favNumber: integer(),
           posts: relationship({ ref: 'Post.author', many: true }),
         },

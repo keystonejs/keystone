@@ -98,12 +98,16 @@ const runner = setupTestRunner({
       Company: list({
         fields: {
           name: text(),
-          locations: relationship({ ref: 'Location.companies', many: true }),
+          locations: relationship({
+            ref: 'Location.companies',
+            many: true,
+            graphql: { isEnabled: { filter: true } },
+          }),
         },
       }),
       Location: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
           companies: relationship({ ref: 'Company.locations', many: true }),
         },
       }),
