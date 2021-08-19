@@ -15,7 +15,7 @@ Reference your custom Navigation component in the export as so.
 
 ```ts
 // /admin/config.ts
-import type { AdminConfig } from '@keystone-next/types';
+import type { AdminConfig } from '@keystone-next/keystone/types';
 import { CustomNavigation } from './components/CustomNavigation';
 
 export const components: AdminConfig['components'] = {
@@ -148,7 +148,7 @@ export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) 
 
 
 // admin/config.ts
-import { AdminConfig } from '@keystone-next/types';
+import { AdminConfig } from '@keystone-next/keystone/types';
 import { CustomNavigation } from './components/CustomNavigation';
 export const components: AdminConfig['components'] = {
   Navigation: CustomNavigation
