@@ -46,8 +46,9 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
     await page.goto('http://localhost:3000');
   });
   beforeEach(async () => {
-    // add records
+    // Drop the database
     await deleteAllData('./tests/test-projects/crud-notifications');
+    // Add required seed data
     await seedData(page);
   });
   test('Complete deletion success, only shows the successful deletion prompt', async () => {
