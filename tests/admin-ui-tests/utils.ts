@@ -7,7 +7,7 @@ import * as playwright from 'playwright';
 import { findRootSync } from '@manypkg/find-root';
 import dotenv from 'dotenv';
 
-async function deleteAllData(projectDir: string) {
+export async function deleteAllData(projectDir: string) {
   const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
   let prisma = new PrismaClient();
@@ -32,7 +32,7 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 
 export const adminUITests = (
   pathToTest: string,
-  tests: (browser: playwright.BrowserType<playwright.Browser>) => void
+  tests: (browser: playwright.BrowserType<playwright.Browser>, projectRoot: string) => void
 ) => {
   const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
@@ -42,7 +42,6 @@ export const adminUITests = (
 
     afterAll(async () => {
       await cleanupKeystoneProcess();
-      deleteAllData(projectDir);
     });
 
     async function startKeystone(command: 'start' | 'dev') {
@@ -68,8 +67,6 @@ export const adminUITests = (
       keystoneProcess.stdout!.on('data', listener);
       keystoneProcess.stderr!.on('data', listener);
 
-      deleteAllData(projectDir);
-
       cleanupKeystoneProcess = async () => {
         keystoneProcess.stdout!.off('data', listener);
         keystoneProcess.stderr!.off('data', listener);
@@ -86,39 +83,39 @@ export const adminUITests = (
       });
     }
 
-    // if (mode === 'prod') {
-    //   test('build keystone', async () => {
-    //     let keystoneBuildProcess = execa('yarn', ['build'], {
-    //       cwd: projectDir,
-    //       env: process.env,
-    //     });
-    //     if (process.env.VERBOSE) {
-    //       const logChunk = (chunk: any) => {
-    //         console.log(chunk.toString('utf8'));
-    //       };
-    //       keystoneBuildProcess.stdout!.on('data', logChunk);
-    //       keystoneBuildProcess.stderr!.on('data', logChunk);
-    //     }
-    //     await keystoneBuildProcess;
-    //   });
-    //   test('start keystone in prod', async () => {
-    //     await startKeystone('start');
-    //   });
-    // }
+    if (mode === 'prod') {
+      test('build keystone', async () => {
+        let keystoneBuildProcess = execa('yarn', ['build'], {
+          cwd: projectDir,
+          env: process.env,
+        });
+        if (process.env.VERBOSE) {
+          const logChunk = (chunk: any) => {
+            console.log(chunk.toString('utf8'));
+          };
+          keystoneBuildProcess.stdout!.on('data', logChunk);
+          keystoneBuildProcess.stderr!.on('data', logChunk);
+        }
+        await keystoneBuildProcess;
+      });
+      test('start keystone in prod', async () => {
+        await startKeystone('start');
+      });
+    }
 
     describe.each([
       'chromium',
-      // 'firefox',
-      // // we don't run the tests on webkit in production
-      // // because unlike chromium and firefox
-      // // webkit doesn't treat localhost as a secure context
-      // // and we enable secure cookies in production
-      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      'firefox',
+      // we don't run the tests on webkit in production
+      // because unlike chromium and firefox
+      // webkit doesn't treat localhost as a secure context
+      // and we enable secure cookies in production
+      ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
-      afterAll(async () => {
+      beforeAll(async () => {
         await deleteAllData(projectDir);
       });
-      tests(playwright[browserName]);
+      tests(playwright[browserName], projectRoot);
     });
   });
 };

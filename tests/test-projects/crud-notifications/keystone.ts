@@ -5,18 +5,19 @@ export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./test.db',
-    async onConnect(context) {
-      console.log('############ CALLING ONCONNECT HERE');
-      console.log(process.env.DATABASE_URL);
-      await context.lists.Task.createMany({
-        data: [...Array.from(Array(50).keys())].map(key => {
-          return { label: `do not delete ${key}` };
-        }),
-      });
-
-      await context.lists.Task.createMany({
-        data: [...Array.from(Array(25).keys())].map(key => {
-          return { label: `deletable ${key}` };
+    onConnect: async context => {
+      context.lists.Task.createMany({
+        data: Array.from(Array(75).keys()).map(key => {
+          if (key >= 50) {
+            return {
+              label: `delete me ${key - 50}`,
+            };
+          } else {
+            console.log(key);
+            return {
+              label: `do not delete ${key}`,
+            };
+          }
         }),
       });
     },
