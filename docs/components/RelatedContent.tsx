@@ -13,6 +13,9 @@ export function RelatedContent({ children }: { children: ReactNode }) {
         display: 'grid',
         gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
         gap: 'var(--space-xlarge)',
+        '> a > p > p > code': {
+          textDecoration: 'none',
+        },
       })}
     >
       {children}
