@@ -1,5 +1,5 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';
-import { createSystem, initConfig } from '../../../../.';
+import { createSystem, initConfig } from '../../../../system';
 import { config, list } from '../../../../schema';
 import { relationship } from '..';
 import { text } from '../../text';
