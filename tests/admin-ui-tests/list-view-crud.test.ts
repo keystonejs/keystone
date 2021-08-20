@@ -4,58 +4,56 @@ import { adminUITests } from './utils';
 adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAllData) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
-  let ids: any[] = [];
-  const seedData = async (page: Page) => {
-    await page.evaluate(async () => {
-      const gql = String.raw;
-      return fetch('http://localhost:3000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: gql`
-            mutation CreateTaskItems($data: [TaskCreateInput!]!) {
-              createTasks(data: $data) {
-                id
-                label
-              }
-            }
-          `,
-          variables: {
-            data: Array.from(Array(75).keys()).map(key => {
-              if (key >= 50) {
-                return {
-                  label: `delete me ${key - 50}`,
-                };
-              } else {
-                return {
-                  label: `do not delete ${key}`,
-                };
-              }
-            }),
+  const seedData = async (page: Page, query: string, variables?: Record<string, any>) => {
+    const { errors } = await page.evaluate(
+      async ({ query, variables }) => {
+        return fetch('http://localhost:3000/api/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        }),
-      }).then(res => res.json());
-    }, ids);
+          body: JSON.stringify({
+            query,
+            variables,
+          }),
+        }).then(res => res.json());
+      },
+      { query, variables }
+    );
+
+    if (errors) {
+      console.error(errors);
+    }
   };
 
   beforeAll(async () => {
-    browser = await browserType.launch();
+    browser = await browserType.launch({ headless: false });
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
   beforeEach(async () => {
     // Drop the database
     await deleteAllData('./tests/test-projects/crud-notifications');
-    // Add required seed data
-    await seedData(page);
   });
+
   test('Complete deletion success, only shows the successful deletion prompt', async () => {
-    await Promise.all([
-      page.waitForNavigation(),
-      page.goto('http://localhost:3000/tasks?sortBy=-label&page=2'),
-    ]);
+    // hack for gql syntax highlighting
+    const gql = String.raw;
+    const query = gql`
+      mutation CreateTaskItem {
+        createTaskItem(data: { label: "you can delete me" }) {
+          id
+          label
+        }
+      }
+    `;
+    try {
+      await seedData(page, query);
+    } catch (e) {
+      console.log(e);
+    }
+
+    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.waitForSelector('tbody tr:first-of-type td:first-of-type label');
     await page.click('tbody tr:first-of-type td:first-of-type label');
     await page.waitForSelector('button:has-text("Delete")');
@@ -67,11 +65,20 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
     const dialogs = await page.$$('div[role="alert"] > div');
     expect(dialogs.length).toBe(1);
   });
+
   test('Complete deletion failure, only shows the successful failure prompt', async () => {
-    await Promise.all([
-      page.waitForNavigation(),
-      page.goto('http://localhost:3000/tasks?sortBy=-label&page=1'),
-    ]);
+    // hack for gql syntax highlighting
+    const gql = String.raw;
+    const query = gql`
+      mutation CreateTaskItem {
+        createTask(data: { label: "do not delete" }) {
+          id
+          label
+        }
+      }
+    `;
+    await seedData(page, query);
+    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.click('tbody tr:first-of-type td:first-of-type label');
     await page.click('button:has-text("Delete")');
     await page.click('div[role="dialog"] button:has-text("Delete")');
@@ -79,7 +86,32 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
     const dialogs = await page.$$('div[role="alert"] > div');
     expect(dialogs.length).toBe(1);
   });
+
   test('Partial deletion failure', async () => {
+    // hack for gql syntax highlighting
+    const gql = String.raw;
+    const query = gql`
+      mutation CreateTaskItems($data: [TaskCreateInput!]!) {
+        createTasks(data: $data) {
+          id
+          label
+        }
+      }
+    `;
+    const variables = {
+      data: Array.from(Array(75).keys()).map(key => {
+        if (key >= 50) {
+          return {
+            label: `delete me ${key - 50}`,
+          };
+        } else {
+          return {
+            label: `do not delete ${key}`,
+          };
+        }
+      }),
+    };
+    await seedData(page, query, variables);
     await Promise.all([
       page.waitForNavigation(),
       page.goto('http://localhost:3000/tasks?sortBy=label&page=1'),
