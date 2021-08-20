@@ -62,6 +62,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
         paddingRight: spacing.xlarge,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
+        position: 'relative',
       }}
       {...props}
     />
