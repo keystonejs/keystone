@@ -1,4 +1,4 @@
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { lists } from './schema';

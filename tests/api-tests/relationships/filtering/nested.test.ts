@@ -1,6 +1,6 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;

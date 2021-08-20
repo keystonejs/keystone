@@ -1,5 +1,5 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectAccessDenied, expectExtensionError } from '../utils';

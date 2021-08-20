@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import { ListSchemaConfig } from '../../types';
 import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
-import { config, list } from '../../schema';
+import { config, list } from '../..';
 import { ExitError } from '../utils';
 import {
   getFiles,

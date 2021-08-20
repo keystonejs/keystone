@@ -9,7 +9,7 @@ This document covers the different field types which are available and the confi
 To see how to access fields in the GraphQL API please see the [GraphQL API](./graphql) docs.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import {
   // Scalar types
   checkbox,
@@ -132,7 +132,7 @@ Options:
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -166,7 +166,7 @@ Options:
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique. This will also allow you to uniquely filter by this field in the GraphQL API.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { integer } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -195,7 +195,7 @@ Currently the `json` field is non-orderable and non-filterable.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { json } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -228,7 +228,7 @@ Options:
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { float } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -265,7 +265,7 @@ Options:
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { decimal } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -301,7 +301,7 @@ Options:
   This module will be used for all encryption routines in the `password` field.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { password } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -347,7 +347,7 @@ Options:
   Can be one of `['select', 'segmented-control']`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { select } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -390,7 +390,7 @@ Options:
   Can be one of `['input', 'textarea']`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -427,7 +427,7 @@ Options:
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { timestamp } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -477,7 +477,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 - `ui.displayMode === 'count'` only supports `many` relationships
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { relationship } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -528,7 +528,7 @@ Options:
 - `isUnique`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { autoIncrement } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -562,7 +562,7 @@ Options:
 - `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { virtual } from '@keystone-next/keystone/fields';
 import { schema } from '@keystone-next/keystone/types';
 
@@ -603,7 +603,7 @@ Options:
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { file } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -633,7 +633,7 @@ Options:
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { image } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -668,7 +668,7 @@ Options:
 - `layouts`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({
@@ -707,7 +707,7 @@ export default config({
   - `folder`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
