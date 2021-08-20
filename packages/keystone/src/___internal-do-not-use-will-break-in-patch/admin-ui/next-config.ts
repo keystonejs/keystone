@@ -19,7 +19,7 @@ export const config = withPreconstruct({
       config.externals = [
         ...config.externals,
         /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
-        /@keystone-next\/types/,
+        '.prisma/client',
       ];
     }
     return config;
