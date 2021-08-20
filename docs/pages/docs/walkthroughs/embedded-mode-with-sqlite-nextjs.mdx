@@ -120,15 +120,23 @@ export default config({
 
 ### Add Keystone to Next.js config
 
-Add a `next.config.js` file to your project root with the following:
+Edit the `next.config.js` file in your project root with the following:
 
-```tsx
-
+```diff
 // next.config.js
 
-const { withKeystone } = require('@keystone-next/keystone/next');
+/** @type {import('next').NextConfig} */
 
-module.exports = withKeystone();
++ const { withKeystone } = require("@keystone-next/keystone/next");
+
+- module.exports = {
+-   reactStrictMode: true,
+- }
+
++ module.exports = withKeystone({
++  reactStrictMode: true,
++ });
+
 ```
 
 This is where the magic happens – the `withKeystone` function lets Next.js encapsulate Keystone in its script runtime, while Keystone still operates independently of the Next.js frontend ✨
@@ -141,8 +149,9 @@ Finally, make a small change to the `scripts` object in `package.json` to includ
 "scripts": {
 + "postinstall": "keystone-next postinstall",
   "dev": "next dev",
+  "build": "next build",
   "start": "next start",
-  "build": "next build"
+  "lint": "next lint"
 },
 ```
 
