@@ -1,8 +1,7 @@
-import path from 'path';
 import { Browser, Page } from 'playwright';
-import { deleteAllData, adminUITests } from './utils';
+import { adminUITests } from './utils';
 
-adminUITests('./tests/test-projects/crud-notifications', (browserType, projectRoot) => {
+adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAllData) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   let ids: any[] = [];
@@ -42,16 +41,14 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, projectRo
   };
 
   beforeAll(async () => {
-    browser = await browserType.launch({ headless: false });
+    browser = await browserType.launch();
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
   beforeEach(async () => {
     // add records
-    const projectDir = path.join(projectRoot, './tests/test-projects/crud-notifications');
-
     try {
-      await deleteAllData(projectDir);
+      await deleteAllData('./tests/test-projects/crud-notifications');
       await seedData(page);
     } catch (e) {
       console.log('beforeEach error', e.message);
