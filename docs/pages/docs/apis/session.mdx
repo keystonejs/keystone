@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Session API
 
@@ -121,5 +124,24 @@ If you configure your Keystone session with session management then the [`Keysto
 
 The `startSession` and `endSession` functions will be used by [authentication mutations](./auth) to start and end authenticated sessions.
 These mutations will set the value of `session` to include the values `{ listKey, itemId }`.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+  <Well
+    heading="Example Project: Authentication"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/with-auth"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Adds password-based authentication to the Task Manager starter project.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for the session property of Keystone’s system configuration object.">{children}</Markdown>;

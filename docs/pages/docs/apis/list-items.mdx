@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # List Items API
 
@@ -149,5 +152,22 @@ const user = await context.lists.User.deleteMany({
   query: 'id name posts { id title }',
 });
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Context API Reference"
+    href="/docs/apis/context"
+    >
+    The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
+  </Well>
+  <Well
+    heading="DB Items API Reference"
+    href="/docs/apis/db-items"
+    >
+    The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for Keystone‘s List Items API: a programmatic API for running CRUD operations against your GraphQL API.">{children}</Markdown>;

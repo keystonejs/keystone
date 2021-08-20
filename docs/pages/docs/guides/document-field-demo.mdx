@@ -12,6 +12,7 @@ import Intro from './_doc-field-intro.mdx';
 import { Well } from '../../../components/primitives/Well';
 import { RelatedContent } from '../../../components/RelatedContent';
 import { useMediaQuery } from '../../../lib/media';
+import { InlineCode } from '../../../components/primitives/Code';
 
 ## Configure the demo
 
@@ -59,17 +60,17 @@ export default ({ children }) => {
 
 <RelatedContent>
   <Well
-    heading="Document field Guide"
-    href="/docs/guides/document-field"
-  >
-  Learn how to configure Keystone’s powerful document field to meet the needs of your project
+    heading="Document Field Guide"
+    href="/docs/guides/document-fields"
+    >
+    Keystone’s document field is a highly customisable rich text editor that stores content as structured JSON. Learn how to configure it and incorporate your own custom React components.
   </Well>
-    <Well
-    heading="Document field example project"
-    href="/https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+  <Well
+    heading="Example Project: Document Field"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/document-field"
     target="_blank"
     rel="noopener noreferrer"
-  >
-  Get the document field running in your local dev environment
+    >
+    Illustrates how to configure <InlineCode>document</InlineCode> fields in your Keystone system and render their data in a frontend application. Builds on the Blog starter project.
   </Well>
 </RelatedContent>

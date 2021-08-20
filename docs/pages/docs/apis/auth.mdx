@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Authentication API
 
@@ -474,5 +477,16 @@ If the token has expired the value `{ code: TOKEN_EXPIRED, message: 'The auth to
 
 If the token is valid then the session handler will start a new session and return the encoded session cookie data as `sessionToken`.
 The authenticated item will be returned as `item`.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Example Project: Authentication"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/with-auth"
+    >
+    Adds password-based authentication to the Task Manager starter project.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-next/auth` package.">{children}</Markdown>;

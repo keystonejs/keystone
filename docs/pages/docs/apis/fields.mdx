@@ -1,4 +1,8 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # Fields API
 
@@ -732,4 +736,21 @@ export default config({
 });
 ```
 
-export default ({ children }) => <Markdown description="A reference of Keystone’s field types, and the configuration options they accept.">{children}</Markdown>;
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list()</InlineCode> function.
+  </Well>
+  <Well
+    heading="GraphQL API Reference"
+    href="/docs/apis/graphql"
+    >
+    A complete CRUD (create, read, update, delete) GraphQL API derived from the list and field names you configure in your system.
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="A reference of Keystone’s field types, and the configuration options they accept.">{children}</Markdown>

@@ -1,4 +1,8 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # Context API
 
@@ -160,5 +164,22 @@ The following properties are deprecated and should not be used.
 They will be removed in future releases.
 
 `gqlNames`: A function which takes a `listKey` and returns an object containing the GraphQL query, mutation and type names related to that list.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="List Items API Reference"
+    href="/docs/apis/list-items"
+    >
+    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.lists.&lt;listName&gt;</InlineCode>
+  </Well>
+  <Well
+    heading="DB Items API Reference"
+    href="/docs/apis/db-items"
+    >
+    The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="The KeystoneContext object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions.">{children}</Markdown>;

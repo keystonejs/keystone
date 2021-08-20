@@ -1,6 +1,9 @@
 import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
 import { Alert } from '../../../components/primitives/Alert';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # Custom Admin UI Pages
 
@@ -8,6 +11,8 @@ In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of Next.js, it exposes the same pages directory for adding custom pages.
 
 !> **Note:** This feature will improve over time. It has been released ahead of time to unblock developers. We are working on improving support for other styling frameworks besides Emotion and will be making it easier by exporting more Admin UI components in the near future.
+
+## Getting started
 
 To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
 Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
@@ -24,6 +29,8 @@ export default function () {
     )
 }
 ```
+
+## Styling pages with Keystone’s built in JSX option
 
 If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
 
@@ -47,5 +54,30 @@ export default function () {
 Of course this is purely a recommendation, if you would prefer to roll your own css-in-js solution in with your custom component please feel free to! Although this may require additional configuration outside of the scope of this guide.
 
 x> **Not all Next.js exports are available:** Keystone **only** supports the page component as a default export in the pages directory. This means that unlike with Next, auxillary exports such as `getStaticProps` and `getServerProps` are not supported.
+
+## Related resources
+
+<RelatedContent>
+    <Well
+    heading="Example: Custom Admin UI Pages"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-pages"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
+    </Well>
+    <Well
+    heading="Custom Admin UI Logo Guide"
+    href="/docs/guides/custom-admin-ui-logo"
+    >
+    Learn how to add your own custom logo to Keystone’s Admin UI.
+    </Well>
+    <Well
+    heading="Custom Admin UI Navigation Guide"
+    href="/docs/guides/custom-admin-ui-navigation"
+    >
+    Learn how to create your own custom Navigation components in Keytone’s Admin UI.
+    </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to add custom pages to the Keystone Admin UI.">{children}</Markdown>;

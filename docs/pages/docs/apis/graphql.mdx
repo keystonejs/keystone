@@ -1,4 +1,8 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # GraphQL API
 
@@ -340,5 +344,22 @@ type User {
   name: String
 }
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list()</InlineCode> function.
+  </Well>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config.">{children}</Markdown>;

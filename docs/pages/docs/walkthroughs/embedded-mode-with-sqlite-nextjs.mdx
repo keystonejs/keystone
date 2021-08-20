@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { useMediaQuery } from '../../../lib/media';
 
 # How to embed Keystone + SQLite in a Next.js app
 
@@ -316,5 +319,16 @@ Embedded mode is a great way to operate a personal Next.js blog or portfolio wit
 ## Summary
 
 Keystone’s Embedded mode and SQLite support gives you the option to run a self contained CMS from the same place you keep your frontend code. While this option restricts read-write access to people who can run the project in local development, it has advantages with ease of setup, security, and web deployment. This is also a great way to deploy a read-only API on the web for content you manage on your computer.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Getting Started with create-keystone-app"
+    href="/docs/walkthroughs/getting-started-with-create-keystone-app"
+    >
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL API playground.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">{children}</Markdown>;
