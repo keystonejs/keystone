@@ -12,7 +12,7 @@ import {
   generateNodeModulesArtifacts,
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
-import { initConfig, createSystem, createExpressServer } from '.';
+import { initConfig, createSystem, createExpressServer } from './system';
 
 export type GraphQLRequest = (arg: {
   query: string;
