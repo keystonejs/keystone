@@ -47,12 +47,8 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
   });
   beforeEach(async () => {
     // add records
-    try {
-      await deleteAllData('./tests/test-projects/crud-notifications');
-      await seedData(page);
-    } catch (e) {
-      console.log('beforeEach error', e.message);
-    }
+    await deleteAllData('./tests/test-projects/crud-notifications');
+    await seedData(page);
   });
   test('Complete deletion success, only shows the successful deletion prompt', async () => {
     await Promise.all([
