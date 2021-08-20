@@ -6,7 +6,7 @@ import {
   CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
   schema,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

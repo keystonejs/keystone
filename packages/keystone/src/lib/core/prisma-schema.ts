@@ -1,4 +1,4 @@
-import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '@keystone-next/types';
+import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
 import { ResolvedDBField, ListsWithResolvedRelations } from './resolve-relationships';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 

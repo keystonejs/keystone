@@ -8,11 +8,11 @@ import { useToasts } from '@keystone-ui/toast';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 import { TextInput } from '@keystone-ui/fields';
-import { parseFileRef } from '@keystone-next/utils';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
-import { FieldProps } from '@keystone-next/types';
+import { FieldProps } from '../../../../types';
 
+import { parseFileRef } from '../utils';
 import { FileValue } from './index';
 
 export function validateRef({ ref }: { ref: string }) {

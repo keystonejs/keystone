@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';
-import { FieldMeta, JSONValue } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
@@ -11,6 +10,7 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { OptionPrimitive, Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
+import { FieldMeta, JSONValue } from '../../../../types';
 import { useList } from '../../../../admin-ui/context';
 import { useRouter } from '../../../../admin-ui/router';
 

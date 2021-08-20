@@ -1,5 +1,5 @@
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
-import { getGqlNames, KeystoneContext } from '@keystone-next/types';
+import { getGqlNames, KeystoneContext } from '@keystone-next/keystone/types';
 import {
   getStaticListName,
   getImperativeListName,

@@ -1,3 +1,4 @@
+import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
   CacheHint,
@@ -9,8 +10,7 @@ import {
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
-} from '@keystone-next/types';
-import { GraphQLResolveInfo } from 'graphql';
+} from '../../../types';
 import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';

@@ -6,7 +6,7 @@ import {
   schema,
   AdminMetaRootVal,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships

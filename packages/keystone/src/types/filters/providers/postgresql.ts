@@ -3,7 +3,7 @@
 
 import { schema } from '../../schema';
 
-import { QueryMode } from '../..';
+import { QueryMode } from '../../next-fields';
 
 type StringNullableFilterType = schema.InputObjectType<{
   // can be null

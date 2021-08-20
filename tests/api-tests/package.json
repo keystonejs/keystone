@@ -26,8 +26,6 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
-    "@keystone-next/types": "^24.0.0",
-    "@keystone-next/utils": "^1.0.4",
     "apollo-cache-control": "^0.14.0",
     "express": "^4.17.1"
   }

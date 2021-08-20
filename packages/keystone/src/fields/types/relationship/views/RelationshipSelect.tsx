@@ -3,10 +3,10 @@
 import 'intersection-observer';
 import { RefObject, useEffect, useMemo, useState, createContext, useContext } from 'react';
 
-import { IdFieldConfig, ListMeta } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
 import { validate as validateUUID } from 'uuid';
+import { IdFieldConfig, ListMeta } from '../../../../types';
 import { gql, TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo';
 
 function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {

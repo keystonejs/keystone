@@ -1,4 +1,4 @@
-import { KeystoneConfig } from '@keystone-next/types';
+import { KeystoneConfig } from '../../types';
 
 import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 

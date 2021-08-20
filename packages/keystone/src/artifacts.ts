@@ -1,9 +1,9 @@
 import path from 'path';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import type { KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import { format } from 'prettier';
+import type { KeystoneConfig } from './types';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
@@ -124,7 +124,7 @@ ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'
 export const lists = createListsAPI(keystoneConfig, PrismaClient);
 `;
 
-const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/types';
+const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/keystone/types';
 import { KeystoneListsTypeInfo } from './types';
 
 export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;`;

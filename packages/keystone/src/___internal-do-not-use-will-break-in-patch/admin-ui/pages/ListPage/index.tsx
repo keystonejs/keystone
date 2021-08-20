@@ -2,7 +2,6 @@
 
 import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
@@ -11,12 +10,13 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
   DataGetter,
   DeepNullable,
   makeDataGetter,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
@@ -494,8 +494,8 @@ function DeleteManyButton({
                     acc.successfulItems++;
                     acc.successMessage =
                       acc.successMessage === ''
-                        ? (acc.successMessage += curr.label)
-                        : (acc.successMessage += `, ${curr.label}`);
+                        ? (acc.successMessage += curr[list.labelField])
+                        : (acc.successMessage += `, ${curr[list.labelField]}`);
                   } else {
                     acc.unsuccessfulItems++;
                   }
