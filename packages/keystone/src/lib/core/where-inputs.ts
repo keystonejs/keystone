@@ -1,4 +1,4 @@
-import { DBField, KeystoneContext } from '@keystone-next/types';
+import { DBField, KeystoneContext } from '../../types';
 import { InitialisedList } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 

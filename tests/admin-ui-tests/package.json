@@ -12,7 +12,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@keystone-next/auth": "*",
-    "@keystone-next/fields": "*",
     "@keystone-next/keystone": "*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
@@ -25,9 +24,6 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/testing": "^1.1.1",
-    "@keystone-next/types": "^24.0.0",
-    "@keystone-next/utils": "^1.0.4",
     "@manypkg/find-root": "^1.1.0",
     "dotenv": "^10.0.0",
     "tree-kill": "^1.2.2"

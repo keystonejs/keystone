@@ -1,5 +1,5 @@
-import type { KeystoneConfig } from '@keystone-next/types';
 import { Application } from 'express';
+import type { KeystoneConfig } from '../../types';
 
 import { defaults } from '../config/defaults';
 

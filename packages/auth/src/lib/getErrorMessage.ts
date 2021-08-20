@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import {
   AuthTokenRedemptionErrorCode,
   AuthTokenRequestErrorCode,

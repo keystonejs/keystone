@@ -18,7 +18,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-Keystone provides a testing library in the package [`@keystone-next/testing`](https://keystonejs.com/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
+Keystone provides a testing library in [`@keystone-next/keystone/testing`](https://keystonejs.com/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
 This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example.test.ts](./example.test.ts)
 
 ### Running tests
@@ -63,7 +63,7 @@ Ran all test suites.
 The function `setupTestRunner` takes the project's `KeystoneConfig` object and creates a `runner` function. This test runner is then used to wrap a test function.
 
 ```typescript
-import { setupTestRunner } from '@keystone-next/testing';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import config from './keystone';
 
 const runner = setupTestRunner({ config });
@@ -127,8 +127,8 @@ test(
 The function `setupTestEnv` is used to set up a test environment which can be used across multiple tests.
 
 ```typescript
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestEnv, TestEnv } from '@keystone-next/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import config from './keystone';
 
 describe('Example tests using test environment', () => {

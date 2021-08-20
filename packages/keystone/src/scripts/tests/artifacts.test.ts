@@ -1,4 +1,4 @@
-import { text } from '@keystone-next/fields';
+import { text } from '../../fields';
 import { config, list } from '../../schema';
 import { ExitError } from '../utils';
 import {
@@ -111,7 +111,7 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall');
     expect(await getFiles(tmp, ['node_modules/.keystone/api.{d.ts,js}'])).toMatchInlineSnapshot(`
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-      import { KeystoneListsAPI } from '@keystone-next/types';
+      import { KeystoneListsAPI } from '@keystone-next/keystone/types';
       import { KeystoneListsTypeInfo } from './types';
 
       export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;

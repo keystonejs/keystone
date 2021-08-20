@@ -1,8 +1,8 @@
-import { KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
+import { KeystoneConfig, DatabaseProvider } from '@keystone-next/keystone/types';
 
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
-// export it from the `@keystone-next/testing` package.
+// export it from `@keystone-next/keystone/testing`.
 export const apiTestConfig = (
   config: Omit<KeystoneConfig, 'db'> & {
     db?: Omit<KeystoneConfig['db'], 'provider' | 'url' | 'adapter'>;

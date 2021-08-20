@@ -1,6 +1,6 @@
-import { integer, text, relationship, virtual } from '@keystone-next/fields';
+import { integer, text, relationship, virtual } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { schema } from '@keystone-next/types';
+import { schema } from '@keystone-next/keystone/types';
 import { isSignedIn, rules } from '../access';
 import formatMoney from '../lib/formatMoney';
 

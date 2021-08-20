@@ -1,7 +1,7 @@
-import { integer } from '@keystone-next/fields';
+import { integer } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({

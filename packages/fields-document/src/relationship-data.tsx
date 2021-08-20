@@ -1,4 +1,8 @@
-import { BaseGeneratedListTypes, GqlNames, KeystoneGraphQLAPI } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  GqlNames,
+  KeystoneGraphQLAPI,
+} from '@keystone-next/keystone/types';
 import { Descendant } from 'slate';
 import { GraphQLSchema, executeSync, parse } from 'graphql';
 import weakMemoize from '@emotion/weak-memoize';

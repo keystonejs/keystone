@@ -1,7 +1,7 @@
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { GraphQLRequest, setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '../../../packages/types/src';
+import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectAccessDenied, expectExtensionError } from '../utils';
 
 const runner = (debug: boolean | undefined) =>

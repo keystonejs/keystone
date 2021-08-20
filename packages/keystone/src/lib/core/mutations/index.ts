@@ -1,4 +1,4 @@
-import { DatabaseProvider, getGqlNames, schema } from '@keystone-next/types';
+import { DatabaseProvider, getGqlNames, schema } from '../../../types';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';

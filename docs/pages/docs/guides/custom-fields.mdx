@@ -12,9 +12,9 @@ There are two parts to a field type:
 - The **frontend** portion which defines how the field looks and behaves in the Admin UI.
 
 The general approach to creating a custom field type is to take an existing field type and make the appropriate changes for your use case.
-In this guide we're going to create a field type `myInt` which recreates the [`integer`](https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/integer) field type.
+In this guide we're going to create a field type `myInt` which recreates the [`integer`](https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types/integer) field type.
 
-!> For inspiration, see [the source for the fields that Keystone provides](https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types) and the [Custom Fields](https://github.com/keystonejs/keystone/tree/master/examples/custom-field) example project.
+!> For inspiration, see [the source for the fields that Keystone provides](https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types) and the [Custom Fields](https://github.com/keystonejs/keystone/tree/master/examples/custom-field) example project.
 
 ## Backend
 
@@ -31,7 +31,7 @@ import {
   orderDirectionEnum,
   filters,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 
 export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
@@ -162,7 +162,7 @@ The `Field` export is a React component which is used in the **item view** and t
 // view.tsx
 
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { FieldProps } from '@keystone-next/types';
+import { FieldProps } from '@keystone-next/keystone/types';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -193,7 +193,7 @@ Note it does not allow modifying the value.
 // view.tsx
 
 import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
-import { CellComponent } from '@keystone-next/types';
+import { CellComponent } from '@keystone-next/keystone/types';
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
@@ -211,7 +211,7 @@ Note it does not allow modifying the value.
 // view.tsx
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { CardValueComponent } from '@keystone-next/types';
+import { CardValueComponent } from '@keystone-next/keystone/types';
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (

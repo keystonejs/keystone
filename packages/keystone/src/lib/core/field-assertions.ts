@@ -1,4 +1,4 @@
-import { schema } from '@keystone-next/types';
+import { schema } from '../../types';
 import { InitialisedField } from './types-for-lists';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };

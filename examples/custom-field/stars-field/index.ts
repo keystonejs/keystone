@@ -7,12 +7,12 @@ import {
   orderDirectionEnum,
   schema,
   filters,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
 // and a different input in the Admin UI
-// https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/integer
+// https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types/integer
 
 export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {

@@ -1,7 +1,7 @@
-import { integer, relationship, text, virtual } from '@keystone-next/fields';
+import { integer, relationship, text, virtual } from '@keystone-next/keystone/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { schema } from '@keystone-next/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { schema } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {

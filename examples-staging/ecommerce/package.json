@@ -18,9 +18,7 @@
     "@babel/runtime": "^7.15.3",
     "@keystone-next/auth": "^31.0.0",
     "@keystone-next/cloudinary": "^6.0.6",
-    "@keystone-next/fields": "^14.0.0",
     "@keystone-next/keystone": "^24.0.0",
-    "@keystone-next/types": "^24.0.0",
     "@types/nodemailer": "^6.4.4",
     "dotenv": "^10.0.0",
     "next": "^10.2.3",
@@ -30,7 +28,6 @@
     "stripe": "^8.169.0"
   },
   "devDependencies": {
-    "@keystone-next/testing": "^1.1.1",
     "typescript": "^4.3.5"
   },
   "engines": {

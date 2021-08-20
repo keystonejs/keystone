@@ -1,4 +1,4 @@
-import type { KeystoneDbAPI } from '@keystone-next/types';
+import type { KeystoneDbAPI } from '@keystone-next/keystone/types';
 
 import { AuthTokenRequestErrorCode } from '../types';
 

@@ -1,4 +1,4 @@
-import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
+import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';

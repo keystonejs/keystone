@@ -7,9 +7,9 @@ import fastGlob from 'fast-glob';
 // @ts-ignore
 import fixturez from 'fixturez';
 import outdent from 'outdent';
-import { KeystoneConfig } from '@keystone-next/types';
 import { parseArgsStringToArgv } from 'string-argv';
 import { IntrospectionEngine, uriToCredentials } from '@prisma/sdk';
+import { KeystoneConfig } from '../../types';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
 
@@ -22,7 +22,7 @@ export const graphql = outdent;
 
 export const basicKeystoneConfig = js`
                                      import { config, list } from "@keystone-next/keystone/schema";
-                                     import { text } from "@keystone-next/fields";
+                                     import { text } from "@keystone-next/keystone/fields";
 
                                      export default config({
                                        db: { provider: "sqlite", url: "file:./app.db" },
@@ -115,8 +115,6 @@ export const symlinkKeystoneDeps = Object.fromEntries(
   [
     '@keystone-next/keystone',
     '@keystone-next/auth',
-    '@keystone-next/fields',
-    '@keystone-next/types',
     '@prisma/engines',
     '@prisma/client',
     'typescript',
