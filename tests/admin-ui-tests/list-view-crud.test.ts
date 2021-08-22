@@ -27,7 +27,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
   };
 
   beforeAll(async () => {
-    browser = await browserType.launch({ headless: false });
+    browser = await browserType.launch();
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
