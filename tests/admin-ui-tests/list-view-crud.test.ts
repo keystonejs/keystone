@@ -41,7 +41,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
     const gql = String.raw;
     const query = gql`
       mutation CreateTaskItem {
-        createTaskItem(data: { label: "you can delete me" }) {
+        createTask(data: { label: "you can delete me" }) {
           id
           label
         }
