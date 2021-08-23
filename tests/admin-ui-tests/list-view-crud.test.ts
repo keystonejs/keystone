@@ -5,7 +5,7 @@ import { adminUITests } from './utils';
 adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAllData) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
-  const seedData = async (page: Page, query: string, variables?: Record<string, any>) => {
+  const seedData = async (query: string, variables?: Record<string, any>) => {
     try {
       const { errors } = await fetch('http://localhost:3000/api/graphql', {
         method: 'POST',
@@ -46,7 +46,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
         }
       }
     `;
-    await seedData(page, query);
+    await seedData(query);
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.waitForSelector('tbody tr:first-of-type td:first-of-type label');
     await page.click('tbody tr:first-of-type td:first-of-type label');
@@ -71,7 +71,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
         }
       }
     `;
-    await seedData(page, query);
+    await seedData(query);
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.click('tbody tr:first-of-type td:first-of-type label');
     await page.click('button:has-text("Delete")');
@@ -105,7 +105,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
         }
       }),
     };
-    await seedData(page, query, variables);
+    await seedData(query, variables);
     await Promise.all([
       page.waitForNavigation(),
       page.goto('http://localhost:3000/tasks?sortBy=label&page=1'),
