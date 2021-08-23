@@ -3,7 +3,7 @@ import {
   FieldTypeFunc,
   BaseGeneratedListTypes,
   CommonFieldConfig,
-  schema,
+  graphql,
   orderDirectionEnum,
   Decimal,
   FieldDefaultValue,
@@ -67,27 +67,27 @@ export const decimal =
       ...config,
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].Decimal.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].Decimal.optional }),
           resolve: filters.resolveCommon,
         },
         create: {
-          arg: schema.arg({ type: schema.String }),
+          arg: graphql.arg({ type: graphql.String }),
           resolve(val) {
             if (val == null) return val;
             return new Decimal(val);
           },
         },
         update: {
-          arg: schema.arg({ type: schema.String }),
+          arg: graphql.arg({ type: graphql.String }),
           resolve(val) {
             if (val == null) return val;
             return new Decimal(val);
           },
         },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.String,
+      output: graphql.field({
+        type: graphql.String,
         resolve({ value }) {
           if (value === null) return null;
           return value.toFixed(scale);

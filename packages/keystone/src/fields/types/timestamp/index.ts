@@ -1,7 +1,7 @@
 import {
   BaseGeneratedListTypes,
   fieldType,
-  schema,
+  graphql,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
@@ -43,15 +43,15 @@ export const timestamp =
       ...config,
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].DateTime.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].DateTime.optional }),
           resolve: filters.resolveCommon,
         },
-        create: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
-        update: { arg: schema.arg({ type: schema.String }), resolve: inputResolver },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        create: { arg: graphql.arg({ type: graphql.String }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: graphql.String }), resolve: inputResolver },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.String,
+      output: graphql.field({
+        type: graphql.String,
         resolve({ value }) {
           if (value === null) return null;
           return value.toISOString();

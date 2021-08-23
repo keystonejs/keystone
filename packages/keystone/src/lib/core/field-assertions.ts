@@ -1,4 +1,4 @@
-import { schema } from '../../types';
+import { graphql } from '../../types';
 import { InitialisedField } from './types-for-lists';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };
@@ -69,7 +69,7 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${list.listKey} does not define one`
     );
   }
-  if (idField.input.uniqueWhere.arg.type !== schema.ID) {
+  if (idField.input.uniqueWhere.arg.type !== graphql.ID) {
     throw new Error(
       `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${
         list.listKey
@@ -92,7 +92,7 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must not have access.read be set to false but ${list.listKey} does`
     );
   }
-  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== schema.ID) {
+  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== graphql.ID) {
     throw new Error(
       `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${
         list.listKey

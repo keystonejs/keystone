@@ -5,7 +5,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
-  schema,
+  graphql,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
 
@@ -29,10 +29,10 @@ export const json =
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
-        create: { arg: schema.arg({ type: schema.JSON }) },
-        update: { arg: schema.arg({ type: schema.JSON }) },
+        create: { arg: graphql.arg({ type: graphql.JSON }) },
+        update: { arg: graphql.arg({ type: graphql.JSON }) },
       },
-      output: schema.field({ type: schema.JSON }),
+      output: graphql.field({ type: graphql.JSON }),
       views: resolveView('json/views'),
       __legacy: {
         defaultValue,

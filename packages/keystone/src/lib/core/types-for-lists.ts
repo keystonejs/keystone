@@ -1,5 +1,5 @@
 import {
-  schema,
+  graphql,
   ItemRootValue,
   TypesForList,
   getGqlNames,
@@ -57,7 +57,7 @@ export function initialiseLists(
       pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
     });
 
-    let output = schema.object<ItemRootValue>()({
+    let output = graphql.object<ItemRootValue>()({
       name: names.outputTypeName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -88,7 +88,7 @@ export function initialiseLists(
       },
     });
 
-    const uniqueWhere = schema.inputObject({
+    const uniqueWhere = graphql.inputObject({
       name: names.whereUniqueInputName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -101,15 +101,15 @@ export function initialiseLists(
       },
     });
 
-    const where: TypesForList['where'] = schema.inputObject({
+    const where: TypesForList['where'] = graphql.inputObject({
       name: names.whereInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.assign(
           {
-            AND: schema.arg({ type: schema.list(schema.nonNull(where)) }),
-            OR: schema.arg({ type: schema.list(schema.nonNull(where)) }),
-            NOT: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            AND: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            OR: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            NOT: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
           },
           ...Object.entries(fields).map(
             ([fieldKey, field]) =>
@@ -120,7 +120,7 @@ export function initialiseLists(
       },
     });
 
-    const create = schema.inputObject({
+    const create = graphql.inputObject({
       name: names.createInputName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -133,7 +133,7 @@ export function initialiseLists(
       },
     });
 
-    const update = schema.inputObject({
+    const update = graphql.inputObject({
       name: names.updateInputName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -146,7 +146,7 @@ export function initialiseLists(
       },
     });
 
-    const orderBy = schema.inputObject({
+    const orderBy = graphql.inputObject({
       name: names.listOrderName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -160,67 +160,67 @@ export function initialiseLists(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: schema.arg({ type: schema.nonNull(where), defaultValue: {} }),
-      orderBy: schema.arg({
-        type: schema.nonNull(schema.list(schema.nonNull(orderBy))),
+      where: graphql.arg({ type: graphql.nonNull(where), defaultValue: {} }),
+      orderBy: graphql.arg({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      take: schema.arg({ type: schema.Int }),
-      skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
+      take: graphql.arg({ type: graphql.Int }),
+      skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 
-    const relateToManyForCreate = schema.inputObject({
+    const relateToManyForCreate = graphql.inputObject({
       name: names.relateToManyForCreateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
+            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
           }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
         };
       },
     });
 
-    const relateToManyForUpdate = schema.inputObject({
+    const relateToManyForUpdate = graphql.inputObject({
       name: names.relateToManyForUpdateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
-          disconnect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-          set: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+          set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
           ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
+            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
           }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
+          connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
         };
       },
     });
 
-    const relateToOneForCreate = schema.inputObject({
+    const relateToOneForCreate = graphql.inputObject({
       name: names.relateToOneForCreateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: create }),
+            create: graphql.arg({ type: create }),
           }),
-          connect: schema.arg({ type: uniqueWhere }),
+          connect: graphql.arg({ type: uniqueWhere }),
         };
       },
     });
 
-    const relateToOneForUpdate = schema.inputObject({
+    const relateToOneForUpdate = graphql.inputObject({
       name: names.relateToOneForUpdateInputName,
       fields: () => {
         const list = lists[listKey];
         return {
           ...(list.access.create !== false && {
-            create: schema.arg({ type: create }),
+            create: graphql.arg({ type: create }),
           }),
-          connect: schema.arg({ type: uniqueWhere }),
-          disconnect: schema.arg({ type: schema.Boolean }),
+          connect: graphql.arg({ type: uniqueWhere }),
+          disconnect: graphql.arg({ type: graphql.Boolean }),
         };
       },
     });
@@ -236,12 +236,12 @@ export function initialiseLists(
         findManyArgs,
         relateTo: {
           many: {
-            where: schema.inputObject({
+            where: graphql.inputObject({
               name: `${listKey}ManyRelationFilter`,
               fields: {
-                every: schema.arg({ type: where }),
-                some: schema.arg({ type: where }),
-                none: schema.arg({ type: where }),
+                every: graphql.arg({ type: where }),
+                some: graphql.arg({ type: where }),
+                none: graphql.arg({ type: where }),
               },
             }),
             create: relateToManyForCreate,

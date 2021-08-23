@@ -12,7 +12,7 @@ import {
 } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneListsAPI, schema } from '@keystone-next/keystone/types';
+import { KeystoneListsAPI, graphql } from '@keystone-next/keystone/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
@@ -84,8 +84,8 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
-        field: schema.field({
-          type: schema.Float,
+        field: graphql.field({
+          type: graphql.Float,
           resolve() {
             return randomNumber();
           },
@@ -100,8 +100,8 @@ export const lists = createSchema({
     },
     fields: {
       label: virtual({
-        field: schema.field({
-          type: schema.String,
+        field: graphql.field({
+          type: graphql.String,
           resolve(item) {
             return `${item.type} - ${item.value}`;
           },

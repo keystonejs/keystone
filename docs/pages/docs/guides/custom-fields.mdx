@@ -27,7 +27,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  schema,
+  graphql,
   orderDirectionEnum,
   filters,
   FieldDefaultValue,
@@ -58,12 +58,12 @@ export const myInt =
     })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-        create: { arg: schema.arg({ type: schema.Int }) },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.Int }),
+      output: graphql.field({ type: graphql.Int }),
       views: require.resolve('./view.tsx'),
       __legacy: {
         isRequired,
@@ -83,10 +83,10 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
-  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-  create: { arg: schema.arg({ type: schema.Int }) },
-  update: { arg: schema.arg({ type: schema.Int }) },
-  orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+  create: { arg: graphql.arg({ type: graphql.Int }) },
+  update: { arg: graphql.arg({ type: graphql.Int }) },
+  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
 },
 ```
 
@@ -94,10 +94,10 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
-  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-  create: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
-  update: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
-  orderBy: { arg: schema.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
+  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+  create: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
+  update: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
+  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
 },
 ```
 
@@ -106,14 +106,14 @@ input: {
 The output field defines what can be fetched from the field:
 
 ```ts
-output: schema.field({ type: schema.Int })
+output: graphql.field({ type: graphql.Int })
 ```
 
 A resolver can also be provided:
 
 ```ts
-output: schema.field({
-  type: schema.Int,
+output: graphql.field({
+  type: graphql.Int,
   resolve({ value, item }, args, context, info) {
     return value;
   }

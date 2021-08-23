@@ -6,7 +6,7 @@ import {
   FieldReadAccessArgs,
   BaseGeneratedListTypes,
   ItemRootValue,
-  schema,
+  graphql,
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
@@ -82,7 +82,7 @@ export function outputTypeField(
   fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
-  return schema.field({
+  return graphql.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,
