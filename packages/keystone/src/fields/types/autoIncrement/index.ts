@@ -5,7 +5,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
@@ -38,17 +38,17 @@ export const autoIncrement =
       ...config,
       input: {
         where: {
-          arg: schema.arg({
+          arg: graphql.arg({
             type: filters[meta.provider].Int.optional,
           }),
           resolve: filters.resolveCommon,
         },
-        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
-        create: { arg: schema.arg({ type: schema.Int }) },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.Int }),
+      output: graphql.field({ type: graphql.Int }),
       views: resolveView('integer/views'),
       __legacy: {
         isRequired,

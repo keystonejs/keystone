@@ -1,5 +1,5 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider, schema } from '../../types';
+import { DatabaseProvider, graphql } from '../../types';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';
@@ -9,14 +9,14 @@ export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider
 ) {
-  const query = schema.object()({
+  const query = graphql.object()({
     name: 'Query',
     fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
   });
 
-  const updateManyByList: Record<string, schema.InputObjectType<any>> = {};
+  const updateManyByList: Record<string, graphql.InputObjectType<any>> = {};
 
-  const mutation = schema.object()({
+  const mutation = graphql.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
@@ -37,7 +37,7 @@ export function getGraphQLSchema(
 
 function collectTypes(
   lists: Record<string, InitialisedList>,
-  updateManyByList: Record<string, schema.InputObjectType<any>>
+  updateManyByList: Record<string, graphql.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
@@ -69,6 +69,6 @@ function collectTypes(
     }
   }
   // this is not necessary, just about ordering
-  collectedTypes.push(schema.JSON.graphQLType);
+  collectedTypes.push(graphql.JSON.graphQLType);
   return collectedTypes;
 }

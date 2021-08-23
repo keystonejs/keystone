@@ -35,13 +35,13 @@ export type {
   NullableInputType,
   ScalarType,
 } from '@graphql-ts/schema/api-without-context';
-export { bindSchemaAPIToContext } from '@graphql-ts/schema';
+export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema';
 export { field, fields, interface, interfaceField, object, union } from './schema-api-with-context';
 
 export type Context = KeystoneContext;
 
-export const JSON = graphqlTsSchema.schema.scalar<JSONValue>(GraphQLJSON);
-export const Upload = graphqlTsSchema.schema.scalar<Promise<FileUpload>>(GraphQLUpload);
+export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
+export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload);
 
 export type NullableType = graphqlTsSchema.NullableType<Context>;
 export type Type = graphqlTsSchema.Type<Context>;

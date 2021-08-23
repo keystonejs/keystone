@@ -1,4 +1,4 @@
-import { getGqlNames, schema } from '../../../types';
+import { getGqlNames, graphql } from '../../../types';
 import { InitialisedList } from '../types-for-lists';
 import * as queries from './resolvers';
 
@@ -6,25 +6,25 @@ export function getQueriesForList(list: InitialisedList) {
   if (list.access.read === false) return {};
   const names = getGqlNames(list);
 
-  const findOne = schema.field({
+  const findOne = graphql.field({
     type: list.types.output,
-    args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
+    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
     async resolve(_rootVal, args, context) {
       return queries.findOne(args, list, context);
     },
   });
 
-  const findMany = schema.field({
-    type: schema.list(schema.nonNull(list.types.output)),
+  const findMany = graphql.field({
+    type: graphql.list(graphql.nonNull(list.types.output)),
     args: list.types.findManyArgs,
     async resolve(_rootVal, args, context, info) {
       return queries.findMany(args, list, context, info);
     },
   });
 
-  const countQuery = schema.field({
-    type: schema.Int,
-    args: { where: schema.arg({ type: schema.nonNull(list.types.where), defaultValue: {} }) },
+  const countQuery = graphql.field({
+    type: graphql.Int,
+    args: { where: graphql.arg({ type: graphql.nonNull(list.types.where), defaultValue: {} }) },
     async resolve(_rootVal, args, context, info) {
       return queries.count(args, list, context, info);
     },
