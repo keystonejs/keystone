@@ -13,7 +13,7 @@ import { useKeystone, useList } from '../context';
 import { Fields } from '../utils/Fields';
 import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
-type NoServerSideErrorValue = { [key: string]: { kind: 'value'; value: any } };
+type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } };
 
 export function CreateItemDrawer({
   listKey,
@@ -39,7 +39,7 @@ export function CreateItemDrawer({
   );
 
   const [value, setValue] = useState(() => {
-    const value: NoServerSideErrorValue = {};
+    const value: ValueWithoutServerSideErrors = {};
     Object.keys(list.fields).forEach(fieldPath => {
       value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue };
     });
@@ -134,7 +134,7 @@ export function CreateItemDrawer({
           invalidFields={invalidFields}
           value={value}
           onChange={useCallback(getNewValue => {
-            setValue(oldValues => getNewValue(oldValues) as NoServerSideErrorValue);
+            setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors);
           }, [])}
         />
       </Box>
