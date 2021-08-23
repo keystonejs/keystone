@@ -182,7 +182,7 @@ export async function count(
 }
 
 function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedList) {
-  const take = _take ?? Infinity;
+  const take = Math.abs(_take ?? Infinity);
   // We want to help devs by failing fast and noisily if limits are violated.
   // Unfortunately, we can't always be sure of intent.
   // E.g., if the query has a "take: 10", is it bad if more results could come back?
@@ -200,7 +200,7 @@ function applyMaxResults(results: unknown[], list: InitialisedList, context: Key
     throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
   if (context) {
-    context.totalResults += Array.isArray(results) ? results.length : 1;
+    context.totalResults += results.length;
     if (context.totalResults > context.maxTotalResults) {
       throw limitsExceededError({
         list: list.listKey,

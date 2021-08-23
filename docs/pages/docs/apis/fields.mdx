@@ -562,18 +562,17 @@ Options:
 - `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, createSchema, list, graphql } from '@keystone-next/keystone';
 import { virtual } from '@keystone-next/keystone/fields';
-import { schema } from '@keystone-next/keystone/types';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
         fieldName: virtual({
-          field: schema.field({
-            type: schema.String,
-            args: { something: schema.arg({ type: schema.Int }) },
+          field: graphql.field({
+            type: graphql.String,
+            args: { something: graphql.arg({ type: graphql.Int }) },
             resolve(item, args, context, info) {
 
             }

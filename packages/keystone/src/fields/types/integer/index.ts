@@ -5,7 +5,7 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
@@ -36,16 +36,16 @@ export const integer =
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
+        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
         where: {
-          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
           resolve: filters.resolveCommon,
         },
-        create: { arg: schema.arg({ type: schema.Int }) },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.Int }),
+      output: graphql.field({ type: graphql.Int }),
       views: resolveView('integer/views'),
       __legacy: { isRequired, defaultValue },
     });

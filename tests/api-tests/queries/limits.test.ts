@@ -135,6 +135,24 @@ describe('maxResults Limit', () => {
         expectLimitsExceededError(errors, [{ path: ['users'] }]);
       })
     );
+    test(
+      'negative take still causes the early error',
+      runner(async ({ context }) => {
+        // there are no users so this will never hit the late error so if it errors
+        // it must be the early error
+        let { errors } = await context.graphql.raw({
+          query: `
+          query {
+            users(take: -10) {
+              name
+            }
+          }
+      `,
+        });
+
+        expectLimitsExceededError(errors, [{ path: ['users'] }]);
+      })
+    );
   });
 
   describe('Relationship querying', () => {
