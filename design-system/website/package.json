@@ -21,7 +21,7 @@
     "@keystone-ui/toast": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.0",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.18",
+    "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/tinycolor2": "^1.4.3",
     "@types/webpack": "^4.41.30",
