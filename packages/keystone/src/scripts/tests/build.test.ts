@@ -89,7 +89,7 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Finalizing page optimization...
 
     Page                                                           Size     First Load JS
-    ┌ ○ /                                                          size         size
+    ┌ ○ /                                                          size          size
     ├   /_app                                                      size             size
     ├ ○ /404                                                       size         size
     ├ λ /api/__keystone_api_build                                  size             size
