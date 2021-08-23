@@ -10,6 +10,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
         return fetch('http://localhost:3000/api/graphql', {
           method: 'POST',
           headers: {
+            'Access-Control-Allow-Headers': '*',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
