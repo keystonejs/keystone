@@ -29,7 +29,7 @@
     "@keystone-ui/icons": "^4.0.0",
     "@keystone-ui/popover": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.1",
-    "@types/react": "^17.0.18",
+    "@types/react": "^17.0.19",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.1",
     "graphql": "^15.5.1",
