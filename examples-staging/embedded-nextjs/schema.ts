@@ -1,4 +1,4 @@
-import { list } from '@keystone-next/keystone/schema';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export const Post = list({

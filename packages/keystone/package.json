@@ -137,6 +137,7 @@
   },
   "preconstruct": {
     "entrypoints": [
+      "index.ts",
       "system.ts",
       "next.ts",
       "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql}.ts",

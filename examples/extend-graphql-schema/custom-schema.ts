@@ -1,4 +1,4 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { graphQLSchemaExtension } from '@keystone-next/keystone';
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: `

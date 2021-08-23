@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { select } from '@keystone-next/keystone/fields';
 

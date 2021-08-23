@@ -5,7 +5,7 @@ import { Markdown } from '../../../components/Markdown';
 The `keystone-next` [CLI](../guides/cli) expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
 
 ```typescript filename=keystone.ts
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({ /* ... */ });
 ```
@@ -41,7 +41,7 @@ See the [Schema API](./schema) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-next/keystone/types';
-import { config, createSchema } from '@keystone-next/keystone/schema';
+import { config, createSchema } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({ /* ... */ }),
@@ -314,7 +314,7 @@ It has a TypeScript type of `ExtendGraphqlSchema`.
 In general you will use the function `graphQLSchemaExtension({ typeDefs, resolvers })` to create your schema extension.
 
 ```typescript
-import { config, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { config, graphQLSchemaExtension } from '@keystone-next/keystone';
 
 export default config({
   extendGraphqlSchema: graphQLSchemaExtension({ typeDefs, resolvers }),
@@ -331,7 +331,7 @@ In order to use this field type you need to configure Keystone with information 
 At the moment Keystone supports storing files on the local filesystem, and is agnostic about how files are served.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   files: {
@@ -359,7 +359,7 @@ In order to use this field type you need to configure Keystone with information 
 At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   images: {
@@ -386,7 +386,7 @@ The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   experimental: {

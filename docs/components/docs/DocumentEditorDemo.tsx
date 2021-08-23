@@ -90,7 +90,7 @@ const componentBlocks = {
 type DocumentFieldConfig = Parameters<typeof import('@keystone-next/fields-document').document>[0];
 
 function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
-  return `import { config, createSchema, list } from '@keystone-next/keystone/schema';
+  return `import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({

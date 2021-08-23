@@ -3,7 +3,7 @@
 // we're currently essentially using CodeSandbox CI as a way to get
 // published packages that we can try out in projects that aren't in the repo
 
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { lists } from './schema';
 
 export default config({

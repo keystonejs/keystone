@@ -1,5 +1,5 @@
 import { text } from '../../fields';
-import { config, list } from '../../schema';
+import { config, list } from '../..';
 import { ExitError } from '../utils';
 import {
   getFiles,

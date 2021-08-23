@@ -7,7 +7,7 @@ To setup the `lists` property of the system configuration you need to use the `c
 This function accepts an object with list names as keys, and `list()` configurations as values.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -34,7 +34,7 @@ The `fields` option defines the names, types, and configuration of the fields in
 This configuration option takes an object with field names as keys, and configured field types as values.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -100,7 +100,7 @@ Options:
   - `pageSize` (default: `50`): Sets the number of items to show per page in the list view.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields`;
 
 export default config({
@@ -156,7 +156,7 @@ Options:
 
 ```typescript
 import { CacheScope } from 'apollo-cache-control';
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -186,7 +186,7 @@ Options:
   The default across all lists can be changed at the root-level `db.idField` config.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({

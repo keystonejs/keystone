@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { select, relationship, text, timestamp, image, file } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({

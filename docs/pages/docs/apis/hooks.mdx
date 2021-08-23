@@ -13,7 +13,7 @@ All hook functions are async and, with the exception of `resolveInput`, do not r
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -78,7 +78,7 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                   |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -141,7 +141,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -196,7 +196,7 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -247,7 +247,7 @@ The `afterChange` function is used to perform side effects after the data for a 
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -307,7 +307,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -356,7 +356,7 @@ It is invoked after all `validateDelete` hooks have been run.
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -394,7 +394,7 @@ The `afterDelete` function is used to perform side effects after the data for a 
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
