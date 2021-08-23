@@ -29,7 +29,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000')]);
   });
   beforeEach(async () => {
     // Drop the database
