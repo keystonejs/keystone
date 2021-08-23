@@ -62,30 +62,32 @@ export function CreateItemDrawer({
 
   const [forceValidation, setForceValidation] = useState(false);
 
-  const fields = Object.keys(list.fields)
-    .filter(fieldPath =>
-      createViewFieldModes.state === 'loaded'
-        ? createViewFieldModes.lists[listKey][fieldPath] !== 'hidden'
-        : false
-    )
-    .map((fieldPath, index) => {
-      const field = list.fields[fieldPath];
-      return (
-        <field.views.Field
-          key={fieldPath}
-          field={field.controller}
-          value={valuesByFieldPath[fieldPath]}
-          forceValidation={forceValidation && invalidFields.has(fieldPath)}
-          onChange={fieldValue => {
-            setValuesByFieldPath({
-              ...valuesByFieldPath,
-              [fieldPath]: fieldValue,
-            });
-          }}
-          autoFocus={index === 0}
-        />
-      );
-    });
+  const fields = useMemo(() => {
+    return Object.keys(list.fields)
+      .filter(fieldPath =>
+        createViewFieldModes.state === 'loaded'
+          ? createViewFieldModes.lists[listKey][fieldPath] !== 'hidden'
+          : false
+      )
+      .map((fieldPath, index) => {
+        const field = list.fields[fieldPath];
+        return (
+          <field.views.Field
+            key={fieldPath}
+            field={field.controller}
+            value={valuesByFieldPath[fieldPath]}
+            forceValidation={forceValidation && invalidFields.has(fieldPath)}
+            onChange={fieldValue => {
+              setValuesByFieldPath({
+                ...valuesByFieldPath,
+                [fieldPath]: fieldValue,
+              });
+            }}
+            autoFocus={index === 0}
+          />
+        );
+      });
+  }, [list, valuesByFieldPath]);
 
   return (
     <Drawer
