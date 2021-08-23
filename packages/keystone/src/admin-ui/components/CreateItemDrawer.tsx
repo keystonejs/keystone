@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
-import { jsx } from '@keystone-ui/core';
+import { jsx, Box } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -124,18 +124,20 @@ export function CreateItemDrawer({
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
-      <Fields
-        fields={list.fields}
-        fieldModes={
-          createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null
-        }
-        forceValidation={forceValidation}
-        invalidFields={invalidFields}
-        value={value}
-        onChange={useCallback(getNewValue => {
-          setValue(oldValues => getNewValue(oldValues) as NoServerSideErrorValue);
-        }, [])}
-      />
+      <Box paddingY="xlarge">
+        <Fields
+          fields={list.fields}
+          fieldModes={
+            createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null
+          }
+          forceValidation={forceValidation}
+          invalidFields={invalidFields}
+          value={value}
+          onChange={useCallback(getNewValue => {
+            setValue(oldValues => getNewValue(oldValues) as NoServerSideErrorValue);
+          }, [])}
+        />
+      </Box>
     </Drawer>
   );
 }
