@@ -70,8 +70,8 @@ test('build works with typescript without the user defining a babel config', asy
         ''
       )
 
-      // the exact formatting change change when making unrelated changes because the code size can change
-      // so we don't include it in the snapshot
+      // the exact formatting of the build size report can change when making unrelated changes
+      // because the code size can change so we don't include it in the snapshot
       .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
     "✨ Building Keystone
