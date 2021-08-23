@@ -47,12 +47,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
         }
       }
     `;
-    try {
-      await seedData(page, query);
-    } catch (e) {
-      console.log(e);
-    }
-
+    await seedData(page, query);
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.waitForSelector('tbody tr:first-of-type td:first-of-type label');
     await page.click('tbody tr:first-of-type td:first-of-type label');
