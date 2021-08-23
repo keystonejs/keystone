@@ -1,8 +1,8 @@
 import { Browser, Page } from 'playwright';
 import fetch from 'node-fetch';
-import { adminUITests } from './utils';
+import { adminUITests, deleteAllData } from './utils';
 
-adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAllData) => {
+adminUITests('./tests/test-projects/crud-notifications', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   const seedData = async (query: string, variables?: Record<string, any>) => {

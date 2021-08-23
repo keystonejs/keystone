@@ -19,30 +19,26 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   });
   return Object.assign(promise, { resolve: resolve as any });
 };
+const projectRoot = findRootSync(process.cwd());
+
+export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
+  const { PrismaClient } = require(path.resolve(
+    projectRoot,
+    projectDir,
+    'node_modules/.prisma/client'
+  ));
+
+  let prisma = new PrismaClient();
+
+  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+
+  await prisma.$disconnect();
+};
 
 export const adminUITests = (
   pathToTest: string,
-  tests: (
-    browser: playwright.BrowserType<playwright.Browser>,
-    deleteAllData: (projectDir: string) => Promise<void>
-  ) => void
+  tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectRoot = findRootSync(process.cwd());
-
-  const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
-    const { PrismaClient } = require(path.resolve(
-      projectRoot,
-      projectDir,
-      'node_modules/.prisma/client'
-    ));
-
-    let prisma = new PrismaClient();
-
-    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
-
-    await prisma.$disconnect();
-  };
-
   const projectDir = path.join(projectRoot, pathToTest);
 
   dotenv.config();
@@ -124,7 +120,7 @@ export const adminUITests = (
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });
-      tests(playwright[browserName], deleteAllData);
+      tests(playwright[browserName]);
     });
   });
 };
