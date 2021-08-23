@@ -1,6 +1,6 @@
 import { CacheScope } from 'apollo-cache-control';
 import { text, relationship, integer } from '@keystone-next/keystone/fields';
-import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';

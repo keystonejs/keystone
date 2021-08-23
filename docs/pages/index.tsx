@@ -420,7 +420,7 @@ export default function IndexPage() {
               <CodeWindow lines={21}>
                 <WindowL>
                   <SourceCode>
-                    {`import { createSchema, list } from '@keystone-next/keystone/schema';
+                    {`import { createSchema, list } from '@keystone-next/keystone';
 import { document, text, timestamp, password, relationship } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({

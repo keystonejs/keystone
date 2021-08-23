@@ -1,6 +1,6 @@
 import { text } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectInternalServerError } from '../../utils';

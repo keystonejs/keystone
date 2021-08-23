@@ -121,11 +121,11 @@ export type TodoListTypeInfo = {
 };
 
 export type TodoListFn = (
-  listConfig: import('@keystone-next/keystone/schema').ListConfig<
+  listConfig: import('@keystone-next/keystone').ListConfig<
     TodoListTypeInfo,
     TodoListTypeInfo['fields']
   >
-) => import('@keystone-next/keystone/schema').ListConfig<
+) => import('@keystone-next/keystone').ListConfig<
   TodoListTypeInfo,
   TodoListTypeInfo['fields']
 >;

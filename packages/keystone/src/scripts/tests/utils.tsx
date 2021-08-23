@@ -21,7 +21,7 @@ export const tsx = outdent;
 export const graphql = outdent;
 
 export const basicKeystoneConfig = js`
-                                     import { config, list } from "@keystone-next/keystone/schema";
+                                     import { config, list } from "@keystone-next/keystone";
                                      import { text } from "@keystone-next/keystone/fields";
 
                                      export default config({
