@@ -1,29 +1,28 @@
 import { Browser, Page } from 'playwright';
+import fetch from 'node-fetch';
 import { adminUITests } from './utils';
 
 adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAllData) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   const seedData = async (page: Page, query: string, variables?: Record<string, any>) => {
-    const { errors } = await page.evaluate(
-      async ({ query, variables }) => {
-        return fetch('http://localhost:3000/api/graphql', {
-          method: 'POST',
-          headers: {
-            'Access-Control-Allow-Headers': '*',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query,
-            variables,
-          }),
-        }).then(res => res.json());
-      },
-      { query, variables }
-    );
-
-    if (errors) {
-      throw errors;
+    try {
+      const { errors } = await fetch('http://localhost:3000/api/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          variables,
+        }),
+      }).then(res => res.json());
+      if (errors) {
+        throw errors;
+      }
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   };
 
