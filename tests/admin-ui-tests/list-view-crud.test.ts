@@ -22,7 +22,7 @@ adminUITests('./tests/test-projects/crud-notifications', (browserType, deleteAll
     );
 
     if (errors) {
-      console.error(errors);
+      throw errors;
     }
   };
 
