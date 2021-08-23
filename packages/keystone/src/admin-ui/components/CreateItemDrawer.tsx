@@ -132,8 +132,8 @@ export function CreateItemDrawer({
         forceValidation={forceValidation}
         invalidFields={invalidFields}
         value={value}
-        onChange={useCallback(value => {
-          setValue(oldValues => value(oldValues) as NoServerSideErrorValue);
+        onChange={useCallback(getNewValue => {
+          setValue(oldValues => getNewValue(oldValues) as NoServerSideErrorValue);
         }, [])}
       />
     </Drawer>
