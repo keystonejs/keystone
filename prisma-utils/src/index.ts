@@ -273,19 +273,19 @@ function printInputTypeForGraphQLTS(
   assert(inputType.constraints.minNumFields === expectedMaxMinNumFields);
   const nameOfInputObjectTypeType = `${inputTypeName}Type`;
   const fields = inputType.fields.map(x => [x.name, pickInputTypeForField(x)] as const);
-  return `type ${nameOfInputObjectTypeType} = schema.InputObjectType<{
+  return `type ${nameOfInputObjectTypeType} = graphql.InputObjectType<{
     ${fields
       .map(([name, field]) => {
-        return `${field.isNullable ? '// can be null\n' : ''}${name}: schema.Arg<${
+        return `${field.isNullable ? '// can be null\n' : ''}${name}: graphql.Arg<${
           field.isList
-            ? `schema.ListType<schema.NonNullType<typeof ${field.type}>>`
+            ? `graphql.ListType<graphql.NonNullType<typeof ${field.type}>>`
             : `typeof ${field.type}`
         }>`;
       })
       .join(',\n')}
   }>
   
-  const ${inputTypeName}: ${nameOfInputObjectTypeType} = schema.inputObject({
+  const ${inputTypeName}: ${nameOfInputObjectTypeType} = graphql.inputObject({
     name: '${
       // we want to use Boolean instead of Bool because GraphQL calls it Boolean
       inputTypeName.replace('Bool', 'Boolean')
@@ -293,8 +293,8 @@ function printInputTypeForGraphQLTS(
     fields: () => ({
       ${fields
         .map(([name, field]) => {
-          return `${field.isNullable ? '// can be null\n' : ''}${name}: schema.arg({ type: ${
-            field.isList ? `schema.list(schema.nonNull(${field.type}))` : field.type
+          return `${field.isNullable ? '// can be null\n' : ''}${name}: graphql.arg({ type: ${
+            field.isList ? `graphql.list(graphql.nonNull(${field.type}))` : field.type
           } })`;
         })
         .join(',\n')}
@@ -303,11 +303,11 @@ function printInputTypeForGraphQLTS(
 }
 
 const scalarsToGqlScalars: Record<string, string> = {
-  String: 'schema.String',
-  Boolean: 'schema.Boolean',
-  Int: 'schema.Int',
-  Float: 'schema.Float',
-  Json: 'schema.JSON',
-  DateTime: 'schema.String',
-  Decimal: 'schema.String',
+  String: 'graphql.String',
+  Boolean: 'graphql.Boolean',
+  Int: 'graphql.Int',
+  Float: 'graphql.Float',
+  Json: 'graphql.JSON',
+  DateTime: 'graphql.String',
+  Decimal: 'graphql.String',
 };
