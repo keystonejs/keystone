@@ -15,6 +15,7 @@ import { Typescript } from '../components/icons/Typescript';
 import { Section, SideBySideSection } from '../components/content/Section';
 import { CodeBox } from '../components/content/CodeBox';
 import { Button } from '../components/primitives/Button';
+import { Quote } from '../components/content/Quote';
 import { EndCta } from '../components/content/EndCta';
 import { Postgres } from '../components/icons/Postgres';
 import { Emoji } from '../components/primitives/Emoji';
@@ -463,11 +464,28 @@ export default function ForDevelopers() {
               gridTemplateRows: 'masonry', // experimental and hopefully supported soon
             })}
           >
+            <TweetBox user="nemeo" img="/assets/benoit-richert.jpg" grad="grad3">
+              How good is Keystone support! The answers are fast, thought through, technical when
+              needed, and always gentle... Kudos to the Keystone team, thank you very much!
+              <Emoji symbol="😊" alt="Blush" />
+            </TweetBox>
+            <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad3">
+              I love how Keystone’s access control lets me declare every single Create, Read,
+              Update, and Delete operation at both the <strong>model</strong> and{' '}
+              <strong>field</strong> level. It’s my favorite way of implementing Auth.
+            </TweetBox>
             <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad3">
               Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
               schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev
               experience feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
               <Emoji symbol="🚀" alt="Rocket ship" />
+            </TweetBox>
+            <TweetBox user="divslingerx" img="/assets/divslingerx.jpg" grad="grad3">
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
+              is almost too good to be open source. I can’t stress enough how awesome the dev
+              experience is. This is what I wish Wordpress was.
             </TweetBox>
             <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
               I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that
