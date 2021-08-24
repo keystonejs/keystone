@@ -1,13 +1,12 @@
 import {
   BaseGeneratedListTypes,
-  FieldData,
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 // @ts-ignore
 import inflection from 'inflection';
@@ -68,12 +67,16 @@ export const select =
       })({
         ...commonConfig,
         input: {
+          where: {
+            arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+            resolve: filters.resolveCommon,
+          },
           create: { arg: schema.arg({ type: schema.Int }) },
           update: { arg: schema.arg({ type: schema.Int }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
         },
         output: schema.field({ type: schema.Int }),
-        __legacy: { filters: getFilters(meta, schema.Int), defaultValue, isRequired },
+        __legacy: { defaultValue, isRequired },
       });
     }
     if (config.dataType === 'enum') {
@@ -96,6 +99,10 @@ export const select =
       )({
         ...commonConfig,
         input: {
+          where: {
+            arg: schema.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
+            resolve: filters.resolveCommon,
+          },
           create: { arg: schema.arg({ type: graphQLType }) },
           update: { arg: schema.arg({ type: graphQLType }) },
           orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -103,12 +110,16 @@ export const select =
         output: schema.field({
           type: graphQLType,
         }),
-        __legacy: { filters: getFilters(meta, graphQLType), defaultValue, isRequired },
+        __legacy: { defaultValue, isRequired },
       });
     }
     return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
       ...commonConfig,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          resolve: filters.resolveString,
+        },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -116,17 +127,6 @@ export const select =
       output: schema.field({
         type: schema.String,
       }),
-      __legacy: { filters: getFilters(meta, schema.String), defaultValue, isRequired },
+      __legacy: { defaultValue, isRequired },
     });
   };
-
-const getFilters = (meta: FieldData, type: schema.ScalarType<any> | schema.EnumType<any>) => ({
-  fields: {
-    ...legacyFilters.fields.equalityInputFields(meta.fieldKey, type),
-    ...legacyFilters.fields.inInputFields(meta.fieldKey, type),
-  },
-  impls: {
-    ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-    ...legacyFilters.impls.inConditions(meta.fieldKey),
-  },
-});

@@ -39,17 +39,21 @@ export type NextFieldType<
     | schema.Arg<schema.InputType>
     | undefined,
   UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
+  >,
+  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
+    schema.NullableInputType,
+    false
   >
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg, FilterArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -109,6 +113,11 @@ export type ScalarDBField<
 export const orderDirectionEnum = schema.enum({
   name: 'OrderDirection',
   values: schema.enumValues(['asc', 'desc']),
+});
+
+export const QueryMode = schema.enum({
+  name: 'QueryMode',
+  values: schema.enumValues(['default', 'insensitive']),
 });
 
 export type RelationDBField<Mode extends 'many' | 'one'> = {
@@ -224,6 +233,39 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldFilters<TDBField extends DBField> =
+  | ({
+      AND?: DBFieldFiltersInner<TDBField>;
+      OR?: DBFieldFiltersInner<TDBField>;
+      NOT?: DBFieldFiltersInner<TDBField>;
+    } & DBFieldFiltersInner<TDBField>)
+  | null;
+
+export type WhereFieldInputArg<
+  TDBField extends DBField,
+  TArg extends schema.Arg<schema.InputType, any>
+> = {
+  arg: TArg;
+} & ResolveFunc<
+  FieldInputResolver<
+    Exclude<schema.InferValueFromArg<TArg>, undefined>,
+    DBFieldFilters<TDBField>,
+    any
+    // i think this is broken because variance?
+    // TDBField extends RelationDBField<infer Mode>
+    //   ? (
+    //       input: {
+    //         many: types.InferValueFromArg<types.Arg<TypesForList['manyRelationWhere']>>;
+    //         one: types.InferValueFromArg<types.Arg<TypesForList['where']>>;
+    //       }[Mode]
+    //     ) => Promise<any>
+    //   : undefined
+  >
+>;
+
 export type UpdateFieldInputArg<
   TDBField extends DBField,
   TArg extends schema.Arg<schema.InputType, any>
@@ -309,17 +351,22 @@ export type FieldTypeWithoutDBField<
     | schema.Arg<schema.InputType>
     | undefined,
   UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, undefined> = schema.Arg<
+  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
     schema.NullableInputType,
-    undefined
+    false
+  >,
+  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
+    schema.NullableInputType,
+    false
   >
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
+    where?: WhereFieldInputArg<TDBField, FilterArg>;
     create?: CreateFieldInputArg<TDBField, CreateArg>;
     update?: UpdateFieldInputArg<TDBField, UpdateArg>;
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>;
@@ -330,13 +377,6 @@ export type FieldTypeWithoutDBField<
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
   __legacy?: {
-    filters?: {
-      fields: Record<string, schema.Arg<any>>;
-      impls: Record<
-        string,
-        (value: any, resolveForeignListWhereInput?: (val: any) => Promise<any>) => any
-      >;
-    };
     isRequired?: boolean;
     defaultValue?: FieldDefaultValue<any, BaseGeneratedListTypes>;
   };
@@ -346,10 +386,18 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends schema.Arg<schema.InputType> | undefined,
     UpdateArg extends schema.Arg<schema.InputType>,
-    UniqueWhereArg extends schema.Arg<schema.NullableInputType, undefined>,
-    OrderByArg extends schema.Arg<schema.NullableInputType, undefined>
+    UniqueWhereArg extends schema.Arg<schema.NullableInputType, false>,
+    OrderByArg extends schema.Arg<schema.NullableInputType, false>,
+    FilterArg extends schema.Arg<schema.NullableInputType, false>
   >(
-    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg>
+    stuff: FieldTypeWithoutDBField<
+      TDBField,
+      CreateArg,
+      UpdateArg,
+      UniqueWhereArg,
+      OrderByArg,
+      FilterArg
+    >
   ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
     return { ...stuff, dbField };
   };
@@ -367,6 +415,11 @@ export type TypesForList = {
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
+      where: schema.InputObjectType<{
+        every: schema.Arg<AnyInputObj>;
+        some: schema.Arg<AnyInputObj>;
+        none: schema.Arg<AnyInputObj>;
+      }>;
       create: schema.InputObjectType<{
         connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
         create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
@@ -393,13 +446,13 @@ export type TypesForList = {
 };
 
 export type FindManyArgs = {
-  where: schema.Arg<schema.NonNullType<TypesForList['where']>, {}>;
+  where: schema.Arg<schema.NonNullType<TypesForList['where']>, true>;
   orderBy: schema.Arg<
     schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
-    Record<string, any>[]
+    true
   >;
-  first: schema.Arg<typeof schema.Int>;
-  skip: schema.Arg<schema.NonNullType<typeof schema.Int>, number>;
+  take: schema.Arg<typeof schema.Int>;
+  skip: schema.Arg<schema.NonNullType<typeof schema.Int>, true>;
 };
 
 export type FindManyArgsValue = schema.InferValueFromArgs<FindManyArgs>;

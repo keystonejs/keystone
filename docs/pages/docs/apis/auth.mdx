@@ -81,11 +81,11 @@ const { withAuth } = createAuth({
 The following elements will be added to the GraphQL API.
 
 ```graphql
-Mutation {
+type Mutation {
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult!
 }
 
-Query {
+type Query {
   authenticatedItem: AuthenticatedItem
 }
 
@@ -191,7 +191,7 @@ const { withAuth } = createAuth({
 Enabling `initFirstItem` will add the following elements to the GraphQL API.
 
 ```graphql
-Mutation {
+type Mutation {
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
@@ -277,12 +277,12 @@ const fields = {
 Enabling `passwordResetLink` will add the following elements to the GraphQL API.
 
 ```graphql
-Mutation {
+type Mutation {
   sendUserPasswordResetLink(email: String!): SendUserPasswordResetLinkResult
   redeemUserPasswordResetToken(email: String!, token: String!, password: String!): RedeemUserPasswordResetTokenResult
 }
 
-Query {
+type Query {
   validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult
 }
 
@@ -416,7 +416,7 @@ const fields = {
 Enabling `magicAuthLink` will add the following elements to the GraphQL API.
 
 ```graphql
-Mutation {
+type Mutation {
   sendUserMagicAuthLink(email: String!): SendUserMagicAuthLinkResult
   redeemUserMagicAuthToken(email: String!, token: String!): RedeemUserMagicAuthTokenResult!
 }

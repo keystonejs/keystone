@@ -87,11 +87,12 @@ export function statelessSessions<T>({
   }
   return {
     async get({ req }) {
-      if (!req.headers.cookie) return;
-      let cookies = cookie.parse(req.headers.cookie);
-      if (!cookies[TOKEN_NAME]) return;
+      const cookies = cookie.parse(req.headers.cookie || '');
+      const bearer = req.headers.authorization?.replace('Bearer ', '');
+      const token = bearer || cookies[TOKEN_NAME];
+      if (!token) return;
       try {
-        return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
+        return await Iron.unseal(token, secret, ironOptions);
       } catch (err) {}
     },
     async end({ res }) {

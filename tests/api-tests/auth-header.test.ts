@@ -83,7 +83,7 @@ describe('Auth testing', () => {
       }
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
       expect(data).toEqual({ users: null });
-      expectAccessDenied(errors, [{ path: ['users'] }]);
+      expectAccessDenied('dev', false, undefined, errors, [{ path: ['users'] }]);
     })
   );
 
@@ -118,8 +118,7 @@ describe('Auth testing', () => {
   });
 
   describe('logged in', () => {
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip(
+    test(
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {

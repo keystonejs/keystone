@@ -4,9 +4,9 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -37,26 +37,15 @@ export const integer =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
       output: schema.field({ type: schema.Int }),
       views: resolveView('integer/views'),
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });

@@ -6,8 +6,8 @@ import {
   schema,
   orderDirectionEnum,
   Decimal,
-  legacyFilters,
   FieldDefaultValue,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -66,6 +66,10 @@ export const decimal =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Decimal.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: {
           arg: schema.arg({ type: schema.String }),
           resolve(val) {
@@ -94,19 +98,6 @@ export const decimal =
         precision,
         scale,
       }),
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.String),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });
   };

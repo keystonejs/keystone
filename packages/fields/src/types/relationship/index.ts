@@ -141,10 +141,6 @@ export const relationship =
     }
     const listTypes = meta.lists[foreignListKey].types;
     if (many) {
-      const whereInputResolve =
-        (key: string) => async (value: any, resolve?: (val: any) => Promise<any>) => {
-          return { [meta.fieldKey]: { [key]: await resolve!(value) } };
-        };
       return fieldType({
         kind: 'relation',
         mode: 'many',
@@ -153,6 +149,12 @@ export const relationship =
       })({
         ...commonConfig,
         input: {
+          where: {
+            arg: schema.arg({ type: listTypes.relateTo.many.where }),
+            resolve(value, context, resolve) {
+              return resolve(value);
+            },
+          },
           create: {
             arg: schema.arg({
               type: listTypes.relateTo.many.create,
@@ -193,18 +195,6 @@ export const relationship =
             }
           : {},
         __legacy: {
-          filters: {
-            fields: {
-              [`${meta.fieldKey}_every`]: schema.arg({ type: listTypes.where }),
-              [`${meta.fieldKey}_some`]: schema.arg({ type: listTypes.where }),
-              [`${meta.fieldKey}_none`]: schema.arg({ type: listTypes.where }),
-            },
-            impls: {
-              [`${meta.fieldKey}_every`]: whereInputResolve('every'),
-              [`${meta.fieldKey}_some`]: whereInputResolve('some'),
-              [`${meta.fieldKey}_none`]: whereInputResolve('none'),
-            },
-          },
           defaultValue,
         },
       });
@@ -217,6 +207,12 @@ export const relationship =
     })({
       ...commonConfig,
       input: {
+        where: {
+          arg: schema.arg({ type: listTypes.where }),
+          resolve(value, context, resolve) {
+            return resolve(value);
+          },
+        },
         create: {
           arg: schema.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
@@ -237,19 +233,6 @@ export const relationship =
         },
       }),
       __legacy: {
-        filters: {
-          fields: {
-            [meta.fieldKey]: schema.arg({ type: listTypes.where }),
-            [`${meta.fieldKey}_is_null`]: schema.arg({ type: schema.Boolean }),
-          },
-          impls: {
-            [meta.fieldKey]: async (value: any, resolve?: (val: any) => Promise<any>) => {
-              return { [meta.fieldKey]: await resolve!(value) };
-            },
-            [`${meta.fieldKey}_is_null`]: value =>
-              value ? { [meta.fieldKey]: null } : { NOT: { [meta.fieldKey]: null } },
-          },
-        },
         defaultValue,
       },
     });

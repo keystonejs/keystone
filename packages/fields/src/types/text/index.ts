@@ -6,7 +6,7 @@ import {
   schema,
   orderDirectionEnum,
   FieldTypeFunc,
-  legacyFilters,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -40,6 +40,10 @@ export const text =
       ...config,
       input: {
         uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.String }) } : undefined,
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          resolve: filters.resolveString,
+        },
         create: { arg: schema.arg({ type: schema.String }) },
         update: { arg: schema.arg({ type: schema.String }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -47,41 +51,10 @@ export const text =
       output: schema.field({ type: schema.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
-        return { displayMode: config.ui?.displayMode ?? 'input' };
+        return {
+          displayMode: config.ui?.displayMode ?? 'input',
+          shouldUseModeInsensitive: meta.provider === 'postgresql',
+        };
       },
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.String),
-            ...(meta.provider === 'sqlite'
-              ? legacyFilters.fields.containsInputFields(meta.fieldKey, schema.String)
-              : {
-                  ...legacyFilters.fields.stringInputFields(meta.fieldKey, schema.String),
-                  ...legacyFilters.fields.equalityInputFieldsInsensitive(
-                    meta.fieldKey,
-                    schema.String
-                  ),
-                  ...legacyFilters.fields.stringInputFieldsInsensitive(
-                    meta.fieldKey,
-                    schema.String
-                  ),
-                }),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.String),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...(meta.provider === 'sqlite'
-              ? legacyFilters.impls.containsConditions(meta.fieldKey)
-              : {
-                  ...legacyFilters.impls.stringConditions(meta.fieldKey),
-                  ...legacyFilters.impls.equalityConditionsInsensitive(meta.fieldKey),
-                  ...legacyFilters.impls.stringConditionsInsensitive(meta.fieldKey),
-                }),
-            // These have no case-insensitive counter parts
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        defaultValue,
-        isRequired,
-      },
+      __legacy: { defaultValue, isRequired },
     });

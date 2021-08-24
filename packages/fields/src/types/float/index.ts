@@ -5,8 +5,8 @@ import {
   fieldType,
   schema,
   orderDirectionEnum,
-  legacyFilters,
   FieldDefaultValue,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -36,26 +36,15 @@ export const float =
     })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Float.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Float }) },
         update: { arg: schema.arg({ type: schema.Float }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
       },
       output: schema.field({ type: schema.Float }),
       views: resolveView('float/views'),
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Float),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Float),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Float),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });

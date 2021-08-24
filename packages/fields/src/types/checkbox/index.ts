@@ -4,9 +4,9 @@ import {
   CommonFieldConfig,
   fieldType,
   FieldTypeFunc,
-  legacyFilters,
   orderDirectionEnum,
   schema,
+  filters,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
@@ -30,6 +30,10 @@ export const checkbox =
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
       ...config,
       input: {
+        where: {
+          arg: schema.arg({ type: filters[meta.provider].Boolean.optional }),
+          resolve: filters.resolveCommon,
+        },
         create: { arg: schema.arg({ type: schema.Boolean }) },
         update: { arg: schema.arg({ type: schema.Boolean }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -38,13 +42,6 @@ export const checkbox =
         type: schema.Boolean,
       }),
       views: resolveView('checkbox/views'),
-      __legacy: {
-        filters: {
-          fields: legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Boolean),
-          impls: legacyFilters.impls.equalityConditions(meta.fieldKey),
-        },
-        isRequired,
-        defaultValue,
-      },
+      __legacy: { isRequired, defaultValue },
     });
   };

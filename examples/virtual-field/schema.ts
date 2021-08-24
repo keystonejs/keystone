@@ -102,7 +102,7 @@ export const lists = createSchema({
                 where: { id: item.id.toString() },
                 query: `posts(
                     orderBy: { publishDate: desc }
-                    first: 1
+                    take: 1
                   ) { id }`,
               });
               if (posts.length > 0) {

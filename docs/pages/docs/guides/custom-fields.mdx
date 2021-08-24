@@ -15,9 +15,9 @@ There are two parts to a field type:
 - The **frontend** portion which defines how the field looks and behaves in the Admin UI.
 
 The general approach to creating a custom field type is to take an existing field type and make the appropriate changes for your use case.
-In this guide we're going to create a field type `myInt` which recreates the [`integer`](https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/integer) field type.
+In this guide we're going to create a field type `myInt` which recreates the [`integer`](https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types/integer) field type.
 
-!> For inspiration, see [the source for the fields that Keystone provides](https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types) and the [Custom Fields](https://github.com/keystonejs/keystone/tree/master/examples/custom-field) example project.
+!> For inspiration, see [the source for the fields that Keystone provides](https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types) and the [Custom Fields](https://github.com/keystonejs/keystone/tree/master/examples/custom-field) example project.
 
 ## Backend
 
@@ -32,7 +32,7 @@ import {
   fieldType,
   schema,
   orderDirectionEnum,
-  legacyFilters,
+  filters,
   FieldDefaultValue,
 } from '@keystone-next/types';
 
@@ -61,6 +61,7 @@ export const myInt =
     })({
       ...config,
       input: {
+        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
         create: { arg: schema.arg({ type: schema.Int }) },
         update: { arg: schema.arg({ type: schema.Int }) },
         orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -68,18 +69,6 @@ export const myInt =
       output: schema.field({ type: schema.Int }),
       views: require.resolve('./view.tsx'),
       __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.Int),
-            ...legacyFilters.fields.inInputFields(meta.fieldKey, schema.Int),
-          },
-          impls: {
-            ...legacyFilters.impls.equalityConditions(meta.fieldKey),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey),
-            ...legacyFilters.impls.inConditions(meta.fieldKey),
-          },
-        },
         isRequired,
         defaultValue,
       },
@@ -97,6 +86,7 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
+  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: schema.arg({ type: schema.Int }) },
   update: { arg: schema.arg({ type: schema.Int }) },
   orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
@@ -107,6 +97,7 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
+  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
   update: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
   orderBy: { arg: schema.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },

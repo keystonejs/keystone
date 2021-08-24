@@ -265,14 +265,14 @@ describe('with access control', () => {
             }
             // Confirm it didn't insert either of the records anyway
             const data1 = await context.lists[group.name].findMany({
-              where: { name: groupName },
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(data1).toMatchObject([]);
 
             // Confirm it didn't insert either of the records anyway
             const data2 = await context.lists[`EventTo${group.name}`].findMany({
-              where: { title: eventName },
+              where: { title: { equals: eventName } },
               query: 'id title',
             });
             expect(data2).toMatchObject([]);
@@ -326,7 +326,7 @@ describe('with access control', () => {
 
             // Confirm it didn't insert the record anyway
             const groups = await context.lists[group.name].findMany({
-              where: { name: groupName },
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(groups).toMatchObject([]);

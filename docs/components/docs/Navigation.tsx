@@ -10,6 +10,7 @@ import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
+import { Emoji } from '../primitives/Emoji';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -133,31 +134,24 @@ export function DocsNavigation() {
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
       <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
-        <NavItem href="/docs/guides/keystone-5-vs-keystone-6-preview">Keystone 5 vs 6</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
-        <NavItem href="/docs/guides/filters">Query Filters</NavItem>
+        <NavItem href="/docs/guides/filters">
+          Query Filters <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/hooks">Hooks</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
-        <NavItem href="/docs/guides/virtual-fields">
-          Virtual Fields <Badge look="success">New</Badge>
-        </NavItem>
-        <NavItem href="/docs/guides/testing">
-          Testing <Badge look="success">New</Badge>
-        </NavItem>
+        <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
+        <NavItem href="/docs/guides/testing">Testing</NavItem>
         <NavItem href="/docs/guides/custom-fields">
-          Custom Fields <Badge look="success">New</Badge>
+          Custom Fields <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-logo">
-          Custom Admin UI Logo <Badge look="success">New</Badge>
-        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-pages">
-          Custom Admin UI Pages <Badge look="success">New</Badge>
+          Custom Admin UI Pages <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-navigation">
-          Custom Admin UI Navigation <Badge look="success">New</Badge>
-        </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-navigation">Custom Admin UI Navigation</NavItem>
         <NavItem href="/docs/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
@@ -190,8 +184,12 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
 
         <SubHeading>GraphQL</SubHeading>
-        <NavItem href="/docs/apis/graphql">GraphQL API</NavItem>
-        <NavItem href="/docs/apis/filters">Query Filter API</NavItem>
+        <NavItem href="/docs/apis/graphql">
+          GraphQL API <Badge look="success">Updated</Badge>
+        </NavItem>
+        <NavItem href="/docs/apis/filters">
+          Query Filter API <Badge look="success">Updated</Badge>
+        </NavItem>
       </Section>
     </nav>
   );
@@ -216,6 +214,36 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
           ))}
         </Section>
       ) : null}
+      <Section label="Featured News">
+        <NavItem href="/updates/new-graphql-api">
+          <Emoji symbol="💎" alt="Gemstone" />
+          &nbsp; New GraphQL API
+        </NavItem>
+        <NavItem href="/releases/2021-07-29">
+          <Emoji symbol="🎛️" alt="Control knobs" />
+          &nbsp; Customisable Admin UI
+        </NavItem>
+        <NavItem href="/updates/prisma-day-2021">
+          <Emoji symbol="🍿" alt="TV" />
+          &nbsp; Jed’s Prisma Day Talk
+        </NavItem>
+        <NavItem href="/releases/2021-06-15">
+          <Emoji symbol="⚙️" alt="Gear" />
+          &nbsp; New Core
+        </NavItem>
+        <NavItem
+          href="https://github.com/keystonejs/keystone/tree/master/examples"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Emoji symbol="🧪" alt="Test Tube" />
+          &nbsp; New Examples Collection
+        </NavItem>
+        <NavItem href="/updates/keystone-5-vs-keystone-6-preview">
+          <Emoji symbol="ℹ️" alt="Information" />
+          &nbsp; Keystone 5 vs 6
+        </NavItem>
+      </Section>
     </nav>
   );
 }

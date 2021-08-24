@@ -3,6 +3,9 @@ import Path from 'path';
 import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack(config: any, { isServer }: any) {
     config.resolve.alias = {
       ...config.resolve.alias,

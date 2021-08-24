@@ -59,7 +59,7 @@ export async function accessControlledFilter(
 
   // Merge declarative access control
   if (typeof access === 'object') {
-    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list)] };
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list, context)] };
   }
 
   return resolvedWhere;
@@ -86,7 +86,7 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, first, skip, orderBy: rawOrderBy }: FindManyArgsValue,
+  { where, take, skip, orderBy: rawOrderBy }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
@@ -94,16 +94,16 @@ export async function findMany(
 ): Promise<ItemRootValue[]> {
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
-  applyEarlyMaxResults(first, list);
+  applyEarlyMaxResults(take, list);
 
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  let resolvedWhere = await resolveWhereInput(where, list, context);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
   const results = await runWithPrisma(context, list, model =>
     model.findMany({
       where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
       orderBy,
-      take: first ?? undefined,
+      take: take ?? undefined,
       skip,
     })
   );
@@ -166,7 +166,7 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  let resolvedWhere = await resolveWhereInput(where || {}, list);
+  let resolvedWhere = await resolveWhereInput(where, list, context);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
 
   const count = await runWithPrisma(context, list, model =>
@@ -186,16 +186,16 @@ export async function count(
   return count;
 }
 
-function applyEarlyMaxResults(_first: number | null | undefined, list: InitialisedList) {
-  const first = _first ?? Infinity;
+function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedList) {
+  const take = _take ?? Infinity;
   // We want to help devs by failing fast and noisily if limits are violated.
   // Unfortunately, we can't always be sure of intent.
-  // E.g., if the query has a "first: 10", is it bad if more results could come back?
+  // E.g., if the query has a "take: 10", is it bad if more results could come back?
   // Maybe yes, or maybe the dev is just paginating posts.
   // But we can be sure there's a problem in two cases:
-  // * The query explicitly has a "first" that exceeds the limit
-  // * The query has no "first", and has more results than the limit
-  if (first < Infinity && first > list.maxResults) {
+  // * The query explicitly has a "take" that exceeds the limit
+  // * The query has no "take", and has more results than the limit
+  if (take < Infinity && take > list.maxResults) {
     throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
 }
