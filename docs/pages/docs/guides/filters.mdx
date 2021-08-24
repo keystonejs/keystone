@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # GraphQL Queries - Filters
 
@@ -172,5 +174,16 @@ For example, to find all the people which have `some` posts with the label `"Hel
   }
 }
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Query Filters API Reference"
+    href="/docs/apis/filters"
+    >
+    The complete list of filters available to Keystone field types.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to use query filters get the data you need from Keystone’s powerful GraphQL API.">{children}</Markdown>;

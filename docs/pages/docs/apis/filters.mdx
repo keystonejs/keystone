@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Query Filter API
 
@@ -148,5 +150,16 @@ The `file` field type does not support filters.
 ### image
 
 The `image` field type does not support filters.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Query Filters Guide"
+    href="/docs/guides/filters"
+    >
+    Query filters are an integral part of Keystone’s powerful GraphQL APIs. This guide will show you how to use filters to get the data you need from your system.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering.">{children}</Markdown>;

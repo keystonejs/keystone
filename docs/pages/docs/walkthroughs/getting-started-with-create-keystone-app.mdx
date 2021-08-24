@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 ![A terminal with the output of create-keystone-app](/assets/walkthroughs/getting-started/cover.svg)
 
@@ -119,5 +122,28 @@ Read more about the cli in our [command line guides](/guides/cli).
 
 - Customise Keystone with the [System Configuration API](/apis/config).
 - Add fields and relationships using [Schema API](/apis/schema).
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Keystone CLI Guide"
+    href="/docs/guides/cli"
+    >
+    Keystone’s CLI helps you develop, build, and deploy projects. This guide explains all you need to standup a new backend in the terminal.
+  </Well>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list()</InlineCode> function.
+  </Well>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>
