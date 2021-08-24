@@ -65,12 +65,14 @@ test('build works with typescript without the user defining a babel config', asy
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(
     result
-      .all!.replace(/\d+(|\.\d+) k?B/g, 'size')
-      .replace(/chunks\/.*\.js/g, 'chunks/hash.js')
-      .replace(
+      .all!.replace(
         '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
         ''
       )
+
+      // the exact formatting of the build size report can change when making unrelated changes
+      // because the code size can change so we don't include it in the snapshot
+      .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
     "✨ Building Keystone
     ✨ Generating Admin UI code
@@ -86,27 +88,8 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Generating static pages (2/6)
     info  - Generating static pages (4/6)
     info  - Generating static pages (6/6)
-    info  - Finalizing page optimization...
-
-    [4mPage[24m                                                           [4mSize[24m     [4mFirst Load JS[24m
-    ┌ ○ /                                                          size         [31m[1msize[22m[39m
-    ├   /_app                                                      size             [31m[1msize[22m[39m
-    ├ ○ /404                                                       size         [31m[1msize[22m[39m
-    ├ λ /api/__keystone_api_build                                  size             [31m[1msize[22m[39m
-    ├ ○ /no-access                                                 size         [31m[1msize[22m[39m
-    ├ ○ /todos                                                     size         [31m[1msize[22m[39m
-    └ ○ /todos/[id]                                                size         [31m[1msize[22m[39m
-    + First Load JS shared by all                                  [31m[1msize[22m[39m
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js                                 size
-      ├ chunks/hash.js                                      size
-      ├ chunks/hash.js                                size
-      └ chunks/hash.js                                   size
-
-    λ  (Server)  server-side renders at runtime (uses [36mgetInitialProps[39m or [36mgetServerSideProps[39m)
+    next build size report
+    λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
     ○  (Static)  automatically rendered as static HTML (uses no initial props)
     ●  (SSG)     automatically generated as static HTML + JSON (uses [36mgetStaticProps[39m)
        (ISR)     incremental static regeneration (uses revalidate in [36mgetStaticProps[39m)
