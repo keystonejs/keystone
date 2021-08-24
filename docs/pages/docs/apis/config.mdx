@@ -285,8 +285,8 @@ Options:
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
 - `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
   - `playground` (default: `process.env.NODE_ENV !== 'production'`): If truthy, will enable the GraphQL Playground for testing queries and mutations in the browser.
-    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings).
-  - See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
+    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings). See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
+  - `introspection` (default: `undefined`): Introspection enables you to query a GraphQL server for information about the underlying schema. If the playground is enabled then introspection is automatically enabled, unless specifically disabled.
 
 ```typescript
 export default config({
@@ -295,6 +295,7 @@ export default config({
     queryLimits: { maxTotalResults: 100 },
     apolloConfig: {
       playground: process.env.NODE_ENV !== 'production',
+      introspection: process.env.NODE_ENV !== 'production',
       /* ... */
     },
   },
