@@ -15,7 +15,6 @@ import { Typescript } from '../components/icons/Typescript';
 import { Section, SideBySideSection } from '../components/content/Section';
 import { CodeBox } from '../components/content/CodeBox';
 import { Button } from '../components/primitives/Button';
-import { Quote } from '../components/content/Quote';
 import { EndCta } from '../components/content/EndCta';
 import { Postgres } from '../components/icons/Postgres';
 import { Emoji } from '../components/primitives/Emoji';
