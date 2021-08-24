@@ -466,7 +466,7 @@ export default function ForDevelopers() {
           >
             <TweetBox user="nemeo" img="/assets/benoit-richert.jpg" grad="grad3">
               How good is Keystone support! The answers are fast, thought through, technical when
-              needed, and always gentle... Kudos to the Keystone team, thank you very much!
+              needed, and always gentle... Kudos to the Keystone team, thank you very much!{' '}
               <Emoji symbol="😊" alt="Blush" />
             </TweetBox>
             <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad3">
@@ -476,7 +476,7 @@ export default function ForDevelopers() {
             </TweetBox>
             <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad3">
               Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev
+              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" /> The dev
               experience feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
               <Emoji symbol="🚀" alt="Rocket ship" />
             </TweetBox>
