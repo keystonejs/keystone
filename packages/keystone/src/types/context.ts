@@ -22,7 +22,9 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
   experimental?: {
-    /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true. */
+    /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true.
+     * This is not a stable API and may contain breaking changes in `patch` level releases.
+    */
     initialisedLists: Record<string, InitialisedList>;
   };
 } & Partial<SessionContext<any>>;
