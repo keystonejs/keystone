@@ -24,7 +24,7 @@ const runner = setupTestRunner({
       }),
       Author: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
           bio: document({
             relationships: {
               mention: {

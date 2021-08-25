@@ -1,5 +1,4 @@
 import { checkbox } from '..';
-import { text } from '../../text';
 
 export const name = 'Checkbox';
 export const typeFunction = checkbox;
@@ -8,7 +7,9 @@ export const exampleValue2 = () => false;
 export const supportsUnique = false;
 export const fieldName = 'enabled';
 
-export const getTestFields = () => ({ name: text(), enabled: checkbox() });
+export const getTestFields = () => ({
+  enabled: checkbox({ graphql: { isEnabled: { filter: true } } }),
+});
 
 export const initItems = () => {
   return [

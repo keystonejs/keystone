@@ -47,9 +47,8 @@ export function getAdminMetaSchema({
     fields: {
       path: graphql.field({ type: graphql.nonNull(graphql.String) }),
       label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      isOrderable: graphql.field({
-        type: graphql.nonNull(graphql.Boolean),
-      }),
+      isOrderable: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+      isFilterable: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
       fieldMeta: graphql.field({ type: jsonScalar }),
       viewsIndex: graphql.field({ type: graphql.nonNull(graphql.Int) }),
       customViewsIndex: graphql.field({ type: graphql.Int }),

@@ -1,14 +1,12 @@
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import { getGqlNames, KeystoneContext } from '@keystone-next/keystone/types';
 import {
-  getStaticListName,
-  getImperativeListName,
-  getDeclarativeListName,
-  listAccessVariations,
+  getListName,
+  listEnabledVariations,
   fieldMatrix,
   getFieldName,
   config,
-} from './utils';
+} from './schema-utils';
 
 const introspectionQuery = `{
   __schema {
@@ -34,13 +32,7 @@ const introspectionQuery = `{
   }
 }`;
 
-const staticList = getStaticListName({ create: true, read: true, update: true, delete: true });
-const imperativeList = getImperativeListName({
-  create: true,
-  read: true,
-  update: true,
-  delete: true,
-});
+const staticList = getListName({ create: true, query: true, update: true, delete: true });
 
 describe(`Schema`, () => {
   let testEnv: TestEnv, context: KeystoneContext;
@@ -81,48 +73,71 @@ describe(`Schema`, () => {
     await testEnv.disconnect();
   });
 
-  describe('static', () => {
-    listAccessVariations.forEach(access => {
-      test(JSON.stringify(access), async () => {
-        const name = getStaticListName(access);
+  describe('isEnabled', () => {
+    listEnabledVariations.forEach(isEnabled => {
+      test(JSON.stringify(isEnabled === undefined ? 'undefined' : isEnabled), async () => {
+        const name = getListName(isEnabled);
         const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
         // The type is used in all the queries and mutations as a return type
-        if (access.create || access.read || access.update || access.delete) {
+        if (isEnabled !== false) {
           expect(types).toContain(gqlNames.outputTypeName);
-          // Filter types are also available for update/delete/create (thanks
-          // to nested mutations)
-          expect(types).toContain(gqlNames.whereInputName);
-          expect(types).toContain(gqlNames.whereUniqueInputName);
         } else {
           expect(types).not.toContain(gqlNames.outputTypeName);
-          expect(types).not.toContain(gqlNames.whereInputName);
+        }
+        if (
+          isEnabled === undefined ||
+          isEnabled === true ||
+          (isEnabled !== false && (isEnabled?.query || isEnabled?.update || isEnabled?.delete))
+        ) {
+          // Filter types are also available for update/delete/create (thanks
+          // to nested mutations)
+          expect(types).toContain(gqlNames.whereUniqueInputName);
+        } else {
           expect(types).not.toContain(gqlNames.whereUniqueInputName);
         }
 
         // Queries are only accessible when reading
-        if (access.read) {
+        if (
+          isEnabled === undefined ||
+          isEnabled === true ||
+          (isEnabled !== false && isEnabled?.query)
+        ) {
+          expect(types).toContain(gqlNames.whereInputName);
           expect(queries).toContain(gqlNames.itemQueryName);
           expect(queries).toContain(gqlNames.listQueryName);
           expect(queries).toContain(gqlNames.listQueryCountName);
         } else {
+          expect(types).not.toContain(gqlNames.whereInputName);
           expect(queries).not.toContain(gqlNames.itemQueryName);
           expect(queries).not.toContain(gqlNames.listQueryName);
           expect(queries).not.toContain(gqlNames.listQueryCountName);
         }
 
-        if (access.create) {
+        if (
+          isEnabled === undefined ||
+          isEnabled === true ||
+          (isEnabled !== false && isEnabled?.create)
+        ) {
           expect(mutations).toContain(gqlNames.createMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.createMutationName);
         }
 
-        if (access.update) {
+        if (
+          isEnabled === undefined ||
+          isEnabled === true ||
+          (isEnabled !== false && isEnabled?.update)
+        ) {
           expect(mutations).toContain(gqlNames.updateMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.updateMutationName);
         }
 
-        if (access.delete) {
+        if (
+          isEnabled === undefined ||
+          isEnabled === true ||
+          (isEnabled !== false && isEnabled?.delete)
+        ) {
           expect(mutations).toContain(gqlNames.deleteMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.deleteMutationName);
@@ -130,22 +145,22 @@ describe(`Schema`, () => {
       });
     });
 
-    fieldMatrix.forEach(access => {
-      test(`${JSON.stringify(access)} on ${staticList}`, () => {
-        const name = getFieldName(access);
+    fieldMatrix.forEach(isEnabled => {
+      test(`${JSON.stringify(isEnabled)} on ${staticList}`, () => {
+        const name = getFieldName(isEnabled);
 
         expect(fieldTypes[staticList].fields).not.toBe(null);
 
         const fields = fieldTypes[staticList].fields;
-        if (access.read) {
+        if (isEnabled.read) {
           expect(fields[name]).not.toBe(undefined);
         } else {
           expect(fields[name]).toBe(undefined);
         }
 
-        // Filter types are only used when reading
+        // Filters require both `read` and `filter` to be true for
         expect(fieldTypes[`${staticList}WhereInput`].inputFields).not.toBe(undefined);
-        if (access.read) {
+        if (isEnabled.read && isEnabled.filter) {
           expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).not.toBe(undefined);
         } else {
           expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).toBe(undefined);
@@ -153,7 +168,7 @@ describe(`Schema`, () => {
 
         // Create inputs
         expect(fieldTypes[`${staticList}CreateInput`].inputFields).not.toBe(undefined);
-        if (access.create) {
+        if (isEnabled.create) {
           expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).not.toBe(undefined);
         } else {
           expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).toBe(undefined);
@@ -161,82 +176,11 @@ describe(`Schema`, () => {
 
         // Update inputs
         expect(fieldTypes[`${staticList}UpdateInput`].inputFields).not.toBe(undefined);
-        if (access.update) {
+        if (isEnabled.update) {
           expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).not.toBe(undefined);
         } else {
           expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).toBe(undefined);
         }
-      });
-
-      test(`${JSON.stringify(access)} on ${imperativeList}`, () => {
-        const name = getFieldName(access);
-
-        expect(fieldTypes[imperativeList].fields).not.toBe(null);
-
-        const fields = fieldTypes[imperativeList].fields;
-        expect(fields[name]).not.toBe(undefined);
-
-        // Filter types are only used when reading
-        expect(fieldTypes[`${imperativeList}WhereInput`].inputFields).not.toBe(undefined);
-        expect(fieldTypes[`${imperativeList}WhereInput`].inputFields[name]).not.toBe(undefined);
-
-        // Create inputs
-        expect(fieldTypes[`${imperativeList}CreateInput`].inputFields).not.toBe(undefined);
-        expect(fieldTypes[`${imperativeList}CreateInput`].inputFields[name]).not.toBe(undefined);
-
-        // Update inputs
-        expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields).not.toBe(undefined);
-        expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields[name]).not.toBe(undefined);
-      });
-    });
-  });
-
-  describe('imperative', () => {
-    listAccessVariations.forEach(access => {
-      test(JSON.stringify(access), async () => {
-        const name = getImperativeListName(access);
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
-
-        // All types, etc, are included when imperative no matter the config (because
-        // it can't be resolved until runtime)
-        expect(types).toContain(gqlNames.outputTypeName);
-        expect(types).toContain(gqlNames.whereInputName);
-        expect(types).toContain(gqlNames.whereUniqueInputName);
-
-        expect(queries).toContain(gqlNames.itemQueryName);
-        expect(queries).toContain(gqlNames.listQueryName);
-        expect(queries).toContain(gqlNames.listQueryCountName);
-
-        expect(mutations).toContain(gqlNames.createMutationName);
-        expect(mutations).toContain(gqlNames.updateMutationName);
-        expect(mutations).toContain(gqlNames.deleteMutationName);
-      });
-    });
-  });
-
-  describe('declarative', () => {
-    listAccessVariations.forEach(access => {
-      test(JSON.stringify(access), async () => {
-        const name = getDeclarativeListName(access);
-
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
-        // All types, etc, are included when declarative no matter the config (because
-        // it can't be resolved until runtime)
-        expect(types).toContain(gqlNames.outputTypeName);
-        expect(types).toContain(gqlNames.whereInputName);
-        expect(types).toContain(gqlNames.whereUniqueInputName);
-
-        expect(queries).toContain(gqlNames.itemQueryName);
-        expect(queries).toContain(gqlNames.listQueryName);
-        expect(queries).toContain(gqlNames.listQueryCountName);
-
-        if (access.create) {
-          expect(mutations).toContain(gqlNames.createMutationName);
-        } else {
-          expect(mutations).not.toContain(gqlNames.createMutationName);
-        }
-        expect(mutations).toContain(`update${name}`);
-        expect(mutations).toContain(`delete${name}`);
       });
     });
   });

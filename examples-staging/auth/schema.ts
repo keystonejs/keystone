@@ -22,6 +22,7 @@ export const lists = createSchema({
       email: text({
         isRequired: true,
         isUnique: true,
+        graphql: { isEnabled: { filter: true } },
       }),
       // The user's password, used as the secret field for auth
       password: password({

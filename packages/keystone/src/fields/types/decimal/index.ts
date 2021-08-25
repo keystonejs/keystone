@@ -56,14 +56,14 @@ export const decimal =
       );
     }
     const index = getIndexType({ isIndexed, isUnique });
-
-    return fieldType({
-      kind: 'scalar',
-      mode: 'optional',
-      scalar: 'Decimal',
+    const dbField = {
+      kind: 'scalar' as const,
+      mode: 'optional' as const,
+      scalar: 'Decimal' as const,
       nativeType: `Decimal(${precision}, ${scale})`,
       index,
-    })({
+    };
+    return fieldType(dbField)({
       ...config,
       input: {
         where: {

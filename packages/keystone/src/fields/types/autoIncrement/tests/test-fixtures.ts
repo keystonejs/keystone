@@ -1,5 +1,4 @@
 import { KeystoneContext } from '../../../../types';
-import { text } from '../../text';
 import { autoIncrement } from '..';
 
 export const name = 'AutoIncrement';
@@ -14,8 +13,7 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  name: text(),
-  orderNumber: autoIncrement(),
+  orderNumber: autoIncrement({ graphql: { isEnabled: { filter: true } } }),
 });
 
 export const initItems = () => {

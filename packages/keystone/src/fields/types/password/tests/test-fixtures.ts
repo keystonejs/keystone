@@ -1,5 +1,4 @@
 import { password } from '..';
-import { text } from '../../text';
 
 export const name = 'Password';
 export const typeFunction = password;
@@ -12,7 +11,6 @@ export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
 export const getTestFields = () => ({
-  name: text(),
   password: password({ minLength: 4 }),
   passwordRejectCommon: password({ rejectCommon: true }),
 });

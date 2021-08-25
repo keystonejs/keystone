@@ -6,12 +6,15 @@ type Note {
   label: String
 }
 
+input NoteWhereUniqueInput {
+  id: ID
+}
+
 input NoteWhereInput {
   AND: [NoteWhereInput!]
   OR: [NoteWhereInput!]
   NOT: [NoteWhereInput!]
   id: IDFilter
-  label: StringNullableFilter
 }
 
 input IDFilter {
@@ -25,41 +28,8 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NoteWhereUniqueInput {
-  id: ID
-}
-
 input NoteOrderByInput {
   id: OrderDirection
-  label: OrderDirection
 }
 
 enum OrderDirection {
@@ -143,6 +113,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

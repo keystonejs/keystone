@@ -19,7 +19,7 @@ const runner = setupTestRunner({
       }),
       PostLimitedRead: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
           content: text(),
         },
         access: {

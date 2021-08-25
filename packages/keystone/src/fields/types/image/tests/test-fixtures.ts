@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { KeystoneContext } from '../../../../types';
-import { text } from '../../text';
 import { image } from '..';
 
 const prepareFile = (_filePath: string) => {
@@ -31,7 +30,7 @@ export const supportsUnique = false;
 export const fieldName = 'avatar';
 export const subfieldName = 'extension';
 
-export const getTestFields = () => ({ name: text(), avatar: image() });
+export const getTestFields = () => ({ avatar: image() });
 
 export const afterAll = async () => {
   // This matches the storagePath in the keystone config in the various test files.

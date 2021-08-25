@@ -1,5 +1,4 @@
 import { float } from '..';
-import { text } from '../../text';
 
 export const name = 'Float';
 export const typeFunction = float;
@@ -8,7 +7,9 @@ export const exampleValue2 = () => 6.283;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: text(), testField: float() });
+export const getTestFields = () => ({
+  testField: float({ graphql: { isEnabled: { filter: true } } }),
+});
 
 export const initItems = () => {
   return [
