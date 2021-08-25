@@ -40,8 +40,8 @@ type Mutation {
 }
 
 input CreateInitialUserInput {
-  name: String
-  email: String
+  name: String!
+  email: String!
   password: String
 }
 
@@ -150,7 +150,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  email: StringFilter
 }
 
 input IDFilter {
@@ -164,7 +164,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -175,10 +175,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -189,7 +189,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input UserOrderByInput {
@@ -248,13 +248,13 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String!
+  email: String!
   avatar: ImageFieldInput
   attachment: FileFieldInput
   password: String
   isAdmin: Boolean
-  roles: String
+  roles: String!
   phoneNumbers: PhoneNumberRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
 }
@@ -312,7 +312,7 @@ input PhoneNumberUpdateArgs {
 input PhoneNumberCreateInput {
   user: UserRelateToOneForCreateInput
   type: String
-  value: String
+  value: String!
 }
 
 input UserRelateToOneForCreateInput {

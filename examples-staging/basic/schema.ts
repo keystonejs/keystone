@@ -43,9 +43,19 @@ export const lists = createSchema({
     },
     fields: {
       /** The user's first and last name. */
-      name: text({ isRequired: true }),
+      name: text({ validation: { length: { min: 1 } } }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isUnique: true, graphql: { isEnabled: { filter: true } } }),
+      email: text({
+        isIndexed: 'unique',
+        graphql: { isEnabled: { filter: true } },
+        validation: {
+          match: {
+            regex:
+              /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+            explanation: 'must be a valid email address',
+          },
+        },
+      }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
@@ -131,7 +141,7 @@ export const lists = createSchema({
   }),
   Post: list({
     fields: {
-      title: text(),
+      title: text({ validation: { length: { min: 5 } }, isNullable: true }),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
       // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),

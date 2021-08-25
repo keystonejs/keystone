@@ -13,8 +13,8 @@ generator client {
 
 model User {
   id                  String        @id @default(cuid())
-  name                String?
-  email               String?       @unique
+  name                String        @default("")
+  email               String        @unique @default("")
   avatar_filesize     Int?
   avatar_extension    String?
   avatar_width        Int?
@@ -26,7 +26,7 @@ model User {
   attachment_filename String?
   password            String?
   isAdmin             Boolean?
-  roles               String?
+  roles               String        @default("")
   phoneNumbers        PhoneNumber[] @relation("PhoneNumber_user")
   posts               Post[]        @relation("Post_author")
 }
@@ -36,7 +36,7 @@ model PhoneNumber {
   user   User?   @relation("PhoneNumber_user", fields: [userId], references: [id])
   userId String? @map("user")
   type   String?
-  value  String?
+  value  String  @default("")
 
   @@index([userId])
 }
