@@ -121,9 +121,9 @@ input UserUpdateInput {
 }
 
 input TodoRelateToManyForUpdateInput {
+  create: [TodoCreateInput!]
   disconnect: [TodoWhereUniqueInput!]
   set: [TodoWhereUniqueInput!]
-  create: [TodoCreateInput!]
   connect: [TodoWhereUniqueInput!]
 }
 

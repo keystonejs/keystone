@@ -153,9 +153,9 @@ input UserUpdateInput {
 }
 
 input PostRelateToManyForUpdateInput {
+  create: [PostCreateInput!]
   disconnect: [PostWhereUniqueInput!]
   set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
 }
 
@@ -227,9 +227,9 @@ input UserRelateToOneForUpdateInput {
 }
 
 input TagRelateToManyForUpdateInput {
+  create: [TagCreateInput!]
   disconnect: [TagWhereUniqueInput!]
   set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
 }
 
