@@ -262,7 +262,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const { colors } = useTheme();
 
   if (field.display.mode === 'count') {
-    const count = item[`_${field.path}Meta`]?.count ?? 0;
+    const count = item[`${field.path}Count`] ?? 0;
     return (
       <CellContainer>
         {count} {count === 1 ? list.singular : list.plural}
@@ -422,7 +422,7 @@ export const controller = (
             label: ${config.fieldMeta.refLabelField}
            }`
         : config.fieldMeta.displayMode === 'count'
-        ? `_${config.path}Meta {count}`
+        ? `${config.path}Count`
         : `${config.path} {
              id
              label: ${config.fieldMeta.refLabelField}
@@ -437,7 +437,7 @@ export const controller = (
       : { kind: 'one', value: null, initialValue: null },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'count') {
-        return { kind: 'count', count: data[`_${config.path}Meta`]?.count ?? 0 };
+        return { kind: 'count', count: data[`${config.path}Count`] ?? 0 };
       }
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
