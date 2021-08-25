@@ -81,6 +81,7 @@ export function createSystem(config: KeystoneConfig) {
         gqlNamesByList: Object.fromEntries(
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
+        lists,
       });
 
       return {

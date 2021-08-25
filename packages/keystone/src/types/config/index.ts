@@ -37,6 +37,10 @@ export type KeystoneConfig = {
     generateNextGraphqlAPI?: boolean;
     /** Config options for Keystone Cloud */
     keystoneCloud?: KeystoneCloudConfig;
+    /** Adds the internal data structure `experimental.initialisedLists` to the context object.
+     * This is not a stable API and may contain breaking changes in `patch` level releases.
+     */
+    contextInitialisedLists?: boolean;
   };
 };
 
