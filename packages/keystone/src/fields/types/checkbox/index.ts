@@ -1,6 +1,5 @@
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   CommonFieldConfig,
   fieldType,
   FieldTypeFunc,
@@ -12,14 +11,12 @@ import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<boolean, TGeneratedListTypes>;
-    isRequired?: boolean;
+    defaultValue?: boolean;
   };
 
 export const checkbox =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    isRequired,
-    defaultValue,
+    defaultValue = false,
     ...config
   }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -27,21 +24,34 @@ export const checkbox =
       throw Error('isUnique is not a supported option for field type checkbox');
     }
 
-    return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({
+    return fieldType({
+      kind: 'scalar',
+      mode: 'required',
+      scalar: 'Boolean',
+      default: { kind: 'literal', value: defaultValue },
+    })({
       ...config,
       input: {
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Boolean.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].Boolean.required }),
           resolve: filters.resolveCommon,
         },
-        create: { arg: graphql.arg({ type: graphql.Boolean }) },
-        update: { arg: graphql.arg({ type: graphql.Boolean }) },
+        create: { arg: graphql.arg({ type: graphql.nonNull(graphql.Boolean), defaultValue }) },
+        update: {
+          arg: graphql.arg({ type: graphql.Boolean }),
+          resolve(val) {
+            if (val === null) {
+              throw new Error('checkbox fields cannot be set to null');
+            }
+            return val;
+          },
+        },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
         type: graphql.Boolean,
       }),
       views: resolveView('checkbox/views'),
-      __legacy: { isRequired, defaultValue },
+      getAdminMeta: () => ({ defaultValue }),
     });
   };
