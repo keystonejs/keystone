@@ -103,9 +103,9 @@ input PersonUpdateInput {
 }
 
 input PackageRelateToManyForUpdateInput {
-  create: [PackageCreateInput!]
   disconnect: [PackageWhereUniqueInput!]
   set: [PackageWhereUniqueInput!]
+  create: [PackageCreateInput!]
   connect: [PackageWhereUniqueInput!]
 }
 

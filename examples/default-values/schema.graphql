@@ -181,9 +181,9 @@ input PersonUpdateInput {
 }
 
 input TaskRelateToManyForUpdateInput {
-  create: [TaskCreateInput!]
   disconnect: [TaskWhereUniqueInput!]
   set: [TaskWhereUniqueInput!]
+  create: [TaskCreateInput!]
   connect: [TaskWhereUniqueInput!]
 }
 

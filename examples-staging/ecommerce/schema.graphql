@@ -245,16 +245,16 @@ input UserUpdateInput {
 }
 
 input CartItemRelateToManyForUpdateInput {
-  create: [CartItemCreateInput!]
   disconnect: [CartItemWhereUniqueInput!]
   set: [CartItemWhereUniqueInput!]
+  create: [CartItemCreateInput!]
   connect: [CartItemWhereUniqueInput!]
 }
 
 input OrderRelateToManyForUpdateInput {
-  create: [OrderCreateInput!]
   disconnect: [OrderWhereUniqueInput!]
   set: [OrderWhereUniqueInput!]
+  create: [OrderCreateInput!]
   connect: [OrderWhereUniqueInput!]
 }
 
@@ -265,9 +265,9 @@ input RoleRelateToOneForUpdateInput {
 }
 
 input ProductRelateToManyForUpdateInput {
-  create: [ProductCreateInput!]
   disconnect: [ProductWhereUniqueInput!]
   set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
   connect: [ProductWhereUniqueInput!]
 }
 
@@ -622,9 +622,9 @@ input OrderUpdateInput {
 }
 
 input OrderItemRelateToManyForUpdateInput {
-  create: [OrderItemCreateInput!]
   disconnect: [OrderItemWhereUniqueInput!]
   set: [OrderItemWhereUniqueInput!]
+  create: [OrderItemCreateInput!]
   connect: [OrderItemWhereUniqueInput!]
 }
 
@@ -690,9 +690,9 @@ input RoleUpdateInput {
 }
 
 input UserRelateToManyForUpdateInput {
-  create: [UserCreateInput!]
   disconnect: [UserWhereUniqueInput!]
   set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
   connect: [UserWhereUniqueInput!]
 }
 

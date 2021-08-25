@@ -229,16 +229,16 @@ input FileFieldInput {
 }
 
 input PhoneNumberRelateToManyForUpdateInput {
-  create: [PhoneNumberCreateInput!]
   disconnect: [PhoneNumberWhereUniqueInput!]
   set: [PhoneNumberWhereUniqueInput!]
+  create: [PhoneNumberCreateInput!]
   connect: [PhoneNumberWhereUniqueInput!]
 }
 
 input PostRelateToManyForUpdateInput {
-  create: [PostCreateInput!]
   disconnect: [PostWhereUniqueInput!]
   set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
 }
 

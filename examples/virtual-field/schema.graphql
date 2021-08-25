@@ -124,9 +124,9 @@ input AuthorUpdateInput {
 }
 
 input PostRelateToManyForUpdateInput {
-  create: [PostCreateInput!]
   disconnect: [PostWhereUniqueInput!]
   set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
 }
 

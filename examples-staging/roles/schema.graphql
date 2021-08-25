@@ -208,9 +208,9 @@ input RoleRelateToOneForUpdateInput {
 }
 
 input TodoRelateToManyForUpdateInput {
-  create: [TodoCreateInput!]
   disconnect: [TodoWhereUniqueInput!]
   set: [TodoWhereUniqueInput!]
+  create: [TodoCreateInput!]
   connect: [TodoWhereUniqueInput!]
 }
 
@@ -282,9 +282,9 @@ input RoleUpdateInput {
 }
 
 input PersonRelateToManyForUpdateInput {
-  create: [PersonCreateInput!]
   disconnect: [PersonWhereUniqueInput!]
   set: [PersonWhereUniqueInput!]
+  create: [PersonCreateInput!]
   connect: [PersonWhereUniqueInput!]
 }
 
