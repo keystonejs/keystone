@@ -396,7 +396,7 @@ While there are a lot of changes to this API, we've put a lot of effort into mak
 3. Update mutation arguments to match the new input types. Make sure you replace `{ id: "..."}` with `{where: { id: "..."} }` in your `update` and `delete` operations.
 4. Update relationship inputs to `create` and `update` operations. Ensure you've replaced usage of `{ disconnectAll: true }` with `{ set: [] }` in to-many relationships, and have used `{ disconnect: true }` rather than `{ disconnect: { id: "..."} }` in to-one relationships.
 
-!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [List Items API](docs/apis/list-items).
+!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [List Items API](/docs/apis/list-items).
 
 ---
 
