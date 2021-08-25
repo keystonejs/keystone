@@ -31,13 +31,17 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await Promise.all([page.waitForNavigation(), page.click('nav a:has-text("People")')]);
     expect(page.url()).toBe('http://localhost:3000/people');
   });
-  //   test('Can not access hidden lists via the navigation', async () => {
-  //     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000')]);
-  //     const nav = await page.waitForSelector('nav');
-  //     console.log('NAV ELEMENT', nav);
-  //     const navItems = await nav.$$eval('li', elements => elements);
-  //     console.log('NAVITEMS', navItems);
-  //   });
+  test('Can not access hidden lists via the navigation', async () => {
+    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000')]);
+    const navItems = await page.$$('nav li a');
+    const navLinks = await Promise.all(
+      navItems.map(navItem => {
+        return navItem.getAttribute('href');
+      })
+    );
+    expect(navLinks.length).toBe(3);
+    expect(navLinks.includes('/secretplans')).toBe(false);
+  });
   test('When navigated to an Item view, the representative list NavItem is selected', async () => {
     await page.goto('http://localhost:3000');
     await page.click('button[title="Create Task"]');
