@@ -24,7 +24,7 @@ export type KeystoneContext = {
   experimental?: {
     /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true.
      * This is not a stable API and may contain breaking changes in `patch` level releases.
-    */
+     */
     initialisedLists: Record<string, InitialisedList>;
   };
 } & Partial<SessionContext<any>>;
