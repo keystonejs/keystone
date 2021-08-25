@@ -1,6 +1,8 @@
 import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
 import { Alert } from '../../../components/primitives/Alert';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Custom Admin UI Pages
 
@@ -8,6 +10,8 @@ import { Alert } from '../../../components/primitives/Alert';
 
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of [Next.js](https://nextjs.org/docs/basic-features/pages), it exposes the same pages directory for adding custom pages.
+
+## Getting started
 
 To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
 Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
@@ -172,5 +176,30 @@ export default function CustomPage () {
 ```
 
 Using `emotion` for styling is purely a recommendation, if you would prefer to use another css-in-js or css solution for your custom component please feel free to. This may require additional configuration currently outside of the scope of this guide.
+
+## Related resources
+
+<RelatedContent>
+    <Well
+    heading="Example: Custom Admin UI Pages"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-pages"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
+    </Well>
+    <Well
+    heading="Custom Admin UI Logo Guide"
+    href="/docs/guides/custom-admin-ui-logo"
+    >
+    Learn how to add your own custom logo to Keystone’s Admin UI.
+    </Well>
+    <Well
+    heading="Custom Admin UI Navigation Guide"
+    href="/docs/guides/custom-admin-ui-navigation"
+    >
+    Learn how to create your own custom Navigation components in Keytone’s Admin UI.
+    </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to add custom pages to the Keystone Admin UI.">{children}</Markdown>;

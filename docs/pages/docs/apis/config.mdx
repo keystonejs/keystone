@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # System Configuration API
 
@@ -404,5 +407,16 @@ Options:
 - `enableNextJsGraphqlApiEndpoint`: (coming soon)
 - `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
 - `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list</InlineCode> function.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options.">{children}</Markdown>;

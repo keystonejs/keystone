@@ -7,15 +7,15 @@ export const proseStyles = {
     content: '""',
   },
   a: {
-    color: 'var(--text)',
     textDecoration: 'underline',
     fontWeight: 500,
+    color: 'inherit',
   },
   'a:hover': {
     color: 'var(--link)',
   },
   strong: {
-    color: 'var(--text)',
+    color: 'inherit',
     fontWeight: 600,
   },
   'ol[type="A"], ol[type="A" s]': {

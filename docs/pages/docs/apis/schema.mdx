@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Schema API
 
@@ -206,5 +208,30 @@ export default config({
 
 The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Fields API Reference"
+    href="/docs/apis/fields"
+    >
+    Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
+  </Well>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+  <Well
+    heading="Example Project: Blog"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    A basic Blog schema with Posts and Authors. Use this as a starting place for learning how to use Keystone. It’s also a starter for other feature projects.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for Keystone’s Schema API, which defines the data model of your system.">{children}</Markdown>;

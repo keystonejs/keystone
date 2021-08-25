@@ -106,7 +106,12 @@ const ORIGINAL_NEXT = [
 const CURRENT = [
   {
     source: '/docs/guides/keystone-5-vs-keystone-next',
-    destination: '/docs/guides/keystone-5-vs-keystone-6-preview',
+    destination: '/updates/keystone-5-vs-keystone-6-preview',
+    permanent: true,
+  },
+  {
+    source: '/docs/guides/keystone-5-vs-keystone-6-preview',
+    destination: '/updates/keystone-5-vs-keystone-6-preview',
     permanent: true,
   },
 ];

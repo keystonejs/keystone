@@ -1,5 +1,7 @@
 import { Emoji } from '../../../components/primitives/Emoji';
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Understanding Relationships
 
@@ -313,5 +315,16 @@ export default config({
 ## Summary
 
 Keystone relationships are managed using the [relationship](../apis/fields#relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Relationship Field API Reference"
+    href="/docs/apis/fields#relationship"
+    >
+    Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to reason about and configure relationships in Keystone so you can bring value to your project through structured content.">{children}</Markdown>;

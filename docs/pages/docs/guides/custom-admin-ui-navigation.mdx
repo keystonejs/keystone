@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Custom Admin UI Navigation
 
@@ -303,5 +305,30 @@ type NavItemProps = {
 
 By default the `isSelected` value will be evaluated by the condition `router.pathname === href`.
 Pass in `isSelected` if you have a custom condition or would like more granular control over the "selected" state of Navigation items.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Example: Custom Admin UI Navigation"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-navigation"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Adds a custom navigation component to the Admin UI. Builds on the Task Manager starter project.
+  </Well>
+  <Well
+    heading="Custom Admin UI Logo Guide"
+    href="/docs/guides/custom-admin-ui-logo"
+    >
+    Learn how to add your own custom logo to Keystone’s Admin UI.
+  </Well>
+  <Well
+    heading="Custom Admin UI Pages Guide"
+    href="/docs/guides/custom-admin-ui-pages"
+    >
+    Learn how to add your own custom pages to Keystone’s Admin UI.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="In this guide, we'll show you how to create a custom Navigation component to be rendered in the Admin UI.">{children}</Markdown>
