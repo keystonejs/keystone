@@ -37,17 +37,20 @@ export const autoIncrement =
     })({
       ...config,
       input: {
+        // create
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        // update
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        // filter
         where: {
-          arg: graphql.arg({
-            type: filters[meta.provider].Int.optional,
-          }),
+          arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
           resolve: filters.resolveCommon,
         },
         uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
-        create: { arg: graphql.arg({ type: graphql.Int }) },
-        update: { arg: graphql.arg({ type: graphql.Int }) },
+        // orderBy
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
+      // read
       output: graphql.field({ type: graphql.Int }),
       views: resolveView('integer/views'),
       __legacy: {

@@ -87,9 +87,9 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must not define an update GraphQL input but the idField for ${list.listKey} does define one`
     );
   }
-  if (idField.access.read === false) {
+  if (idField.graphql.isEnabled.read === false) {
     throw new Error(
-      `The idField on a list must not have access.read be set to false but ${list.listKey} does`
+      `The idField on a list must not have graphql.isEnabled.read be set to false but ${list.listKey} does`
     );
   }
   if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== graphql.ID) {

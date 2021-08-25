@@ -11,17 +11,15 @@ type Todo {
   updatedAt: String
 }
 
+input TodoWhereUniqueInput {
+  id: ID
+}
+
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
   id: IDFilter
-  label: StringNullableFilter
-  isComplete: BooleanNullableFilter
-  assignedTo: UserWhereInput
-  finishBy: DateTimeNullableFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
 }
 
 input IDFilter {
@@ -35,61 +33,8 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input BooleanNullableFilter {
-  equals: Boolean
-  not: BooleanNullableFilter
-}
-
-input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: DateTimeNullableFilter
-}
-
-input TodoWhereUniqueInput {
-  id: ID
-}
-
 input TodoOrderByInput {
   id: OrderDirection
-  label: OrderDirection
-  isComplete: OrderDirection
-  finishBy: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
 }
 
 enum OrderDirection {
@@ -102,6 +47,8 @@ input TodoUpdateInput {
   isComplete: Boolean
   assignedTo: UserRelateToOneForUpdateInput
   finishBy: String
+  createdAt: String
+  updatedAt: String
 }
 
 input UserRelateToOneForUpdateInput {
@@ -120,6 +67,8 @@ input TodoCreateInput {
   isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
   finishBy: String
+  createdAt: String
+  updatedAt: String
 }
 
 input UserRelateToOneForCreateInput {
@@ -147,39 +96,19 @@ type PasswordState {
   isSet: Boolean!
 }
 
+input UserWhereUniqueInput {
+  id: ID
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
-  password: PasswordFilter
-  tasks: TodoManyRelationFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-}
-
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input TodoManyRelationFilter {
-  every: TodoWhereInput
-  some: TodoWhereInput
-  none: TodoWhereInput
-}
-
-input UserWhereUniqueInput {
-  id: ID
 }
 
 input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
 }
 
 input UserUpdateInput {
@@ -187,6 +116,8 @@ input UserUpdateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForUpdateInput
+  createdAt: String
+  updatedAt: String
 }
 
 input TodoRelateToManyForUpdateInput {
@@ -206,6 +137,8 @@ input UserCreateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForCreateInput
+  createdAt: String
+  updatedAt: String
 }
 
 input TodoRelateToManyForCreateInput {
@@ -290,6 +223,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

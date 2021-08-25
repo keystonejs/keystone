@@ -32,6 +32,7 @@ export const staticAdminMetaQuery = gql`
             path
             label
             isOrderable
+            isFilterable
             fieldMeta
             viewsIndex
             customViewsIndex
@@ -88,6 +89,7 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
                   | 'path'
                   | 'label'
                   | 'isOrderable'
+                  | 'isFilterable'
                   | 'fieldMeta'
                   | 'viewsIndex'
                   | 'customViewsIndex'
@@ -158,6 +160,7 @@ type KeystoneAdminUIFieldMeta = {
   path: Scalars['String'];
   label: Scalars['String'];
   isOrderable: Scalars['Boolean'];
+  isFilterable: Scalars['Boolean'];
   fieldMeta: Maybe<Scalars['JSON']>;
   viewsIndex: Scalars['Int'];
   customViewsIndex: Maybe<Scalars['Int']>;

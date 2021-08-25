@@ -16,12 +16,15 @@ type Scalars = {
   readonly JSON: import('@keystone-next/keystone/types').JSONValue;
 };
 
+export type TodoWhereUniqueInput = {
+  readonly id?: Scalars['ID'] | null;
+};
+
 export type TodoWhereInput = {
   readonly AND?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly NOT?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly id?: IDFilter | null;
-  readonly title?: StringNullableFilter | null;
 };
 
 export type IDFilter = {
@@ -35,41 +38,8 @@ export type IDFilter = {
   readonly not?: IDFilter | null;
 };
 
-export type StringNullableFilter = {
-  readonly equals?: Scalars['String'] | null;
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly lt?: Scalars['String'] | null;
-  readonly lte?: Scalars['String'] | null;
-  readonly gt?: Scalars['String'] | null;
-  readonly gte?: Scalars['String'] | null;
-  readonly contains?: Scalars['String'] | null;
-  readonly startsWith?: Scalars['String'] | null;
-  readonly endsWith?: Scalars['String'] | null;
-  readonly not?: NestedStringNullableFilter | null;
-};
-
-export type NestedStringNullableFilter = {
-  readonly equals?: Scalars['String'] | null;
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly lt?: Scalars['String'] | null;
-  readonly lte?: Scalars['String'] | null;
-  readonly gt?: Scalars['String'] | null;
-  readonly gte?: Scalars['String'] | null;
-  readonly contains?: Scalars['String'] | null;
-  readonly startsWith?: Scalars['String'] | null;
-  readonly endsWith?: Scalars['String'] | null;
-  readonly not?: NestedStringNullableFilter | null;
-};
-
-export type TodoWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null;
-};
-
 export type TodoOrderByInput = {
   readonly id?: OrderDirection | null;
-  readonly title?: OrderDirection | null;
 };
 
 export type OrderDirection = 'asc' | 'desc';

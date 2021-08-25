@@ -117,6 +117,7 @@ export function createAdminMeta(
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
         fieldMeta: null,
         isOrderable: !!field.input?.orderBy,
+        isFilterable: !!field.input?.where,
         path: fieldKey,
         listKey: key,
         search,

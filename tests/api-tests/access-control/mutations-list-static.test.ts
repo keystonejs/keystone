@@ -8,7 +8,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       // Imperative -> Static access control
       User: list({
-        fields: { name: text() },
+        fields: { name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }) },
         access: {
           read: true,
           create: ({ originalInput }) => {

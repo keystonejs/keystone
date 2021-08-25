@@ -105,7 +105,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     > = {};
     Object.keys(list.fields).forEach(fieldPath => {
       const field = list.fields[fieldPath];
-      if (field.controller.filter) {
+      if (field.isFilterable && field.controller.filter) {
         // TODO: make all the things readonly so this works
         fieldsWithFilters[fieldPath] = field as any;
       }

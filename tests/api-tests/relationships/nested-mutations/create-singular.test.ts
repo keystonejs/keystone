@@ -50,28 +50,28 @@ const runner = setupTestRunner({
 
       GroupNoCreate: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
         },
         access: { create: () => false },
       }),
 
       EventToGroupNoCreate: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { filter: true } } }),
           group: relationship({ ref: 'GroupNoCreate' }),
         },
       }),
 
       GroupNoCreateHard: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
         },
         access: { create: false },
       }),
 
       EventToGroupNoCreateHard: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { filter: true } } }),
           group: relationship({ ref: 'GroupNoCreateHard' }),
         },
       }),

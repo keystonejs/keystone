@@ -3,7 +3,7 @@ import { InitialisedList } from '../types-for-lists';
 import * as queries from './resolvers';
 
 export function getQueriesForList(list: InitialisedList) {
-  if (list.access.read === false) return {};
+  if (!list.graphql.isEnabled.query) return {};
   const names = getGqlNames(list);
 
   const findOne = graphql.field({

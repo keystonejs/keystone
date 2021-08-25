@@ -1,5 +1,4 @@
 import { json } from '..';
-import { text } from '../../text';
 
 export const name = 'Json';
 export const typeFunction = json;
@@ -12,7 +11,7 @@ export const exampleValue2 = () => ({
 export const supportsUnique = false;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: text(), testField: json() });
+export const getTestFields = () => ({ testField: json() });
 
 export const initItems = () => {
   return [

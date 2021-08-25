@@ -9,7 +9,7 @@ const runner = (debug: boolean | undefined) =>
     config: apiTestConfig({
       lists: createSchema({
         User: list({
-          fields: { name: text() },
+          fields: { name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }) },
           hooks: {
             beforeChange: ({ resolvedData }) => {
               if (resolvedData.name === 'trigger before') {

@@ -38,9 +38,7 @@ export const checkbox =
         update: { arg: graphql.arg({ type: graphql.Boolean }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Boolean,
-      }),
+      output: graphql.field({ type: graphql.Boolean }),
       views: resolveView('checkbox/views'),
       __legacy: { isRequired, defaultValue },
     });

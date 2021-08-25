@@ -382,27 +382,6 @@ export type FieldTypeWithoutDBField<
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
-export function fieldType<TDBField extends DBField>(dbField: TDBField) {
-  return function <
-    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
-    UpdateArg extends graphql.Arg<graphql.InputType>,
-    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
-    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
-    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
-  >(
-    stuff: FieldTypeWithoutDBField<
-      TDBField,
-      CreateArg,
-      UpdateArg,
-      UniqueWhereArg,
-      OrderByArg,
-      FilterArg
-    >
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
-    return { ...stuff, dbField };
-  };
-}
-
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
 export type TypesForList = {
@@ -456,3 +435,25 @@ export type FindManyArgs = {
 };
 
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
+
+// fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
+export function fieldType<TDBField extends DBField>(dbField: TDBField) {
+  return function <
+    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
+    UpdateArg extends graphql.Arg<graphql.InputType>,
+    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
+    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
+    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
+  >(
+    graphQLInfo: FieldTypeWithoutDBField<
+      TDBField,
+      CreateArg,
+      UpdateArg,
+      UniqueWhereArg,
+      OrderByArg,
+      FilterArg
+    >
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
+    return { ...graphQLInfo, dbField };
+  };
+}

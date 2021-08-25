@@ -18,7 +18,7 @@ export const User = list({
   },
   fields: {
     name: text({ isRequired: true }),
-    email: text({ isRequired: true, isUnique: true }),
+    email: text({ isRequired: true, isUnique: true, graphql: { isEnabled: { filter: true } } }),
     password: password(),
     cart: relationship({
       ref: 'CartItem.user',

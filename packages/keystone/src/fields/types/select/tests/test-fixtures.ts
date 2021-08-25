@@ -1,5 +1,4 @@
 import { select } from '..';
-import { text } from '../../text';
 
 type MatrixValue = typeof testMatrix[number];
 
@@ -13,6 +12,7 @@ export const supportsUnique = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
+      graphql: { isEnabled: { filter: true } },
       dataType: matrixValue,
       options:
         matrixValue === 'enum'
@@ -34,6 +34,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
     };
   }
   return {
+    graphql: { isEnabled: { filter: true } },
     dataType: matrixValue,
     options: [
       { label: 'One', value: 1 },
@@ -51,7 +52,6 @@ export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_nu
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 
 export const getTestFields = (matrixValue: MatrixValue) => ({
-  name: text(),
   company: select(fieldConfig(matrixValue)),
 });
 
