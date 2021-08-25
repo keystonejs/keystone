@@ -1,6 +1,8 @@
 import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
 import { Alert } from '../../../components/primitives/Alert'
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Custom Admin UI Logo
 
@@ -45,5 +47,31 @@ Of course this is purely a recommendation, if you would prefer to roll your own 
 
 Once you've added your custom logo component you should see it rendered out in the Admin UI.
 ![image of Admin UI with custom logo](/assets/guides/custom-admin-ui-logo/custom-logo-result.png)
+
+## Related resources
+
+<RelatedContent>
+    <Well
+        heading="Example: Custom Admin UI Logo"
+        href="https://github.com/keystonejs/keystone/tree/master/examples/custom-admin-ui-logo"
+        target="_blank"
+        rel="noopener noreferrer"
+        >
+        Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
+    </Well>
+    <Well
+        heading="Custom Admin UI Navigation Guide"
+        href="/docs/guides/custom-admin-ui-navigation"
+        >
+        Learn how to create your own custom Navigation components in Keytone’s Admin UI.
+    </Well>
+    <Well
+        heading="Custom Admin UI Pages Guide"
+        href="/docs/guides/custom-admin-ui-pages"
+        >
+        Learn how to add your own custom pages to Keystone’s Admin UI.
+    </Well>
+
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to customize Keystone’s Admin UI with your own logo.">{children}</Markdown>;
