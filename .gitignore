@@ -121,6 +121,7 @@ temp/
 
 # SQLite databases
 *.db
+*.db-journal
 
 # Generated files from build process
 robots.txt

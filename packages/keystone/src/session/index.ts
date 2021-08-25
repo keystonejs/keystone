@@ -9,7 +9,7 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  schema,
+  graphql,
 } from '../types';
 // uid-safe is what express-session uses so let's just use it
 
@@ -193,8 +193,8 @@ export async function createSessionContext<T>(
 export function sessionSchema(graphQLSchema: GraphQLSchema) {
   const schemaConfig = graphQLSchema.toConfig();
   const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
-  const endSessionField = schema.field({
-    type: schema.nonNull(schema.Boolean),
+  const endSessionField = graphql.field({
+    type: graphql.nonNull(graphql.Boolean),
     async resolve(rootVal, args, context) {
       if (context.endSession) {
         await context.endSession();

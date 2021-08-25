@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # How to embed Keystone + SQLite in a Next.js app
 
@@ -38,12 +40,18 @@ Here's what we're going to do:
 
 ## Setup a Next.js app
 
-Create a basic Next.js project with the `--typescript` option in an empty directory.
+x> **Warning:** We normally advise to set up a new Next.js app with `yarn create next-app --typescript my-project`, however this will install Next.js `11.x`. This version isn't compatible with this guide until we upgrade Keystone's Next.js internals to `11.x`.
+
+x> To continue, you'll need to use Next.js `10.x` until this upgrade is completed. We've set up a repository below using Next.js `10.x` you can clone in the mean time.
+
+Clone the basic Next.js project below.
 
 ```bash
-yarn create next-app --typescript my-project
-cd my-project
+git clone https://github.com/keystonejs/embedded-mode-with-sqlite-nextjs
+cd embedded-mode-with-sqlite-nextjs
 ```
+
+Then run `yarn` to install the dependencies.
 
 !> Keystone 6 has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
 
@@ -95,7 +103,7 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 ```tsx
 // keystone.ts
 
-import { config, list } from '@keystone-next/keystone/schema';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 const Post = list({
@@ -256,7 +264,7 @@ export async function getStaticProps({
   params,
 }: GetStaticPropsContext) {
   const [post] = await lists.Post.findMany({
-    where: { slug: params!.slug as string },
+    where: { slug: { equals: params!.slug as string } },
     query: 'id title content',
   });
   return { props: { post } };
@@ -316,5 +324,16 @@ Embedded mode is a great way to operate a personal Next.js blog or portfolio wit
 ## Summary
 
 Keystone’s Embedded mode and SQLite support gives you the option to run a self contained CMS from the same place you keep your frontend code. While this option restricts read-write access to people who can run the project in local development, it has advantages with ease of setup, security, and web deployment. This is also a great way to deploy a read-only API on the web for content you manage on your computer.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Getting Started with create-keystone-app"
+    href="/docs/walkthroughs/getting-started-with-create-keystone-app"
+    >
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL API playground.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">{children}</Markdown>;

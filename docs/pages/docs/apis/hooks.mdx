@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Hooks API
 
@@ -13,7 +15,7 @@ All hook functions are async and, with the exception of `resolveInput`, do not r
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -78,7 +80,7 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                   |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -141,7 +143,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -196,7 +198,7 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -247,7 +249,7 @@ The `afterChange` function is used to perform side effects after the data for a 
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -307,7 +309,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -356,7 +358,7 @@ It is invoked after all `validateDelete` hooks have been run.
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -394,7 +396,7 @@ The `afterDelete` function is used to perform side effects after the data for a 
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -437,5 +439,16 @@ The data resolving steps are applied in the following order:
 4. Field values (built in): Some fields types take the value given in the GraphQL operation and convert it into a different type or format to be saved to the database.
 5. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field, which will the current field value on `resolvedData`.
 6. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Hooks Guide"
+    href="/docs/guides/hooks"
+    >
+    Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs with your own business logic.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Hooks let you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.">{children}</Markdown>;
