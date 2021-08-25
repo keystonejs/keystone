@@ -99,10 +99,13 @@ export function makeCreateContext({
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => gqlNamesByList[listKey],
-      initialisedLists: config.experimental?.contextInitialisedLists ? lists : {},
       images,
       files,
     };
+    if (config.experimental?.contextInitialisedLists) {
+      contextToReturn.experimental = { initialisedLists: lists };
+    }
+
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
