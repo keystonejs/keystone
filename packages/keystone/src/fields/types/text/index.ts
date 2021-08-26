@@ -11,7 +11,7 @@ import { resolveView } from '../../resolve-view';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    isIndexed?: boolean | 'unique';
+    isIndexed?: true | 'unique';
     ui?: {
       displayMode?: 'input' | 'textarea';
     };
@@ -19,36 +19,30 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
       match?: { regex: RegExp; explanation?: string };
       length?: { min?: number; max?: number };
     };
-  } & (
-      | {
-          defaultValue?: string;
-          isNullable?: false;
-        }
-      | {
-          defaultValue?: string | null;
-          isNullable?: true;
-        }
-    );
+    defaultValue?: string;
+  } & ({ isNullable?: false; graphql?: { isNonNull?: true } } | { isNullable?: true });
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    defaultValue,
+    defaultValue: _defaultValue,
     isNullable = false,
     validation,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  meta =>
-    fieldType({
+  meta => {
+    const defaultValue =
+      isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined;
+    return fieldType({
       kind: 'scalar',
       mode: isNullable ? 'optional' : 'required',
       scalar: 'String',
       index: isIndexed === true ? 'index' : isIndexed === false ? undefined : isIndexed,
       default:
-        isNullable === false || defaultValue !== undefined
+        defaultValue != null
           ? {
               kind: 'literal',
-              value: defaultValue || '',
+              value: defaultValue,
             }
           : undefined,
     })({
@@ -115,6 +109,7 @@ export const text =
         };
       },
     });
+  };
 
 export type TextFieldMeta = {
   displayMode: 'input' | 'textarea';
