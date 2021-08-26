@@ -43,7 +43,6 @@ export async function insertSeedData(context: KeystoneContext) {
     } catch (e) {
       persons = [];
     }
-
     taskData.assignedTo = { connect: { id: persons[0].id } };
     const task = await context.lists.Task.createOne({
       data: taskData,
