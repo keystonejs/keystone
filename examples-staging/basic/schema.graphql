@@ -124,6 +124,7 @@ type PasswordState {
 }
 
 input UserWhereUniqueInput {
+  id: ID
   email: String
 }
 
@@ -148,7 +149,19 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IDFilter
   email: StringNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
 }
 
 input StringNullableFilter {
@@ -179,7 +192,14 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input UserOrderByInput
+input UserOrderByInput {
+  id: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
 
 input UserUpdateInput {
   name: String
@@ -257,15 +277,20 @@ type PhoneNumber {
   value: String
 }
 
-input PhoneNumberWhereUniqueInput
+input PhoneNumberWhereUniqueInput {
+  id: ID
+}
 
 input PhoneNumberWhereInput {
   AND: [PhoneNumberWhereInput!]
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
+  id: IDFilter
 }
 
-input PhoneNumberOrderByInput
+input PhoneNumberOrderByInput {
+  id: OrderDirection
+}
 
 input PhoneNumberUpdateInput {
   user: UserRelateToOneForUpdateInput
@@ -308,15 +333,20 @@ type Post_content_DocumentField {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
-input PostWhereUniqueInput
+input PostWhereUniqueInput {
+  id: ID
+}
 
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
+  id: IDFilter
 }
 
-input PostOrderByInput
+input PostOrderByInput {
+  id: OrderDirection
+}
 
 input PostUpdateInput {
   title: String
