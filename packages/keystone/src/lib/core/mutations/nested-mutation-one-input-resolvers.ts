@@ -4,12 +4,14 @@ import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
-  graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo']['one']['create']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['one']['create'], undefined>>
+  >,
   null | undefined
 >;
 type _UpdateValueType = Exclude<
   graphql.InferValueFromArg<
-    graphql.Arg<graphql.NonNullType<TypesForList['relateTo']['one']['update']>>
+    graphql.Arg<graphql.NonNullType<Exclude<TypesForList['relateTo']['one']['update'], undefined>>>
   >,
   null | undefined
 >;
