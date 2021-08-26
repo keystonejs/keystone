@@ -35,13 +35,15 @@ export async function insertSeedData(context: KeystoneContext) {
   };
 
   const createPost = async (postData: PostProps) => {
-    let authors = [];
+    let authors;
     try {
       authors = await context.lists.Author.findMany({
         where: { name: { equals: postData.author } },
         query: 'id',
       });
-    } catch (e) {}
+    } catch (e) {
+      authors = [];
+    }
     postData.author = { connect: { id: authors[0].id } };
     const post = await context.lists.Post.createOne({
       data: postData,

@@ -34,13 +34,15 @@ export async function insertSeedData(context: KeystoneContext) {
   };
 
   const createTask = async (taskData: TaskProps) => {
-    let persons = [];
+    let persons;
     try {
       persons = await context.lists.Person.findMany({
         where: { name: { equals: taskData.person } },
         query: 'id',
       });
-    } catch (e) {}
+    } catch (e) {
+      persons = [];
+    }
 
     taskData.assignedTo = { connect: { id: persons[0].id } };
     const task = await context.lists.Task.createOne({
