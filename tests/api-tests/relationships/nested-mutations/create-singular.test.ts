@@ -38,7 +38,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        graphql: { isEnabled: { query: false } },
+        graphql: { omit: ['query'] },
       }),
 
       EventToGroupNoReadHard: list({
@@ -66,7 +66,7 @@ const runner = setupTestRunner({
         fields: {
           name: text({ isFilterable: true }),
         },
-        graphql: { isEnabled: { create: false } },
+        graphql: { omit: ['create'] },
       }),
 
       EventToGroupNoCreateHard: list({
@@ -94,7 +94,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        graphql: { isEnabled: { update: false } },
+        graphql: { omit: ['update'] },
       }),
 
       EventToGroupNoUpdateHard: list({
