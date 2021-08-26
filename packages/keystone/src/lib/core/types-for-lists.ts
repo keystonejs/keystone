@@ -207,13 +207,7 @@ export function initialiseLists(
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (
-              // We're going to skip this field if...
-              !field.input?.create?.arg || // The field type doesn't support create, or
-              !field.graphql.isEnabled.create // Create has been disabled on this field, or
-            ) {
-              return [];
-            }
+            if (!field.input?.create?.arg || !field.graphql.isEnabled.create) return [];
             return [[key, field.input.create.arg]] as const;
           })
         );
@@ -226,13 +220,7 @@ export function initialiseLists(
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (
-              // We're going to skip this field if...
-              !field.input?.update?.arg || /// The field type doesn't support update, or
-              !field.graphql.isEnabled.update // Update has been disabled on this field, or
-            ) {
-              return [];
-            }
+            if (!field.input?.update?.arg || !field.graphql.isEnabled.update) return [];
             return [[key, field.input.update.arg]] as const;
           })
         );
