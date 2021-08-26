@@ -33,10 +33,9 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       // Input Types
       create?: boolean; // Does this field exist in the create Input type?
       update?: boolean; // Does this field exist in the update Input type?
-
-      // Disabled by default...
-      filter?: boolean; // Does this field exist in the WhereInput for both unique and ... not unique type?
-      orderBy?: boolean; // Does this field exist in the OrderBy type?
     };
   };
+  // Disabled by default...
+  isFilterable?: boolean; // Does this field exist in the WhereInput for both unique and ... not unique type?
+  isOrderable?: boolean; // Does this field exist in the OrderBy type?
 };

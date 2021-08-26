@@ -86,50 +86,28 @@ const runner = setupTestRunner({
     lists: createSchema({
       Owner: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true } } }),
-          companies: relationship({
-            ref: 'Company.owners',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          name: text({ isFilterable: true }),
+          companies: relationship({ ref: 'Company.owners', many: true, isFilterable: true }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          location: relationship({
-            ref: 'Location.company',
-            graphql: { isEnabled: { filter: true } },
-          }),
-          owners: relationship({
-            ref: 'Owner.companies',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          location: relationship({ ref: 'Location.company', isFilterable: true }),
+          owners: relationship({ ref: 'Owner.companies', many: true, isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
           name: text(),
-          company: relationship({
-            ref: 'Company.location',
-            graphql: { isEnabled: { filter: true } },
-          }),
-          custodians: relationship({
-            ref: 'Custodian.locations',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          company: relationship({ ref: 'Company.location', isFilterable: true }),
+          custodians: relationship({ ref: 'Custodian.locations', many: true, isFilterable: true }),
         },
       }),
       Custodian: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true } } }),
-          locations: relationship({
-            ref: 'Location.custodians',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          name: text({ isFilterable: true }),
+          locations: relationship({ ref: 'Location.custodians', many: true, isFilterable: true }),
         },
       }),
     }),

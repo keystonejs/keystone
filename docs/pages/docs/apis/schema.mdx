@@ -21,6 +21,8 @@ export default config({
       graphql: { /* ... */ },
       db: { /* ... */ },
       description: '...',
+      defaultIsFilterable: true,
+      defaultIsOrderable: true,
     }),
     /* ... */
   }),
@@ -29,6 +31,11 @@ export default config({
 ```
 
 This document will explain the configuration options which can be used with the `list()` function.
+
+Options:
+
+- `defaultIsFilterable`: If `true`, all fields will be filterable by default. They can override this by setting the field level `isFilterable` option to `false`.
+- `defaultIsOrderable`: If `true`, all fields will be orderable by default. They can override this by setting the field level `isOrderable` option to `false`.
 
 ## fields
 

@@ -103,13 +103,13 @@ const runner = setupTestRunner({
     lists: createSchema({
       Company: list({
         fields: {
-          name: text({ graphql: { isEnabled: { orderBy: true } } }),
-          location: relationship({ ref: 'Location', graphql: { isEnabled: { filter: true } } }),
+          name: text({ isOrderable: true }),
+          location: relationship({ ref: 'Location', isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
+          name: text({ isFilterable: true, isOrderable: true }),
         },
       }),
     }),

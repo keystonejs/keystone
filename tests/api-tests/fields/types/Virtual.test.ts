@@ -98,7 +98,7 @@ describe('Virtual field type', () => {
               authoredPosts: relationship({
                 ref: 'Post.organisationAuthor',
                 many: true,
-                graphql: { isEnabled: { filter: true } },
+                isFilterable: true,
               }),
             },
           }),
@@ -108,7 +108,7 @@ describe('Virtual field type', () => {
               authoredPosts: relationship({
                 ref: 'Post.personAuthor',
                 many: true,
-                graphql: { isEnabled: { filter: true } },
+                isFilterable: true,
               }),
             },
           }),

@@ -21,10 +21,7 @@ testModules
         config: apiTestConfig({
           lists: createSchema({
             [listKey]: list({
-              fields: {
-                name: text({ graphql: { isEnabled: { orderBy: true } } }),
-                ...mod.getTestFields(matrixValue),
-              },
+              fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
             }),
           }),
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
@@ -415,12 +412,7 @@ testModules
                   config: apiTestConfig({
                     lists: createSchema({
                       [listKey]: list({
-                        fields: {
-                          field: mod.typeFunction({
-                            isUnique: true,
-                            graphql: { isEnabled: { filter: true } },
-                          }),
-                        },
+                        fields: { field: mod.typeFunction({ isUnique: true, isFilterable: true }) },
                       }),
                     }),
                   }),

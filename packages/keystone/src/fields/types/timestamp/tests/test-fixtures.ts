@@ -9,7 +9,7 @@ export const supportsUnique = true;
 export const fieldName = 'lastOnline';
 
 export const getTestFields = () => ({
-  lastOnline: timestamp({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
+  lastOnline: timestamp({ isFilterable: true, isOrderable: true }),
 });
 
 export const initItems = () => {

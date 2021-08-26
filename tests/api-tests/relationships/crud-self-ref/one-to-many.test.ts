@@ -82,12 +82,12 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
-          friendOf: relationship({ ref: 'User.friends', graphql: { isEnabled: { filter: true } } }),
+          name: text({ isFilterable: true, isOrderable: true }),
+          friendOf: relationship({ ref: 'User.friends', isFilterable: true }),
           friends: relationship({
             ref: 'User.friendOf',
             many: true,
-            graphql: { isEnabled: { filter: true } },
+            isFilterable: true,
           }),
         },
       }),

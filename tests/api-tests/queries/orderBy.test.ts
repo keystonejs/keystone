@@ -9,8 +9,8 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          a: integer({ graphql: { isEnabled: { orderBy: true } } }),
-          b: integer({ graphql: { isEnabled: { orderBy: true } } }),
+          a: integer({ isOrderable: true }),
+          b: integer({ isOrderable: true }),
         },
       }),
     }),

@@ -9,7 +9,7 @@ export const supportsUnique = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({
-  testField: text({ graphql: { isEnabled: { filter: true } } }),
+  testField: text({ isFilterable: true }),
 });
 
 export const initItems = () => {

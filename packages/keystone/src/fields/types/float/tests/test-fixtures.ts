@@ -7,9 +7,7 @@ export const exampleValue2 = () => 6.283;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({
-  testField: float({ graphql: { isEnabled: { filter: true } } }),
-});
+export const getTestFields = () => ({ testField: float({ isFilterable: true }) });
 
 export const initItems = () => {
   return [
