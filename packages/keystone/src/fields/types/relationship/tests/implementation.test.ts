@@ -88,9 +88,9 @@ describe('Type Generation', () => {
 
     expect(printType(schema.getType('ZipRelateToManyForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForUpdateInput {
-  create: [ZipCreateInput!]
   disconnect: [ZipWhereUniqueInput!]
   set: [ZipWhereUniqueInput!]
+  create: [ZipCreateInput!]
   connect: [ZipWhereUniqueInput!]
 }"
 `);
