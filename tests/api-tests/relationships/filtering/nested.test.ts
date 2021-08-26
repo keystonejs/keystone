@@ -10,16 +10,12 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          company: relationship({ ref: 'Company', graphql: { isEnabled: { filter: true } } }),
-          posts: relationship({
-            ref: 'Post',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          company: relationship({ ref: 'Company', isFilterable: true }),
+          posts: relationship({ ref: 'Post', many: true, isFilterable: true }),
         },
       }),
       Company: list({ fields: { name: text() } }),
-      Post: list({ fields: { content: text({ graphql: { isEnabled: { filter: true } } }) } }),
+      Post: list({ fields: { content: text({ isFilterable: true }) } }),
     }),
   }),
 });
