@@ -1,10 +1,10 @@
 import { GraphQLError } from 'graphql';
-import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '@keystone-next/types';
 import { useMemo } from 'react';
-import { DeepNullable, makeDataGetter } from '@keystone-next/admin-ui-utils';
+import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '../../types';
 import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
+import { DeepNullable, makeDataGetter } from './dataGetter';
 
-export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '@keystone-next/types';
+export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes };
 
 export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;

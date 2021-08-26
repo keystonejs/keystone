@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Hooks
 
@@ -14,8 +16,8 @@ A hook is a function you define as part of your [schema configuration](../apis/s
 Let's look at a basic example to log a message to the console whenever a new user is created.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -52,8 +54,8 @@ The `resolveInput` hook lets us take the data which has been provided to the Gra
 Let's write a hook which takes the data for a blog post and converts the first letter to upper-case.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -99,8 +101,8 @@ An empty string, `""`, is a perfectly valid `String` value to pass into GraphQL.
 Let's use a validation hook to ensure that this value doesn't make it into our database.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -143,8 +145,8 @@ We can use the `beforeChange` and `afterChange` hooks to do this.
 Let's send an email after a user is created.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 // Keystone leaves it up to you to decide how best to implement email in your system
 import { sendWelcomeEmail } from './lib/welcomeEmail';
 
@@ -196,8 +198,8 @@ For example, you might have an email validation function which want to use in yo
 You could always write this as a list hook, but it will make your code more clear if you write this as a field hook.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -221,5 +223,13 @@ export default config({
 ```
 
 See the [Hooks API](../apis/hooks) for the details of all the arguments available for all the different hook functions.
+
+## Related resources
+
+<RelatedContent>
+  <Well heading="Hooks API Reference" href="/docs/apis/hooks">
+  The complete reference for executing code at different stages of the mutation lifecycle
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to use Keystone’s Hooks API to enhance your core operations with custome business logic.">{children}</Markdown>;

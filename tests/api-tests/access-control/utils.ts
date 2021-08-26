@@ -1,5 +1,5 @@
-import { text, password } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text, password } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { apiTestConfig } from '../utils';
@@ -92,7 +92,7 @@ const lists = createSchema({
   User: list({
     fields: {
       name: text(),
-      email: text({ isUnique: true }),
+      email: text({ isUnique: true, graphql: { isEnabled: { filter: true } } }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),
@@ -125,7 +125,7 @@ listAccessVariations.forEach(access => {
     },
   });
   lists[getDeclarativeListName(access)] = list({
-    fields: { name: text() },
+    fields: { name: text({ graphql: { isEnabled: { filter: true } } }) },
     access: {
       create: access.create,
       // arbitrarily restrict the data to a single item (see data.js)

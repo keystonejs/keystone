@@ -1,6 +1,6 @@
 // import React from 'react';
 
-import { AdminConfig } from '@keystone-next/types';
+import { AdminConfig } from '@keystone-next/keystone/types';
 
 // import { DarkTheme } from '@keystone-next/keystone/admin-ui/themes';
 // export const theme = DarkTheme;

@@ -1,3 +1,4 @@
+import { GraphQLInputObjectType } from 'graphql';
 import {
   BaseGeneratedListTypes,
   CreateAccessControl,
@@ -11,8 +12,7 @@ import {
   ListAccessControl,
   ReadListAccessControl,
   UpdateListAccessControl,
-} from '@keystone-next/types';
-import { GraphQLInputObjectType } from 'graphql';
+} from '../../types';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { InputFilter } from './where-inputs';
 

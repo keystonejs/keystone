@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';
-import { FieldMeta, JSONValue } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
@@ -11,6 +10,7 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { OptionPrimitive, Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
+import { FieldMeta, JSONValue } from '../../../../types';
 import { useList } from '../../../../admin-ui/context';
 import { useRouter } from '../../../../admin-ui/router';
 
@@ -75,8 +75,7 @@ export function FilterAdd({ listKey }: { listKey: string }) {
         <ChevronDownIcon size="small" />
       </Button>
       <PopoverDialog
-        aria-label="Filters options"
-        aria-description={`list of filters to apply to the ${listKey} list`}
+        aria-label={`Filters options, list of filters to apply to the ${listKey} list`}
         arrow={arrow}
         isVisible={isOpen}
         {...dialog.props}
@@ -105,7 +104,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     > = {};
     Object.keys(list.fields).forEach(fieldPath => {
       const field = list.fields[fieldPath];
-      if (field.controller.filter) {
+      if (field.isFilterable && field.controller.filter) {
         // TODO: make all the things readonly so this works
         fieldsWithFilters[fieldPath] = field as any;
       }

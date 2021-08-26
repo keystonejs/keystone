@@ -1,6 +1,6 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, relationship, text, timestamp } from '@keystone-next/fields';
-import { select } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
+import { select } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Task: list({
@@ -15,7 +15,7 @@ export const lists = createSchema({
       },
     },
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ isRequired: true, graphql: { isEnabled: { orderBy: true } } }),
       priority: select({
         dataType: 'enum',
         options: [
@@ -28,11 +28,13 @@ export const lists = createSchema({
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
+    graphql: { isEnabled: { filter: true, orderBy: true } },
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
+    graphql: { isEnabled: { filter: true, orderBy: true } },
   }),
 });

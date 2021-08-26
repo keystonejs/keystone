@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, password, relationship, text, timestamp } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, password, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 
 // this implementation for createdBy and updatedBy is currently wrong so they're disabled for now
 const trackingFields = {

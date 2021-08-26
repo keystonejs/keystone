@@ -15,7 +15,6 @@ import {
   useState,
 } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -26,6 +25,7 @@ import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { FieldLabel, TextInput } from '@keystone-ui/fields';
+import { ListMeta } from '../../../../types';
 import {
   DataGetter,
   DeepNullable,
@@ -35,7 +35,7 @@ import {
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { useList } from '../../../../admin-ui/context';

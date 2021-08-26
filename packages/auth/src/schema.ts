@@ -1,5 +1,5 @@
 import { mergeSchemas } from '@graphql-tools/schema';
-import { ExtendGraphqlSchema } from '@keystone-next/types';
+import { ExtendGraphqlSchema } from '@keystone-next/keystone/types';
 
 import {
   assertObjectType,
@@ -70,7 +70,8 @@ export const getSchemaExtension =
       throw new Error(
         `createAuth was called with an identityField of ${identityField} on the list ${listKey} ` +
           `but that field doesn't allow being searched uniquely with a String or ID. ` +
-          `You should likely add \`isUnique: true\` to the field at ${listKey}.${identityField}`
+          `You should likely add \`isUnique: true\, graphql: { isEnabled: { filter: true } }\` ` +
+          `to the field at ${listKey}.${identityField}`
       );
     }
     return [

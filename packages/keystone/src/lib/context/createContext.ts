@@ -6,9 +6,10 @@ import {
   KeystoneGraphQLAPI,
   GqlNames,
   KeystoneConfig,
-} from '@keystone-next/types';
+} from '../../types';
 
 import { PrismaClient } from '../core/utils';
+import { InitialisedList } from '../core/types-for-lists';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
@@ -19,12 +20,14 @@ export function makeCreateContext({
   prismaClient,
   gqlNamesByList,
   config,
+  lists,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   config: KeystoneConfig;
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
+  lists: Record<string, InitialisedList>;
 }) {
   const images = createImagesContext(config);
   const files = createFilesContext(config);
@@ -99,6 +102,10 @@ export function makeCreateContext({
       images,
       files,
     };
+    if (config.experimental?.contextInitialisedLists) {
+      contextToReturn.experimental = { initialisedLists: lists };
+    }
+
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);

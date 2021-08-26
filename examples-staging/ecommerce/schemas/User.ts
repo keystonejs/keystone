@@ -1,5 +1,5 @@
-import { list } from '@keystone-next/keystone/schema';
-import { text, password, relationship } from '@keystone-next/fields';
+import { list } from '@keystone-next/keystone';
+import { text, password, relationship } from '@keystone-next/keystone/fields';
 import { permissions, rules } from '../access';
 
 export const User = list({
@@ -18,7 +18,7 @@ export const User = list({
   },
   fields: {
     name: text({ isRequired: true }),
-    email: text({ isRequired: true, isUnique: true }),
+    email: text({ isRequired: true, isUnique: true, graphql: { isEnabled: { filter: true } } }),
     password: password(),
     cart: relationship({
       ref: 'CartItem.user',

@@ -1,5 +1,5 @@
 import {
-  schema,
+  graphql,
   ItemRootValue,
   TypesForList,
   getGqlNames,
@@ -12,8 +12,8 @@ import {
   DatabaseProvider,
   FindManyArgs,
   CacheHintArgs,
-} from '@keystone-next/types';
-import { FieldHooks } from '@keystone-next/types/src/config/hooks';
+} from '../../types';
+import { FieldHooks } from '../../types/config/hooks';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,
@@ -25,10 +25,20 @@ import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
-export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
+export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graphql'> & {
   dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
   hooks: FieldHooks<BaseGeneratedListTypes>;
+  graphql: {
+    isEnabled: {
+      read: boolean;
+      create: boolean;
+      update: boolean;
+      filter: boolean;
+      orderBy: boolean;
+    };
+    cacheHint?: CacheHint | undefined;
+  };
 };
 
 export type InitialisedList = {
@@ -44,6 +54,16 @@ export type InitialisedList = {
   maxResults: number;
   listKey: string;
   lists: Record<string, InitialisedList>;
+  graphql: {
+    isEnabled: {
+      type: boolean;
+      query: boolean;
+
+      create: boolean;
+      update: boolean;
+      delete: boolean;
+    };
+  };
 };
 
 export function initialiseLists(
@@ -51,20 +71,74 @@ export function initialiseLists(
   provider: DatabaseProvider
 ): Record<string, InitialisedList> {
   const listInfos: Record<string, ListInfo> = {};
+  const isEnabled: Record<
+    string,
+    {
+      type: boolean;
+      query: boolean;
+      create: boolean;
+      update: boolean;
+      delete: boolean;
+      filter: boolean;
+      orderBy: boolean;
+    }
+  > = {};
+
+  for (const [listKey, listConfig] of Object.entries(listsConfig)) {
+    const _isEnabled = listConfig.graphql?.isEnabled;
+    if (_isEnabled === false) {
+      isEnabled[listKey] = {
+        type: false,
+        query: false,
+        create: false,
+        update: false,
+        delete: false,
+        filter: false,
+        orderBy: false,
+      };
+    } else if (_isEnabled === true || _isEnabled === undefined) {
+      isEnabled[listKey] = {
+        type: true,
+        query: true,
+        create: true,
+        update: true,
+        delete: true,
+        filter: false,
+        orderBy: false,
+      };
+    } else {
+      isEnabled[listKey] = {
+        type: true,
+        query: _isEnabled.query ?? true,
+        create: _isEnabled.create ?? true,
+        update: _isEnabled.update ?? true,
+        delete: _isEnabled.delete ?? true,
+        filter: _isEnabled.filter ?? false,
+        orderBy: _isEnabled.orderBy ?? false,
+      };
+    }
+  }
+
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const names = getGqlNames({
       listKey,
       pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
     });
 
-    let output = schema.object<ItemRootValue>()({
+    let output = graphql.object<ItemRootValue>()({
       name: names.outputTypeName,
       fields: () => {
         const { fields } = lists[listKey];
         return {
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([fieldPath, field]) => {
-              if (field.access.read === false) return [];
+              if (
+                !field.output ||
+                !field.graphql.isEnabled.read ||
+                (field.dbField.kind === 'relation' && !isEnabled[field.dbField.list].query)
+              ) {
+                return [];
+              }
               return [
                 [fieldPath, field.output] as const,
                 ...Object.entries(field.extraOutputFields || {}),
@@ -88,71 +162,84 @@ export function initialiseLists(
       },
     });
 
-    const uniqueWhere = schema.inputObject({
+    const uniqueWhere = graphql.inputObject({
       name: names.whereUniqueInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.uniqueWhere?.arg || field.access.read === false) return [];
+            if (
+              !field.input?.uniqueWhere?.arg ||
+              !field.graphql.isEnabled.read ||
+              !field.graphql.isEnabled.filter
+            ) {
+              return [];
+            }
             return [[key, field.input.uniqueWhere.arg]] as const;
           })
         );
       },
     });
 
-    const where: TypesForList['where'] = schema.inputObject({
+    const where: TypesForList['where'] = graphql.inputObject({
       name: names.whereInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.assign(
           {
-            AND: schema.arg({ type: schema.list(schema.nonNull(where)) }),
-            OR: schema.arg({ type: schema.list(schema.nonNull(where)) }),
-            NOT: schema.arg({ type: schema.list(schema.nonNull(where)) }),
+            AND: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            OR: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            NOT: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
           },
           ...Object.entries(fields).map(
             ([fieldKey, field]) =>
               field.input?.where?.arg &&
-              field.access.read !== false && { [fieldKey]: field.input?.where?.arg }
+              field.graphql.isEnabled.read &&
+              field.graphql.isEnabled.filter && { [fieldKey]: field.input?.where?.arg }
           )
         );
       },
     });
 
-    const create = schema.inputObject({
+    const create = graphql.inputObject({
       name: names.createInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.create?.arg || field.access.create === false) return [];
+            if (!field.input?.create?.arg || !field.graphql.isEnabled.create) return [];
             return [[key, field.input.create.arg]] as const;
           })
         );
       },
     });
 
-    const update = schema.inputObject({
+    const update = graphql.inputObject({
       name: names.updateInputName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.update?.arg || field.access.update === false) return [];
+            if (!field.input?.update?.arg || !field.graphql.isEnabled.update) return [];
             return [[key, field.input.update.arg]] as const;
           })
         );
       },
     });
 
-    const orderBy = schema.inputObject({
+    const orderBy = graphql.inputObject({
       name: names.listOrderName,
       fields: () => {
         const { fields } = lists[listKey];
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (!field.input?.orderBy?.arg || field.access.read === false) return [];
+            if (
+              !field.input?.orderBy?.arg ||
+              !field.graphql.isEnabled.read ||
+              !field.graphql.isEnabled.orderBy
+            ) {
+              return [];
+            }
             return [[key, field.input.orderBy.arg]] as const;
           })
         );
@@ -160,71 +247,72 @@ export function initialiseLists(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: schema.arg({ type: schema.nonNull(where), defaultValue: {} }),
-      orderBy: schema.arg({
-        type: schema.nonNull(schema.list(schema.nonNull(orderBy))),
+      where: graphql.arg({ type: graphql.nonNull(where), defaultValue: {} }),
+      orderBy: graphql.arg({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
         defaultValue: [],
       }),
       // TODO: non-nullable when max results is specified in the list with the default of max results
-      take: schema.arg({ type: schema.Int }),
-      skip: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 0 }),
+      take: graphql.arg({ type: graphql.Int }),
+      skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 
-    const relateToManyForCreate = schema.inputObject({
-      name: names.relateToManyForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
-          }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-        };
-      },
-    });
+    const _isEnabled = isEnabled[listKey];
+    let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate;
+    if (_isEnabled.type) {
+      relateToManyForCreate = graphql.inputObject({
+        name: names.relateToManyForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+          };
+        },
+      });
 
-    const relateToManyForUpdate = schema.inputObject({
-      name: names.relateToManyForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          disconnect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-          set: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-          ...(list.access.create !== false && {
-            create: schema.arg({ type: schema.list(schema.nonNull(create)) }),
-          }),
-          connect: schema.arg({ type: schema.list(schema.nonNull(uniqueWhere)) }),
-        };
-      },
-    });
+      relateToManyForUpdate = graphql.inputObject({
+        name: names.relateToManyForUpdateInputName,
+        fields: () => {
+          return {
+            // The order of these fields reflects the order in which they are applied
+            // in the mutation.
+            disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+          };
+        },
+      });
 
-    const relateToOneForCreate = schema.inputObject({
-      name: names.relateToOneForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: schema.arg({ type: create }),
-          }),
-          connect: schema.arg({ type: uniqueWhere }),
-        };
-      },
-    });
+      relateToOneForCreate = graphql.inputObject({
+        name: names.relateToOneForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            connect: graphql.arg({ type: uniqueWhere }),
+          };
+        },
+      });
 
-    const relateToOneForUpdate = schema.inputObject({
-      name: names.relateToOneForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: schema.arg({ type: create }),
-          }),
-          connect: schema.arg({ type: uniqueWhere }),
-          disconnect: schema.arg({ type: schema.Boolean }),
-        };
-      },
-    });
-
+      relateToOneForUpdate = graphql.inputObject({
+        name: names.relateToOneForUpdateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            connect: graphql.arg({ type: uniqueWhere }),
+            disconnect: graphql.arg({ type: graphql.Boolean }),
+          };
+        },
+      });
+    }
     listInfos[listKey] = {
       types: {
         output,
@@ -236,12 +324,12 @@ export function initialiseLists(
         findManyArgs,
         relateTo: {
           many: {
-            where: schema.inputObject({
+            where: graphql.inputObject({
               name: `${listKey}ManyRelationFilter`,
               fields: {
-                every: schema.arg({ type: where }),
-                some: schema.arg({ type: where }),
-                none: schema.arg({ type: where }),
+                every: graphql.arg({ type: where }),
+                some: graphql.arg({ type: where }),
+                none: graphql.arg({ type: where }),
               },
             }),
             create: relateToManyForCreate,
@@ -262,7 +350,24 @@ export function initialiseLists(
             if (typeof fieldFunc !== 'function') {
               throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
             }
-            return [fieldKey, fieldFunc({ fieldKey, listKey, lists: listInfos, provider })];
+            let f = fieldFunc({ fieldKey, listKey, lists: listInfos, provider });
+
+            const _isEnabled = {
+              read: f.graphql?.isEnabled?.read ?? true,
+              update: f.graphql?.isEnabled?.update ?? true,
+              create: f.graphql?.isEnabled?.create ?? true,
+              // Filter and orderBy can be set at the list level, and default to `false`
+              // if no value was set at the list level.
+              filter: f.graphql?.isEnabled?.filter ?? isEnabled[listKey].filter,
+              orderBy: f.graphql?.isEnabled?.orderBy ?? isEnabled[listKey].orderBy,
+            };
+            const field = {
+              ...f,
+              graphql: { ...f.graphql, isEnabled: _isEnabled },
+              input: { ...f.input },
+            };
+
+            return [fieldKey, field];
           })
         ),
         ...getNamesFromList(listKey, list),
@@ -276,29 +381,34 @@ export function initialiseLists(
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
     Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
-      let hasAnAccessibleCreateField = false;
-      let hasAnAccessibleUpdateField = false;
+      let hasAnEnabledCreateField = false;
+      let hasAnEnabledUpdateField = false;
       const fields = Object.fromEntries(
         Object.entries(list.fields).map(([fieldKey, field]) => {
+          if (field.input?.create?.arg && field.graphql.isEnabled.create) {
+            hasAnEnabledCreateField = true;
+          }
+          if (field.input?.update && field.graphql.isEnabled.update) {
+            hasAnEnabledUpdateField = true;
+          }
           const access = parseFieldAccessControl(field.access);
-          if (access.create && field.input?.create?.arg) {
-            hasAnAccessibleCreateField = true;
-          }
-          if (access.update && field.input?.update) {
-            hasAnAccessibleUpdateField = true;
-          }
           const dbField = listsWithResolvedDBFields[listKey].resolvedDbFields[fieldKey];
-          return [fieldKey, { ...field, access, dbField, hooks: field.hooks ?? {} }];
+          return [
+            fieldKey,
+            { ...field, access, dbField, hooks: field.hooks ?? {}, graphql: field.graphql },
+          ];
         })
       );
       const access = parseListAccessControl(list.access);
-      if (!hasAnAccessibleCreateField) {
-        access.create = false;
+      // You can't have a graphQL type with no fields, so
+      // if they're all disabled, we have to disable the whole operation.
+      if (!hasAnEnabledCreateField) {
+        isEnabled[listKey].create = false;
       }
-      if (!hasAnAccessibleUpdateField) {
-        access.update = false;
+      if (!hasAnEnabledUpdateField) {
+        isEnabled[listKey].update = false;
       }
-      return [listKey, { ...list, access, fields }];
+      return [listKey, { ...list, access, fields, graphql: { isEnabled: isEnabled[listKey] } }];
     })
   );
 

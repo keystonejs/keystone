@@ -5,8 +5,8 @@ import { Markdown } from '../../../components/Markdown';
 The `access` property of the [list configuration](./schema) and [field configuration](./fields) objects configures who can read, create, update, and delete items in your Keystone system.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -35,7 +35,7 @@ Verbose syntax provides a separate access control rule for each operation type; 
 Concise syntax provides a single access control rule which is used for all operation types.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -73,7 +73,7 @@ If you want to keep the operations in the GraphQL API while preventing all acces
 The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -97,8 +97,8 @@ For singular operations, e.g. `updateItem` or `deleteItem`, if the merged filter
 For multi-item operations, e.g. `updateItems` or `deleteItems`, if the merged filter excludes items then these will simply be ignored by the operation, giving the same behaviour as if the ID was missing.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -131,7 +131,7 @@ If the function returns:
 - **a declarative value** then this will be applied to the operation as described [above](#declarative-list).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -157,7 +157,7 @@ Imperative access control functions are passed a collection of arguments which c
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                           |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({
@@ -190,8 +190,8 @@ Verbose syntax provides a separate access control rule for each operation type; 
 Concise syntax provides a single access control rule which is used for all operation types.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -232,8 +232,8 @@ If you want to keep the fields in the GraphQL API while preventing all access, y
 The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -260,8 +260,8 @@ If the function returns `false` then an `Access Denied` error will be returned.
 If the function returns `true` then the operation will be allowed.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -292,8 +292,8 @@ Imperative access control functions are passed a collection of arguments which c
 | `item`          | The item being updated, deleted, or read. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({

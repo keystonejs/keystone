@@ -1,5 +1,5 @@
-import { relationship, text } from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+import { relationship, text } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-next/keystone';
 import { permissions } from '../access';
 import { permissionFields } from './fields';
 

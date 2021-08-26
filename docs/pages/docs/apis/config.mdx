@@ -1,11 +1,14 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # System Configuration API
 
 The `keystone-next` [CLI](../guides/cli) expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
 
 ```typescript filename=keystone.ts
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({ /* ... */ });
 ```
@@ -28,7 +31,7 @@ export default config({
 
 We will cover each of these options below.
 
-The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/types`.
+The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/keystone/types`.
 This type definition should be considered the source of truth for the available configuration options.
 
 ## lists
@@ -40,8 +43,8 @@ In general you will use the `createSchema()` function to create this configurati
 See the [Schema API](./schema) docs for details on how to use this function.
 
 ```typescript
-import type { ListSchemaConfig } from '@keystone-next/types';
-import { config, createSchema } from '@keystone-next/keystone/schema';
+import type { ListSchemaConfig } from '@keystone-next/keystone/types';
+import { config, createSchema } from '@keystone-next/keystone';
 
 export default config({
   lists: createSchema({ /* ... */ }),
@@ -52,7 +55,7 @@ export default config({
 ## db
 
 ```
-import type { DatabaseConfig } from '@keystone-next/types';
+import type { DatabaseConfig } from '@keystone-next/keystone/types';
 ```
 
 The `db` config option configures the database used to store data in your Keystone system.
@@ -128,7 +131,7 @@ The `sqlite` provider is not intended to be used in production systems, and has 
 ## ui
 
 ```ts
-import type { AdminUIConfig } from '@keystone-next/types';
+import type { AdminUIConfig } from '@keystone-next/keystone/types';
 ```
 
 The `ui` config option configures the Admin UI which is provided by Keystone.
@@ -186,7 +189,7 @@ export default config({
 ## server
 
 ```
-import type { ServerConfig } from '@keystone-next/types';
+import type { ServerConfig } from '@keystone-next/keystone/types';
 ```
 
 The `dev` and `start` commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
@@ -249,7 +252,7 @@ config({
 ## session
 
 ```
-import type { SessionStrategy } from '@keystone-next/types';
+import type { SessionStrategy } from '@keystone-next/keystone/types';
 ```
 
 The `session` config option allows you to configure session management of your Keystone system.
@@ -271,7 +274,7 @@ See the [Session API](./session) for more details on how to configure session ma
 ## graphql
 
 ```
-import type { GraphQLConfig } from '@keystone-next/types';
+import type { GraphQLConfig } from '@keystone-next/keystone/types';
 ```
 
 The `graphql` config option allows you to configures certain aspects of your GraphQL API.
@@ -285,8 +288,8 @@ Options:
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
 - `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
   - `playground` (default: `process.env.NODE_ENV !== 'production'`): If truthy, will enable the GraphQL Playground for testing queries and mutations in the browser.
-    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings).
-  - See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
+    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings). See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
+  - `introspection` (default: `undefined`): Introspection enables you to query a GraphQL server for information about the underlying schema. If the playground is enabled then introspection is automatically enabled, unless specifically disabled.
 
 ```typescript
 export default config({
@@ -295,6 +298,7 @@ export default config({
     queryLimits: { maxTotalResults: 100 },
     apolloConfig: {
       playground: process.env.NODE_ENV !== 'production',
+      introspection: process.env.NODE_ENV !== 'production',
       /* ... */
     },
   },
@@ -305,7 +309,7 @@ export default config({
 ## extendGraphqlSchema
 
 ```
-import type { ExtendGraphqlSchema } from '@keystone-next/types';
+import type { ExtendGraphqlSchema } from '@keystone-next/keystone/types';
 ```
 
 The `extendGraphqlSchema` config option allows you to extend the GraphQL API which is generated by Keystone based on your schema definition.
@@ -314,7 +318,7 @@ It has a TypeScript type of `ExtendGraphqlSchema`.
 In general you will use the function `graphQLSchemaExtension({ typeDefs, resolvers })` to create your schema extension.
 
 ```typescript
-import { config, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { config, graphQLSchemaExtension } from '@keystone-next/keystone';
 
 export default config({
   extendGraphqlSchema: graphQLSchemaExtension({ typeDefs, resolvers }),
@@ -331,7 +335,7 @@ In order to use this field type you need to configure Keystone with information 
 At the moment Keystone supports storing files on the local filesystem, and is agnostic about how files are served.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   files: {
@@ -359,7 +363,7 @@ In order to use this field type you need to configure Keystone with information 
 At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   images: {
@@ -386,7 +390,7 @@ The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 
 export default config({
   experimental: {
@@ -403,5 +407,16 @@ Options:
 - `enableNextJsGraphqlApiEndpoint`: (coming soon)
 - `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
 - `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list</InlineCode> function.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options.">{children}</Markdown>;

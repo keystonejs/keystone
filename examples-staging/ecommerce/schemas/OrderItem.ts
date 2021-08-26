@@ -1,5 +1,5 @@
-import { integer, text, relationship } from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+import { integer, text, relationship } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-next/keystone';
 import { isSignedIn, rules } from '../access';
 
 export const OrderItem = list({
@@ -10,7 +10,7 @@ export const OrderItem = list({
     delete: () => false,
   },
   fields: {
-    name: text({ isRequired: true }),
+    name: text({ isRequired: true, graphql: { isEnabled: { orderBy: true } } }),
     description: text({
       ui: {
         displayMode: 'textarea',

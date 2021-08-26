@@ -1,3 +1,4 @@
+import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
   CacheHint,
@@ -5,12 +6,11 @@ import {
   FieldReadAccessArgs,
   BaseGeneratedListTypes,
   ItemRootValue,
-  schema,
+  graphql,
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
-} from '@keystone-next/types';
-import { GraphQLResolveInfo } from 'graphql';
+} from '../../../types';
 import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
@@ -82,7 +82,7 @@ export function outputTypeField(
   fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
-  return schema.field({
+  return graphql.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,

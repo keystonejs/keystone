@@ -1,6 +1,6 @@
-import { text } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
@@ -8,7 +8,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       // Imperative -> Declarative access control
       User: list({
-        fields: { name: text() },
+        fields: { name: text({ graphql: { isEnabled: { orderBy: true } } }) },
         access: {
           read: true,
           create: true,

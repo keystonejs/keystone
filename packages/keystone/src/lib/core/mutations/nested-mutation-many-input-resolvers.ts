@@ -1,16 +1,20 @@
-import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, graphql } from '../../../types';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
-  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['create']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['many']['create'], undefined>>
+  >,
   null | undefined
 >;
 
 type _UpdateValueType = Exclude<
-  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['many']['update']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['many']['update'], undefined>>
+  >,
   null | undefined
 >;
 

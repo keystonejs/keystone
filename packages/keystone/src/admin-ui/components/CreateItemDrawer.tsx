@@ -1,8 +1,8 @@
 /* @jsx jsx */
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
-import { jsx, Stack } from '@keystone-ui/core';
+import { jsx, Box } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -10,7 +10,10 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { gql, useMutation } from '../apollo';
 import { useKeystone, useList } from '../context';
 
+import { Fields } from '../utils/Fields';
 import { GraphQLErrorNotice } from './GraphQLErrorNotice';
+
+type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } };
 
 export function CreateItemDrawer({
   listKey,
@@ -35,10 +38,10 @@ export function CreateItemDrawer({
   }`
   );
 
-  const [valuesByFieldPath, setValuesByFieldPath] = useState(() => {
-    const value: Record<string, unknown> = {};
+  const [value, setValue] = useState(() => {
+    const value: ValueWithoutServerSideErrors = {};
     Object.keys(list.fields).forEach(fieldPath => {
-      value[fieldPath] = list.fields[fieldPath].controller.defaultValue;
+      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue };
     });
     return value;
   });
@@ -46,8 +49,8 @@ export function CreateItemDrawer({
   const invalidFields = useMemo(() => {
     const invalidFields = new Set<string>();
 
-    Object.keys(valuesByFieldPath).forEach(fieldPath => {
-      const val = valuesByFieldPath[fieldPath];
+    Object.keys(value).forEach(fieldPath => {
+      const val = value[fieldPath].value;
 
       const validateFn = list.fields[fieldPath].controller.validate;
       if (validateFn) {
@@ -58,34 +61,9 @@ export function CreateItemDrawer({
       }
     });
     return invalidFields;
-  }, [list, valuesByFieldPath]);
+  }, [list, value]);
 
   const [forceValidation, setForceValidation] = useState(false);
-
-  const fields = Object.keys(list.fields)
-    .filter(fieldPath =>
-      createViewFieldModes.state === 'loaded'
-        ? createViewFieldModes.lists[listKey][fieldPath] !== 'hidden'
-        : false
-    )
-    .map((fieldPath, index) => {
-      const field = list.fields[fieldPath];
-      return (
-        <field.views.Field
-          key={fieldPath}
-          field={field.controller}
-          value={valuesByFieldPath[fieldPath]}
-          forceValidation={forceValidation && invalidFields.has(fieldPath)}
-          onChange={fieldValue => {
-            setValuesByFieldPath({
-              ...valuesByFieldPath,
-              [fieldPath]: fieldValue,
-            });
-          }}
-          autoFocus={index === 0}
-        />
-      );
-    });
 
   return (
     <Drawer
@@ -103,7 +81,7 @@ export function CreateItemDrawer({
             const data: Record<string, any> = {};
             Object.keys(list.fields).forEach(fieldPath => {
               const { controller } = list.fields[fieldPath];
-              const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
+              const serialized = controller.serialize(value[fieldPath].value);
               if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
                 Object.assign(data, serialized);
               }
@@ -146,10 +124,20 @@ export function CreateItemDrawer({
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
-      <Stack gap="xlarge" paddingY="xlarge">
-        {fields}
-        {fields.length === 0 && 'There are no fields that you can read or edit'}
-      </Stack>
+      <Box paddingY="xlarge">
+        <Fields
+          fields={list.fields}
+          fieldModes={
+            createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null
+          }
+          forceValidation={forceValidation}
+          invalidFields={invalidFields}
+          value={value}
+          onChange={useCallback(getNewValue => {
+            setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors);
+          }, [])}
+        />
+      </Box>
     </Drawer>
   );
 }

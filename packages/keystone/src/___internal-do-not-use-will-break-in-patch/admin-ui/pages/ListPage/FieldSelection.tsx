@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx } from '@keystone-ui/core';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options';
 import { Popover } from '@keystone-ui/popover';
 import { useRouter } from 'next/router';
+import { ListMeta } from '../../../../types';
 import { useSelectedFields } from './useSelectedFields';
 
 function isArrayEqual(arrA: string[], arrB: string[]) {
@@ -71,8 +71,7 @@ export function FieldSelection({
 
   return (
     <Popover
-      aria-label="Columns options"
-      aria-description={`list of column options to apply to the ${list.key} list`}
+      aria-label={`Columns options, list of column options to apply to the ${list.key} list`}
       triggerRenderer={({ triggerProps }) => {
         return (
           <Button weight="link" css={{ padding: 4 }} {...triggerProps}>

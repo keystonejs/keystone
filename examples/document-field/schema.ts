@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { select, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 
 export const lists = createSchema({

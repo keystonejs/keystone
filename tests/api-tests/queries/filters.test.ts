@@ -1,6 +1,6 @@
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
@@ -8,13 +8,17 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          noDash: text(),
-          single_dash: text(),
-          many_many_many_dashes: text(),
-          multi____dash: text(),
+          noDash: text({ graphql: { isEnabled: { filter: true } } }),
+          single_dash: text({ graphql: { isEnabled: { filter: true } } }),
+          many_many_many_dashes: text({ graphql: { isEnabled: { filter: true } } }),
+          multi____dash: text({ graphql: { isEnabled: { filter: true } } }),
         },
       }),
-      SecondaryList: list({ fields: { someUser: relationship({ ref: 'User' }) } }),
+      SecondaryList: list({
+        fields: {
+          someUser: relationship({ ref: 'User', graphql: { isEnabled: { filter: true } } }),
+        },
+      }),
     }),
   }),
 });

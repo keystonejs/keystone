@@ -7,16 +7,6 @@ import * as playwright from 'playwright';
 import { findRootSync } from '@manypkg/find-root';
 import dotenv from 'dotenv';
 
-async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
-
-  let prisma = new PrismaClient();
-
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
-
-  await prisma.$disconnect();
-}
-
 const treeKill = promisify(_treeKill);
 
 // this'll take a while
@@ -29,13 +19,28 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   });
   return Object.assign(promise, { resolve: resolve as any });
 };
+const projectRoot = findRootSync(process.cwd());
+
+export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
+  const { PrismaClient } = require(path.resolve(
+    projectRoot,
+    projectDir,
+    'node_modules/.prisma/client'
+  ));
+
+  let prisma = new PrismaClient();
+
+  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+
+  await prisma.$disconnect();
+};
 
 export const adminUITests = (
   pathToTest: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
+
   dotenv.config();
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};

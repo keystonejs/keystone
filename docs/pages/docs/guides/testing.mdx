@@ -1,13 +1,16 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # Testing
 
 When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
-In this guide we'll show you how to use the `@keystone-next/testing` package and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
+In this guide we'll show you how to use `@keystone-next/keystone/testing` and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
 
 ## Running tests
 
-In order to run tests using the `@keystone-next/testing` package, we recommend adding the following script to your `package.json` file.
+In order to run tests using `@keystone-next/keystone/testing`, we recommend adding the following script to your `package.json` file.
 
 ```json
 "scripts": {
@@ -30,7 +33,7 @@ The first step to writing a test for your Keystone system is to setup a test run
 You can then use this runner to wrap your test functions.
 
 ```typescript
-import { setupTestRunner } from '@keystone-next/testing';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { config } from './keystone';
 
 const runner = setupTestRunner({ config });
@@ -204,8 +207,8 @@ The context API can be used after calling `connect()` in the `beforeAll()` block
 x> Be careful of sharing database state across tests. Avoid relying on changes of state from one test in subsequent tests.
 
 ```
-import { setupTestEnv, TestEnv } from '@keystone-next/testing';
-import { KeystoneContext } from '@keystone-next/types';
+import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 
 describe('Example tests using test environment', () => {
   let testEnv: TestEnv;
@@ -233,5 +236,30 @@ describe('Example tests using test environment', () => {
   });
 });
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Example Project: Testing"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/testing"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Shows you how to write tests against the GraphQL API to your Keystone system. Builds on the Authentication example project.
+  </Well>
+  <Well
+    heading="Context API Reference"
+    href="/docs/apis/context"
+    >
+    The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
+  </Well>
+  <Well
+    heading="List Items API Reference"
+    href="/docs/apis/list-items"
+    >
+    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.lists.&lt;listName&gt;</InlineCode>.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to use the `@keystone-next/testing` package and Jest to write tests that check the behaviour of your GraphQL API.">{children}</Markdown>;

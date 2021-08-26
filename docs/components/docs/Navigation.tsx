@@ -11,6 +11,7 @@ import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
 import { BREAK_POINTS } from '../../lib/media';
+import { Emoji } from '../primitives/Emoji';
 
 type SectionProps = { label: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
@@ -199,7 +200,6 @@ export function DocsNavigation() {
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
       <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
       <Section label="Guides">
-        <NavItem href="/docs/guides/keystone-5-vs-keystone-6-preview">Keystone 5 vs 6</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">
@@ -280,6 +280,36 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
           ))}
         </Section>
       ) : null}
+      <Section label="Featured News">
+        <NavItem href="/updates/new-graphql-api">
+          <Emoji symbol="💎" alt="Gemstone" />
+          &nbsp; New GraphQL API
+        </NavItem>
+        <NavItem href="/releases/2021-07-29">
+          <Emoji symbol="🎛️" alt="Control knobs" />
+          &nbsp; Customisable Admin UI
+        </NavItem>
+        <NavItem href="/updates/prisma-day-2021">
+          <Emoji symbol="🍿" alt="TV" />
+          &nbsp; Jed’s Prisma Day Talk
+        </NavItem>
+        <NavItem href="/releases/2021-06-15">
+          <Emoji symbol="⚙️" alt="Gear" />
+          &nbsp; New Core
+        </NavItem>
+        <NavItem
+          href="https://github.com/keystonejs/keystone/tree/master/examples"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Emoji symbol="🧪" alt="Test Tube" />
+          &nbsp; New Examples Collection
+        </NavItem>
+        <NavItem href="/updates/keystone-5-vs-keystone-6-preview">
+          <Emoji symbol="ℹ️" alt="Information" />
+          &nbsp; Keystone 5 vs 6
+        </NavItem>
+      </Section>
     </nav>
   );
 }

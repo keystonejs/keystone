@@ -4,9 +4,9 @@ import {
   BaseGeneratedListTypes,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  schema,
+  graphql,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
 import cloudinary from 'cloudinary';
@@ -33,44 +33,44 @@ type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     };
   };
 
-const CloudinaryImageFormat = schema.inputObject({
+const CloudinaryImageFormat = graphql.inputObject({
   name: 'CloudinaryImageFormat',
   description:
     'Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).\n' +
     'All options are strings as they ultimately end up in a URL.',
   fields: {
-    prettyName: schema.arg({
+    prettyName: graphql.arg({
       description: ' Rewrites the filename to be this pretty string. Do not include `/` or `.`',
-      type: schema.String,
+      type: graphql.String,
     }),
-    width: schema.arg({ type: schema.String }),
-    height: schema.arg({ type: schema.String }),
-    crop: schema.arg({ type: schema.String }),
-    aspect_ratio: schema.arg({ type: schema.String }),
-    gravity: schema.arg({ type: schema.String }),
-    zoom: schema.arg({ type: schema.String }),
-    x: schema.arg({ type: schema.String }),
-    y: schema.arg({ type: schema.String }),
-    format: schema.arg({ type: schema.String }),
-    fetch_format: schema.arg({ type: schema.String }),
-    quality: schema.arg({ type: schema.String }),
-    radius: schema.arg({ type: schema.String }),
-    angle: schema.arg({ type: schema.String }),
-    effect: schema.arg({ type: schema.String }),
-    opacity: schema.arg({ type: schema.String }),
-    border: schema.arg({ type: schema.String }),
-    background: schema.arg({ type: schema.String }),
-    overlay: schema.arg({ type: schema.String }),
-    underlay: schema.arg({ type: schema.String }),
-    default_image: schema.arg({ type: schema.String }),
-    delay: schema.arg({ type: schema.String }),
-    color: schema.arg({ type: schema.String }),
-    color_space: schema.arg({ type: schema.String }),
-    dpr: schema.arg({ type: schema.String }),
-    page: schema.arg({ type: schema.String }),
-    density: schema.arg({ type: schema.String }),
-    flags: schema.arg({ type: schema.String }),
-    transformation: schema.arg({ type: schema.String }),
+    width: graphql.arg({ type: graphql.String }),
+    height: graphql.arg({ type: graphql.String }),
+    crop: graphql.arg({ type: graphql.String }),
+    aspect_ratio: graphql.arg({ type: graphql.String }),
+    gravity: graphql.arg({ type: graphql.String }),
+    zoom: graphql.arg({ type: graphql.String }),
+    x: graphql.arg({ type: graphql.String }),
+    y: graphql.arg({ type: graphql.String }),
+    format: graphql.arg({ type: graphql.String }),
+    fetch_format: graphql.arg({ type: graphql.String }),
+    quality: graphql.arg({ type: graphql.String }),
+    radius: graphql.arg({ type: graphql.String }),
+    angle: graphql.arg({ type: graphql.String }),
+    effect: graphql.arg({ type: graphql.String }),
+    opacity: graphql.arg({ type: graphql.String }),
+    border: graphql.arg({ type: graphql.String }),
+    background: graphql.arg({ type: graphql.String }),
+    overlay: graphql.arg({ type: graphql.String }),
+    underlay: graphql.arg({ type: graphql.String }),
+    default_image: graphql.arg({ type: graphql.String }),
+    delay: graphql.arg({ type: graphql.String }),
+    color: graphql.arg({ type: graphql.String }),
+    color_space: graphql.arg({ type: graphql.String }),
+    dpr: graphql.arg({ type: graphql.String }),
+    page: graphql.arg({ type: graphql.String }),
+    density: graphql.arg({ type: graphql.String }),
+    flags: graphql.arg({ type: graphql.String }),
+    transformation: graphql.arg({ type: graphql.String }),
   },
 });
 
@@ -82,25 +82,25 @@ type CloudinaryImage_File = {
   encoding: string | null;
   publicUrl: string | null;
   publicUrlTransformed: (args: {
-    transformation: schema.InferValueFromArg<schema.Arg<typeof CloudinaryImageFormat>>;
+    transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>;
   }) => string | null;
 };
 
-const outputType = schema.object<CloudinaryImage_File>()({
+const outputType = graphql.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
-    id: schema.field({ type: schema.ID }),
+    id: graphql.field({ type: graphql.ID }),
     // path: types.field({ type: types.String }),
-    filename: schema.field({ type: schema.String }),
-    originalFilename: schema.field({ type: schema.String }),
-    mimetype: schema.field({ type: schema.String }),
-    encoding: schema.field({ type: schema.String }),
-    publicUrl: schema.field({ type: schema.String }),
-    publicUrlTransformed: schema.field({
+    filename: graphql.field({ type: graphql.String }),
+    originalFilename: graphql.field({ type: graphql.String }),
+    mimetype: graphql.field({ type: graphql.String }),
+    encoding: graphql.field({ type: graphql.String }),
+    publicUrl: graphql.field({ type: graphql.String }),
+    publicUrlTransformed: graphql.field({
       args: {
-        transformation: schema.arg({ type: CloudinaryImageFormat }),
+        transformation: graphql.arg({ type: CloudinaryImageFormat }),
       },
-      type: schema.String,
+      type: graphql.String,
       resolve(rootVal, args) {
         return rootVal.publicUrlTransformed(args);
       },
@@ -148,10 +148,10 @@ export const cloudinaryImage =
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
-        create: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
-        update: { arg: schema.arg({ type: schema.Upload }), resolve: resolveInput },
+        create: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
+        update: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
       },
-      output: schema.field({
+      output: graphql.field({
         type: outputType,
         resolve({ value }) {
           if (value === null) {
@@ -163,7 +163,7 @@ export const cloudinaryImage =
             publicUrlTransformed: ({
               transformation,
             }: {
-              transformation: schema.InferValueFromArg<schema.Arg<typeof CloudinaryImageFormat>>;
+              transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>;
             }) => adapter.publicUrlTransformed(val, transformation ?? {}),
             ...val,
           };

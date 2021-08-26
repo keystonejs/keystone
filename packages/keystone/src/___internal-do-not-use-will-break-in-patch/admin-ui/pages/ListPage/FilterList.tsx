@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
-import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
 import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
+import { FieldMeta, ListMeta } from '../../../../types';
 import { useRouter } from '../../../../admin-ui/router';
 import { Filter } from './useFilters';
 
@@ -43,9 +43,8 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
     <Fragment>
       <Pill
         containerProps={{
-          'aria-label': `Filter item ${filter.field}`,
+          'aria-label': `Filter item ${filter.field}, press to edit filter`,
         }}
-        aria-description={'Press to edit filter'}
         {...trigger.props}
         ref={trigger.ref}
         onClick={() => setOpen(true)}
@@ -64,8 +63,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         />
       </Pill>
       <PopoverDialog
-        aria-label="filter item config"
-        aria-description={`dialog for configuring ${filter.field} filter`}
+        aria-label={`filter item config, dialog for configuring ${filter.field} filter`}
         arrow={arrow}
         {...dialog.props}
         isVisible={isOpen}

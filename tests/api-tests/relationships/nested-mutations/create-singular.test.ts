@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { read: false },
+        graphql: { isEnabled: { query: false } },
       }),
 
       EventToGroupNoReadHard: list({
@@ -50,28 +50,28 @@ const runner = setupTestRunner({
 
       GroupNoCreate: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
         },
         access: { create: () => false },
       }),
 
       EventToGroupNoCreate: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { filter: true } } }),
           group: relationship({ ref: 'GroupNoCreate' }),
         },
       }),
 
       GroupNoCreateHard: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
         },
-        access: { create: false },
+        graphql: { isEnabled: { create: false } },
       }),
 
       EventToGroupNoCreateHard: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { filter: true } } }),
           group: relationship({ ref: 'GroupNoCreateHard' }),
         },
       }),
@@ -94,7 +94,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { update: false },
+        graphql: { isEnabled: { update: false } },
       }),
 
       EventToGroupNoUpdateHard: list({
@@ -164,7 +164,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   [
     { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
+    { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
     { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
     { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
     { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },

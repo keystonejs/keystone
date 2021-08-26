@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -44,7 +44,7 @@ const runner = setupTestRunner({
       }),
       GroupNoCreate: list({
         fields: {
-          name: text(),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
         },
         access: {
           create: () => false,

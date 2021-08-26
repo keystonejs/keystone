@@ -26,7 +26,7 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.7",
     "@types/mdx-js__react": "^1.5.4",
-    "@types/react": "^17.0.18",
+    "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/webpack": "^4.41.30",
     "classnames": "^2.3.1",
@@ -45,7 +45,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
-    "next-sitemap": "^1.6.157",
+    "next-sitemap": "^1.6.164",
     "start-server-and-test": "^1.13.1",
     "typescript": "^4.3.5"
   },

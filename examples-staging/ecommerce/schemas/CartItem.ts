@@ -1,5 +1,5 @@
-import { integer, relationship } from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+import { integer, relationship } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-next/keystone';
 import { rules, isSignedIn } from '../access';
 
 export const CartItem = list({
@@ -20,7 +20,7 @@ export const CartItem = list({
       defaultValue: 1,
       isRequired: true,
     }),
-    product: relationship({ ref: 'Product' }),
-    user: relationship({ ref: 'User.cart' }),
+    product: relationship({ ref: 'Product', graphql: { isEnabled: { filter: true } } }),
+    user: relationship({ ref: 'User.cart', graphql: { isEnabled: { filter: true } } }),
   },
 });

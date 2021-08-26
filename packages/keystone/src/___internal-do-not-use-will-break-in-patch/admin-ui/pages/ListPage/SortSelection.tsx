@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Divider, Heading, jsx, Stack } from '@keystone-ui/core';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 import { Fragment } from 'react';
+import { ListMeta } from '../../../../types';
 import { useRouter } from '../../../../admin-ui/router';
 import { fieldSelectionOptionsComponents } from './FieldSelection';
 import { useSort } from './useSort';
@@ -44,8 +44,7 @@ export function SortSelection({ list }: { list: ListMeta }) {
       </Button>
 
       <PopoverDialog
-        aria-label="Sort options"
-        aria-description={`list of sorting parameters to apply to the ${list.key} list`}
+        aria-label={`Sort options, list of sorting parameters to apply to the ${list.key} list`}
         arrow={arrow}
         isVisible={isOpen}
         {...dialog.props}

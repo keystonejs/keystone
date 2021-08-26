@@ -1,4 +1,4 @@
-import { ItemRootValue, KeystoneContext } from '@keystone-next/types';
+import { ItemRootValue, KeystoneContext } from '../../../types';
 import {
   validateCreateListAccessControl,
   validateFieldAccessControl,

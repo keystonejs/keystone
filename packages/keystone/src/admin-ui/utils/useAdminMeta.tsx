@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import hashString from '@emotion/hash';
-import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { AdminMeta, FieldViews, getGqlNames } from '../../types';
 import { useLazyQuery } from '../apollo';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 

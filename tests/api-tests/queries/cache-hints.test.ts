@@ -1,8 +1,8 @@
 import { CacheScope } from 'apollo-cache-control';
-import { text, relationship, integer } from '@keystone-next/fields';
-import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship, integer } from '@keystone-next/keystone/fields';
+import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
@@ -20,7 +20,7 @@ const runner = setupTestRunner({
       User: list({
         fields: {
           name: text({
-            graphql: { cacheHint: { maxAge: 80 } },
+            graphql: { cacheHint: { maxAge: 80 }, isEnabled: { filter: true } },
           }),
           favNumber: integer({
             graphql: { cacheHint: { maxAge: 10, scope: CacheScope.Private } },

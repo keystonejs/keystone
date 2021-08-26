@@ -8,7 +8,7 @@ import {
   parse,
   validate,
 } from 'graphql';
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '../../types';
 import { getVariablesForGraphQLField } from './executeGraphQLFieldToRootVal';
 
 function getRootTypeName(type: GraphQLOutputType): string {

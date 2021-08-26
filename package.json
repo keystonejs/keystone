@@ -34,7 +34,7 @@
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
-    "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; yarn keystone-next postinstall --fix; cd ../..; done",
+    "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../../..; done",
     "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../../..; done",
     "generate-filters": "cd prisma-utils && yarn generate",
     "lint:filters": "cd prisma-utils && yarn verify"
@@ -52,18 +52,18 @@
     "@changesets/cli": "^2.16.0",
     "@jest/test-sequencer": "^27.0.6",
     "@manypkg/cli": "^0.18.0",
-    "@preconstruct/cli": "2.1.0",
+    "@preconstruct/cli": "2.1.1",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@types/jest": "^27.0.1",
     "@types/node-fetch": "^2.5.12",
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
-    "@typescript-eslint/parser": "^4.29.2",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-plugin-cypress": "^2.11.3",
-    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-import": "^2.24.1",
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -151,8 +151,7 @@
       "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
       "!packages/**/dist/**",
-      "!packages/fields/**/test-fixtures.{js,ts}",
-      "!packages/fields/types.js"
+      "!packages/keystone/src/fields/**/test-fixtures.{js,ts}"
     ]
   },
   "resolutions": {

@@ -1,6 +1,6 @@
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -10,7 +10,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          title: text(),
+          title: text({ graphql: { isEnabled: { orderBy: true } } }),
           author: relationship({ ref: 'User.notes' }),
         },
       }),
