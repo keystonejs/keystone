@@ -1,14 +1,14 @@
+import { FileUpload } from 'graphql-upload';
 import {
   fieldType,
-  schema,
+  graphql,
   FieldTypeFunc,
   CommonFieldConfig,
   BaseGeneratedListTypes,
   KeystoneContext,
   FileData,
   FieldDefaultValue,
-} from '@keystone-next/types';
-import { FileUpload } from 'graphql-upload';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getFileRef } from './utils';
 
@@ -18,9 +18,12 @@ export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     defaultValue?: FieldDefaultValue<FileFieldInputType, TGeneratedListTypes>;
   };
 
-const FileFieldInput = schema.inputObject({
+const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
-  fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
+  fields: {
+    upload: graphql.arg({ type: graphql.Upload }),
+    ref: graphql.arg({ type: graphql.String }),
+  },
 });
 
 type FileFieldInputType =
@@ -28,17 +31,17 @@ type FileFieldInputType =
   | null
   | { upload?: Promise<FileUpload> | null; ref?: string | null };
 
-const fileFields = schema.fields<FileData>()({
-  filename: schema.field({ type: schema.nonNull(schema.String) }),
-  filesize: schema.field({ type: schema.nonNull(schema.Int) }),
-  ref: schema.field({
-    type: schema.nonNull(schema.String),
+const fileFields = graphql.fields<FileData>()({
+  filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
+  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  ref: graphql.field({
+    type: graphql.nonNull(graphql.String),
     resolve(data) {
       return getFileRef(data.mode, data.filename);
     },
   }),
-  src: schema.field({
-    type: schema.nonNull(schema.String),
+  src: graphql.field({
+    type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
       if (!context.files) {
         throw new Error(
@@ -50,13 +53,13 @@ const fileFields = schema.fields<FileData>()({
   }),
 });
 
-const FileFieldOutput = schema.interface<FileData>()({
+const FileFieldOutput = graphql.interface<FileData>()({
   name: 'FileFieldOutput',
   fields: fileFields,
   resolveType: () => 'LocalFileFieldOutput',
 });
 
-const LocalFileFieldOutput = schema.object<FileData>()({
+const LocalFileFieldOutput = graphql.object<FileData>()({
   name: 'LocalFileFieldOutput',
   interfaces: [FileFieldOutput],
   fields: fileFields,
@@ -101,10 +104,10 @@ export const file =
     })({
       ...config,
       input: {
-        create: { arg: schema.arg({ type: FileFieldInput }), resolve: inputResolver },
-        update: { arg: schema.arg({ type: FileFieldInput }), resolve: inputResolver },
+        create: { arg: graphql.arg({ type: FileFieldInput }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: FileFieldInput }), resolve: inputResolver },
       },
-      output: schema.field({
+      output: graphql.field({
         type: FileFieldOutput,
         resolve({ value: { filesize, filename, mode } }) {
           if (

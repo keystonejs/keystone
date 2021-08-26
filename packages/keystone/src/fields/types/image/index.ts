@@ -1,3 +1,4 @@
+import { FileUpload } from 'graphql-upload';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -7,9 +8,8 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
-  schema,
-} from '@keystone-next/types';
-import { FileUpload } from 'graphql-upload';
+  graphql,
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
@@ -19,30 +19,33 @@ export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
     isRequired?: boolean;
   };
 
-const ImageExtensionEnum = schema.enum({
+const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
-  values: schema.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
+  values: graphql.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
 });
 
-const ImageFieldInput = schema.inputObject({
+const ImageFieldInput = graphql.inputObject({
   name: 'ImageFieldInput',
-  fields: { upload: schema.arg({ type: schema.Upload }), ref: schema.arg({ type: schema.String }) },
+  fields: {
+    upload: graphql.arg({ type: graphql.Upload }),
+    ref: graphql.arg({ type: graphql.String }),
+  },
 });
 
-const imageOutputFields = schema.fields<ImageData>()({
-  id: schema.field({ type: schema.nonNull(schema.ID) }),
-  filesize: schema.field({ type: schema.nonNull(schema.Int) }),
-  width: schema.field({ type: schema.nonNull(schema.Int) }),
-  height: schema.field({ type: schema.nonNull(schema.Int) }),
-  extension: schema.field({ type: schema.nonNull(ImageExtensionEnum) }),
-  ref: schema.field({
-    type: schema.nonNull(schema.String),
+const imageOutputFields = graphql.fields<ImageData>()({
+  id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+  ref: graphql.field({
+    type: graphql.nonNull(graphql.String),
     resolve(data) {
       return getImageRef(data.mode, data.id, data.extension);
     },
   }),
-  src: schema.field({
-    type: schema.nonNull(schema.String),
+  src: graphql.field({
+    type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
       if (!context.images) {
         throw new Error('Image context is undefined');
@@ -52,13 +55,13 @@ const imageOutputFields = schema.fields<ImageData>()({
   }),
 });
 
-const ImageFieldOutput = schema.interface<ImageData>()({
+const ImageFieldOutput = graphql.interface<ImageData>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
   resolveType: () => 'LocalImageFieldOutput',
 });
 
-const LocalImageFieldOutput = schema.object<ImageData>()({
+const LocalImageFieldOutput = graphql.object<ImageData>()({
   name: 'LocalImageFieldOutput',
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
@@ -116,10 +119,10 @@ export const image =
     })({
       ...config,
       input: {
-        create: { arg: schema.arg({ type: ImageFieldInput }), resolve: inputResolver },
-        update: { arg: schema.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        create: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
       },
-      output: schema.field({
+      output: graphql.field({
         type: ImageFieldOutput,
         resolve({ value: { extension, filesize, height, id, mode, width } }) {
           if (

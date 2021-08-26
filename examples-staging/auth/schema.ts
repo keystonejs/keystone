@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { text, checkbox, password } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
@@ -22,6 +22,7 @@ export const lists = createSchema({
       email: text({
         isRequired: true,
         isUnique: true,
+        graphql: { isEnabled: { filter: true } },
       }),
       // The user's password, used as the secret field for auth
       password: password({

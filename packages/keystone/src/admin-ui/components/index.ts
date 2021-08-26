@@ -10,7 +10,7 @@ export { Navigation, NavigationContainer, NavItem, ListNavItems, ListNavItem } f
 
 // co-locating the type with the admin-ui/component for a more a salient mental model.
 // importing this type from @keystone-next/keystone/admin-ui/components is probably intuitive for a user
-export type { NavigationProps } from '@keystone-next/types';
+export type { NavigationProps } from '../../types';
 
 // CUSTOM PAGE BUILDING UTILITIES
 export { PageContainer } from './PageContainer';

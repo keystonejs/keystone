@@ -1,5 +1,5 @@
-import { JSONValue, FieldMeta } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
+import { JSONValue, FieldMeta } from '../../types';
 import { DataGetter } from './dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController';
 

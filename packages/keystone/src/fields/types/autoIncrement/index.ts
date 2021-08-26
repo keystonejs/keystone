@@ -5,9 +5,9 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
 
@@ -37,18 +37,21 @@ export const autoIncrement =
     })({
       ...config,
       input: {
+        // create
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        // update
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        // filter
         where: {
-          arg: schema.arg({
-            type: filters[meta.provider].Int.optional,
-          }),
+          arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
           resolve: filters.resolveCommon,
         },
-        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.Int }) } : undefined,
-        create: { arg: schema.arg({ type: schema.Int }) },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+        // orderBy
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.Int }),
+      // read
+      output: graphql.field({ type: graphql.Int }),
       views: resolveView('integer/views'),
       __legacy: {
         isRequired,

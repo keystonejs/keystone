@@ -5,9 +5,9 @@ import {
   fieldType,
   FieldTypeFunc,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -31,16 +31,14 @@ export const checkbox =
       ...config,
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].Boolean.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].Boolean.optional }),
           resolve: filters.resolveCommon,
         },
-        create: { arg: schema.arg({ type: schema.Boolean }) },
-        update: { arg: schema.arg({ type: schema.Boolean }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        create: { arg: graphql.arg({ type: graphql.Boolean }) },
+        update: { arg: graphql.arg({ type: graphql.Boolean }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.Boolean,
-      }),
+      output: graphql.field({ type: graphql.Boolean }),
       views: resolveView('checkbox/views'),
       __legacy: { isRequired, defaultValue },
     });

@@ -2,16 +2,16 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+import { sync as uid } from 'uid-safe';
 import {
   SessionStrategy,
   JSONValue,
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  schema,
-} from '@keystone-next/types';
+  graphql,
+} from '../types';
 // uid-safe is what express-session uses so let's just use it
-import { sync as uid } from 'uid-safe';
 
 function generateSessionId() {
   return uid(24);
@@ -193,8 +193,8 @@ export async function createSessionContext<T>(
 export function sessionSchema(graphQLSchema: GraphQLSchema) {
   const schemaConfig = graphQLSchema.toConfig();
   const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
-  const endSessionField = schema.field({
-    type: schema.nonNull(schema.Boolean),
+  const endSessionField = graphql.field({
+    type: graphql.nonNull(graphql.Boolean),
     async resolve(rootVal, args, context) {
       if (context.endSession) {
         await context.endSession();

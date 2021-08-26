@@ -1,18 +1,23 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # GraphQL API
+
+?> We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
 
 Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](./schema) definition provided in the system [config](./config).
 
 Consider the following system definition:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
-    User: list({ fields: { name: text() } }),
+    User: list({ fields: { name: text({ graphql: { isEnabled: { filter: true, orderBy: true }}}) } }),
   }),
   /* ... */
 });
@@ -406,5 +411,22 @@ type User {
   name: String
 }
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API Reference"
+    href="/docs/apis/schema"
+    >
+    The API to configure your  options used with the <InlineCode>list()</InlineCode> function.
+  </Well>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config.">{children}</Markdown>;

@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Session API
 
@@ -7,7 +9,7 @@ It has a TypeScript type of `SessionStrategy<any>`.
 In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 
 export default config({
@@ -35,7 +37,7 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 `storedSessions()` accepts an additional `store` argument, which is an object capable of loading and storing session data.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions, storedSessions } from '@keystone-next/keystone/session';
 
 export default config({
@@ -99,7 +101,7 @@ Keystone provides a [Redis](https://redis.io/) based session store in the packag
 ```typescript
 import redis from 'redis';
 import { redisSessionStore } from '@keystone-next/session-store-redis';
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { storedSessions } from '@keystone-next/keystone/session';
 
 export default config({
@@ -121,5 +123,24 @@ If you configure your Keystone session with session management then the [`Keysto
 
 The `startSession` and `endSession` functions will be used by [authentication mutations](./auth) to start and end authenticated sessions.
 These mutations will set the value of `session` to include the values `{ listKey, itemId }`.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Config API Reference"
+    href="/docs/apis/config"
+    >
+    The API to configure all the parts parts of your Keystone system.
+  </Well>
+  <Well
+    heading="Example Project: Authentication"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/with-auth"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Adds password-based authentication to the Task Manager starter project.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Reference docs for the session property of Keystone’s system configuration object.">{children}</Markdown>;

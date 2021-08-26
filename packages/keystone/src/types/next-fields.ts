@@ -2,7 +2,7 @@ import Decimal from 'decimal.js';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider, FieldDefaultValue } from './core';
-import { schema } from './schema';
+import { graphql } from './schema';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
@@ -35,20 +35,20 @@ export type FieldTypeFunc = (data: FieldData) => NextFieldType;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends schema.Arg<schema.InputType> | undefined =
-    | schema.Arg<schema.InputType>
+  CreateArg extends graphql.Arg<graphql.InputType> | undefined =
+    | graphql.Arg<graphql.InputType>
     | undefined,
-  UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  UpdateArg extends graphql.Arg<graphql.InputType> = graphql.Arg<graphql.InputType>,
+  UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  OrderByArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >,
-  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >
 > = {
@@ -110,14 +110,14 @@ export type ScalarDBField<
   index?: 'unique' | 'index';
 };
 
-export const orderDirectionEnum = schema.enum({
+export const orderDirectionEnum = graphql.enum({
   name: 'OrderDirection',
-  values: schema.enumValues(['asc', 'desc']),
+  values: graphql.enumValues(['asc', 'desc']),
 });
 
-export const QueryMode = schema.enum({
+export const QueryMode = graphql.enum({
   name: 'QueryMode',
-  values: schema.enumValues(['default', 'insensitive']),
+  values: graphql.enumValues(['default', 'insensitive']),
 });
 
 export type RelationDBField<Mode extends 'many' | 'one'> = {
@@ -218,11 +218,11 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never;
 
-export type OrderByFieldInputArg<Val, TArg extends schema.Arg<schema.NullableInputType>> = {
+export type OrderByFieldInputArg<Val, TArg extends graphql.Arg<graphql.NullableInputType>> = {
   arg: TArg;
 } & ResolveFunc<
   (
-    value: Exclude<schema.InferValueFromArg<TArg>, null | undefined>,
+    value: Exclude<graphql.InferValueFromArg<TArg>, null | undefined>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >;
@@ -246,12 +246,12 @@ type DBFieldFilters<TDBField extends DBField> =
 
 export type WhereFieldInputArg<
   TDBField extends DBField,
-  TArg extends schema.Arg<schema.InputType, any>
+  TArg extends graphql.Arg<graphql.InputType, any>
 > = {
   arg: TArg;
 } & ResolveFunc<
   FieldInputResolver<
-    Exclude<schema.InferValueFromArg<TArg>, undefined>,
+    Exclude<graphql.InferValueFromArg<TArg>, undefined>,
     DBFieldFilters<TDBField>,
     any
     // i think this is broken because variance?
@@ -268,18 +268,18 @@ export type WhereFieldInputArg<
 
 export type UpdateFieldInputArg<
   TDBField extends DBField,
-  TArg extends schema.Arg<schema.InputType, any>
+  TArg extends graphql.Arg<graphql.InputType, any>
 > = {
   arg: TArg;
 } & ResolveFunc<
   FieldInputResolver<
-    schema.InferValueFromArg<TArg>,
+    graphql.InferValueFromArg<TArg>,
     DBFieldToInputValue<TDBField>,
     any
     // i think this is broken because variance?
     // TDBField extends RelationDBField<infer Mode>
     //   ? (
-    //       input: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo'][Mode]['create']>>
+    //       input: graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo'][Mode]['create']>>
     //     ) => Promise<any>
     //   : undefined
   >
@@ -292,23 +292,23 @@ type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResol
   // i think this is broken because variance?
   // TDBField extends RelationDBField<infer Mode>
   //   ? (
-  //       input: schema.InferValueFromArg<schema.Arg<TypesForList['relateTo'][Mode]['create']>>
+  //       input: graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo'][Mode]['create']>>
   //     ) => Promise<any>
   //   : undefined
 >;
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
-  TArg extends schema.Arg<schema.InputType, any> | undefined
+  TArg extends graphql.Arg<graphql.InputType, any> | undefined
 > = {
   arg: TArg;
-} & (TArg extends schema.Arg<schema.InputType, any>
-  ? DBFieldToInputValue<TDBField> extends schema.InferValueFromArg<TArg>
+} & (TArg extends graphql.Arg<graphql.InputType, any>
+  ? DBFieldToInputValue<TDBField> extends graphql.InferValueFromArg<TArg>
     ? {
-        resolve?: CreateFieldInputResolver<schema.InferValueFromArg<TArg>, TDBField>;
+        resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>;
       }
     : {
-        resolve: CreateFieldInputResolver<schema.InferValueFromArg<TArg>, TDBField>;
+        resolve: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>;
       }
   : {
       resolve: CreateFieldInputResolver<undefined, TDBField>;
@@ -321,19 +321,19 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
     ? { resolve?: Func }
     : { resolve: Func };
 
-export type UniqueWhereFieldInputArg<Val, TArg extends schema.Arg<schema.InputType>> = {
+export type UniqueWhereFieldInputArg<Val, TArg extends graphql.Arg<graphql.InputType>> = {
   arg: TArg;
 } & ResolveFunc<
   (
-    value: Exclude<schema.InferValueFromArg<TArg>, undefined | null>,
+    value: Exclude<graphql.InferValueFromArg<TArg>, undefined | null>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >;
 
-type FieldTypeOutputField<TDBField extends DBField> = schema.Field<
+type FieldTypeOutputField<TDBField extends DBField> = graphql.Field<
   { value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
   any,
-  schema.OutputType,
+  graphql.OutputType,
   'value'
 >;
 
@@ -347,20 +347,20 @@ type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends Scalaris
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends schema.Arg<schema.InputType> | undefined =
-    | schema.Arg<schema.InputType>
+  CreateArg extends graphql.Arg<graphql.InputType> | undefined =
+    | graphql.Arg<graphql.InputType>
     | undefined,
-  UpdateArg extends schema.Arg<schema.InputType> = schema.Arg<schema.InputType>,
-  UniqueWhereArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  UpdateArg extends graphql.Arg<graphql.InputType> = graphql.Arg<graphql.InputType>,
+  UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >,
-  OrderByArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  OrderByArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >,
-  FilterArg extends schema.Arg<schema.NullableInputType, false> = schema.Arg<
-    schema.NullableInputType,
+  FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
+    graphql.NullableInputType,
     false
   >
 > = {
@@ -375,22 +375,77 @@ export type FieldTypeWithoutDBField<
   views: string;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
-  unreferencedConcreteInterfaceImplementations?: schema.ObjectType<any>[];
+  unreferencedConcreteInterfaceImplementations?: graphql.ObjectType<any>[];
   __legacy?: {
     isRequired?: boolean;
     defaultValue?: FieldDefaultValue<any, BaseGeneratedListTypes>;
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
+type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
+
+export type TypesForList = {
+  update: AnyInputObj;
+  create: AnyInputObj;
+  uniqueWhere: AnyInputObj;
+  where: AnyInputObj;
+  orderBy: AnyInputObj;
+  output: graphql.ObjectType<ItemRootValue>;
+  findManyArgs: FindManyArgs;
+  relateTo: {
+    many: {
+      where: graphql.InputObjectType<{
+        every: graphql.Arg<AnyInputObj>;
+        some: graphql.Arg<AnyInputObj>;
+        none: graphql.Arg<AnyInputObj>;
+      }>;
+      create: graphql.InputObjectType<{
+        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
+      }>;
+      update: graphql.InputObjectType<{
+        disconnect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
+        set: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
+        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
+      }>;
+    };
+    one: {
+      create: graphql.InputObjectType<{
+        create?: graphql.Arg<TypesForList['create']>;
+        connect: graphql.Arg<TypesForList['uniqueWhere']>;
+      }>;
+      update: graphql.InputObjectType<{
+        create?: graphql.Arg<TypesForList['create']>;
+        connect: graphql.Arg<TypesForList['uniqueWhere']>;
+        disconnect: graphql.Arg<typeof graphql.Boolean>;
+      }>;
+    };
+  };
+};
+
+export type FindManyArgs = {
+  where: graphql.Arg<graphql.NonNullType<TypesForList['where']>, true>;
+  orderBy: graphql.Arg<
+    graphql.NonNullType<graphql.ListType<graphql.NonNullType<TypesForList['orderBy']>>>,
+    true
+  >;
+  take: graphql.Arg<typeof graphql.Int>;
+  skip: graphql.Arg<graphql.NonNullType<typeof graphql.Int>, true>;
+};
+
+export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
+
+// fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
-    CreateArg extends schema.Arg<schema.InputType> | undefined,
-    UpdateArg extends schema.Arg<schema.InputType>,
-    UniqueWhereArg extends schema.Arg<schema.NullableInputType, false>,
-    OrderByArg extends schema.Arg<schema.NullableInputType, false>,
-    FilterArg extends schema.Arg<schema.NullableInputType, false>
+    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
+    UpdateArg extends graphql.Arg<graphql.InputType>,
+    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
+    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
+    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
   >(
-    stuff: FieldTypeWithoutDBField<
+    graphQLInfo: FieldTypeWithoutDBField<
       TDBField,
       CreateArg,
       UpdateArg,
@@ -399,60 +454,6 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       FilterArg
     >
   ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
-    return { ...stuff, dbField };
+    return { ...graphQLInfo, dbField };
   };
 }
-
-type AnyInputObj = schema.InputObjectType<Record<string, schema.Arg<schema.InputType, any>>>;
-
-export type TypesForList = {
-  update: AnyInputObj;
-  create: AnyInputObj;
-  uniqueWhere: AnyInputObj;
-  where: AnyInputObj;
-  orderBy: AnyInputObj;
-  output: schema.ObjectType<ItemRootValue>;
-  findManyArgs: FindManyArgs;
-  relateTo: {
-    many: {
-      where: schema.InputObjectType<{
-        every: schema.Arg<AnyInputObj>;
-        some: schema.Arg<AnyInputObj>;
-        none: schema.Arg<AnyInputObj>;
-      }>;
-      create: schema.InputObjectType<{
-        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
-        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
-      }>;
-      update: schema.InputObjectType<{
-        disconnect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
-        set: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
-        connect: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['uniqueWhere']>>>;
-        create?: schema.Arg<schema.ListType<schema.NonNullType<TypesForList['create']>>>;
-      }>;
-    };
-    one: {
-      create: schema.InputObjectType<{
-        create?: schema.Arg<TypesForList['create']>;
-        connect: schema.Arg<TypesForList['uniqueWhere']>;
-      }>;
-      update: schema.InputObjectType<{
-        create?: schema.Arg<TypesForList['create']>;
-        connect: schema.Arg<TypesForList['uniqueWhere']>;
-        disconnect: schema.Arg<typeof schema.Boolean>;
-      }>;
-    };
-  };
-};
-
-export type FindManyArgs = {
-  where: schema.Arg<schema.NonNullType<TypesForList['where']>, true>;
-  orderBy: schema.Arg<
-    schema.NonNullType<schema.ListType<schema.NonNullType<TypesForList['orderBy']>>>,
-    true
-  >;
-  take: schema.Arg<typeof schema.Int>;
-  skip: schema.Arg<schema.NonNullType<typeof schema.Int>, true>;
-};
-
-export type FindManyArgsValue = schema.InferValueFromArgs<FindManyArgs>;

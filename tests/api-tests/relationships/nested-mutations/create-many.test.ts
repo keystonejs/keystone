@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied, expectRelationshipError } from '../../utils';
 
@@ -13,7 +13,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          content: text(),
+          content: text({ graphql: { isEnabled: { orderBy: true } } }),
         },
       }),
       User: list({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
       }),
       NoteNoCreate: list({
         fields: {
-          content: text(),
+          content: text({ graphql: { isEnabled: { filter: true } } }),
         },
         access: {
           create: () => false,
@@ -46,7 +46,7 @@ const runner = setupTestRunner({
       }),
       UserToNotesNoCreate: list({
         fields: {
-          username: text(),
+          username: text({ graphql: { isEnabled: { filter: true } } }),
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
@@ -61,7 +61,7 @@ const runner2 = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          content: text(),
+          content: text({ graphql: { isEnabled: { orderBy: true } } }),
         },
         hooks: {
           afterChange() {

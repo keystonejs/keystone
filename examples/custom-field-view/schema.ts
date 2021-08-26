@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { json, select } from '@keystone-next/keystone/fields';
 
@@ -27,11 +27,13 @@ export const lists = createSchema({
         },
       }),
     },
+    graphql: { isEnabled: { filter: true, orderBy: true } },
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
+    graphql: { isEnabled: { filter: true, orderBy: true } },
   }),
 });

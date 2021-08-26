@@ -1,5 +1,5 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectValidationError } from '../utils';
 
@@ -7,7 +7,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: createSchema({
       User: list({
-        fields: { name: text() },
+        fields: { name: text({ graphql: { isEnabled: { orderBy: true } } }) },
         hooks: {
           validateInput: ({ resolvedData, addValidationError }) => {
             if (resolvedData.name === 'bad') {

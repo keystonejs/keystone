@@ -1,4 +1,7 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { InlineCode } from '../../../components/primitives/Code';
 
 # How To Use Document Fields
 
@@ -19,7 +22,7 @@ The document field provides a number of different formatting options, all of whi
 To get started with a fully featured editor experience, you can turn on all of the built-in options.
 
 ```typescript
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export const lists = createSchema({
@@ -158,7 +161,7 @@ For example, you might want to include twitter-style mentions of other users in 
 We can achieve this with the `relationships` option to the document field.
 
 ```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 import { text } from '@keystone-next/keystone/fields';
 
@@ -349,7 +352,7 @@ You need to import the `componentBlocks` and pass it to the document field along
 `keystone.ts`
 
 ```ts
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 import { componentBlocks } from './component-blocks';
 
@@ -568,7 +571,7 @@ fields.object({
 To use relationship fields on component blocks, you need to add a relationship to the document field config.
 
 ```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({
@@ -675,5 +678,24 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 
 <DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Example Project: Document Field"
+    href="https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+    target="_blank"
+    rel="noopener noreferrer"
+    >
+    Illustrates how to configure <InlineCode>document</InlineCode> fields in your Keystone system and render their data in a frontend application. Builds on the Blog starter project.
+  </Well>
+  <Well
+    heading="Document Field Demo"
+    href="/docs/guides/document-field-demo"
+    >
+    Test drive the many features of Keystone’s Document field on this website.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="Learn how to configure Keystone’s highly customizable Rich Text editor. The Document field is built with Slate and stores your content as JSON-structured data.">{children}</Markdown>;

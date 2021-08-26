@@ -1,14 +1,14 @@
+import bcryptjs from 'bcryptjs';
+// @ts-ignore
+import dumbPasswords from 'dumb-passwords';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  schema,
-} from '@keystone-next/types';
-import bcryptjs from 'bcryptjs';
-// @ts-ignore
-import dumbPasswords from 'dumb-passwords';
+  graphql,
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -27,17 +27,17 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
     isRequired?: boolean;
   };
 
-const PasswordState = schema.object<{ isSet: boolean }>()({
+const PasswordState = graphql.object<{ isSet: boolean }>()({
   name: 'PasswordState',
   fields: {
-    isSet: schema.field({ type: schema.nonNull(schema.Boolean) }),
+    isSet: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
   },
 });
 
-const PasswordFilter = schema.inputObject({
+const PasswordFilter = graphql.inputObject({
   name: 'PasswordFilter',
   fields: {
-    isSet: schema.arg({ type: schema.nonNull(schema.Boolean) }),
+    isSet: graphql.arg({ type: graphql.nonNull(graphql.Boolean) }),
   },
 });
 
@@ -97,7 +97,7 @@ export const password =
       ...config,
       input: {
         where: {
-          arg: schema.arg({ type: PasswordFilter }),
+          arg: graphql.arg({ type: PasswordFilter }),
           resolve(val) {
             if (val === null) {
               throw new Error('Password filters cannot be set to null');
@@ -111,17 +111,17 @@ export const password =
           },
         },
         create: {
-          arg: schema.arg({ type: schema.String }),
+          arg: graphql.arg({ type: graphql.String }),
           resolve: inputResolver,
         },
         update: {
-          arg: schema.arg({ type: schema.String }),
+          arg: graphql.arg({ type: graphql.String }),
           resolve: inputResolver,
         },
       },
       views: resolveView('password/views'),
       getAdminMeta: () => ({ minLength: minLength }),
-      output: schema.field({
+      output: graphql.field({
         type: PasswordState,
         resolve(val) {
           return { isSet: val.value !== null && bcryptHashRegex.test(val.value) };

@@ -1,7 +1,7 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
@@ -86,28 +86,50 @@ const runner = setupTestRunner({
     lists: createSchema({
       Owner: list({
         fields: {
-          name: text(),
-          companies: relationship({ ref: 'Company.owners', many: true }),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
+          companies: relationship({
+            ref: 'Company.owners',
+            many: true,
+            graphql: { isEnabled: { filter: true } },
+          }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          location: relationship({ ref: 'Location.company' }),
-          owners: relationship({ ref: 'Owner.companies', many: true }),
+          location: relationship({
+            ref: 'Location.company',
+            graphql: { isEnabled: { filter: true } },
+          }),
+          owners: relationship({
+            ref: 'Owner.companies',
+            many: true,
+            graphql: { isEnabled: { filter: true } },
+          }),
         },
       }),
       Location: list({
         fields: {
           name: text(),
-          company: relationship({ ref: 'Company.location' }),
-          custodians: relationship({ ref: 'Custodian.locations', many: true }),
+          company: relationship({
+            ref: 'Company.location',
+            graphql: { isEnabled: { filter: true } },
+          }),
+          custodians: relationship({
+            ref: 'Custodian.locations',
+            many: true,
+            graphql: { isEnabled: { filter: true } },
+          }),
         },
       }),
       Custodian: list({
         fields: {
-          name: text(),
-          locations: relationship({ ref: 'Location.custodians', many: true }),
+          name: text({ graphql: { isEnabled: { filter: true } } }),
+          locations: relationship({
+            ref: 'Location.custodians',
+            many: true,
+            graphql: { isEnabled: { filter: true } },
+          }),
         },
       }),
     }),

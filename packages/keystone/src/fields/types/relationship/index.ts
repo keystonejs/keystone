@@ -3,10 +3,10 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  schema,
+  graphql,
   AdminMetaRootVal,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships
@@ -148,13 +148,13 @@ export const relationship =
         ...commonConfig,
         input: {
           where: {
-            arg: schema.arg({ type: listTypes.relateTo.many.where }),
+            arg: graphql.arg({ type: listTypes.relateTo.many.where }),
             resolve(value, context, resolve) {
               return resolve(value);
             },
           },
           create: {
-            arg: schema.arg({
+            arg: graphql.arg({
               type: listTypes.relateTo.many.create,
             }),
             async resolve(value, context, resolve) {
@@ -162,7 +162,7 @@ export const relationship =
             },
           },
           update: {
-            arg: schema.arg({
+            arg: graphql.arg({
               type: listTypes.relateTo.many.update,
             }),
             async resolve(value, context, resolve) {
@@ -170,19 +170,19 @@ export const relationship =
             },
           },
         },
-        output: schema.field({
+        output: graphql.field({
           args: listTypes.findManyArgs,
-          type: schema.list(schema.nonNull(listTypes.output)),
+          type: graphql.list(graphql.nonNull(listTypes.output)),
           resolve({ value }, args) {
             return value.findMany(args);
           },
         }),
         extraOutputFields: withMeta
           ? {
-              [`${meta.fieldKey}Count`]: schema.field({
-                type: schema.Int,
+              [`${meta.fieldKey}Count`]: graphql.field({
+                type: graphql.Int,
                 args: {
-                  where: schema.arg({ type: schema.nonNull(listTypes.where), defaultValue: {} }),
+                  where: graphql.arg({ type: graphql.nonNull(listTypes.where), defaultValue: {} }),
                 },
                 resolve({ value }, args) {
                   return value.count({
@@ -206,25 +206,25 @@ export const relationship =
       ...commonConfig,
       input: {
         where: {
-          arg: schema.arg({ type: listTypes.where }),
+          arg: graphql.arg({ type: listTypes.where }),
           resolve(value, context, resolve) {
             return resolve(value);
           },
         },
         create: {
-          arg: schema.arg({ type: listTypes.relateTo.one.create }),
+          arg: graphql.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
         update: {
-          arg: schema.arg({ type: listTypes.relateTo.one.update }),
+          arg: graphql.arg({ type: listTypes.relateTo.one.update }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
       },
-      output: schema.field({
+      output: graphql.field({
         type: listTypes.output,
         resolve({ value }) {
           return value();

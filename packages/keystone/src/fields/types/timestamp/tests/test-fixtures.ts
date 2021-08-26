@@ -1,5 +1,4 @@
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/types';
-import { text } from '../../text';
+import { DatabaseProvider, KeystoneContext } from '../../../../types';
 import { timestamp } from '..';
 
 export const name = 'DateTimeUtc';
@@ -9,7 +8,9 @@ export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';
 export const supportsUnique = true;
 export const fieldName = 'lastOnline';
 
-export const getTestFields = () => ({ name: text(), lastOnline: timestamp() });
+export const getTestFields = () => ({
+  lastOnline: timestamp({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
+});
 
 export const initItems = () => {
   return [

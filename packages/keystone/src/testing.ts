@@ -4,7 +4,7 @@ import fs from 'fs';
 import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
-import type { KeystoneConfig, KeystoneContext } from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -12,7 +12,7 @@ import {
   generateNodeModulesArtifacts,
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
-import { initConfig, createSystem, createExpressServer } from '.';
+import { initConfig, createSystem, createExpressServer } from './system';
 
 export type GraphQLRequest = (arg: {
   query: string;

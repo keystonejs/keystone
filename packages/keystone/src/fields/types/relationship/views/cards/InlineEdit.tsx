@@ -1,11 +1,11 @@
 /** @jsx jsx */
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { jsx, Stack } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { useCallback, useState } from 'react';
 import { Tooltip } from '@keystone-ui/tooltip';
+import { ListMeta } from '../../../../../types';
 import {
   deserializeValue,
   ItemData,

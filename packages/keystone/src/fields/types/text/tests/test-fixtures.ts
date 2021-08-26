@@ -1,4 +1,4 @@
-import { DatabaseProvider } from '@keystone-next/types';
+import { DatabaseProvider } from '../../../../types';
 import { text } from '..';
 
 export const name = 'Text';
@@ -8,7 +8,9 @@ export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: text(), testField: text() });
+export const getTestFields = () => ({
+  testField: text({ graphql: { isEnabled: { filter: true } } }),
+});
 
 export const initItems = () => {
   return [

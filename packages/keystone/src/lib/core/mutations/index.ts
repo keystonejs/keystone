@@ -1,4 +1,4 @@
-import { DatabaseProvider, getGqlNames, schema } from '@keystone-next/types';
+import { DatabaseProvider, getGqlNames, graphql } from '../../../types';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';
@@ -22,18 +22,20 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 export function getMutationsForList(list: InitialisedList, provider: DatabaseProvider) {
   const names = getGqlNames(list);
 
-  const createOne = schema.field({
+  const createOne = graphql.field({
     type: list.types.output,
-    args: { data: schema.arg({ type: schema.nonNull(list.types.create) }) },
+    args: { data: graphql.arg({ type: graphql.nonNull(list.types.create) }) },
     resolve(_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data }, list, context);
     },
   });
 
-  const createMany = schema.field({
-    type: schema.list(list.types.output),
+  const createMany = graphql.field({
+    type: graphql.list(list.types.output),
     args: {
-      data: schema.arg({ type: schema.nonNull(schema.list(schema.nonNull(list.types.create))) }),
+      data: graphql.arg({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.create))),
+      }),
     },
     resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
@@ -42,28 +44,28 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const updateOne = schema.field({
+  const updateOne = graphql.field({
     type: list.types.output,
     args: {
-      where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }),
-      data: schema.arg({ type: schema.nonNull(list.types.update) }),
+      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
+      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
     },
     resolve(_rootVal, args, context) {
       return createAndUpdate.updateOne(args, list, context);
     },
   });
 
-  const updateManyInput = schema.inputObject({
+  const updateManyInput = graphql.inputObject({
     name: names.updateManyInputName,
     fields: {
-      where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }),
-      data: schema.arg({ type: schema.nonNull(list.types.update) }),
+      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
+      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
     },
   });
-  const updateMany = schema.field({
-    type: schema.list(list.types.output),
+  const updateMany = graphql.field({
+    type: graphql.list(list.types.output),
     args: {
-      data: schema.arg({ type: schema.nonNull(schema.list(schema.nonNull(updateManyInput))) }),
+      data: graphql.arg({ type: graphql.nonNull(graphql.list(graphql.nonNull(updateManyInput))) }),
     },
     resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
@@ -72,19 +74,19 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
   });
 
-  const deleteOne = schema.field({
+  const deleteOne = graphql.field({
     type: list.types.output,
-    args: { where: schema.arg({ type: schema.nonNull(list.types.uniqueWhere) }) },
+    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
     resolve(rootVal, { where }, context) {
       return deletes.deleteOne(where, list, context);
     },
   });
 
-  const deleteMany = schema.field({
-    type: schema.list(list.types.output),
+  const deleteMany = graphql.field({
+    type: graphql.list(list.types.output),
     args: {
-      where: schema.arg({
-        type: schema.nonNull(schema.list(schema.nonNull(list.types.uniqueWhere))),
+      where: graphql.arg({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.uniqueWhere))),
       }),
     },
     resolve(rootVal, { where }, context) {
@@ -96,15 +98,15 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
 
   return {
     mutations: {
-      ...(list.access.create !== false && {
+      ...(list.graphql.isEnabled.create && {
         [names.createMutationName]: createOne,
         [names.createManyMutationName]: createMany,
       }),
-      ...(list.access.update !== false && {
+      ...(list.graphql.isEnabled.update && {
         [names.updateMutationName]: updateOne,
         [names.updateManyMutationName]: updateMany,
       }),
-      ...(list.access.delete !== false && {
+      ...(list.graphql.isEnabled.delete && {
         [names.deleteMutationName]: deleteOne,
         [names.deleteManyMutationName]: deleteMany,
       }),

@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
-import { KeystoneContext } from '../../../packages/types/src';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectAccessDenied, expectExtensionError } from '../utils';
 
 const runner = (debug: boolean | undefined) =>
@@ -9,7 +9,7 @@ const runner = (debug: boolean | undefined) =>
     config: apiTestConfig({
       lists: createSchema({
         User: list({
-          fields: { name: text() },
+          fields: { name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }) },
           hooks: {
             beforeChange: ({ resolvedData }) => {
               if (resolvedData.name === 'trigger before') {

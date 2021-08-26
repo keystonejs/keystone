@@ -1,16 +1,11 @@
-import { KeystoneContext } from '@keystone-next/types';
-import { text } from '../types/text';
+import { KeystoneContext } from '../../types';
 
 export const name = 'ID';
 
 export const exampleValue = () => '"foo"';
 
 export const newInterfaces = true;
-export const getTestFields = () => {
-  return {
-    name: text(),
-  };
-};
+export const getTestFields = () => ({});
 
 export const initItems = () => {
   return [{ name: 'person1' }, { name: 'person2' }, { name: 'person3' }, { name: 'person4' }];

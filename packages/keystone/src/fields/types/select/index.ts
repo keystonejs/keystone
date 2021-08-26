@@ -1,3 +1,4 @@
+import inflection from 'inflection';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -5,11 +6,10 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 // @ts-ignore
-import inflection from 'inflection';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
 
@@ -68,22 +68,22 @@ export const select =
         ...commonConfig,
         input: {
           where: {
-            arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+            arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
             resolve: filters.resolveCommon,
           },
-          create: { arg: schema.arg({ type: schema.Int }) },
-          update: { arg: schema.arg({ type: schema.Int }) },
-          orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+          create: { arg: graphql.arg({ type: graphql.Int }) },
+          update: { arg: graphql.arg({ type: graphql.Int }) },
+          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
-        output: schema.field({ type: schema.Int }),
+        output: graphql.field({ type: graphql.Int }),
         __legacy: { defaultValue, isRequired },
       });
     }
     if (config.dataType === 'enum') {
       const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
-      const graphQLType = schema.enum({
+      const graphQLType = graphql.enum({
         name: enumName,
-        values: schema.enumValues(config.options.map(x => x.value)),
+        values: graphql.enumValues(config.options.map(x => x.value)),
       });
       // i do not like this "let's just magically use strings on sqlite"
       return fieldType(
@@ -100,14 +100,14 @@ export const select =
         ...commonConfig,
         input: {
           where: {
-            arg: schema.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
+            arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: filters.resolveCommon,
           },
-          create: { arg: schema.arg({ type: graphQLType }) },
-          update: { arg: schema.arg({ type: graphQLType }) },
-          orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+          create: { arg: graphql.arg({ type: graphQLType }) },
+          update: { arg: graphql.arg({ type: graphQLType }) },
+          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
-        output: schema.field({
+        output: graphql.field({
           type: graphQLType,
         }),
         __legacy: { defaultValue, isRequired },
@@ -117,15 +117,15 @@ export const select =
       ...commonConfig,
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].String.optional }),
           resolve: filters.resolveString,
         },
-        create: { arg: schema.arg({ type: schema.String }) },
-        update: { arg: schema.arg({ type: schema.String }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        create: { arg: graphql.arg({ type: graphql.String }) },
+        update: { arg: graphql.arg({ type: graphql.String }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.String,
+      output: graphql.field({
+        type: graphql.String,
       }),
       __legacy: { defaultValue, isRequired },
     });

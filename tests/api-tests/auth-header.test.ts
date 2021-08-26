@@ -1,8 +1,8 @@
 import { text, timestamp, password } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneContext } from '@keystone-next/types';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied } from './utils';
 
@@ -36,7 +36,7 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text({ isUnique: true }),
+            email: text({ isUnique: true, graphql: { isEnabled: { filter: true } } }),
             password: password(),
           },
           access: {
@@ -113,7 +113,7 @@ describe('Auth testing', () => {
         ),
       })
     ).rejects.toMatchInlineSnapshot(
-      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true\` to the field at User.email]`
+      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true, graphql: { isEnabled: { filter: true } }\` to the field at User.email]`
     );
   });
 

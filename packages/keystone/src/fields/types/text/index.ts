@@ -3,11 +3,11 @@ import {
   FieldDefaultValue,
   CommonFieldConfig,
   fieldType,
-  schema,
+  graphql,
   orderDirectionEnum,
   FieldTypeFunc,
   filters,
-} from '@keystone-next/types';
+} from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
 
@@ -39,16 +39,16 @@ export const text =
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: schema.arg({ type: schema.String }) } : undefined,
+        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
         where: {
-          arg: schema.arg({ type: filters[meta.provider].String.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].String.optional }),
           resolve: filters.resolveString,
         },
-        create: { arg: schema.arg({ type: schema.String }) },
-        update: { arg: schema.arg({ type: schema.String }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        create: { arg: graphql.arg({ type: graphql.String }) },
+        update: { arg: graphql.arg({ type: graphql.String }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.String }),
+      output: graphql.field({ type: graphql.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
         return {

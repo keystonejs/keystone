@@ -1,5 +1,5 @@
-import { JSONValue } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
+import { JSONValue } from '../../types';
 
 type Path = (string | number)[];
 

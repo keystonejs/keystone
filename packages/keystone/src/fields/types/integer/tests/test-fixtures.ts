@@ -1,5 +1,4 @@
 import { integer } from '..';
-import { text } from '../../text';
 
 export const name = 'Integer';
 export const typeFunction = integer;
@@ -8,7 +7,9 @@ export const exampleValue2 = () => 38;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: text(), testField: integer() });
+export const getTestFields = () => ({
+  testField: integer({ graphql: { isEnabled: { filter: true } } }),
+});
 
 export const initItems = () => {
   return [

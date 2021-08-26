@@ -1,10 +1,16 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Query Filter API
+
+?> We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
 
 Each field type provides its own set of filters which can be used with [queries](./graphql#all-users).
 This page lists all the filters available for each field type.
 For more details on how to use filters in queries please consult to the [GraphQL Queries - Filters](../guides/filters) guide.
+
+?> Filters are disabled by default as a security precaution. To enable the filters on a field, set the config option `{ graphql: { isEnabled: { filter: true } } }`.
 
 ## Scalar types
 
@@ -146,5 +152,16 @@ The `file` field type does not support filters.
 ### image
 
 The `image` field type does not support filters.
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Query Filters Guide"
+    href="/docs/guides/filters"
+    >
+    Query filters are an integral part of Keystone’s powerful GraphQL APIs. This guide will show you how to use filters to get the data you need from your system.
+  </Well>
+</RelatedContent>
 
 export default ({ children }) => <Markdown description="A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering.">{children}</Markdown>;

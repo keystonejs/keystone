@@ -2,7 +2,6 @@
 
 import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
@@ -11,6 +10,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
   DataGetter,
@@ -671,7 +671,6 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      position: 'relative',
                     }}
                   >
                     <CheckboxControl
@@ -799,7 +798,6 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
         padding: spacing.small,
         textAlign: 'left',
         position: 'sticky',
-        zIndex: 1,
         top: 0,
       }}
       {...props}

@@ -2,12 +2,12 @@
 
 import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
 import { useRouter } from 'next/router';
-import { NavigationProps, ListMeta } from '@keystone-next/types';
 import { Stack, jsx, useTheme, Text } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
+import { NavigationProps, ListMeta } from '../../types';
 
 import { useKeystone } from '../context';
 import { Link } from '../router';
