@@ -86,6 +86,7 @@ export function initialiseLists(
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const _isEnabled = listConfig.graphql?.isEnabled;
+    const { defaultIsFilterable, defaultIsOrderable } = listConfig;
     if (_isEnabled === false) {
       isEnabled[listKey] = {
         type: false,
@@ -103,8 +104,8 @@ export function initialiseLists(
         create: true,
         update: true,
         delete: true,
-        filter: false,
-        orderBy: false,
+        filter: !!defaultIsFilterable,
+        orderBy: !!defaultIsOrderable,
       };
     } else {
       isEnabled[listKey] = {
@@ -113,8 +114,8 @@ export function initialiseLists(
         create: _isEnabled.create ?? true,
         update: _isEnabled.update ?? true,
         delete: _isEnabled.delete ?? true,
-        filter: _isEnabled.filter ?? false,
-        orderBy: _isEnabled.orderBy ?? false,
+        filter: !!defaultIsFilterable,
+        orderBy: !!defaultIsOrderable,
       };
     }
   }
@@ -257,61 +258,62 @@ export function initialiseLists(
       skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 
-    const relateToManyForCreate = graphql.inputObject({
-      name: names.relateToManyForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-          }),
-          connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-        };
-      },
-    });
+    const _isEnabled = isEnabled[listKey];
+    let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate;
+    if (_isEnabled.type) {
+      relateToManyForCreate = graphql.inputObject({
+        name: names.relateToManyForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+          };
+        },
+      });
 
-    const relateToManyForUpdate = graphql.inputObject({
-      name: names.relateToManyForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          ...(list.access.create !== false && {
-            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-          }),
-          connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-        };
-      },
-    });
+      relateToManyForUpdate = graphql.inputObject({
+        name: names.relateToManyForUpdateInputName,
+        fields: () => {
+          return {
+            // The order of these fields reflects the order in which they are applied
+            // in the mutation.
+            disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+          };
+        },
+      });
 
-    const relateToOneForCreate = graphql.inputObject({
-      name: names.relateToOneForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: graphql.arg({ type: create }),
-          }),
-          connect: graphql.arg({ type: uniqueWhere }),
-        };
-      },
-    });
+      relateToOneForCreate = graphql.inputObject({
+        name: names.relateToOneForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            connect: graphql.arg({ type: uniqueWhere }),
+          };
+        },
+      });
 
-    const relateToOneForUpdate = graphql.inputObject({
-      name: names.relateToOneForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          ...(list.access.create !== false && {
-            create: graphql.arg({ type: create }),
-          }),
-          connect: graphql.arg({ type: uniqueWhere }),
-          disconnect: graphql.arg({ type: graphql.Boolean }),
-        };
-      },
-    });
-
+      relateToOneForUpdate = graphql.inputObject({
+        name: names.relateToOneForUpdateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            connect: graphql.arg({ type: uniqueWhere }),
+            disconnect: graphql.arg({ type: graphql.Boolean }),
+          };
+        },
+      });
+    }
     listInfos[listKey] = {
       types: {
         output,
@@ -355,10 +357,10 @@ export function initialiseLists(
               read: f.graphql?.isEnabled?.read ?? true,
               update: f.graphql?.isEnabled?.update ?? true,
               create: f.graphql?.isEnabled?.create ?? true,
-              // Filter and orderBy can be set at the list level, and default to `false`
-              // if no value was set at the list level.
-              filter: f.graphql?.isEnabled?.filter ?? isEnabled[listKey].filter,
-              orderBy: f.graphql?.isEnabled?.orderBy ?? isEnabled[listKey].orderBy,
+              // Filter and orderBy can be defaulted at the list level, otherwise they
+              // default to `false` if no value was set at the list level.
+              filter: f.isFilterable ?? isEnabled[listKey].filter,
+              orderBy: f.isOrderable ?? isEnabled[listKey].orderBy,
             };
             const field = {
               ...f,

@@ -1,4 +1,4 @@
-import { text } from '@keystone-next/keystone/fields';
+import { relationship, text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { apiTestConfig } from '../utils';
@@ -112,8 +112,17 @@ const getFieldPrefix = (isEnabled: FieldEnabled) => {
 
 const getFieldName = (isEnabled: FieldEnabled) => getFieldPrefix(isEnabled);
 
-const createFieldStatic = (isEnabled: FieldEnabled) => ({
-  [getFieldName(isEnabled)]: text({ graphql: { isEnabled } }),
+const createFieldStatic = ({ filter, orderBy, ...isEnabled }: FieldEnabled) => ({
+  [getFieldName({ filter, orderBy, ...isEnabled })]: text({
+    graphql: { isEnabled },
+    isFilterable: filter || undefined,
+    isOrderable: orderBy || undefined,
+  }),
+});
+
+const createRelatedFields = (isEnabled: ListEnabled) => ({
+  [`${getListPrefix(isEnabled)}one`]: relationship({ ref: getListName(isEnabled), many: false }),
+  [`${getListPrefix(isEnabled)}many`]: relationship({ ref: getListName(isEnabled), many: true }),
 });
 
 const lists = createSchema({});
@@ -126,6 +135,13 @@ listEnabledVariations.forEach(isEnabled => {
     ),
     graphql: { isEnabled },
   });
+});
+
+lists.RelatedToAll = list({
+  fields: Object.assign(
+    {},
+    ...listEnabledVariations.map(variation => createRelatedFields(variation))
+  ),
 });
 
 const config = apiTestConfig({

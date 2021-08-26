@@ -20,7 +20,7 @@ export const CartItem = list({
       defaultValue: 1,
       isRequired: true,
     }),
-    product: relationship({ ref: 'Product', graphql: { isEnabled: { filter: true } } }),
-    user: relationship({ ref: 'User.cart', graphql: { isEnabled: { filter: true } } }),
+    product: relationship({ ref: 'Product', isFilterable: true }),
+    user: relationship({ ref: 'User.cart', isFilterable: true }),
   },
 });

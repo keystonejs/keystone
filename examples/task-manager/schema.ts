@@ -18,13 +18,15 @@ export const lists = createSchema({
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
-    graphql: { isEnabled: { filter: true, orderBy: true } },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    graphql: { isEnabled: { filter: true, orderBy: true } },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
 });

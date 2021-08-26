@@ -12,7 +12,7 @@ export const supportsUnique = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
-      graphql: { isEnabled: { filter: true } },
+      isFilterable: true as const,
       dataType: matrixValue,
       options:
         matrixValue === 'enum'
@@ -34,7 +34,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
     };
   }
   return {
-    graphql: { isEnabled: { filter: true } },
+    isFilterable: true as const,
     dataType: matrixValue,
     options: [
       { label: 'One', value: 1 },
