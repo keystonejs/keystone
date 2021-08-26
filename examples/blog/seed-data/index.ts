@@ -1,26 +1,23 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { authors, posts } from './data';
+
+type AuthorProps = {
+  name: String;
+  email: String;
+};
+
+type PostProps = {
+  title: String;
+  status: String;
+  publishDate: String;
+  author: Object;
+  content: String;
+};
 
 export async function insertSeedData(context: KeystoneContext) {
   console.log(`🌱 Inserting seed data`);
 
-  const createPost = async postData => {
-    let authors = [];
-    try {
-      authors = await context.lists.Author.findMany({
-        where: { name: { equals: postData.author } },
-        query: 'id',
-      });
-    } catch (e) {}
-    postData.author = { connect: { id: authors[0].id } };
-    const post = await context.lists.Post.createOne({
-      data: postData,
-      query: 'id',
-    });
-    return post;
-  };
-
-  const createAuthor = async authorData => {
+  const createAuthor = async (authorData: AuthorProps) => {
     let author = null;
     try {
       author = await context.lists.Author.findOne({
@@ -35,6 +32,22 @@ export async function insertSeedData(context: KeystoneContext) {
       });
     }
     return author;
+  };
+
+  const createPost = async (postData: PostProps) => {
+    let authors = [];
+    try {
+      authors = await context.lists.Author.findMany({
+        where: { name: { equals: postData.author } },
+        query: 'id',
+      });
+    } catch (e) {}
+    postData.author = { connect: { id: authors[0].id } };
+    const post = await context.lists.Post.createOne({
+      data: postData,
+      query: 'id',
+    });
+    return post;
   };
 
   for (const author of authors) {

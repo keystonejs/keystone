@@ -1,26 +1,22 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { persons, tasks } from './data';
+
+type PersonProps = {
+  name: String;
+};
+
+type TaskProps = {
+  label: String;
+  isComplete: Boolean;
+  finishBy: String;
+  assignedTo: Object;
+  person?: Object;
+};
 
 export async function insertSeedData(context: KeystoneContext) {
   console.log(`🌱 Inserting seed data`);
 
-  const createTask = async taskData => {
-    let persons = [];
-    try {
-      persons = await context.lists.Person.findMany({
-        where: { name: { equals: taskData.person } },
-        query: 'id',
-      });
-    } catch (e) {}
-    taskData.person = { connect: { id: persons[0].id } };
-    const task = await context.lists.Task.createOne({
-      data: taskData,
-      query: 'id',
-    });
-    return task;
-  };
-
-  const createPerson = async personData => {
+  const createPerson = async (personData: PersonProps) => {
     let person = null;
     try {
       person = await context.lists.Person.findOne({
@@ -37,12 +33,29 @@ export async function insertSeedData(context: KeystoneContext) {
     return person;
   };
 
+  const createTask = async (taskData: TaskProps) => {
+    let persons = [];
+    try {
+      persons = await context.lists.Person.findMany({
+        where: { name: { equals: taskData.person } },
+        query: 'id',
+      });
+    } catch (e) {}
+
+    taskData.assignedTo = { connect: { id: persons[0].id } };
+    const task = await context.lists.Task.createOne({
+      data: taskData,
+      query: 'id',
+    });
+    return task;
+  };
+
   for (const person of persons) {
     console.log(`👩 Adding person: ${person.name}`);
     await createPerson(person);
   }
   for (const task of tasks) {
-    console.log(`🔘 Adding task: ${task.title}`);
+    console.log(`🔘 Adding task: ${task.label}`);
     await createTask(task);
   }
 
