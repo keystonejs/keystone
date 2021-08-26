@@ -21,10 +21,7 @@ testModules
         config: apiTestConfig({
           lists: createSchema({
             [listKey]: list({
-              fields: {
-                name: text({ isFilterable: true }),
-                ...mod.getTestFields(matrixValue),
-              },
+              fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
             }),
           }),
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
