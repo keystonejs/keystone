@@ -259,7 +259,7 @@ export function initialiseLists(
 
     const _isEnabled = isEnabled[listKey];
     let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate;
-    if (_isEnabled.create || _isEnabled.query || _isEnabled.update || _isEnabled.delete) {
+    if (_isEnabled.type) {
       relateToManyForCreate = graphql.inputObject({
         name: names.relateToManyForCreateInputName,
         fields: () => {
@@ -268,10 +268,7 @@ export function initialiseLists(
             ...(_isEnabled.create && {
               create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
             }),
-            // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-              connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
           };
         },
       });
@@ -282,18 +279,13 @@ export function initialiseLists(
           return {
             // The order of these fields reflects the order in which they are applied
             // in the mutation.
-            // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-              disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-              set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            }),
+            disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
             // Create via a relationship is only supported if this list allows create
             ...(_isEnabled.create && {
               create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
             }),
-            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-              connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            }),
+            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
           };
         },
       });
@@ -304,10 +296,7 @@ export function initialiseLists(
           return {
             // Create via a relationship is only supported if this list allows create
             ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
-            // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-              connect: graphql.arg({ type: uniqueWhere }),
-            }),
+            connect: graphql.arg({ type: uniqueWhere }),
           };
         },
       });
@@ -318,11 +307,8 @@ export function initialiseLists(
           return {
             // Create via a relationship is only supported if this list allows create
             ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
-            // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-              connect: graphql.arg({ type: uniqueWhere }),
-              disconnect: graphql.arg({ type: graphql.Boolean }),
-            }),
+            connect: graphql.arg({ type: uniqueWhere }),
+            disconnect: graphql.arg({ type: graphql.Boolean }),
           };
         },
       });

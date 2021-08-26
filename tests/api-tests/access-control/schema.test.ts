@@ -87,11 +87,8 @@ describe(`Schema`, () => {
         } else {
           expect(types).not.toContain(gqlNames.outputTypeName);
         }
-        if (
-          isEnabled === undefined ||
-          isEnabled === true ||
-          (isEnabled !== false && (isEnabled.query || isEnabled.update || isEnabled.delete))
-        ) {
+
+        if (isEnabled !== false) {
           // Filter types are also available for update/delete/create (thanks
           // to nested mutations)
           expect(types).toContain(gqlNames.whereUniqueInputName);
@@ -99,14 +96,8 @@ describe(`Schema`, () => {
           expect(types).not.toContain(gqlNames.whereUniqueInputName);
         }
 
-        // The relateTo types do not exist if the list has been completely
-        // disabled, or if all four operations have been individually disabled.
-        if (
-          isEnabled === false ||
-          (isEnabled !== undefined &&
-            isEnabled !== true &&
-            !(isEnabled.query || isEnabled.create || isEnabled.update || isEnabled.delete))
-        ) {
+        // The relateTo types do not exist if the list has been completely disabled
+        if (isEnabled === false) {
           expect(types).not.toContain(gqlNames.relateToManyForCreateInputName);
           expect(types).not.toContain(gqlNames.relateToOneForCreateInputName);
           expect(types).not.toContain(gqlNames.relateToManyForUpdateInputName);
@@ -143,31 +134,14 @@ describe(`Schema`, () => {
             expect(updateFromMany).not.toContain('create');
             expect(updateFromOne).not.toContain('create');
           }
-          // The connect/disconnect/set operations are supported as long as the uniqueWhere
-          // exists, e.g. one of query/update/delete is supported.
-          if (
-            isEnabled === true ||
-            isEnabled === undefined ||
-            isEnabled.query ||
-            isEnabled.update ||
-            isEnabled.delete
-          ) {
-            expect(createFromMany).toContain('connect');
-            expect(createFromOne).toContain('connect');
-            expect(updateFromMany).toContain('connect');
-            expect(updateFromOne).toContain('connect');
-            expect(updateFromMany).toContain('disconnect');
-            expect(updateFromOne).toContain('disconnect');
-            expect(updateFromMany).toContain('set');
-          } else {
-            expect(createFromMany).not.toContain('connect');
-            expect(createFromOne).not.toContain('connect');
-            expect(updateFromMany).not.toContain('connect');
-            expect(updateFromOne).not.toContain('connect');
-            expect(updateFromMany).not.toContain('disconnect');
-            expect(updateFromOne).not.toContain('disconnect');
-            expect(updateFromMany).not.toContain('set');
-          }
+          // The connect/disconnect/set operations are always supported.
+          expect(createFromMany).toContain('connect');
+          expect(createFromOne).toContain('connect');
+          expect(updateFromMany).toContain('connect');
+          expect(updateFromOne).toContain('connect');
+          expect(updateFromMany).toContain('disconnect');
+          expect(updateFromOne).toContain('disconnect');
+          expect(updateFromMany).toContain('set');
         }
 
         // Queries are only accessible when reading
