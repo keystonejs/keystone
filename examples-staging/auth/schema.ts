@@ -19,11 +19,7 @@ export const lists = createSchema({
       // The user's name
       name: text({ isRequired: true }),
       // The user's email address, used as the identity field for auth
-      email: text({
-        isRequired: true,
-        isUnique: true,
-        graphql: { isEnabled: { filter: true } },
-      }),
+      email: text({ isRequired: true, isUnique: true, isFilterable: true }),
       // The user's password, used as the secret field for auth
       password: password({
         access: {

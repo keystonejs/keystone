@@ -22,7 +22,7 @@ testModules
           lists: createSchema({
             [listKey]: list({
               fields: {
-                name: text({ graphql: { isEnabled: { orderBy: true } } }),
+                name: text({ isFilterable: true }),
                 ...mod.getTestFields(matrixValue),
               },
             }),
@@ -415,12 +415,7 @@ testModules
                   config: apiTestConfig({
                     lists: createSchema({
                       [listKey]: list({
-                        fields: {
-                          field: mod.typeFunction({
-                            isUnique: true,
-                            graphql: { isEnabled: { filter: true } },
-                          }),
-                        },
+                        fields: { field: mod.typeFunction({ isUnique: true, isFilterable: true }) },
                       }),
                     }),
                   }),

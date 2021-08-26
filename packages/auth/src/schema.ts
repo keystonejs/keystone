@@ -70,7 +70,7 @@ export const getSchemaExtension =
       throw new Error(
         `createAuth was called with an identityField of ${identityField} on the list ${listKey} ` +
           `but that field doesn't allow being searched uniquely with a String or ID. ` +
-          `You should likely add \`isUnique: true\, graphql: { isEnabled: { filter: true } }\` ` +
+          `You should likely add \`isUnique: true\, isFilterable: true \` ` +
           `to the field at ${listKey}.${identityField}`
       );
     }
