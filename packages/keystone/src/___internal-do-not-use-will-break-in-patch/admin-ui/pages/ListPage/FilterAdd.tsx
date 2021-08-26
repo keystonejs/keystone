@@ -75,8 +75,7 @@ export function FilterAdd({ listKey }: { listKey: string }) {
         <ChevronDownIcon size="small" />
       </Button>
       <PopoverDialog
-        aria-label="Filters options"
-        aria-description={`list of filters to apply to the ${listKey} list`}
+        aria-label={`Filters options, list of filters to apply to the ${listKey} list`}
         arrow={arrow}
         isVisible={isOpen}
         {...dialog.props}

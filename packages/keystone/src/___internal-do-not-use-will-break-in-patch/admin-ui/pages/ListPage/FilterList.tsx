@@ -43,9 +43,8 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
     <Fragment>
       <Pill
         containerProps={{
-          'aria-label': `Filter item ${filter.field}`,
+          'aria-label': `Filter item ${filter.field}, press to edit filter`,
         }}
-        aria-description={'Press to edit filter'}
         {...trigger.props}
         ref={trigger.ref}
         onClick={() => setOpen(true)}
@@ -64,8 +63,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         />
       </Pill>
       <PopoverDialog
-        aria-label="filter item config"
-        aria-description={`dialog for configuring ${filter.field} filter`}
+        aria-label={`filter item config, dialog for configuring ${filter.field} filter`}
         arrow={arrow}
         {...dialog.props}
         isVisible={isOpen}
