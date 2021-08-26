@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
 import Link from 'next/link';
+import debounce from 'lodash.debounce';
 
 import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
@@ -58,11 +59,14 @@ export function NavItem({
   const isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
+  const setMobileNavIsOpen = ctx ? ctx.setMobileNavIsOpen : () => {};
 
   const [desktopOpenState, setDesktopOpenState] = useState(-1);
 
   useEffect(() => {
     const listener = () => {
+      setDesktopOpenState(-1);
+      setMobileNavIsOpen(false);
       const width = Math.max(
         document.body.scrollWidth,
         document.documentElement.scrollWidth,
@@ -71,20 +75,15 @@ export function NavItem({
         document.documentElement.clientWidth
       );
       if (width > BREAK_POINTS.sm) {
-        console.log('width is bigger than md breakpoint');
-        if (desktopOpenState !== 0) {
-          setDesktopOpenState(0);
-        }
+        setDesktopOpenState(-1);
       } else {
-        if (desktopOpenState !== -1) {
-          setDesktopOpenState(-1);
-        }
+        setDesktopOpenState(-1);
       }
     };
-    window.addEventListener('resize', listener);
+    window.addEventListener('resize', debounce(listener, 130));
 
     return () => {
-      window.removeEventListener('resize', listener);
+      window.removeEventListener('resize', debounce(listener, 130));
     };
   }, [setDesktopOpenState]);
 
@@ -124,11 +123,14 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const isActive = pathname === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
+  const setMobileNavIsOpen = ctx ? ctx.setMobileNavIsOpen : () => {};
 
   const [desktopOpenState, setDesktopOpenState] = useState(-1);
 
   useEffect(() => {
     const listener = () => {
+      setDesktopOpenState(-1);
+      setMobileNavIsOpen(false);
       const width = Math.max(
         document.body.scrollWidth,
         document.documentElement.scrollWidth,
@@ -137,20 +139,15 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
         document.documentElement.clientWidth
       );
       if (width > BREAK_POINTS.sm) {
-        console.log('width is bigger than md breakpoint');
-        if (desktopOpenState !== 0) {
-          setDesktopOpenState(0);
-        }
+        setDesktopOpenState(-1);
       } else {
-        if (desktopOpenState !== -1) {
-          setDesktopOpenState(-1);
-        }
+        setDesktopOpenState(-1);
       }
     };
-    window.addEventListener('resize', listener);
+    window.addEventListener('resize', debounce(listener, 130));
 
     return () => {
-      window.removeEventListener('resize', listener);
+      window.removeEventListener('resize', debounce(listener, 130));
     };
   }, [setDesktopOpenState]);
 

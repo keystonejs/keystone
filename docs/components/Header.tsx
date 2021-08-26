@@ -1,5 +1,13 @@
 /** @jsx jsx  */
-import { createContext, useContext, useCallback, useEffect, useState, useRef, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  ReactNode,
+} from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -18,8 +26,11 @@ import { GitHub } from './icons/GitHub';
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean };
-const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
+type HeaderContextType = { mobileNavIsOpen: boolean; setMobileNavIsOpen: any };
+const HeaderContext = createContext<HeaderContextType>({
+  mobileNavIsOpen: false,
+  setMobileNavIsOpen: () => {},
+});
 export const useHeaderContext = () => useContext(HeaderContext);
 
 function Logo() {
@@ -269,7 +280,7 @@ export function Header() {
         >
           <GitHub css={{ height: '1.5em' }} />
         </a>
-        <HeaderContext.Provider value={{ mobileNavIsOpen }}>
+        <HeaderContext.Provider value={{ mobileNavIsOpen, setMobileNavIsOpen }}>
           <div
             ref={menuRef}
             css={mq({
