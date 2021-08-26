@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { useCallback, useMemo, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
