@@ -81,19 +81,19 @@ describe(`Schema`, () => {
       test(JSON.stringify(isEnabled === undefined ? 'undefined' : isEnabled), async () => {
         const name = getListName(isEnabled);
         const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
-        // The type is used in all the queries and mutations as a return type
-        if (isEnabled !== false) {
-          expect(types).toContain(gqlNames.outputTypeName);
-        } else {
+        // The type is used in all the queries and mutations as a return type.
+        if (isEnabled === false) {
           expect(types).not.toContain(gqlNames.outputTypeName);
+        } else {
+          expect(types).toContain(gqlNames.outputTypeName);
         }
 
-        if (isEnabled !== false) {
-          // Filter types are also available for update/delete/create (thanks
-          // to nested mutations)
-          expect(types).toContain(gqlNames.whereUniqueInputName);
-        } else {
+        // The whereUnique input type is used in queries and mutations, and
+        // also in the relateTo input types.
+        if (isEnabled === false) {
           expect(types).not.toContain(gqlNames.whereUniqueInputName);
+        } else {
+          expect(types).toContain(gqlNames.whereUniqueInputName);
         }
 
         // The relateTo types do not exist if the list has been completely disabled
