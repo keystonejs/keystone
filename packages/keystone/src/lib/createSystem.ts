@@ -33,7 +33,14 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
                 return [
                   fieldKey,
                   (data: FieldData) => {
-                    return { ...field(data), access: true, isFilterable: true, isOrderable: true };
+                    const f = field(data);
+                    return {
+                      ...f,
+                      access: true,
+                      isFilterable: true,
+                      isOrderable: true,
+                      graphql: { ...(f.graphql || {}), isEnabled: {} },
+                    };
                   },
                 ];
               })
