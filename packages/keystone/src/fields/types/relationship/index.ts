@@ -153,18 +153,14 @@ export const relationship =
               return resolve(value);
             },
           },
-          create: {
-            arg: graphql.arg({
-              type: listTypes.relateTo.many.create,
-            }),
+          create: listTypes.relateTo.many.create && {
+            arg: graphql.arg({ type: listTypes.relateTo.many.create }),
             async resolve(value, context, resolve) {
               return resolve(value);
             },
           },
-          update: {
-            arg: graphql.arg({
-              type: listTypes.relateTo.many.update,
-            }),
+          update: listTypes.relateTo.many.update && {
+            arg: graphql.arg({ type: listTypes.relateTo.many.update }),
             async resolve(value, context, resolve) {
               return resolve(value);
             },
@@ -211,13 +207,14 @@ export const relationship =
             return resolve(value);
           },
         },
-        create: {
+        create: listTypes.relateTo.one.create && {
           arg: graphql.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
-        update: {
+
+        update: listTypes.relateTo.one.update && {
           arg: graphql.arg({ type: listTypes.relateTo.one.update }),
           async resolve(value, context, resolve) {
             return resolve(value);

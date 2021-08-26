@@ -38,7 +38,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { read: false },
+        graphql: { isEnabled: { query: false } },
       }),
 
       EventToGroupNoReadHard: list({
@@ -66,7 +66,7 @@ const runner = setupTestRunner({
         fields: {
           name: text({ graphql: { isEnabled: { filter: true } } }),
         },
-        access: { create: false },
+        graphql: { isEnabled: { create: false } },
       }),
 
       EventToGroupNoCreateHard: list({
@@ -94,7 +94,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { update: false },
+        graphql: { isEnabled: { update: false } },
       }),
 
       EventToGroupNoUpdateHard: list({
@@ -164,7 +164,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   [
     { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
+    { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
     { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
     { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
     { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
