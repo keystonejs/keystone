@@ -210,15 +210,7 @@ export function initialiseLists(
             if (
               // We're going to skip this field if...
               !field.input?.create?.arg || // The field type doesn't support create, or
-              !field.graphql.isEnabled.create || // Create has been disabled on this field, or
-              (field.dbField.kind === 'relation' && // This is a relationship field and the related list...
-                !(
-                  isEnabled[field.dbField.list].create || // Doesn't support create
-                  // and also
-                  isEnabled[field.dbField.list].query || // Doesn't support uniqueWhere (?)
-                  isEnabled[field.dbField.list].update ||
-                  isEnabled[field.dbField.list].delete
-                ))
+              !field.graphql.isEnabled.create // Create has been disabled on this field, or
             ) {
               return [];
             }
@@ -237,15 +229,7 @@ export function initialiseLists(
             if (
               // We're going to skip this field if...
               !field.input?.update?.arg || /// The field type doesn't support update, or
-              !field.graphql.isEnabled.update || // Update has been disabled on this field, or
-              (field.dbField.kind === 'relation' && // This is a relationship field and the related list...
-                !(
-                  isEnabled[field.dbField.list].create || // Doesn't support create
-                  // and also
-                  isEnabled[field.dbField.list].query || // Doesn't support uniqueWhere (?)
-                  isEnabled[field.dbField.list].update ||
-                  isEnabled[field.dbField.list].delete
-                ))
+              !field.graphql.isEnabled.update // Update has been disabled on this field, or
             ) {
               return [];
             }
@@ -285,128 +269,76 @@ export function initialiseLists(
       skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 
-    const relateToManyForCreate = graphql.inputObject({
-      name: names.relateToManyForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          // Create via a relationship is only supported if this list allows create
-          ...(list.graphql.isEnabled.create && {
-            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-          }),
-          // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-          ...((list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete) && {
-            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          }),
-          ...(!(
-            list.graphql.isEnabled.create ||
-            list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete
-          ) && {
-            // We can't have an empty type, so leave a placeholder. This input type
-            // will never actually get used, so this will never end up in the GraphQL API.
-            unusedPlaceholder: graphql.arg({ type: graphql.Boolean }),
-          }),
-        };
-      },
-    });
+    const _isEnabled = isEnabled[listKey];
+    let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate;
+    if (_isEnabled.create || _isEnabled.query || _isEnabled.update || _isEnabled.delete) {
+      relateToManyForCreate = graphql.inputObject({
+        name: names.relateToManyForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
+            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
+              connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            }),
+          };
+        },
+      });
 
-    const relateToManyForUpdate = graphql.inputObject({
-      name: names.relateToManyForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        const _isEnabled = list.graphql.isEnabled;
-        return {
-          // The order of these fields reflects the order in which they are applied
-          // in the mutation.
-          // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-          ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-            disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          }),
-          // Create via a relationship is only supported if this list allows create
-          ...(_isEnabled.create && {
-            create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-          }),
-          ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
-            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          }),
-          ...(!(
-            _isEnabled.create ||
-            _isEnabled.query ||
-            _isEnabled.update ||
-            _isEnabled.delete
-          ) && {
-            // We can't have an empty type, so leave a placeholder. This input type
-            // will never actually get used, so this will never end up in the GraphQL API.
-            unusedPlaceholder: graphql.arg({ type: graphql.Boolean }),
-          }),
-        };
-      },
-    });
+      relateToManyForUpdate = graphql.inputObject({
+        name: names.relateToManyForUpdateInputName,
+        fields: () => {
+          return {
+            // The order of these fields reflects the order in which they are applied
+            // in the mutation.
+            // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
+            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
+              disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+              set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            }),
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && {
+              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
+            }),
+            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
+              connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
+            }),
+          };
+        },
+      });
 
-    const relateToOneForCreate = graphql.inputObject({
-      name: names.relateToOneForCreateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          // Create via a relationship is only supported if this list allows create
-          ...(list.graphql.isEnabled.create && {
-            create: graphql.arg({ type: create }),
-          }),
-          // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-          ...((list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete) && {
-            connect: graphql.arg({ type: uniqueWhere }),
-          }),
-          ...(!(
-            list.graphql.isEnabled.create ||
-            list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete
-          ) && {
-            // We can't have an empty type, so leave a placeholder. This input type
-            // will never actually get used, so this will never end up in the GraphQL API.
-            unusedPlaceholder: graphql.arg({ type: graphql.Boolean }),
-          }),
-        };
-      },
-    });
+      relateToOneForCreate = graphql.inputObject({
+        name: names.relateToOneForCreateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            // Connecting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
+            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
+              connect: graphql.arg({ type: uniqueWhere }),
+            }),
+          };
+        },
+      });
 
-    const relateToOneForUpdate = graphql.inputObject({
-      name: names.relateToOneForUpdateInputName,
-      fields: () => {
-        const list = lists[listKey];
-        return {
-          // Create via a relationship is only supported if this list allows create
-          ...(list.graphql.isEnabled.create && {
-            create: graphql.arg({ type: create }),
-          }),
-          // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
-          ...((list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete) && {
-            connect: graphql.arg({ type: uniqueWhere }),
-            disconnect: graphql.arg({ type: graphql.Boolean }),
-          }),
-          ...(!(
-            list.graphql.isEnabled.create ||
-            list.graphql.isEnabled.query ||
-            list.graphql.isEnabled.update ||
-            list.graphql.isEnabled.delete
-          ) && {
-            // We can't have an empty type, so leave a placeholder. This input type
-            // will never actually get used, so this will never end up in the GraphQL API.
-            unusedPlaceholder: graphql.arg({ type: graphql.Boolean }),
-          }),
-        };
-      },
-    });
-
+      relateToOneForUpdate = graphql.inputObject({
+        name: names.relateToOneForUpdateInputName,
+        fields: () => {
+          return {
+            // Create via a relationship is only supported if this list allows create
+            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            // Connecting/disconnecting/setting to this list (via a uniqueWhere) is only supported if uniqueWhere already exists
+            ...((_isEnabled.query || _isEnabled.update || _isEnabled.delete) && {
+              connect: graphql.arg({ type: uniqueWhere }),
+              disconnect: graphql.arg({ type: graphql.Boolean }),
+            }),
+          };
+        },
+      });
+    }
     listInfos[listKey] = {
       types: {
         output,

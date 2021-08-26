@@ -399,11 +399,11 @@ export type TypesForList = {
         some: graphql.Arg<AnyInputObj>;
         none: graphql.Arg<AnyInputObj>;
       }>;
-      create: graphql.InputObjectType<{
+      create?: graphql.InputObjectType<{
         connect?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
         create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
       }>;
-      update: graphql.InputObjectType<{
+      update?: graphql.InputObjectType<{
         disconnect?: graphql.Arg<
           graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>
         >;
@@ -413,11 +413,11 @@ export type TypesForList = {
       }>;
     };
     one: {
-      create: graphql.InputObjectType<{
+      create?: graphql.InputObjectType<{
         create?: graphql.Arg<TypesForList['create']>;
         connect?: graphql.Arg<TypesForList['uniqueWhere']>;
       }>;
-      update: graphql.InputObjectType<{
+      update?: graphql.InputObjectType<{
         create?: graphql.Arg<TypesForList['create']>;
         connect?: graphql.Arg<TypesForList['uniqueWhere']>;
         disconnect?: graphql.Arg<typeof graphql.Boolean>;
