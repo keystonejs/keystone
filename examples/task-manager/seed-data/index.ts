@@ -2,13 +2,13 @@ import { KeystoneContext } from '@keystone-next/keystone/types';
 import { persons, tasks } from './data';
 
 type PersonProps = {
-  name: String;
+  name: string;
 };
 
 type TaskProps = {
-  label: String;
+  label: string;
   isComplete: Boolean;
-  finishBy: String;
+  finishBy: string;
   assignedTo: Object;
   person?: Object;
 };

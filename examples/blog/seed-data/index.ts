@@ -2,16 +2,16 @@ import { KeystoneContext } from '@keystone-next/keystone/types';
 import { authors, posts } from './data';
 
 type AuthorProps = {
-  name: String;
-  email: String;
+  name: string;
+  email: string;
 };
 
 type PostProps = {
-  title: String;
-  status: String;
-  publishDate: String;
+  title: string;
+  status: string;
+  publishDate: string;
   author: Object;
-  content: String;
+  content: string;
 };
 
 export async function insertSeedData(context: KeystoneContext) {
