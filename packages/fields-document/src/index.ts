@@ -79,10 +79,7 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     defaultValue?: FieldDefaultValue<Record<string, any>[], TGeneratedListTypes>;
   };
 
-const views = path.join(
-  path.dirname(require.resolve('@keystone-next/fields-document/package.json')),
-  'views'
-);
+const views = path.join(path.dirname(__dirname), 'views');
 
 export const document =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({

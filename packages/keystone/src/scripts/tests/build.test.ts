@@ -78,8 +78,9 @@ test('build works with typescript without the user defining a babel config', asy
     ✨ Generating Admin UI code
     ✨ Generating Keystone config code
     ✨ Building Admin UI
-    info  - Using webpack 4. Reason: custom webpack configuration in next.config.js https://nextjs.org/docs/messages/webpack5
+    info  - Using webpack 5. Reason: Enabled by default https://nextjs.org/docs/messages/webpack5
     info  - Skipping validation of types...
+    warn  - No ESLint configuration detected. Run next lint to begin setup
     info  - Creating an optimized production build...
     info  - Compiled successfully
     info  - Collecting page data...
