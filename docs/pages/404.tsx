@@ -53,7 +53,7 @@ export default function NotFoundPage() {
         {tryV5Link ? (
           <Type as="p" look="body18bold" margin="2rem 0 0">
             If you were looking for a page in the Keystone 5 docs, try{' '}
-            <a href="https://v5.keystonejs.com">v5.keystonejs.com{asPath}</a>.
+            <a href={'https://v5.keystonejs.com' + asPath}>https://v5.keystonejs.com{asPath}</a>.
           </Type>
         ) : null}
         <ConstructionIllustration />
