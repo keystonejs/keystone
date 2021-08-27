@@ -9,7 +9,7 @@ Use it as a starting place for learning how to use Keystone.
 To run this project:
 
 1. Clone the Keystone repository locally
-2. Navigate to this directory `cd /examples/task-manager`
+2. Navigate to this directory `cd examples/task-manager`
 3. Run `yarn dev`
 
 This will start Keystone’s Admin UI at [localhost:3000](http://localhost:3000), where you can add items to an empty database.
