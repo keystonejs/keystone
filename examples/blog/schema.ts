@@ -4,7 +4,7 @@ import { select, relationship, text, timestamp } from '@keystone-next/keystone/f
 export const lists = createSchema({
   Post: list({
     fields: {
-      title: text({ isRequired: true, graphql: { isEnabled: { filter: true } } }),
+      title: text({ isRequired: true, isFilterable: true }),
       status: select({
         dataType: 'enum',
         options: [

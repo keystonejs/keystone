@@ -8,7 +8,7 @@ export const supportsUnique = false;
 export const fieldName = 'enabled';
 
 export const getTestFields = () => ({
-  enabled: checkbox({ graphql: { isEnabled: { filter: true } } }),
+  enabled: checkbox({ isFilterable: true }),
 });
 
 export const initItems = () => {

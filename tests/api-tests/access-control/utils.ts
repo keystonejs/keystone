@@ -92,7 +92,7 @@ const lists = createSchema({
   User: list({
     fields: {
       name: text(),
-      email: text({ isUnique: true, graphql: { isEnabled: { filter: true } } }),
+      email: text({ isUnique: true, isFilterable: true }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),
@@ -125,7 +125,7 @@ listAccessVariations.forEach(access => {
     },
   });
   lists[getDeclarativeListName(access)] = list({
-    fields: { name: text({ graphql: { isEnabled: { filter: true } } }) },
+    fields: { name: text({ isFilterable: true }) },
     access: {
       create: access.create,
       // arbitrarily restrict the data to a single item (see data.js)

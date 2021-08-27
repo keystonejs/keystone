@@ -7,9 +7,7 @@ export const exampleValue2 = () => 38;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({
-  testField: integer({ graphql: { isEnabled: { filter: true } } }),
-});
+export const getTestFields = () => ({ testField: integer({ isFilterable: true }) });
 
 export const initItems = () => {
   return [
