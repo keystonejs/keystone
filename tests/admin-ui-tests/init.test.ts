@@ -16,6 +16,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   test('Clicking on the logo should return you to the Dashboard route', async () => {
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     expect(page.url()).toBe('http://localhost:3000/tasks');
+    await page.waitForSelector('h3 a:has-text("Keystone 6")');
     await Promise.all([page.waitForNavigation(), page.click('h3 a:has-text("Keystone 6")')]);
     expect(page.url()).toBe('http://localhost:3000/');
   });
