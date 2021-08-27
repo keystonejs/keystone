@@ -42,25 +42,17 @@ export function InlineEdit({
             ${selectedFields}
           }
         }`,
-    {
-      errorPolicy: 'all',
-    }
+    { errorPolicy: 'all' }
   );
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(fieldsObj, itemGetter);
-    return {
-      value,
-      item: itemGetter.data,
-    };
+    return { value, item: itemGetter.data };
   });
 
   if (state.item !== itemGetter.data && itemGetter.errors?.every(x => x.path?.length !== 1)) {
     const value = deserializeValue(fieldsObj, itemGetter);
-    setValue({
-      value,
-      item: itemGetter.data,
-    });
+    setValue({ value, item: itemGetter.data });
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
@@ -136,10 +128,7 @@ export function InlineEdit({
         invalidFields={invalidFields}
         onChange={useCallback(
           value => {
-            setValue(state => ({
-              item: state.item,
-              value: value(state.value),
-            }));
+            setValue(state => ({ item: state.item, value: value(state.value) }));
           },
           [setValue]
         )}

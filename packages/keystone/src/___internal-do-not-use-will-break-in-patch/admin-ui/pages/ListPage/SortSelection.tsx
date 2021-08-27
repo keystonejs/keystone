@@ -14,14 +14,7 @@ export function SortSelection({ list }: { list: ListMeta }) {
   const sort = useSort(list);
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
+    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
   });
 
   return (
@@ -81,22 +74,13 @@ function SortSelectionPopoverContent({ onClose, list }: { onClose: () => void; l
       </div>
       <Divider />
       <Options
-        value={
-          sort
-            ? {
-                label: list.fields[sort.field].label,
-                value: sort.field,
-              }
-            : noFieldOption
-        }
+        value={sort ? { label: list.fields[sort.field].label, value: sort.field } : noFieldOption}
         components={fieldSelectionOptionsComponents}
         onChange={newVal => {
           const fieldPath: string = (newVal as any).value;
           if (fieldPath === noFieldOption.value) {
             const { sortBy, ...restOfQuery } = router.query;
-            router.push({
-              query: restOfQuery,
-            });
+            router.push({ query: restOfQuery });
           } else {
             router.push({
               query: {
@@ -113,10 +97,7 @@ function SortSelectionPopoverContent({ onClose, list }: { onClose: () => void; l
         }}
         options={Object.keys(list.fields)
           .filter(fieldPath => list.fields[fieldPath].isOrderable)
-          .map(fieldPath => ({
-            label: list.fields[fieldPath].label,
-            value: fieldPath,
-          }))
+          .map(fieldPath => ({ label: list.fields[fieldPath].label, value: fieldPath }))
           .concat(noFieldOption)}
       />
     </Stack>
