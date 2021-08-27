@@ -94,6 +94,12 @@ const sizeMap = {
     height: '2.2rem',
     padding: '0 14px',
   },
+  xsmall: {
+    fontSize: '.75rem',
+    borderRadius: '4px',
+    height: '2rem',
+    padding: '0 12px',
+  },
 };
 
 type ButtonProps = {

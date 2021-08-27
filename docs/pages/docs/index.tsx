@@ -19,6 +19,7 @@ export default function Docs() {
       noProse
       title={'Keystone Docs Home'}
       description={'Developer docs for KeystoneJS: The superpowered headless CMS for developers.'}
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Keystone Docs

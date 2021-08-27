@@ -129,6 +129,7 @@ export default function WhatsNew() {
       noProse
       title={'Latest News'}
       description={'What’s new with Keystone. A snapshot of announcements and recent releases.'}
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Latest News
