@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Button } from './Button';
 import { Edit } from '../../components/icons/Edit';
+import { Button } from './Button';
 
 export function EditButton({
   pathName,
