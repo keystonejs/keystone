@@ -50,6 +50,10 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
+  // Defaults to apply to all fields.
+  defaultIsFilterable?: true; // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?: true; // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+
   /**
    * The label used for the list
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
@@ -206,10 +210,6 @@ export type ListGraphQLConfig = {
         create?: boolean; // Does createItem/createItems exist? Does `create` exist on the RelationshipInput types?
         update?: boolean; // Does updateItem/updateItems exist?
         delete?: boolean; // Does deleteItem/deleteItems exist?
-
-        // Defaults to apply to all fields. Default: false
-        filter?: boolean; // The default value to use for graphql.isEnabled.filter on all fields for this list
-        orderBy?: boolean; // The default value to use for graphql.isEnabled.orderBy on all fields for this list
       };
 };
 

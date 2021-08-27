@@ -45,7 +45,7 @@ export const lists = createSchema({
       /** The user's first and last name. */
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isUnique: true, graphql: { isEnabled: { filter: true } } }),
+      email: text({ isRequired: true, isUnique: true, isFilterable: true }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),

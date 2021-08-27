@@ -24,7 +24,7 @@ testModules
           lists: createSchema({
             [listKey]: list({
               fields: {
-                name: text({ graphql: { isEnabled: { orderBy: true } } }),
+                name: text({ isOrderable: true }),
                 ...mod.getTestFields(matrixValue),
               },
             }),

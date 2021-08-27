@@ -112,8 +112,12 @@ const getFieldPrefix = (isEnabled: FieldEnabled) => {
 
 const getFieldName = (isEnabled: FieldEnabled) => getFieldPrefix(isEnabled);
 
-const createFieldStatic = (isEnabled: FieldEnabled) => ({
-  [getFieldName(isEnabled)]: text({ graphql: { isEnabled } }),
+const createFieldStatic = ({ filter, orderBy, ...isEnabled }: FieldEnabled) => ({
+  [getFieldName({ filter, orderBy, ...isEnabled })]: text({
+    graphql: { isEnabled },
+    isFilterable: filter || undefined,
+    isOrderable: orderBy || undefined,
+  }),
 });
 
 const createRelatedFields = (isEnabled: ListEnabled) => ({

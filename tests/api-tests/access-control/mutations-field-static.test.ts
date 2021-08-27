@@ -28,7 +28,7 @@ const runner = setupTestRunner({
                 }
               },
             },
-            graphql: { isEnabled: { orderBy: true } },
+            isOrderable: true,
           }),
         },
       }),
