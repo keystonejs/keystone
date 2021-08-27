@@ -22,6 +22,10 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      noRead: text({ graphql: { omit: ['read'] } }),
+      noUpdate: text({ graphql: { omit: ['update'] } }),
+      noCreate: text({ graphql: { omit: ['create'] } }),
+      noExist: text({ graphql: { omit: true } }),
     },
   }),
 });
