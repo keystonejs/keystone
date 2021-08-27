@@ -208,23 +208,19 @@ type SecretPlan {
   description: String
 }
 
+input SecretPlanWhereUniqueInput {
+  id: ID
+}
+
 input SecretPlanWhereInput {
   AND: [SecretPlanWhereInput!]
   OR: [SecretPlanWhereInput!]
   NOT: [SecretPlanWhereInput!]
   id: IDFilter
-  label: StringNullableFilter
-  description: StringNullableFilter
-}
-
-input SecretPlanWhereUniqueInput {
-  id: ID
 }
 
 input SecretPlanOrderByInput {
   id: OrderDirection
-  label: OrderDirection
-  description: OrderDirection
 }
 
 input SecretPlanUpdateInput {
