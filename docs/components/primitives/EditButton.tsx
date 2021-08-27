@@ -3,7 +3,6 @@ import { jsx } from '@emotion/react';
 
 import { Button } from './Button';
 import { Edit } from '../../components/icons/Edit';
-import { useMediaQuery } from '../../lib/media';
 
 export function EditButton({
   pathName,
@@ -14,8 +13,6 @@ export function EditButton({
   isIndexPage?: boolean;
   editPath?: string;
 }) {
-  const mq = useMediaQuery();
-
   let fileUrl = `https://github.com/keystonejs/keystone/edit/website_live/docs/pages/`;
 
   if (editPath) {
@@ -39,10 +36,10 @@ export function EditButton({
       }}
     >
       <Edit
-        css={mq({
+        css={{
           color: 'var(--muted)',
           marginRight: '0.35rem',
-        })}
+        }}
       />
       Edit on GitHub
     </Button>
