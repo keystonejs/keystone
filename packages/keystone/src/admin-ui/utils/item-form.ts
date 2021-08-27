@@ -7,14 +7,8 @@ import { DataGetter } from './dataGetter';
 
 export type Value = Record<
   string,
-  | {
-      kind: 'error';
-      errors: readonly [GraphQLError, ...GraphQLError[]];
-    }
-  | {
-      kind: 'value';
-      value: any;
-    }
+  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value'; value: any }
 >;
 
 export function useChangedFieldsAndDataForUpdate(
