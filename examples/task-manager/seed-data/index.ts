@@ -37,7 +37,7 @@ export async function insertSeedData(context: KeystoneContext) {
     let persons;
     try {
       persons = await context.lists.Person.findMany({
-        where: { name: { equals: taskData.person } },
+        where: { name: { equals: taskData.assignedTo } },
         query: 'id',
       });
     } catch (e) {
