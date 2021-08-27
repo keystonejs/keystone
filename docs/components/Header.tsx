@@ -13,6 +13,7 @@ import { jsx } from '@emotion/react';
 import Link from 'next/link';
 import debounce from 'lodash.debounce';
 
+import { BREAK_POINTS } from '../lib/media';
 import { useMediaQuery } from '../lib/media';
 import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
@@ -26,7 +27,6 @@ import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
-import { BREAK_POINTS } from '../lib/media';
 
 type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number };
 const HeaderContext = createContext<HeaderContextType>({
