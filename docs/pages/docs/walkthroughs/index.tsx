@@ -14,6 +14,7 @@ export default function Docs() {
       description={
         'Explore tutorials with step-by-step instruction on building solutions with Keystone.'
       }
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Walkthroughs

@@ -10,8 +10,10 @@ import type { Heading } from '../lib/getHeadings';
 import { Announce } from '../components/Announce';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
+import { EditButton } from './primitives/EditButton';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Sidebar } from './docs/Sidebar';
+import { Stack } from './primitives/Stack';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
@@ -66,6 +68,8 @@ export function DocsPage({
   title,
   description,
   ogImage,
+  isIndexPage,
+  editPath,
 }: {
   children: ReactNode;
   headings?: Heading[];
@@ -75,6 +79,8 @@ export function DocsPage({
   title: string;
   description: string;
   ogImage?: string;
+  isIndexPage?: boolean;
+  editPath?: string;
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const mq = useMediaQuery();
@@ -119,7 +125,16 @@ export function DocsPage({
             ref={contentRef}
             className={noProse ? '' : 'prose'}
           >
-            <Breadcrumbs />
+            <Stack
+              orientation="horizontal"
+              block
+              css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
+            >
+              <Breadcrumbs />
+              {!isUpdatesPage && (
+                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
+              )}
+            </Stack>
             {children}
           </main>
           {!!headings.length && !noRightNav && (
