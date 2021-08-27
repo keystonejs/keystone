@@ -11,10 +11,7 @@ export function useFilters(list: ListMeta) {
     Object.entries(list.fields).forEach(([fieldPath, field]) => {
       if (field.controller.filter) {
         Object.keys(field.controller.filter.types).forEach(type => {
-          possibleFilters[`!${fieldPath}_${type}`] = {
-            type,
-            field: fieldPath,
-          };
+          possibleFilters[`!${fieldPath}_${type}`] = { type, field: fieldPath };
         });
       }
     });
@@ -31,10 +28,7 @@ export function useFilters(list: ListMeta) {
           value = JSON.parse(val);
         } catch (err) {}
         if (val !== undefined) {
-          filters.push({
-            ...filter,
-            value,
-          });
+          filters.push({ ...filter, value });
         }
       }
     });
