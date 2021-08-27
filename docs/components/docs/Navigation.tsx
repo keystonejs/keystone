@@ -1,17 +1,16 @@
 /** @jsx jsx */
-import { AnchorHTMLAttributes, HTMLAttributes, ReactNode, useEffect, useState } from 'react';
+import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import format from 'date-fns/format';
 import Link from 'next/link';
-import debounce from 'lodash.debounce';
 
 import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
-import { BREAK_POINTS } from '../../lib/media';
+
 import { Emoji } from '../primitives/Emoji';
 
 type SectionProps = { label: string; children: ReactNode };
@@ -59,33 +58,7 @@ export function NavItem({
   const isActive = _isActive || pathname === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
-  const setMobileNavIsOpen = ctx ? ctx.setMobileNavIsOpen : () => {};
-
-  const [desktopOpenState, setDesktopOpenState] = useState(-1);
-
-  useEffect(() => {
-    const listener = () => {
-      setDesktopOpenState(-1);
-      setMobileNavIsOpen(false);
-      const width = Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      );
-      if (width > BREAK_POINTS.sm) {
-        setDesktopOpenState(-1);
-      } else {
-        setDesktopOpenState(-1);
-      }
-    };
-    window.addEventListener('resize', debounce(listener, 130));
-
-    return () => {
-      window.removeEventListener('resize', debounce(listener, 130));
-    };
-  }, [setDesktopOpenState]);
+  const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
 
   return (
     <Link href={href} passHref>
@@ -123,33 +96,7 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const isActive = pathname === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
-  const setMobileNavIsOpen = ctx ? ctx.setMobileNavIsOpen : () => {};
-
-  const [desktopOpenState, setDesktopOpenState] = useState(-1);
-
-  useEffect(() => {
-    const listener = () => {
-      setDesktopOpenState(-1);
-      setMobileNavIsOpen(false);
-      const width = Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      );
-      if (width > BREAK_POINTS.sm) {
-        setDesktopOpenState(-1);
-      } else {
-        setDesktopOpenState(-1);
-      }
-    };
-    window.addEventListener('resize', debounce(listener, 130));
-
-    return () => {
-      window.removeEventListener('resize', debounce(listener, 130));
-    };
-  }, [setDesktopOpenState]);
+  const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
 
   return (
     <Link href={href} passHref>

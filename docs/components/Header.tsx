@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import debounce from 'lodash.debounce';
 
 import { useMediaQuery } from '../lib/media';
 import { SearchField } from './primitives/SearchField';
@@ -25,11 +26,12 @@ import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
+import { BREAK_POINTS } from '../lib/media';
 
-type HeaderContextType = { mobileNavIsOpen: boolean; setMobileNavIsOpen: any };
+type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number };
 const HeaderContext = createContext<HeaderContextType>({
   mobileNavIsOpen: false,
-  setMobileNavIsOpen: () => {},
+  desktopOpenState: -1,
 });
 export const useHeaderContext = () => useContext(HeaderContext);
 
@@ -118,9 +120,36 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
 export function Header() {
   const mq = useMediaQuery();
   const router = useRouter();
-  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+
+  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
+  const [desktopOpenState, setDesktopOpenState] = useState(-1);
+
+  useEffect(() => {
+    const listener = () => {
+      setMobileNavIsOpen(false);
+      setDesktopOpenState(-1);
+      const width = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      if (width > BREAK_POINTS.sm) {
+        setDesktopOpenState(-1);
+      } else {
+        setDesktopOpenState(-1);
+      }
+    };
+    window.addEventListener('resize', debounce(listener, 130));
+
+    return () => {
+      window.removeEventListener('resize', debounce(listener, 130));
+    };
+  }, [setDesktopOpenState]);
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
@@ -280,7 +309,7 @@ export function Header() {
         >
           <GitHub css={{ height: '1.5em' }} />
         </a>
-        <HeaderContext.Provider value={{ mobileNavIsOpen, setMobileNavIsOpen }}>
+        <HeaderContext.Provider value={{ mobileNavIsOpen, desktopOpenState }}>
           <div
             ref={menuRef}
             css={mq({

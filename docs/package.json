@@ -46,6 +46,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.6",
     "next-sitemap": "^1.6.164",
     "start-server-and-test": "^1.13.1",
     "typescript": "^4.3.5"
