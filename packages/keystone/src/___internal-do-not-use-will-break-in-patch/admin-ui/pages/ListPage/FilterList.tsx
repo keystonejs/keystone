@@ -23,14 +23,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter();
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
+    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
   });
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
