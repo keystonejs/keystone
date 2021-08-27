@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 
 import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
 import { Examples } from '../../components/docs/ExamplesList';
@@ -40,7 +41,10 @@ export default function Docs() {
             Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
             and how it delivers a developer experience that combines features, flexibility, and the
             perfect amount of abstraction to get started fast, and grow as you learn.{' '}
-            <a href="/updates/prisma-day-2021">Read the full transcript</a>.
+            <Link href="/updates/prisma-day-2021">
+              <a>Read the full transcript</a>
+            </Link>
+            .
           </Type>
         </div>
         <div>
