@@ -33,6 +33,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   });
   test('Can not access hidden lists via the navigation', async () => {
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000')]);
+    await page.waitForSelector('nav');
     const navItems = await page.$$('nav li a');
     const navLinks = await Promise.all(
       navItems.map(navItem => {
