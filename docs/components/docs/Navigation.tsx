@@ -10,7 +10,6 @@ import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
-
 import { Emoji } from '../primitives/Emoji';
 
 type SectionProps = { label: string; children: ReactNode };
