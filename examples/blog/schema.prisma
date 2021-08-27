@@ -24,8 +24,12 @@ model Post {
 }
 
 model Author {
-  id    String  @id @default(cuid())
-  name  String?
-  email String? @unique
-  posts Post[]  @relation("Post_author")
+  id       String  @id @default(cuid())
+  name     String?
+  email    String? @unique
+  posts    Post[]  @relation("Post_author")
+  noRead   String?
+  noUpdate String?
+  noCreate String?
+  noExist  String?
 }

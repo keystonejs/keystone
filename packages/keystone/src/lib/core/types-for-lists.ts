@@ -85,9 +85,9 @@ export function initialiseLists(
   > = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
-    const _isEnabled = listConfig.graphql?.isEnabled;
+    const omit = listConfig.graphql?.omit;
     const { defaultIsFilterable, defaultIsOrderable } = listConfig;
-    if (_isEnabled === false) {
+    if (omit === true) {
       isEnabled[listKey] = {
         type: false,
         query: false,
@@ -97,7 +97,7 @@ export function initialiseLists(
         filter: false,
         orderBy: false,
       };
-    } else if (_isEnabled === true || _isEnabled === undefined) {
+    } else if (omit === undefined) {
       isEnabled[listKey] = {
         type: true,
         query: true,
@@ -110,10 +110,10 @@ export function initialiseLists(
     } else {
       isEnabled[listKey] = {
         type: true,
-        query: _isEnabled.query ?? true,
-        create: _isEnabled.create ?? true,
-        update: _isEnabled.update ?? true,
-        delete: _isEnabled.delete ?? true,
+        query: !omit.includes('query'),
+        create: !omit.includes('create'),
+        update: !omit.includes('update'),
+        delete: !omit.includes('delete'),
         filter: !!defaultIsFilterable,
         orderBy: !!defaultIsOrderable,
       };
@@ -353,14 +353,16 @@ export function initialiseLists(
             }
             let f = fieldFunc({ fieldKey, listKey, lists: listInfos, provider });
 
+            const omit = f.graphql?.omit;
+            const read = omit !== true && !omit?.includes('read');
             const _isEnabled = {
-              read: f.graphql?.isEnabled?.read ?? true,
-              update: f.graphql?.isEnabled?.update ?? true,
-              create: f.graphql?.isEnabled?.create ?? true,
+              read,
+              update: omit !== true && !omit?.includes('update'),
+              create: omit !== true && !omit?.includes('create'),
               // Filter and orderBy can be defaulted at the list level, otherwise they
               // default to `false` if no value was set at the list level.
-              filter: f.isFilterable ?? isEnabled[listKey].filter,
-              orderBy: f.isOrderable ?? isEnabled[listKey].orderBy,
+              filter: read && (f.isFilterable ?? isEnabled[listKey].filter),
+              orderBy: read && (f.isOrderable ?? isEnabled[listKey].orderBy),
             };
             const field = {
               ...f,

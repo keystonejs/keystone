@@ -22,18 +22,17 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
   };
   graphql?: {
     cacheHint?: CacheHint;
-    // Setting any of these to `false` will remove the corresponding operations
-    // from the GraphQL schema.
+    // Setting any of these values will remove the corresponding input/output types from the GraphQL schema.
+    // Output Types
+    //   'read': Does this field exist on the Item type? Will also disable filtering/ordering.
+    // Input Types
+    //   'create': Does this field exist in the create Input type?
+    //   'update': Does this field exist in the update Input type?
     //
-    // Default: true
-    isEnabled?: {
-      // Output Types
-      read?: boolean; // Does this field exist on the Item type?
-
-      // Input Types
-      create?: boolean; // Does this field exist in the create Input type?
-      update?: boolean; // Does this field exist in the update Input type?
-    };
+    // If `true` then the field will be completely removed from all types.
+    //
+    // Default: undefined
+    omit?: true | ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
   isFilterable?: boolean; // Does this field exist in the WhereInput for both unique and ... not unique type?
