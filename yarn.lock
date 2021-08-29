@@ -2948,9 +2948,9 @@
     form-data "^3.0.0"
 
 "@types/node@*", "@types/node@>=8.1.0":
-  version "16.7.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.7.5.tgz#96142b243977b03d99c338fdb09241d286102711"
-  integrity sha512-E7SpxDXoHEpmZ9C1gSqwadhE6zPRtf3g0gJy9Y51DsImnR5TcDs3QEiV/3Q7zOM8LWaZp5Gph71NK6ElVMG1IQ==
+  version "15.12.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.5.tgz#9a78318a45d75c9523d2396131bd3cca54b2d185"
+  integrity sha512-se3yX7UHv5Bscf8f1ERKvQOD6sTyycH3hdaoozvaLxgUiY5lIGEeH37AD0G0Qi9kPqihPn0HOfd2yaIEN9VwEg==
 
 "@types/node@^10.1.0":
   version "10.17.60"
@@ -3234,6 +3234,11 @@
   integrity sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==
   dependencies:
     "@types/node" "*"
+
+"@types/zen-observable@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.3.tgz#781d360c282436494b32fe7d9f7f8e64b3118aa3"
+  integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
 "@typescript-eslint/eslint-plugin@^4.29.3":
   version "4.29.3"
@@ -12001,24 +12006,24 @@ slash@^3.0.0:
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
 slate-history@^0.60.4:
-  version "0.60.17"
-  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.60.17.tgz#4a790a33fc28570d8f0ce03aa58d64d6797464c4"
-  integrity sha512-IH7455DOxfTTIF/NxZh88PQn70iX/u+Osq1SvVrIOT/oiMyK2DulMAOOKl4N8UbALnWgjvHlyoGXjpgTW3Y5eQ==
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.60.4.tgz#0fe6abc45029a08a8b0a084581c3040de223189c"
+  integrity sha512-Srf2GgVa67bO4Bi8ctxr9M/fKwoSbInANv1YzvS8JlWAnqZagY97SGoZHMJcPIngbIYIO7v+DYPshL8Csaq1/Q==
   dependencies:
     immer "^7.0.0"
     is-plain-object "^3.0.0"
 
 slate-hyperscript@^0.60.8:
-  version "0.60.17"
-  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.60.17.tgz#d12320ba816e0a0d993408ec7f540a2f88b94a1b"
-  integrity sha512-A7opeccMKkrOpPRITtf2xnSBniJ4ZDnA9AxqC4rJc2HiiR09/Tj7eZ1Uh6q7+4KK+bXw+0hVNnf5zyCl765YCA==
+  version "0.60.8"
+  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.60.8.tgz#e71fef456e24429c5cfac5fe6077567b0fdbb9d1"
+  integrity sha512-BmNo4b6U8lJq31oCNcd2a4LWoC5Z2yZcWOfBbcewEO1xwXGLnUxQkUKNsixtfbRTerUFV/wuvssVL+r93Y07BA==
   dependencies:
     is-plain-object "^3.0.0"
 
 slate-react@^0.60.4:
-  version "0.60.17"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.60.17.tgz#7e6c38b25c4bdad4ae5bf7b325dbc554f65be5fa"
-  integrity sha512-gqsZPwZeTfV9aEGrU9gCiKaRu8oda/zYyWKwP31qzRL6hMaJ5d1BEicXLccZgdq+LoMbxA8dMOA+hLAsb19PVA==
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.60.4.tgz#032eae50e043b5be9c399b391aad5e391937ff9c"
+  integrity sha512-e/mI7qChCAVV5FJPplG3/f9JyqtgVwUDM4D0rKA5Bycwarmw6orPqyrEDG8BPMHewuLOzyRXsRoiZ7umJoz/IA==
   dependencies:
     "@types/is-hotkey" "^0.1.1"
     "@types/lodash" "^4.14.149"
@@ -12029,9 +12034,9 @@ slate-react@^0.60.4:
     scroll-into-view-if-needed "^2.2.20"
 
 slate@^0.60.4:
-  version "0.60.17"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.60.17.tgz#a57896552e953bd04f43dbf2843cfc0a1d6cdbf7"
-  integrity sha512-zwdqCZcuX+vLj5vr30CxQKXo4zuYOX+g9R1HS7O2u3ym9CcYP2ri/hSFdJfGbIuSz7ncSo55kQHcbipuBw7seA==
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.60.4.tgz#dc4be8c019d876abe141c1a5d789f54e849e05b1"
+  integrity sha512-WXiP0XP/rbkZdDko3U4u+WbVY4e4/l7MZb0amKSDpyrYyuBpQUUZby9OqurepdtkaJukjs0iYMqNPRgI1//NhA==
   dependencies:
     "@types/esrever" "^0.2.0"
     esrever "^0.2.0"
@@ -13227,9 +13232,9 @@ typedarray@^0.0.6:
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
 typescript@^4.3.5:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.2.tgz#6d618640d430e3569a1dfb44f7d7e600ced3ee86"
-  integrity sha512-gzP+t5W4hdy4c+68bfcv0t400HVJMMd2+H9B7gae1nQlBzCqvrXX+6GL/b3GAgyTH966pzrZ70/fRjwAtZksSQ==
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
+  integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
 
 uid-safe@^2.1.5:
   version "2.1.5"
@@ -14126,10 +14131,11 @@ zen-observable-ts@^0.8.21:
     zen-observable "^0.8.0"
 
 zen-observable-ts@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.2.0.tgz#6925f60e9a5e8f3af72151b9d37e5789ccf70139"
-  integrity sha512-3IklmJSChXaqAD2gPz6yKHThAnZL46D51x5EPpN/MHuPjrepVdSg3qI7f5fh1RT8Y+K46Owo9fpVuJiuJXLMMA==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.1.0.tgz#2d1aa9d79b87058e9b75698b92791c1838551f83"
+  integrity sha512-1h4zlLSqI2cRLPJUHJFL8bCWHhkpuXkF+dbGkRaWjgDIG26DmzyshUMrdV/rL3UnR+mhaX4fRq8LPouq0MYYIA==
   dependencies:
+    "@types/zen-observable" "0.8.3"
     zen-observable "0.8.15"
 
 zen-observable@0.8.15, zen-observable@^0.8.0:
