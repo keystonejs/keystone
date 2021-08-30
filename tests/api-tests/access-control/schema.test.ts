@@ -248,7 +248,7 @@ describe(`Public schema`, () => {
               expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
             }
           });
-          test(`adminMeta - ${JSON.stringify(config)} on ${listName}`, async () => {
+          test(`adminMeta - build mode ${JSON.stringify(config)} on ${listName}`, async () => {
             const query = `
               query q($listName: String!) {
                 keystone {
@@ -294,6 +294,59 @@ describe(`Public schema`, () => {
               expect(field.isOrderable).toEqual(true);
             } else {
               expect(field.isOrderable).toEqual(false);
+            }
+          });
+
+          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+            const item = await context.sudo().lists[listName].createOne({ data: {} });
+            const query = `
+              query q($listName: String!) {
+                keystone {
+                  adminMeta {
+                    list(key: $listName) {
+                      key
+                      fields {
+                        path
+                        createView { fieldMode }
+                        listView { fieldMode }
+                        itemView(id: "${item.id}") { fieldMode }
+                      }
+                    }
+                  }
+                }
+              }`;
+            const variables = { listName };
+
+            const { data, errors } = await context
+              .withSession({})
+              .graphql.raw({ query, variables });
+            expect(errors).toBe(undefined);
+
+            const field = data!.keystone.adminMeta.list.fields.filter(
+              (f: any) => f.path === getFieldName(config)
+            )[0];
+
+            // createView - edit/hidden (hidden if omit.create)
+            if (config.omit === true || config.omit?.includes('create')) {
+              expect(field.createView.fieldMode).toEqual('hidden');
+            } else {
+              expect(field.createView.fieldMode).toEqual('edit');
+            }
+
+            // listView - read/hidden (hidden if omit.read)
+            if (config.omit === true || config.omit?.includes('read')) {
+              expect(field.listView.fieldMode).toEqual('hidden');
+            } else {
+              expect(field.listView.fieldMode).toEqual('read');
+            }
+
+            // itemView - edit/read/hidden (read if omit.update, hidden if omit.read)
+            if (config.omit === true || config.omit?.includes('read')) {
+              expect(field.itemView.fieldMode).toEqual('hidden');
+            } else if (config.omit?.includes('update')) {
+              expect(field.itemView.fieldMode).toEqual('read');
+            } else {
+              expect(field.itemView.fieldMode).toEqual('edit');
             }
           });
         }
