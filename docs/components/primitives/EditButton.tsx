@@ -13,10 +13,10 @@ export function EditButton({
   isIndexPage?: boolean;
   editPath?: string;
 }) {
-  let fileUrl = `https://github.com/keystonejs/keystone/edit/website_live/docs/pages/`;
+  let fileUrl = `https://github.com/keystonejs/keystone/edit/website_live/docs/pages`;
 
   if (editPath) {
-    fileUrl += editPath;
+    fileUrl += `/${editPath}`;
   } else if (isIndexPage) {
     fileUrl += `${pathName}/index.tsx`;
   } else {
