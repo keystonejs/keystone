@@ -28,7 +28,7 @@
     "@types/mdx-js__react": "^1.5.4",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
-    "@types/webpack": "^4.41.30",
+    "@types/webpack": "^5.28.0",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
