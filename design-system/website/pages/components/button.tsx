@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button, buttonToneValues, ToneKey, buttonWeightValues } from '@keystone-ui/button';

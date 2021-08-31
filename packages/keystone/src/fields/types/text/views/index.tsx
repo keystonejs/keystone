@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
 import {

@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 

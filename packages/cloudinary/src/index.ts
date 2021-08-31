@@ -169,10 +169,7 @@ export const cloudinaryImage =
           };
         },
       }),
-      views: path.join(
-        path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
-        'views'
-      ),
+      views: path.join(path.dirname(__dirname), 'views'),
       __legacy: { isRequired, defaultValue },
     });
   };

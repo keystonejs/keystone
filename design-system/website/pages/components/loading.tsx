@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { Fragment } from 'react';
 import { jsx, Box, Stack } from '@keystone-ui/core';

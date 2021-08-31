@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';

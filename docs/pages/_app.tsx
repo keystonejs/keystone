@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { ToastProvider } from 'react-toast-notifications';
 import { jsx, Global, css } from '@emotion/react';

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Button } from '@keystone-ui/button';
 import { Box, jsx } from '@keystone-ui/core';

@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Transforms, Element, Editor } from 'slate';
 import React from 'react';
