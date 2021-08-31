@@ -98,6 +98,7 @@ export function createAdminMeta(
     }
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
+      if (field.access.read === false) continue;
       let search: 'default' | 'insensitive' | null = null;
       if (searchFields.has(fieldKey)) {
         if (whereInputFields[`${fieldKey}_contains_i`]?.type === GraphQLString) {
