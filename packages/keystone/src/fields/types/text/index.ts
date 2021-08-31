@@ -9,13 +9,11 @@ import {
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
     isRequired?: boolean;
     ui?: {
       displayMode?: 'input' | 'textarea';
@@ -25,7 +23,6 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -35,11 +32,12 @@ export const text =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'String',
-      index: getIndexType({ isIndexed, isUnique }),
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].String.optional }),
           resolve: filters.resolveString,

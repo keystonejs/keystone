@@ -85,8 +85,8 @@ export const password =
       return val;
     }
 
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type password');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type password");
     }
 
     return fieldType({
