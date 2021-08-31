@@ -261,7 +261,7 @@ To achieve this, rather than passing in `graphql.field({ ... })` as the `field` 
 The argument `lists` contains the type information for all of the Keystone lists.
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
-```
+```ts
 export const lists = createSchema({
   Post: list({
     fields: {
@@ -274,7 +274,7 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
       latestPost: virtual({
         field: lists =>

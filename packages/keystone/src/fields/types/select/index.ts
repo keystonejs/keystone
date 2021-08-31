@@ -11,7 +11,6 @@ import {
 } from '../../../types';
 // @ts-ignore
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> &
@@ -31,14 +30,12 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
         displayMode?: 'select' | 'segmented-control';
       };
       isRequired?: boolean;
-      isIndexed?: boolean;
-      isUnique?: boolean;
+      isIndexed?: boolean | 'unique';
     };
 
 export const select =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     ui: { displayMode = 'select', ...ui } = {},
     isRequired,
     defaultValue,
@@ -56,7 +53,7 @@ export const select =
       }),
     };
 
-    const index = getIndexType({ isIndexed, isUnique });
+    const index = isIndexed === true ? 'index' : isIndexed || undefined;
 
     if (config.dataType === 'integer') {
       return fieldType({
