@@ -52,7 +52,7 @@ function collectTypes(
       for (const field of Object.values(list.fields)) {
         if (
           isEnabled.query &&
-          field.access.read !== false &&
+          field.graphql.isEnabled.read &&
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above

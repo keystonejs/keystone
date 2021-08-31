@@ -40,7 +40,7 @@ export function createAdminMeta(
       initialColumns = [
         labelField,
         ...Object.keys(list.fields)
-          .filter(fieldKey => list.fields[fieldKey].access.read !== false)
+          .filter(fieldKey => list.fields[fieldKey].graphql.isEnabled.read)
           .filter(fieldKey => fieldKey !== labelField)
           .filter(fieldKey => fieldKey !== 'id'),
       ].slice(0, 3);
@@ -98,7 +98,9 @@ export function createAdminMeta(
     }
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
-      if (field.access.read === false) continue;
+      // FIXME: Disabling this entirely for now until the Admin UI can properly
+      // handle `omit: ['read']` correctly.
+      if (field.graphql.isEnabled.read === false) continue;
       let search: 'default' | 'insensitive' | null = null;
       if (searchFields.has(fieldKey)) {
         if (whereInputFields[`${fieldKey}_contains_i`]?.type === GraphQLString) {
