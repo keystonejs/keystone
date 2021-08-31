@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
+import fetch from 'node-fetch';
 import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
@@ -20,6 +21,27 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   return Object.assign(promise, { resolve: resolve as any });
 };
 const projectRoot = findRootSync(process.cwd());
+
+export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
+  try {
+    const { errors } = await fetch('http://localhost:3000/api/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    }).then(res => res.json());
+    if (errors) {
+      throw errors;
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
 
 export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
   const { PrismaClient } = require(path.resolve(
