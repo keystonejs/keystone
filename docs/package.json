@@ -34,6 +34,7 @@
     "cypress": "^5.6.0",
     "date-fns": "^2.23.0",
     "facepaint": "^1.2.1",
+    "lodash.debounce": "^4.0.8",
     "next": "^11.1.0",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^1.2.1",
@@ -45,6 +46,7 @@
     "remark-hint": "^1.0.10"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.6",
     "next-sitemap": "^1.6.164",
     "start-server-and-test": "^1.13.1",
     "typescript": "^4.3.5"

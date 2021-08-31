@@ -47,16 +47,9 @@ export function FieldSelection({
   const setNewSelectedFields = (selectedFields: string[]) => {
     if (isArrayEqual(selectedFields, list.initialColumns)) {
       const { fields: _ignore, ...otherQueryFields } = router.query;
-      router.push({
-        query: otherQueryFields,
-      });
+      router.push({ query: otherQueryFields });
     } else {
-      router.push({
-        query: {
-          ...router.query,
-          fields: selectedFields.join(','),
-        },
-      });
+      router.push({ query: { ...router.query, fields: selectedFields.join(',') } });
     }
   };
   const fields: { value: string; label: string; isDisabled: boolean }[] = [];
@@ -92,9 +85,7 @@ export function FieldSelection({
               setNewSelectedFields(options.map(x => x.value));
             }}
             isMulti
-            value={fields.filter(option => {
-              return selectedFields.has(option.value);
-            })}
+            value={fields.filter(option => selectedFields.has(option.value))}
             options={fields}
             components={fieldSelectionOptionsComponents}
           />

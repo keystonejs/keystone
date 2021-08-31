@@ -9,9 +9,7 @@ export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({
-  price: decimal({ scale: 2, graphql: { isEnabled: { filter: true } } }),
-});
+export const getTestFields = () => ({ price: decimal({ scale: 2, isFilterable: true }) });
 
 export const initItems = () => {
   return [

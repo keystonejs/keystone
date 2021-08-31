@@ -4,7 +4,7 @@ import { select, relationship, text, timestamp } from '@keystone-next/keystone/f
 export const lists = createSchema({
   Post: list({
     fields: {
-      title: text({ isRequired: true, graphql: { isEnabled: { filter: true } } }),
+      title: text({ isRequired: true, isFilterable: true }),
       status: select({
         dataType: 'enum',
         options: [
@@ -22,6 +22,10 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      noRead: text({ graphql: { omit: ['read'] } }),
+      noUpdate: text({ graphql: { omit: ['update'] } }),
+      noCreate: text({ graphql: { omit: ['create'] } }),
+      noExist: text({ graphql: { omit: true } }),
     },
   }),
 });

@@ -113,7 +113,8 @@ export const idFieldType =
     })({
       ...config,
       // The ID field is always filterable and orderable.
-      graphql: { isEnabled: { filter: true, orderBy: true } },
+      isFilterable: true,
+      isOrderable: true,
       input: {
         where: {
           arg: filterArg,

@@ -16,15 +16,8 @@ import { useList } from '../../../../admin-ui/context';
 import { useRouter } from '../../../../admin-ui/router';
 
 type State =
-  | {
-      kind: 'selecting-field';
-    }
-  | {
-      kind: 'filter-value';
-      fieldPath: string;
-      filterType: string;
-      filterValue: JSONValue;
-    };
+  | { kind: 'selecting-field' }
+  | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue };
 
 const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
   Option: ({ children, ...props }) => {
@@ -51,14 +44,7 @@ const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
 export function FilterAdd({ listKey }: { listKey: string }) {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
+    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
   });
 
   return (
@@ -156,9 +142,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
           <button
             type="button"
             onClick={() => {
-              setState({
-                kind: 'selecting-field',
-              });
+              setState({ kind: 'selecting-field' });
             }}
             css={{
               border: 0,
