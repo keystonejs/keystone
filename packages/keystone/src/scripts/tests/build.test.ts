@@ -69,7 +69,7 @@ test('build works with typescript without the user defining a babel config', asy
         '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
         ''
       )
-
+      .replace('warn  - No ESLint configuration detected. Run next lint to begin setup\n', '')
       // the exact formatting of the build size report can change when making unrelated changes
       // because the code size can change so we don't include it in the snapshot
       .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
@@ -80,7 +80,6 @@ test('build works with typescript without the user defining a babel config', asy
     ✨ Building Admin UI
     info  - Using webpack 5. Reason: Enabled by default https://nextjs.org/docs/messages/webpack5
     info  - Skipping validation of types...
-    warn  - No ESLint configuration detected. Run next lint to begin setup
     info  - Creating an optimized production build...
     info  - Compiled successfully
     info  - Collecting page data...
