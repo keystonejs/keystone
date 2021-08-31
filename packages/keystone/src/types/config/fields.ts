@@ -24,7 +24,7 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     cacheHint?: CacheHint;
     // Setting any of these values will remove the corresponding input/output types from the GraphQL schema.
     // Output Types
-    //   'read': Does this field exist on the Item type? Will also disable filtering/ordering.
+    //   'read': Does this field exist on the Item type? Will also disable filtering/ordering/admimMeta
     // Input Types
     //   'create': Does this field exist in the create Input type?
     //   'update': Does this field exist in the update Input type?
