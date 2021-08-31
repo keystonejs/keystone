@@ -104,7 +104,7 @@
     "memoize-one": "^5.2.1",
     "meow": "^9.0.0",
     "next": "^11.1.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "object-hash": "^2.2.0",
     "p-limit": "^2.3.0",
     "pirates": "^4.0.1",
