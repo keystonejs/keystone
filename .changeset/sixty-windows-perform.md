@@ -31,4 +31,4 @@
 '@keystone-next/test-projects-crud-notifications': patch
 ---
 
-Updated `typescript` dependency to `4.4.0`.
+Updated `typescript` dependency to `^4.4.2`.
