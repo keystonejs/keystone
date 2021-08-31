@@ -9,12 +9,10 @@ import {
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
     isRequired?: boolean;
     defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
   };
@@ -22,7 +20,6 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
 export const timestamp =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -38,7 +35,7 @@ export const timestamp =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'DateTime',
-      index: getIndexType({ isUnique, isIndexed }),
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {
