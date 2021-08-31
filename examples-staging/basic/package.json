@@ -21,7 +21,7 @@
     "@preconstruct/next": "^3.0.0",
     "@types/react": "^17.0.19",
     "apollo-server-micro": "^2.25.2",
-    "graphql": "^15.5.1",
+    "graphql": "^15.5.2",
     "graphql-tag": "^2.12.5",
     "next": "^11.1.0",
     "react": "^17.0.2",

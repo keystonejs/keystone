@@ -18,10 +18,7 @@ import { useRouter, Link } from '../../../../admin-ui/router';
 type ListCardProps = {
   listKey: string;
   count:
-    | {
-        type: 'success';
-        count: number;
-      }
+    | { type: 'success'; count: number }
     | { type: 'no-access' }
     | { type: 'error'; message: string }
     | { type: 'loading' };

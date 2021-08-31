@@ -44,7 +44,7 @@ const runner = setupTestRunner({
       }),
       GroupNoCreate: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true } } }),
+          name: text({ isFilterable: true }),
         },
         access: {
           create: () => false,

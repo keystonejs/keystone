@@ -12,9 +12,7 @@ export const skipUpdateTest = true;
 
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({
-  orderNumber: autoIncrement({ graphql: { isEnabled: { filter: true } } }),
-});
+export const getTestFields = () => ({ orderNumber: autoIncrement({ isFilterable: true }) });
 
 export const initItems = () => {
   return [

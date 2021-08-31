@@ -81,9 +81,7 @@ function ItemForm({
         ${selectedFields}
       }
     }`,
-    {
-      errorPolicy: 'all',
-    }
+    { errorPolicy: 'all' }
   );
   itemGetter =
     useMemo(() => {
@@ -94,10 +92,7 @@ function ItemForm({
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(list.fields, itemGetter);
-    return {
-      value,
-      item: itemGetter.data,
-    };
+    return { value, item: itemGetter.data };
   });
   if (
     !loading &&
@@ -105,10 +100,7 @@ function ItemForm({
     (itemGetter.errors || []).every(x => x.path?.length !== 1)
   ) {
     const value = deserializeValue(list.fields, itemGetter);
-    setValue({
-      value,
-      item: itemGetter.data,
-    });
+    setValue({ value, item: itemGetter.data });
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
@@ -126,12 +118,7 @@ function ItemForm({
     setForceValidation(newForceValidation);
     if (newForceValidation) return;
 
-    update({
-      variables: {
-        data: dataForUpdate,
-        id: itemGetter.get('id').data,
-      },
-    })
+    update({ variables: { data: dataForUpdate, id: itemGetter.get('id').data } })
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
       // out below. If we're happy with this, clean up the unused lines.
       .then(({ /* data, */ errors }) => {
@@ -155,11 +142,7 @@ function ItemForm({
         }
       })
       .catch(err => {
-        toasts.addToast({
-          title: 'Failed to update item',
-          tone: 'negative',
-          message: err.message,
-        });
+        toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message });
       });
   });
   const labelFieldValue = itemGetter.data?.[list.labelField];
@@ -179,10 +162,7 @@ function ItemForm({
         invalidFields={invalidFields}
         onChange={useCallback(
           value => {
-            setValue(state => ({
-              item: state.item,
-              value: value(state.value),
-            }));
+            setValue(state => ({ item: state.item, value: value(state.value) }));
           },
           [setValue]
         )}
@@ -192,10 +172,7 @@ function ItemForm({
         onSave={onSave}
         hasChangedFields={!!changedFields.size}
         onReset={useEventCallback(() => {
-          setValue({
-            item: itemGetter.data,
-            value: deserializeValue(list.fields, itemGetter),
-          });
+          setValue({ item: itemGetter.data, value: deserializeValue(list.fields, itemGetter) });
         })}
         loading={loading}
         deleteButton={useMemo(
@@ -337,14 +314,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       item: ItemData;
       keystone: {
         adminMeta: {
-          list: {
-            fields: {
-              path: string;
-              itemView: {
-                fieldMode: 'edit' | 'read' | 'hidden';
-              };
-            }[];
-          };
+          list: { fields: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }[] };
         };
       };
     }>

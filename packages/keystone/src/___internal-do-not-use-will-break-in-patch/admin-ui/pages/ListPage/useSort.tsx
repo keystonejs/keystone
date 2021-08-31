@@ -15,9 +15,6 @@ export function useSort(list: ListMeta) {
       direction = 'DESC';
     }
     if (!list.fields[sortByField].isOrderable) return null;
-    return {
-      field: sortByField,
-      direction,
-    };
+    return { field: sortByField, direction };
   }, [sortByFromUrl, list]);
 }

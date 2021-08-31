@@ -33,9 +33,7 @@ import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { useSort } from './useSort';
 
-type ListPageProps = {
-  listKey: string;
-};
+type ListPageProps = { listKey: string };
 
 let listMetaGraphqlQuery: TypedDocumentNode<
   {
@@ -44,13 +42,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list: {
           hideCreate: boolean;
           hideDelete: boolean;
-
-          fields: {
-            path: string;
-            listView: {
-              fieldMode: 'read' | 'hidden';
-            };
-          }[];
+          fields: { path: string; listView: { fieldMode: 'read' | 'hidden' } }[];
         } | null;
       };
     };
@@ -83,9 +75,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey);
-    router.replace({
-      pathname: router.pathname,
-    });
+    router.replace({ pathname: router.pathname });
   };
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
@@ -103,12 +93,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
           parsed = JSON.parse(queryParamsFromLocalStorage!);
         } catch (err) {}
         if (parsed) {
-          router.replace({
-            query: {
-              ...router.query,
-              ...parsed,
-            },
-          });
+          router.replace({ query: { ...router.query, ...parsed } });
         }
       }
     },
@@ -208,19 +193,13 @@ const ListPage = ({ listKey }: ListPageProps) => {
   let [dataState, setDataState] = useState({ data: newData, error: newError });
 
   if (newData && dataState.data !== newData) {
-    setDataState({
-      data: newData,
-      error: newError,
-    });
+    setDataState({ data: newData, error: newError });
   }
 
   const { data, error } = dataState;
 
   const dataGetter = makeDataGetter<
-    DeepNullable<{
-      count: number;
-      items: { id: string; [key: string]: any }[];
-    }>
+    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
   >(data, error?.graphQLErrors);
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
@@ -237,10 +216,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         newSelectedItems.add(item.id);
       }
     });
-    setSelectedItems({
-      itemsFromServer: data.items,
-      selectedItems: newSelectedItems,
-    });
+    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems });
   }
 
   const theme = useTheme();
@@ -445,9 +421,7 @@ function DeleteManyButton({
 `,
       [list]
     ),
-    {
-      errorPolicy: 'all',
-    }
+    { errorPolicy: 'all' }
   );
   const [isOpen, setIsOpen] = useState(false);
   const toasts = useToasts();
