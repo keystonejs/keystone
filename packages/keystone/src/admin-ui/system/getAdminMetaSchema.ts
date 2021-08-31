@@ -73,6 +73,9 @@ export function getAdminMetaSchema({
                       'KeystoneAdminUIFieldMetaCreateView.fieldMode cannot be resolved during the build process'
                     );
                   }
+                  if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.create) {
+                    return 'hidden';
+                  }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
                     lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.createView?.fieldMode ??
@@ -104,6 +107,9 @@ export function getAdminMetaSchema({
                     throw new Error(
                       'KeystoneAdminUIFieldMetaListView.fieldMode cannot be resolved during the build process'
                     );
+                  }
+                  if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
+                    return 'hidden';
                   }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
@@ -140,6 +146,13 @@ export function getAdminMetaSchema({
                   throw new Error(
                     'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
                   );
+                }
+                if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
+                  return 'hidden';
+                } else if (
+                  !lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.update
+                ) {
+                  return 'read';
                 }
                 const item = await context
                   .sudo()
