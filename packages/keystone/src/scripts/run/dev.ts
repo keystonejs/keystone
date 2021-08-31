@@ -142,7 +142,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       server.close(async err => {
         try {
           await disconnect?.();
-        } catch (disconnectionError) {
+        } catch (disconnectionError: any) {
           if (!err) {
             err = disconnectionError;
           } else {

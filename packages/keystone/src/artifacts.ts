@@ -49,7 +49,7 @@ export async function getCommittedArtifacts(
 async function readFileButReturnNothingIfDoesNotExist(filename: string) {
   try {
     return await fs.readFile(filename, 'utf8');
-  } catch (err) {
+  } catch (err: any) {
     if (err.code === 'ENOENT') {
       return;
     }
