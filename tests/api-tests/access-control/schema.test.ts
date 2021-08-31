@@ -248,7 +248,7 @@ describe(`Public schema`, () => {
               expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
             }
           });
-          test(`adminMeta - ${JSON.stringify(config)} on ${listName}`, async () => {
+          test(`adminMeta - build mode ${JSON.stringify(config)} on ${listName}`, async () => {
             const query = `
               query q($listName: String!) {
                 keystone {
@@ -273,27 +273,94 @@ describe(`Public schema`, () => {
             const field = data!.keystone.adminMeta.list.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
-
-            // Filters require both `read` and `filter` to be true for
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('read')) && // Can read
-              (isFilterable || config.isFilterable) // Can filter
-            ) {
-              expect(field.isFilterable).toEqual(true);
+            if (config.omit === true || config.omit?.includes('read')) {
+              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
+              expect(field).toBe(undefined);
             } else {
-              expect(field.isFilterable).toEqual(false);
+              // Filters require both `read` and `filter` to be true for
+              if (
+                // @ts-ignore
+                config.omit !== true && // Not excluded
+                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                (isFilterable || config.isFilterable) // Can filter
+              ) {
+                expect(field.isFilterable).toEqual(true);
+              } else {
+                expect(field.isFilterable).toEqual(false);
+              }
+
+              // Orderby require both `read` and `orderBy` to be true for
+              if (
+                // @ts-ignore
+                config.omit !== true && // Not excluded
+                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                (isOrderable || config.isOrderable) // Can orderBy
+              ) {
+                expect(field.isOrderable).toEqual(true);
+              } else {
+                expect(field.isOrderable).toEqual(false);
+              }
             }
+          });
 
-            // Orderby require both `read` and `orderBy` to be true for
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('read')) && // Can read
-              (isOrderable || config.isOrderable) // Can orderBy
-            ) {
-              expect(field.isOrderable).toEqual(true);
+          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+            const item = await context.sudo().lists[listName].createOne({ data: {} });
+            const query = `
+              query q($listName: String!) {
+                keystone {
+                  adminMeta {
+                    list(key: $listName) {
+                      key
+                      fields {
+                        path
+                        createView { fieldMode }
+                        listView { fieldMode }
+                        itemView(id: "${item.id}") { fieldMode }
+                      }
+                    }
+                  }
+                }
+              }`;
+            const variables = { listName };
+
+            const { data, errors } = await context
+              .withSession({})
+              .graphql.raw({ query, variables });
+            expect(errors).toBe(undefined);
+
+            const field = data!.keystone.adminMeta.list.fields.filter(
+              (f: any) => f.path === getFieldName(config)
+            )[0];
+
+            if (config.omit === true || config.omit?.includes('read')) {
+              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
+              expect(field).toBe(undefined);
             } else {
-              expect(field.isOrderable).toEqual(false);
+              // createView - edit/hidden (hidden if omit.create)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('create')) {
+                expect(field.createView.fieldMode).toEqual('hidden');
+              } else {
+                expect(field.createView.fieldMode).toEqual('edit');
+              }
+
+              // listView - read/hidden (hidden if omit.read)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('read')) {
+                expect(field.listView.fieldMode).toEqual('hidden');
+              } else {
+                expect(field.listView.fieldMode).toEqual('read');
+              }
+
+              // itemView - edit/read/hidden (read if omit.update, hidden if omit.read)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('read')) {
+                expect(field.itemView.fieldMode).toEqual('hidden');
+              } else if (config.omit?.includes('update')) {
+                expect(field.itemView.fieldMode).toEqual('read');
+              } else {
+                expect(field.itemView.fieldMode).toEqual('edit');
+              }
             }
           });
         }
