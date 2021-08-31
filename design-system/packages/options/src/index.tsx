@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';

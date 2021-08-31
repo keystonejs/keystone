@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy';
 import Link from 'next/link';

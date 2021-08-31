@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';

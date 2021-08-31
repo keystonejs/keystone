@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment, useMemo, useRef, RefObject } from 'react';
 import copy from 'copy-to-clipboard';

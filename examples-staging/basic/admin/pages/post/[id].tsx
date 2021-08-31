@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useRouter } from '@keystone-next/keystone/admin-ui/router';

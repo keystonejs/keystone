@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment, useState, useEffect, HTMLAttributes } from 'react';
 import { jsx, Global } from '@emotion/react';

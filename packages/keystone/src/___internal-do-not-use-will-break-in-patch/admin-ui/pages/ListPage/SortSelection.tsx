@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Button } from '@keystone-ui/button';
 import { Divider, Heading, jsx, Stack } from '@keystone-ui/core';

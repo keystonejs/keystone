@@ -6,6 +6,9 @@ export const config = withPreconstruct({
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack(config: any, { isServer }: any) {
     config.resolve.alias = {
       ...config.resolve.alias,

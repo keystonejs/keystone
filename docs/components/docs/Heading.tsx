@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import slugify from '@sindresorhus/slugify';
 import { jsx } from '@emotion/react';

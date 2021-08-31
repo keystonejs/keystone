@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
 import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';

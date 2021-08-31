@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import Link from 'next/link';
 import { jsx, H3 } from '@keystone-ui/core';

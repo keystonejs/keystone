@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { useEffect, useMemo, useState } from 'react';
 import fetch from 'cross-fetch';

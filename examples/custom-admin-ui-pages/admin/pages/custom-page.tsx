@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { PageContainer } from '@keystone-next/keystone/admin-ui/components';
 import { jsx, Heading } from '@keystone-ui/core';

@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { allMarkdownShortcuts } from './marks';
 import { jsx, makeEditor } from './tests/utils';

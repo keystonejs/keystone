@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import type { ElementType, HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';

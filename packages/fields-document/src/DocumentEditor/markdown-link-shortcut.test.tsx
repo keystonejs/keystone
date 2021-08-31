@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React from 'react';
 import { component, fields } from './component-blocks/api';

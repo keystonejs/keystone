@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import Highlight, { Language, Prism } from 'prism-react-renderer';
 import { jsx } from '@emotion/react';

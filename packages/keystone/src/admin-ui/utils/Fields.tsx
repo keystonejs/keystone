@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Stack } from '@keystone-ui/core';
 import { memo, useMemo } from 'react';

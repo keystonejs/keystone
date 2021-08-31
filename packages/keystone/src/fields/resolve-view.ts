@@ -1,5 +1,5 @@
 import path from 'path';
+import { packagePath } from '../package-path';
 
-const pkgDir = path.dirname(require.resolve('@keystone-next/keystone/package.json'));
-
-export const resolveView = (pathname: string) => path.join(pkgDir, 'fields', 'types', pathname);
+export const resolveView = (pathname: string) =>
+  path.join(packagePath, 'fields', 'types', pathname);

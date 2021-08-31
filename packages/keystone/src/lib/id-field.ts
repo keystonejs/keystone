@@ -9,9 +9,10 @@ import {
   ScalarDBField,
   graphql,
 } from '../types';
+import { packagePath } from '../package-path';
 
 const views = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  packagePath,
   '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
 );
 

@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
 import { useRouter } from 'next/router';

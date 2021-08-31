@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { FieldProps } from '@keystone-next/keystone/types';
 import { jsx } from '@keystone-ui/core';

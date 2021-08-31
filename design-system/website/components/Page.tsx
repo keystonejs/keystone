@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import type { HTMLAttributes, ReactNode } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';

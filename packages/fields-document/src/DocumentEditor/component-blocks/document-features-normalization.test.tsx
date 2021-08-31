@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Node } from 'slate';
 import { component, fields } from '../../component-blocks';

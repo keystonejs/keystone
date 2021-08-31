@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ReactNode, forwardRef, useMemo } from 'react';

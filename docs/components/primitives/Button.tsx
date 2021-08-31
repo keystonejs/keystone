@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment, FunctionComponent, ReactNode } from 'react';
 import { jsx } from '@emotion/react';

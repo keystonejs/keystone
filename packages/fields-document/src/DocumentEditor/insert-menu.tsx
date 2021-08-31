@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Portal } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';

@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { ComponentProps, ReactNode, useState } from 'react';
 import { jsx, Stack, useTheme } from '@keystone-ui/core';

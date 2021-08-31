@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 import type { ReactNode } from 'react';

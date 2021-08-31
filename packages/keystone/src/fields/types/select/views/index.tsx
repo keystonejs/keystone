@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 import { Fragment } from 'react';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';

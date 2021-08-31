@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { HTMLAttributes, ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
