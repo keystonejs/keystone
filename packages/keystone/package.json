@@ -103,7 +103,7 @@
     "intersection-observer": "^0.12.0",
     "memoize-one": "^5.2.1",
     "meow": "^9.0.0",
-    "next": "^11.1.0",
+    "next": "^11.1.2",
     "node-fetch": "^2.6.1",
     "object-hash": "^2.2.0",
     "p-limit": "^2.3.0",
@@ -122,7 +122,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@testing-library/dom": "^8.1.1",
+    "@testing-library/dom": "^8.2.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/bytes": "^3.1.1",
