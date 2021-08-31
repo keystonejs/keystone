@@ -10,20 +10,20 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
-  // test('Nav contains a Dashboard route by default', async () => {
-  //   await page.waitForSelector('nav a:has-text("Dashboard")');
-  // });
-  // test('When at the index, the Dashboard NavItem is selected', async () => {
-  //   const element = await page.waitForSelector('nav a:has-text("Dashboard")');
-  //   const ariaCurrent = await element?.getAttribute('aria-current');
-  //   expect(ariaCurrent).toBe('location');
-  // });
-  // test('When navigated to a List route, the representative list NavItem is selected', async () => {
-  //   await page.goto('http://localhost:3000/tasks');
-  //   const element = await page.waitForSelector('nav a:has-text("Tasks")');
-  //   const ariaCurrent = await element?.getAttribute('aria-current');
-  //   expect(ariaCurrent).toBe('location');
-  // });
+  test('Nav contains a Dashboard route by default', async () => {
+    await page.waitForSelector('nav a:has-text("Dashboard")');
+  });
+  test('When at the index, the Dashboard NavItem is selected', async () => {
+    const element = await page.waitForSelector('nav a:has-text("Dashboard")');
+    const ariaCurrent = await element?.getAttribute('aria-current');
+    expect(ariaCurrent).toBe('location');
+  });
+  test('When navigated to a List route, the representative list NavItem is selected', async () => {
+    await page.goto('http://localhost:3000/tasks');
+    const element = await page.waitForSelector('nav a:has-text("Tasks")');
+    const ariaCurrent = await element?.getAttribute('aria-current');
+    expect(ariaCurrent).toBe('location');
+  });
   test('Can access all list pages via the navigation', async () => {
     await page.goto('http://localhost:3000');
     await Promise.all([
