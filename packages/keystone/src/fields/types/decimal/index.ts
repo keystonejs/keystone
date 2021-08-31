@@ -10,7 +10,6 @@ import {
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
@@ -18,14 +17,12 @@ export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     precision?: number;
     scale?: number;
     defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
   };
 
 export const decimal =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     precision = 18,
     scale = 4,
     isRequired,
@@ -55,14 +52,15 @@ export const decimal =
           `must not be larger than the field's precision (${precision})`
       );
     }
-    const index = getIndexType({ isIndexed, isUnique });
+
+    const index = isIndexed === true ? 'index' : isIndexed || undefined;
     const dbField = {
-      kind: 'scalar' as const,
-      mode: 'optional' as const,
-      scalar: 'Decimal' as const,
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'Decimal',
       nativeType: `Decimal(${precision}, ${scale})`,
       index,
-    };
+    } as const;
     return fieldType(dbField)({
       ...config,
       input: {

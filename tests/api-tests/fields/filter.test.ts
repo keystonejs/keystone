@@ -412,7 +412,9 @@ testModules
                   config: apiTestConfig({
                     lists: createSchema({
                       [listKey]: list({
-                        fields: { field: mod.typeFunction({ isUnique: true, isFilterable: true }) },
+                        fields: {
+                          field: mod.typeFunction({ isIndexed: 'unique', isFilterable: true }),
+                        },
                       }),
                     }),
                   }),

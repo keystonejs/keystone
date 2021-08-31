@@ -9,20 +9,17 @@ import {
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
   };
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -32,7 +29,7 @@ export const float =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Float',
-      index: getIndexType({ isIndexed, isUnique }),
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {

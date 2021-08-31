@@ -23,8 +23,8 @@ export const checkbox =
     ...config
   }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type checkbox');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
     }
 
     return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Boolean' })({

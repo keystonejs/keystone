@@ -175,7 +175,9 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique. This will also allow you to uniquely filter by this field in the GraphQL API.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -188,7 +190,7 @@ export default config({
         fieldName: integer({
           defaultValue: 0,
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
         }),
         /* ... */
       },
@@ -237,7 +239,9 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -250,7 +254,7 @@ export default config({
         fieldName: float({
           defaultValue: 3.14159,
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
         }),
         /* ... */
       },
@@ -274,7 +278,9 @@ Options:
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -289,7 +295,7 @@ export default config({
           precision: 12,
           scale: 3,
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
         }),
         /* ... */
       },
@@ -354,7 +360,9 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['select', 'segmented-control']`.
 
@@ -374,7 +382,7 @@ export default config({
           ],
           defaultValue: '...',
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
           ui: { displayMode: 'select' },
         }),
         /* ... */
@@ -397,7 +405,9 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique. This will also allow you to uniquely filter by this field in the GraphQL API.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['input', 'textarea']`.
 
@@ -412,7 +422,7 @@ export default config({
         fieldName: text({
           defaultValue: '...',
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
           ui: { displayMode: 'textarea' },
         }),
         /* ... */
@@ -436,7 +446,9 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalInput` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+- `isIndexed` (default: `false`)
+  - If `true` then this field will be indexed by the database.
+  - If `'unique'` then all values of this field must be unique.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -449,7 +461,7 @@ export default config({
         fieldName: timestamp({
           defaultValue: '1970-01-01T00:00:00.000Z',
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
         }),
         /* ... */
       },
@@ -537,7 +549,7 @@ Options:
 
 - `defaultValue`
 - `isRequired`
-- `isUnique`
+- `isIndexed`
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -550,7 +562,7 @@ export default config({
         fieldName: autoIncrement({
           defaultValue: 0,
           isRequired: true,
-          isUnique: true,
+          isIndexed: 'unique',
         }),
         /* ... */
       },

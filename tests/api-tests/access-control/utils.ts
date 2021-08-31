@@ -92,7 +92,7 @@ const lists = createSchema({
   User: list({
     fields: {
       name: text(),
-      email: text({ isUnique: true, isFilterable: true }),
+      email: text({ isIndexed: 'unique', isFilterable: true }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),

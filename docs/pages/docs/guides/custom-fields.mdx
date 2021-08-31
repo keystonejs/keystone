@@ -39,14 +39,12 @@ export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
   };
 
 export const myInt =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -56,7 +54,7 @@ export const myInt =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Int',
-      index: isIndexed ? 'index' : isUnique ? 'unique' : undefined,
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {

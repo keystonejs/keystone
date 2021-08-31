@@ -9,20 +9,17 @@ import {
   filters,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
-import { getIndexType } from '../../get-index-type';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
-    isUnique?: boolean;
-    isIndexed?: boolean;
+    isIndexed?: boolean | 'unique';
   };
 
 export const integer =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -32,11 +29,12 @@ export const integer =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Int',
-      index: getIndexType({ isIndexed, isUnique }),
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {
-        uniqueWhere: isUnique ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
           resolve: filters.resolveCommon,

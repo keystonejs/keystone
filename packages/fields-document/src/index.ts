@@ -109,8 +109,8 @@ export const document =
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
     };
 
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type document');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type document");
     }
 
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {

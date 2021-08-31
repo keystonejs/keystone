@@ -35,7 +35,7 @@ export const lists = createSchema({
   Person: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       password: password({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },

@@ -22,8 +22,8 @@ export const json =
     ...config
   }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type json');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type json");
     }
 
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
