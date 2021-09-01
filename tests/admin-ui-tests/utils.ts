@@ -23,22 +23,19 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 const projectRoot = findRootSync(process.cwd());
 
 export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
-  try {
-    const { errors } = await fetch('http://localhost:3000/api/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables,
-      }),
-    }).then(res => res.json());
-    if (errors) {
-      throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
-    }
-  } catch (e) {
-    throw e;
+  const { errors } = await fetch('http://localhost:3000/api/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  }).then(res => res.json());
+
+  if (errors) {
+    throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
   }
 };
 
