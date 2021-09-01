@@ -35,7 +35,7 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
       }),
     }).then(res => res.json());
     if (errors) {
-      throw errors;
+      throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
     }
   } catch (e) {
     throw e;
