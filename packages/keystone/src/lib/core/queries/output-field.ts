@@ -16,7 +16,6 @@ import {
   getAccessFilters,
   validateFieldAccessControl,
 } from '../access-control';
-import { accessDeniedError } from '../graphql-errors';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
@@ -124,10 +123,7 @@ export function outputTypeField(
         },
       });
       if (!canAccess) {
-        // If the client handles errors correctly, it should be able to
-        // receive partial data (for the fields the user has access to),
-        // and then an `errors` array of AccessDeniedError's
-        throw accessDeniedError();
+        return null;
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take

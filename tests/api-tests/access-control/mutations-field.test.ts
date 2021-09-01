@@ -36,7 +36,7 @@ const runner = setupTestRunner({
   }),
 });
 
-describe('Access control - Imperative => static', () => {
+describe('Access control', () => {
   test(
     'createOne',
     runner(async ({ context }) => {
