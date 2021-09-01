@@ -162,7 +162,7 @@ testModules
                 files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),
             });
-          } catch (error) {
+          } catch (error: any) {
             expect(error.message).toMatch(
               "isIndexed: 'unique' is not a supported option for field type"
             );

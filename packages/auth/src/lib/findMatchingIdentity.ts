@@ -13,7 +13,7 @@ export async function findMatchingIdentity(
   try {
     const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
     return { success: true, item };
-  } catch (err) {
+  } catch (err: any) {
     if (err.message === 'You do not have access to this resource') {
       return { success: false, code: 'IDENTITY_NOT_FOUND' };
     }

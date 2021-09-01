@@ -233,7 +233,7 @@ function DeleteButton({
             action: async () => {
               try {
                 await deleteItem();
-              } catch (err) {
+              } catch (err: any) {
                 return toasts.addToast({
                   title: `Failed to delete ${list.singular} item: ${itemLabel}`,
                   message: err.message,
