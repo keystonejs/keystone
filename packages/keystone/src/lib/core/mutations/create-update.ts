@@ -254,7 +254,7 @@ async function getResolvedData(
           resolvedData,
           fieldPath,
         });
-      } catch (error) {
+      } catch (error: any) {
         fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
       }
     }
@@ -268,7 +268,7 @@ async function getResolvedData(
   if (list.hooks.resolveInput) {
     try {
       resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
-    } catch (error) {
+    } catch (error: any) {
       throw extensionError(hookName, [{ error, tag: list.listKey }]);
     }
   }

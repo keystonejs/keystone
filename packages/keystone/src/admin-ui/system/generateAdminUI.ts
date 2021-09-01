@@ -17,7 +17,7 @@ function getDoesAdminConfigExist() {
     const configPath = Path.join(process.cwd(), 'admin', 'config');
     resolve.sync(configPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false });
     return true;
-  } catch (err) {
+  } catch (err: any) {
     if (err.code === 'MODULE_NOT_FOUND') {
       return false;
     }
