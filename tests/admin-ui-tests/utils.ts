@@ -38,7 +38,6 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
       throw errors;
     }
   } catch (e) {
-    console.log(e);
     throw e;
   }
 };
