@@ -27,11 +27,11 @@ For a guide on how to use this API to apply common patterns please see the [acce
 
 Keystone allows you to set up access control on a per-list basis.
 The default access control is to allow all operations for all users.
-Access control is applied to the generated CRUD (**c**reate, **r**ead, **u**pdate, **d**elete) queries and mutations in the [GraphQL API](./graphql).
+Access control is applied to the generated CRUD (**c**reate, **r**ead, **u**pdate, **d**elete) operations and mutations in the [GraphQL API](./graphql).
 Access control is applied before any [hooks](./hooks) are executed.
 
 You can specify access control using either **concise** or **verbose** syntax.
-Verbose syntax provides a separate access control rule for each operation type; `create`, `read`, `update`, and `delete`.
+Verbose syntax provides a separate access control rule for each operation type; `query`, `create`, `update`, and `delete`.
 Concise syntax provides a single access control rule which is used for all operation types.
 
 ```typescript
@@ -44,8 +44,8 @@ export default config({
       access: true,
       // Verbose access control definition
       access: {
+        query: true,
         create: true,
-        read: true,
         update: true,
         delete: true,
       },
@@ -202,8 +202,8 @@ export default config({
           access: true,
           // Verbose access control definition
           access: {
-            create: true,
             read: true,
+            create: true,
             update: true,
           },
         }),
