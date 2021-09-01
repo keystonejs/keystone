@@ -36,7 +36,7 @@ export async function runSideEffectOnlyHook<
     if (shouldRunFieldLevelHook(fieldPath)) {
       try {
         await field.hooks[hookName]?.({ fieldPath, ...args });
-      } catch (error) {
+      } catch (error: any) {
         fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
       }
     }
@@ -48,7 +48,7 @@ export async function runSideEffectOnlyHook<
   // List hooks
   try {
     await list.hooks[hookName]?.(args);
-  } catch (error) {
+  } catch (error: any) {
     throw extensionError(hookName, [{ error, tag: list.listKey }]);
   }
 }
