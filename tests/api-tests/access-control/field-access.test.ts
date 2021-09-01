@@ -1,21 +1,15 @@
 import { DatabaseProvider, KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import { expectAccessDenied } from '../utils';
-import {
-  nameFn,
-  listAccessVariations,
-  fieldMatrix,
-  getFieldName,
-  getOperationListName,
-  getItemListName,
-  getFilterListName,
-  config,
-  getFilterBoolListName,
-} from './utils';
+import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils';
 
 type IdType = any;
 
 describe(`Field access`, () => {
+  const listAccess = { create: true, query: true, update: true, delete: true };
+  const mode = 'item';
+  const listKey = nameFn[mode](listAccess);
+
   let testEnv: TestEnv, context: KeystoneContext, provider: DatabaseProvider;
   let items: Record<string, { id: IdType; name: string }[]>;
   beforeAll(async () => {
@@ -25,17 +19,8 @@ describe(`Field access`, () => {
 
     await testEnv.connect();
 
-    // ensure every list has at least some data
-    const initialData: Record<string, { name: string }[]> = listAccessVariations.reduce(
-      (acc, access) =>
-        Object.assign(acc, {
-          [getOperationListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-          [getItemListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-          [getFilterListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-          [getFilterBoolListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-        }),
-      {}
-    );
+    const initialData = { [getItemListName(listAccess)]: [{ name: 'Hello' }, { name: 'Hi' }] };
+
     items = {};
     for (const [listKey, _items] of Object.entries(initialData)) {
       items[listKey] = (await context.sudo().lists[listKey].createMany({
@@ -47,10 +32,6 @@ describe(`Field access`, () => {
   afterAll(async () => {
     await testEnv.disconnect();
   });
-
-  const listAccess = { create: true, query: true, update: true, delete: true };
-  const mode = 'item';
-  const listKey = nameFn[mode](listAccess);
 
   describe('query', () => {
     fieldMatrix.forEach(access => {
