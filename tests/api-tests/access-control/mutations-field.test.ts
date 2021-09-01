@@ -12,7 +12,7 @@ const runner = setupTestRunner({
           other: text(),
           name: text({
             access: {
-              query: () => true,
+              read: () => true,
               create: ({ originalInput }: any) => {
                 if (Array.isArray(originalInput)) {
                   return !originalInput.some(item => item.data.name === 'bad');

@@ -88,7 +88,7 @@ const createFieldStatic = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
     access: {
       create: () => fieldAccess.create,
-      query: () => fieldAccess.query,
+      read: () => fieldAccess.query,
       update: () => fieldAccess.update,
     },
   }),
@@ -97,7 +97,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
     access: {
       create: () => fieldAccess.create,
-      query: () => fieldAccess.query,
+      read: () => fieldAccess.query,
       update: () => fieldAccess.update,
     },
   }),
@@ -109,8 +109,8 @@ const lists = createSchema({
       name: text(),
       email: text({ isIndexed: 'unique', isFilterable: true }),
       password: password(),
-      noRead: text({ access: { query: () => false } }),
-      yesRead: text({ access: { query: () => true } }),
+      noRead: text({ access: { read: () => false } }),
+      yesRead: text({ access: { read: () => true } }),
     },
   }),
 });

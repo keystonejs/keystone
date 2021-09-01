@@ -54,8 +54,8 @@ export const lists = createSchema({
       /** Administrators have more access to various lists and fields. */
       isAdmin: checkbox({
         access: {
+          read: access.isAdmin,
           create: access.isAdmin,
-          query: access.isAdmin,
           update: access.isAdmin,
         },
         ui: {

@@ -32,7 +32,7 @@ describe(`Field access`, () => {
     await testEnv.disconnect();
   });
 
-  describe('query', () => {
+  describe('read', () => {
     fieldMatrix.forEach(access => {
       test(`field allowed - singular: ${JSON.stringify(access)}`, async () => {
         const item = items[listKey][0];

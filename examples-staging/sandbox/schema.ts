@@ -4,7 +4,7 @@ import { checkbox, password, relationship, text, timestamp } from '@keystone-nex
 // this implementation for createdBy and updatedBy is currently wrong so they're disabled for now
 const trackingFields = {
   createdAt: timestamp({
-    access: { create: () => false, query: () => true, update: () => false },
+    access: { read: () => true, create: () => false, update: () => false },
     defaultValue: () => new Date().toISOString(),
     ui: {
       createView: { fieldMode: 'hidden' },
@@ -22,7 +22,7 @@ const trackingFields = {
   //   },
   // }),
   updatedAt: timestamp({
-    access: { create: () => false, query: () => true, update: () => false },
+    access: { read: () => true, create: () => false, update: () => false },
     hooks: {
       resolveInput: () => new Date().toISOString(),
     },

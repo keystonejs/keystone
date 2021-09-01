@@ -150,7 +150,7 @@ export function initialiseLists(
                     outputField,
                     field.dbField,
                     field.graphql?.cacheHint,
-                    field.access.query,
+                    field.access.read,
                     listKey,
                     fieldPath,
                     lists

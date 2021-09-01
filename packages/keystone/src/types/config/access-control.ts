@@ -133,8 +133,8 @@ export type FieldUpdateItemAccessArgs<GeneratedListTypes extends BaseGeneratedLi
 
 export type FieldAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | {
+      read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<GeneratedListTypes>>;
       create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<GeneratedListTypes>>;
-      query?: IndividualFieldAccessControl<FieldReadItemAccessArgs<GeneratedListTypes>>;
       update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<GeneratedListTypes>>;
       // filter?: COMING SOON
       // orderBy?: COMING SOON
