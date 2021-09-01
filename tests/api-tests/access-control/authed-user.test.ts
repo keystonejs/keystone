@@ -42,7 +42,6 @@ const afterConnect = async ({ context }: { context: KeystoneContext }) => {
 
 describe('Authed', () => {
   let testEnv: TestEnv, context: KeystoneContext;
-  let items: Record<string, { id: IdType; name: string }[]> = {};
   let user: { id: IdType; name: string; yesRead: string; noRead: string };
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
@@ -51,7 +50,6 @@ describe('Authed', () => {
     await testEnv.connect();
 
     const result = await afterConnect({ context });
-    items = result.items;
     user = result.user;
   });
   afterAll(async () => {

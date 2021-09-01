@@ -1,4 +1,4 @@
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/keystone/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import { expectAccessDenied } from '../utils';
 import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils';
@@ -10,12 +10,11 @@ describe(`Field access`, () => {
   const mode = 'item';
   const listKey = nameFn[mode](listAccess);
 
-  let testEnv: TestEnv, context: KeystoneContext, provider: DatabaseProvider;
+  let testEnv: TestEnv, context: KeystoneContext;
   let items: Record<string, { id: IdType; name: string }[]>;
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
-    provider = config.db.provider!;
 
     await testEnv.connect();
 
