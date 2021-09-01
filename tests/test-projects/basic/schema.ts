@@ -29,4 +29,13 @@ export const lists = createSchema({
     defaultIsFilterable: true,
     defaultIsOrderable: true,
   }),
+  SecretPlan: list({
+    fields: {
+      label: text(),
+      description: text(),
+    },
+    ui: {
+      isHidden: true,
+    },
+  }),
 });
