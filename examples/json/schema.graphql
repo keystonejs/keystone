@@ -61,7 +61,7 @@ input PackageUpdateArgs {
 input PackageCreateInput {
   label: String
   pkgjson: JSON
-  isPrivate: Boolean
+  isPrivate: Boolean! = false
   ownedBy: PersonRelateToOneForCreateInput
 }
 

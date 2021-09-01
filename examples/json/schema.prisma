@@ -12,12 +12,12 @@ generator client {
 }
 
 model Package {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   label     String?
   pkgjson   String?
-  isPrivate Boolean?
-  ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
-  ownedById String?  @map("ownedBy")
+  isPrivate Boolean @default(false)
+  ownedBy   Person? @relation("Package_ownedBy", fields: [ownedById], references: [id])
+  ownedById String? @map("ownedBy")
 
   @@index([ownedById])
 }

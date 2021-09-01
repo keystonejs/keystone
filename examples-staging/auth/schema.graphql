@@ -137,7 +137,7 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  isAdmin: Boolean
+  isAdmin: Boolean! = false
 }
 
 """

@@ -703,12 +703,12 @@ input RoleUpdateArgs {
 
 input RoleCreateInput {
   name: String
-  canManageProducts: Boolean
-  canSeeOtherUsers: Boolean
-  canManageUsers: Boolean
-  canManageRoles: Boolean
-  canManageCart: Boolean
-  canManageOrders: Boolean
+  canManageProducts: Boolean! = false
+  canSeeOtherUsers: Boolean! = false
+  canManageUsers: Boolean! = false
+  canManageRoles: Boolean! = false
+  canManageCart: Boolean! = false
+  canManageOrders: Boolean! = false
   assignedTo: UserRelateToManyForCreateInput
 }
 
