@@ -202,6 +202,42 @@ input TaskRelateToManyForCreateInput {
   connect: [TaskWhereUniqueInput!]
 }
 
+type SecretPlan {
+  id: ID!
+  label: String
+  description: String
+}
+
+input SecretPlanWhereUniqueInput {
+  id: ID
+}
+
+input SecretPlanWhereInput {
+  AND: [SecretPlanWhereInput!]
+  OR: [SecretPlanWhereInput!]
+  NOT: [SecretPlanWhereInput!]
+  id: IDFilter
+}
+
+input SecretPlanOrderByInput {
+  id: OrderDirection
+}
+
+input SecretPlanUpdateInput {
+  label: String
+  description: String
+}
+
+input SecretPlanUpdateArgs {
+  where: SecretPlanWhereUniqueInput!
+  data: SecretPlanUpdateInput!
+}
+
+input SecretPlanCreateInput {
+  label: String
+  description: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -223,6 +259,15 @@ type Mutation {
   updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  createSecretPlan(data: SecretPlanCreateInput!): SecretPlan
+  createSecretPlans(data: [SecretPlanCreateInput!]!): [SecretPlan]
+  updateSecretPlan(
+    where: SecretPlanWhereUniqueInput!
+    data: SecretPlanUpdateInput!
+  ): SecretPlan
+  updateSecretPlans(data: [SecretPlanUpdateArgs!]!): [SecretPlan]
+  deleteSecretPlan(where: SecretPlanWhereUniqueInput!): SecretPlan
+  deleteSecretPlans(where: [SecretPlanWhereUniqueInput!]!): [SecretPlan]
 }
 
 type Query {
@@ -242,6 +287,14 @@ type Query {
   ): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
+  secretPlans(
+    where: SecretPlanWhereInput! = {}
+    orderBy: [SecretPlanOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [SecretPlan!]
+  secretPlan(where: SecretPlanWhereUniqueInput!): SecretPlan
+  secretPlansCount(where: SecretPlanWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

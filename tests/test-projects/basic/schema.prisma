@@ -28,3 +28,9 @@ model Person {
   name  String?
   tasks Task[]  @relation("Task_assignedTo")
 }
+
+model SecretPlan {
+  id          String  @id @default(cuid())
+  label       String?
+  description String?
+}

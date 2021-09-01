@@ -1,30 +1,10 @@
 import { Browser, Page } from 'playwright';
-import fetch from 'node-fetch';
-import { adminUITests, deleteAllData } from './utils';
+
+import { makeGqlRequest, adminUITests, deleteAllData } from './utils';
 
 adminUITests('./tests/test-projects/crud-notifications', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
-  const seedData = async (query: string, variables?: Record<string, any>) => {
-    try {
-      const { errors } = await fetch('http://localhost:3000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
-      }).then(res => res.json());
-      if (errors) {
-        throw errors;
-      }
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
 
   beforeAll(async () => {
     browser = await browserType.launch();
@@ -46,7 +26,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
         }
       }
     `;
-    await seedData(query);
+    await makeGqlRequest(query);
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.waitForSelector('tbody tr:first-of-type td:first-of-type label');
     await page.click('tbody tr:first-of-type td:first-of-type label');
@@ -71,7 +51,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
         }
       }
     `;
-    await seedData(query);
+    await makeGqlRequest(query);
     await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')]);
     await page.click('tbody tr:first-of-type td:first-of-type label');
     await page.click('button:has-text("Delete")');
@@ -105,7 +85,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
         }
       }),
     };
-    await seedData(query, variables);
+    await makeGqlRequest(query, variables);
     await Promise.all([
       page.waitForNavigation(),
       page.goto('http://localhost:3000/tasks?sortBy=label&page=1'),
