@@ -118,8 +118,6 @@ type Author {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  noUpdate: String
-  noCreate: String
 }
 
 input AuthorWhereUniqueInput {
@@ -141,8 +139,6 @@ input AuthorUpdateInput {
   name: String
   email: String
   posts: PostRelateToManyForUpdateInput
-  noRead: String
-  noCreate: String
 }
 
 input PostRelateToManyForUpdateInput {
@@ -161,8 +157,6 @@ input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyForCreateInput
-  noRead: String
-  noUpdate: String
 }
 
 input PostRelateToManyForCreateInput {
