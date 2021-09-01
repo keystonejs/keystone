@@ -6,12 +6,15 @@ type Todo {
   title: String
 }
 
+input TodoWhereUniqueInput {
+  id: ID
+}
+
 input TodoWhereInput {
   AND: [TodoWhereInput!]
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
   id: IDFilter
-  title: StringNullableFilter
 }
 
 input IDFilter {
@@ -25,41 +28,8 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input TodoWhereUniqueInput {
-  id: ID
-}
-
 input TodoOrderByInput {
   id: OrderDirection
-  title: OrderDirection
 }
 
 enum OrderDirection {
@@ -143,6 +113,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

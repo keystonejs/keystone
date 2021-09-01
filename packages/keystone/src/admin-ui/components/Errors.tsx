@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { Component, ReactNode } from 'react';
 import { Button } from '@keystone-ui/button';

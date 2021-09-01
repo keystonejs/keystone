@@ -86,28 +86,28 @@ const runner = setupTestRunner({
     lists: createSchema({
       Owner: list({
         fields: {
-          name: text(),
-          companies: relationship({ ref: 'Company.owners', many: true }),
+          name: text({ isFilterable: true }),
+          companies: relationship({ ref: 'Company.owners', many: true, isFilterable: true }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          location: relationship({ ref: 'Location.company' }),
-          owners: relationship({ ref: 'Owner.companies', many: true }),
+          location: relationship({ ref: 'Location.company', isFilterable: true }),
+          owners: relationship({ ref: 'Owner.companies', many: true, isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
           name: text(),
-          company: relationship({ ref: 'Company.location' }),
-          custodians: relationship({ ref: 'Custodian.locations', many: true }),
+          company: relationship({ ref: 'Company.location', isFilterable: true }),
+          custodians: relationship({ ref: 'Custodian.locations', many: true, isFilterable: true }),
         },
       }),
       Custodian: list({
         fields: {
-          name: text(),
-          locations: relationship({ ref: 'Location.custodians', many: true }),
+          name: text({ isFilterable: true }),
+          locations: relationship({ ref: 'Location.custodians', many: true, isFilterable: true }),
         },
       }),
     }),

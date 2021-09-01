@@ -34,7 +34,7 @@ We add two new fields, `email` and `password`, to the `Person` list.
 These are used as our _identity_ and _secret_ fields for login.
 
 ```typescript
-    email: text({ isRequired: true, isUnique: true }),
+    email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
     password: password({ isRequired: true }),
 ```
 

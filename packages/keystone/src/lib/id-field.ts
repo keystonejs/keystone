@@ -9,9 +9,10 @@ import {
   ScalarDBField,
   graphql,
 } from '../types';
+import { packagePath } from '../package-path';
 
 const views = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  packagePath,
   '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
 );
 
@@ -110,6 +111,10 @@ export const idFieldType =
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
+      ...config,
+      // The ID field is always filterable and orderable.
+      isFilterable: true,
+      isOrderable: true,
       input: {
         where: {
           arg: filterArg,

@@ -17,7 +17,7 @@ import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
-    User: list({ fields: { name: text() } }),
+    User: list({ fields: { name: text({ isOrderable: true }) } }),
   }),
   /* ... */
 });

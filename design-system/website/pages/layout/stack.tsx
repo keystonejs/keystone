@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, Text, Stack } from '@keystone-ui/core';
 

@@ -8,7 +8,9 @@ export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: text(), testField: text() });
+export const getTestFields = () => ({
+  testField: text({ isFilterable: true }),
+});
 
 export const initItems = () => {
   return [

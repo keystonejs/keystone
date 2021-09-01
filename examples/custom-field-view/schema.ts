@@ -27,11 +27,15 @@ export const lists = createSchema({
         },
       }),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
 });

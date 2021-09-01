@@ -9,8 +9,8 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          a: integer(),
-          b: integer(),
+          a: integer({ isOrderable: true }),
+          b: integer({ isOrderable: true }),
         },
       }),
     }),

@@ -10,7 +10,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          title: text(),
+          title: text({ isOrderable: true }),
           author: relationship({ ref: 'User.notes' }),
         },
       }),

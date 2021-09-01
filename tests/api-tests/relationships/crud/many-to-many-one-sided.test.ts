@@ -90,9 +90,12 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: createSchema({
       Company: list({
-        fields: { name: text(), locations: relationship({ ref: 'Location', many: true }) },
+        fields: {
+          name: text(),
+          locations: relationship({ ref: 'Location', many: true, isFilterable: true }),
+        },
       }),
-      Location: list({ fields: { name: text() } }),
+      Location: list({ fields: { name: text({ isFilterable: true }) } }),
     }),
   }),
 });

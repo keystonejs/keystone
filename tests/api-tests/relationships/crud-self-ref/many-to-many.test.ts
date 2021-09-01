@@ -87,9 +87,9 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           friendOf: relationship({ ref: 'User.friends', many: true }),
-          friends: relationship({ ref: 'User.friendOf', many: true }),
+          friends: relationship({ ref: 'User.friendOf', many: true, isFilterable: true }),
         },
       }),
     }),

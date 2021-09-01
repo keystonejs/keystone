@@ -28,6 +28,7 @@ const runner = setupTestRunner({
                 }
               },
             },
+            isOrderable: true,
           }),
         },
       }),

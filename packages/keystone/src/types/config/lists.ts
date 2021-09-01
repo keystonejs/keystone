@@ -50,6 +50,10 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
+  // Defaults to apply to all fields.
+  defaultIsFilterable?: true; // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?: true; // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+
   /**
    * The label used for the list
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
@@ -194,6 +198,18 @@ export type ListGraphQLConfig = {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
+  // Setting any of these values will remove the corresponding operations from the GraphQL schema.
+  // Queries:
+  //   'query':  Does item()/items() exist?
+  // Mutations:
+  //   'create': Does createItem/createItems exist? Does `create` exist on the RelationshipInput types?
+  //   'update': Does updateItem/updateItems exist?
+  //   'delete': Does deleteItem/deleteItems exist?
+  // If `true`, then everything will be omitted, including the output type. This makes it a DB only list,
+  // including from the point of view of relationships to this list.
+  //
+  // Default: undefined
+  omit?: true | ('query' | 'create' | 'update' | 'delete')[];
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };

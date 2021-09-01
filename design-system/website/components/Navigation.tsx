@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { Fragment, ReactNode } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';

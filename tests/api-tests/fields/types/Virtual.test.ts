@@ -95,13 +95,21 @@ describe('Virtual field type', () => {
           Organisation: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
+              authoredPosts: relationship({
+                ref: 'Post.organisationAuthor',
+                many: true,
+                isFilterable: true,
+              }),
             },
           }),
           Person: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
+              authoredPosts: relationship({
+                ref: 'Post.personAuthor',
+                many: true,
+                isFilterable: true,
+              }),
             },
           }),
           Post: list({

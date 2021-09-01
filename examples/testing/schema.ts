@@ -29,13 +29,17 @@ export const lists = createSchema({
         return !!(session?.itemId && session.itemId === task.assignedTo?.id);
       },
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       password: password({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
 });

@@ -60,15 +60,17 @@ type PasswordState {
   isSet: Boolean!
 }
 
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
   email: StringNullableFilter
-  password: PasswordFilter
-  isAdmin: BooleanNullableFilter
 }
 
 input IDFilter {
@@ -110,25 +112,8 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input BooleanNullableFilter {
-  equals: Boolean
-  not: BooleanNullableFilter
-}
-
-input UserWhereUniqueInput {
-  id: ID
-  email: String
-}
-
 input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  isAdmin: OrderDirection
 }
 
 enum OrderDirection {
@@ -210,6 +195,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

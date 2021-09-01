@@ -19,7 +19,7 @@ const runner = setupTestRunner({
       }),
       PostLimitedRead: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           content: text(),
         },
         access: {

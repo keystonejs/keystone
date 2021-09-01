@@ -8,7 +8,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       // Imperative -> Declarative access control
       User: list({
-        fields: { name: text() },
+        fields: { name: text({ isOrderable: true }) },
         access: {
           read: true,
           create: true,

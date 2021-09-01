@@ -116,8 +116,8 @@ export const cloudinaryImage =
     ...config
   }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type cloudinaryImage');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");
     }
     const adapter = new CloudinaryAdapter(cloudinary);
     const resolveInput = async (
@@ -169,10 +169,7 @@ export const cloudinaryImage =
           };
         },
       }),
-      views: path.join(
-        path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
-        'views'
-      ),
+      views: path.join(path.dirname(__dirname), 'views'),
       __legacy: { isRequired, defaultValue },
     });
   };

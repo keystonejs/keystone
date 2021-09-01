@@ -15,16 +15,16 @@ enum PostStatusType {
   published
 }
 
+input PostWhereUniqueInput {
+  id: ID
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringNullableFilter
-  status: PostStatusTypeNullableFilter
-  content: StringNullableFilter
-  publishDate: DateTimeNullableFilter
-  author: AuthorWhereInput
 }
 
 input IDFilter {
@@ -66,34 +66,8 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input PostStatusTypeNullableFilter {
-  equals: PostStatusType
-  in: [PostStatusType!]
-  notIn: [PostStatusType!]
-  not: PostStatusTypeNullableFilter
-}
-
-input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  not: DateTimeNullableFilter
-}
-
-input PostWhereUniqueInput {
-  id: ID
-}
-
 input PostOrderByInput {
   id: OrderDirection
-  title: OrderDirection
-  status: OrderDirection
-  content: OrderDirection
-  publishDate: OrderDirection
 }
 
 enum OrderDirection {
@@ -144,6 +118,12 @@ type Author {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  noUpdate: String
+  noCreate: String
+}
+
+input AuthorWhereUniqueInput {
+  id: ID
 }
 
 input AuthorWhereInput {
@@ -151,32 +131,18 @@ input AuthorWhereInput {
   OR: [AuthorWhereInput!]
   NOT: [AuthorWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
-  posts: PostManyRelationFilter
-}
-
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
-input AuthorWhereUniqueInput {
-  id: ID
-  email: String
 }
 
 input AuthorOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
 }
 
 input AuthorUpdateInput {
   name: String
   email: String
   posts: PostRelateToManyForUpdateInput
+  noRead: String
+  noCreate: String
 }
 
 input PostRelateToManyForUpdateInput {
@@ -195,6 +161,8 @@ input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyForCreateInput
+  noRead: String
+  noUpdate: String
 }
 
 input PostRelateToManyForCreateInput {
@@ -279,6 +247,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int

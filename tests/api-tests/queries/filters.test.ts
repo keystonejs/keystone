@@ -8,13 +8,17 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          noDash: text(),
-          single_dash: text(),
-          many_many_many_dashes: text(),
-          multi____dash: text(),
+          noDash: text({ isFilterable: true }),
+          single_dash: text({ isFilterable: true }),
+          many_many_many_dashes: text({ isFilterable: true }),
+          multi____dash: text({ isFilterable: true }),
         },
       }),
-      SecondaryList: list({ fields: { someUser: relationship({ ref: 'User' }) } }),
+      SecondaryList: list({
+        fields: {
+          someUser: relationship({ ref: 'User', isFilterable: true }),
+        },
+      }),
     }),
   }),
 });

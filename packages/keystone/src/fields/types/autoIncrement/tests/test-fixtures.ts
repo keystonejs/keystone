@@ -1,5 +1,4 @@
 import { KeystoneContext } from '../../../../types';
-import { text } from '../../text';
 import { autoIncrement } from '..';
 
 export const name = 'AutoIncrement';
@@ -13,10 +12,7 @@ export const skipUpdateTest = true;
 
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({
-  name: text(),
-  orderNumber: autoIncrement(),
-});
+export const getTestFields = () => ({ orderNumber: autoIncrement({ isFilterable: true }) });
 
 export const initItems = () => {
   return [

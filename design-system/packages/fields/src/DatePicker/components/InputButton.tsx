@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, forwardRef } from 'react';

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ElementType, Children, Fragment, ReactNode, isValidElement } from 'react';

@@ -105,7 +105,7 @@ export const lists = createSchema({
       /* The name of the user */
       name: text({ isRequired: true }),
       /* The email of the user, used to sign in */
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       /* The password of the user */
       password: password({
         isRequired: true,

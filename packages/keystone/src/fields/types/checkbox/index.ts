@@ -20,8 +20,8 @@ export const checkbox =
     ...config
   }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type checkbox');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
     }
 
     return fieldType({
@@ -48,9 +48,7 @@ export const checkbox =
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Boolean,
-      }),
+      output: graphql.field({ type: graphql.Boolean }),
       views: resolveView('checkbox/views'),
       getAdminMeta: () => ({ defaultValue }),
     });

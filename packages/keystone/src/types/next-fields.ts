@@ -382,27 +382,6 @@ export type FieldTypeWithoutDBField<
   };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
-export function fieldType<TDBField extends DBField>(dbField: TDBField) {
-  return function <
-    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
-    UpdateArg extends graphql.Arg<graphql.InputType>,
-    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
-    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
-    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
-  >(
-    stuff: FieldTypeWithoutDBField<
-      TDBField,
-      CreateArg,
-      UpdateArg,
-      UniqueWhereArg,
-      OrderByArg,
-      FilterArg
-    >
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
-    return { ...stuff, dbField };
-  };
-}
-
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
 export type TypesForList = {
@@ -420,11 +399,11 @@ export type TypesForList = {
         some: graphql.Arg<AnyInputObj>;
         none: graphql.Arg<AnyInputObj>;
       }>;
-      create: graphql.InputObjectType<{
+      create?: graphql.InputObjectType<{
         connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
         create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
       }>;
-      update: graphql.InputObjectType<{
+      update?: graphql.InputObjectType<{
         disconnect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
         set: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
         connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
@@ -432,11 +411,11 @@ export type TypesForList = {
       }>;
     };
     one: {
-      create: graphql.InputObjectType<{
+      create?: graphql.InputObjectType<{
         create?: graphql.Arg<TypesForList['create']>;
         connect: graphql.Arg<TypesForList['uniqueWhere']>;
       }>;
-      update: graphql.InputObjectType<{
+      update?: graphql.InputObjectType<{
         create?: graphql.Arg<TypesForList['create']>;
         connect: graphql.Arg<TypesForList['uniqueWhere']>;
         disconnect: graphql.Arg<typeof graphql.Boolean>;
@@ -456,3 +435,25 @@ export type FindManyArgs = {
 };
 
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
+
+// fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
+export function fieldType<TDBField extends DBField>(dbField: TDBField) {
+  return function <
+    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
+    UpdateArg extends graphql.Arg<graphql.InputType>,
+    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
+    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
+    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
+  >(
+    graphQLInfo: FieldTypeWithoutDBField<
+      TDBField,
+      CreateArg,
+      UpdateArg,
+      UniqueWhereArg,
+      OrderByArg,
+      FilterArg
+    >
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
+    return { ...graphQLInfo, dbField };
+  };
+}

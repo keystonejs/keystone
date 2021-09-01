@@ -12,14 +12,14 @@ const runner = setupTestRunner({
     lists: createSchema({
       Post: list({
         fields: {
-          title: text(),
-          author: relationship({ ref: 'User' }),
+          title: text({ isFilterable: true, isOrderable: true }),
+          author: relationship({ ref: 'User', isFilterable: true }),
         },
       }),
       User: list({
         fields: {
-          name: text(),
-          feed: relationship({ ref: 'Post', many: true }),
+          name: text({ isFilterable: true }),
+          feed: relationship({ ref: 'Post', many: true, isFilterable: true }),
         },
       }),
     }),

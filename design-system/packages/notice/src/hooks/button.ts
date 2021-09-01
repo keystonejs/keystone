@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { useTheme } from '@keystone-ui/core';

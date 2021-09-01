@@ -16,7 +16,7 @@ testModules
   )
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-      describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
+      describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
             mod.beforeEach();
@@ -44,7 +44,7 @@ testModules
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
-                    isUnique: true,
+                    isIndexed: 'unique',
                     ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                   }),
                 },
@@ -140,7 +140,7 @@ testModules
   )
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-      describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
+      describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         test('Ensure non-supporting fields throw an error', async () => {
           // Try to create a thing and have it fail
           let erroredOut = false;
@@ -152,7 +152,7 @@ testModules
                     fields: {
                       name: text(),
                       testField: mod.typeFunction({
-                        isUnique: true,
+                        isIndexed: 'unique',
                         ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                       }),
                     },
@@ -162,8 +162,10 @@ testModules
                 files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),
             });
-          } catch (error) {
-            expect(error.message).toMatch('isUnique is not a supported option for field type');
+          } catch (error: any) {
+            expect(error.message).toMatch(
+              "isIndexed: 'unique' is not a supported option for field type"
+            );
             erroredOut = true;
           }
           expect(erroredOut).toEqual(true);

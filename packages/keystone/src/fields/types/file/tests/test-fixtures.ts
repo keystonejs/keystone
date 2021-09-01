@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import { text } from '../../text';
 import { file } from '..';
 
 const prepareFile = (_filePath: string) => {
@@ -30,7 +29,7 @@ export const supportsUnique = false;
 export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
 
-export const getTestFields = () => ({ name: text(), secretFile: file() });
+export const getTestFields = () => ({ secretFile: file() });
 
 export const afterEach = async () => {
   // This matches the storagePath in the keystone config in the various test files.
