@@ -263,8 +263,17 @@ export const componentBlocks = {
       return (
         <div
           css={{
-            borderLeft: '3px solid #CBD5E0',
             paddingLeft: 16,
+            backgroundColor: '#f3f5f6',
+            padding: '8px 12px 16px 48px',
+            position: 'relative',
+            ':after': {
+              content: '\201C',
+              position: 'absolute',
+              top: '0',
+              left: '0',
+              fontSize: '4rem',
+            },
           }}
         >
           <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
