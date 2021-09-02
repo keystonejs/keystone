@@ -145,6 +145,8 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   const { spacing } = useTheme();
   return (
     <div
+      id="skip-link-navigation"
+      tabIndex={-1}
       css={{
         display: 'flex',
         flexDirection: 'column',

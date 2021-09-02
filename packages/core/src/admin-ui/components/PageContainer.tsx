@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme, Stack, H4 } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode } from 'react';
 
 import { Navigation } from './Navigation';
@@ -14,6 +14,46 @@ type PageContainerProps = {
 };
 
 export const HEADER_HEIGHT = 80;
+
+export function SkipLinks() {
+  const { palette } = useTheme();
+  return (
+    <div
+      css={{
+        zIndex: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        rowGap: '8px',
+        background: 'white',
+        position: 'fixed',
+        top: '-100rem',
+        width: '300px',
+        left: 0,
+        right: 0,
+        padding: '1rem',
+        boxShadow: `0 0 5px 1px ${palette.neutral500}`,
+        ':focus-within': {
+          top: '10px',
+          left: '10px',
+        },
+      }}
+    >
+      <H4>Skip to:</H4>
+      <Stack
+        as="ol"
+        gap="small"
+        css={{
+          padding: 0,
+          margin: 0,
+          listStyle: 'none',
+        }}
+      >
+        <a href="#skip-link-navigation">Page Navigation</a>
+        <a href="#skip-link-content">Content</a>
+      </Stack>
+    </div>
+  );
+}
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
   // const { colors } = useTheme();
@@ -57,6 +97,8 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
 
   return (
     <main
+      id="skip-link-content"
+      tabIndex={-1}
       css={{
         backgroundColor: colors.background,
         boxSizing: 'border-box',
@@ -76,6 +118,7 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
   const { colors, spacing } = useTheme();
   return (
     <PageWrapper>
+      <SkipLinks />
       <div
         css={{
           alignItems: 'center',
