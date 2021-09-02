@@ -30,7 +30,11 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const router = useRouter();
   return (
-    <div css={{ position: 'relative' }}>
+    <div
+      css={{
+        position: 'relative',
+      }}
+    >
       <Link
         href={`/${list.path}`}
         css={{
@@ -158,7 +162,15 @@ export const HomePage = () => {
           <LoadingDots label="Loading lists" size="large" tone="passive" />
         </Center>
       ) : (
-        <Inline gap="large" paddingY="xlarge">
+        <Inline
+          as="ul"
+          gap="large"
+          paddingY="xlarge"
+          css={{
+            paddingInlineStart: '0px',
+            marginBottom: '0px',
+          }}
+        >
           {(() => {
             if (visibleLists.state === 'error') {
               return (

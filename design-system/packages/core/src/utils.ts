@@ -12,6 +12,19 @@ import {
 import { createPortal } from 'react-dom';
 
 /*
+  Simple switch to coerce a child tag from a parent tag argument
+*/
+export const getChildTag = (parentTag?: ElementType<any>) => {
+  switch (parentTag) {
+    case 'ul':
+    case 'ol':
+      return 'li';
+    default:
+      return 'div';
+  }
+};
+
+/*
   @johannes' one weird trick for fixing TypeScript autocomplete
 */
 export function identityType<T>() {
