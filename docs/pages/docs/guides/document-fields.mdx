@@ -504,9 +504,11 @@ export const componentBlocks = {
 
 ### Fields
 
-There are a variety
+There are a variety:
 
 #### Child Fields
+
+?> We haven't completed the documentation for this feature yet. In the meantime, if you're like to know more about this feature, reach out to us in the [community Slack](https://community.keystonejs.com/).
 
 #### Form Fields
 
@@ -635,13 +637,17 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 });
 ```
 
-> You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
+!> You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
 
 ### Preview Props
 
+?> We haven't completed the documentation for this feature yet. In the meantime, if you're like to know more about this feature, reach out to us in the [community Slack](https://community.keystonejs.com/).
+
 ### Chromeless
 
-If you want to give your component blocks a more native feel in the editor, you can set `chromeless: true` to disable Keystone's standard generated edit form. In the [document editor demo](/docs/guides/document-field-demo), the Notice and Quote blocks are chromeless, but the Hero block has the standard chrome styling:
+If you want to hide the default UI around your component block, you can set chromeless: true. This removes the border, toolbar, and generated form.
+
+In the [document editor demo](/docs/guides/document-field-demo), the Notice and Quote blocks are chromeless, but the Hero block has the standard chrome styling:
 
 ![Notice, Quote, and Hero component blocks demonstrating chrome, and chromeless styling](/assets/guides/document-fields/chomeless-example-docs-demo.png)
 
