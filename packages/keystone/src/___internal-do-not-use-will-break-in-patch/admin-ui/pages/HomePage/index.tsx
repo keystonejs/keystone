@@ -158,7 +158,15 @@ export const HomePage = () => {
           <LoadingDots label="Loading lists" size="large" tone="passive" />
         </Center>
       ) : (
-        <Inline gap="large" paddingY="xlarge">
+        <Inline
+          as="ul"
+          gap="large"
+          paddingY="xlarge"
+          css={{
+            paddingLeft: '0px',
+            marginBottom: '0px',
+          }}
+        >
           {(() => {
             if (visibleLists.state === 'error') {
               return (
