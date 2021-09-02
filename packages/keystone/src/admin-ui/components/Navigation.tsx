@@ -8,7 +8,7 @@ import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { NavigationProps, ListMeta } from '../../types';
+import { NavigationProps, ListMeta, AuthenticatedItem } from '../../types';
 
 import { useKeystone } from '../context';
 import { Link } from '../router';
@@ -60,51 +60,94 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   );
 };
 
-const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
+const AuthenticatedItemFoo = ({ item }: { item: AuthenticatedItem | undefined }) => {
   const { spacing, typography } = useTheme();
-  return (
-    <div
-      css={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: spacing.xlarge,
-        marginBottom: 0,
-      }}
-    >
-      <div css={{ fontSize: typography.fontSize.small }}>
-        Signed in as <strong>{item.label}</strong>
-      </div>
-      <Popover
-        placement="bottom"
-        triggerRenderer={({ triggerProps }) => (
-          <Button
-            size="small"
-            style={{ padding: 0, width: 36 }}
-            aria-label="Links and signout"
-            {...triggerProps}
-          >
-            <MoreHorizontalIcon />
-          </Button>
-        )}
+  if (item && item.state === 'authenticated') {
+    return (
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          margin: spacing.xlarge,
+          marginBottom: 0,
+        }}
       >
-        <Stack gap="medium" padding="large" dividers="between">
-          {/* FIXME: Use config.graphql.path */}
-          <PopoverLink target="_blank" href="/api/graphql">
-            API Explorer
-          </PopoverLink>
-          <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
-            GitHub Repository
-          </PopoverLink>
-          <PopoverLink target="_blank" href="https://keystonejs.com">
-            Keystone Documentation
-          </PopoverLink>
-          <SignoutButton />
-        </Stack>
-      </Popover>
-    </div>
-  );
+        <div css={{ fontSize: typography.fontSize.small }}>
+          Signed in as <strong>{item.label}</strong>
+        </div>
+        <Popover
+          placement="bottom"
+          triggerRenderer={({ triggerProps }) => (
+            <Button
+              size="small"
+              style={{ padding: 0, width: 36 }}
+              aria-label="Links and signout"
+              {...triggerProps}
+            >
+              <MoreHorizontalIcon />
+            </Button>
+          )}
+        >
+          <Stack gap="medium" padding="large" dividers="between">
+            {/* FIXME: Use config.graphql.path */}
+            <PopoverLink target="_blank" href="/api/graphql">
+              API Explorer
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
+              GitHub Repository
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://keystonejs.com">
+              Keystone Documentation
+            </PopoverLink>
+            <SignoutButton />
+          </Stack>
+        </Popover>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          margin: spacing.xlarge,
+          marginBottom: 0,
+        }}
+      >
+        <div />
+        <Popover
+          placement="bottom"
+          triggerRenderer={({ triggerProps }) => (
+            <Button
+              size="small"
+              style={{ padding: 0, width: 36 }}
+              aria-label="Links and signout"
+              {...triggerProps}
+            >
+              <MoreHorizontalIcon />
+            </Button>
+          )}
+        >
+          <Stack gap="medium" padding="large" dividers="between">
+            {/* FIXME: Use config.graphql.path */}
+            <PopoverLink target="_blank" href="/api/graphql">
+              API Explorer
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
+              GitHub Repository
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://keystonejs.com">
+              Keystone Documentation
+            </PopoverLink>
+          </Stack>
+        </Popover>
+      </div>
+    );
+  }
 };
 
 const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement>) => {
@@ -140,9 +183,7 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
         justifyContent: 'center',
       }}
     >
-      {authenticatedItem?.state === 'authenticated' && (
-        <AuthenticatedItem item={authenticatedItem} />
-      )}
+      <AuthenticatedItemFoo item={authenticatedItem} />
       <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
         <ul
           css={{
