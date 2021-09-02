@@ -20,39 +20,40 @@ export default config({
 });
 ```
 
-This document covers the complete access control API.
-For a guide on how to use this API to apply common patterns please see the [access control guide](../guides/access-control).
+!> This document covers the complete access control API.
+Our [access control guide](../guides/access-control) shows you how to apply this API to common patterns.
 
 ## List Access Control
 
-Keystone allows you to set up access control on a per-list basis.
-The default access control is to allow all operations for all users.
+Keystone lets you apply access control on a per-list basis.
+By default it allows all operations for all users.
 Access control is applied to the generated CRUD (**c**reate, **r**ead, **u**pdate, **d**elete) operations and mutations in the [GraphQL API](./graphql), and is applied before any [hooks](./hooks) are executed.
 
-List level access control can be specified in three ways, of increasing power.
+List-level access control can be specified in three ways, of increasing power.
 
-- `operation` access control lets you check the information in the `context` and `session` objects to decide if the
-  user is allow to access the list.
-- `filter` access control lets you provide a GraphQL filter which defines the items the user is allowed to access.
-- `item` access control lets you write a function which inspects the provided input data and the existing object (if it exists)
+- `operation` lets you check the information in the `context` and `session` objects to decide if the
+  user is allowed to access the list.
+- `filter` lets you provide a GraphQL filter which defines the items the user is allowed to access.
+- `item` lets you write a function which inspects the provided input data and the existing object (if it exists)
   and make a decision based on this extra data.
 
-If access is denied due to any of the access control methods then the following response will be returned from the GraphQL API:
+If access is **denied** due to any of the access control methods, the following responses will be returned from the GraphQL API:
 
 - **Mutations**
-  - Single operations will return `null` and return an access denied error
-  - Multi operations will return a data array with `null` values for the items which have access denied.
-    Access denied errors will be return for each `null` items.
+  - **Single** operations return `null` and an access denied error.
+  - **Multi** operations return a data array with `null` values for the items which have access denied.
+    Error responses are returned for each `null` item.
 - **Queries**
-  - Single item queries will return `null` with no errors.
-  - Many item queries will filter out those items which have access denied, with no errors.
-  - Count queries will only count those items for which access is not denied, with no errors.
+  - **Single** item queries return `null` with no errors.
+  - **Many** item queries filter out the items which have access denied. No error responses are returned.
+  - **Count** queries will only count items for which access is **not** denied. No errors are returned.
 
 ### Operation
 
-Operation level access control lets you control whether which operations can be accessed by a user based on the `session` and `context`.
-Individual functions can be provided for each of the operations.
-These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
+Operation-level access control lets you control which operations can be accessed by a user based on the `session` and `context`.
+Individual functions can be provided for each operation.
+
+!> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -78,11 +79,12 @@ It does not prevent a user **reading** the data returned by the mutation operati
 
 ### Filter
 
-Filter level access control lets you control which operations can be performed by providing a function which returns a GraphQL filter.
-For mutations, access will be denied if the item being operated on doesn't match the filter.
-For queries, the access control filter will be combined with the provided query filter and only items which match both filters will be returned.
+Filter-level access control lets you control which operations can be performed by providing a function that returns a GraphQL filter.
 
-In general the filter access control functions will return GraphQL filters.
+- For **mutations**, access will be denied if the item being operated on doesn't match the filter.
+- For **queries**, the access control filter will be combined with the provided query filter and only items which match both filters will be returned.
+
+In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
 ```typescript
@@ -117,12 +119,14 @@ export default config({
 
 !> Filter access control cannot be used on `create` operations, as there is no pre-existing item to filter against.
 
-### Item - Mutations only
+### Item (mutations only)
 
-The final level of access control is the `item` level.
-This level of access control is available for the `create`, `update`, and `delete` mutations.
-This level lets your write functions which have access to the input data of the mutation (for `create` and `update` operations) as well as the existing item in the database (for `update` and `delete` operations).
-These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
+`item` is the final and most powerful level of access control. It’s available to `create`, `update`, and `delete` mutations, and lets you write functions which have access to:
+
+- the **input data** of the mutation (for `create` and `update` operations), and
+- the **existing item** in the database (for `update` and `delete` operations).
+
+!> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -150,7 +154,7 @@ export default config({
 
 ### Function Arguments
 
-List level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
+List-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
 | Argument        | Description                                                                                                   |
 | --------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -163,19 +167,18 @@ List level access control functions are passed a collection of arguments which c
 
 ## Field Access Control
 
-Keystone also allows you to set up access control on a per-field basis.
-Access control rules can be set for `read`, `update` and `delete`operations.
+Keystone also lets you set access control on a per-field basis.
+Rules can be set for `read`, `update` and `delete`operations.
 
-Each operation is defined by a function which returns `true` if access is allowed and `false` if access is not allowed.
+!> Each operation is defined by a function which returns `true` if access is allowed and `false` if access is not allowed.
 
-- **Mutations**: The field level access control rules are applied after the list level access rules have been applied.
-  Only those fields which have an input value provided to the mutation will have their access control rules applied.
-  If any of the provided fields fail their access control check, then the whole operation will be aborted.
-  The GraphQL API will return `null` along with an access denied error.
+### Mutations
 
-- **Queries**: Field level access control rules are applied when trying to resolve a field on the output type.
-  If access is denied then the query will still return an item object, but the specific field will return `null`.
-  No errors will be returned for `read` access denied.
+Field-level access control rules are applied **after** list-level access rules. Access control rules are only applied to the fields that have an input value provided to the mutation. If any of the provided fields fail their access control check, the whole operation is aborted. The GraphQL API then returns `null` along with an access denied error.
+
+### Queries
+
+Field-level access control rules are applied when trying to resolve a field on the output type. If access is denied the query will still return an item object, but the specific field will return `null`. No errors will be returned for `read` access denied.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
@@ -198,11 +201,11 @@ export default config({
 });
 ```
 
-!> Field level access control is not available for `delete` operations.
+!> Field-level access control is not available for `delete` operations.
 
 ### Function Arguments
 
-Field level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
+Field-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
 | Argument        | Description                                                                                 |
 | --------------- | ------------------------------------------------------------------------------------------- |
