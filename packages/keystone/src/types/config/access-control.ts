@@ -117,19 +117,16 @@ export type ListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes>
 };
 
 // Field Access
-
 export type IndividualFieldAccessControl<Args> = (args: Args) => MaybePromise<boolean>;
 
-type BaseFieldAccessArgs = { fieldKey: string };
-
 export type FieldCreateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
-  CreateItemAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
+  CreateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };
 
 export type FieldReadItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
-  BaseAccessArgs & BaseFieldAccessArgs & { item: GeneratedListTypes['backing'] };
+  BaseAccessArgs & { fieldKey: string; item: GeneratedListTypes['backing'] };
 
 export type FieldUpdateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
-  UpdateItemAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
+  UpdateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };
 
 export type FieldAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | {
