@@ -32,10 +32,7 @@ export const checkbox =
     })({
       ...config,
       input: {
-        where: {
-          arg: graphql.arg({ type: filters[meta.provider].Boolean.required }),
-          resolve: filters.resolveCommon,
-        },
+        where: { arg: graphql.arg({ type: filters[meta.provider].Boolean.required }) },
         create: { arg: graphql.arg({ type: graphql.nonNull(graphql.Boolean), defaultValue }) },
         update: {
           arg: graphql.arg({ type: graphql.Boolean }),
