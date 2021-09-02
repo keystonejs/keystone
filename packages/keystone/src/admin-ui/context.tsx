@@ -24,6 +24,7 @@ type KeystoneContextType = {
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
   reinitContext: () => void;
+  apiPath: string;
 };
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined);
@@ -34,6 +35,7 @@ type KeystoneProviderProps = {
   adminMetaHash: string;
   fieldViews: FieldViews;
   lazyMetadataQuery: DocumentNode;
+  apiPath: string;
 };
 
 function InternalKeystoneProvider({
@@ -42,6 +44,7 @@ function InternalKeystoneProvider({
   adminMetaHash,
   children,
   lazyMetadataQuery,
+  apiPath,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
@@ -70,6 +73,7 @@ function InternalKeystoneProvider({
             reinitContext,
             visibleLists,
             createViewFieldModes,
+            apiPath,
           }}
         >
           {children}
@@ -84,10 +88,9 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        // FIXME: Use config.graphql.path
-        link: createUploadLink({ uri: '/api/graphql' }),
+        link: createUploadLink({ uri: props.apiPath }),
       }),
-    []
+    [props.apiPath]
   );
 
   return (

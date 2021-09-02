@@ -257,6 +257,9 @@ export function getAdminMetaSchema({
   const adminMeta = graphql.object<AdminMetaRootVal>()({
     name: 'KeystoneAdminMeta',
     fields: {
+      apiPath: graphql.field({
+        type: graphql.nonNull(graphql.String),
+      }),
       enableSignout: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
       }),

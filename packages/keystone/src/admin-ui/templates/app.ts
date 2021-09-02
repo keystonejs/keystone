@@ -53,7 +53,8 @@ export default getApp({
   lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
   fieldViews: [${allViews.map((_, i) => `view${i}`)}],
   adminMetaHash: "${adminMetaQueryResultHash}",
-  adminConfig: adminConfig
+  adminConfig: adminConfig,
+  apiPath: "${adminMetaRootVal.apiPath}",
 });
 `;
   // -- TEMPLATE END

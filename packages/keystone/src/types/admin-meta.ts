@@ -100,6 +100,7 @@ export type ListMeta = {
 };
 
 export type AdminMeta = {
+  apiPath: string;
   enableSignout: boolean;
   enableSessionItem: boolean;
   lists: { [list: string]: ListMeta };
@@ -180,6 +181,7 @@ export type ListMetaRootVal = {
 };
 
 export type AdminMetaRootVal = {
+  apiPath: string;
   enableSignout: boolean;
   enableSessionItem: boolean;
   lists: Array<ListMetaRootVal>;

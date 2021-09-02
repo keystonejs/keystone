@@ -41,7 +41,7 @@ export const writeAdminFiles = (
         {
           mode: 'write' as const,
           src: apiTemplate,
-          outputPath: 'pages/api/graphql.js',
+          outputPath: `pages/${adminMeta.apiPath}.js`,
         },
       ]
     : []),
