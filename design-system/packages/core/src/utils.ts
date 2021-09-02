@@ -12,7 +12,8 @@ import {
 import { createPortal } from 'react-dom';
 
 /*
-  Simple switch to coerce a child tag from a parent tag argument
+  Simple switch to return a child tag from a parent tag argument.
+  Returns a div by default.
 */
 export const getChildTag = (parentTag?: ElementType<any>) => {
   switch (parentTag) {
