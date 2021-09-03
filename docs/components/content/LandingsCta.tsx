@@ -1,13 +1,9 @@
 /** @jsx jsx */
 import type { HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
-// import Image from 'next/image';
 
 import { useMediaQuery } from '../../lib/media';
-// import { Button } from '../primitives/Button';
 import { Type } from '../primitives/Type';
-// import { ArrowR } from '../icons/ArrowR';
-// import { Tick } from '../icons/Tick';
 import { Section } from './Section';
 import { FeatureWell } from '../../components/primitives/FeatureWell';
 
