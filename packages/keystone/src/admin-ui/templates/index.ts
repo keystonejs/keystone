@@ -24,7 +24,12 @@ export const writeAdminFiles = (
   { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
   {
     mode: 'write',
-    src: appTemplate(adminMeta, graphQLSchema, { configFileExists, projectAdminPath }, config.graphql?.path || '/api/graphql'),
+    src: appTemplate(
+      adminMeta,
+      graphQLSchema,
+      { configFileExists, projectAdminPath },
+      config.graphql?.path || '/api/graphql'
+    ),
     outputPath: 'pages/_app.js',
   },
   { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
