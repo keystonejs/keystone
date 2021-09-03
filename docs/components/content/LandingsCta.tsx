@@ -19,7 +19,7 @@ export function LandingsCta(props: HTMLAttributes<HTMLElement>) {
       css={mq({
         border: '1px solid var(--border-muted)',
         borderRadius: '1rem',
-        padding: ['1.5rem', null, null, '3.5rem'],
+        padding: ['1.5rem', '2.5rem', null, '3.5rem'],
         boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
       })}
       {...props}
@@ -35,7 +35,7 @@ export function LandingsCta(props: HTMLAttributes<HTMLElement>) {
         css={mq({
           display: 'grid',
           gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr'],
-          gap: ['1.5rem', null, null, '2.5rem'],
+          gap: ['1rem', '2rem', '2.5rem', null],
           alignItems: 'stretch',
           marginTop: '2.5rem',
         })}
