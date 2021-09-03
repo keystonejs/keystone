@@ -33,6 +33,7 @@ import { Watch } from '../components/icons/Watch';
 import { Cli } from '../components/icons/Cli';
 import { Page } from '../components/Page';
 import { IntroHeading } from '../components/content/Intro';
+import { LandingsCta } from '../components/content/LandingsCta';
 
 import adminUi from '../public/assets/admin-ui.png';
 
@@ -165,6 +166,8 @@ export default function WhyKeystonePage() {
           works like a charm. As a frontend dev with skills in node and elastic search, Keystone +
           GraphQL just feels so right to me <Emoji symbol="❤️" alt="Love" />
         </Quote>
+
+        <LandingsCta />
 
         <Section>
           <Pill grad="grad2" id="features">
@@ -538,80 +541,6 @@ export default function WhyKeystonePage() {
             perfect balance of reliability and flexibility for backend work.
           </TweetBox>
         </Section>
-
-        <Section>
-          <Type as="h2" look="heading48">
-            We made this <Highlight look="grad2">for you</Highlight>
-          </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
-            Learn more about why Keystone is a great fit for your entire team:
-          </Type>
-          <ul
-            css={mq({
-              display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '3rem',
-              listStyle: 'none',
-              padding: 0,
-              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
-              '& svg': {
-                height: '3rem',
-              },
-              '& svg, & h3, & p': {
-                marginBottom: '1rem',
-              },
-            })}
-          >
-            <li>
-              <Code grad="grad2" />
-              <Type as="h3" look="heading24">
-                Developers
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
-                at home with the tools you know and love.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-developers">
-                  <a>Keystone for Developers →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Content grad="grad2" />
-              <Type as="h3" look="heading24">
-                Content people
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Get the fields, forms, and workflows you need to do your best work. Tell the full
-                story with a rich text editor that can be configured for any content need.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-content-management">
-                  <a>Keystone for Content Management →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Organization grad="grad2" />
-              <Type as="h3" look="heading24">
-                Organisations
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Realise your vision with a backend you can shape to fit your logic. Own your data,
-                cultivate a productive content culture, send your message anywhere, and scale on
-                your terms.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-organisations">
-                  <a>Keystone for Organisations →</a>
-                </Link>
-              </Type>
-            </li>
-          </ul>
-        </Section>
-
         <EndCta grad="grad2" />
       </MWrapper>
     </Page>

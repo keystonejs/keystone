@@ -9,6 +9,8 @@ import { Type } from '../../components/primitives/Type';
 import { Well } from '../../components/primitives/Well';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
+import { LandingsCta } from '../../components/content/LandingsCta';
+import { CommunityCta } from '../../components/content/CommunityCta';
 
 export default function Docs() {
   const mq = useMediaQuery();
@@ -75,6 +77,8 @@ export default function Docs() {
           </div>
         </div>
       </div>
+
+      <LandingsCta />
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Walkthroughs
@@ -236,6 +240,7 @@ export default function Docs() {
           A list of the filters you can query against for each field type.
         </Well>
       </div>
+      <CommunityCta />
     </DocsPage>
   );
 }

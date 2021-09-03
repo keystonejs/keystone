@@ -9,7 +9,6 @@ import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Int
 import { CommunityCta } from '../components/content/CommunityCta';
 import { LandingsCta } from '../components/content/LandingsCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
-import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/content/MWrapper';
@@ -25,7 +24,6 @@ import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
 import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
-import { Content } from '../components/icons/Content';
 import { Updates } from '../components/icons/Updates';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
@@ -33,7 +31,6 @@ import { Custom } from '../components/icons/Custom';
 import { Filter } from '../components/icons/Filter';
 import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
-import { Code } from '../components/icons/Code';
 import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
 
@@ -720,6 +717,8 @@ export const lists = createSchema({
           </ul>
         </Section>
 
+        <LandingsCta />
+
         <Section
           css={{
             textAlign: 'center',
@@ -755,88 +754,6 @@ export const lists = createSchema({
             />
           </div>
         </Section>
-
-        <Section>
-          <Type as="h2" look="heading48">
-            Unify your <Highlight look="grad3">team dynamic</Highlight>
-          </Type>
-          <Type
-            as="p"
-            look="body20"
-            margin="0.5rem 0 1.5rem 0"
-            color="var(--muted)"
-            css={{ maxWidth: '37.5rem' }}
-          >
-            Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
-            natural. A tool your team can grow with.
-          </Type>
-          <ul
-            css={mq({
-              display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '3rem',
-              listStyle: 'none',
-              padding: 0,
-              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
-              '& svg': {
-                height: '3rem',
-              },
-              '& svg, & h3, & p': {
-                marginBottom: '1rem',
-              },
-            })}
-          >
-            <li>
-              <Code grad="grad3" />
-              <Type as="h3" look="heading24">
-                Developers
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
-                at home with the tools you know and love.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-developers">
-                  <a>Keystone for Developers →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Content grad="grad3" />
-              <Type as="h3" look="heading24">
-                Content people
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Get the fields, forms, and workflows you need to do your best work. Tell the full
-                story with a rich text editor that can be configured for any content need.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-content-management">
-                  <a>Keystone for Content Management →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Organization grad="grad3" />
-              <Type as="h3" look="heading24">
-                Organisations
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Realise your vision with a backend you can shape to fit your logic. Own your data,
-                cultivate a productive content culture, send your message anywhere, and scale on
-                your terms.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-organisations">
-                  <a>Keystone for Organisations →</a>
-                </Link>
-              </Type>
-            </li>
-          </ul>
-        </Section>
-
-        <LandingsCta />
 
         <CommunityCta />
 
