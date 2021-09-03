@@ -5,12 +5,16 @@ import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
-  graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo']['many']['create']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['many']['create'], undefined>>
+  >,
   null | undefined
 >;
 
 type _UpdateValueType = Exclude<
-  graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo']['many']['update']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['many']['update'], undefined>>
+  >,
   null | undefined
 >;
 

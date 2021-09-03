@@ -8,15 +8,15 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          noDash: text({ graphql: { isEnabled: { filter: true } } }),
-          single_dash: text({ graphql: { isEnabled: { filter: true } } }),
-          many_many_many_dashes: text({ graphql: { isEnabled: { filter: true } } }),
-          multi____dash: text({ graphql: { isEnabled: { filter: true } } }),
+          noDash: text({ isFilterable: true }),
+          single_dash: text({ isFilterable: true }),
+          many_many_many_dashes: text({ isFilterable: true }),
+          multi____dash: text({ isFilterable: true }),
         },
       }),
       SecondaryList: list({
         fields: {
-          someUser: relationship({ ref: 'User', graphql: { isEnabled: { filter: true } } }),
+          someUser: relationship({ ref: 'User', isFilterable: true }),
         },
       }),
     }),

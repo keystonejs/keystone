@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import type { ReactNode } from 'react';
 import { jsx } from '@keystone-ui/core';

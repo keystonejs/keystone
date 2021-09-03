@@ -47,7 +47,7 @@ export const lists = createSchema({
       /** Email is used to log into the system. */
       email: text({
         isIndexed: 'unique',
-        graphql: { isEnabled: { filter: true } },
+        isFilterable: true,
         validation: {
           match: {
             regex:

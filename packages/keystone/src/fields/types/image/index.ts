@@ -102,8 +102,8 @@ export const image =
     ...config
   }: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   () => {
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type image');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type image");
     }
 
     return fieldType({

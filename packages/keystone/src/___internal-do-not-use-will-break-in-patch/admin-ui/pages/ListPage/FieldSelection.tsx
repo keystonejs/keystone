@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Button } from '@keystone-ui/button';
 import { Box, jsx } from '@keystone-ui/core';
@@ -46,16 +47,9 @@ export function FieldSelection({
   const setNewSelectedFields = (selectedFields: string[]) => {
     if (isArrayEqual(selectedFields, list.initialColumns)) {
       const { fields: _ignore, ...otherQueryFields } = router.query;
-      router.push({
-        query: otherQueryFields,
-      });
+      router.push({ query: otherQueryFields });
     } else {
-      router.push({
-        query: {
-          ...router.query,
-          fields: selectedFields.join(','),
-        },
-      });
+      router.push({ query: { ...router.query, fields: selectedFields.join(',') } });
     }
   };
   const fields: { value: string; label: string; isDisabled: boolean }[] = [];
@@ -71,8 +65,7 @@ export function FieldSelection({
 
   return (
     <Popover
-      aria-label="Columns options"
-      aria-description={`list of column options to apply to the ${list.key} list`}
+      aria-label={`Columns options, list of column options to apply to the ${list.key} list`}
       triggerRenderer={({ triggerProps }) => {
         return (
           <Button weight="link" css={{ padding: 4 }} {...triggerProps}>
@@ -92,9 +85,7 @@ export function FieldSelection({
               setNewSelectedFields(options.map(x => x.value));
             }}
             isMulti
-            value={fields.filter(option => {
-              return selectedFields.has(option.value);
-            })}
+            value={fields.filter(option => selectedFields.has(option.value))}
             options={fields}
             components={fieldSelectionOptionsComponents}
           />

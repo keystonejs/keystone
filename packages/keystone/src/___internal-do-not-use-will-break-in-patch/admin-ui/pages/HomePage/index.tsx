@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 
@@ -17,10 +18,7 @@ import { useRouter, Link } from '../../../../admin-ui/router';
 type ListCardProps = {
   listKey: string;
   count:
-    | {
-        type: 'success';
-        count: number;
-      }
+    | { type: 'success'; count: number }
     | { type: 'no-access' }
     | { type: 'error'; message: string }
     | { type: 'loading' };
@@ -160,7 +158,15 @@ export const HomePage = () => {
           <LoadingDots label="Loading lists" size="large" tone="passive" />
         </Center>
       ) : (
-        <Inline gap="large" paddingY="xlarge">
+        <Inline
+          as="ul"
+          gap="large"
+          paddingY="xlarge"
+          css={{
+            paddingLeft: '0px',
+            marginBottom: '0px',
+          }}
+        >
           {(() => {
             if (visibleLists.state === 'error') {
               return (

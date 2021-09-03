@@ -1,131 +1,121 @@
-import { text } from '@keystone-next/keystone/fields';
+import { relationship, text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { apiTestConfig } from '../utils';
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
-const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
+const yesNo = (x: boolean | undefined) => (x === true ? 'Y' : x === false ? 'N' : 'U');
 
-type ListEnabled =
-  | undefined
-  | boolean
-  | { query: boolean; create: boolean; update: boolean; delete: boolean };
-
-type FieldEnabled = {
-  read: boolean;
-  create: boolean;
-  update: boolean;
-  filter: boolean;
-  orderBy: boolean;
+type ListConfig = {
+  isFilterable?: true;
+  isOrderable?: true;
+  omit?: true | ('query' | 'create' | 'update' | 'delete')[];
 };
 
-const getListPrefix = (isEnabled: ListEnabled) => {
-  if (isEnabled === undefined) {
-    return 'Undefined';
-  } else if (isEnabled === true) {
-    return 'True';
-  } else if (isEnabled === false) {
-    return 'False';
+type FieldConfig = {
+  isFilterable?: true;
+  isOrderable?: true;
+  omit?: true | ('read' | 'create' | 'update')[];
+};
+
+const getListPrefix = ({ isFilterable, isOrderable, omit }: ListConfig) => {
+  const s = `${yesNo(isFilterable)}F${yesNo(isOrderable)}O`;
+  if (omit === undefined) {
+    return `${s}Undefined`;
+  } else if (omit === true) {
+    return `${s}True`;
   } else {
     // prettier-ignore
-    return `${yesNo(isEnabled.create)}Create${yesNo(isEnabled.query)}Query${yesNo(isEnabled.update)}Update${yesNo(isEnabled.delete)}Delete`;
+    return `${s}${yesNo(omit.includes('create'))}C${yesNo(omit.includes('query'))}Q${yesNo(omit.includes('update'))}U${yesNo(omit.includes('delete'))}D`;
+  }
+};
+const getFieldPrefix = ({ isFilterable, isOrderable, omit }: FieldConfig) => {
+  const s = `${yesNo(isFilterable)}Filter${yesNo(isOrderable)}Order`;
+  if (omit === undefined) {
+    return `${s}Undefined`;
+  } else if (omit === true) {
+    return `${s}True`;
+  } else {
+    // prettier-ignore
+    return `${s}${yesNo(omit.includes('read'))}Read${yesNo(omit.includes('create'))}Create${yesNo(omit.includes('update'))}Update`;
   }
 };
 
-const getListName = (isEnabled: ListEnabled) => `${getListPrefix(isEnabled)}List`;
+const getListName = (config: ListConfig) => `${getListPrefix(config)}List`;
+const getFieldName = (config: FieldConfig) => getFieldPrefix(config);
 
-/* Generated with:
-  const result = [];
-  const options = ['read', 'create', 'update', 'filter', 'orderBy'];
-  // All possible combinations are contained in the set 0..2^n-1
-  for(let flags = 0; flags < Math.pow(2, options.length); flags++) {
-    // Generate an object of true/false values for the particular combination
-    result.push(options.reduce((memo, option, index) => ({
-      ...memo,
-      // Use a bit mask to see if that bit is set
-      [option]: !!(flags & (1 << index)),
-    }), {}));
+const listConfigVariables: ListConfig[] = [];
+for (const isFilterable of [undefined, true as const]) {
+  for (const isOrderable of [undefined, true as const]) {
+    for (const flag of [undefined, true, false]) {
+      if (flag === undefined || flag === true) {
+        listConfigVariables.push({ isFilterable, isOrderable, omit: flag });
+      } else {
+        for (const query of [undefined, 'query']) {
+          for (const create of [undefined, 'create']) {
+            for (const update of [undefined, 'update']) {
+              for (const _delete of [undefined, 'delete']) {
+                const omit = [query, create, update, _delete].filter(x => x) as ListConfig['omit'];
+                listConfigVariables.push({ isFilterable, isOrderable, omit });
+              }
+            }
+          }
+        }
+      }
+    }
   }
-  */
-const listEnabledVariations: ListEnabled[] = [
-  undefined,
-  true,
-  false,
-  { create: false, query: false, update: false, delete: false },
-  { create: true, query: false, update: false, delete: false },
-  { create: false, query: true, update: false, delete: false },
-  { create: true, query: true, update: false, delete: false },
-  { create: false, query: false, update: true, delete: false },
-  { create: true, query: false, update: true, delete: false },
-  { create: false, query: true, update: true, delete: false },
-  { create: true, query: true, update: true, delete: false },
-  { create: false, query: false, update: false, delete: true },
-  { create: true, query: false, update: false, delete: true },
-  { create: false, query: true, update: false, delete: true },
-  { create: true, query: true, update: false, delete: true },
-  { create: false, query: false, update: true, delete: true },
-  { create: true, query: false, update: true, delete: true },
-  { create: false, query: true, update: true, delete: true },
-  { create: true, query: true, update: true, delete: true },
-];
+}
 
-const fieldMatrix: FieldEnabled[] = [
-  { read: false, create: false, update: false, filter: false, orderBy: false },
-  { read: true, create: false, update: false, filter: false, orderBy: false },
-  { read: false, create: true, update: false, filter: false, orderBy: false },
-  { read: true, create: true, update: false, filter: false, orderBy: false },
-  { read: false, create: false, update: true, filter: false, orderBy: false },
-  { read: true, create: false, update: true, filter: false, orderBy: false },
-  { read: false, create: true, update: true, filter: false, orderBy: false },
-  { read: true, create: true, update: true, filter: false, orderBy: false },
-  { read: false, create: false, update: false, filter: true, orderBy: false },
-  { read: true, create: false, update: false, filter: true, orderBy: false },
-  { read: false, create: true, update: false, filter: true, orderBy: false },
-  { read: true, create: true, update: false, filter: true, orderBy: false },
-  { read: false, create: false, update: true, filter: true, orderBy: false },
-  { read: true, create: false, update: true, filter: true, orderBy: false },
-  { read: false, create: true, update: true, filter: true, orderBy: false },
-  { read: true, create: true, update: true, filter: true, orderBy: false },
-  { read: false, create: false, update: false, filter: false, orderBy: true },
-  { read: true, create: false, update: false, filter: false, orderBy: true },
-  { read: false, create: true, update: false, filter: false, orderBy: true },
-  { read: true, create: true, update: false, filter: false, orderBy: true },
-  { read: false, create: false, update: true, filter: false, orderBy: true },
-  { read: true, create: false, update: true, filter: false, orderBy: true },
-  { read: false, create: true, update: true, filter: false, orderBy: true },
-  { read: true, create: true, update: true, filter: false, orderBy: true },
-  { read: false, create: false, update: false, filter: true, orderBy: true },
-  { read: true, create: false, update: false, filter: true, orderBy: true },
-  { read: false, create: true, update: false, filter: true, orderBy: true },
-  { read: true, create: true, update: false, filter: true, orderBy: true },
-  { read: false, create: false, update: true, filter: true, orderBy: true },
-  { read: true, create: false, update: true, filter: true, orderBy: true },
-  { read: false, create: true, update: true, filter: true, orderBy: true },
-  { read: true, create: true, update: true, filter: true, orderBy: true },
-];
+const fieldMatrix: FieldConfig[] = [];
+for (const isFilterable of [undefined, true as const]) {
+  for (const isOrderable of [undefined, true as const]) {
+    for (const flag of [undefined, true, false]) {
+      if (flag === undefined || flag === true) {
+        fieldMatrix.push({ isFilterable, isOrderable, omit: flag });
+      } else {
+        for (const query of [undefined, 'read']) {
+          for (const create of [undefined, 'create']) {
+            for (const update of [undefined, 'update']) {
+              const omit = [query, create, update].filter(x => x) as FieldConfig['omit'];
+              fieldMatrix.push({ isFilterable, isOrderable, omit });
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
-const getFieldPrefix = (isEnabled: FieldEnabled) => {
-  // prettier-ignore
-  return `${yesNo(isEnabled.read)}Read${yesNo(isEnabled.create)}Create${yesNo(isEnabled.update)}Update${yesNo(isEnabled.filter)}Filter${yesNo(isEnabled.orderBy)}OrderBy`;
-};
+const createFieldStatic = (config: FieldConfig) => ({
+  [getFieldName(config)]: text({
+    graphql: { omit: config.omit },
+    isFilterable: config.isFilterable,
+    isOrderable: config.isOrderable,
+  }),
+});
 
-const getFieldName = (isEnabled: FieldEnabled) => getFieldPrefix(isEnabled);
-
-const createFieldStatic = (isEnabled: FieldEnabled) => ({
-  [getFieldName(isEnabled)]: text({ graphql: { isEnabled } }),
+const createRelatedFields = (config: ListConfig) => ({
+  [`${getListPrefix(config)}one`]: relationship({ ref: getListName(config), many: false }),
+  [`${getListPrefix(config)}many`]: relationship({ ref: getListName(config), many: true }),
 });
 
 const lists = createSchema({});
 
-listEnabledVariations.forEach(isEnabled => {
-  lists[getListName(isEnabled)] = list({
+listConfigVariables.forEach(config => {
+  lists[getListName(config)] = list({
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
     ),
-    graphql: { isEnabled },
+    defaultIsFilterable: config.isFilterable,
+    defaultIsOrderable: config.isOrderable,
+    graphql: { omit: config.omit },
   });
+});
+
+lists.RelatedToAll = list({
+  fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
 });
 
 const config = apiTestConfig({
@@ -133,4 +123,4 @@ const config = apiTestConfig({
   session: statelessSessions({ secret: COOKIE_SECRET }),
 });
 
-export { getListName, listEnabledVariations, fieldMatrix, getFieldName, config };
+export { getListName, listConfigVariables, fieldMatrix, getFieldName, config };

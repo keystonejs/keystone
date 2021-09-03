@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
@@ -75,38 +76,14 @@ export const controller = (
         return `${label.toLowerCase()}: ${renderedValue}`;
       },
       types: {
-        is: {
-          label: 'Is exactly',
-          initialValue: '',
-        },
-        not: {
-          label: 'Is not exactly',
-          initialValue: '',
-        },
-        gt: {
-          label: 'Is greater than',
-          initialValue: '',
-        },
-        lt: {
-          label: 'Is less than',
-          initialValue: '',
-        },
-        gte: {
-          label: 'Is greater than or equal to',
-          initialValue: '',
-        },
-        lte: {
-          label: 'Is less than or equal to',
-          initialValue: '',
-        },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
-        },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
-        },
+        is: { label: 'Is exactly', initialValue: '' },
+        not: { label: 'Is not exactly', initialValue: '' },
+        gt: { label: 'Is greater than', initialValue: '' },
+        lt: { label: 'Is less than', initialValue: '' },
+        gte: { label: 'Is greater than or equal to', initialValue: '' },
+        lte: { label: 'Is less than or equal to', initialValue: '' },
+        in: { label: 'Is one of', initialValue: '' },
+        not_in: { label: 'Is not one of', initialValue: '' },
       },
     },
   };

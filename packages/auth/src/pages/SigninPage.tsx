@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
 

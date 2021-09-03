@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Transforms } from 'slate';
 import { component, fields } from '../../component-blocks';

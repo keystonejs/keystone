@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { jsx, keyframes, useTheme } from '@keystone-ui/core';

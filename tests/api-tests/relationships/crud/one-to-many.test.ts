@@ -90,21 +90,14 @@ const runner = setupTestRunner({
     lists: createSchema({
       Company: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true, orderBy: true } } }),
-          locations: relationship({
-            ref: 'Location.company',
-            many: true,
-            graphql: { isEnabled: { filter: true } },
-          }),
+          name: text({ isFilterable: true, isOrderable: true }),
+          locations: relationship({ ref: 'Location.company', many: true, isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
-          name: text({ graphql: { isEnabled: { filter: true } } }),
-          company: relationship({
-            ref: 'Company.locations',
-            graphql: { isEnabled: { filter: true } },
-          }),
+          name: text({ isFilterable: true }),
+          company: relationship({ ref: 'Company.locations', isFilterable: true }),
         },
       }),
     }),

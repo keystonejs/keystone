@@ -37,7 +37,6 @@ export const text =
       kind: 'scalar',
       mode: isNullable ? 'optional' : 'required',
       scalar: 'String',
-      index: isIndexed === true ? 'index' : isIndexed === false ? undefined : isIndexed,
       default:
         defaultValue != null
           ? {
@@ -45,6 +44,7 @@ export const text =
               value: defaultValue,
             }
           : undefined,
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       hooks: {

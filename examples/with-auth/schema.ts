@@ -18,21 +18,23 @@ export const lists = createSchema({
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
-    graphql: { isEnabled: { filter: true, orderBy: true } },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       // Added an email and password pair to be used with authentication
       // The email address is going to be used as the identity field, so it's
-      // important that we set isRequired, isUnique, and isEnabled: filter.
-      email: text({ isRequired: true, isUnique: true, graphql: { isEnabled: { filter: true } } }),
+      // important that we set isRequired, isIndexed: 'unique', and isFilterable.
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       // The password field stores a hash of the supplied password, and
       // we want to ensure that all people have a password set, so we use
       // the isRequired flag.
       password: password({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    graphql: { isEnabled: { filter: true, orderBy: true } },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
 });

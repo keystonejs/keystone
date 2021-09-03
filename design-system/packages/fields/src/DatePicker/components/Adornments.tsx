@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ElementType, ReactNode, createContext, useContext } from 'react';

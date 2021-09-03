@@ -59,7 +59,7 @@ export function addRelationshipData(
             }}}`,
             variables: { id },
           });
-        } catch (err) {
+        } catch (err: any) {
           if (err.message === 'You do not have access to this resource') {
             // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
             // then simply return { id } and leave `label` and `data` undefined.

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';

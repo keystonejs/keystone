@@ -36,7 +36,7 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text({ isUnique: true, graphql: { isEnabled: { filter: true } } }),
+            email: text({ isIndexed: 'unique', isFilterable: true }),
             password: password(),
           },
           access: {
@@ -113,7 +113,7 @@ describe('Auth testing', () => {
         ),
       })
     ).rejects.toMatchInlineSnapshot(
-      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true, graphql: { isEnabled: { filter: true } }\` to the field at User.email]`
+      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique', isFilterable: true\` to the field at User.email]`
     );
   });
 
