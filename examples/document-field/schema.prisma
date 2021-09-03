@@ -13,8 +13,8 @@ generator client {
 
 model Post {
   id          String    @id @default(cuid())
-  title       String?
-  slug        String?   @unique
+  title       String    @default("")
+  slug        String    @unique @default("")
   status      String?
   content     String?
   publishDate DateTime?
@@ -26,8 +26,8 @@ model Post {
 
 model Author {
   id    String  @id @default(cuid())
-  name  String?
-  email String? @unique
+  name  String  @default("")
+  email String  @unique @default("")
   posts Post[]  @relation("Post_author")
   bio   String?
 }

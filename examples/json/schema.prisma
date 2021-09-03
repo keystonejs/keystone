@@ -13,7 +13,7 @@ generator client {
 
 model Package {
   id        String   @id @default(cuid())
-  label     String?
+  label     String   @default("")
   pkgjson   String?
   isPrivate Boolean?
   ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
@@ -24,6 +24,6 @@ model Package {
 
 model Person {
   id       String    @id @default(cuid())
-  name     String?
+  name     String    @default("")
   packages Package[] @relation("Package_ownedBy")
 }

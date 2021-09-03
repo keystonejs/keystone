@@ -72,8 +72,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String
-  slug: String
+  title: String! = ""
+  slug: String! = ""
   status: PostStatusType
   content: JSON
   publishDate: String
@@ -138,8 +138,8 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   posts: PostRelateToManyForCreateInput
   bio: JSON
 }

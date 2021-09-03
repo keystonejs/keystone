@@ -13,15 +13,15 @@ generator client {
 
 model User {
   id       String  @id @default(cuid())
-  name     String?
-  email    String? @unique
+  name     String  @default("")
+  email    String  @unique @default("")
   password String?
   posts    Post[]  @relation("Post_author")
 }
 
 model Post {
   id          String    @id @default(cuid())
-  title       String?
+  title       String    @default("")
   status      String?
   content     Json?
   publishDate DateTime?
@@ -33,7 +33,7 @@ model Post {
 }
 
 model Tag {
-  id    String  @id @default(cuid())
-  name  String?
-  posts Post[]  @relation("Post_tags_Tag_posts")
+  id    String @id @default(cuid())
+  name  String @default("")
+  posts Post[] @relation("Post_tags_Tag_posts")
 }

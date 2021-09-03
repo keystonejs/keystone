@@ -24,7 +24,7 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  title: StringNullableFilter
+  title: StringFilter
 }
 
 input IDFilter {
@@ -38,7 +38,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -49,10 +49,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -63,7 +63,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input PostOrderByInput {
@@ -95,9 +95,9 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String
+  title: String! = ""
   status: PostStatusType
-  content: String
+  content: String! = ""
   publishDate: String
   author: AuthorRelateToOneForCreateInput
 }
@@ -154,8 +154,8 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   posts: PostRelateToManyForCreateInput
 }
 

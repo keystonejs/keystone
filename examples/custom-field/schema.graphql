@@ -68,9 +68,9 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String
+  title: String! = ""
   status: PostStatusType
-  content: String
+  content: String! = ""
   rating: Int
   publishDate: String
   author: AuthorRelateToOneForCreateInput
@@ -128,8 +128,8 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   posts: PostRelateToManyForCreateInput
 }
 

@@ -12,6 +12,6 @@ generator client {
 }
 
 model Note {
-  id    String  @id @default(cuid())
-  label String?
+  id    String @id @default(cuid())
+  label String @default("")
 }

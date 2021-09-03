@@ -51,9 +51,9 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String
-  slug: String
-  content: String
+  title: String! = ""
+  slug: String! = ""
+  content: String! = ""
 }
 
 """

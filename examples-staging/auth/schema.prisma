@@ -13,8 +13,8 @@ generator client {
 
 model User {
   id       String   @id @default(cuid())
-  name     String?
-  email    String?  @unique
+  name     String   @default("")
+  email    String   @unique @default("")
   password String?
   isAdmin  Boolean?
 }

@@ -13,7 +13,7 @@ generator client {
 
 model Task {
   id           String    @id @default(cuid())
-  label        String?
+  label        String    @default("")
   priority     String?
   isComplete   Boolean?
   assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
@@ -25,8 +25,8 @@ model Task {
 
 model Person {
   id       String  @id @default(cuid())
-  name     String?
-  email    String? @unique
+  name     String  @default("")
+  email    String  @unique @default("")
   password String?
   tasks    Task[]  @relation("Task_assignedTo")
 }

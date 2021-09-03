@@ -13,7 +13,7 @@ generator client {
 
 model Todo {
   id           String    @id @default(cuid())
-  label        String?
+  label        String    @default("")
   isComplete   Boolean?
   assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
@@ -26,8 +26,8 @@ model Todo {
 
 model User {
   id        String    @id @default(cuid())
-  name      String?
-  email     String?
+  name      String    @default("")
+  email     String    @default("")
   password  String?
   tasks     Todo[]    @relation("Todo_assignedTo")
   createdAt DateTime?

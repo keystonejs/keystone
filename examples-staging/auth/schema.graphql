@@ -2,8 +2,8 @@
 # Modify your Keystone config when you want to change this.
 
 input CreateInitialUserInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
 }
 
@@ -70,7 +70,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  email: StringFilter
 }
 
 input IDFilter {
@@ -84,7 +84,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -95,10 +95,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -109,7 +109,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input UserOrderByInput {
@@ -134,8 +134,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
   isAdmin: Boolean
 }

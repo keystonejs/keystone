@@ -63,7 +63,7 @@ input TodoUpdateArgs {
 }
 
 input TodoCreateInput {
-  label: String
+  label: String! = ""
   isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
   finishBy: String
@@ -133,8 +133,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
   tasks: TodoRelateToManyForCreateInput
   createdAt: String

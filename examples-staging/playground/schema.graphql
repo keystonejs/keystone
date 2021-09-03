@@ -47,7 +47,7 @@ input NoteUpdateArgs {
 }
 
 input NoteCreateInput {
-  label: String
+  label: String! = ""
 }
 
 """

@@ -26,7 +26,7 @@ input TaskWhereInput {
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
   id: IDFilter
-  label: StringNullableFilter
+  label: StringFilter
   priority: TaskPriorityTypeNullableFilter
   isComplete: BooleanNullableFilter
   assignedTo: PersonWhereInput
@@ -44,7 +44,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -55,10 +55,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -69,7 +69,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input TaskPriorityTypeNullableFilter {
@@ -129,7 +129,7 @@ input TaskUpdateArgs {
 }
 
 input TaskCreateInput {
-  label: String
+  label: String! = ""
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
@@ -163,7 +163,7 @@ input PersonWhereInput {
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
+  name: StringFilter
   tasks: TaskManyRelationFilter
 }
 
@@ -196,7 +196,7 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String
+  name: String! = ""
   tasks: TaskRelateToManyForCreateInput
 }
 

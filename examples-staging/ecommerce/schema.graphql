@@ -105,8 +105,8 @@ enum PasswordResetRedemptionErrorCode {
 }
 
 input CreateInitialUserInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
 }
 
@@ -180,7 +180,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  email: StringFilter
 }
 
 input IDFilter {
@@ -194,7 +194,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -205,10 +205,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -219,7 +219,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input UserOrderByInput {
@@ -277,8 +277,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String! = ""
+  email: String! = ""
   password: String
   cart: CartItemRelateToManyForCreateInput
   orders: OrderRelateToManyForCreateInput
@@ -361,8 +361,8 @@ input ProductUpdateArgs {
 }
 
 input ProductCreateInput {
-  name: String
-  description: String
+  name: String! = ""
+  description: String! = ""
   photo: ProductImageRelateToOneForCreateInput
   status: String
   price: Int
@@ -474,7 +474,7 @@ input ProductImageUpdateArgs {
 
 input ProductImageCreateInput {
   image: Upload
-  altText: String
+  altText: String! = ""
   product: ProductRelateToOneForCreateInput
 }
 
@@ -571,8 +571,8 @@ input OrderItemUpdateArgs {
 }
 
 input OrderItemCreateInput {
-  name: String
-  description: String
+  name: String! = ""
+  description: String! = ""
   photo: ProductImageRelateToOneForCreateInput
   price: Int
   quantity: Int
@@ -637,7 +637,7 @@ input OrderCreateInput {
   total: Int
   items: OrderItemRelateToManyForCreateInput
   user: UserRelateToOneForCreateInput
-  charge: String
+  charge: String! = ""
 }
 
 input OrderItemRelateToManyForCreateInput {
@@ -702,7 +702,7 @@ input RoleUpdateArgs {
 }
 
 input RoleCreateInput {
-  name: String
+  name: String! = ""
   canManageProducts: Boolean
   canSeeOtherUsers: Boolean
   canManageUsers: Boolean
