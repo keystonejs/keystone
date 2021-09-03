@@ -795,7 +795,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  apiPath: String!
   enableSignout: Boolean!
   enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!

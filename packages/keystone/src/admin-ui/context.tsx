@@ -106,6 +106,7 @@ export const useKeystone = (): {
   authenticatedItem: AuthenticatedItem;
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
+  apiPath: string;
 } => {
   const value = useContext(KeystoneContext);
   if (!value) {
@@ -127,6 +128,7 @@ export const useKeystone = (): {
     authenticatedItem: value.authenticatedItem,
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
+    apiPath: value.apiPath,
   };
 };
 

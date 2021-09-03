@@ -61,8 +61,7 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
 };
 
 const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
-  const { adminMeta } = useKeystone();
-  const { apiPath } = adminMeta;
+  const { apiPath } = useKeystone();
   const { spacing, typography } = useTheme();
   return (
     <div

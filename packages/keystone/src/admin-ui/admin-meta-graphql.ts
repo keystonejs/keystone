@@ -7,7 +7,6 @@ export const staticAdminMetaQuery = gql`
       __typename
       adminMeta {
         __typename
-        apiPath
         enableSignout
         enableSessionItem
         lists {
@@ -66,7 +65,7 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
   keystone: { __typename: 'KeystoneMeta' } & {
     adminMeta: { __typename: 'KeystoneAdminMeta' } & Pick<
       KeystoneAdminMeta,
-      'apiPath' | 'enableSignout' | 'enableSessionItem'
+      'enableSignout' | 'enableSessionItem'
     > & {
         lists: Array<
           { __typename: 'KeystoneAdminUIListMeta' } & Pick<
@@ -125,7 +124,6 @@ type KeystoneMeta = {
 
 type KeystoneAdminMeta = {
   __typename: 'KeystoneAdminMeta';
-  apiPath: Scalars['String'];
   enableSignout: Scalars['Boolean'];
   enableSessionItem: Scalars['Boolean'];
   lists: Array<KeystoneAdminUIListMeta>;

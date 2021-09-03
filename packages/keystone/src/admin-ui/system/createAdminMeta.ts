@@ -9,7 +9,6 @@ export function createAdminMeta(
 ) {
   const { ui, lists, session } = config;
   const adminMetaRoot: AdminMetaRootVal = {
-    apiPath: config.graphql?.path || '/api/graphql',
     enableSessionItem: ui?.enableSessionItem || false,
     enableSignout: session !== undefined,
     listsByKey: {},
