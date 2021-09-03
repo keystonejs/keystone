@@ -19,7 +19,8 @@ type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string 
 export const appTemplate = (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
-  { configFileExists, projectAdminPath }: AppTemplateOptions
+  { configFileExists, projectAdminPath }: AppTemplateOptions,
+  apiPath: string
 ) => {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -53,7 +54,8 @@ export default getApp({
   lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
   fieldViews: [${allViews.map((_, i) => `view${i}`)}],
   adminMetaHash: "${adminMetaQueryResultHash}",
-  adminConfig: adminConfig
+  adminConfig: adminConfig,
+  apiPath: "${apiPath}",
 });
 `;
   // -- TEMPLATE END

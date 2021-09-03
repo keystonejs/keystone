@@ -18,5 +18,5 @@ export const config = {
     bodyParser: false,
   },
 };
-export default apolloServer.createHandler({ path: '/api/graphql' });
+export default apolloServer.createHandler({ path: initializedKeystoneConfig.graphql?.path || '/api/graphql' });
 `;

@@ -136,9 +136,8 @@ export type ServerConfig = {
 // config.graphql
 
 export type GraphQLConfig = {
-  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
-  // We should be able to use config.graphql.path to set this path.
-  // path?: string;
+  // The path of the GraphQL API endpoint. Default: '/api/graphql'.
+  path?: string;
   queryLimits?: {
     maxTotalResults?: number;
   };

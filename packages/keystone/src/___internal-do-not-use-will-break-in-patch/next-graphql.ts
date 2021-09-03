@@ -19,5 +19,5 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
     connectionPromise: keystone.connect(),
   });
 
-  return apolloServer.createHandler({ path: '/api/graphql' });
+  return apolloServer.createHandler({ path: keystoneConfig.graphql?.path || '/api/graphql' });
 }

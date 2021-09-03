@@ -70,7 +70,7 @@ export async function setupTestEnv({
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
-      .post('/api/graphql')
+      .post(config.graphql?.path || '/api/graphql')
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 

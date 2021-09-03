@@ -61,7 +61,7 @@ const _createApolloServerConfig = ({
   graphQLSchema: GraphQLSchema;
   graphqlConfig?: GraphQLConfig;
 }) => {
-  // Playground config, is /api/graphql available?
+  // Playground config
   const apolloConfig = graphqlConfig?.apolloConfig;
   const apolloConfigPlayground = apolloConfig?.playground;
   let playground: Config['playground'];
