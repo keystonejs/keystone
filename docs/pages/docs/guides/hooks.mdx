@@ -191,7 +191,7 @@ Similary, the `beforeDelete` and `afterDelete` hooks can be used to trigger side
 
 All of the examples above have involved hooks associated with a particular list.
 Keystone also supports setting of hooks associated with a particular field.
-All the same hooks are available, and they receive all the same arguments, along with an extra `fieldPath` argument.
+All the same hooks are available, and they receive all the same arguments, along with an extra `fieldKey` argument.
 
 Field hooks can be useful if you want to have field specific rules.
 For example, you might have an email validation function which want to use in your system.
@@ -208,10 +208,10 @@ export default config({
         name: text(),
         email: text({
           hooks: {
-            validateInput: ({ addValidationError, resolvedData, fieldPath }) => {
-              const email = resolvedData[fieldPath];
+            validateInput: ({ addValidationError, resolvedData, fieldKey }) => {
+              const email = resolvedData[fieldKey];
               if (email !== undefined && email !== null && !email.includes('@')) {
-                addValidationError(`The email address ${email} provided for the field ${fieldPath} must contain an '@' character`);
+                addValidationError(`The email address ${email} provided for the field ${fieldKey} must contain an '@' character`);
               }
             },
           },

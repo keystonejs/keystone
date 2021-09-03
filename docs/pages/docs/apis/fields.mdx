@@ -480,7 +480,7 @@ A `relationship` field represents a relationship between two lists.
 
 Read our [relationships guide](../guides/relationships) for details on Keystone’s relationship model and how to configure them in your project.
 
-- `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldPath>`.
+- `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldKey>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
 - `defaultValue` (default: `undefined`): Can be either a relationship input value `{ connect: { id: ID } }` or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
   This value will be used for the field when creating items if no explicit value is set.

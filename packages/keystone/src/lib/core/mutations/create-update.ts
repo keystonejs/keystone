@@ -244,18 +244,18 @@ async function getResolvedData(
   // Field hooks
   let _resolvedData: Record<string, any> = {};
   const fieldsErrors: { error: Error; tag: string }[] = [];
-  for (const [fieldPath, field] of Object.entries(list.fields)) {
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
     if (field.hooks.resolveInput === undefined) {
-      _resolvedData[fieldPath] = resolvedData[fieldPath];
+      _resolvedData[fieldKey] = resolvedData[fieldKey];
     } else {
       try {
-        _resolvedData[fieldPath] = await field.hooks.resolveInput({
+        _resolvedData[fieldKey] = await field.hooks.resolveInput({
           ...hookArgs,
           resolvedData,
-          fieldPath,
+          fieldKey,
         });
       } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
       }
     }
   }

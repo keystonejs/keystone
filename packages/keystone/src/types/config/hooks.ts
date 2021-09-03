@@ -35,7 +35,7 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
 // TODO: probably maybe don't do this and write it out manually
 // (this is also incorrect because the return value is wrong for many of them)
 type AddFieldPathToObj<T extends (arg: any) => any> = T extends (args: infer Args) => infer Result
-  ? (args: Args & { fieldPath: string }) => Result
+  ? (args: Args & { fieldKey: string }) => Result
   : never;
 
 type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>> = {

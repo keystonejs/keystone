@@ -72,7 +72,7 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | Argument        | Description                                                                                                                                                                       |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                            |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                       |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                        |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                         |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                     |
 | `existingItem`  | The currently stored item (`undefined` for `create` operations). This object is an unresolved list item. [list item API](./list-items) for more details on unresolved list items. |
@@ -104,7 +104,7 @@ export default config({
           hooks: {
             resolveInput: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -134,7 +134,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | Argument                  | Description                                                                                                                                                                                                 |
 | :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`                 | The key of the list being operated on.                                                                                                                                                                      |
-| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                                                                 |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                                  |
 | `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
 | `originalInput`           | The value of `data` passed into the mutation.                                                                                                                                                               |
 | `existingItem`            | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -165,7 +165,7 @@ export default config({
           hooks: {
             validateInput: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -190,7 +190,7 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 | Argument        | Description                                                                                                                                                                                                 |
 | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                                                      |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                                                 |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                                  |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                               |
 | `existingItem`  | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -219,7 +219,7 @@ export default config({
           hooks: {
             beforeChange: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -241,7 +241,7 @@ The `afterChange` function is used to perform side effects after the data for a 
 | Argument        | Description                                                                                                                                                                                                  |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                                                       |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                                                  |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                                   |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                                    |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                                |
 | `existingItem`  | The previous value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -270,7 +270,7 @@ export default config({
           hooks: {
             afterChange: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -302,7 +302,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | Argument                  | Description                                                                                                                                                   |
 | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`                 | The key of the list being operated on.                                                                                                                        |
-| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                   |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                    |
 | `operation`               | The operation being performed (`'delete'`).                                                                                                                   |
 | `existingItem`            | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`                 | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
@@ -329,7 +329,7 @@ export default config({
           hooks: {
             validateDelete: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               existingItem,
               context,
@@ -352,7 +352,7 @@ It is invoked after all `validateDelete` hooks have been run.
 | Argument       | Description                                                                                                                                                   |
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`      | The key of the list being operated on.                                                                                                                        |
-| `fieldPath`    | The path of the field being operated on (field hooks only).                                                                                                   |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                    |
 | `operation`    | The operation being performed (`'delete'`).                                                                                                                   |
 | `existingItem` | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
@@ -372,7 +372,7 @@ export default config({
       fields: {
         fieldName: text({
           hooks: {
-            beforeDelete: async ({ listKey, fieldPath, operation, existingItem, context }) => {
+            beforeDelete: async ({ listKey, fieldKey, operation, existingItem, context }) => {
               /* ... */
             },
           },
@@ -390,7 +390,7 @@ The `afterDelete` function is used to perform side effects after the data for a 
 | Argument       | Description                                                                                                                                                  |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`      | The key of the list being operated on.                                                                                                                       |
-| `fieldPath`    | The path of the field being operated on (field hooks only).                                                                                                  |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                   |
 | `operation`    | The operation being performed (`'delete'`).                                                                                                                  |
 | `existingItem` | The value of the item, now deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                              |
@@ -410,7 +410,7 @@ export default config({
       fields: {
         fieldName: text({
           hooks: {
-            afterDelete: async ({ listKey, fieldPath, operation, existingItem, context }) => {
+            afterDelete: async ({ listKey, fieldKey, operation, existingItem, context }) => {
               /* ... */
             },
           },
