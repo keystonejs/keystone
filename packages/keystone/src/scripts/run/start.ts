@@ -3,8 +3,9 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { createExpressServer } from '../../lib/server/createExpressServer';
-import { ExitError, getAdminPath } from '../utils';
+import { createAdminUIServer } from '../../admin-ui/system';
 import { requirePrismaClient } from '../../artifacts';
+import { ExitError, getAdminPath } from '../utils';
 
 export const start = async (cwd: string) => {
   console.log('✨ Starting Keystone');
@@ -27,17 +28,12 @@ export const start = async (cwd: string) => {
   await keystone.connect();
 
   console.log('✨ Creating server');
-  const server = await createExpressServer(
-    config,
-    graphQLSchema,
-    keystone.createContext,
-    false,
-    getAdminPath(cwd)
-  );
-  if (config.ui?.isDisabled) {
-    console.log(`👋 GraphQL API ready`);
-  } else {
-    console.log(`👋 Admin UI and GraphQL API ready`);
+  const server = await createExpressServer(config, graphQLSchema, keystone.createContext);
+  console.log(`✅ GraphQL API ready`);
+  if (!config.ui?.isDisabled) {
+    console.log('✨ Preparing Admin UI Next.js app');
+    server.use(await createAdminUIServer(config, keystone.createContext, false, getAdminPath(cwd)));
+    console.log(`✅ Admin UI ready`);
   }
 
   const port = config.server?.port || process.env.PORT || 3000;
