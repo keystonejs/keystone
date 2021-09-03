@@ -1,3 +1,4 @@
+import { humanize } from '../../../lib/utils';
 import {
   BaseGeneratedListTypes,
   CommonFieldConfig,
@@ -20,17 +21,31 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
       length?: { min?: number; max?: number };
     };
     defaultValue?: string;
-  } & ({ isNullable?: false; graphql?: { isNonNull?: true } } | { isNullable?: true });
+  } & ({ isNullable?: false; graphql?: { isNonNull?: true } } | { isNullable: true });
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
     defaultValue: _defaultValue,
-    isNullable = false,
     validation,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
+    const { isNullable = false } = config;
+    if (
+      config.access !== true &&
+      (config.access === false ||
+        typeof config.access === 'function' ||
+        config.access?.read !== true)
+    ) {
+      throw new Error(
+        `The text field at ${meta.listKey}.${meta.fieldKey} sets access.read and also sets graphql.isNonNull === true ` +
+          `but graphql.isNonNull === true is only allowed when a field does not set access.read`
+      );
+    }
+
+    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+
     const defaultValue =
       isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined;
     return fieldType({
@@ -53,14 +68,22 @@ export const text =
           const val = args.resolvedData[meta.fieldKey];
           if (val != null) {
             if (validation?.length?.min && val.length < validation.length.min) {
-              args.addValidationError(`must be at least ${validation.length.min} characters long`);
+              if (validation.length.min === 1) {
+                args.addValidationError(`${fieldLabel} must not be empty`);
+              } else {
+                args.addValidationError(
+                  `${fieldLabel} must be at least ${validation.length.min} characters long`
+                );
+              }
             }
             if (validation?.length?.max && val.length > validation.length.max) {
-              args.addValidationError(`must be no longer than ${validation.length.min} characters`);
+              args.addValidationError(
+                `${fieldLabel} must be no longer than ${validation.length.min} characters`
+              );
             }
             if (validation?.match && !validation.match.regex.test(val)) {
               args.addValidationError(
-                validation.match.explanation || `must match ${validation.match.regex}`
+                validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`
               );
             }
           }
@@ -86,7 +109,12 @@ export const text =
         update: { arg: graphql.arg({ type: graphql.String }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.String }),
+      output: graphql.field({
+        type:
+          config.isNullable !== true && config.graphql?.isNonNull
+            ? graphql.nonNull(graphql.String)
+            : graphql.String,
+      }),
       views: resolveView('text/views'),
       getAdminMeta(): TextFieldMeta {
         return {
