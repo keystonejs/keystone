@@ -53,7 +53,7 @@ export function FeatureWell({
             color: 'inherit',
           }}
         >
-          {heading}
+          {heading} →
         </Type>
         <Type
           as="p"
