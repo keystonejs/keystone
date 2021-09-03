@@ -60,7 +60,7 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   );
 };
 
-const AuthenticatedItemFoo = ({ item }: { item: AuthenticatedItem | undefined }) => {
+const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
   const { spacing, typography } = useTheme();
   return (
     <div
@@ -146,7 +146,7 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
         position: 'relative',
       }}
     >
-      <AuthenticatedItemFoo item={authenticatedItem} />
+      <AuthenticatedItemDialog item={authenticatedItem} />
       <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
         <ul
           css={{
