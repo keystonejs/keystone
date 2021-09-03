@@ -7,6 +7,7 @@ import { useMediaQuery } from '../lib/media';
 import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
 import { CommunityCta } from '../components/content/CommunityCta';
+import { LandingsCta } from '../components/content/LandingsCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
@@ -834,6 +835,8 @@ export const lists = createSchema({
             </li>
           </ul>
         </Section>
+
+        <LandingsCta />
 
         <CommunityCta />
 
