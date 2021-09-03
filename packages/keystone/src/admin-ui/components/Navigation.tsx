@@ -96,7 +96,6 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
         )}
       >
         <Stack gap="medium" padding="large" dividers="between">
-          {/* FIXME: Use config.graphql.path */}
           <PopoverLink target="_blank" href={apiPath}>
             API Explorer
           </PopoverLink>
