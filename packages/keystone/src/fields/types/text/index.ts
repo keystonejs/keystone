@@ -23,6 +23,11 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     defaultValue?: string;
   } & ({ isNullable?: false; graphql?: { isNonNull?: true } } | { isNullable: true });
 
+function validateLen(num: number | undefined, kind: 'min' | 'max') {
+  if (num !== undefined && (!Number.isInteger(num) || num < 0)) {
+  }
+}
+
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
@@ -33,10 +38,11 @@ export const text =
   meta => {
     const { isNullable = false } = config;
     if (
-      config.access !== true &&
       (config.access === false ||
         typeof config.access === 'function' ||
-        config.access?.read !== true)
+        (typeof config.access === 'object' && config.access.read !== true)) &&
+      !config.isNullable &&
+      config.graphql?.isNonNull
     ) {
       throw new Error(
         `The text field at ${meta.listKey}.${meta.fieldKey} sets access.read and also sets graphql.isNonNull === true ` +
