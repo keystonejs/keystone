@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 25.0.1
+
+### Patch Changes
+
+- [#6474](https://github.com/keystonejs/keystone/pull/6474) [`6205381b1`](https://github.com/keystonejs/keystone/commit/6205381b19041b88363a32e7ff13d606ba12a48e) Thanks [@timleslie](https://github.com/timleslie)! - Fixed typo in Admin UI.
+
 ## 25.0.0
 
 ### Major Changes
