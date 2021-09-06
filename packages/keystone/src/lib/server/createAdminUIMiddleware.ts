@@ -10,7 +10,7 @@ const adminErrorHTMLFilepath = path.join(
   'admin-error.html'
 );
 
-export const createAdminUIServer = async (
+export const createAdminUIMiddleware = async (
   config: KeystoneConfig,
   createContext: CreateContext,
   dev: boolean,

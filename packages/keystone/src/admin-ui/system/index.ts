@@ -1,4 +1,4 @@
 export { generateAdminUI } from './generateAdminUI';
-export { createAdminUIServer } from './createAdminUIServer';
+export { createAdminUIMiddleware } from './createAdminUIMiddleware';
 export { getAdminMetaSchema } from './getAdminMetaSchema';
 export { buildAdminUI } from './buildAdminUI';
