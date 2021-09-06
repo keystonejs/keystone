@@ -40,12 +40,18 @@ Here's what we're going to do:
 
 ## Setup a Next.js app
 
-Create a basic Next.js project with the `--typescript` option in an empty directory.
+x> **Warning:** We normally advise to set up a new Next.js app with `yarn create next-app --typescript my-project`, however this will install Next.js `11.x`. This version isn't compatible with this guide until we upgrade Keystone's Next.js internals to `11.x`.
+
+x> To continue, you'll need to use Next.js `10.x` until this upgrade is completed. We've set up a repository below using Next.js `10.x` you can clone in the mean time.
+
+Clone the basic Next.js project below.
 
 ```bash
-yarn create next-app --typescript my-project
-cd my-project
+git clone https://github.com/keystonejs/embedded-mode-with-sqlite-nextjs
+cd embedded-mode-with-sqlite-nextjs
 ```
+
+Then run `yarn` to install the dependencies.
 
 !> Keystone 6 has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
 

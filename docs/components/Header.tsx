@@ -258,7 +258,6 @@ export function Header() {
 
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
-        <LinkItem href="/docs">Docs</LinkItem>
 
         {/* TODO: Add in search for mobile via this button */}
         {/*
@@ -277,8 +276,6 @@ export function Header() {
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
         </button>
         */}
-
-        <DarkModeBtn />
         <Button
           as="a"
           href="/docs"
@@ -289,8 +286,9 @@ export function Header() {
             },
           })}
         >
-          Get Started
+          Documentation
         </Button>
+        <DarkModeBtn />
         <a
           href="https://github.com/keystonejs/keystone"
           target="_blank"

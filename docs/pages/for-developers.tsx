@@ -484,7 +484,7 @@ export default function ForDevelopers() {
                 @KeystoneJS
               </a>{' '}
               is almost too good to be open source. I can’t stress enough how awesome the dev
-              experience is. This is what I wish Wordpress was.
+              experience is. This is what I wish WordPress was.
             </TweetBox>
             <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
               I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that

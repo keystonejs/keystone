@@ -129,6 +129,7 @@ export default function WhatsNew() {
       noProse
       title={'Latest News'}
       description={'What’s new with Keystone. A snapshot of announcements and recent releases.'}
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Latest News
@@ -175,11 +176,13 @@ export default function WhatsNew() {
           <br />
           We’ve made the experience of working with Keystone’s GraphQL API easier to program and
           reason about: We've{' '}
-          <a href="https://keystonejs.com/updates/new-graphql-api">written a complete guide</a> to
-          the improvements we've made, and it includes a{' '}
-          <a href="https://keystonejs.com/updates/new-graphql-api#upgrade-checklist">
-            checklist of the steps you need to take to upgrade your Keystone projects
-          </a>
+          <Link href="/updates/new-graphql-api">
+            <a>written a complete guide</a>
+          </Link>{' '}
+          to the improvements we've made, and it includes a{' '}
+          <Link href="/updates/new-graphql-api#upgrade-checklist">
+            <a>checklist of the steps you need to take to upgrade your Keystone projects</a>
+          </Link>
           .
           <br />
           <br />
@@ -190,15 +193,25 @@ export default function WhatsNew() {
           We're opening Admin UI up to support a more personal content experience. Now you can:
           <ul>
             <li>
-              embed your own <a href="/docs/guides/custom-admin-ui-logo">custom logo</a>,
+              embed your own{' '}
+              <Link href="/docs/guides/custom-admin-ui-logo">
+                <a>custom logo</a>
+              </Link>
+              ,
             </li>
             <li>
-              add <a href="/docs/guides/custom-admin-ui-pages">custom pages</a> with Admin UI
-              routes, and
+              add{' '}
+              <Link href="/docs/guides/custom-admin-ui-pages">
+                <a>custom pages</a>
+              </Link>{' '}
+              with Admin UI routes, and
             </li>
             <li>
               link to them (and elsewhere) with{' '}
-              <a href="/docs/guides/custom-admin-ui-navigation">custom navigation</a>.
+              <Link href="/docs/guides/custom-admin-ui-navigation">
+                <a>custom navigation</a>
+              </Link>
+              .
             </li>
           </ul>
           To deliver a more productive editor experience that's aligned with the needs and brand of
@@ -244,13 +257,23 @@ export default function WhatsNew() {
           Next.js and Tailwind, that gives you:
           <ul>
             <li>
-              Public <a href="/docs/guides/auth">auth</a> and signup
+              Public{' '}
+              <Link href="/docs/guides/auth">
+                <a>auth</a>
+              </Link>{' '}
+              and signup
             </li>
             <li>
-              Role-based <a href="/docs/guides/access-control">access control</a>
+              Role-based{' '}
+              <Link href="/docs/guides/access-control">
+                <a>access control</a>
+              </Link>
             </li>
             <li>
-              Custom components in the <a href="/docs/guides/document-field-demo">document field</a>
+              Custom components in the{' '}
+              <Link href="/docs/guides/document-field-demo">
+                <a>document field</a>
+              </Link>
             </li>
           </ul>
           Editors can embed audience Polls in post content, and authenticated visitors can make
@@ -268,7 +291,11 @@ export default function WhatsNew() {
         <Timeline date="10th July 2021" />
         <Box heading="Watch Jed's Prisma Day talk">
           Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
-          below, or <a href="/updates/prisma-day-2021">read the full transcript</a>.
+          below, or{' '}
+          <Link href="/updates/prisma-day-2021">
+            <a>read the full transcript</a>
+          </Link>
+          .
           <div
             css={{
               position: 'relative',
@@ -298,10 +325,24 @@ export default function WhatsNew() {
         <Timeline date="29th June 2021" />
         <Box heading="New website">
           We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
-          and background on <a href="/why-keystone">why Keystone</a> is built for projects that need
-          to scale on their own terms. Navigating the docs is easier with breadcrumbs, index pages
-          for <a href="/docs/walkthroughs">Walkthroughs</a>, <a href="/docs/guides">Guides</a>, and{' '}
-          <a href="/docs/apis">APIs</a>, and a better mobile experience. We hope you like it ❤️
+          and background on{' '}
+          <Link href="/why-keystone">
+            <a>why Keystone</a>
+          </Link>{' '}
+          is built for projects that need to scale on their own terms. Navigating the docs is easier
+          with breadcrumbs, index pages for{' '}
+          <Link href="/docs/walkthroughs">
+            <a>Walkthroughs</a>
+          </Link>
+          ,{' '}
+          <Link href="/docs/guides">
+            <a>Guides</a>
+          </Link>
+          , and{' '}
+          <Link href="/docs/apis">
+            <a>APIs</a>
+          </Link>
+          , and a better mobile experience. We hope you like it ❤️
         </Box>
         <Timeline date="21st June 2021" />
         <Box heading="New guides">
@@ -309,19 +350,29 @@ export default function WhatsNew() {
           written the following guides:
           <ul>
             <li>
-              <a href="/docs/guides/virtual-fields">Virtual fields</a>
+              <Link href="/docs/guides/virtual-fields">
+                <a>Virtual fields</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/relationships">Relationships</a>
+              <Link href="/docs/guides/relationships">
+                <a>Relationships</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/hooks">Hooks</a>
+              <Link href="/docs/guides/hooks">
+                <a>Hooks</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/filters">Query Filters</a>
+              <Link href="/docs/guides/filters">
+                <a>Query Filters</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/testing">Testing</a>
+              <Link href="/docs/guides/testing">
+                <a>Testing</a>
+              </Link>
             </li>
           </ul>
         </Box>
@@ -343,11 +394,15 @@ export default function WhatsNew() {
           A long awaited feature: you can now find an item by unique fields in your schema. It works
           for{' '}
           <InlineCode>
-            <a href="/docs/apis/fields#text">text</a>
+            <Link href="/docs/apis/fields#text">
+              <a>text</a>
+            </Link>
           </InlineCode>{' '}
           and{' '}
           <InlineCode>
-            <a href="/docs/apis/fields#integer">integer</a>
+            <Link href="/docs/apis/fields#integer">
+              <a>integer</a>
+            </Link>
           </InlineCode>{' '}
           fields that have <InlineCode>isUnique: true</InlineCode> set.
         </Box>
@@ -389,9 +444,9 @@ export default function WhatsNew() {
           You can now use SQLite to store data via Prisma. It includes support for the{' '}
           <InlineCode>file</InlineCode> and <InlineCode>cloudinary</InlineCode> field types, and
           lets you{' '}
-          <a href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
-            embed Keystone inside a Next.js frontend app
-          </a>
+          <Link href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
+            <a>embed Keystone inside a Next.js frontend app</a>
+          </Link>
           .
         </Box>
         <Timeline date="6th April 2021" />

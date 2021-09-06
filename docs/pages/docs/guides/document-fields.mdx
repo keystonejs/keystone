@@ -375,7 +375,7 @@ export default config({
 <details>
 
 <summary>
-  In the document editor at the top of this page, the Quote(shown above), Notice and Hero are
+  In the [document editor demo](/docs/guides/document-field-demo), the insertable Quote, Notice and Hero items are
   implemented as component blocks, see the implementation for Notice and Hero by expanding this.
 </summary>
 
@@ -641,9 +641,10 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 
 ### Chromeless
 
-If you want to give your component blocks a more native feel in the editor, you can set `chromeless: true`.
-When you disable it, the generated form is disabled.
-In the editor at the top of this page, the Notice and Quote blocks are chromeless and the Hero has the chrome enabled.
+If you want to give your component blocks a more native feel in the editor, you can set `chromeless: true` to disable Keystone's standard generated edit form. In the [document editor demo](/docs/guides/document-field-demo), the Notice and Quote blocks are chromeless, but the Hero block has the standard chrome styling:
+
+![Notice, Quote, and Hero component blocks demonstrating chrome, and chromeless styling](/assets/guides/document-fields/chomeless-example-docs-demo.png)
+
 You will likely want to provide a custom [toolbar](#toolbar) when you set `chromeless: true`.
 
 ```tsx
