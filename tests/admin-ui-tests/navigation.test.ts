@@ -64,7 +64,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     const gql = String.raw;
     const query = gql`
       mutation CreateTaskItem {
-        createTask(data: { label: "you can delete me" }) {
+        createTask(data: { label: "test task" }) {
           id
         }
       }
