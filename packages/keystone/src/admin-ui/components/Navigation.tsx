@@ -79,7 +79,7 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
           Signed in as <strong>{item.label}</strong>
         </div>
       ) : (
-        <div css={{ fontSize: typography.fontSize.small }}>Graqhql Playground and Docs</div>
+        <div css={{ fontSize: typography.fontSize.small }}>GraphQL Playground and Docs</div>
       )}
 
       <Popover
