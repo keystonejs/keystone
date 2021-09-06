@@ -37,8 +37,8 @@ test('build works with typescript without the user defining a babel config', asy
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': js`
-                     import { config, list } from "@keystone-next/keystone/schema";
-                     import { text } from "@keystone-next/fields";
+                     import { config, list } from "@keystone-next/keystone";
+                     import { text } from "@keystone-next/keystone/fields";
 
                      type x = string;
 
@@ -65,18 +65,20 @@ test('build works with typescript without the user defining a babel config', asy
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(
     result
-      .all!.replace(/\d+(|\.\d+) k?B/g, 'size')
-      .replace(/chunks\/.*\.js/g, 'chunks/hash.js')
-      .replace(
+      .all!.replace(
         '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
         ''
       )
+      .replace('warn  - No ESLint configuration detected. Run next lint to begin setup\n', '')
+      // the exact formatting of the build size report can change when making unrelated changes
+      // because the code size can change so we don't include it in the snapshot
+      .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
     "✨ Building Keystone
     ✨ Generating Admin UI code
     ✨ Generating Keystone config code
     ✨ Building Admin UI
-    info  - Using webpack 4. Reason: custom webpack configuration in next.config.js https://nextjs.org/docs/messages/webpack5
+    info  - Using webpack 5. Reason: Enabled by default https://nextjs.org/docs/messages/webpack5
     info  - Skipping validation of types...
     info  - Creating an optimized production build...
     info  - Compiled successfully
@@ -86,26 +88,7 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Generating static pages (2/6)
     info  - Generating static pages (4/6)
     info  - Generating static pages (6/6)
-    info  - Finalizing page optimization...
-
-    Page                                                           Size     First Load JS
-    ┌ ○ /                                                          size         size
-    ├   /_app                                                      size             size
-    ├ ○ /404                                                       size         size
-    ├ λ /api/__keystone_api_build                                  size             size
-    ├ ○ /no-access                                                 size         size
-    ├ ○ /todos                                                     size         size
-    └ ○ /todos/[id]                                                size         size
-    + First Load JS shared by all                                  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js  size
-      ├ chunks/hash.js                                 size
-      ├ chunks/hash.js                                      size
-      ├ chunks/hash.js                                size
-      └ chunks/hash.js                                   size
-
+    next build size report
     λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
     ○  (Static)  automatically rendered as static HTML (uses no initial props)
     ●  (SSG)     automatically generated as static HTML + JSON (uses getStaticProps)

@@ -1,11 +1,5 @@
-export * from './core';
-export * from './config';
-export * from './utils';
-export * from './session';
-export * from './admin-meta';
-export * from './base';
-export * from './context';
-export * from './next-fields';
-export * as filters from './filters';
-export * from './schema';
-export { jsonFieldTypePolyfilledForSQLite } from './json-field-type-polyfill-for-sqlite';
+throw new Error(
+  '`@keystone-next/types` has been moved to `@keystone-next/keystone/types`, please import from there instead.'
+);
+
+export {};

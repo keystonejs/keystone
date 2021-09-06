@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import type { KeystoneContext } from '@keystone-next/types';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -103,13 +103,13 @@ const runner = setupTestRunner({
     lists: createSchema({
       Company: list({
         fields: {
-          name: text(),
-          location: relationship({ ref: 'Location' }),
+          name: text({ isOrderable: true }),
+          location: relationship({ ref: 'Location', isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true, isOrderable: true }),
         },
       }),
     }),

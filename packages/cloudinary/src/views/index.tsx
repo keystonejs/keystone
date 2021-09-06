@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
 import {
@@ -6,7 +7,7 @@ import {
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { validateImage } from './Field';
 

@@ -1,6 +1,6 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, relationship, text, timestamp } from '@keystone-next/fields';
-import { select } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
+import { select } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Task: list({
@@ -18,11 +18,24 @@ export const lists = createSchema({
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+    },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
+  }),
+  SecretPlan: list({
+    fields: {
+      label: text(),
+      description: text(),
+    },
+    ui: {
+      isHidden: true,
     },
   }),
 });

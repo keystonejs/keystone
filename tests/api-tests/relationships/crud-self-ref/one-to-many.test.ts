@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import type { KeystoneContext } from '@keystone-next/types';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -82,9 +82,13 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          name: text(),
-          friendOf: relationship({ ref: 'User.friends' }),
-          friends: relationship({ ref: 'User.friendOf', many: true }),
+          name: text({ isFilterable: true, isOrderable: true }),
+          friendOf: relationship({ ref: 'User.friends', isFilterable: true }),
+          friends: relationship({
+            ref: 'User.friendOf',
+            many: true,
+            isFilterable: true,
+          }),
         },
       }),
     }),

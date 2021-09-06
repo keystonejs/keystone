@@ -2,8 +2,7 @@ import fs from 'fs';
 import mime from 'mime';
 import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { text } from '@keystone-next/fields';
-import { DatabaseProvider } from '@keystone-next/types';
+import { DatabaseProvider } from '@keystone-next/keystone/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');
@@ -51,7 +50,6 @@ export const fieldConfig = () => ({
   },
 });
 export const getTestFields = () => ({
-  name: text(),
   image: cloudinaryImage({
     cloudinary: {
       cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',

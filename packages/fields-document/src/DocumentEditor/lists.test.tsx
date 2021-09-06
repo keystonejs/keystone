@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { nestList, toggleList } from './lists';
 import { jsx, makeEditor } from './tests/utils';

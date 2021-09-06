@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, password, relationship, text } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, password, relationship, text } from '@keystone-next/keystone/fields';
 
 import { isSignedIn, permissions, rules } from './access';
 
@@ -31,10 +31,14 @@ export const lists = createSchema({
       - [ ] Extend the Admin UI to stop people creating private Todos assigned to someone else
     */
     access: {
-      create: permissions.canCreateTodos,
-      read: rules.canReadTodos,
-      update: rules.canManageTodos,
-      delete: rules.canManageTodos,
+      operation: {
+        create: permissions.canCreateTodos,
+      },
+      filter: {
+        query: rules.canReadTodos,
+        update: rules.canManageTodos,
+        delete: rules.canManageTodos,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canCreateTodos(args),
@@ -79,10 +83,14 @@ export const lists = createSchema({
       - [x] Restrict tasks based on same item or canManageTodos
     */
     access: {
-      create: permissions.canManagePeople,
-      read: rules.canReadPeople,
-      update: rules.canUpdatePeople,
-      delete: permissions.canManagePeople,
+      operation: {
+        create: permissions.canManagePeople,
+        delete: permissions.canManagePeople,
+      },
+      filter: {
+        query: rules.canReadPeople,
+        update: rules.canUpdatePeople,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canManagePeople(args),
@@ -105,7 +113,7 @@ export const lists = createSchema({
       /* The name of the user */
       name: text({ isRequired: true }),
       /* The email of the user, used to sign in */
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       /* The password of the user */
       password: password({
         isRequired: true,
@@ -163,10 +171,12 @@ export const lists = createSchema({
       - [ ] Extend the Admin UI with client-side validation based on the same set of rules
     */
     access: {
-      create: permissions.canManageRoles,
-      read: isSignedIn,
-      update: permissions.canManageRoles,
-      delete: permissions.canManageRoles,
+      operation: {
+        create: permissions.canManageRoles,
+        query: isSignedIn,
+        update: permissions.canManageRoles,
+        delete: permissions.canManageRoles,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canManageRoles(args),

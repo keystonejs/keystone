@@ -6,6 +6,9 @@ export const config = withPreconstruct({
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack(config: any, { isServer }: any) {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -18,8 +21,8 @@ export const config = withPreconstruct({
     if (isServer) {
       config.externals = [
         ...config.externals,
-        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view)/,
-        /@keystone-next\/types/,
+        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
+        '.prisma/client',
       ];
     }
     return config;

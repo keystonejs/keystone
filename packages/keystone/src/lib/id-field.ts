@@ -1,17 +1,18 @@
 import path from 'path';
+import { validate } from 'uuid';
+import { isCuid } from 'cuid';
 import {
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
   orderDirectionEnum,
   ScalarDBField,
-  schema,
-} from '@keystone-next/types';
-import { validate } from 'uuid';
-import { isCuid } from 'cuid';
+  graphql,
+} from '../types';
+import { packagePath } from '../package-path';
 
 const views = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  packagePath,
   '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
 );
 
@@ -43,33 +44,33 @@ const idParsers = {
 };
 
 const nonCircularFields = {
-  equals: schema.arg({ type: schema.ID }),
-  in: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
-  notIn: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
-  lt: schema.arg({ type: schema.ID }),
-  lte: schema.arg({ type: schema.ID }),
-  gt: schema.arg({ type: schema.ID }),
-  gte: schema.arg({ type: schema.ID }),
+  equals: graphql.arg({ type: graphql.ID }),
+  in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
+  notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
+  lt: graphql.arg({ type: graphql.ID }),
+  lte: graphql.arg({ type: graphql.ID }),
+  gt: graphql.arg({ type: graphql.ID }),
+  gte: graphql.arg({ type: graphql.ID }),
 };
 
-type IDFilterType = schema.InputObjectType<
+type IDFilterType = graphql.InputObjectType<
   typeof nonCircularFields & {
-    not: schema.Arg<typeof IDFilter>;
+    not: graphql.Arg<typeof IDFilter>;
   }
 >;
 
-const IDFilter: IDFilterType = schema.inputObject({
+const IDFilter: IDFilterType = graphql.inputObject({
   name: 'IDFilter',
   fields: () => ({
     ...nonCircularFields,
-    not: schema.arg({ type: IDFilter }),
+    not: graphql.arg({ type: IDFilter }),
   }),
 });
 
-const filterArg = schema.arg({ type: IDFilter });
+const filterArg = graphql.arg({ type: IDFilter });
 
 function resolveVal(
-  input: Exclude<schema.InferValueFromArg<typeof filterArg>, undefined>,
+  input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
   kind: IdFieldConfig['kind']
 ): any {
   if (input === null) {
@@ -110,6 +111,10 @@ export const idFieldType =
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
+      ...config,
+      // The ID field is always filterable and orderable.
+      isFilterable: true,
+      isOrderable: true,
       input: {
         where: {
           arg: filterArg,
@@ -117,11 +122,11 @@ export const idFieldType =
             return resolveVal(val, config.kind);
           },
         },
-        uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parseVal },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.nonNull(schema.ID),
+      output: graphql.field({
+        type: graphql.nonNull(graphql.ID),
         resolve({ value }) {
           return value.toString();
         },

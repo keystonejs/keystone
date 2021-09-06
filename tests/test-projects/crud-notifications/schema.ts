@@ -1,17 +1,15 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, relationship, text, timestamp } from '@keystone-next/fields';
-import { select } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
+import { select } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Task: list({
     access: {
-      delete: async ({ itemId, context }) => {
-        const item: any = await context.lists.Task.findOne({
-          where: { id: itemId },
-          query: 'label',
-        });
-        const matchString = item.label.replace(/([\d])+/g, '').trim();
-        return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
+      item: {
+        delete: async ({ item }) => {
+          const matchString = item.label.replace(/([\d])+/g, '').trim();
+          return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
+        },
       },
     },
     fields: {
@@ -28,11 +26,15 @@ export const lists = createSchema({
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ isRequired: true }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
+    defaultIsFilterable: true,
+    defaultIsOrderable: true,
   }),
 });

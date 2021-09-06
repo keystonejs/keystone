@@ -6,14 +6,18 @@ import {
   KeystoneListsAPI as GenericKeystoneListsAPI,
   KeystoneDbAPI as GenericKeystoneDbAPI,
   KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import('@keystone-next/types').JSONValue;
+  readonly JSON: import('@keystone-next/keystone/types').JSONValue;
+};
+
+export type TodoWhereUniqueInput = {
+  readonly id?: Scalars['ID'] | null;
 };
 
 export type TodoWhereInput = {
@@ -21,7 +25,6 @@ export type TodoWhereInput = {
   readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly NOT?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly id?: IDFilter | null;
-  readonly title?: StringNullableFilter | null;
 };
 
 export type IDFilter = {
@@ -35,41 +38,8 @@ export type IDFilter = {
   readonly not?: IDFilter | null;
 };
 
-export type StringNullableFilter = {
-  readonly equals?: Scalars['String'] | null;
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly lt?: Scalars['String'] | null;
-  readonly lte?: Scalars['String'] | null;
-  readonly gt?: Scalars['String'] | null;
-  readonly gte?: Scalars['String'] | null;
-  readonly contains?: Scalars['String'] | null;
-  readonly startsWith?: Scalars['String'] | null;
-  readonly endsWith?: Scalars['String'] | null;
-  readonly not?: NestedStringNullableFilter | null;
-};
-
-export type NestedStringNullableFilter = {
-  readonly equals?: Scalars['String'] | null;
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
-  readonly lt?: Scalars['String'] | null;
-  readonly lte?: Scalars['String'] | null;
-  readonly gt?: Scalars['String'] | null;
-  readonly gte?: Scalars['String'] | null;
-  readonly contains?: Scalars['String'] | null;
-  readonly startsWith?: Scalars['String'] | null;
-  readonly endsWith?: Scalars['String'] | null;
-  readonly not?: NestedStringNullableFilter | null;
-};
-
-export type TodoWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null;
-};
-
 export type TodoOrderByInput = {
   readonly id?: OrderDirection | null;
-  readonly title?: OrderDirection | null;
 };
 
 export type OrderDirection = 'asc' | 'desc';
@@ -121,11 +91,11 @@ export type TodoListTypeInfo = {
 };
 
 export type TodoListFn = (
-  listConfig: import('@keystone-next/keystone/schema').ListConfig<
+  listConfig: import('@keystone-next/keystone').ListConfig<
     TodoListTypeInfo,
     TodoListTypeInfo['fields']
   >
-) => import('@keystone-next/keystone/schema').ListConfig<
+) => import('@keystone-next/keystone').ListConfig<
   TodoListTypeInfo,
   TodoListTypeInfo['fields']
 >;

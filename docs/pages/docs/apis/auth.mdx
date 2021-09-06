@@ -10,8 +10,8 @@ Additional options to this function provide support for creating an initial item
 For examples of how to use authentication in your system please see the [authentication guide](../guides/auth).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text, password, checkbox } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text, password, checkbox } from '@keystone-next/keystone/fields';
 import { createAuth } from '@keystone-next/auth';
 
 const { withAuth } = createAuth({
@@ -42,7 +42,7 @@ export default withAuth(
     lists: createSchema({
       User: list({
         fields: {
-          email: text({ isUnique: true }),
+          email: text({ isIndexed: 'unique', isFilterable: true }),
           password: password(),
           isAdmin: checkbox(),
         },
@@ -62,7 +62,7 @@ The `createAuth` function must be used in conjunction with a [session](./session
 The core functionality of the authentication system provides a GraphQL mutation to authenticate a user and then start a session, and a sign in page in the Admin UI.
 
 - `listKey`: The name of the list to authenticate against.
-- `identityField`: The name of the field to use as an identity field. This field must have `{ isUnique: true }` set.
+- `identityField`: The name of the field to use as an identity field. This field must have `{ isIndexed: 'unique', isFilterable: true }` set.
 - `secretField`: The name of the field to use as a secret. This field must be a `password()` field type.
 
 ```typescript

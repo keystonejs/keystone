@@ -1,4 +1,4 @@
-import { KeystoneConfig } from '@keystone-next/types';
+import { KeystoneConfig } from '../types';
 import { initConfig } from '../lib/config/initConfig';
 import { createSystem } from '../lib/createSystem';
 import { createApolloServerMicro } from '../lib/server/createApolloServer';
@@ -19,5 +19,5 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
     connectionPromise: keystone.connect(),
   });
 
-  return apolloServer.createHandler({ path: '/api/graphql' });
+  return apolloServer.createHandler({ path: keystoneConfig.graphql?.path || '/api/graphql' });
 }

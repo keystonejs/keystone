@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { SVGAttributes, forwardRef, ReactNode } from 'react';

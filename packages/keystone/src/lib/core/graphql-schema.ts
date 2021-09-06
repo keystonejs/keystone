@@ -1,5 +1,5 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider, schema } from '@keystone-next/types';
+import { DatabaseProvider, graphql } from '../../types';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';
@@ -9,14 +9,14 @@ export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider
 ) {
-  const query = schema.object()({
+  const query = graphql.object()({
     name: 'Query',
     fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
   });
 
-  const updateManyByList: Record<string, schema.InputObjectType<any>> = {};
+  const updateManyByList: Record<string, graphql.InputObjectType<any>> = {};
 
-  const mutation = schema.object()({
+  const mutation = graphql.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
@@ -37,17 +37,22 @@ export function getGraphQLSchema(
 
 function collectTypes(
   lists: Record<string, InitialisedList>,
-  updateManyByList: Record<string, schema.InputObjectType<any>>
+  updateManyByList: Record<string, graphql.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = [];
   for (const list of Object.values(lists)) {
+    const { isEnabled } = list.graphql;
+    if (!isEnabled.type) continue;
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
-    if (list.access.read || list.access.create || list.access.update || list.access.delete) {
-      collectedTypes.push(list.types.output.graphQLType);
+    collectedTypes.push(list.types.output.graphQLType);
+    if (isEnabled.query || isEnabled.update || isEnabled.delete) {
+      collectedTypes.push(list.types.uniqueWhere.graphQLType);
+    }
+    if (isEnabled.query) {
       for (const field of Object.values(list.fields)) {
         if (
-          list.access.read !== false &&
-          field.access.read !== false &&
+          isEnabled.query &&
+          field.graphql.isEnabled.read &&
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
@@ -57,18 +62,17 @@ function collectTypes(
         }
       }
       collectedTypes.push(list.types.where.graphQLType);
-      collectedTypes.push(list.types.uniqueWhere.graphQLType);
       collectedTypes.push(list.types.orderBy.graphQLType);
     }
-    if (list.access.update) {
+    if (isEnabled.update) {
       collectedTypes.push(list.types.update.graphQLType);
       collectedTypes.push(updateManyByList[list.listKey].graphQLType);
     }
-    if (list.access.create) {
+    if (isEnabled.create) {
       collectedTypes.push(list.types.create.graphQLType);
     }
   }
   // this is not necessary, just about ordering
-  collectedTypes.push(schema.JSON.graphQLType);
+  collectedTypes.push(graphql.JSON.graphQLType);
   return collectedTypes;
 }

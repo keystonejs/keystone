@@ -2,7 +2,7 @@ import React from 'react';
 import { Core } from '@keystone-ui/core';
 import { AppProps } from 'next/app';
 import { DocumentNode } from 'graphql';
-import { AdminConfig, FieldViews } from '@keystone-next/types';
+import { AdminConfig, FieldViews } from '../../../../types';
 import { ErrorBoundary } from '../../../../admin-ui/components';
 import { KeystoneProvider } from '../../../../admin-ui/context';
 
@@ -11,6 +11,7 @@ type AppConfig = {
   adminMetaHash: string;
   fieldViews: FieldViews;
   lazyMetadataQuery: DocumentNode;
+  apiPath: string;
 };
 
 export const getApp =

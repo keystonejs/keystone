@@ -1,10 +1,10 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { select, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Post: list({
     fields: {
-      title: text({ isRequired: true }),
+      title: text({ isRequired: true, isFilterable: true }),
       status: select({
         dataType: 'enum',
         options: [
@@ -20,7 +20,7 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

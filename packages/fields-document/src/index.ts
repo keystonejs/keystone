@@ -4,10 +4,10 @@ import {
   CommonFieldConfig,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  schema,
+  graphql,
   JSONValue,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -79,10 +79,7 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     defaultValue?: FieldDefaultValue<Record<string, any>[], TGeneratedListTypes>;
   };
 
-const views = path.join(
-  path.dirname(require.resolve('@keystone-next/fields-document/package.json')),
-  'views'
-);
+const views = path.join(path.dirname(__dirname), 'views');
 
 export const document =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -112,28 +109,28 @@ export const document =
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
     };
 
-    if ((config as any).isUnique) {
-      throw Error('isUnique is not a supported option for field type document');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type document");
     }
 
     return jsonFieldTypePolyfilledForSQLite(meta.provider, {
       ...config,
       input: {
-        create: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
-        update: { arg: schema.arg({ type: schema.JSON }), resolve: inputResolver },
+        create: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
       },
-      output: schema.field({
-        type: schema.object<{ document: JSONValue }>()({
+      output: graphql.field({
+        type: graphql.object<{ document: JSONValue }>()({
           name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
           fields: {
-            document: schema.field({
+            document: graphql.field({
               args: {
-                hydrateRelationships: schema.arg({
-                  type: schema.nonNull(schema.Boolean),
+                hydrateRelationships: graphql.arg({
+                  type: graphql.nonNull(graphql.Boolean),
                   defaultValue: false,
                 }),
               },
-              type: schema.nonNull(schema.JSON),
+              type: graphql.nonNull(graphql.JSON),
               resolve({ document }, { hydrateRelationships }, context) {
                 return hydrateRelationships
                   ? addRelationshipData(

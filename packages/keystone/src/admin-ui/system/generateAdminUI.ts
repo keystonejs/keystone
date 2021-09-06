@@ -5,8 +5,7 @@ import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
-import type { KeystoneConfig, AdminMetaRootVal } from '@keystone-next/types';
-import { AdminFileToWrite } from '@keystone-next/types';
+import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
@@ -18,7 +17,7 @@ function getDoesAdminConfigExist() {
     const configPath = Path.join(process.cwd(), 'admin', 'config');
     resolve.sync(configPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false });
     return true;
-  } catch (err) {
+  } catch (err: any) {
     if (err.code === 'MODULE_NOT_FOUND') {
       return false;
     }

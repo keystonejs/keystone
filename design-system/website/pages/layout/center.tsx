@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, Box, useTheme, Center } from '@keystone-ui/core';
 

@@ -22,7 +22,7 @@ The document field provides a number of different formatting options, all of whi
 To get started with a fully featured editor experience, you can turn on all of the built-in options.
 
 ```typescript
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export const lists = createSchema({
@@ -161,9 +161,9 @@ For example, you might want to include twitter-style mentions of other users in 
 We can achieve this with the `relationships` option to the document field.
 
 ```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -352,7 +352,7 @@ You need to import the `componentBlocks` and pass it to the document field along
 `keystone.ts`
 
 ```ts
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 import { componentBlocks } from './component-blocks';
 
@@ -571,7 +571,7 @@ fields.object({
 To use relationship fields on component blocks, you need to add a relationship to the document field config.
 
 ```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({

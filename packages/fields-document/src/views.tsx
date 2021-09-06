@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
@@ -10,7 +11,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 import weakMemoize from '@emotion/weak-memoize';
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';

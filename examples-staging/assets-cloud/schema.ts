@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp, image, file } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { select, relationship, text, timestamp, image, file } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Post: list({
@@ -22,7 +22,7 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

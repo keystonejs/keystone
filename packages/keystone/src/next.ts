@@ -47,7 +47,7 @@ export const withKeystone =
           '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/api',
           '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/next-graphql',
           '@keystone-next/keystone/next',
-          '@keystone-next/keystone',
+          '@keystone-next/keystone/system',
           '.prisma/client',
         ];
       }

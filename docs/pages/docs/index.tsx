@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -71,7 +72,7 @@ export default function Docs() {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </div>
       </div>
