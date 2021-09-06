@@ -161,8 +161,34 @@ Commit website update and open PR to add to `master`.
 
 Have PR reviewed and merged into `master`.
 
----
+### GitHub branches
 
 Create branch off `master` such as `bring-in-latest-website-changes` and merge in `website_live` changes, open PR and get it merged, example - https://github.com/keystonejs/keystone/pull/6470
 
 Create branch off `website_live` such as `bring-in-latest-master-changes` and merge in `master` changes, open PR and get it merged, example - https://github.com/keystonejs/keystone/pull/6472
+
+### GitHub histories
+
+Go to the website_live branch
+
+`git checkout website_live`
+
+Check that we're identical to master
+
+`git diff master`
+
+Do a merge that should just update the parents of the new commit
+
+`git merge master`
+
+This should be empty
+
+`git diff origin/website_live`
+
+This should be empty
+
+`git diff master`
+
+Force push website_live (after turning off branch protection in github)
+
+`git push --force`
