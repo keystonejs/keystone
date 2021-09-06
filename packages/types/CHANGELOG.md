@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 25.0.0
+
+### Major Changes
+
+- [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
+
 ## 24.0.0
 
 ### Major Changes

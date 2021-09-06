@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/icons",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "license": "MIT",
   "main": "dist/icons.cjs.js",
   "module": "dist/icons.esm.js",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.3",
-    "@keystone-ui/core": "^3.0.0"
+    "@keystone-ui/core": "^3.2.0"
   },
   "peerDependencies": {
     "react": "^17.0.2"
