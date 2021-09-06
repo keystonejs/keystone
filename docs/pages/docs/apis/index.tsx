@@ -17,6 +17,7 @@ export default function Docs() {
       noProse
       title={'APIs'}
       description={'Index for Keystone’s API reference docs.'}
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         API Reference
