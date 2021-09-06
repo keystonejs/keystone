@@ -27,7 +27,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -41,7 +41,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -169,7 +169,7 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNoteNoRead = await context.lists.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().lists.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
@@ -206,7 +206,7 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().lists.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 

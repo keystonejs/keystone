@@ -21,12 +21,14 @@ export const lists = createSchema({
     // Add access control so that only the assigned user can update a task
     // We will write a test to verify that this is working correctly.
     access: {
-      update: async ({ session, itemId, context }) => {
-        const task = await context.lists.Task.findOne({
-          where: { id: itemId },
-          query: 'assignedTo { id }',
-        });
-        return !!(session?.itemId && session.itemId === task.assignedTo?.id);
+      item: {
+        update: async ({ session, item, context }) => {
+          const task = await context.lists.Task.findOne({
+            where: { id: item.id },
+            query: 'assignedTo { id }',
+          });
+          return !!(session?.itemId && session.itemId === task.assignedTo?.id);
+        },
       },
     },
     defaultIsFilterable: true,

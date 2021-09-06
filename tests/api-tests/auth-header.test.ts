@@ -40,10 +40,12 @@ const runner = setupTestRunner({
             password: password(),
           },
           access: {
-            create: defaultAccess,
-            read: defaultAccess,
-            update: defaultAccess,
-            delete: defaultAccess,
+            operation: {
+              create: defaultAccess,
+              query: defaultAccess,
+              update: defaultAccess,
+              delete: defaultAccess,
+            },
           },
         }),
       }),
@@ -82,8 +84,14 @@ describe('Auth testing', () => {
         await context.sudo().lists[listKey].createMany({ data });
       }
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
-      expect(data).toEqual({ users: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['users'] }]);
+      expect(data).toEqual({ users: [] });
+      expect(errors).toBe(undefined);
+
+      const result = await context.graphql.raw({
+        query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
+      });
+      expect(result.data).toEqual({ updateUser: null });
+      expectAccessDenied('dev', false, undefined, result.errors, [{ path: ['updateUser'] }]);
     })
   );
 

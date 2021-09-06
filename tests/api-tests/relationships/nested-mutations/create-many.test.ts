@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -27,7 +27,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -41,7 +41,7 @@ const runner = setupTestRunner({
           content: text({ isFilterable: true }),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -217,10 +217,8 @@ describe('with access control', () => {
                 }`,
         });
 
-        expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: null } });
-        expectAccessDenied('dev', false, undefined, errors, [
-          { path: ['createUserToNotesNoRead', 'notes'] },
-        ]);
+        expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: [] } });
+        expect(errors).toBe(undefined);
       })
     );
 

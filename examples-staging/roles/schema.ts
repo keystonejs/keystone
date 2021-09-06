@@ -31,10 +31,14 @@ export const lists = createSchema({
       - [ ] Extend the Admin UI to stop people creating private Todos assigned to someone else
     */
     access: {
-      create: permissions.canCreateTodos,
-      read: rules.canReadTodos,
-      update: rules.canManageTodos,
-      delete: rules.canManageTodos,
+      operation: {
+        create: permissions.canCreateTodos,
+      },
+      filter: {
+        query: rules.canReadTodos,
+        update: rules.canManageTodos,
+        delete: rules.canManageTodos,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canCreateTodos(args),
@@ -79,10 +83,14 @@ export const lists = createSchema({
       - [x] Restrict tasks based on same item or canManageTodos
     */
     access: {
-      create: permissions.canManagePeople,
-      read: rules.canReadPeople,
-      update: rules.canUpdatePeople,
-      delete: permissions.canManagePeople,
+      operation: {
+        create: permissions.canManagePeople,
+        delete: permissions.canManagePeople,
+      },
+      filter: {
+        query: rules.canReadPeople,
+        update: rules.canUpdatePeople,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canManagePeople(args),
@@ -163,10 +171,12 @@ export const lists = createSchema({
       - [ ] Extend the Admin UI with client-side validation based on the same set of rules
     */
     access: {
-      create: permissions.canManageRoles,
-      read: isSignedIn,
-      update: permissions.canManageRoles,
-      delete: permissions.canManageRoles,
+      operation: {
+        create: permissions.canManageRoles,
+        query: isSignedIn,
+        update: permissions.canManageRoles,
+        delete: permissions.canManageRoles,
+      },
     },
     ui: {
       hideCreate: args => !permissions.canManageRoles(args),

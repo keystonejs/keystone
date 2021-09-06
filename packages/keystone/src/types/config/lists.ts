@@ -30,7 +30,7 @@ export type ListConfig<
    * @default true
    * @see https://www.keystonejs.com/guides/access-control
    */
-  access?: ListAccessControl<TGeneratedListTypes> | boolean;
+  access?: ListAccessControl<TGeneratedListTypes>;
 
   /** Config for how this list should act in the Admin UI */
   ui?: ListAdminUIConfig<TGeneratedListTypes, Fields>;

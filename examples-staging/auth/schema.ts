@@ -4,8 +4,10 @@ import { text, checkbox, password } from '@keystone-next/keystone/fields';
 export const lists = createSchema({
   User: list({
     access: {
-      // Only allow admins to delete users
-      delete: ({ session }) => session?.data?.isAdmin,
+      operation: {
+        // Only allow admins to delete users
+        delete: ({ session }) => session?.data?.isAdmin,
+      },
     },
     ui: {
       // Since you can't delete users unless you're an admin, we hide the UI for it

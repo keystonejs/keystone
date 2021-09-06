@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           name: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       EventToGroupNoRead: list({

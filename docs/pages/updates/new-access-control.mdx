@@ -1,0 +1,181 @@
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# A new & improved Access Control API
+
+Securing the data in your Keystone sytem is one of the most important steps in preparing your application for a production deployment.
+To make this process simpler and safer, we've made some important changes to the [Access Control APIs](/docs/apis/access-control) from previous versions.
+This document outlines the motivation behind the changes, and shows you how to update your existing Access Control functions to use the new APIs.
+
+## Control your GrahpQL API
+
+Previous versions of Keystone allowed you to control which operations were included in your GraphQL API by specifying **static** access control.
+For example, the following access control definition would omit all delete operations for the list from the GraphQL API.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      access: {
+        delete: false,
+      },
+    }),
+  }),
+});
+```
+
+With the new API, access control will never have any effect on which operations are in your GraphQL API.
+
+If you would like to exclude an operation from the GraphQL API, you can use the new [`config.graphql.omit`](/docs/apis/schema#graphql) API.
+To exclude all `delete` operations, you would write:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      graphql: {
+        omit: ['delete'],
+      }
+    }),
+  }),
+});
+```
+
+!> If you have used static access control to exclude operations from you GraphQL API, update those lists to use the `graphql.omit` configuration option instead.
+
+## Queries never throw Access Denied
+
+Previous versions of Keystone would return an Access Denied error from a **query** if an item couldn't be found, or explicitly had access denied.
+This behaviour proved confusing, particularly in the missing data case.
+
+The new access control API **never** returns an Access Denied error on a **query**.
+When querying for a single item, if the item is missing, or access is denied, the query will return `null`.
+If querying for multiple items, or for a count of items, any items which are excluded due to access control will be filtered out of the result, and removed from the count.
+The query will never return an Access Denied error.
+
+!> If you have client-side code which checks for Access Denied errors on queries, update it to check for `null` return values instead.
+
+## More flexible access control definitions
+
+Previous versions of Keystone allowed you to write access control using **static**, **imperative**, or **declarative** definitions.
+In practice, these alternatives were not very intuitive to use, and often lead to confusion, which in turn could lead to security risks.
+
+The new API makes each rule much more explicit and supports fewer variations, making it easier to read, write, and maintain your access control rules.
+This in turn will reduce the risk of introducing security gaps in your system.
+
+Before moving on, be sure to [read the docs](/docs/apis/access-control) for the new API.
+
+### Updating static access control
+
+If you are using **static** access control, you will generally want to update this to use the new `operation` level access control.
+If you previously had the following:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      access: {
+        create: false,
+        read: true,
+        update: false,
+        delete: false,
+      },
+    }),
+  }),
+});
+```
+
+you will need to change it to:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      access: {
+        operation: {
+          create: () => false,
+          query: () => true,
+          update: () => false,
+          delete: () => false,
+        }
+      },
+    }),
+  }),
+});
+```
+
+!> Note that that `read` operation has been renamed to `query`.
+
+### Updating declarative access control
+
+If you are using **declarative** access control, you will neeed to update this to use the new `filter` level access control.
+If you previously had the following:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      access: {
+        read: { isAdmin: { equals: true } },
+        update: { isAdmin: { equals: true } },
+        delete: { isAdmin: { equals: true } },
+      },
+    }),
+  }),
+});
+```
+
+you will need to change it to:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone';
+
+export default config({
+  lists: createSchema({
+    ListKey: list({
+      access: {
+        filter: {
+          query: () => ({ isAdmin: { equals: true } }),
+          update: () => ({ isAdmin: { equals: true } }),
+          delete: () => ({ isAdmin: { equals: true } }),
+        }
+      },
+    }),
+  }),
+});
+```
+
+### Updating imperative access control
+
+The **imperative** access control pattern in previous versions of Keystone provided a high degree of flexibility, providing access to a wide range of input variables, and allowing for both static (boolean valued) and declarative (filter valued) return values.
+Porting your imperative access control to the new API will depend on what type of function you have.
+The following rules will help you decide how to update you system.
+
+- Does your function ever return a declarative value, e.g. a GraphQL filter value? If so, you should move it into the `filter` access control block.
+- Does your function depend on the `item` or `originalInput` arguments? If so, you should move it into the `item` access control block.
+- If the function returns a boolean value and does not depend on the `item` or `originalInput` arguments, you should move it into the `operation` access control block.
+
+!> You can define separate functions for an operation in more than one access control block. Items must pass all access control rules for an operation to be successful.
+
+## Getting help
+
+We've put a lot of thought into the new access control APIs based on our experience building real world systems with Keystone.
+While large changes like this can be daunting, we hope that the long term benefits will make the transition worth the effort.
+
+If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com) to get the help you need.
+
+?> The security of the data in your Keystone system should be a high priority.
+We strongly encourage you to [write tests](/docs/guides/testing) to verify the behaviour of your access control definitions before upgrading.
+
+export default ({ children, ...props }) => <Markdown description="A new & improved Access Control API" {...props}>{children}</Markdown>;
+export { getServerSideProps }
