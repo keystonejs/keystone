@@ -9,7 +9,7 @@ This document outlines the motivation behind the changes, and shows you how to u
 
 ## Control your GrahpQL API
 
-Previous versions of Keystone allowed you to control which operations were included in your GraphQL API by specifying `static` access control.
+Previous versions of Keystone allowed you to control which operations were included in your GraphQL API by specifying **static** access control.
 For example, the following access control definition would omit all delete operations for the list from the GraphQL API.
 
 ```typescript
@@ -28,7 +28,7 @@ export default config({
 
 With the new API, access control will never have any effect on which operations are in your GraphQL API.
 
-If you would like to exclude an operation from the GraphQL API, you can now use the new [`config.graphql.omit`](/docs/apis/schema#graphql) API.
+If you would like to exclude an operation from the GraphQL API, you can use the new [`config.graphql.omit`](/docs/apis/schema#graphql) API.
 To exclude all `delete` operations, you would write:
 
 ```typescript
@@ -61,17 +61,17 @@ The query will never return an Access Denied error.
 
 ## More flexible access control definitions
 
-Previous versions of Keystone allowed you to write access control using static, imperative, or declarative definitions.
+Previous versions of Keystone allowed you to write access control using **static**, **imperative**, or **declarative** definitions.
 In practice, these alternatives were not very intuitive to use, and often lead to confusion, which in turn could lead to security risks.
 
-The new API makes each rule much more explicit, making it easier to read, write, and maintain your access control rules.
+The new API makes each rule much more explicit and supports fewer variations, making it easier to read, write, and maintain your access control rules.
 This in turn will reduce the risk of introducing security gaps in your system.
 
 Before moving on, be sure to [read the docs](/docs/apis/access-control) for the new API.
 
 ### Updating static access control
 
-If you are using static access control, you will generally want to update this to use the new `operation` level access control.
+If you are using **static** access control, you will generally want to update this to use the new `operation` level access control.
 If you previously had the following:
 
 ```typescript
@@ -116,7 +116,7 @@ export default config({
 
 ### Updating declarative access control
 
-If you are using declarative access control, you will neeed to update this to use the new `filter` level access control.
+If you are using **declarative** access control, you will neeed to update this to use the new `filter` level access control.
 If you previously had the following:
 
 ```typescript
@@ -157,7 +157,7 @@ export default config({
 
 ### Updating imperative access control
 
-The imperative access control pattern in previous versions of Keystone provided a high degree of flexibility, providing access to a wide range of input variables, and allowing for both static (boolean valued) and declarative (filter valued) return values.
+The **imperative** access control pattern in previous versions of Keystone provided a high degree of flexibility, providing access to a wide range of input variables, and allowing for both static (boolean valued) and declarative (filter valued) return values.
 Porting your imperative access control to the new API will depend on what type of function you have.
 The following rules will help you decide how to update you system.
 
@@ -175,7 +175,7 @@ While large changes like this can be daunting, we hope that the long term benefi
 If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com) to get the help you need.
 
 ?> The security of the data in your Keystone system should be a high priority.
-We strongly encourage you to [write tests](/docs/guides/testing) to verify the behaviour of your access control definitions.
+We strongly encourage you to [write tests](/docs/guides/testing) to verify the behaviour of your access control definitions before upgrading.
 
 export default ({ children, ...props }) => <Markdown description="A new & improved Access Control API" {...props}>{children}</Markdown>;
 export { getServerSideProps }
