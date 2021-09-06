@@ -127,8 +127,8 @@ export const adminUITests = (
     }
 
     describe.each([
-      // 'chromium',
       'firefox',
+      'chromium',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
       // webkit doesn't treat localhost as a secure context
