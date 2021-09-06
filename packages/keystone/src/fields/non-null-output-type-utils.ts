@@ -6,10 +6,7 @@ export function hasReadAccessControl(
   if (access === undefined) {
     return false;
   }
-  if (typeof access === 'function' || typeof access.read === 'function') {
-    return true;
-  }
-  return false;
+  return typeof access === 'function' || typeof access.read === 'function';
 }
 
 export function assertIsNonNullAllowed(
