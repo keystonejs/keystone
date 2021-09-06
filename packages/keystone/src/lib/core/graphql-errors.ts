@@ -2,6 +2,14 @@ import { ApolloError } from 'apollo-server-errors';
 
 export const accessDeniedError = () => new ApolloError('You do not have access to this resource');
 
+export const prismaError = (err: Error) => {
+  return new ApolloError(
+    `Prisma error: ${err.message.split('\n').slice(-1)[0].trim()}`,
+    'INTERNAL_SERVER_ERROR',
+    { ...err }
+  );
+};
+
 export const validationFailureError = (messages: string[]) => {
   const s = messages.map(m => `  - ${m}`).join('\n');
   return new ApolloError(`You provided invalid data for this operation.\n${s}`);
