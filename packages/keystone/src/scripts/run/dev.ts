@@ -1,13 +1,14 @@
 import path from 'path';
 import url from 'url';
 import express from 'express';
-import { createAdminUIServer, generateAdminUI } from '../../admin-ui/system';
+import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { defaults } from '../../lib/config/defaults';
 import { createExpressServer } from '../../lib/server/createExpressServer';
+import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
@@ -82,7 +83,12 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
 
       console.log('✨ Preparing Admin UI app');
-      adminUIMiddleware = await createAdminUIServer(config, createContext, true, getAdminPath(cwd));
+      adminUIMiddleware = await createAdminUIMiddleware(
+        config,
+        createContext,
+        true,
+        getAdminPath(cwd)
+      );
       expressServer.use(adminUIMiddleware);
       console.log(`✅ Admin UI ready`);
     }
