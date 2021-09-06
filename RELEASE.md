@@ -165,4 +165,4 @@ Have PR reviewed and merged into `master`.
 
 Create branch off `master` such as `bring-in-latest-website-changes` and merge in `website_live` changes, open PR and get it merged, example - https://github.com/keystonejs/keystone/pull/6470
 
-Open PR to merge `master` into `website_live`
+Create branch off `website_live` such as `bring-in-latest-master-changes` and merge in `master` changes, open PR and get it merged, example - https://github.com/keystonejs/keystone/pull/6472
