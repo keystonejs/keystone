@@ -1,5 +1,27 @@
 # @keystone-ui/website
 
+## 3.0.2
+
+### Patch Changes
+
+- [#6443](https://github.com/keystonejs/keystone/pull/6443) [`b45536e22`](https://github.com/keystonejs/keystone/commit/b45536e22f9c3a61c781161602f6f01268b303c7) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependency `@types/webpack`.
+
+* [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
+
+* Updated dependencies [[`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c)]:
+  - @keystone-ui/button@5.0.1
+  - @keystone-ui/core@3.2.0
+  - @keystone-ui/fields@4.1.3
+  - @keystone-ui/loading@4.0.1
+  - @keystone-ui/modals@4.0.1
+  - @keystone-ui/notice@4.0.2
+  - @keystone-ui/options@4.0.2
+  - @keystone-ui/pill@5.0.1
+  - @keystone-ui/popover@4.0.3
+  - @keystone-ui/segmented-control@4.0.3
+  - @keystone-ui/toast@4.0.3
+  - @keystone-ui/tooltip@4.0.2
+
 ## 3.0.1
 
 ### Patch Changes
