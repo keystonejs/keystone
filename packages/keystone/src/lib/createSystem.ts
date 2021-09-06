@@ -26,7 +26,7 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
           listKey,
           {
             ...list,
-            access: true,
+            access: { operation: {}, item: {}, filter: {} },
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
@@ -36,7 +36,7 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
                     const f = field(data);
                     return {
                       ...f,
-                      access: true,
+                      access: () => true,
                       isFilterable: true,
                       isOrderable: true,
                       graphql: { ...(f.graphql || {}), omit: [] },

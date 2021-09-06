@@ -37,9 +37,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
         type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.create))),
       }),
     },
-    resolve(_rootVal, args, context) {
+    async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.createMany(args, list, context, provider)
+        await createAndUpdate.createMany(args, list, context, provider)
       );
     },
   });
@@ -67,9 +67,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     args: {
       data: graphql.arg({ type: graphql.nonNull(graphql.list(graphql.nonNull(updateManyInput))) }),
     },
-    resolve(_rootVal, args, context) {
+    async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        createAndUpdate.updateMany(args, list, context, provider)
+        await createAndUpdate.updateMany(args, list, context, provider)
       );
     },
   });
@@ -89,9 +89,9 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
         type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.uniqueWhere))),
       }),
     },
-    resolve(rootVal, { where }, context) {
+    async resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        deletes.deleteMany(where, list, context, provider)
+        await deletes.deleteMany(where, list, context, provider)
       );
     },
   });

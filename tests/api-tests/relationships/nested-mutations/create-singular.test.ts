@@ -24,7 +24,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { read: () => false },
+        access: { operation: { query: () => false } },
       }),
 
       EventToGroupNoRead: list({
@@ -52,7 +52,7 @@ const runner = setupTestRunner({
         fields: {
           name: text({ isFilterable: true }),
         },
-        access: { create: () => false },
+        access: { operation: { create: () => false } },
       }),
 
       EventToGroupNoCreate: list({
@@ -80,7 +80,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { update: () => false },
+        access: { operation: { update: () => false } },
       }),
 
       EventToGroupNoUpdate: list({
@@ -264,14 +264,14 @@ describe('with access control', () => {
               ]);
             }
             // Confirm it didn't insert either of the records anyway
-            const data1 = await context.lists[group.name].findMany({
+            const data1 = await context.sudo().lists[group.name].findMany({
               where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(data1).toMatchObject([]);
 
             // Confirm it didn't insert either of the records anyway
-            const data2 = await context.lists[`EventTo${group.name}`].findMany({
+            const data2 = await context.sudo().lists[`EventTo${group.name}`].findMany({
               where: { title: { equals: eventName } },
               query: 'id title',
             });
@@ -325,7 +325,7 @@ describe('with access control', () => {
             }
 
             // Confirm it didn't insert the record anyway
-            const groups = await context.lists[group.name].findMany({
+            const groups = await context.sudo().lists[group.name].findMany({
               where: { name: { equals: groupName } },
               query: 'id name',
             });
