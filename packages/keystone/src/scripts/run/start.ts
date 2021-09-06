@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
 import { createExpressServer } from '../../lib/server/createExpressServer';
-import { createAdminUIServer } from '../../admin-ui/system';
+import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
 import { requirePrismaClient } from '../../artifacts';
 import { ExitError, getAdminPath } from '../utils';
 
@@ -32,7 +32,9 @@ export const start = async (cwd: string) => {
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled) {
     console.log('✨ Preparing Admin UI Next.js app');
-    server.use(await createAdminUIServer(config, keystone.createContext, false, getAdminPath(cwd)));
+    server.use(
+      await createAdminUIMiddleware(config, keystone.createContext, false, getAdminPath(cwd))
+    );
     console.log(`✅ Admin UI ready`);
   }
 
