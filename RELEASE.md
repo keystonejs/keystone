@@ -160,3 +160,9 @@ Add release to release page index under `/docs/pages/releases/index.mdx` with a 
 Commit website update and open PR to add to `master`.
 
 Have PR reviewed and merged into `master`.
+
+---
+
+Create branch off `master` such as `bring-in-latest-website-changes` and merge in `website_live` changes, open PR and get it merged, example - https://github.com/keystonejs/keystone/pull/6470
+
+Open PR to merge `master` into `website_live`
