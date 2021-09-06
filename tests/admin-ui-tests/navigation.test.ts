@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { adminUITests } from './utils';
+import { adminUITests, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
@@ -61,12 +61,20 @@ adminUITests('./tests/test-projects/basic', browserType => {
     expect(ariaCurrent).toBe('location');
   });
   test('When pressing a list view nav item from an item view, the correct route should be reached', async () => {
-    await page.goto('http://localhost:3000');
-    await page.click('button[title="Create Task"]');
-    await page.fill('id=label', 'Test Task');
-    await Promise.all([page.waitForNavigation(), page.click('button[type="submit"]')]);
+    const gql = String.raw;
+    const query = gql`
+      mutation CreateTaskItem {
+        createTask(data: { label: "you can delete me" }) {
+          id
+        }
+      }
+    `;
+    const {
+      createTask: { id },
+    } = await makeGqlRequest(query);
+    await page.goto(`http://localhost:3000/tasks/${id}`);
+    await page.waitForSelector('nav a:has-text("Tasks")');
     await Promise.all([page.waitForNavigation(), page.click('nav a:has-text("Tasks")')]);
-
     expect(page.url()).toBe('http://localhost:3000/tasks');
   });
   afterAll(async () => {
