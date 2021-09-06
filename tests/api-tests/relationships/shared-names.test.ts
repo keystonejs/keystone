@@ -1,7 +1,7 @@
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '@keystone-next/types';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../utils';
 
 type IdType = any;
@@ -97,19 +97,19 @@ const runner = setupTestRunner({
       Employee: list({
         fields: {
           name: text(),
-          company: relationship({ ref: 'Company.employees', many: false }),
-          role: relationship({ ref: 'Role', many: false }),
+          company: relationship({ ref: 'Company.employees', many: false, isFilterable: true }),
+          role: relationship({ ref: 'Role', many: false, isFilterable: true }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          employees: relationship({ ref: 'Employee.company', many: true }),
+          employees: relationship({ ref: 'Employee.company', many: true, isFilterable: true }),
         },
       }),
       Role: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           company: relationship({ ref: 'Company', many: false }),
           employees: relationship({ ref: 'Employee', many: true }),
         },

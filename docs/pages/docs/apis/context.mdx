@@ -13,7 +13,7 @@ The APIs provided by the `KeystoneContext` object can be used to write the busin
 The `KeystoneContext` object has the following properties, which are documented below.
 
 ```typescript
-import type { KeystoneContext } from '@keystone-next/types';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 
 context = {
   // HTTP request object
@@ -111,7 +111,7 @@ See the [session API](./session#session-context) for more details.
 When using the `context.lists`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
 The following functions will create a new `KeystoneContext` object with this behaviour modified.
 
-`sudo()`: A function which returns a new `KeystoneContext` object with all access control disabled for subsequent API calls.
+`sudo()`: A function which returns a new `KeystoneContext` object with all access control disabled and all filters enabled for subsequent API calls.
 
 `exitSudo()`: A function which returns a new `KeystoneContext` object with all access control re-enabled for subsequent API calls.
 

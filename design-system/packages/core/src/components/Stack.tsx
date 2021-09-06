@@ -1,12 +1,13 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ElementType, Children, Fragment, ReactNode, isValidElement } from 'react';
+import { Children, Fragment, ReactNode, isValidElement } from 'react';
 
 import { jsx } from '../emotion';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useTheme } from '../theme';
 import { Theme } from '../types';
-import { forwardRefWithAs, mapResponsiveProp } from '../utils';
+import { forwardRefWithAs, mapResponsiveProp, getChildTag } from '../utils';
 
 import { Box, BoxProps } from './Box';
 import { Divider } from './Divider';
@@ -43,16 +44,6 @@ export type StackProps = {
   /** The size of the gap between each element in the stack. */
   gap?: keyof Theme['spacing'];
 } & BoxProps;
-
-const getChildTag = (parentTag?: ElementType<any>) => {
-  switch (parentTag) {
-    case 'ul':
-    case 'ol':
-      return 'li';
-    default:
-      return 'div';
-  }
-};
 
 export const Stack = forwardRefWithAs<'div', StackProps>(
   ({ across, align = 'stretch', children, dividers = 'none', gap = 'none', ...props }, ref) => {

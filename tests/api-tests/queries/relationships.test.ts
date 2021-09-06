@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
 
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -12,14 +12,14 @@ const runner = setupTestRunner({
     lists: createSchema({
       Post: list({
         fields: {
-          title: text(),
-          author: relationship({ ref: 'User' }),
+          title: text({ isFilterable: true, isOrderable: true }),
+          author: relationship({ ref: 'User', isFilterable: true }),
         },
       }),
       User: list({
         fields: {
-          name: text(),
-          feed: relationship({ ref: 'Post', many: true }),
+          name: text({ isFilterable: true }),
+          feed: relationship({ ref: 'Post', many: true, isFilterable: true }),
         },
       }),
     }),

@@ -1,6 +1,6 @@
 import { promisify } from 'util';
 import type { RedisClient } from 'redis';
-import type { SessionStoreFunction } from '@keystone-next/types';
+import type { SessionStoreFunction } from '@keystone-next/keystone/types';
 
 type Options = {
   /** An initialised redis client from the `redis` npm package */

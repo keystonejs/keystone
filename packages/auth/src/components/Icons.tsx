@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { forwardRefWithAs, jsx } from '@keystone-ui/core';
 

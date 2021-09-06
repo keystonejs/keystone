@@ -1,4 +1,3 @@
-import { getGqlNames } from '@keystone-next/types';
 import {
   GraphQLSchema,
   parse,
@@ -13,6 +12,7 @@ import {
   InputValueDefinitionNode,
 } from 'graphql';
 import prettier from 'prettier';
+import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
@@ -83,14 +83,14 @@ export function printGeneratedTypes(
     String: 'string',
     Int: 'number',
     Float: 'number',
-    JSON: 'import("@keystone-next/types").JSONValue',
+    JSON: 'import("@keystone-next/keystone/types").JSONValue',
   };
 
   let prelude = `import {
   KeystoneListsAPI as GenericKeystoneListsAPI,
   KeystoneDbAPI as GenericKeystoneDbAPI,
   KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 `;
 
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
@@ -151,14 +151,14 @@ export type ${listTypeInfoName} = {
     listQuery: ${
       listQuery
         ? printArgs(listQuery.arguments!)
-        : 'import("@keystone-next/types").BaseGeneratedListTypes["args"]["listQuery"]'
+        : 'import("@keystone-next/keystone/types").BaseGeneratedListTypes["args"]["listQuery"]'
     }
   };
 };
 
 export type ${listKey}ListFn = (
-  listConfig: import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
-) => import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
+  listConfig: import('@keystone-next/keystone').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
+) => import('@keystone-next/keystone').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
 `;
     allListsStr += `\n  readonly ${JSON.stringify(listKey)}: ${listTypeInfoName};`;
   }

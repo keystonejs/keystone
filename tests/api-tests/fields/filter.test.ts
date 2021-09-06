@@ -1,14 +1,13 @@
-import path from 'path';
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestRunner } from '@keystone-next/testing';
+import { createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/src/tests/test-fixtures.ts'));
 
 const provider = process.env.TEST_ADAPTER;
 
@@ -21,7 +20,9 @@ testModules
       const runner = setupTestRunner({
         config: apiTestConfig({
           lists: createSchema({
-            [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+            [listKey]: list({
+              fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
+            }),
           }),
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
           files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
@@ -412,7 +413,7 @@ testModules
                     lists: createSchema({
                       [listKey]: list({
                         fields: {
-                          field: mod.typeFunction({ isUnique: true }),
+                          field: mod.typeFunction({ isIndexed: 'unique', isFilterable: true }),
                         },
                       }),
                     }),

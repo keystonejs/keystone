@@ -1,11 +1,13 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text, checkbox, password } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { text, checkbox, password } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   User: list({
     access: {
-      // Only allow admins to delete users
-      delete: ({ session }) => session?.data?.isAdmin,
+      operation: {
+        // Only allow admins to delete users
+        delete: ({ session }) => session?.data?.isAdmin,
+      },
     },
     ui: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
@@ -19,10 +21,7 @@ export const lists = createSchema({
       // The user's name
       name: text({ isRequired: true }),
       // The user's email address, used as the identity field for auth
-      email: text({
-        isRequired: true,
-        isUnique: true,
-      }),
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       // The user's password, used as the secret field for auth
       password: password({
         access: {

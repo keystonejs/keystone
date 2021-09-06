@@ -1,19 +1,15 @@
-import {
-  FindManyArgsValue,
-  ItemRootValue,
-  KeystoneContext,
-  OrderDirection,
-} from '@keystone-next/types';
 import { GraphQLResolveInfo } from 'graphql';
-import { validateNonCreateListAccessControl } from '../access-control';
+import { FindManyArgsValue, ItemRootValue, KeystoneContext, OrderDirection } from '../../../types';
+import { checkOperationAccess, getAccessFilters } from '../access-control';
 import {
   PrismaFilter,
   UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
   UniqueInputFilter,
+  InputFilter,
 } from '../where-inputs';
-import { accessDeniedError, limitsExceededError } from '../graphql-errors';
+import { limitsExceededError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
@@ -46,20 +42,12 @@ export function mapUniqueWhereToWhere(
 export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
-  resolvedWhere: PrismaFilter
+  resolvedWhere: PrismaFilter,
+  accessFilters: boolean | InputFilter
 ) {
-  // Run access control
-  const access = await validateNonCreateListAccessControl({
-    access: list.access.read,
-    args: { context, listKey: list.listKey, operation: 'read', session: context.session },
-  });
-  if (access === false) {
-    throw accessDeniedError();
-  }
-
-  // Merge declarative access control
-  if (typeof access === 'object') {
-    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(access, list, context)] };
+  // Merge the filter access control
+  if (typeof accessFilters === 'object') {
+    resolvedWhere = { AND: [resolvedWhere, await resolveWhereInput(accessFilters, list, context)] };
   }
 
   return resolvedWhere;
@@ -70,19 +58,25 @@ export async function findOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
+  // Check operation permission to pass into single operation
+  const operationAccess = await checkOperationAccess(list, context, 'query');
+  if (!operationAccess) {
+    return null;
+  }
+
+  const accessFilters = await getAccessFilters(list, context, 'query');
+  if (accessFilters === false) {
+    return null;
+  }
+
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
   const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
 
   // Apply access control
-  const filter = await accessControlledFilter(list, context, resolvedWhere);
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where: filter }));
-
-  if (item === null) {
-    throw accessDeniedError();
-  }
-  return item;
+  return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
 }
 
 export async function findMany(
@@ -94,10 +88,21 @@ export async function findMany(
 ): Promise<ItemRootValue[]> {
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
+  // Check operation permission, throw access denied if not allowed
+  const operationAccess = await checkOperationAccess(list, context, 'query');
+  if (!operationAccess) {
+    return [];
+  }
+
+  const accessFilters = await getAccessFilters(list, context, 'query');
+  if (accessFilters === false) {
+    return [];
+  }
+
   applyEarlyMaxResults(take, list);
 
   let resolvedWhere = await resolveWhereInput(where, list, context);
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const results = await runWithPrisma(context, list, model =>
     model.findMany({
@@ -166,8 +171,19 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
+  // Check operation permission, throw access denied if not allowed
+  const operationAccess = await checkOperationAccess(list, context, 'query');
+  if (!operationAccess) {
+    return 0;
+  }
+
+  const accessFilters = await getAccessFilters(list, context, 'query');
+  if (accessFilters === false) {
+    return 0;
+  }
+
   let resolvedWhere = await resolveWhereInput(where, list, context);
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere);
+  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const count = await runWithPrisma(context, list, model =>
     model.count({
@@ -187,7 +203,7 @@ export async function count(
 }
 
 function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedList) {
-  const take = _take ?? Infinity;
+  const take = Math.abs(_take ?? Infinity);
   // We want to help devs by failing fast and noisily if limits are violated.
   // Unfortunately, we can't always be sure of intent.
   // E.g., if the query has a "take: 10", is it bad if more results could come back?
@@ -205,7 +221,7 @@ function applyMaxResults(results: unknown[], list: InitialisedList, context: Key
     throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
   }
   if (context) {
-    context.totalResults += Array.isArray(results) ? results.length : 1;
+    context.totalResults += results.length;
     if (context.totalResults > context.maxTotalResults) {
       throw limitsExceededError({
         list: list.listKey,

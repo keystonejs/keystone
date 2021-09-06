@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/website",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -18,7 +18,7 @@
     "@emotion/react": "^11.4.1",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/fields-document": "^8.0.0",
+    "@keystone-next/fields-document": "^9.0.0",
     "@mdx-js/loader": "next",
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^11.1.0",
@@ -26,16 +26,15 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.7",
     "@types/mdx-js__react": "^1.5.4",
-    "@types/react": "^17.0.18",
+    "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
-    "@types/webpack": "^4.41.30",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
     "date-fns": "^2.23.0",
     "facepaint": "^1.2.1",
     "lodash.debounce": "^4.0.8",
-    "next": "npm:next@^11.1.0",
+    "next": "^11.1.0",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
@@ -47,9 +46,9 @@
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
-    "next-sitemap": "^1.6.157",
+    "next-sitemap": "^1.6.164",
     "start-server-and-test": "^1.13.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

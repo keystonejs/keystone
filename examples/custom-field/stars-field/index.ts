@@ -5,28 +5,26 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  schema,
+  graphql,
   filters,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
 // and a different input in the Admin UI
-// https://github.com/keystonejs/keystone/tree/master/packages/fields/src/types/integer
+// https://github.com/keystonejs/keystone/tree/master/packages/keystone/src/fields/types/integer
 
 export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
-    isUnique?: boolean;
-    isIndexed?: boolean;
+    isIndexed?: boolean | 'unique';
     maxStars?: number;
   };
 
 export const stars =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     maxStars = 5,
@@ -38,7 +36,7 @@ export const stars =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Int',
-      index: getIndexType({ isIndexed, isUnique }),
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       // this passes through all of the common configuration like access control and etc.
       ...config,
@@ -57,11 +55,11 @@ export const stars =
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
         where: {
-          arg: schema.arg({ type: filters[meta.provider].Int.optional }),
+          arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
           resolve: filters.resolveCommon,
         },
         create: {
-          arg: schema.arg({ type: schema.Int }),
+          arg: graphql.arg({ type: graphql.Int }),
           // this field type doesn't need to do anything special
           // but field types can specify resolvers for inputs like they can for their output GraphQL field
           // this function can be omitted, it is here purely to show how you could change it
@@ -82,12 +80,12 @@ export const stars =
             return val;
           },
         },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       // this
-      output: schema.field({
-        type: schema.Int,
+      output: graphql.field({
+        type: graphql.Int,
         // like the input resolvers, providing the resolver is unnecessary if you're just returning the value
         // it is shown here to show what you could do
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -104,16 +102,3 @@ export const stars =
         defaultValue,
       },
     });
-
-function getIndexType({
-  isIndexed,
-  isUnique,
-}: {
-  isIndexed?: boolean;
-  isUnique?: boolean;
-}): undefined | 'index' | 'unique' {
-  if (isUnique && isIndexed) {
-    throw new Error('Only one of isUnique and isIndexed can be passed to field types');
-  }
-  return isIndexed ? 'index' : isUnique ? 'unique' : undefined;
-}

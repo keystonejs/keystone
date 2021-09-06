@@ -1,4 +1,3 @@
-import { text } from '@keystone-next/fields';
 import { document } from '..';
 
 export const name = 'Document';
@@ -17,7 +16,7 @@ export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
-export const getTestFields = () => ({ name: text(), content: document() });
+export const getTestFields = () => ({ content: document() });
 
 export const initItems = () => {
   return [

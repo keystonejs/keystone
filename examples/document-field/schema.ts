@@ -1,12 +1,12 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { select, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 
 export const lists = createSchema({
   Post: list({
     fields: {
       title: text({ isRequired: true }),
-      slug: text({ isRequired: true, isUnique: true }),
+      slug: text({ isRequired: true, isIndexed: 'unique' }),
       status: select({
         dataType: 'enum',
         options: [
@@ -43,7 +43,7 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
       bio: document({
         // We want to constrain the formatting in Author bios to a limited set of options.

@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { checkbox, json, relationship, text } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { checkbox, json, relationship, text } from '@keystone-next/keystone/fields';
 
 export const lists = createSchema({
   Package: list({

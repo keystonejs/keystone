@@ -1,7 +1,7 @@
-import { integer } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '@keystone-next/types';
+import { integer } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({
@@ -9,8 +9,8 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          a: integer(),
-          b: integer(),
+          a: integer({ isOrderable: true }),
+          b: integer({ isOrderable: true }),
         },
       }),
     }),

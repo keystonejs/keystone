@@ -1,5 +1,110 @@
 # @keystone-next/keystone
 
+## 25.0.0
+
+### Major Changes
+
+- [#6377](https://github.com/keystonejs/keystone/pull/6377) [`3008c5110`](https://github.com/keystonejs/keystone/commit/3008c5110a0ebc524eb3609bd8ba901f664f83d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved exports of `@keystone-next/keystone` to `@keystone-next/keystone/system`
+
+* [#6323](https://github.com/keystonejs/keystone/pull/6323) [`3904a9cf7`](https://github.com/keystonejs/keystone/commit/3904a9cf73e16ef192faae833f2f39ed05f2d707) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed unused legacy filter code
+
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated to Next.js 11. If you were using a custom Babel config, it will no longer be respected because of changes in Next.js.
+
+* [#6393](https://github.com/keystonejs/keystone/pull/6393) [`ee54522d5`](https://github.com/keystonejs/keystone/commit/ee54522d513a9376c1ed1e472a7ff91657e4e693) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated `@graphql-ts/schema` to `0.3.0` and moved the `schema` export to `@keystone-next/keystone` entrypoint and renamed it to `graphql`. `bindSchemaAPIToContext` on the `graphql` export has also been renamed to `bindGraphQLSchemaAPIToContext`.
+
+- [#6426](https://github.com/keystonejs/keystone/pull/6426) [`8f2786535`](https://github.com/keystonejs/keystone/commit/8f2786535272976678427fd13758e63b2c59d955) Thanks [@timleslie](https://github.com/timleslie)! - Update the Access Control API. This is a breaking change which impacts the security of all Keystone systems.
+
+  See the [Access Control API](https://keystonejs.com/docs/apis/access-control) for a full description of the new API.
+
+* [#6420](https://github.com/keystonejs/keystone/pull/6420) [`0aa02a333`](https://github.com/keystonejs/keystone/commit/0aa02a333d989c30647cd10e25325d4d2db61be6) Thanks [@timleslie](https://github.com/timleslie)! - Added the config option `graphql.omit` to list and field level configuration to control which types and operations are excluded from the GraphQL API. The use of a static `false` value in access control definitions no longer excludes operations from the GraphQL API.
+
+- [#6455](https://github.com/keystonejs/keystone/pull/6455) [`bf9b5605f`](https://github.com/keystonejs/keystone/commit/bf9b5605fc684975d9e2cad604c8e0d978eac40a) Thanks [@timleslie](https://github.com/timleslie)! - The `fieldPath` argument to field hooks has been renamed to `fieldKey`. This makes the naming consistent with the Access Control APIs.
+
+* [#6463](https://github.com/keystonejs/keystone/pull/6463) [`3957c0981`](https://github.com/keystonejs/keystone/commit/3957c098131b3b055cb94b07f1ce55ec82640908) Thanks [@JedWatson](https://github.com/JedWatson)! - The GraphQL API endpoint now starts up significantly faster in Dev.
+
+  To facilitate this, `createExpressServer` no longer includes the step of creating the Admin UI Middleware, which changes its signature. `createAdminUIMiddleware` is now also exported from `@keystone-next/keystone/system`.
+
+- [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
+
+* [#6420](https://github.com/keystonejs/keystone/pull/6420) [`0aa02a333`](https://github.com/keystonejs/keystone/commit/0aa02a333d989c30647cd10e25325d4d2db61be6) Thanks [@timleslie](https://github.com/timleslie)! - Filtering and ordering is no longer enabled by default, as they have the potential to expose data which would otherwise be protected by access control. To enable filtering and ordering you can set `isFilterable: true` and `isOrderable: true` on specific fields, or set `defaultIsFilterable: true` and `defaultIsOrderable: true` at the list level.
+
+- [#6378](https://github.com/keystonejs/keystone/pull/6378) [`489e128fe`](https://github.com/keystonejs/keystone/commit/489e128fe0835968eda0908b199a8867c0e72a5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved exports of `@keystone-next/keystone/schema` to `@keystone-next/keystone`
+
+### Minor Changes
+
+- [#6403](https://github.com/keystonejs/keystone/pull/6403) [`2a901a121`](https://github.com/keystonejs/keystone/commit/2a901a1210a0b3de0ccd22ca93e9cbcc8ed0f951) Thanks [@timleslie](https://github.com/timleslie)! - Added the experimental config option `config.experimental.contextInitialisedLists`, which adds the internal data structure `experimental.initialisedLists` to the `context` object. This is a temporary addition to the API which will be removed in a future release once a more controlled API is available. It should be used with caution, as it will contain breaking change in `patch` level releases.
+
+* [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
+
+- [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
+
+* [#6361](https://github.com/keystonejs/keystone/pull/6361) [`595922b48`](https://github.com/keystonejs/keystone/commit/595922b48c909053fa9d34bb1c42177ad41c72d5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved exports of `@keystone-next/testing` to `@keystone-next/keystone/testing`
+
+- [#6368](https://github.com/keystonejs/keystone/pull/6368) [`783290796`](https://github.com/keystonejs/keystone/commit/78329079606d74a2eedd63f96a985116bf0b449c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/utils` to `@keystone-next/keystone/fields/types/image/utils` for image ref related utilities and `@keystone-next/keystone/fields/types/file/utils` for file ref related utilities.
+
+* [#6458](https://github.com/keystonejs/keystone/pull/6458) [`944bce1e8`](https://github.com/keystonejs/keystone/commit/944bce1e834be4d0f4c79f35cd53ccbabb92f555) Thanks [@timleslie](https://github.com/timleslie)! - Added the config option `config.graphql.path` to configure the endpoint of the GraphQL API (default `'/api/graphql'`).
+
+- [#6467](https://github.com/keystonejs/keystone/pull/6467) [`e0f935eb2`](https://github.com/keystonejs/keystone/commit/e0f935eb2ef8ac311a43423c6691e56cd27b6bed) Thanks [@JedWatson](https://github.com/JedWatson)! - Add extendExpressApp config option for configuring the express app that Keystone creates
+
+* [#6459](https://github.com/keystonejs/keystone/pull/6459) [`f2311781a`](https://github.com/keystonejs/keystone/commit/f2311781a990c0ccd3302ac8e7aa889138f70e47) Thanks [@timleslie](https://github.com/timleslie)! - Updated Navigation component to show docs and playground links irrespective of authentication.
+
+- [#6362](https://github.com/keystonejs/keystone/pull/6362) [`fd744dcaa`](https://github.com/keystonejs/keystone/commit/fd744dcaa513efb2a8ae954bb2d5d1fa7f0723d6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/fields` to `@keystone-next/keystone/fields`
+
+### Patch Changes
+
+- [#6390](https://github.com/keystonejs/keystone/pull/6390) [`2e3f3666b`](https://github.com/keystonejs/keystone/commit/2e3f3666b5340b8eb778104a1d4a3f4d52be6528) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improved performance of create item modal with many fields
+
+* [#6385](https://github.com/keystonejs/keystone/pull/6385) [`9651aff8e`](https://github.com/keystonejs/keystone/commit/9651aff8eb9a51c0fbda6f51b1be0fedb07571da) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed issue in Relationship field display mode 'count'. It was using `_fieldnameMeta.count` instead of `fieldnameCount`
+
+- [#6422](https://github.com/keystonejs/keystone/pull/6422) [`9c5991f43`](https://github.com/keystonejs/keystone/commit/9c5991f43e8f909e576f6b51fd87aab3bbead504) Thanks [@timleslie](https://github.com/timleslie)! - Made cosmetic changes to the Admin UI code. No functional changes.
+
+* [#6453](https://github.com/keystonejs/keystone/pull/6453) [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Dashboard cards now enclosed in unordered list, for clearer semantics.
+
+- [#6397](https://github.com/keystonejs/keystone/pull/6397) [`c76bfc0a2`](https://github.com/keystonejs/keystone/commit/c76bfc0a2ad5aeffb68b8d2006225f608e855a19) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added a comment in the `schema.prisma` and `schema.graphql` files explaining that they're generated and should not be modified manually.
+
+* [#6391](https://github.com/keystonejs/keystone/pull/6391) [`bc9088f05`](https://github.com/keystonejs/keystone/commit/bc9088f0574af27be6a068483a789a80f7a46a41) Thanks [@bladey](https://github.com/bladey)! - Adds support for `introspection` in the Apollo Server config. Introspection enables you to query a GraphQL server for information about the underlying schema. If the playground is enabled then introspection is automatically enabled - unless specifically disabled.
+
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
+
+* [#6392](https://github.com/keystonejs/keystone/pull/6392) [`bd120c7c2`](https://github.com/keystonejs/keystone/commit/bd120c7c296c9adaaefe9bf93cbb384cc7528715) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed negative `take` values above the list's `graphql.queryLimits.maxResults` not causing an error before getting the values from the database.
+
+- [#6381](https://github.com/keystonejs/keystone/pull/6381) [`b3eefc1c3`](https://github.com/keystonejs/keystone/commit/b3eefc1c336a9a366c39f7aa2cf5251baaf843fd) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed error from prisma when using `.keystone/api` from `generateNodeAPI` in a API route (`admin/pages/api/*`)
+
+* [#6429](https://github.com/keystonejs/keystone/pull/6429) [`cbc5a68aa`](https://github.com/keystonejs/keystone/commit/cbc5a68aa7547ea55d1254ee5c3b1e543cdc78e2) Thanks [@timleslie](https://github.com/timleslie)! - Update adminMeta `fieldMode` resolvers to respect `graphql.omit` configuration.
+
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
+
+* [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
+
+- [#6412](https://github.com/keystonejs/keystone/pull/6412) [`2324fa027`](https://github.com/keystonejs/keystone/commit/2324fa027a6c2beabef4724c69a9ad05338a0cf3) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Merged aria-description text for dialogs on list view in Admin UI into their respective aria-labels.
+
+* [#6462](https://github.com/keystonejs/keystone/pull/6462) [`88b03bd79`](https://github.com/keystonejs/keystone/commit/88b03bd79112c7d8f0d41c592c8bd4bb226f5f71) Thanks [@JedWatson](https://github.com/JedWatson)! - Fixed crashing the process when createContext() fails for Admin UI requests
+
+- [#6354](https://github.com/keystonejs/keystone/pull/6354) [`5ceccd821`](https://github.com/keystonejs/keystone/commit/5ceccd821b513e2abec3eb24278e7c30bdcdf6d6) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed Listview checkbox bug in a better way.
+
+* [#6433](https://github.com/keystonejs/keystone/pull/6433) [`bb0c6c626`](https://github.com/keystonejs/keystone/commit/bb0c6c62610eda20ae93a6b67185276bdbba3248) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma dependencies to `2.30.2`.
+
+* Updated dependencies [[`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c)]:
+  - @keystone-ui/button@5.0.1
+  - @keystone-ui/core@3.2.0
+  - @keystone-ui/fields@4.1.3
+  - @keystone-ui/icons@4.0.1
+  - @keystone-ui/loading@4.0.1
+  - @keystone-ui/modals@4.0.1
+  - @keystone-ui/notice@4.0.2
+  - @keystone-ui/options@4.0.2
+  - @keystone-ui/pill@5.0.1
+  - @keystone-ui/popover@4.0.3
+  - @keystone-ui/segmented-control@4.0.3
+  - @keystone-ui/toast@4.0.3
+  - @keystone-ui/tooltip@4.0.2
+
+## 24.0.1
+
+### Patch Changes
+
+- [#6350](https://github.com/keystonejs/keystone/pull/6350) [`9ca1c41cd`](https://github.com/keystonejs/keystone/commit/9ca1c41cd6cc34b4cf4393abfbe2e4b43a275401) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed delete toast not leveraging labelField property.
+
 ## 24.0.0
 
 ### Major Changes

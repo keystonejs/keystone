@@ -1,13 +1,14 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 
 import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { makeDataGetter } from '@keystone-next/admin-ui-utils';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { DrawerController } from '@keystone-ui/modals';
 import { LoadingDots } from '@keystone-ui/loading';
 
+import { makeDataGetter } from '../../../../admin-ui/utils';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { gql, useQuery } from '../../../../admin-ui/apollo';
@@ -17,10 +18,7 @@ import { useRouter, Link } from '../../../../admin-ui/router';
 type ListCardProps = {
   listKey: string;
   count:
-    | {
-        type: 'success';
-        count: number;
-      }
+    | { type: 'success'; count: number }
     | { type: 'no-access' }
     | { type: 'error'; message: string }
     | { type: 'loading' };
@@ -160,7 +158,15 @@ export const HomePage = () => {
           <LoadingDots label="Loading lists" size="large" tone="passive" />
         </Center>
       ) : (
-        <Inline gap="large" paddingY="xlarge">
+        <Inline
+          as="ul"
+          gap="large"
+          paddingY="xlarge"
+          css={{
+            paddingLeft: '0px',
+            marginBottom: '0px',
+          }}
+        >
           {(() => {
             if (visibleLists.state === 'error') {
               return (

@@ -1,8 +1,8 @@
-import { KeystoneConfig, DatabaseProvider } from '@keystone-next/types';
+import { KeystoneConfig, DatabaseProvider } from '@keystone-next/keystone/types';
 
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
-// export it from the `@keystone-next/testing` package.
+// export it from `@keystone-next/keystone/testing`.
 export const apiTestConfig = (
   config: Omit<KeystoneConfig, 'db'> & {
     db?: Omit<KeystoneConfig['db'], 'provider' | 'url' | 'adapter'>;
@@ -69,11 +69,13 @@ export const expectAccessDenied = (
   //   - httpQuery is false
   //   - graphql.debug is true or
   //   - graphql.debug is undefined and mode !== production or
-  const expectDebug =
-    _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+  // const expectDebug =
+  //   _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
   // We expect to see the Apollo exception under the same conditions, but only if
   // httpQuery is also true.
-  const expectException = httpQuery && expectDebug;
+  const expectException = false;
+  // httpQuery && expectDebug;
+  // console.log({ expectDebug, httpQuery, expectException });
 
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
@@ -154,7 +156,7 @@ export const expectPrismaError = (
     args.map(({ path, message, code, target }) => ({
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
-        exception: { clientVersion: '2.29.1', code, meta: { target } },
+        exception: { clientVersion: '2.30.2', code, meta: { target } },
       },
       path,
       message,

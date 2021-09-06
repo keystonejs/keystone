@@ -1,7 +1,7 @@
-import { integer, relationship, text, virtual } from '@keystone-next/fields';
-import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { schema } from '@keystone-next/types';
+import { integer, relationship, text, virtual } from '@keystone-next/keystone/fields';
+import { BaseFields, createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { graphql } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {
@@ -24,8 +24,8 @@ describe('Virtual field type', () => {
     'no args',
     makeRunner({
       foo: virtual({
-        field: schema.field({
-          type: schema.Int,
+        field: graphql.field({
+          type: graphql.Int,
           resolve() {
             return 42;
           },
@@ -45,11 +45,11 @@ describe('Virtual field type', () => {
     'args',
     makeRunner({
       foo: virtual({
-        field: schema.field({
-          type: schema.Int,
+        field: graphql.field({
+          type: graphql.Int,
           args: {
-            x: schema.arg({ type: schema.Int }),
-            y: schema.arg({ type: schema.Int }),
+            x: graphql.arg({ type: graphql.Int }),
+            y: graphql.arg({ type: graphql.Int }),
           },
           resolve: (item, { x = 5, y = 6 }) => x! * y!,
         }),
@@ -68,11 +68,11 @@ describe('Virtual field type', () => {
     'args - use defaults',
     makeRunner({
       foo: virtual({
-        field: schema.field({
-          type: schema.Int,
+        field: graphql.field({
+          type: graphql.Int,
           args: {
-            x: schema.arg({ type: schema.Int }),
-            y: schema.arg({ type: schema.Int }),
+            x: graphql.arg({ type: graphql.Int }),
+            y: graphql.arg({ type: graphql.Int }),
           },
           resolve: (item, { x = 5, y = 6 }) => x! * y!,
         }),
@@ -95,13 +95,21 @@ describe('Virtual field type', () => {
           Organisation: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
+              authoredPosts: relationship({
+                ref: 'Post.organisationAuthor',
+                many: true,
+                isFilterable: true,
+              }),
             },
           }),
           Person: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
+              authoredPosts: relationship({
+                ref: 'Post.personAuthor',
+                many: true,
+                isFilterable: true,
+              }),
             },
           }),
           Post: list({
@@ -110,8 +118,8 @@ describe('Virtual field type', () => {
               personAuthor: relationship({ ref: 'Person.authoredPosts' }),
               author: virtual({
                 field: lists =>
-                  schema.field({
-                    type: schema.union({
+                  graphql.field({
+                    type: graphql.union({
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
@@ -181,13 +189,13 @@ describe('Virtual field type', () => {
     'graphQLReturnFragment',
     makeRunner({
       foo: virtual({
-        field: schema.field({
-          type: schema.list(
-            schema.object<{ title: string; rating: number }>()({
+        field: graphql.field({
+          type: graphql.list(
+            graphql.object<{ title: string; rating: number }>()({
               name: 'Movie',
               fields: {
-                title: schema.field({ type: schema.String }),
-                rating: schema.field({ type: schema.Int }),
+                title: graphql.field({ type: graphql.String }),
+                rating: graphql.field({ type: graphql.Int }),
               },
             })
           ),

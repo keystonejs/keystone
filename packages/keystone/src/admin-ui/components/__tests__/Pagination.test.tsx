@@ -11,6 +11,7 @@ describe('<Pagination/>', () => {
   it('should render a nav element with role navigation', () => {
     useRouter.mockImplementation(() => ({
       route: '/',
+      pathname: '/',
       query: {
         pageSize: '10',
         page: '1',
@@ -30,6 +31,7 @@ describe('<Pagination/>', () => {
     it('should have a disabled back button, when on the first page', () => {
       useRouter.mockImplementation(() => ({
         route: '/',
+        pathname: '/',
         query: {
           pageSize: '10',
           page: '1',
@@ -50,6 +52,7 @@ describe('<Pagination/>', () => {
     it('should have a disabled next button, when on the last page', () => {
       useRouter.mockImplementation(() => ({
         route: '/',
+        pathname: '/',
         query: {
           pageSize: '10',
           page: 3,
@@ -71,6 +74,7 @@ describe('<Pagination/>', () => {
       const push = jest.fn().mockImplementation(() => Promise.resolve());
       useRouter.mockImplementation(() => ({
         route: '/',
+        pathname: '/',
         prefetch: () => Promise.resolve(),
         query: {
           pageSize: '10',
@@ -94,6 +98,7 @@ describe('<Pagination/>', () => {
       const push = jest.fn().mockImplementation(() => Promise.resolve());
       useRouter.mockImplementation(() => ({
         route: '/',
+        pathname: '/',
         prefetch: () => Promise.resolve(),
         query: {
           pageSize: '10',
