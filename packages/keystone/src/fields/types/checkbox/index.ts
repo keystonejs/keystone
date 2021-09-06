@@ -7,11 +7,15 @@ import {
   graphql,
   filters,
 } from '../../../types';
+import { assertIsNonNullAllowed } from '../../non-null-output-type-utils';
 import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: boolean;
+    graphql?: {
+      isNonNull?: boolean;
+    };
   };
 
 export const checkbox =
@@ -23,6 +27,8 @@ export const checkbox =
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
     }
+
+    assertIsNonNullAllowed(meta, config.access, config.graphql?.isNonNull);
 
     return fieldType({
       kind: 'scalar',
@@ -45,7 +51,9 @@ export const checkbox =
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Boolean }),
+      output: graphql.field({
+        type: config.graphql?.isNonNull ? graphql.nonNull(graphql.Boolean) : graphql.Boolean,
+      }),
       views: resolveView('checkbox/views'),
       getAdminMeta: () => ({ defaultValue }),
     });
