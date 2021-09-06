@@ -203,6 +203,7 @@ Options:
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
+- `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 
 ```typescript
 export default config({
@@ -211,6 +212,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
+    extendExpressApp: (app) => { /* ... */ },
   },
   /* ... */
 });
@@ -228,8 +230,8 @@ config({
     healthCheck: {
       path: '/my-health-check',
       data: { status: 'healthy' },
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -245,9 +247,42 @@ config({
         timestamp: Date.now(),
         uptime: process.uptime(),
       }),
-    }
-  }
+    },
+  },
 })
+```
+
+### extendExpressApp
+
+This lets you modify the express app that Keystone creates _before_ the Apollo Server and Admin UI Middleware are added to it (but after the `cors` and `healthcheck` options are applied).
+
+For example, you could add your own request logging middleware:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.use((req, res, next) => {
+        console.log('A request!');
+        next();
+      });
+    },
+  },
+});
+```
+
+Or add a custom route handler:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.get('/_version', (req, res) => {
+        res.send('v6.0.0-rc.2');
+      });
+    },
+  },
+});
 ```
 
 ## session

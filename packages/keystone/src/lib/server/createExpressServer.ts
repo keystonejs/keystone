@@ -63,6 +63,11 @@ export const createExpressServer = async (
   addHealthCheck({ config, server });
 
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
+
+  if (config.server?.extendExpressApp) {
+    config.server?.extendExpressApp(server);
+  }
+
   addApolloServer({
     server,
     config,

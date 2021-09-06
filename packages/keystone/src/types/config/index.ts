@@ -1,6 +1,7 @@
-import { CorsOptions } from 'cors';
-import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
+import { CorsOptions } from 'cors';
+import express from 'express';
+import type { GraphQLSchema } from 'graphql';
 
 import type { AssetMode, KeystoneContext } from '..';
 
@@ -131,6 +132,8 @@ export type ServerConfig = {
   maxFileSize?: number;
   /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
   healthCheck?: HealthCheckConfig | true;
+  /** Hook to extend the Express App that Keystone creates */
+  extendExpressApp?: (app: express.Express) => void;
 };
 
 // config.graphql
