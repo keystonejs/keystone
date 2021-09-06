@@ -227,6 +227,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
+      <NavItem href="/updates/new-access-control">
+          <Emoji symbol="🔐" alt="Padlock" />
+          &nbsp; New Access Control API
+        </NavItem>
         <NavItem href="/updates/new-graphql-api">
           <Emoji symbol="💎" alt="Gemstone" />
           &nbsp; New GraphQL API
