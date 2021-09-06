@@ -64,14 +64,15 @@ export async function findOne(
     return null;
   }
 
-  // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
-  const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
-
   const accessFilters = await getAccessFilters(list, context, 'query');
   if (accessFilters === false) {
     return null;
   }
+
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
+  const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
+
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
@@ -93,12 +94,12 @@ export async function findMany(
     return [];
   }
 
-  applyEarlyMaxResults(take, list);
-
   const accessFilters = await getAccessFilters(list, context, 'query');
   if (accessFilters === false) {
     return [];
   }
+
+  applyEarlyMaxResults(take, list);
 
   let resolvedWhere = await resolveWhereInput(where, list, context);
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);

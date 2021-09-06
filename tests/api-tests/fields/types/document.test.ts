@@ -46,7 +46,7 @@ const runner = setupTestRunner({
             },
           }),
         },
-        access: { filter: { query: { name: { not: { equals: 'Charlie' } } } } },
+        access: { filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) } },
       }),
     }),
   }),

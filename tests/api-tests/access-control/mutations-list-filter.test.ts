@@ -11,7 +11,7 @@ const runner = setupTestRunner({
         fields: { name: text({ isOrderable: true }) },
         access: {
           filter: {
-            query: true,
+            query: () => true,
             update: () => ({ name: { not: { equals: 'bad' } } }),
             delete: async () => ({ name: { not: { contains: 'no delete' } } }),
           },

@@ -27,14 +27,14 @@ Our [access control guide](../guides/access-control) shows you how to apply this
 
 Keystone lets you apply access control on a per-list basis.
 By default it allows all operations for all users.
-Access control is applied to the generated CRUD (**c**reate, **r**ead, **u**pdate, **d**elete) operations and mutations in the [GraphQL API](./graphql), and is applied before any [hooks](./hooks) are executed.
+Access control is applied to the generated CRUD operations and mutations in the [GraphQL API](./graphql), and is applied before any [hooks](./hooks) are executed.
 
 List-level access control can be specified in three ways.
 
-- `operation` access control lets you check the information in the `context` and `session` objects to decide if the
+- [`operation`](#operation) access control lets you check the information in the `context` and `session` objects to decide if the
   user is allowed to access the list.
-- `filter` access control lets you provide a GraphQL filter to restrict the items the user is allowed to access.
-- `item` access control lets you write a function which inspects the provided input data and the existing object (if it exists)
+- [`filter`](#filter) access control lets you provide a GraphQL filter to restrict the items the user is allowed to access.
+- [`item`](#item) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
   and make a decision based on this extra data.
 
 !> **Access denied:** **Mutations** return `null` data with an access denied error. **Queries** never return access denied errors, and instead treat items as if they didn't exist.
@@ -52,7 +52,7 @@ If access is **denied** due to any of the access control methods, the following 
 
 ### Operation
 
-Operation-level access control lets you control whether which operations can be accessed by a user based on the `session` and `context`.
+Operation-level access control lets you control which operations can be accessed by a user based on the `session` and `context`.
 Individual functions can be provided for each of the operations.
 
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.

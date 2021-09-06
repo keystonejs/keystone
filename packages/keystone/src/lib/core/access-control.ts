@@ -123,9 +123,9 @@ export function parseListAccessControl(
   } else {
     filter = {
       // create: not supported
-      query: access?.filter?.query ?? true,
-      update: access?.filter?.update ?? true,
-      delete: access?.filter?.delete ?? true,
+      query: access?.filter?.query ?? (() => true),
+      update: access?.filter?.update ?? (() => true),
+      delete: access?.filter?.delete ?? (() => true),
     };
   }
 

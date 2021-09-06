@@ -29,7 +29,7 @@ function getResolvedUniqueWheres(
     // Check whether the item exists
     const item = await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
     if (item === null) {
-      throw new Error('Sorry but nope');
+      throw new Error('Unable to find item to connect to.');
     }
     return uniqueWhere;
   });

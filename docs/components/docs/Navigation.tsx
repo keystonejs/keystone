@@ -227,7 +227,7 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
-      <NavItem href="/updates/new-access-control">
+        <NavItem href="/updates/new-access-control">
           <Emoji symbol="🔐" alt="Padlock" />
           &nbsp; New Access Control API
         </NavItem>

@@ -14,13 +14,11 @@ type FilterOutput<GeneratedListTypes extends BaseGeneratedListTypes> =
   | GeneratedListTypes['inputs']['where'];
 
 export type ListFilterAccessControl<
-  Operation extends 'create' | 'query' | 'update' | 'delete',
+  Operation extends 'query' | 'update' | 'delete',
   GeneratedListTypes extends BaseGeneratedListTypes
-> =
-  | FilterOutput<GeneratedListTypes>
-  | ((
-      args: BaseAccessArgs & { operation: Operation }
-    ) => MaybePromise<FilterOutput<GeneratedListTypes>>);
+> = (
+  args: BaseAccessArgs & { operation: Operation }
+) => MaybePromise<FilterOutput<GeneratedListTypes>>;
 
 // List Item Access
 

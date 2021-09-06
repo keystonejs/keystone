@@ -25,7 +25,7 @@ const runner = setupTestRunner({
         access: {
           filter: {
             // Limit read access to the first post only
-            query: { name: { in: [postNames[1]] } },
+            query: () => ({ name: { in: [postNames[1]] } }),
           },
         },
       }),
