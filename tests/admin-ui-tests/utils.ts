@@ -127,7 +127,7 @@ export const adminUITests = (
     }
 
     describe.each([
-      'chromium',
+      // 'chromium',
       'firefox',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
