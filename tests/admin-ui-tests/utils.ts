@@ -83,7 +83,7 @@ export const adminUITests = (
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
-        if (stringified.includes('API ready')) {
+        if (stringified.includes('Admin UI ready')) {
           adminUIReady.resolve();
         }
       };
@@ -127,8 +127,8 @@ export const adminUITests = (
     }
 
     describe.each([
-      'firefox',
       'chromium',
+      'firefox',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
       // webkit doesn't treat localhost as a secure context
