@@ -65,7 +65,7 @@ export const exampleProjectTests = (
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
-        if (stringified.includes('API ready')) {
+        if (stringified.includes('Admin UI ready')) {
           adminUIReady.resolve();
         }
       };

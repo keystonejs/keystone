@@ -1,7 +1,7 @@
 import url from 'url';
 import path from 'path';
 import express from 'express';
-import type { KeystoneConfig, SessionStrategy, CreateContext } from '../../types';
+import type { KeystoneConfig, CreateContext } from '../../types';
 import { createSessionContext } from '../../session';
 
 const adminErrorHTMLFilepath = path.join(
@@ -10,17 +10,16 @@ const adminErrorHTMLFilepath = path.join(
   'admin-error.html'
 );
 
-export const createAdminUIServer = async (
+export const createAdminUIMiddleware = async (
   config: KeystoneConfig,
   createContext: CreateContext,
   dev: boolean,
-  projectAdminPath: string,
-  sessionStrategy?: SessionStrategy<any>
+  projectAdminPath: string
 ) => {
   /** We do this to stop webpack from bundling next inside of next */
-  const { ui, graphql } = config;
-  const thing = 'next';
-  const next = require(thing);
+  const { ui, graphql, session } = config;
+  const _next = 'next';
+  const next = require(_next);
   const app = next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
   await app.prepare();
@@ -34,14 +33,14 @@ export const createAdminUIServer = async (
     }
     try {
       const context = createContext({
-        sessionContext: sessionStrategy
-          ? await createSessionContext(sessionStrategy, req, res, createContext)
+        sessionContext: session
+          ? await createSessionContext(session, req, res, createContext)
           : undefined,
         req,
       });
       const isValidSession = ui?.isAccessAllowed
         ? await ui.isAccessAllowed(context)
-        : sessionStrategy
+        : session
         ? context.session !== undefined
         : true;
       const maybeRedirect = await ui?.pageMiddleware?.({ context, isValidSession });
