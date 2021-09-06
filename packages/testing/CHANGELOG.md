@@ -1,5 +1,11 @@
 # @keystone-next/testing
 
+## 2.0.0
+
+### Major Changes
+
+- [#6361](https://github.com/keystonejs/keystone/pull/6361) [`595922b48`](https://github.com/keystonejs/keystone/commit/595922b48c909053fa9d34bb1c42177ad41c72d5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved exports of `@keystone-next/testing` to `@keystone-next/keystone/testing`
+
 ## 1.1.1
 
 ### Patch Changes

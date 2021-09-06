@@ -1,5 +1,11 @@
 # @keystone-next/fields
 
+## 15.0.0
+
+### Major Changes
+
+- [#6362](https://github.com/keystonejs/keystone/pull/6362) [`fd744dcaa`](https://github.com/keystonejs/keystone/commit/fd744dcaa513efb2a8ae954bb2d5d1fa7f0723d6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/fields` to `@keystone-next/keystone/fields`
+
 ## 14.0.0
 
 ### Major Changes

@@ -1,5 +1,15 @@
 # @keystonejs/api-tests
 
+## 11.1.1
+
+### Patch Changes
+
+- [#6429](https://github.com/keystonejs/keystone/pull/6429) [`cbc5a68aa`](https://github.com/keystonejs/keystone/commit/cbc5a68aa7547ea55d1254ee5c3b1e543cdc78e2) Thanks [@timleslie](https://github.com/timleslie)! - Update adminMeta `fieldMode` resolvers to respect `graphql.omit` configuration.
+
+* [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
+
+- [#6433](https://github.com/keystonejs/keystone/pull/6433) [`bb0c6c626`](https://github.com/keystonejs/keystone/commit/bb0c6c62610eda20ae93a6b67185276bdbba3248) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma dependencies to `2.30.2`.
+
 ## 11.1.0
 
 ### Minor Changes
