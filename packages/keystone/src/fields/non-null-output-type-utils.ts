@@ -3,18 +3,13 @@ import { BaseGeneratedListTypes, FieldAccessControl, FieldData } from '../types'
 export function hasReadAccessControl(
   access: FieldAccessControl<BaseGeneratedListTypes> | undefined
 ) {
-  if (typeof access === 'boolean') {
-    return !access;
-  }
-  if (
-    access === undefined ||
-    typeof access === 'function' ||
-    typeof access.read === 'function' ||
-    access.read === false
-  ) {
+  if (access === undefined) {
     return false;
   }
-  return true;
+  if (typeof access === 'function' || typeof access.read === 'function') {
+    return true;
+  }
+  return false;
 }
 
 export function assertIsNonNullAllowed(
