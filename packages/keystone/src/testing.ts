@@ -66,11 +66,11 @@ export async function setupTestEnv({
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
   // (config, graphQLSchema, createContext, dev, projectAdminPath, isVerbose)
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
+  const app = await createExpressServer(config, graphQLSchema, createContext);
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
-      .post('/api/graphql')
+      .post(config.graphql?.path || '/api/graphql')
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 

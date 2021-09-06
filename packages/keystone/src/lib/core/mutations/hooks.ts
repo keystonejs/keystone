@@ -7,7 +7,7 @@ export async function runSideEffectOnlyHook<
       string,
       {
         hooks: {
-          [Key in HookName]?: (args: { fieldPath: string } & Args) => Promise<void> | void;
+          [Key in HookName]?: (args: { fieldKey: string } & Args) => Promise<void> | void;
         };
       }
     >;
@@ -32,12 +32,12 @@ export async function runSideEffectOnlyHook<
 
   // Field hooks
   const fieldsErrors: { error: Error; tag: string }[] = [];
-  for (const [fieldPath, field] of Object.entries(list.fields)) {
-    if (shouldRunFieldLevelHook(fieldPath)) {
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
+    if (shouldRunFieldLevelHook(fieldKey)) {
       try {
-        await field.hooks[hookName]?.({ fieldPath, ...args });
+        await field.hooks[hookName]?.({ fieldKey, ...args });
       } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldPath}` });
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
       }
     }
   }

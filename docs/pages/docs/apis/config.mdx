@@ -203,6 +203,7 @@ Options:
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
+- `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 
 ```typescript
 export default config({
@@ -211,6 +212,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
+    extendExpressApp: (app) => { /* ... */ },
   },
   /* ... */
 });
@@ -228,8 +230,8 @@ config({
     healthCheck: {
       path: '/my-health-check',
       data: { status: 'healthy' },
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -245,9 +247,42 @@ config({
         timestamp: Date.now(),
         uptime: process.uptime(),
       }),
-    }
-  }
+    },
+  },
 })
+```
+
+### extendExpressApp
+
+This lets you modify the express app that Keystone creates _before_ the Apollo Server and Admin UI Middleware are added to it (but after the `cors` and `healthcheck` options are applied).
+
+For example, you could add your own request logging middleware:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.use((req, res, next) => {
+        console.log('A request!');
+        next();
+      });
+    },
+  },
+});
+```
+
+Or add a custom route handler:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.get('/_version', (req, res) => {
+        res.send('v6.0.0-rc.2');
+      });
+    },
+  },
+});
 ```
 
 ## session
@@ -287,6 +322,7 @@ Options:
   These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
+- `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
 - `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
   - `playground` (default: `process.env.NODE_ENV !== 'production'`): If truthy, will enable the GraphQL Playground for testing queries and mutations in the browser.
     To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings). See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
@@ -297,6 +333,7 @@ export default config({
   graphql: {
     debug: process.env.NODE_ENV !== 'production',
     queryLimits: { maxTotalResults: 100 },
+    path: '/api/graphql',
     apolloConfig: {
       playground: process.env.NODE_ENV !== 'production',
       introspection: process.env.NODE_ENV !== 'production',

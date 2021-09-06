@@ -8,7 +8,7 @@ import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { NavigationProps, ListMeta } from '../../types';
+import { NavigationProps, ListMeta, AuthenticatedItem } from '../../types';
 
 import { useKeystone } from '../context';
 import { Link } from '../router';
@@ -60,7 +60,8 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   );
 };
 
-const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
+const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
+  const { apiPath } = useKeystone();
   const { spacing, typography } = useTheme();
   return (
     <div
@@ -73,9 +74,14 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         marginBottom: 0,
       }}
     >
-      <div css={{ fontSize: typography.fontSize.small }}>
-        Signed in as <strong>{item.label}</strong>
-      </div>
+      {item && item.state === 'authenticated' ? (
+        <div css={{ fontSize: typography.fontSize.small }}>
+          Signed in as <strong>{item.label}</strong>
+        </div>
+      ) : (
+        <div css={{ fontSize: typography.fontSize.small }}>Graqhql Playground and Docs</div>
+      )}
+
       <Popover
         placement="bottom"
         triggerRenderer={({ triggerProps }) => (
@@ -90,8 +96,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         )}
       >
         <Stack gap="medium" padding="large" dividers="between">
-          {/* FIXME: Use config.graphql.path */}
-          <PopoverLink target="_blank" href="/api/graphql">
+          <PopoverLink target="_blank" href={apiPath}>
             API Explorer
           </PopoverLink>
           <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
@@ -100,7 +105,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
           <PopoverLink target="_blank" href="https://keystonejs.com">
             Keystone Documentation
           </PopoverLink>
-          <SignoutButton />
+          {item && item.state === 'authenticated' && <SignoutButton />}
         </Stack>
       </Popover>
     </div>
@@ -138,11 +143,10 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        position: 'relative',
       }}
     >
-      {authenticatedItem?.state === 'authenticated' && (
-        <AuthenticatedItem item={authenticatedItem} />
-      )}
+      <AuthenticatedItemDialog item={authenticatedItem} />
       <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
         <ul
           css={{

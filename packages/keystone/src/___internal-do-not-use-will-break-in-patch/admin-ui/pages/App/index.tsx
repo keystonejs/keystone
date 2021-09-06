@@ -11,6 +11,7 @@ type AppConfig = {
   adminMetaHash: string;
   fieldViews: FieldViews;
   lazyMetadataQuery: DocumentNode;
+  apiPath: string;
 };
 
 export const getApp =
