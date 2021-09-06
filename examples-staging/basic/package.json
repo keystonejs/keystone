@@ -20,7 +20,7 @@
     "@keystone-ui/tooltip": "^4.0.2",
     "@preconstruct/next": "^3.0.0",
     "@types/react": "^17.0.19",
-    "apollo-server-micro": "^2.25.2",
+    "apollo-server-micro": "^3.3.0",
     "graphql": "^15.5.2",
     "graphql-tag": "^2.12.5",
     "next": "^11.1.0",
