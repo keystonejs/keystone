@@ -1,6 +1,6 @@
 {
   "name": "keystone-next-app",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": true,
   "scripts": {
     "dev": "keystone-next dev",
@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.3",
-    "@keystone-next/auth": "^31.0.0",
-    "@keystone-next/fields-document": "^8.0.0",
-    "@keystone-next/keystone": "^24.0.0",
+    "@keystone-next/auth": "^32.0.0",
+    "@keystone-next/fields-document": "^9.0.0",
+    "@keystone-next/keystone": "^25.0.0",
     "apollo-server-micro": "^2.25.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/graphql-api-endpoint"

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-sandbox",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -8,8 +8,8 @@
     "sandbox": "yarn && yarn dev"
   },
   "dependencies": {
-    "@keystone-next/auth": "^31.0.0",
-    "@keystone-next/keystone": "^24.0.0"
+    "@keystone-next/auth": "^32.0.0",
+    "@keystone-next/keystone": "^25.0.0"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
