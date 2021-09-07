@@ -1,6 +1,7 @@
 import pluralize from 'pluralize';
 import { ItemRootValue, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
+import { prismaError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 
@@ -78,8 +79,11 @@ export async function runWithPrisma<T>(
   fn: (model: PrismaModel) => Promise<T>
 ) {
   const model = context.prisma[listKey[0].toLowerCase() + listKey.slice(1)];
-  // FIXME: We will capture errors here and return them with a custom error code
-  return await fn(model);
+  try {
+    return await fn(model);
+  } catch (err: any) {
+    throw prismaError(err);
+  }
 }
 
 // this is wrong
