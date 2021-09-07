@@ -1,0 +1,175 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 6th September 2021
+
+Big strides towards our `General Availability` release for Keystone 6 in the very near future<Emoji symbol="⌛" alt="hourglass" /> this release includes:
+
+- New & Improved Access Control API <Emoji symbol="✨" alt="sparkle" />
+- Customisable Express App <Emoji symbol="🗺️" alt="map" />
+- Customisable GraphQL Paths <Emoji symbol="🚏" alt="signpost" />
+- Faster GraphQL API startups in local dev <Emoji symbol="🚀" alt="rocket" />
+- Next.js 11 upgrade for Admin UI <Emoji symbol="⚙️" alt="settings" />
+- Apollo Server Introspection <Emoji symbol="🔎" alt="magnifying glass" />
+- Omit GraphQL Operations <Emoji symbol="🚦" alt="traffic light" />
+- And more...
+
+?> This release contains breaking changes, please see below!
+
+```json
+"@keystone-next/admin-ui-utils": "6.0.0",
+"@keystone-next/auth": "32.0.0",
+"@keystone-next/cloudinary": "7.0.0",
+"@keystone-next/fields": "15.0.0",
+"@keystone-next/fields-document": "9.0.0",
+"@keystone-next/keystone": "25.0.1",
+"@keystone-next/session-store-redis": "4.0.0",
+"@keystone-next/testing": "2.0.0",
+"@keystone-next/types": "25.0.0",
+"@keystone-next/utils": "2.0.0",
+```
+
+## New & Improved Access Control API <Emoji symbol="✨" alt="sparkles" />
+
+?> Some of these API changes are **breaking** and impact the security of all Keystone systems.
+
+Access Control is now easier to program, and makes it harder to introduce security gaps in your system:
+
+- The **static** approach to access control has been replaced. Now access control **never** effects the operations in your GraphQL API.
+- Keystone used to return an `access denied` error from a **query** if an item couldn't be found, or explicitly had access denied. The improved API **never** returns that error type on a **query**.
+- Access **rules** are now more explicit, and support fewer variations so you're less likely to introduce security gaps. They're also easier to read, write, and maintain.
+
+![CleanShot 2021-09-07 at 11 40 20](https://user-images.githubusercontent.com/6447754/132271454-e6c9c5e5-acd8-4439-bbbc-9621419ee1fb.png)
+
+### How to upgrade
+
+1. Follow the instructions in our [Access Control upgrade guide](https://keystonejs.com/updates/new-access-control).
+2. Review our updated [Access Control API](https://keystonejs.com/docs/apis/access-control) docs.
+
+!> If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com) to get the help you need.
+
+## Faster Startup <Emoji symbol="🚀" alt="rocket" />
+
+The GraphQL API endpoint now starts up significantly faster in development!
+
+Often when you're working with the GraphQL API you'll be waiting around for it to start up, now you don't need to wait for the Admin UI to be ready before hitting the server. The process of creating of the Express Server + GraphQL API has been split from the Admin UI, which significantly speeds up boot time for the GraphQL API in development! <Emoji symbol="🎉" alt="tada" />
+
+!> To facilitate this, `createExpressServer` no longer includes the step of creating the Admin UI Middleware, which changes its signature. `createAdminUIMiddleware` is now also exported from `@keystone-next/keystone/system`.
+
+## Next.js 11 <Emoji symbol="⚙️" alt="settings" />
+
+We've updated the underlying Next.js server that Keystone uses under the hood from version `10` to `11`, which includes optimisations to improve cold startup time.
+
+!> If you've been using a custom Babel config, you'll need to remove this as it’s no longer supported in Next.js 11.
+
+## Omit GraphQL Operations <Emoji symbol="🚦" alt="traffic light" />
+
+You can now add `graphql.omit` to list and field level configuration to control which types and operations are excluded from the GraphQL API. This option accepts either `true`, or an array of the values read, create, or update. If you specify `true` then the field will be excluded from all input and output types in the GraphQL API. If you provide an array of read, create, or update the field will be omitted from the corresponding input and output types in the GraphQL API.
+
+```
+User: list({
+  fields: {
+    name: text({
+      graphql: {
+        omit: ['read', 'create', 'update'],
+      }
+    }),
+  },
+})
+```
+
+## Customisable Express App <Emoji symbol="🗺️" alt="map" />
+
+A long awaited feature, the Express App that Keystone creates is now customisable with the new `extendExpressApp` option!
+
+- Add your own custom server routes
+- Host two apps on separate ports
+- And more...
+
+Check out the [Server Config docs](https://keystonejs.com/docs/apis/config#server) for more information.
+
+## Package Shuffle <Emoji symbol="💃" alt="dancer" />
+
+We've moved some packages around to make it easier for you to keep your project in sync with Keystone releases, in order to prevent mismatching versions of Keystone packages. The exports from the following packages now reside inside the `@keystone-next/keystone/*` package:
+
+```
+@keystone-next/admin-ui-utils
+@keystone-next/fields
+@keystone-next/testing
+@keystone-next/types
+@keystone-next/utils
+@keystone-next/schema
+```
+
+For example if you had:
+
+```
+import {
+  relationship,
+} from '@keystone-next/fields';
+```
+
+This is now:
+
+```
+import {
+  relationship,
+} from '@keystone-next/keystone/fields';
+```
+
+?> <Emoji symbol="💡" alt="bulb" /> For any affected package, you'll need to change your import references and remove deprecated packages from your `package.json` as they will no longer be updated.
+
+## Key Changes <Emoji symbol="🔑" alt="key" />
+
+### `isUnique` now `isIndex` for unique fields <Emoji symbol="🗂" alt="folder" />
+
+Unique fields marked as `isUnique: true` are now represented as `isIndex: 'unique'`. This ensures that regular indexes and unique indexes aren't enabled at the same time.
+
+`isIndex` accepts the following options as per the [Fields API docs](https://keystonejs.com/docs/apis/fields) -
+
+- If `true` then the field will be indexed by the database.
+- If `'unique'` then all values of the field must be unique.
+
+### `fieldPath` now `fieldKey` for field hooks <Emoji symbol="🪝" alt="hook" />
+
+The `fieldPath` argument to field hooks has been renamed to `fieldKey`. This makes the naming consistent with the Access Control APIs.
+
+### `schema` now `graphql` for virtual and custom fields <Emoji symbol="🥽" alt="safety googles" />
+
+If you've using Virtual fields or custom field types, or if constructing GraphQL types, we used to export `schema`, this has been changed to `graphql`.
+
+## Disabled filtering and ordering (by default) <Emoji symbol="🙅‍♀️" alt="woman gesturing no" />
+
+Filtering and ordering is no longer enabled by default, as they have the potential to expose data which would otherwise be protected by access control. To enable filtering and ordering you can set `isFilterable: true` and `isOrderable: true` on specific fields, or set `defaultIsFilterable: true` and `defaultIsOrderable: true` at the list level.
+
+Check out our [Fields API docs](https://keystonejs.com/docs/apis/fields#common-configuration) for all field level options.
+
+## Introspection <Emoji symbol="🔎" alt="magnifying glass" />
+
+You can now enable `introspection` in the Apollo Server config. Introspection enables you to query a GraphQL server for information about the underlying schema. Check out the [GraphQL Config docs](https://keystonejs.com/docs/apis/config#graphql) for more information.
+
+## GraphQL Path Customisation <Emoji symbol="🚏" alt="signpost" />
+
+The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with the new option `config.graphql.path`. You can find this and all other options in our [GraphQL API docs](https://keystonejs.com/docs/apis/config#graphql).
+
+## Admin UI Improvements <Emoji symbol="🛠️" alt="tools" />
+
+The Navigation component has been updated to show docs and playground links irrespective of authentication. The triple-dot menu is now available in the Admin UI even if authentication isn't being used.
+
+![CleanShot 2021-09-07 at 13 22 30](https://user-images.githubusercontent.com/6447754/132279358-a47de0f2-605f-4058-98dd-3bd8da83350c.png)
+
+Additionally, performance has been improved of the create item modal when many fields are configured. Thanks to **Sam Lam** for the heads up!
+
+## Prisma Update <Emoji symbol="⬆️" alt="up arrow" />
+
+Updated Prisma dependencies from `2.29.0` to `2.30.2`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.30.0) for more details.
+
+## Credits <Emoji symbol="💫" alt="circle star" />
+
+- Fixed an issue in the Relationship field when using display mode `count`, thanks to [@gautamsi](https://github.com/gautamsi)!
+- **Sam Lam** for alerting us to performance issues with Admin UI create item modal.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-09-06) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="Edging ever closer to General Availability for Keystone 6, this release includes a better Access Control API, customisable Express App, customisable GraphQL Paths, and more..." {...props}>{children}</Markdown>;
+export { getStaticProps }
