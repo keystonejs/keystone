@@ -40,8 +40,6 @@ const addApolloServer = async ({
 
   const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
   server.use(graphqlUploadExpress({ maxFileSize }));
-  // FIXME: Support custom API path via config.graphql.path.
-  // Note: Core keystone uses '/admin/api' as the default.
   await apolloServer.start();
   apolloServer.applyMiddleware({
     app: server,
