@@ -47,14 +47,7 @@ export type KeystoneConfig = {
 
 // config.lists
 
-export type {
-  ListSchemaConfig,
-  ListConfig,
-  BaseFields,
-  MaybeSessionFunction,
-  MaybeItemFunction,
-  // CacheHint,
-};
+export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
 
 // config.db
 

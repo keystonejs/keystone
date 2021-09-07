@@ -1,4 +1,3 @@
-import { CacheScope } from 'apollo-server-types';
 import Decimal from 'decimal.js';
 import { BaseGeneratedListTypes } from './utils';
 import { CommonFieldConfig } from './config';
@@ -7,11 +6,6 @@ import { graphql } from './schema';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
-
-export type CacheHint = {
-  maxAge?: number;
-  scope?: CacheScope;
-};
 
 export type ItemRootValue = { id: { toString(): string }; [key: string]: unknown };
 

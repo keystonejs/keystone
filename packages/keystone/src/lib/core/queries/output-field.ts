@@ -1,7 +1,7 @@
+import { CacheHint } from 'apollo-server-types';
 import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
-  CacheHint,
   IndividualFieldAccessControl,
   BaseGeneratedListTypes,
   ItemRootValue,
