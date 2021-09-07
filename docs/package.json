@@ -13,7 +13,7 @@
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3",
+    "@babel/runtime": "^7.15.4",
     "@emotion/cache": "11.4.0",
     "@emotion/react": "^11.4.1",
     "@emotion/server": "11.4.0",
@@ -21,12 +21,12 @@
     "@keystone-next/fields-document": "^9.0.0",
     "@mdx-js/loader": "next",
     "@mdx-js/react": "^1.6.22",
-    "@next/mdx": "^11.1.0",
+    "@next/mdx": "^11.1.2",
     "@preconstruct/next": "^3.0.0",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.7",
     "@types/mdx-js__react": "^1.5.4",
-    "@types/react": "^17.0.19",
+    "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
@@ -34,7 +34,7 @@
     "date-fns": "^2.23.0",
     "facepaint": "^1.2.1",
     "lodash.debounce": "^4.0.8",
-    "next": "^11.1.0",
+    "next": "^11.1.2",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
     "next-sitemap": "^1.6.164",
-    "start-server-and-test": "^1.13.1",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.4.2"
   },
   "engines": {
