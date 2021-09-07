@@ -72,7 +72,7 @@ Now that we have the Next.js starter with static files, let‘s embed Keystone i
 
 ### Install dependencies
 
-Add the following Keystone dependencies to your project:
+Add the following Keystone dependency to your project:
 
 ```bash
 yarn add @keystone-next/keystone
@@ -97,7 +97,7 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 ```tsx
 // keystone.ts
 
-import { config, list } from '@keystone-next/keystone/schema';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 const Post = list({
