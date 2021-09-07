@@ -13,7 +13,7 @@
   "dependencies": {
     "@types/tough-cookie": "^4.0.1",
     "execa": "^5.1.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.2",
     "playwright": "^1.14.1",
     "tree-kill": "^1.2.2"
   }
