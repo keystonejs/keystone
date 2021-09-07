@@ -156,9 +156,8 @@ export const expectPrismaError = (
     args.map(({ path, message, code, target }) => ({
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
-        exception: { clientVersion: '2.30.2', code, meta: { target } },
-        meta: { target },
-        clientVersion: '2.30.2',
+        exception: { prisma: { clientVersion: '2.30.2', code, meta: { target } } },
+        prisma: { clientVersion: '2.30.2', code, meta: { target } },
       },
       path,
       message,

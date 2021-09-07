@@ -6,7 +6,7 @@ export const prismaError = (err: Error) => {
   return new ApolloError(
     `Prisma error: ${err.message.split('\n').slice(-1)[0].trim()}`,
     'INTERNAL_SERVER_ERROR',
-    { ...err }
+    { prisma: { ...err } }
   );
 };
 
