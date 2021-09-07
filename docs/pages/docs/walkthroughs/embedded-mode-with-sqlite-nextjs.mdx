@@ -40,18 +40,12 @@ Here's what we're going to do:
 
 ## Setup a Next.js app
 
-x> **Warning:** We normally advise to set up a new Next.js app with `yarn create next-app --typescript my-project`, however this will install Next.js `11.x`. This version isn't compatible with this guide until we upgrade Keystone's Next.js internals to `11.x`.
-
-x> To continue, you'll need to use Next.js `10.x` until this upgrade is completed. We've set up a repository below using Next.js `10.x` you can clone in the mean time.
-
-Clone the basic Next.js project below.
+Create a basic Next.js project with the `--typescript` option in an empty directory.
 
 ```bash
-git clone https://github.com/keystonejs/embedded-mode-with-sqlite-nextjs
-cd embedded-mode-with-sqlite-nextjs
+yarn create next-app --typescript my-project
+cd my-project
 ```
-
-Then run `yarn` to install the dependencies.
 
 !> Keystone 6 has great TypeScript support. Including it in your project will make it easier to use Keystone’s APIs later.
 
@@ -78,10 +72,10 @@ Now that we have the Next.js starter with static files, let‘s embed Keystone i
 
 ### Install dependencies
 
-Add the following Keystone dependencies to your project:
+Add the following Keystone dependency to your project:
 
 ```bash
-yarn add @keystone-next/keystone @keystone-next/fields
+yarn add @keystone-next/keystone
 ```
 
 ### Update .gitignore
@@ -103,8 +97,8 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 ```tsx
 // keystone.ts
 
-import { config, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 const Post = list({
   fields: {
