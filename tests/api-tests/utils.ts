@@ -157,6 +157,8 @@ export const expectPrismaError = (
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
         exception: { clientVersion: '2.30.2', code, meta: { target } },
+        meta: { target },
+        clientVersion: '2.30.2',
       },
       path,
       message,
