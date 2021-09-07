@@ -202,7 +202,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -228,7 +228,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -256,7 +256,7 @@ describe('with access control', () => {
         });
 
         // Update an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -284,7 +284,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -328,7 +328,7 @@ describe('with access control', () => {
         });
 
         // Update an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoCreate(

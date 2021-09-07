@@ -31,7 +31,6 @@ describe('Access control - Item', () => {
   test(
     'createOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid name should pass
       await context.lists.User.createOne({ data: { name: 'good' } });
 
@@ -54,7 +53,6 @@ describe('Access control - Item', () => {
   test(
     'updateOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
       await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
@@ -78,7 +76,6 @@ describe('Access control - Item', () => {
   test(
     'deleteOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
@@ -103,7 +100,6 @@ describe('Access control - Item', () => {
   test(
     'createMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Mix of good and bad names
       const { data, errors } = await context.graphql.raw({
         query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
@@ -147,7 +143,6 @@ describe('Access control - Item', () => {
   test(
     'updateMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
@@ -205,7 +200,6 @@ describe('Access control - Item', () => {
   test(
     'deleteMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
