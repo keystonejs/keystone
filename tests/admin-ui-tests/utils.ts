@@ -23,7 +23,7 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 const projectRoot = findRootSync(process.cwd());
 
 export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
-  const { errors } = await fetch('http://localhost:3000/api/graphql', {
+  const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,6 +37,8 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
   if (errors) {
     throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
   }
+
+  return data;
 };
 
 export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
