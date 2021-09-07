@@ -1,4 +1,4 @@
-import { CacheScope } from 'apollo-cache-control';
+import { CacheScope } from 'apollo-server-types';
 import { text, relationship, integer } from '@keystone-next/keystone/fields';
 import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';

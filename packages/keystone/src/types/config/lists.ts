@@ -1,4 +1,4 @@
-import type { CacheHint } from '../next-fields';
+import type { CacheHint } from 'apollo-server-types';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
