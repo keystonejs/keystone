@@ -12,7 +12,7 @@
     "@svgr/plugin-jsx": "^5.5.0",
     "@svgr/plugin-prettier": "^5.5.0",
     "@svgr/plugin-svgo": "^5.5.0",
-    "@types/react": "^17.0.19",
+    "@types/react": "^17.0.20",
     "chalk": "^4.1.2",
     "feather-icons": "^4.28.0",
     "fs-extra": "^10.0.0",
@@ -21,7 +21,7 @@
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3",
+    "@babel/runtime": "^7.15.4",
     "@keystone-ui/core": "^3.2.0"
   },
   "peerDependencies": {
