@@ -14,7 +14,7 @@
     "@babel/runtime": "^7.15.3",
     "@keystone-next/auth": "^32.0.0",
     "@keystone-next/fields-document": "^9.0.0",
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/keystone": "^25.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/graphql-api-endpoint"
 }
