@@ -121,11 +121,11 @@ import {
 
 ## Key Changes <Emoji symbol="🔑" alt="key" />
 
-### `isUnique` now `isIndex` for unique fields <Emoji symbol="🗂" alt="folder" />
+### `isUnique` now `isIndexed` for unique fields <Emoji symbol="🗂" alt="folder" />
 
-Unique fields marked as `isUnique: true` are now represented as `isIndex: 'unique'`. This ensures that regular indexes and unique indexes aren't enabled at the same time.
+Unique fields marked as `isUnique: true` are now represented as `isIndexed: 'unique'`. This ensures that regular indexes and unique indexes aren't enabled at the same time.
 
-`isIndex` accepts the following options as per the [Fields API docs](https://keystonejs.com/docs/apis/fields) -
+`isIndexed` accepts the following options as per the [Fields API docs](https://keystonejs.com/docs/apis/fields) -
 
 - If `true` then the field will be indexed by the database.
 - If `'unique'` then all values of the field must be unique.
