@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied } from '../utils';
+import { apiTestConfig, expectAccessDenied, expectInternalServerError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -19,6 +19,25 @@ const runner = setupTestRunner({
             },
             delete: async ({ item }) => {
               return !item.name.startsWith('no delete');
+            },
+          },
+        },
+      }),
+      BadAccess: list({
+        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        access: {
+          item: {
+            // @ts-ignore Intentionally return a filter for testing purposes
+            create: () => {
+              return { name: { not: { equals: 'bad' } } };
+            },
+            // @ts-ignore Intentionally return a filter for testing purposes
+            update: () => {
+              return { name: { not: { equals: 'bad' } } };
+            },
+            // @ts-ignore Intentionally return a filter for testing purposes
+            delete: async () => {
+              return { name: { not: { startsWtih: 'no delete' } } };
             },
           },
         },
@@ -51,6 +70,30 @@ describe('Access control - Item', () => {
   );
 
   test(
+    'createOne - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      // Valid name
+      const { body } = await graphQLRequest({
+        query: `mutation ($data: BadAccessCreateInput!) { createBadAccess(data: $data) { id } }`,
+        variables: { data: { name: 'better' } },
+      });
+
+      // Returns null and throws an error
+      expect(body.data).toEqual({ createBadAccess: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from BadAccess.access.item.create(). Got object',
+          path: ['createBadAccess'],
+        },
+      ]);
+
+      // No items should exist
+      const _users = await context.lists.BadAccess.findMany({ query: 'id name' });
+      expect(_users.map(({ name }) => name)).toEqual([]);
+    })
+  );
+
+  test(
     'updateOne',
     runner(async ({ context }) => {
       // Valid name should pass
@@ -70,6 +113,32 @@ describe('Access control - Item', () => {
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
+    })
+  );
+
+  test(
+    'updateOne - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      const item = await context.sudo().lists.BadAccess.createOne({ data: { name: 'good' } });
+
+      // Valid name
+      const { body } = await graphQLRequest({
+        query: `mutation ($id: ID! $data: BadAccessUpdateInput!) { updateBadAccess(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: item.id, data: { name: 'better' } },
+      });
+
+      // Returns null and throws an error
+      expect(body.data).toEqual({ updateBadAccess: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from BadAccess.access.item.update(). Got object',
+          path: ['updateBadAccess'],
+        },
+      ]);
+
+      // Item should have its original name
+      const _items = await context.lists.BadAccess.findMany({ query: 'id name' });
+      expect(_items.map(({ name }) => name)).toEqual(['good']);
     })
   );
 
@@ -94,6 +163,32 @@ describe('Access control - Item', () => {
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['no delete']);
+    })
+  );
+
+  test(
+    'deleteOne - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      const item = await context.sudo().lists.BadAccess.createOne({ data: { name: 'good' } });
+
+      // Valid name
+      const { body } = await graphQLRequest({
+        query: `mutation ($id: ID!) { deleteBadAccess(where: { id: $id }) { id } }`,
+        variables: { id: item.id },
+      });
+
+      // Returns null and throws an error
+      expect(body.data).toEqual({ deleteBadAccess: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from BadAccess.access.item.delete(). Got object',
+          path: ['deleteBadAccess'],
+        },
+      ]);
+
+      // Item should have its original name
+      const _items = await context.lists.BadAccess.findMany({ query: 'id name' });
+      expect(_items.map(({ name }) => name)).toEqual(['good']);
     })
   );
 
