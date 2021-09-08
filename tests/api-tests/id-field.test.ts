@@ -45,6 +45,64 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     })
   );
   test(
+    'Fetching an item uniquely with a null id throws an error',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({ query: `{ user(where: { id: null}) { id } }` });
+      expect(body.data).toEqual({ user: null });
+      expectBadUserInput(body.errors, [
+        {
+          path: ['user'],
+          message: `The unique value provided in a unique where input must not be null`,
+        },
+      ]);
+    })
+  );
+  test(
+    'Filtering an item with a null id throws an error',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({ query: `{ users(where: { id: null }) { id } }` });
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [{ path: ['users'], message: `id filter cannot be null` }]);
+    })
+  );
+  test(
+    'Filtering an item with { equals: null } throws an error',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ users(where: { id: { equals: null } }) { id } }`,
+      });
+      expect(body.data).toEqual({ users: null });
+      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: `Only ${s} can be passed to id filters` },
+      ]);
+    })
+  );
+  test(
+    'Filtering an item with a in: [] throws an error',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ users(where: { id: { in: null } }) { id } }`,
+      });
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: `in id filter cannot be null` },
+      ]);
+    })
+  );
+  test(
+    'Filtering an item with a notIn: [] throws an error',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ users(where: { id: { notIn: null } }) { id } }`,
+      });
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: `notIn id filter cannot be null` },
+      ]);
+    })
+  );
+  test(
     'Creating an item',
     runner(async ({ context }) => {
       const { id } = await context.lists.User.createOne({ data: { name: 'something' } });
