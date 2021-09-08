@@ -7,8 +7,8 @@ export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    prismaPreviewFeatures: ["orderByRelation"],
   },
-  prismaPreviewFeatures: ["orderByRelation"],
   lists,
   extendGraphqlSchema,
 });
