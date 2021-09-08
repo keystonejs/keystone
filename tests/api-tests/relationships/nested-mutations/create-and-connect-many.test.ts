@@ -174,7 +174,7 @@ describe('with access control', () => {
         });
 
         // Create an item that does the linking
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -216,7 +216,7 @@ describe('with access control', () => {
         });
 
         // Update the item and link the relationship field
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(

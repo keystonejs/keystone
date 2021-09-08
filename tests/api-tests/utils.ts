@@ -136,7 +136,7 @@ export const expectExtensionError = (
         extensions: {
           code: 'INTERNAL_SERVER_ERROR',
           ...(expectException
-            ? { exception: { debug, stacktrace: expect.arrayContaining(stacktrace) } }
+            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),
           ...(expectDebug ? { debug } : {}),
         },
@@ -156,9 +156,7 @@ export const expectPrismaError = (
     args.map(({ path, message, code, target }) => ({
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
-        exception: { clientVersion: '2.30.2', code, meta: { target } },
-        meta: { target },
-        clientVersion: '2.30.2',
+        prisma: { clientVersion: '2.30.2', code, meta: { target } },
       },
       path,
       message,

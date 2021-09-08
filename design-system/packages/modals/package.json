@@ -5,10 +5,10 @@
   "main": "dist/modals.cjs.js",
   "module": "dist/modals.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.19"
+    "@types/react": "^17.0.20"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3",
+    "@babel/runtime": "^7.15.4",
     "@keystone-ui/button": "^5.0.1",
     "@keystone-ui/core": "^3.2.0",
     "react": "^17.0.2",
