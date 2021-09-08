@@ -1,7 +1,7 @@
+import { CacheHint } from 'apollo-server-types';
 import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
-  CacheHint,
   IndividualFieldAccessControl,
   BaseGeneratedListTypes,
   ItemRootValue,
@@ -118,7 +118,7 @@ export function outputTypeField(
           fieldKey,
           item: rootVal,
           listKey,
-          operation: 'query',
+          operation: 'read',
           session: context.session,
         },
       });
@@ -128,7 +128,7 @@ export function outputTypeField(
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
       if (cacheHint && info && info.cacheControl) {
-        info.cacheControl.setCacheHint(cacheHint as any);
+        info.cacheControl.setCacheHint(cacheHint);
       }
 
       const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info);
