@@ -7,14 +7,15 @@ import {
   graphql,
   filters,
 } from '../../../types';
-import { assertIsNonNullAllowed } from '../../non-null-output-type-utils';
+import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: boolean;
     graphql?: {
-      isNonNull?: boolean;
+      read?: { isNonNull?: boolean };
+      create?: { isNonNull?: boolean };
     };
   };
 
@@ -28,7 +29,8 @@ export const checkbox =
       throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
     }
 
-    assertIsNonNullAllowed(meta, config.access, config.graphql?.isNonNull);
+    assertReadIsNonNullAllowed(meta, config);
+    assertCreateIsNonNullAllowed(meta, config);
 
     return fieldType({
       kind: 'scalar',
@@ -39,7 +41,20 @@ export const checkbox =
       ...config,
       input: {
         where: { arg: graphql.arg({ type: filters[meta.provider].Boolean.required }) },
-        create: { arg: graphql.arg({ type: graphql.nonNull(graphql.Boolean), defaultValue }) },
+        create: {
+          arg: graphql.arg({
+            type: config.graphql?.create?.isNonNull
+              ? graphql.nonNull(graphql.Boolean)
+              : graphql.Boolean,
+            defaultValue: config.graphql?.create?.isNonNull ? defaultValue : undefined,
+          }),
+          resolve(val) {
+            if (val === null) {
+              throw new Error('checkbox fields cannot be set to null');
+            }
+            return val ?? defaultValue;
+          },
+        },
         update: {
           arg: graphql.arg({ type: graphql.Boolean }),
           resolve(val) {
@@ -52,7 +67,7 @@ export const checkbox =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.isNonNull ? graphql.nonNull(graphql.Boolean) : graphql.Boolean,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Boolean) : graphql.Boolean,
       }),
       views: resolveView('checkbox/views'),
       getAdminMeta: () => ({ defaultValue }),

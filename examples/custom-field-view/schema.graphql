@@ -131,7 +131,7 @@ input TaskUpdateArgs {
 input TaskCreateInput {
   label: String
   priority: TaskPriorityType
-  isComplete: Boolean! = false
+  isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: String
   relatedLinks: JSON

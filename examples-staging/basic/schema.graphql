@@ -253,7 +253,7 @@ input UserCreateInput {
   avatar: ImageFieldInput
   attachment: FileFieldInput
   password: String
-  isAdmin: Boolean! = false
+  isAdmin: Boolean
   roles: String
   phoneNumbers: PhoneNumberRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput

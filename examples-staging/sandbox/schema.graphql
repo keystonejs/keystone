@@ -64,7 +64,7 @@ input TodoUpdateArgs {
 
 input TodoCreateInput {
   label: String
-  isComplete: Boolean! = false
+  isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
   finishBy: String
   createdAt: String
