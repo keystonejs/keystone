@@ -202,6 +202,7 @@ export function printPrismaSchema(
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["orderByRelation"]
   output = "${clientDir}"
 }
 \n`;
