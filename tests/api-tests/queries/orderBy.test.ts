@@ -250,7 +250,7 @@ describe('Ordering by a single field', () => {
   );
 
   test(
-    'Multi filter, bad format throws error ',
+    'Multi filter, multiple keys throws error ',
     runner(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
 
@@ -260,6 +260,36 @@ describe('Ordering by a single field', () => {
       expect(body.data).toEqual({ users: null });
       expectBadUserInput(body.errors, [
         { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
+      ]);
+    })
+  );
+
+  test(
+    'Multi filter, zero keys throws error ',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+
+      const { body } = await graphQLRequest({
+        query: 'query { users(orderBy: [{}]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
+      ]);
+    })
+  );
+
+  test(
+    'Multi filter, null values throws error ',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+
+      const { body } = await graphQLRequest({
+        query: 'query { users(orderBy: [{ a: null }]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectBadUserInput(body.errors, [
+        { path: ['users'], message: 'null cannot be passed as an order direction' },
       ]);
     })
   );

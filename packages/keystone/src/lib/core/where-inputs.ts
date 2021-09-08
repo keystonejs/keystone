@@ -86,10 +86,10 @@ export async function resolveWhereInput(
                         Object.entries(value).map(async ([key, val]) => {
                           if (val === null) {
                             throw new Error(
-                              `The key ${key} in a many relation filter cannot be set to null`
+                              `The key "${key}" in a many relation filter cannot be set to null`
                             );
                           }
-                          return [key, await whereResolver(val as any)];
+                          return [key, await whereResolver(val)];
                         })
                       )
                     );
@@ -106,6 +106,8 @@ export async function resolveWhereInput(
           : value;
         if (ret === null) {
           if (field.dbField.kind === 'multi') {
+            // Note: no built-in field types support multi valued database fields *and* filtering.
+            // This code path is only relevent to custom fields which fit that criteria.
             throw new Error('multi db fields cannot return null from where input resolvers');
           }
           return { [fieldKey]: null };
