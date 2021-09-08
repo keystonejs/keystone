@@ -79,7 +79,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     })
   );
   test(
-    'Filtering an item with a in: [] throws an error',
+    'Filtering an item with a in: null throws an error',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `{ users(where: { id: { in: null } }) { id } }`,
@@ -91,7 +91,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     })
   );
   test(
-    'Filtering an item with a notIn: [] throws an error',
+    'Filtering an item with a notIn: null throws an error',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `{ users(where: { id: { notIn: null } }) { id } }`,
