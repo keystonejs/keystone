@@ -121,7 +121,7 @@ export type FieldCreateItemAccessArgs<GeneratedListTypes extends BaseGeneratedLi
   CreateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };
 
 export type FieldReadItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
-  BaseAccessArgs & { fieldKey: string; item: GeneratedListTypes['backing'] };
+  BaseAccessArgs & { operation: 'read'; fieldKey: string; item: GeneratedListTypes['backing'] };
 
 export type FieldUpdateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
   UpdateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };
