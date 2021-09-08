@@ -34,7 +34,7 @@ List-level access control can be specified in three ways.
 - [`operation`](#operation) access control lets you check the information in the `context` and `session` objects to decide if the
   user is allowed to access the list.
 - [`filter`](#filter) access control lets you provide a GraphQL filter to restrict the items the user is allowed to access.
-- [`item`](#item) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
+- [`item`](#item-mutations-only) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
   and make a decision based on this extra data.
 
 !> **Access denied:** **Mutations** return `null` data with an access denied error. **Queries** never return access denied errors, and instead treat items as if they didn't exist.
