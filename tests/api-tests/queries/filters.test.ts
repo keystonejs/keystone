@@ -74,7 +74,7 @@ describe('filtering on field name', () => {
 describe('filtering on relationships', () => {
   test(
     'findMany throws error with null relationship query',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ secondaryLists(where: { otherUsers: null }) { id } }',
       });
@@ -91,7 +91,7 @@ describe('filtering on relationships', () => {
 
   test(
     'findMany throws error with null relationship query value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ secondaryLists(where: { otherUsers: { some: null } }) { id } }',
       });
@@ -140,7 +140,7 @@ describe('searching by unique fields', () => {
 
   test(
     'findOne throws error with zero where values',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({ query: '{ user(where: {}) { id email } }' });
       // Returns null and throws an error
       expect(body.data).toEqual({ user: null });
@@ -173,7 +173,7 @@ describe('searching by unique fields', () => {
 
   test(
     'findOne throws error with null where values',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ user(where: { email: null }) { id email } }',
       });
