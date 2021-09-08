@@ -297,6 +297,36 @@ describe('non-matching filter', () => {
       ]);
     })
   );
+
+  test(
+    'errors on incomplete data',
+    runner(async ({ context }) => {
+      // Create an item to link against
+      const createUser = await context.lists.User.createOne({ data: {} });
+
+      // Create an item that does the linking
+      const { data, errors } = await context.graphql.raw({
+        query: `
+              mutation {
+                updateUser(
+                  where: { id: "${createUser.id}" },
+                  data: { notes: {} }
+                ) {
+                  id
+                }
+              }`,
+      });
+
+      expect(data).toEqual({ updateUser: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateUser'],
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+        },
+      ]);
+    })
+  );
 });
 
 describe('with access control', () => {
