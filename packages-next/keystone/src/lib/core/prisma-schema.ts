@@ -196,9 +196,9 @@ export function printPrismaSchema(
   clientDir: string,
   prismaPreviewFeatures?: string[]
 ) {
-  let prismaFeatures = ''
+  let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
-    prismaFeatures = `previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`
+    prismaFlags = `\n previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`;
     }
   let prismaSchema = `datasource ${provider} {
   url = env("DATABASE_URL")
@@ -207,8 +207,7 @@ export function printPrismaSchema(
 
 generator client {
   provider = "prisma-client-js"
-  output = "${clientDir}"
-  ${prismaFeatures}
+  output = "${clientDir}"${prismaFlags}
 }
 \n`;
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
