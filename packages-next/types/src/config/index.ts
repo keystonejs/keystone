@@ -37,7 +37,6 @@ export type KeystoneConfig = {
     /** Config options for Keystone Cloud */
     keystoneCloud?: KeystoneCloudConfig;
   };
-  prismaPreviewFeatures?: string[];
 };
 
 // config.lists
@@ -58,6 +57,7 @@ export type DatabaseConfig = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
+  prismaPreviewFeatures?: string[];
 } & (
   | (
       | {

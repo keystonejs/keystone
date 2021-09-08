@@ -32,7 +32,7 @@ export async function getCommittedArtifacts(
     lists,
     getDBProvider(config.db),
     'node_modules/.prisma/client',
-    config.prismaPreviewFeatures
+    config.db.prismaPreviewFeatures
   );
   return {
     graphql: format(printSchema(graphQLSchema), { parser: 'graphql' }),

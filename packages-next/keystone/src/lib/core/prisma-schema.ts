@@ -194,16 +194,12 @@ export function printPrismaSchema(
   lists: ListsWithResolvedRelations,
   provider: DatabaseProvider,
   clientDir: string,
-  prismaFeatures: string[]
+  prismaPreviewFeatures?: string[]
 ) {
-  let prismaPreviewFeatures = ''
-  if (prismaFeatures && prismaFeatures.length) {
-    prismaPreviewFeatures = '['
-    prismaFeatures.forEach(e => {
-      prismaPreviewFeatures += `"${e}"`
-    })
-    prismaPreviewFeatures+=']'
-  }
+  let prismaFeatures = ''
+  if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
+    prismaFeatures = `previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`
+    }
   let prismaSchema = `datasource ${provider} {
   url = env("DATABASE_URL")
   provider = "${provider}"
@@ -212,7 +208,7 @@ export function printPrismaSchema(
 generator client {
   provider = "prisma-client-js"
   output = "${clientDir}"
-  ${prismaPreviewFeatures && prismaPreviewFeatures.length ? 'previewFeatures = ' + prismaPreviewFeatures : ''}
+  ${prismaFeatures}
 }
 \n`;
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
