@@ -309,6 +309,12 @@ type Mutation {
   deleteAuthors(ids: [ID!]): [Author]
 }
 
+input QueryInput {
+  field: String
+  relation: String
+  direction: String
+}
+
 type Query {
   """
    Search for all Post items which match the where clause.
@@ -379,6 +385,7 @@ type Query {
       reason: "This query will be removed in a future version. Please use authorsCount instead."
     )
   authorsCount(where: AuthorWhereInput! = {}): Int
+  exampleWithPrismaPreviewFeatures: [Post]
   keystone: KeystoneMeta!
 }
 

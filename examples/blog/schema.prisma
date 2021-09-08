@@ -4,8 +4,9 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider        = "prisma-client-js"
+  output          = "node_modules/.prisma/client"
+  previewFeatures = ["orderByRelation"]
 }
 
 model Post {
