@@ -53,7 +53,7 @@ export async function getAccessFilters(
 }
 
 export async function validateFieldAccessControl<
-  Args extends { listKey: string; fieldKey: string; operation: 'query' | 'create' | 'update' }
+  Args extends { listKey: string; fieldKey: string; operation: 'read' | 'create' | 'update' }
 >({
   access,
   args,

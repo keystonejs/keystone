@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { createSchema, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied } from '../utils';
+import { apiTestConfig, expectAccessDenied, expectInternalServerError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -30,6 +30,17 @@ const runner = setupTestRunner({
             },
             isOrderable: true,
           }),
+          badAccess: text({
+            access: {
+              // @ts-ignore Intentionally return a string for testing purposes
+              read: () => 'non boolean value',
+              // @ts-ignore Intentionally return a string for testing purposes
+              create: () => 'non boolean value',
+              // @ts-ignore Intentionally return a string for testing purposes
+              update: () => 'non boolean value',
+            },
+            isOrderable: true,
+          }),
         },
       }),
     }),
@@ -37,6 +48,27 @@ const runner = setupTestRunner({
 });
 
 describe('Access control', () => {
+  test(
+    'findMany - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      const item = await context
+        .sudo()
+        .lists.User.createOne({ data: { name: 'foo', badAccess: 'bar' } });
+
+      const { body } = await graphQLRequest({
+        query: `query { users { id name badAccess } }`,
+      });
+
+      // Returns the item, with null for the bad field, and an error message
+      expect(body.data).toEqual({ users: [{ id: item.id, name: 'foo', badAccess: null }] });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from User.fields.badAccess.access.read(). Got string',
+          path: ['users', 0, 'badAccess'],
+        },
+      ]);
+    })
+  );
   test(
     'createOne',
     runner(async ({ context }) => {
@@ -52,6 +84,34 @@ describe('Access control', () => {
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
       expectAccessDenied('dev', false, undefined, errors, [{ path: ['createUser'] }]);
+
+      // Only the original user should exist
+      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      expect(_users.map(({ name }) => name)).toEqual(['good']);
+      expect(_users.map(({ other }) => other)).toEqual(['a']);
+    })
+  );
+
+  test(
+    'createOne - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      // Valid name should pass
+      await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
+
+      // Invalid name
+      const { body } = await graphQLRequest({
+        query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
+        variables: { data: { name: 'fine', other: 'b', badAccess: 'bar' } },
+      });
+
+      // Returns null and throws an error
+      expect(body.data).toEqual({ createUser: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from User.fields.badAccess.access.create(). Got string',
+          path: ['createUser'],
+        },
+      ]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name other' });
@@ -79,6 +139,38 @@ describe('Access control', () => {
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
       expectAccessDenied('dev', false, undefined, errors, [{ path: ['updateUser'] }]);
+
+      // User should have its original name
+      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      expect(_users.map(({ name }) => name)).toEqual(['better']);
+      expect(_users.map(({ other }) => other)).toEqual(['b']);
+    })
+  );
+
+  test(
+    'updateOne - Bad function return value',
+    runner(async ({ context, graphQLRequest }) => {
+      // Valid name should pass
+      const user = await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
+      await context.lists.User.updateOne({
+        where: { id: user.id },
+        data: { name: 'better', other: 'b' },
+      });
+
+      // Invalid name
+      const { body } = await graphQLRequest({
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: user.id, data: { name: 'bad', other: 'c', badAccess: 'bar' } },
+      });
+
+      // Returns null and throws an error
+      expect(body.data).toEqual({ updateUser: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          message: 'Must return a Boolean from User.fields.badAccess.access.update(). Got string',
+          path: ['updateUser'],
+        },
+      ]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name other' });
