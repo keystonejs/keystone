@@ -33,7 +33,7 @@ List-level access control can be specified in three ways.
 
 - [`operation`](#operation) access control lets you check the information in the `context` and `session` objects to decide if the
   user is allowed to access the list.
-- [`filter`](#filter) access control lets you provide a GraphQL filter to restrict the items the user is allowed to access.
+- [`filter`](#filter) access control lets you provide a [GraphQL filter](./filters) to restrict the items the user is allowed to access.
 - [`item`](#item-mutations-only) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
   and make a decision based on this extra data.
 
@@ -82,7 +82,7 @@ You should ensure that your `create`, `update`, and `delete` are also configured
 
 ### Filter
 
-Filter-level access control lets you restrict which items can be operated on by providing a function which returns a GraphQL filter.
+Filter-level access control lets you restrict which items can be operated on by providing a function which returns a [GraphQL filter](./filters).
 
 - For **mutations**, the access control filter will be combined with the unique identifier provided to the operation, and access will be denied if no item is found with this combined filter.
 - For **queries**, the access control filter will be combined with the query filter and only items which match both filters will be returned.
