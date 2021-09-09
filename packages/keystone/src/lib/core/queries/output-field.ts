@@ -118,7 +118,7 @@ export function outputTypeField(
           fieldKey,
           item: rootVal,
           listKey,
-          operation: 'query',
+          operation: 'read',
           session: context.session,
         },
       });
