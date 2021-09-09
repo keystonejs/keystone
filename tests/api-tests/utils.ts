@@ -5,7 +5,7 @@ import { KeystoneConfig, DatabaseProvider } from '@keystone-next/keystone/types'
 // export it from `@keystone-next/keystone/testing`.
 export const apiTestConfig = (
   config: Omit<KeystoneConfig, 'db'> & {
-    db?: Omit<KeystoneConfig['db'], 'provider' | 'url' | 'adapter'>;
+    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
   }
 ): KeystoneConfig => ({
   ...config,
