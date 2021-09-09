@@ -44,8 +44,14 @@ export const Product = list({
     price: integer(),
     user: relationship({
       ref: 'User.products',
-      defaultValue: ({ context }) =>
-        context.session?.itemId ? { connect: { id: context.session?.itemId } } : null,
+      hooks: {
+        resolveInput({ operation, resolvedData, context }) {
+          if (operation === 'create' && !resolvedData.user && context.session?.itemId) {
+            return { connect: { id: context.session?.itemId } };
+          }
+          return resolvedData.user;
+        },
+      },
     }),
   },
 });
