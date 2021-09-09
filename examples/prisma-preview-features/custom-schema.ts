@@ -12,9 +12,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         const data = await context.prisma.post.findMany({
           orderBy: {
             author: {
-              name: 'desc'
-            }
-          }
+              name: 'desc',
+            },
+          },
         });
         return data;
       },
