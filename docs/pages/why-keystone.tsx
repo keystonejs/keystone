@@ -166,16 +166,9 @@ export default function WhyKeystonePage() {
           GraphQL just feels so right to me <Emoji symbol="❤️" alt="Love" />
         </Quote>
 
-        <Section
-          css={mq({
-            border: '1px solid var(--border-muted)',
-            borderRadius: '1rem',
-            padding: ['1.5rem', '2.5rem', null, '3.5rem'],
-            boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
-          })}
-        >
+        <Section>
           <Type as="h2" look="heading30">
-            Unify your team dynamic
+            A platform the whole team can rally around
           </Type>
           <Type
             as="p"
@@ -183,8 +176,9 @@ export default function WhyKeystonePage() {
             color="var(--muted)"
             css={{ maxWidth: '34rem', margin: '1rem 0' }}
           >
-            Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
-            natural. A tool your team can grow with.
+            Great experiences aren’t solved by code alone. It's a team sport where That's why
+            Keystone Enable a content culture that’s productive, collaborative, and fun. Open,
+            flexible, and natural.A tool your team can grow with.
           </Type>
           <div
             css={mq({
