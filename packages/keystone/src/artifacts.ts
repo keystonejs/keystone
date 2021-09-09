@@ -139,7 +139,7 @@ const makeVercelIncludeTheSQLiteDB = (
   directoryOfFileToBeWritten: string,
   config: KeystoneConfig
 ) => {
-  if (config.db.adapter === 'prisma_sqlite' || config.db.provider === 'sqlite') {
+  if (config.db.provider === 'sqlite') {
     const sqliteDbAbsolutePath = path.resolve(cwd, config.db.url.replace('file:', ''));
 
     return `import path from 'path';
