@@ -26,6 +26,7 @@ export const createReturnedValue = 3250;
 export const updateReturnedValue = 5562;
 
 export const supportsUnique = false;
+export const skipRequiredTest = true;
 export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
 
