@@ -46,6 +46,7 @@ export const Product = list({
       ref: 'User.products',
       hooks: {
         resolveInput({ operation, resolvedData, context }) {
+          // Default to the currently logged in user on create.
           if (operation === 'create' && !resolvedData.user && context.session?.itemId) {
             return { connect: { id: context.session?.itemId } };
           }
