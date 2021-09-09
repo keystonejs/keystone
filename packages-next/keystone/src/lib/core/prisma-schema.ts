@@ -198,7 +198,7 @@ export function printPrismaSchema(
 ) {
   let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
-    prismaFlags = `\n previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`;
+    prismaFlags = `\n  previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`;
     }
   let prismaSchema = `datasource ${provider} {
   url = env("DATABASE_URL")
