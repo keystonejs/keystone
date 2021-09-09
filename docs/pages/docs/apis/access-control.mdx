@@ -171,7 +171,7 @@ List-level access control functions are passed a collection of arguments which c
 ## Field Access Control
 
 Keystone also allows you to set up access control on a per-field basis.
-Rules can be set for `read`, `update` and `delete` operations.
+Rules can be set for `read`, `create` and `update` operations.
 
 !> Each operation is defined by a function which returns `true` if access is allowed and `false` if access is not allowed.
 
@@ -211,7 +211,7 @@ export default config({
 });
 ```
 
-!> Field-level access control is not available for `delete` operations. To restrict `create` operations configure either `access.operation.delete`, `access.filter.delete` or `access.item.delete` at the list level.
+!> Field-level access control is not available for `delete` operations. Restrict `delete` operations at the List-level instead with `access.operation.delete`, `access.filter.delete` or `access.item.delete`.
 
 ### Function Arguments
 
