@@ -6,9 +6,9 @@ import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 
 export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
-  if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
+  if (db.provider === 'postgresql') {
     return 'postgresql';
-  } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
+  } else if (db.provider === 'sqlite') {
     return 'sqlite';
   } else {
     throw new Error(
