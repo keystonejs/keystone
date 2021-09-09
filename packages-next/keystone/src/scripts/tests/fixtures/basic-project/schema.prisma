@@ -9,6 +9,6 @@ generator client {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
+  id    String  @id @default(cuid())
   title String?
 }

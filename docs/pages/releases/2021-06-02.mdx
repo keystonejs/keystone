@@ -1,12 +1,11 @@
-import { Markdown } from '../../components/Page';
+import { Markdown, getServerSideProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
 
-# Release
+# Release: 2nd June 2021
 
-## 2nd June 2021
+## What's New
 
-### What's New
-
-We have a new JSON field ✨, a bunch of new learning resources, and plenty of under the hood optimisations in this big release. 💪
+We have a new JSON field <Emoji symbol="✨" alt="Sparkle"/>, a bunch of new learning resources, and plenty of under the hood optimisations in this big release. <Emoji symbol="💪" alt="Muscle"/>
 
 ```typescript
 "@keystone-next/adapter-prisma-legacy": "8.0.0",
@@ -21,7 +20,7 @@ We have a new JSON field ✨, a bunch of new learning resources, and plenty of u
 "@keystone-next/utils-legacy": "11.0.1",
 ```
 
-### JSON Field 👩🏻‍💻
+### JSON Field <Emoji symbol="👩🏻‍💻" alt="Person at laptop"/>
 
 Thanks to the new `json` field, you can now represent JSON blobs in your backend. Check out the [JSON example project](https://github.com/keystonejs/keystone/tree/master/examples/json) to learn more.
 
@@ -35,16 +34,16 @@ Package: list({
 }),
 ```
 
-### More Learning Resources 🧑‍🏫
+### More Learning Resources <Emoji symbol="🧑‍🏫" alt="Student at blackboard"/>
 
 In addition to the JSON one above, we added new examples for:
 
 - Setting [Default Values](https://github.com/keystonejs/keystone/tree/master/examples/default-values) for fields.
 - [Extending the GraphQL Schema](https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema) with custom queries and mutations.
 
-We also published a tutorial that shows you [how to embed Keystone and SQLite in a Next.js app](https://next.keystonejs.com/tutorials/embedded-mode-with-sqlite-nextjs). The end result is an app with a queryable GraphQL endpoint based on your Keystone schema that you can run live on Vercel – for free! 🚀
+We also published a tutorial that shows you [how to embed Keystone and SQLite in a Next.js app](https://keystonejs.com/tutorials/embedded-mode-with-sqlite-nextjs). The end result is an app with a queryable GraphQL endpoint based on your Keystone schema that you can run live on Vercel – for free! <Emoji symbol="🚀" alt="Rocket"/>
 
-### sortBy deprecated with improvements to orderBy 🤹‍♂️
+### sortBy deprecated with improvements to orderBy
 
 We deprecated the `sortBy` GraphQL filter and updated the `orderBy` GraphQL filter with an improved API.
 
@@ -79,7 +78,7 @@ Rather than writing `allUsers(orderBy: "name_ASC")` you now write `allUsers(orde
 
 Note: each `UserOrderByInput` must have exactly one key, or else an error will be returned.
 
-### withItemData replaced with sessionData 🔧
+### withItemData replaced with sessionData <Emoji symbol="🔧" alt="Wrench"/>
 
 We removed `withItemData` in favour of a `sessionData` option to the `createAuth()` function.
 
@@ -115,7 +114,7 @@ export default withAuth(
 );
 ```
 
-Now, the fields to populate are configured on sessionData in createAuth, and withItemData is completely removed. 🧹
+Now, the fields to populate are configured on sessionData in createAuth, and withItemData is completely removed.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -148,7 +147,7 @@ export default withAuth(
 );
 ```
 
-### More consistent and predictable createItems, updateItems, and deleteItems mutations 🧘‍♀️
+### More consistent and predictable createItems, updateItems, and deleteItems mutations <Emoji symbol="🧘‍♀️" alt="Meditator"/>
 
 We fixed the behaviour of `createItems`, `updateItems`, and `deleteItems` mutations to be consistent and predictable.
 
@@ -162,7 +161,7 @@ Previously, if items were filtered out by declarative access control, then no er
 
 Previously, if static access control denied access to the mutation, then `null` was returned, and a single `error` was returned. Now, an array of `null`s is returned, with a separate error for each object. This makes the behaviour of static and declarative access control consistent.
 
-### Counts Improved 🔢
+### Counts Improved <Emoji symbol="🔢" alt="1 2 3 4"/>
 
 The GraphQL field `_all<path>Meta { count }` generated for `many` relationships has been deprecated in favour of a new field `<path>Count`, which directly returns the count.
 
@@ -172,16 +171,17 @@ A `posts` relationship field would have the following field added to the API:
 postsCount(where: PostWhereInput! = {}): Int
 ```
 
-### Prisma updated to 2.24.0 ⬆️
+### Prisma updated to 2.24.0 <Emoji symbol="⬆️" alt="Up arrow"/>
 
 We've updated our Prisma dependency from `2.22.1` to `2.24.0`! Check out the [Prisma release notes](https://github.com/prisma/prisma/releases) for more details.
 
-### Credits 🎉
+### Credits <Emoji symbol="Party popper"/>
 
 - Thanks [@jonowu](https://github.com/jonowu) for adding a `sameSite` option to the session options for cookies. Can be one of true, false, 'strict', 'lax' or 'none' as per Mozilla docs. See the [PR](https://github.com/keystonejs/keystone/pull/5774) for more details!
 
-- Thanks [@gabrielkuettel](https://github.com/gabrielkuettel) for fixing a typo [Database Items API](https://next.keystonejs.com/apis/db-items) page!
+- Thanks [@gabrielkuettel](https://github.com/gabrielkuettel) for fixing a typo [Database Items API](https://keystonejs.com/docs/apis/db-items) page!
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-02) on GitHub.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children, ...props }) => <Markdown {...props}>{children}</Markdown>;
+export { getServerSideProps }

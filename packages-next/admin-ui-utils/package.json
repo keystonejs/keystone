@@ -1,13 +1,13 @@
 {
   "name": "@keystone-next/admin-ui-utils",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "main": "dist/admin-ui-utils.cjs.js",
   "module": "dist/admin-ui-utils.esm.js",
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.14.6",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/types": "^20.0.0",
+    "@keystone-next/types": "^21.0.0",
     "@keystone-ui/core": "^3.1.0",
     "@types/react": "^17.0.11",
     "fast-deep-equal": "^3.1.3",

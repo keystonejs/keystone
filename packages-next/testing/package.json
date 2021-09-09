@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/testing",
   "description": "Tools to assist with testing Keystone projects",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/testing.cjs.js",
@@ -10,7 +10,7 @@
     "node": "^12.20 || >= 14.13"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^20.0.0",
+    "@keystone-next/keystone": "^21.0.0",
     "@types/supertest": "^2.0.11",
     "memoize-one": "^5.2.1",
     "supertest": "^6.1.3"

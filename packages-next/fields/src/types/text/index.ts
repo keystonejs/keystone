@@ -17,6 +17,8 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     isIndexed?: boolean;
     isUnique?: boolean;
     isRequired?: boolean;
+    maxLength?: number;
+    fixedLength?: number;
     ui?: {
       displayMode?: 'input' | 'textarea';
     };
@@ -28,13 +30,28 @@ export const text =
     isUnique,
     isRequired,
     defaultValue,
+    maxLength,
+    fixedLength,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
-  meta =>
-    fieldType({
+  meta => {
+    if ((maxLength || fixedLength) && meta.provider === 'sqlite') {
+      throw new Error(
+        'The maxLength and fixedLength properties for text field does not support sqlite'
+      );
+    }
+    return fieldType({
       kind: 'scalar',
       mode: 'optional',
       scalar: 'String',
+      nativeType:
+        meta.provider === 'sqlite'
+          ? undefined
+          : maxLength
+          ? `VarChar(${maxLength})`
+          : fixedLength
+          ? `Char(${fixedLength})`
+          : undefined,
       index: getIndexType({ isIndexed, isUnique }),
     })({
       ...config,
@@ -47,7 +64,11 @@ export const text =
       output: schema.field({ type: schema.String }),
       views: resolveView('text/views'),
       getAdminMeta() {
-        return { displayMode: config.ui?.displayMode ?? 'input' };
+        return {
+          displayMode: config.ui?.displayMode ?? 'input',
+          maxLength: maxLength,
+          fixedLength: fixedLength,
+        };
       },
       __legacy: {
         filters: {
@@ -85,3 +106,4 @@ export const text =
         isRequired,
       },
     });
+  };

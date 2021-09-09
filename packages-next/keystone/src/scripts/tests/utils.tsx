@@ -116,6 +116,7 @@ export const symlinkKeystoneDeps = Object.fromEntries(
     '@keystone-next/keystone',
     '@keystone-next/auth',
     '@keystone-next/fields',
+    '@keystone-next/types',
     '@prisma/engines',
     '@prisma/client',
     'typescript',

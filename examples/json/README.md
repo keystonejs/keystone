@@ -20,7 +20,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-This example implements a `Packages` list. In this field we specify a `pkgjson` field which is a _required_ [`json` field type](https://next.keystonejs.com/apis/fields#json).
+This example implements a `Packages` list. In this field we specify a `pkgjson` field which is a _required_ [`json` field type](https://keystonejs.com/docs/apis/fields#json).
 This accepts any valid JSON including:
 
 - string node

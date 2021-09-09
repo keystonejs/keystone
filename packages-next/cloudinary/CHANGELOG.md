@@ -1,5 +1,35 @@
 # @keystone-next/cloudinary
 
+## 6.0.3
+
+### Patch Changes
+
+- [#6031](https://github.com/keystonejs/keystone/pull/6031) [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `cloudinaryImage` field not passing through access control, hooks, ui and graphql options to Keystone.
+
+- Updated dependencies [[`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5), [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5)]:
+  - @keystone-next/fields@11.0.3
+  - @keystone-next/types@21.0.1
+
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`03f535ba6`](https://github.com/keystonejs/keystone/commit/03f535ba6fa1a5e5f3027bcad761feb3fd94587b)]:
+  - @keystone-next/types@21.0.0
+  - @keystone-next/fields@11.0.2
+
+## 6.0.1
+
+### Patch Changes
+
+- [#5925](https://github.com/keystonejs/keystone/pull/5925) [`de0a5c19e`](https://github.com/keystonejs/keystone/commit/de0a5c19e656360ea3febc7e0240543c7817253e) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
+- Updated dependencies [[`de0a5c19e`](https://github.com/keystonejs/keystone/commit/de0a5c19e656360ea3febc7e0240543c7817253e), [`7a25925c3`](https://github.com/keystonejs/keystone/commit/7a25925c3dc5b2af2cf1209ee949563fb71a4a8c), [`50ad1ce6b`](https://github.com/keystonejs/keystone/commit/50ad1ce6be90f5fb2481840dbd01328b6f629432), [`0df3734d5`](https://github.com/keystonejs/keystone/commit/0df3734d52a89df30f1d555d003002cb79ad9e9a), [`4e5634b86`](https://github.com/keystonejs/keystone/commit/4e5634b86a26819cecec5b10c18f9d231b5434e2), [`972e04514`](https://github.com/keystonejs/keystone/commit/972e045145711e39fd6fa167cb87fa05e062272c), [`543154bc0`](https://github.com/keystonejs/keystone/commit/543154bc081dde33ea29b8a2bff1d3033d538077), [`972e04514`](https://github.com/keystonejs/keystone/commit/972e045145711e39fd6fa167cb87fa05e062272c)]:
+  - @keystone-next/fields@11.0.1
+  - @keystone-next/types@20.0.1
+  - @keystone-ui/fields@4.1.2
+  - @keystone-ui/pill@5.0.0
+
 ## 6.0.0
 
 ### Major Changes

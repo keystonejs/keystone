@@ -20,6 +20,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}
+          placeholder={field.placeholder}
         />
       ) : (
         <TextInput
@@ -27,6 +28,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
           autoFocus={autoFocus}
           onChange={event => onChange(event.target.value)}
           value={value}
+          placeholder={field.placeholder}
         />
       )
     ) : (
@@ -50,16 +52,29 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
+type Config = FieldControllerConfig<{
+  displayMode: 'input' | 'textarea';
+  maxLength?: number;
+  fixedLength?: number;
+}>;
 
 export const controller = (
   config: Config
-): FieldController<string, string> & { displayMode: 'input' | 'textarea' } => {
+): FieldController<string, string> & {
+  displayMode: 'input' | 'textarea';
+  placeholder: string | undefined;
+} => {
+  console.log(config);
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
+    placeholder: config.fieldMeta.maxLength
+      ? `Maximum length: ${config.fieldMeta.maxLength}`
+      : config.fieldMeta.fixedLength
+      ? `Fixed length: ${config.fieldMeta.fixedLength}`
+      : '',
     displayMode: config.fieldMeta.displayMode,
     deserialize: data => {
       const value = data[config.path];
@@ -74,7 +89,7 @@ export const controller = (
               props.onChange(event.target.value);
             }}
             value={props.value}
-            autoFocus
+            autoFocus={props.autoFocus}
           />
         );
       },
