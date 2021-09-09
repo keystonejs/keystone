@@ -1,5 +1,15 @@
 # @keystone-next/keystone
 
+## 25.0.2
+
+### Patch Changes
+
+- [#6507](https://github.com/keystonejs/keystone/pull/6507) [`847f6f046`](https://github.com/keystonejs/keystone/commit/847f6f04691e6a4847fea6f89de18675254e8845) Thanks [@timleslie](https://github.com/timleslie)! - Fixed an issue where the incorrect value for the `operation` argument was passed into field-level access control functions. Keystone now correctly passes in `'read'` rather than the incorrect `'query'`.
+
+* [#6507](https://github.com/keystonejs/keystone/pull/6507) [`69b4332a7`](https://github.com/keystonejs/keystone/commit/69b4332a7bc39f9c4d3731002c4224e39a0660bd) Thanks [@timleslie](https://github.com/timleslie)! - Fixed windows issues with new view resolver from #6414.
+
+- [#6507](https://github.com/keystonejs/keystone/pull/6507) [`b3a77c311`](https://github.com/keystonejs/keystone/commit/b3a77c31154990a3350fc0005d9d04812021cf0a) Thanks [@timleslie](https://github.com/timleslie)! - Fixed item form submitting an invalid request after saving returns errors
+
 ## 25.0.1
 
 ### Patch Changes
