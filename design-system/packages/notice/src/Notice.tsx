@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { ReactNode, useMemo } from 'react';
-import { jsx, makeId, useId, Stack } from '@keystone-ui/core';
+import { jsx, makeId, useId, Stack, MarginProps, Box } from '@keystone-ui/core';
 import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
 import { AlertCircleIcon } from '@keystone-ui/icons/icons/AlertCircleIcon';
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
@@ -36,7 +36,7 @@ type NoticeProps = {
   tone?: ToneKey;
   title?: string;
   className?: string;
-} /* TODO: & MarginProps */;
+} & MarginProps;
 
 export const Notice = ({
   actions,
@@ -60,7 +60,7 @@ export const Notice = ({
 
   return (
     <ButtonProvider {...buttonContext}>
-      <div
+      <Box
         css={{
           display: 'flex',
           flex: 1,
@@ -97,7 +97,7 @@ export const Notice = ({
             </Stack>
           )}
         </div>
-      </div>
+      </Box>
     </ButtonProvider>
   );
 };
