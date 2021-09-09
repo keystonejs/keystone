@@ -147,6 +147,8 @@ async function resolveOrderBy(
       const resolve = field.input!.orderBy!.resolve;
       const resolvedValue = resolve ? await resolve(value, context) : value;
       if (field.dbField.kind === 'multi') {
+        // Note: no built-in field types support multi valued database fields *and* orderBy.
+        // This code path is only relevent to custom fields which fit that criteria.
         const keys = Object.keys(resolvedValue);
         if (keys.length !== 1) {
           throw new Error(
