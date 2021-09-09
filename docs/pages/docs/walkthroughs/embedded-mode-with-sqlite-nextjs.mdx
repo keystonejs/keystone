@@ -109,7 +109,7 @@ import { text } from '@keystone-next/fields';
 const Post = list({
   fields: {
     title: text({ isRequired: true }),
-    slug: text(),
+    slug: text({ isIndexed: 'unique', isFilterable: true }),
     content: text(),
   },
 });
@@ -271,8 +271,8 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext) {
-  const [post] = await lists.Post.findMany({
-    where: { slug: { equals: params!.slug as string } },
+  const post = await lists.Post.findOne({
+    where: { slug: params!.slug as string },
     query: 'id title content',
   });
   return { props: { post } };
