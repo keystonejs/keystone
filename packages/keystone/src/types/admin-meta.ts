@@ -82,6 +82,12 @@ export type FieldMeta = {
   views: FieldViews[number];
   controller: FieldController<unknown, JSONValue>;
   search: 'default' | 'insensitive' | null;
+  itemView: {
+    /**
+     * `null` indicates that the value is dynamic and must be fetched for any given item
+     */
+    fieldMode: 'edit' | 'read' | 'hidden' | null;
+  };
 };
 
 export type ListMeta = {

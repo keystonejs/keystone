@@ -7,16 +7,12 @@ import {
   BaseGeneratedListTypes,
   KeystoneContext,
   FileData,
-  FieldDefaultValue,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
 import { getFileRef } from './utils';
 
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
-    isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<FileFieldInputType, TGeneratedListTypes>;
-  };
+  CommonFieldConfig<TGeneratedListTypes>;
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -84,11 +80,9 @@ async function inputResolver(data: FileFieldInputType, context: KeystoneContext)
 }
 
 export const file =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    isRequired,
-    defaultValue,
-    ...config
-  }: FileFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  <TGeneratedListTypes extends BaseGeneratedListTypes>(
+    config: FileFieldConfig<TGeneratedListTypes> = {}
+  ): FieldTypeFunc =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type file");
@@ -123,9 +117,5 @@ export const file =
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
       views: resolveView('file/views'),
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });
   };

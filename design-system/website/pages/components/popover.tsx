@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Box } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
+import { Box, jsx } from '@keystone-ui/core';
 import { Popover } from '@keystone-ui/popover';
 import { Page } from '../../components/Page';
 
@@ -20,7 +20,7 @@ export default function PopoverPage() {
         styles for height and width.
       </p>
       <Popover triggerRenderer={({ triggerProps }) => <Button {...triggerProps}>Click me</Button>}>
-        <Box width={180} height={80} padding="medium">
+        <Box tabIndex={0} width={180} height={80} padding="medium">
           I'm in a popover!
         </Box>
       </Popover>

@@ -47,14 +47,7 @@ export type KeystoneConfig = {
 
 // config.lists
 
-export type {
-  ListSchemaConfig,
-  ListConfig,
-  BaseFields,
-  MaybeSessionFunction,
-  MaybeItemFunction,
-  // CacheHint,
-};
+export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
 
 // config.db
 
@@ -64,32 +57,8 @@ export type DatabaseConfig = {
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-} & (
-  | (
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-          adapter: 'prisma_postgresql';
-          provider?: undefined;
-        }
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-          adapter?: undefined;
-          provider: 'postgresql';
-        }
-    )
-  | (
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-          adapter: 'prisma_sqlite';
-          provider?: undefined;
-        }
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-          adapter?: undefined;
-          provider: 'sqlite';
-        }
-    )
-);
+  provider: 'postgresql' | 'sqlite';
+};
 
 // config.ui
 
@@ -141,6 +110,9 @@ export type ServerConfig = {
 export type GraphQLConfig = {
   // The path of the GraphQL API endpoint. Default: '/api/graphql'.
   path?: string;
+  // The CORS configuration to use on the GraphQL API endpoint.
+  // Default: { origin: 'https://studio.apollographql.com', credentials: true }
+  cors?: CorsOptions;
   queryLimits?: {
     maxTotalResults?: number;
   };

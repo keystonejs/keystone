@@ -7,17 +7,6 @@ import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
 
-// CacheScope and CacheHint are sort of duplicated from apollo-cache-control
-// because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
-// so we have a copy of it but using a union of string literals instead of an enum
-// (note people importing the enum from apollo-cache-control will still be able to use it because you can use enums as their literal values but not the opposite)
-export type CacheScope = 'PUBLIC' | 'PRIVATE';
-
-export type CacheHint = {
-  maxAge?: number;
-  scope?: CacheScope;
-};
-
 export type ItemRootValue = { id: { toString(): string }; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
@@ -303,7 +292,7 @@ export type CreateFieldInputArg<
 > = {
   arg: TArg;
 } & (TArg extends graphql.Arg<graphql.InputType, any>
-  ? DBFieldToInputValue<TDBField> extends graphql.InferValueFromArg<TArg>
+  ? graphql.InferValueFromArg<TArg> extends DBFieldToInputValue<TDBField>
     ? {
         resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>;
       }

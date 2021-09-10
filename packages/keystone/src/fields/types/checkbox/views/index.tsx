@@ -54,12 +54,14 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 type CheckboxController = FieldController<boolean, boolean>;
 
-export const controller = (config: FieldControllerConfig): CheckboxController => {
+export const controller = (
+  config: FieldControllerConfig<{ defaultValue: boolean }>
+): CheckboxController => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: false,
+    defaultValue: config.fieldMeta.defaultValue,
     deserialize(item) {
       const value = item[config.path];
       return typeof value === 'boolean' ? value : false;

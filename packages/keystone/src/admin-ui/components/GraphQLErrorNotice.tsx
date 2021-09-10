@@ -10,11 +10,15 @@ type GraphQLErrorNoticeProps = {
 
 export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeProps) {
   if (networkError) {
-    return <Notice tone="negative">{networkError.message}</Notice>;
+    return (
+      <Notice tone="negative" marginBottom="large">
+        {networkError.message}
+      </Notice>
+    );
   }
   if (errors?.length) {
     return (
-      <Stack gap="small">
+      <Stack gap="small" marginBottom="large">
         {errors.map(err => (
           <Notice tone="negative">{err.message}</Notice>
         ))}

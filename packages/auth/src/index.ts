@@ -227,7 +227,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       ...sessionStrategy,
       get: async ({ req, createContext }) => {
         const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
+        const sudoContext = createContext({ sudo: true });
         if (
           !session ||
           !session.listKey ||

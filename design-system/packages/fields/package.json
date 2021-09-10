@@ -5,10 +5,10 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.19"
+    "@types/react": "^17.0.20"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3",
+    "@babel/runtime": "^7.15.4",
     "@keystone-ui/core": "^3.2.0",
     "@keystone-ui/icons": "^4.0.1",
     "@keystone-ui/popover": "^4.0.3",

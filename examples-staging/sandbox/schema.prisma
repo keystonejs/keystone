@@ -14,7 +14,7 @@ generator client {
 model Todo {
   id           String    @id @default(cuid())
   label        String?
-  isComplete   Boolean?
+  isComplete   Boolean   @default(false)
   assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
