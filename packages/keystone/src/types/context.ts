@@ -18,7 +18,6 @@ export type KeystoneContext = {
   images: ImagesContext | undefined;
   totalResults: number;
   maxTotalResults: number;
-  schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
   experimental?: {

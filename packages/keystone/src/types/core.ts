@@ -17,7 +17,7 @@ export type FieldDefaultValue<T, TGeneratedListTypes extends BaseGeneratedListTy
 
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
-  skipAccessControl?: boolean;
+  sudo?: boolean;
   req?: IncomingMessage;
 }) => KeystoneContext;
 
