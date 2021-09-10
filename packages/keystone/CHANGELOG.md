@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 25.0.3
+
+### Patch Changes
+
+- [`7b7956428`](https://github.com/keystonejs/keystone/commit/7b795642803fbd4586ca28c9d398a5735f5964d4) Thanks [@timleslie](https://github.com/timleslie)! - Fixed Relationship field inline connect throwing 400 errors when selecting a value.
+
 ## 25.0.2
 
 ### Patch Changes
