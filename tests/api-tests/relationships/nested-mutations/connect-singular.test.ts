@@ -191,6 +191,34 @@ describe('non-matching filter', () => {
       ]);
     })
   );
+
+  test(
+    'errors on incomplete data',
+    runner(async ({ context }) => {
+      // Create an item to link against
+      const createEvent = await context.lists.Event.createOne({ data: {} });
+
+      // Create an item that does the linking
+      const { data, errors } = await context.graphql.raw({
+        query: `
+              mutation {
+                updateEvent(
+                  where: { id: "${createEvent.id}" },
+                  data: { group: {} }
+                ) {
+                  id
+                }
+              }`,
+      });
+      expect(data).toEqual({ updateEvent: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateEvent'],
+          message: `Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
+        },
+      ]);
+    })
+  );
 });
 
 describe('with access control', () => {

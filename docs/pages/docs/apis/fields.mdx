@@ -632,10 +632,6 @@ A `file` field represents a file of any type.
 
 See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
 
-Options:
-
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
 import { file } from '@keystone-next/keystone/fields';
@@ -644,9 +640,7 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        repo: file({
-          isRequired: true,
-        }),
+        repo: file(),
         /* ... */
       },
     }),
@@ -662,10 +656,6 @@ An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gi
 
 See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
 
-Options:
-
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone';
 import { image } from '@keystone-next/keystone/fields';
@@ -674,9 +664,7 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        avatar: image({
-          isRequired: true,
-        }),
+        avatar: image(),
         /* ... */
       },
     }),
@@ -733,7 +721,6 @@ export default config({
 
 (coming soon)
 
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `cloudinary`: Configuration for the connected Cloudinary account.
   - `cloudName`
   - `apiKey`
@@ -749,7 +736,6 @@ export default config({
     ListName: list({
       fields: {
         fieldName: cloudinaryImage({
-          isRequired: true,
           cloudinary: {
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,
             apiKey: process.env.CLOUDINARY_API_KEY,

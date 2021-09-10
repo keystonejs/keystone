@@ -27,6 +27,7 @@ export const createReturnedValue = 'jpg';
 export const updateReturnedValue = createReturnedValue;
 
 export const supportsUnique = false;
+export const skipRequiredTest = true;
 export const fieldName = 'avatar';
 export const subfieldName = 'extension';
 
