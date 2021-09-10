@@ -43,7 +43,7 @@ export function assertCreateIsNonNullAllowed(
   if (config.graphql?.create?.isNonNull && hasCreateAccessControl(config.access)) {
     throw new Error(
       `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.create.isNonNull: true and has create access control, this is not allowed.\n` +
-        'Either disable graphql.create.isNonNull or read access control.'
+        'Either disable graphql.create.isNonNull or create access control.'
     );
   }
 }
