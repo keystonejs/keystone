@@ -109,6 +109,9 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         }
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
+          itemView: {
+            fieldMode: field.itemView?.fieldMode ?? null,
+          },
           views,
           controller: fieldViews[field.viewsIndex].controller({
             listKey: list.key,

@@ -25,6 +25,10 @@ export const lists = createSchema({
       content: text({ ui: { displayMode: 'textarea' } }),
       // A virtual field returning a custom GraphQL object type.
       counts: virtual({
+        ui: {
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'hidden' },
+        },
         field: graphql.field({
           type: graphql.object<{
             words: number;
@@ -47,7 +51,6 @@ export const lists = createSchema({
             };
           },
         }),
-        graphQLReturnFragment: '{ words sentences paragraphs }',
       }),
       // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
