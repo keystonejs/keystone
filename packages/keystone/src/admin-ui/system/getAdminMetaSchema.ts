@@ -8,6 +8,7 @@ import {
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
+  ItemRootValue,
 } from '../../types';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
@@ -154,9 +155,10 @@ export function getAdminMetaSchema({
                 ) {
                   return 'read';
                 }
-                const item = await context
-                  .sudo()
-                  .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
+                const item = await fetchItemForItemViewFieldMode(context)(
+                  rootVal.listKey,
+                  rootVal.itemId
+                );
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =
                   lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
@@ -339,4 +341,34 @@ function runMaybeFunction<Return extends string | boolean, T>(
     return defaultValue;
   }
   return sessionFunction;
+}
+
+const fetchItemForItemViewFieldMode = extendContext(context => {
+  type ListKey = string;
+  type ItemId = string;
+  const lists = new Map<ListKey, Map<ItemId, Promise<ItemRootValue | null>>>();
+  return (listKey: ListKey, id: ItemId) => {
+    if (!lists.has(listKey)) {
+      lists.set(listKey, new Map());
+    }
+    const items = lists.get(listKey)!;
+    if (items.has(id)) {
+      return items.get(id)!;
+    }
+    let promise = context.db.lists[listKey].findOne({ where: { id } });
+    items.set(id, promise);
+    return promise;
+  };
+});
+
+function extendContext<T>(cb: (context: KeystoneContext) => T) {
+  const cache = new WeakMap<KeystoneContext, T>();
+  return (context: KeystoneContext) => {
+    if (cache.has(context)) {
+      return cache.get(context)!;
+    }
+    const result = cb(context);
+    cache.set(context, result);
+    return result;
+  };
 }
