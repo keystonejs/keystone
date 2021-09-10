@@ -90,13 +90,13 @@ model Order {
 }
 
 model Role {
-  id                String   @id @default(cuid())
+  id                String  @id @default(cuid())
   name              String?
-  canManageProducts Boolean?
-  canSeeOtherUsers  Boolean?
-  canManageUsers    Boolean?
-  canManageRoles    Boolean?
-  canManageCart     Boolean?
-  canManageOrders   Boolean?
-  assignedTo        User[]   @relation("User_role")
+  canManageProducts Boolean @default(false)
+  canSeeOtherUsers  Boolean @default(false)
+  canManageUsers    Boolean @default(false)
+  canManageRoles    Boolean @default(false)
+  canManageCart     Boolean @default(false)
+  canManageOrders   Boolean @default(false)
+  assignedTo        User[]  @relation("User_role")
 }
