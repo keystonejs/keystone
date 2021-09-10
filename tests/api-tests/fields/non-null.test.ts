@@ -89,7 +89,7 @@ testModules
             expect(error).toBeInstanceOf(Error);
             expect(error.message).toEqual(
               `The field at Test.testField sets graphql.create.isNonNull: true and has create access control, this is not allowed.\n` +
-                `Either disable graphql.create.isNonNull or read access control.`
+                `Either disable graphql.create.isNonNull or create access control.`
             );
           });
         }
