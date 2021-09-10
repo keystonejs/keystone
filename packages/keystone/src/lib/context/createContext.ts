@@ -16,14 +16,14 @@ import { createFilesContext } from './createFilesContext';
 
 export function makeCreateContext({
   graphQLSchema,
-  internalSchema,
+  sudoGraphQLSchema,
   prismaClient,
   gqlNamesByList,
   config,
   lists,
 }: {
   graphQLSchema: GraphQLSchema;
-  internalSchema: GraphQLSchema;
+  sudoGraphQLSchema: GraphQLSchema;
   config: KeystoneConfig;
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
@@ -44,23 +44,21 @@ export function makeCreateContext({
     publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
   }
 
-  const internalDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
+  const sudoDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
   for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
-    internalDbApiFactories[listKey] = getDbAPIFactory(gqlNames, internalSchema);
+    sudoDbApiFactories[listKey] = getDbAPIFactory(gqlNames, sudoGraphQLSchema);
   }
 
   const createContext = ({
     sessionContext,
-    skipAccessControl = false,
+    sudo = false,
     req,
-    schemaName = 'public',
   }: {
     sessionContext?: SessionContext<any>;
-    skipAccessControl?: boolean;
+    sudo?: Boolean;
     req?: IncomingMessage;
-    schemaName?: 'public' | 'internal';
   } = {}): KeystoneContext => {
-    const schema = schemaName === 'public' ? graphQLSchema : internalSchema;
+    const schema = sudo ? sudoGraphQLSchema : graphQLSchema;
 
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query);
@@ -78,20 +76,18 @@ export function makeCreateContext({
     const dbAPI: KeystoneContext['db']['lists'] = {};
     const itemAPI: KeystoneContext['lists'] = {};
     const contextToReturn: KeystoneContext = {
-      schemaName,
       db: { lists: dbAPI },
       lists: itemAPI,
       totalResults: 0,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
-      sudo: () =>
-        createContext({ sessionContext, skipAccessControl: true, req, schemaName: 'internal' }),
-      exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),
+      sudo: () => createContext({ sessionContext, sudo: true, req }),
+      exitSudo: () => createContext({ sessionContext, sudo: false, req }),
       withSession: session =>
         createContext({
           sessionContext: { ...sessionContext, session } as SessionContext<any>,
-          skipAccessControl,
+          sudo,
           req,
         }),
       req,
@@ -106,7 +102,7 @@ export function makeCreateContext({
       contextToReturn.experimental = { initialisedLists: lists };
     }
 
-    const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
+    const dbAPIFactories = sudo ? sudoDbApiFactories : publicDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
       itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
