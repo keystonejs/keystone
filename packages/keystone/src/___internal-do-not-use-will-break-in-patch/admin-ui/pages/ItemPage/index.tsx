@@ -276,7 +276,12 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.entries(list.fields)
-      .filter(([, field]) => field.itemView.fieldMode !== 'hidden')
+      .filter(
+        ([fieldKey, field]) =>
+          field.itemView.fieldMode !== 'hidden' ||
+          // the id field is hidden but we still need to fetch it
+          fieldKey === 'id'
+      )
       .map(([fieldKey]) => {
         return list.fields[fieldKey].controller.graphqlSelection;
       })
