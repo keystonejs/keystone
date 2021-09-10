@@ -27,7 +27,7 @@ input TaskWhereInput {
   id: IDFilter
   label: StringNullableFilter
   priority: TaskPriorityTypeNullableFilter
-  isComplete: BooleanNullableFilter
+  isComplete: BooleanFilter
   assignedTo: PersonWhereInput
   finishBy: DateTimeNullableFilter
 }
@@ -78,9 +78,9 @@ input TaskPriorityTypeNullableFilter {
   not: TaskPriorityTypeNullableFilter
 }
 
-input BooleanNullableFilter {
+input BooleanFilter {
   equals: Boolean
-  not: BooleanNullableFilter
+  not: BooleanFilter
 }
 
 input DateTimeNullableFilter {

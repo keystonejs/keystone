@@ -292,7 +292,7 @@ export type CreateFieldInputArg<
 > = {
   arg: TArg;
 } & (TArg extends graphql.Arg<graphql.InputType, any>
-  ? DBFieldToInputValue<TDBField> extends graphql.InferValueFromArg<TArg>
+  ? graphql.InferValueFromArg<TArg> extends DBFieldToInputValue<TDBField>
     ? {
         resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>;
       }

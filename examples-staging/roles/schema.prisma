@@ -12,12 +12,12 @@ generator client {
 }
 
 model Todo {
-  id           String   @id @default(cuid())
+  id           String  @id @default(cuid())
   label        String?
-  isComplete   Boolean?
-  isPrivate    Boolean?
-  assignedTo   Person?  @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId String?  @map("assignedTo")
+  isComplete   Boolean @default(false)
+  isPrivate    Boolean @default(false)
+  assignedTo   Person? @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId String? @map("assignedTo")
 
   @@index([assignedToId])
 }
@@ -37,11 +37,11 @@ model Person {
 model Role {
   id                 String   @id @default(cuid())
   name               String?
-  canCreateTodos     Boolean?
-  canManageAllTodos  Boolean?
-  canSeeOtherPeople  Boolean?
-  canEditOtherPeople Boolean?
-  canManagePeople    Boolean?
-  canManageRoles     Boolean?
+  canCreateTodos     Boolean  @default(false)
+  canManageAllTodos  Boolean  @default(false)
+  canSeeOtherPeople  Boolean  @default(false)
+  canEditOtherPeople Boolean  @default(false)
+  canManagePeople    Boolean  @default(false)
+  canManageRoles     Boolean  @default(false)
   assignedTo         Person[] @relation("Person_role")
 }
