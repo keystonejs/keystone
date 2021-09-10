@@ -43,7 +43,7 @@ export default function Docs() {
 
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
         Simple starters to get you up and running with a local Keystone instance and understand the
-        basics of designing{' '}
+        basics of designing a{' '}
         <Link href="/docs/apis/schema" passHref>
           <a>schema</a>
         </Link>{' '}
