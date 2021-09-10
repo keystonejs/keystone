@@ -142,8 +142,15 @@ export function DocsNavigation() {
     >
       <PrimaryNavItem href="/docs">Docs Home</PrimaryNavItem>
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
-      <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
-      <Section label="Guides">
+      <Section>
+        <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
+        <NavItem href="/docs/examples/#base-projects">Basic</NavItem>
+        <NavItem href="/docs/examples/#feature-projects">Feature</NavItem>
+        <NavItem href="/docs/examples/#deployment-projects">Deployment</NavItem>
+      </Section>
+
+      <Section>
+        <PrimaryNavItem href="/docs/examples">Guides</PrimaryNavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">
@@ -178,7 +185,8 @@ export function DocsNavigation() {
           Custom Field Views
         </NavItem>
       </Section>
-      <Section label="API">
+      <Section>
+        <PrimaryNavItem href="/docs/examples">APIs</PrimaryNavItem>
         <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
