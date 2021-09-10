@@ -6,18 +6,26 @@ import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 
 export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
-  if (db.provider === 'postgresql') {
-    return 'postgresql';
-  } else if (db.provider === 'sqlite') {
-    return 'sqlite';
-  } else {
+  if (!['postgresql', 'sqlite'].includes(db.provider)) {
     throw new Error(
       'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
     );
   }
+  return db.provider;
 }
 
-function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
+function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
+  // This function creates a GraphQLSchema based on a modified version of the provided config.
+  // The modifications are:
+  //  * All list level access control is disabled
+  //  * All field level access control is disabled
+  //  * All graphql.omit configuration is disabled
+  //  * All fields are explicitly made filterable and orderable
+  //
+  // These changes result in a schema without any restrictions on the CRUD
+  // operations that can be run.
+  //
+  // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
   const transformedConfig: KeystoneConfig = {
     ...config,
     lists: Object.fromEntries(
@@ -63,7 +71,7 @@ export function createSystem(config: KeystoneConfig) {
 
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
 
-  const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
+  const sudoGraphQLSchema = getSudoGraphQLSchema(config, provider);
 
   return {
     graphQLSchema,
@@ -83,7 +91,7 @@ export function createSystem(config: KeystoneConfig) {
 
       const createContext = makeCreateContext({
         graphQLSchema,
-        internalSchema: internalGraphQLSchema,
+        sudoGraphQLSchema,
         config,
         prismaClient,
         gqlNamesByList: Object.fromEntries(
@@ -95,7 +103,7 @@ export function createSystem(config: KeystoneConfig) {
       return {
         async connect() {
           await prismaClient.$connect();
-          const context = createContext({ skipAccessControl: true, schemaName: 'internal' });
+          const context = createContext({ sudo: true });
           await config.db.onConnect?.(context);
         },
         async disconnect() {

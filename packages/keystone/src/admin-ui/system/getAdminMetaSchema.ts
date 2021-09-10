@@ -8,6 +8,7 @@ import {
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
+  ItemRootValue,
 } from '../../types';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
@@ -170,19 +171,18 @@ export function getAdminMetaSchema({
 
                 // uhhh, for some reason TypeScript only understands this if it's assigned
                 // to a variable and then returned
-                let ret = context.db.lists[rootVal.listKey]
-                  .findOne({
-                    where: { id: rootVal.itemId },
-                  })
-                  .then(item => {
-                    if (item === null) {
-                      return 'hidden' as const;
-                    }
-                    return runMaybeFunction(sessionFunction, 'edit', {
-                      session: context.session,
-                      item,
-                    });
+                let ret = fetchItemForItemViewFieldMode(context)(
+                  rootVal.listKey,
+                  rootVal.itemId
+                ).then(item => {
+                  if (item === null) {
+                    return 'hidden' as const;
+                  }
+                  return runMaybeFunction(sessionFunction, 'edit', {
+                    session: context.session,
+                    item,
                   });
+                });
                 return ret;
               },
             }),
@@ -361,3 +361,33 @@ function runMaybeFunction<Return extends string | boolean, T>(
 }
 
 function fakeAssert<T>(val: any): asserts val is T {}
+
+const fetchItemForItemViewFieldMode = extendContext(context => {
+  type ListKey = string;
+  type ItemId = string;
+  const lists = new Map<ListKey, Map<ItemId, Promise<ItemRootValue | null>>>();
+  return (listKey: ListKey, id: ItemId) => {
+    if (!lists.has(listKey)) {
+      lists.set(listKey, new Map());
+    }
+    const items = lists.get(listKey)!;
+    if (items.has(id)) {
+      return items.get(id)!;
+    }
+    let promise = context.db.lists[listKey].findOne({ where: { id } });
+    items.set(id, promise);
+    return promise;
+  };
+});
+
+function extendContext<T>(cb: (context: KeystoneContext) => T) {
+  const cache = new WeakMap<KeystoneContext, T>();
+  return (context: KeystoneContext) => {
+    if (cache.has(context)) {
+      return cache.get(context)!;
+    }
+    const result = cb(context);
+    cache.set(context, result);
+    return result;
+  };
+}
