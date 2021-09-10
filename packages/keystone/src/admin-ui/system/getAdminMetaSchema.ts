@@ -125,26 +125,24 @@ export function getAdminMetaSchema({
       itemView: graphql.field({
         args: {
           id: graphql.arg({
-            type: graphql.nonNull(graphql.ID),
+            type: graphql.ID,
           }),
         },
         resolve(rootVal, args) {
-          return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id ?? null };
         },
-        type: graphql.object<FieldIdentifier & { itemId: string }>()({
+        type: graphql.object<FieldIdentifier & { itemId: string | null }>()({
           name: 'KeystoneAdminUIFieldMetaItemView',
           fields: {
             fieldMode: graphql.field({
-              type: graphql.nonNull(
-                graphql.enum({
-                  name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-                  values: graphql.enumValues(['edit', 'read', 'hidden']),
-                })
-              ),
-              async resolve(rootVal, args, context) {
-                if ('isAdminUIBuildProcess' in context) {
+              type: graphql.enum({
+                name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
+                values: graphql.enumValues(['edit', 'read', 'hidden']),
+              }),
+              resolve(rootVal, args, context) {
+                if ('isAdminUIBuildProcess' in context && rootVal.itemId !== null) {
                   throw new Error(
-                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
+                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process if an id is provided'
                   );
                 }
                 if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
@@ -154,17 +152,38 @@ export function getAdminMetaSchema({
                 ) {
                   return 'read';
                 }
-                const item = await context
-                  .sudo()
-                  .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
                 const listConfig = config.lists[rootVal.listKey];
+
                 const sessionFunction =
                   lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
-                  listConfig.ui?.itemView?.defaultFieldMode;
-                return runMaybeFunction(sessionFunction, 'edit', {
-                  session: context.session,
-                  item,
-                });
+                  listConfig.ui?.itemView?.defaultFieldMode ??
+                  'edit';
+                if (typeof sessionFunction === 'string') {
+                  return sessionFunction;
+                }
+
+                if (rootVal.itemId === null) {
+                  return null;
+                }
+
+                fakeAssert<KeystoneContext>(context);
+
+                // uhhh, for some reason TypeScript only understands this if it's assigned
+                // to a variable and then returned
+                let ret = context.db.lists[rootVal.listKey]
+                  .findOne({
+                    where: { id: rootVal.itemId },
+                  })
+                  .then(item => {
+                    if (item === null) {
+                      return 'hidden' as const;
+                    }
+                    return runMaybeFunction(sessionFunction, 'edit', {
+                      session: context.session,
+                      item,
+                    });
+                  });
+                return ret;
               },
             }),
           },
@@ -340,3 +359,5 @@ function runMaybeFunction<Return extends string | boolean, T>(
   }
   return sessionFunction;
 }
+
+function fakeAssert<T>(val: any): asserts val is T {}

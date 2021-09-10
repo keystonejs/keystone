@@ -275,9 +275,10 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const { palette, spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
-    let selectedFields = Object.keys(list.fields)
-      .map(fieldPath => {
-        return list.fields[fieldPath].controller.graphqlSelection;
+    let selectedFields = Object.entries(list.fields)
+      .filter(([, field]) => field.itemView.fieldMode !== 'hidden')
+      .map(([fieldKey]) => {
+        return list.fields[fieldKey].controller.graphqlSelection;
       })
       .join('\n');
     return {
