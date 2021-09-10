@@ -310,7 +310,7 @@ export function Cards({
                     try {
                       const { data, errors } = await client.query({
                         query: gql`query ($ids: [ID!]!) {
-                      items: ${foreignList.gqlNames.listQueryName}(where: {id_in:$ids}) {
+                      items: ${foreignList.gqlNames.listQueryName}(where: { id: { in: $ids }}) {
                         ${selectedFields}
                       }
                     }`,
