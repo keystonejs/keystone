@@ -5,15 +5,6 @@ import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 
-export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
-  if (!['postgresql', 'sqlite'].includes(db.provider)) {
-    throw new Error(
-      'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
-    );
-  }
-  return db.provider;
-}
-
 function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
@@ -64,14 +55,13 @@ function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider
 }
 
 export function createSystem(config: KeystoneConfig) {
-  const provider = getDBProvider(config.db);
-  const lists = initialiseLists(config.lists, provider);
+  const lists = initialiseLists(config.lists, config.db.provider);
 
   const adminMeta = createAdminMeta(config, lists);
 
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
 
-  const sudoGraphQLSchema = getSudoGraphQLSchema(config, provider);
+  const sudoGraphQLSchema = getSudoGraphQLSchema(config, config.db.provider);
 
   return {
     graphQLSchema,
@@ -79,7 +69,7 @@ export function createSystem(config: KeystoneConfig) {
     getKeystone: (PrismaClient: any) => {
       const prismaClient = new PrismaClient({
         log: config.db.enableLogging && ['query'],
-        datasources: { [provider]: { url: config.db.url } },
+        datasources: { [config.db.provider]: { url: config.db.url } },
       });
       prismaClient.$on('beforeExit', async () => {
         // Prisma is failing to properly clean up its child processes

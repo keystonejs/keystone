@@ -9,7 +9,6 @@ import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema';
-import { getDBProvider } from './lib/createSystem';
 
 export function getSchemaPaths(cwd: string) {
   return {
@@ -181,7 +180,7 @@ export async function generateNodeModulesArtifacts(
   config: KeystoneConfig,
   cwd: string
 ) {
-  const lists = initialiseLists(config.lists, getDBProvider(config.db));
+  const lists = initialiseLists(config.lists, config.db.provider);
 
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
