@@ -144,7 +144,7 @@ Options:
   will propagate up until a nullable field is found which means the entire item will be unreadable and when doing an `items` query, all the items will be unreadable.
 - `graphql.create.isNonNull` (default: `false`): If you have no create access control and you want to explicitly show that this is field is non-nullable in the create input
   you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
-  This is only allowed when you have no create access control becaue otherwise, the item will always fail access control
+  This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
