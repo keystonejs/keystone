@@ -97,7 +97,7 @@ export type StaticAdminMetaQuery = {
           isFilterable: boolean;
           fieldMeta: Maybe<JSONValue>;
           viewsIndex: number;
-          customViewsIndex?: Maybe<number>;
+          customViewsIndex: Maybe<number>;
           search: Maybe<QueryMode>;
           itemView: Maybe<{
             __typename: 'KeystoneAdminUIFieldMetaItemView';
