@@ -25,7 +25,7 @@ export function GitHubExamplesCTA() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Keystone GitHub Repo <ArrowR />
+        Keystone GitHub repo <ArrowR />
       </Button>
     </Alert>
   );
