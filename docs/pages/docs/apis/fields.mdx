@@ -139,7 +139,7 @@ Options:
 
 - `defaultValue` (default: `false`): This value will be used for the field when creating items if no explicit value is set.
 - `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
-  you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control becaue otherwise,
+  you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
   when access is denied, `null` will be returned which will cause an error since the field is non-nullable and the error
   will propagate up until a nullable field is found which means the entire item will be unreadable and when doing an `items` query, all the items will be unreadable.
 - `graphql.create.isNonNull` (default: `false`): If you have no create access control and you want to explicitly show that this is field is non-nullable in the create input
