@@ -42,7 +42,7 @@ function getNamedOrListTypeNodeForType(
   return { kind: 'NamedType', name: { kind: 'Name', value: type.name } };
 }
 
-export function getTypeNodeForType(type: GraphQLType): TypeNode {
+function getTypeNodeForType(type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
     return { kind: 'NonNullType', type: getNamedOrListTypeNodeForType(type.ofType) };
   }
