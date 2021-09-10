@@ -100,6 +100,7 @@ export const bigInt =
 
     return fieldType({
       kind: 'scalar',
+      __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       mode,
       scalar: 'BigInt',
       // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined

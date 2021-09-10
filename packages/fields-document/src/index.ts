@@ -118,6 +118,7 @@ export const document =
       meta.provider,
       {
         ...config,
+        __ksTelemetryFieldTypeName: '@keystone-6/document',
         input: {
           create: {
             arg: graphql.arg({ type: graphql.JSON }),

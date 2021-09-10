@@ -73,6 +73,7 @@ export const calendarDay =
 
     return fieldType({
       kind: 'scalar',
+      __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
       mode,
       scalar: usesNativeDateType ? 'DateTime' : 'String',
       index: isIndexed === true ? 'index' : isIndexed || undefined,

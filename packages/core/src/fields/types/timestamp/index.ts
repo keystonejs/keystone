@@ -71,6 +71,7 @@ export const timestamp =
       kind: 'scalar',
       mode,
       scalar: 'DateTime',
+      __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'string'

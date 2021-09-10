@@ -106,6 +106,7 @@ export const multiselect =
       meta.provider,
       {
         ...config,
+        __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
         hooks: {
           ...config.hooks,
           async validateInput(args) {

@@ -101,6 +101,7 @@ export function jsonFieldTypePolyfilledForSQLite<
     graphql.Arg<graphql.NullableInputType, false>,
     graphql.Arg<graphql.NullableInputType, false>
   > & {
+    __ksTelemetryFieldTypeName?: string;
     input?: {
       uniqueWhere?: undefined;
       orderBy?: undefined;
@@ -118,6 +119,7 @@ export function jsonFieldTypePolyfilledForSQLite<
       mode: dbFieldConfig?.mode ?? 'optional',
       scalar: 'String',
       default: dbFieldConfig?.default,
+      __ksTelemetryFieldTypeName: config.__ksTelemetryFieldTypeName,
       map: dbFieldConfig?.map,
     })({
       ...config,
@@ -140,5 +142,6 @@ export function jsonFieldTypePolyfilledForSQLite<
     scalar: 'Json',
     default: dbFieldConfig?.default,
     map: dbFieldConfig?.map,
+    __ksTelemetryFieldTypeName: config.__ksTelemetryFieldTypeName,
   })(config);
 }
