@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { Examples } from '../../components/docs/ExamplesList';
 import { GitHubExamplesCTA } from '../../components/docs/GitHubExamplesCTA';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
