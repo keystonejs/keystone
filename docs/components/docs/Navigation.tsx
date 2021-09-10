@@ -150,7 +150,7 @@ export function DocsNavigation() {
       </Section>
 
       <Section>
-        <PrimaryNavItem href="/docs/examples">Guides</PrimaryNavItem>
+        <PrimaryNavItem href="/docs/guides">Guides</PrimaryNavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">
@@ -186,7 +186,7 @@ export function DocsNavigation() {
         </NavItem>
       </Section>
       <Section>
-        <PrimaryNavItem href="/docs/examples">APIs</PrimaryNavItem>
+        <PrimaryNavItem href="/docs/apis">APIs</PrimaryNavItem>
         <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
