@@ -2,17 +2,17 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
+import Link from 'next/link';
 import { GitHubExamplesCTA } from '../../components/docs/GitHubExamplesCTA';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { Well } from '../../components/primitives/Well';
 import { useMediaQuery } from '../../lib/media';
 import { InlineCode } from '../../components/primitives/Code';
-import Link from 'next/link';
-
-const mq = useMediaQuery();
 
 export default function Docs() {
+  const mq = useMediaQuery();
+
   return (
     <DocsPage
       noRightNav
