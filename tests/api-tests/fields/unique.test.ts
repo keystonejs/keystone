@@ -57,7 +57,7 @@ testModules
         test(
           'uniqueness is enforced over multiple mutations',
           runner(async ({ context, graphQLRequest }) => {
-            await context.lists.Test.createOne({
+            await context.query.Test.createOne({
               data: { testField: mod.exampleValue(matrixValue) },
             });
 
@@ -116,7 +116,7 @@ testModules
         test(
           'Configuring uniqueness on one field does not affect others',
           runner(async ({ context }) => {
-            const items = await context.lists.Test.createMany({
+            const items = await context.query.Test.createMany({
               data: [
                 { testField: mod.exampleValue(matrixValue), name: 'jess' },
                 { testField: mod.exampleValue2(matrixValue), name: 'jess' },

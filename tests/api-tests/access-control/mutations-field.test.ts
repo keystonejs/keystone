@@ -53,7 +53,7 @@ describe('Access control', () => {
     runner(async ({ context, graphQLRequest }) => {
       const item = await context
         .sudo()
-        .lists.User.createOne({ data: { name: 'foo', badAccess: 'bar' } });
+        .query.User.createOne({ data: { name: 'foo', badAccess: 'bar' } });
 
       const { body } = await graphQLRequest({
         query: `query { users { id name badAccess } }`,
@@ -73,7 +73,7 @@ describe('Access control', () => {
     'createOne',
     runner(async ({ context }) => {
       // Valid name should pass
-      await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
+      await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -91,7 +91,7 @@ describe('Access control', () => {
       ]);
 
       // Only the original user should exist
-      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      const _users = await context.query.User.findMany({ query: 'id name other' });
       expect(_users.map(({ name }) => name)).toEqual(['good']);
       expect(_users.map(({ other }) => other)).toEqual(['a']);
     })
@@ -101,7 +101,7 @@ describe('Access control', () => {
     'createOne - Bad function return value',
     runner(async ({ context, graphQLRequest }) => {
       // Valid name should pass
-      await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
+      await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
 
       // Invalid name
       const { body } = await graphQLRequest({
@@ -119,7 +119,7 @@ describe('Access control', () => {
       ]);
 
       // Only the original user should exist
-      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      const _users = await context.query.User.findMany({ query: 'id name other' });
       expect(_users.map(({ name }) => name)).toEqual(['good']);
       expect(_users.map(({ other }) => other)).toEqual(['a']);
     })
@@ -129,8 +129,8 @@ describe('Access control', () => {
     'updateOne',
     runner(async ({ context }) => {
       // Valid name should pass
-      const user = await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
-      await context.lists.User.updateOne({
+      const user = await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
+      await context.query.User.updateOne({
         where: { id: user.id },
         data: { name: 'better', other: 'b' },
       });
@@ -151,7 +151,7 @@ describe('Access control', () => {
       ]);
 
       // User should have its original name
-      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      const _users = await context.query.User.findMany({ query: 'id name other' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
       expect(_users.map(({ other }) => other)).toEqual(['b']);
     })
@@ -161,8 +161,8 @@ describe('Access control', () => {
     'updateOne - Bad function return value',
     runner(async ({ context, graphQLRequest }) => {
       // Valid name should pass
-      const user = await context.lists.User.createOne({ data: { name: 'good', other: 'a' } });
-      await context.lists.User.updateOne({
+      const user = await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
+      await context.query.User.updateOne({
         where: { id: user.id },
         data: { name: 'better', other: 'b' },
       });
@@ -183,7 +183,7 @@ describe('Access control', () => {
       ]);
 
       // User should have its original name
-      const _users = await context.lists.User.findMany({ query: 'id name other' });
+      const _users = await context.query.User.findMany({ query: 'id name other' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
       expect(_users.map(({ other }) => other)).toEqual(['b']);
     })
@@ -230,7 +230,7 @@ describe('Access control', () => {
       ]);
 
       // Valid users should exist in the database
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -245,7 +245,7 @@ describe('Access control', () => {
     'updateMany',
     runner(async ({ context }) => {
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1', other: 'a' },
           { name: 'good 2', other: 'a' },
@@ -292,7 +292,7 @@ describe('Access control', () => {
       ]);
 
       // All users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });

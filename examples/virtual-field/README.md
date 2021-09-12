@@ -107,7 +107,7 @@ relatedPosts: virtual({
       resolve(item, args, context) {
         // this could have some logic to get posts that are actually related to this one somehow
         // this is a just a naive "get the three latest posts that aren't this one"
-        return context.db.lists.Post.findMany({
+        return context.db.Post.findMany({
           take: 3,
           where: { id_not: item.id, status: 'published' },
           orderBy: [{ publishDate: 'desc' }],

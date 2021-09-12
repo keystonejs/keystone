@@ -47,12 +47,12 @@ const [post] = await context.lists.Post.findMany({
 
 ### 2. Return the unresolved item data with read hooks
 
-This **replaces the `resolveFields: boolean` use case**. We now have a new set of APIs on `context.db.lists.{List}` which return unresolved item data from your database (but with read hooks applied). They can be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers.
+This **replaces the `resolveFields: boolean` use case**. We now have a new set of APIs on `context.db.{List}` which return unresolved item data from your database (but with read hooks applied). They can be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers.
 
 For example, to query for the raw data stored in the database:
 
 ```js
-const [post] = await context.db.lists.Post.findMany({
+const [post] = await context.db.Post.findMany({
   where: { slug },
 });
 ```

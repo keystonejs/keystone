@@ -39,7 +39,7 @@ describe('List Hooks: #resolveInput()', () => {
   test(
     'resolves fields first, then passes them to the list',
     runner(async ({ context }) => {
-      const user = await context.lists.User.createOne({ data: { name: 'jess' }, query: 'name' });
+      const user = await context.query.User.createOne({ data: { name: 'jess' }, query: 'name' });
       // Field should be executed first, appending `-field`, then the list
       // should be executed which appends `-list`, and finally that total
       // result should be stored.

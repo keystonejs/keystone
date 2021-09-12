@@ -100,7 +100,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const count = await context.sudo().lists[listKey].count({});
+      const count = await context.sudo().query[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return { kind: 'redirect', to: '/init' };
@@ -227,7 +227,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           !session.listKey ||
           session.listKey !== listKey ||
           !session.itemId ||
-          !sudoContext.lists[session.listKey]
+          !sudoContext.query[session.listKey]
         ) {
           return;
         }
@@ -238,7 +238,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         try {
           // If no field selection is specified, just load the id. We still load the item,
           // because doing so validates that it exists in the database
-          const data = await sudoContext.lists[listKey].findOne({
+          const data = await sudoContext.query[listKey].findOne({
             where: { id: session.itemId },
             query: sessionData || 'id',
           });
@@ -282,7 +282,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           const accessingInitPage =
             url?.pathname === '/init' &&
             url?.host === host &&
-            (await context.sudo().lists[listKey].count({})) === 0;
+            (await context.sudo().query[listKey].count({})) === 0;
           return (
             accessingInitPage ||
             (keystoneConfig.ui?.isAccessAllowed

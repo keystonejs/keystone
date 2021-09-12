@@ -42,7 +42,7 @@ which should give output ending with:
 ```
  PASS  ./example.test.ts (14.245 s)
   Example tests using test runner
-    ✓ Create a Person using the list items API (3820 ms)
+    ✓ Create a Person using the Query API (3820 ms)
     ✓ Create a Person using a hand-crafted GraphQL query sent over HTTP (780 ms)
     ✓ Check that trying to create user with no name (required field) fails (722 ms)
     ✓ Check access control by running updateTask as a specific user via context.withSession() (759 ms)
@@ -70,7 +70,7 @@ const runner = setupTestRunner({ config });
 
 describe('Example tests using test runner', () => {
   test(
-    'Create a Person using the list items API',
+    'Create a Person using the Query API',
     runner(async ({ context }) => {
       ...
     })
@@ -86,9 +86,9 @@ The test runner provides the test function with a [`KeystoneContext`](https://ke
 
 ```typescript
 test(
-  'Create a Person using the list items API',
+  'Create a Person using the Query API',
   runner(async ({ context }) => {
-    const person = await context.lists.Person.createOne({
+    const person = await context.query.Person.createOne({
       data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
       query: 'id name email password { isSet }',
     });

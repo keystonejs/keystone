@@ -59,7 +59,7 @@ We use `originalInput`, which contains the input passed to the GraphQL create mu
       }),
 ```
 
-We use [`context`](https://keystonejs.com/docs/apis/context) along with the [list items API](https://keystonejs.com/docs/apis/list-items) to set the default assignee of a task to be a user named `"Anonymous"`.
+We use [`context`](https://keystonejs.com/docs/apis/context) along with the [Query API](https://keystonejs.com/docs/apis/query) to set the default assignee of a task to be a user named `"Anonymous"`.
 
 ```typescript
       assignedTo: relationship({
@@ -67,7 +67,7 @@ We use [`context`](https://keystonejs.com/docs/apis/context) along with the [lis
         many: false,
         // Dynamic default: Find an anonymous user and assign the task to them
         defaultValue: async ({ context }) => {
-          const anonymous = await context.lists.Person.findMany({
+          const anonymous = await context.query.Person.findMany({
             where: { name: 'Anonymous' },
           });
           if (anonymous.length > 0) {

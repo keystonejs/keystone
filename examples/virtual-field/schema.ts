@@ -80,7 +80,7 @@ export const lists = {
         field: graphql.field({
           type: graphql.String,
           async resolve(item, args, context) {
-            const { author } = await context.lists.Post.findOne({
+            const { author } = await context.query.Post.findOne({
               where: { id: item.id.toString() },
               query: 'author { name }',
             });
@@ -101,7 +101,7 @@ export const lists = {
           graphql.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
-              const { posts } = await context.lists.Author.findOne({
+              const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },
                 query: `posts(
                     orderBy: { publishDate: desc }
@@ -109,7 +109,7 @@ export const lists = {
                   ) { id }`,
               });
               if (posts.length > 0) {
-                return context.db.lists.Post.findOne({ where: { id: posts[0].id } });
+                return context.db.Post.findOne({ where: { id: posts[0].id } });
               }
             },
           }),

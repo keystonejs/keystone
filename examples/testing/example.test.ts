@@ -8,11 +8,11 @@ const runner = setupTestRunner({ config });
 
 describe('Example tests using test runner', () => {
   test(
-    'Create a Person using the list items API',
+    'Create a Person using the Query API',
     runner(async ({ context }) => {
       // We can use the context argument provided by the test runner to access
       // the full context API.
-      const person = await context.lists.Person.createOne({
+      const person = await context.query.Person.createOne({
         data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
         query: 'id name email password { isSet }',
       });
@@ -71,7 +71,7 @@ describe('Example tests using test runner', () => {
       // are behaving as expected.
 
       // Create some users
-      const [alice, bob] = await context.lists.Person.createMany({
+      const [alice, bob] = await context.query.Person.createMany({
         data: [
           { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
           { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
@@ -82,7 +82,7 @@ describe('Example tests using test runner', () => {
       expect(bob.name).toEqual('Bob');
 
       // Create a task assigned to Alice
-      const task = await context.lists.Task.createOne({
+      const task = await context.query.Task.createOne({
         data: {
           label: 'Experiment with Keystone',
           priority: 'high',
@@ -172,7 +172,7 @@ describe('Example tests using test environment', () => {
     await testEnv.connect();
 
     // Create a person in the database to be used in multiple tests
-    person = (await context.lists.Person.createOne({
+    person = (await context.query.Person.createOne({
       data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
     })) as { id: string };
   });
@@ -181,7 +181,7 @@ describe('Example tests using test environment', () => {
   });
 
   test('Check that the persons password is set', async () => {
-    const { password } = await context.lists.Person.findOne({
+    const { password } = await context.query.Person.findOne({
       where: { id: person.id },
       query: 'password { isSet }',
     });
@@ -189,7 +189,7 @@ describe('Example tests using test environment', () => {
   });
 
   test('Update the persons email address', async () => {
-    const { email } = await context.lists.Person.updateOne({
+    const { email } = await context.query.Person.updateOne({
       where: { id: person.id },
       data: { email: 'new-email@example.com' },
       query: 'email',

@@ -39,7 +39,7 @@ We add a custom mutation to our schema using `type Mutation` in the `typeDefs`, 
     resolvers: {
       Mutation: {
         publishPost: (root, { id }, context) => {
-          return context.db.lists.Post.updateOne({
+          return context.db.Post.updateOne({
             id,
             data: { status: 'published', publishDate: new Date().toUTCString() },
           });
@@ -66,7 +66,7 @@ We add a custom query to our schema using `type Query` in the `typeDefs`, and de
           const cutoff = new Date(
             new Date().setUTCDate(new Date().getUTCDate() - days)
           ).toUTCString();
-          return context.db.lists.Post.findMany({
+          return context.db.Post.findMany({
             where: { author: { id }, publishDate_gt: cutoff },
           });
         },
@@ -97,13 +97,13 @@ We add a custom type to our schema using `type Statisics` in the `typeDefs`, and
     resolvers: {
       Query: {
         stats: async (root, { id }, context) => {
-          const draft = await context.lists.Post.count({
+          const draft = await context.query.Post.count({
             where: { author: { id }, status: 'draft' },
           });
-          const published = await context.lists.Post.count({
+          const published = await context.query.Post.count({
             where: { author: { id }, status: 'published' },
           });
-          const { posts } = await context.lists.Author.findOne({
+          const { posts } = await context.query.Author.findOne({
             where: { id },
             query: 'posts(take: 1, orderBy: { publishDate: desc }) { id }',
           });
@@ -112,7 +112,7 @@ We add a custom type to our schema using `type Statisics` in the `typeDefs`, and
       },
       Statistics: {
         latest: (root, args, context) =>
-          context.db.lists.Post.findOne({ where: { id: root.latestPostId } }),
+          context.db.Post.findOne({ where: { id: root.latestPostId } }),
       },
     },
   }),

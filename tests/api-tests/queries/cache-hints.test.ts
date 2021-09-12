@@ -72,7 +72,7 @@ const runner = setupTestRunner({
 });
 
 const addFixtures = async (context: KeystoneContext) => {
-  const users = await context.lists.User.createMany({
+  const users = await context.query.User.createMany({
     data: [
       { name: 'Jess', favNumber: 1 },
       { name: 'Johanna', favNumber: 8 },
@@ -80,7 +80,7 @@ const addFixtures = async (context: KeystoneContext) => {
     ],
   });
 
-  const posts = await context.lists.Post.createMany({
+  const posts = await context.query.Post.createMany({
     data: [
       { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
       { author: { connect: [{ id: users[0].id }, { id: users[1].id }] }, title: 'Two authors' },
