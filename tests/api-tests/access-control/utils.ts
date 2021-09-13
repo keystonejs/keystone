@@ -1,5 +1,5 @@
 import { text, password } from '@keystone-next/keystone/fields';
-import { list } from '@keystone-next/keystone';
+import { list, ListSchemaConfig } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { apiTestConfig } from '../utils';
@@ -103,7 +103,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   }),
 });
 
-const lists = {
+const lists: ListSchemaConfig = {
   User: list({
     fields: {
       name: text(),
