@@ -1,7 +1,7 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, json, relationship, text } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   Package: list({
     fields: {
       label: text({ isRequired: true }),
@@ -16,4 +16,4 @@ export const lists = createSchema({
       packages: relationship({ ref: 'Package.ownedBy', many: true }),
     },
   }),
-});
+};

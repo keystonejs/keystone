@@ -1,8 +1,8 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
 import { graphql } from '@keystone-next/keystone/types';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -117,4 +117,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

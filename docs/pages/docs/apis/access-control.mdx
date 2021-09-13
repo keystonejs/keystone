@@ -6,18 +6,18 @@ The `access` property of the [list configuration](./schema) object configures wh
 The `access` property of the [field configuration](./fields) object configures who can read, create, and update specific field values of an item.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       fields: {
         fieldName: text({ access: { /* ... */ }, }),
       },
       access: { /* ... */ },
     }),
-  }),
+  },
 });
 ```
 
@@ -59,10 +59,10 @@ Individual functions can be provided for each of the operations.
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         operation: {
@@ -73,7 +73,7 @@ export default config({
         }
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -92,11 +92,11 @@ In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       fields: {
         isReadable: checkbox(),
@@ -117,7 +117,7 @@ export default config({
         }
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -135,11 +135,11 @@ It’s available to `create`, `update`, and `delete` mutations, and lets you wri
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         item: {
@@ -149,7 +149,7 @@ export default config({
         }
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -192,11 +192,11 @@ No errors will be returned for `read` access denied.
 !> The `read` access control is applied to fields returned from both **queries** and **mutations**.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       fields: {
         fieldName: text({
@@ -208,7 +208,7 @@ export default config({
         }),
       },
     }),
-  }),
+  },
 });
 ```
 

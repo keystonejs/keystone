@@ -12,13 +12,13 @@ Keystone generates a CRUD (create, read, update, delete) GraphQL API based on th
 Consider the following system definition:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({ fields: { name: text({ isOrderable: true }) } }),
-  }),
+  },
   /* ... */
 });
 ```

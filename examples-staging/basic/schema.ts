@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
 import {
   text,
   relationship,
@@ -34,7 +34,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-export const lists = createSchema({
+export const lists = {
   User: list({
     ui: {
       listView: {
@@ -186,7 +186,7 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: gql`

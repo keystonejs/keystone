@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
@@ -19,11 +19,11 @@ testModules
       const listKey = 'Test';
       const runner = setupTestRunner({
         config: apiTestConfig({
-          lists: createSchema({
+          lists: {
             [listKey]: list({
               fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
             }),
-          }),
+          },
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
           files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
         }),
@@ -410,13 +410,13 @@ testModules
                 'Unique equality',
                 setupTestRunner({
                   config: apiTestConfig({
-                    lists: createSchema({
+                    lists: {
                       [listKey]: list({
                         fields: {
                           field: mod.typeFunction({ isIndexed: 'unique', isFilterable: true }),
                         },
                       }),
-                    }),
+                    },
                   }),
                 })(async ({ context }) => {
                   // Populate the database before running the tests

@@ -1,13 +1,13 @@
 import { text } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           content: document({
@@ -48,7 +48,7 @@ const runner = setupTestRunner({
         },
         access: { filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) } },
       }),
-    }),
+    },
   }),
 });
 
