@@ -10,7 +10,7 @@ import {
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { accessDeniedError, extensionError } from '../graphql-errors';
-import { checkOperationAccess, getAccessFilters } from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -63,7 +63,7 @@ export class NestedMutationState {
     const writeLimit = pLimit(1);
 
     // Check operation permission to pass into single operation
-    const operationAccess = await checkOperationAccess(list, context, 'create');
+    const operationAccess = await getOperationAccess(list, context, 'create');
 
     const { item, afterChange } = await createSingle(
       { data },
@@ -90,7 +90,7 @@ export async function createOne(
   const writeLimit = pLimit(1);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'create');
+  const operationAccess = await getOperationAccess(list, context, 'create');
 
   const { item, afterChange } = await createSingle(
     createInput,
@@ -114,7 +114,7 @@ export async function createMany(
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'create');
+  const operationAccess = await getOperationAccess(list, context, 'create');
 
   return createInputs.data.map(async data => {
     const { item, afterChange } = await createSingle(
@@ -181,7 +181,7 @@ export async function updateOne(
   const writeLimit = pLimit(1);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'update');
+  const operationAccess = await getOperationAccess(list, context, 'update');
 
   // Get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update');
@@ -198,7 +198,7 @@ export async function updateMany(
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'update');
+  const operationAccess = await getOperationAccess(list, context, 'update');
 
   // Get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update');

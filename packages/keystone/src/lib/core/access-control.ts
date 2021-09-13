@@ -16,7 +16,7 @@ import {
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
-export async function checkOperationAccess(
+export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'delete' | 'create' | 'update' | 'query'
