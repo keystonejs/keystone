@@ -38,12 +38,10 @@ export default function Docs() {
         The Keystone Experience
       </Type>
       <div>
-        <div>
-          <Type as="p" look="body18" margin="0 0 1.25rem">
-            Discover the vision behind Keystone and what it's like to work with. If you’ve just
-            heard of Keystone, start here first:
-          </Type>
-        </div>
+        <Type as="p" look="body18" css={{ maxWidth: '90ch', margin: '0 0 1.25rem' }}>
+          Discover the vision behind Keystone and what it's like to work with. If you’ve just heard
+          of Keystone, start here first:
+        </Type>
         <div
           css={mq({
             display: 'grid',
