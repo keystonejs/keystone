@@ -1,6 +1,6 @@
 import pLimit, { Limit } from 'p-limit';
 import { DatabaseProvider, KeystoneContext } from '../../../types';
-import { checkOperationAccess, getAccessFilters } from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
@@ -59,7 +59,7 @@ export async function deleteMany(
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'delete');
+  const operationAccess = await getOperationAccess(list, context, 'delete');
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
@@ -75,7 +75,7 @@ export async function deleteOne(
   context: KeystoneContext
 ) {
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'delete');
+  const operationAccess = await getOperationAccess(list, context, 'delete');
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
