@@ -58,11 +58,8 @@ export type DatabaseConfig = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
-<<<<<<< HEAD
   prismaPreviewFeatures?: string[];
-=======
   idField?: IdFieldConfig;
->>>>>>> 03f535ba6 (New id fields (#5947))
 } & (
   | (
       | {
