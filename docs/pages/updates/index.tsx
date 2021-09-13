@@ -167,7 +167,55 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="17th August 2021" isLatest />
+        <Timeline date="6th September 2021" isLatest />
+        <Box heading="New & Improved Access Control API">
+          Access Control is now easier to program, and makes it harder to introduce security gaps in
+          your system.
+          <ul>
+            <li>
+              The <strong>static</strong> approach to access control has been replaced. Now access
+              control <strong>never</strong> effects the operations in your GraphQL API.
+            </li>
+            <li>
+              Keystone used to return an <InlineCode>access denied</InlineCode> error from a{' '}
+              <strong>query</strong> if an item couldn't be found, or explicitly had access denied.
+              The improved API never returns that error type on a <strong>query</strong>.
+            </li>
+            <li>
+              Access <strong>rules</strong> are now more explicit, and support fewer variations so
+              you're less likely to introduce security gaps.
+            </li>
+          </ul>
+          To securely upgrade your system, follow the instructions in our{' '}
+          <Link href="https://keystonejs.com/updates/new-access-control">
+            <a>Access Control upgrade guide</a>
+          </Link>
+          .
+        </Box>
+        <Timeline date="6th September 2021" isLatest />
+        <Box heading="Customisable Express App">
+          A long awaited feature, the Express App that Keystone creates is now{' '}
+          <Link href="https://keystonejs.com/docs/apis/config#server">
+            <a>customisable</a>
+          </Link>{' '}
+          with the new <InlineCode>extendExpressApp</InlineCode> option:
+          <ul>
+            <li>Add your own custom server routes</li>
+            <li>Host two apps on separate ports</li>
+            <li>And more...</li>
+          </ul>
+        </Box>
+        <Timeline date="6th September 2021" isLatest />
+        <Box heading="GraphQL Path Customisation">
+          The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with
+          the new option <InlineCode>config.graphql.path</InlineCode>. You can find this and all
+          other options in our{' '}
+          <Link href="https://keystonejs.com/docs/apis/config#graphql">
+            <a>GraphQL API docs</a>
+          </Link>
+          .
+        </Box>
+        <Timeline date="17th August 2021" />
         <Box heading="New & improved GraphQL API">
           A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
           for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
@@ -183,10 +231,7 @@ export default function WhatsNew() {
           <Link href="/updates/new-graphql-api#upgrade-checklist">
             <a>checklist of the steps you need to take to upgrade your Keystone projects</a>
           </Link>
-          .
-          <br />
-          <br />
-          Be sure to check it out!
+          . Be sure to check it out!
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">

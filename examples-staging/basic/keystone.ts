@@ -1,4 +1,4 @@
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
@@ -29,10 +29,6 @@ export default auth.withAuth(
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
-    // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
-    // graphql: {
-    //   path: '/api/graphql',
-    // },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
       // path: '/admin',

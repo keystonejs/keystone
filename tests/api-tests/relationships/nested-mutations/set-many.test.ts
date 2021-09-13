@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -39,7 +39,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -182,7 +182,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().lists.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 

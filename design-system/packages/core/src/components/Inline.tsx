@@ -1,9 +1,10 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { Children, ReactNode } from 'react';
 import { jsx } from '../emotion';
 
-import { forwardRefWithAs } from '../utils';
+import { forwardRefWithAs, getChildTag } from '../utils';
 import { Theme } from '../types';
 import { useTheme } from '../theme';
 import { Box, BoxProps } from './Box';
@@ -29,6 +30,7 @@ export const Inline = forwardRefWithAs<'div', InlineProps>(
     const { spacing } = useTheme();
     const resolvedAlign = alignment[align];
     const resolvedGap = spacing[gap];
+    const ChildWrapper = getChildTag(props.as);
 
     return (
       <Box
@@ -44,7 +46,7 @@ export const Inline = forwardRefWithAs<'div', InlineProps>(
       >
         {Children.map(children, child =>
           child !== null && child !== undefined ? (
-            <div
+            <ChildWrapper
               css={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -53,7 +55,7 @@ export const Inline = forwardRefWithAs<'div', InlineProps>(
               }}
             >
               {child}
-            </div>
+            </ChildWrapper>
           ) : null
         )}
       </Box>

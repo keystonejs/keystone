@@ -114,6 +114,14 @@ const CURRENT = [
     destination: '/updates/keystone-5-vs-keystone-6-preview',
     permanent: true,
   },
+  {
+    // create-keystone-app has hidden characters in it's console output when it
+    // links to this page (when a console does not support hyperlinks), adding
+    // this condition in case someone copies them accidentally
+    source: '/docs/guides/keystone-5-vs-keystone-next%E2%80%8B',
+    destination: '/docs/guides/keystone-5-vs-keystone-next',
+    permanent: true,
+  },
 ];
 
 module.exports = [...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];

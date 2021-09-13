@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
 import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
@@ -90,7 +91,7 @@ const componentBlocks = {
 type DocumentFieldConfig = Parameters<typeof import('@keystone-next/fields-document').document>[0];
 
 function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
-  return `import { config, createSchema, list } from '@keystone-next/keystone/schema';
+  return `import { config, createSchema, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({
@@ -295,8 +296,9 @@ export const DocumentEditorDemo = () => {
         'blockquote, p, pre': {
           marginTop: '1em',
           marginBottom: '1em',
+          lineHeight: 1.75,
         },
-        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold', margin: 0 },
+        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold', margin: 0, lineHeight: 1.75 },
         h1: { fontSize: 'var(--font-xxlarge)' },
         h2: { fontSize: 'var(--font-large)' },
         h3: { fontSize: 'var(--font-medium)' },
@@ -304,6 +306,7 @@ export const DocumentEditorDemo = () => {
         h6: { fontSize: 'var(--font-xxsmall)' },
         'ul, ol': {
           paddingLeft: 40,
+          lineHeight: 1.75,
         },
       }}
     >

@@ -1,18 +1,21 @@
+import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
   CacheHint,
   IndividualFieldAccessControl,
-  FieldReadAccessArgs,
   BaseGeneratedListTypes,
   ItemRootValue,
-  schema,
+  graphql,
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
-} from '@keystone-next/types';
-import { GraphQLResolveInfo } from 'graphql';
-import { validateFieldAccessControl } from '../access-control';
-import { accessDeniedError } from '../graphql-errors';
+  FieldReadItemAccessArgs,
+} from '../../../types';
+import {
+  checkOperationAccess,
+  getAccessFilters,
+  validateFieldAccessControl,
+} from '../access-control';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
@@ -40,7 +43,23 @@ function getRelationVal(
     };
   } else {
     return async () => {
-      const resolvedWhere = await accessControlledFilter(foreignList, context, relationFilter);
+      // Check operation permission to pass into single operation
+      const operationAccess = await checkOperationAccess(foreignList, context, 'query');
+      if (!operationAccess) {
+        return null;
+      }
+
+      const accessFilters = await getAccessFilters(foreignList, context, 'query');
+      if (accessFilters === false) {
+        return null;
+      }
+
+      const resolvedWhere = await accessControlledFilter(
+        foreignList,
+        context,
+        relationFilter,
+        accessFilters
+      );
 
       return runWithPrisma(context, foreignList, model =>
         model.findFirst({ where: resolvedWhere })
@@ -77,12 +96,12 @@ export function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
-  access: IndividualFieldAccessControl<FieldReadAccessArgs<BaseGeneratedListTypes>>,
+  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseGeneratedListTypes>>,
   listKey: string,
   fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
-  return schema.field({
+  return graphql.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,
@@ -99,15 +118,12 @@ export function outputTypeField(
           fieldKey,
           item: rootVal,
           listKey,
-          operation: 'read',
+          operation: 'query',
           session: context.session,
         },
       });
       if (!canAccess) {
-        // If the client handles errors correctly, it should be able to
-        // receive partial data (for the fields the user has access to),
-        // and then an `errors` array of AccessDeniedError's
-        throw accessDeniedError();
+        return null;
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take

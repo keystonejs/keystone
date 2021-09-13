@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, useTheme, Inline } from '@keystone-ui/core';
 

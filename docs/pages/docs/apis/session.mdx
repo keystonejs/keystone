@@ -9,7 +9,7 @@ It has a TypeScript type of `SessionStrategy<any>`.
 In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 
 export default config({
@@ -37,7 +37,7 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 `storedSessions()` accepts an additional `store` argument, which is an object capable of loading and storing session data.
 
 ```typescript
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions, storedSessions } from '@keystone-next/keystone/session';
 
 export default config({
@@ -101,7 +101,7 @@ Keystone provides a [Redis](https://redis.io/) based session store in the packag
 ```typescript
 import redis from 'redis';
 import { redisSessionStore } from '@keystone-next/session-store-redis';
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { storedSessions } from '@keystone-next/keystone/session';
 
 export default config({

@@ -1,6 +1,6 @@
-import { setupTestRunner } from '@keystone-next/testing';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { createSchema, list } from '@keystone-next/keystone';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -10,12 +10,12 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          company: relationship({ ref: 'Company' }),
-          posts: relationship({ ref: 'Post', many: true }),
+          company: relationship({ ref: 'Company', isFilterable: true }),
+          posts: relationship({ ref: 'Post', many: true, isFilterable: true }),
         },
       }),
       Company: list({ fields: { name: text() } }),
-      Post: list({ fields: { content: text() } }),
+      Post: list({ fields: { content: text({ isFilterable: true }) } }),
     }),
   }),
 });

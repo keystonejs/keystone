@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode } from 'react';
@@ -62,6 +63,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
         paddingRight: spacing.xlarge,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
+        position: 'relative',
       }}
       {...props}
     />

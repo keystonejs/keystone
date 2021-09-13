@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
@@ -14,7 +15,7 @@ export function GitHubExamplesCTA() {
           margin: '0 1rem 0.5rem 0',
         }}
       >
-        See the full set of examples in our
+        All example projects live in the
       </span>
       <Button
         as="a"
@@ -24,7 +25,7 @@ export function GitHubExamplesCTA() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        GitHub Repo <ArrowR />
+        Keystone GitHub repo <ArrowR />
       </Button>
     </Alert>
   );

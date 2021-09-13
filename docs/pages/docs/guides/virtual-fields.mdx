@@ -18,17 +18,16 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { virtual } from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
+import { config, createSchema, list, graphql } from '@keystone-next/keystone';
+import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
     Example: list({
       fields: {
         hello: virtual({
-          field: schema.field({
-            type: schema.String,
+          field: graphql.field({
+            type: graphql.String,
             resolve() {
               return "Hello, world!";
             },
@@ -59,18 +58,18 @@ which gives the response:
 
 The value of `hello` is generated from the `resolve` function, which returns the string `"Hello, world!"`.
 
-## The schema API
+## The `graphql` API
 
-The `virtual` field is configured using functions from the `schema` API in the `@keystone-next/types` package.
+The `virtual` field is configured using functions from the `graphql` export from `@keystone-next/keystone`.
 This API provides the interface required to create type-safe extensions to the Keystone GraphQL schema.
-The schema API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
+The `graphql` API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
 
-The `virtual` field accepts a configuration option called `field`, which is a `schema.field()` object.
+The `virtual` field accepts a configuration option called `field`, which is a `graphql.field()` object.
 
-In our example we passed in two required options to `schema.field()`.
-The option `type: schema.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
+In our example we passed in two required options to `graphql.field()`.
+The option `type: graphql.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
 
-The `schema` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
+The `graphql` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
 
 ## Resolver arguments
 
@@ -94,8 +93,8 @@ export default config({
         content: text(),
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
-          type: schema.String,
-          field: schema.field({
+          type: graphql.String,
+          field: graphql.field({
             async resolve(item, args, context) {
               const { author } = await context.lists.Post.findOne({
                 where: { id: item.id.toString() },
@@ -132,11 +131,11 @@ export default config({
       fields: {
         content: text(),
         excerpt: virtual({
-          field: schema.field({
-            type: schema.String,
+          field: graphql.field({
+            type: graphql.String,
             args: {
-              length: schema.arg({
-                type: schema.nonNull(schema.Int),
+              length: graphql.arg({
+                type: graphql.nonNull(graphql.Int),
                 defaultValue: 200
               }),
             },
@@ -190,7 +189,7 @@ Had we not specified `defaultValue` in our field, the `graphQLReturnFragment` ar
 The examples above returned a scalar `String` value. Virtual fields can also be configured to return a GraphQL object.
 
 In our blog example we might want to provide some statistics on each blog post, such as the number of words, sentences, and paragraphs in the post.
-We can set up a GraphQL type called `PostCounts` to represent this data using the `schema.object()` function.
+We can set up a GraphQL type called `PostCounts` to represent this data using the `graphql.object()` function.
 
 ```typescript
 export default config({
@@ -199,17 +198,17 @@ export default config({
       fields: {
         content: text(),
         counts: virtual({
-          field: schema.field({
-            type: schema.object<{
+          field: graphql.field({
+            type: graphql.object<{
               words: number;
               sentences: number;
               paragraphs: number;
             }>()({
               name: 'PostCounts',
               fields: {
-                words: schema.field({ type: schema.Int }),
-                sentences: schema.field({ type: schema.Int }),
-                paragraphs: schema.field({ type: schema.Int }),
+                words: graphql.field({ type: graphql.Int }),
+                sentences: graphql.field({ type: graphql.Int }),
+                paragraphs: graphql.field({ type: graphql.Int }),
               },
             }),
             resolve(item: any) {
@@ -237,18 +236,18 @@ This fragment tells the Keystone Admin UI which values to show in the item page 
 
 #### Self-referencing objects
 
-!> This information is specifically for TypeScript users of the `schema.object()` function with a self-referential GraphQL type.
+!> This information is specifically for TypeScript users of the `graphql.object()` function with a self-referential GraphQL type.
 
-GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `schema.ObjectType<RootVal>` along with making `fields` a function that returns the object.
+GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<RootVal>` along with making `fields` a function that returns the object.
 
 ```ts
 type PersonRootVal = { name: string; friends: PersonRootVal[] };
 
-const Person: schema.ObjectType<PersonRootVal> = schema.object<PersonRootVal>()({
+const Person: graphql.ObjectType<PersonRootVal> = graphql.object<PersonRootVal>()({
   name: "Person",
   fields: () => ({
-    name: schema.field({ type: schema.String }),
-    friends: schema.field({ type: schema.list(Person) }),
+    name: graphql.field({ type: graphql.String }),
+    friends: graphql.field({ type: graphql.list(Person) }),
   }),
 });
 ```
@@ -258,11 +257,11 @@ const Person: schema.ObjectType<PersonRootVal> = schema.object<PersonRootVal>()(
 Rather than returning a custom GraphQL object, we might want to have a virtual field which returns one of the GraphQL types generated by Keystone itself.
 For example, for each `Author` we might want to return their `latestPost` as a `Post` object.
 
-To achieve this, rather than passing in `schema.field({ ... })` as the `field` option, we pass in a function `lists => schema.field({ ... })`.
+To achieve this, rather than passing in `graphql.field({ ... })` as the `field` option, we pass in a function `lists => graphql.field({ ... })`.
 The argument `lists` contains the type information for all of the Keystone lists.
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
-```
+```ts
 export const lists = createSchema({
   Post: list({
     fields: {
@@ -275,11 +274,11 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
       latestPost: virtual({
         field: lists =>
-          schema.field({
+          graphql.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.lists.Author.findOne({

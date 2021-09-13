@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react';
@@ -6,7 +7,7 @@ import { Transforms, Editor } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
 import { useKeystone } from '@keystone-next/keystone/admin-ui/context';
-import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
+import { RelationshipSelect } from '@keystone-next/keystone/fields/types/relationship/views/RelationshipSelect';
 
 import { ToolbarButton } from './primitives';
 import { useStaticEditor } from './utils';

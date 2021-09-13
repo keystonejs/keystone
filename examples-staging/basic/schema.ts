@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
+import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
 import {
   text,
   relationship,
@@ -9,10 +9,10 @@ import {
   virtual,
   image,
   file,
-} from '@keystone-next/fields';
+} from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneListsAPI, schema } from '@keystone-next/types';
+import { KeystoneListsAPI, graphql } from '@keystone-next/keystone/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
@@ -45,7 +45,7 @@ export const lists = createSchema({
       /** The user's first and last name. */
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
@@ -54,8 +54,8 @@ export const lists = createSchema({
       /** Administrators have more access to various lists and fields. */
       isAdmin: checkbox({
         access: {
-          create: access.isAdmin,
           read: access.isAdmin,
+          create: access.isAdmin,
           update: access.isAdmin,
         },
         ui: {
@@ -84,8 +84,8 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
-        field: schema.field({
-          type: schema.Float,
+        field: graphql.field({
+          type: graphql.Float,
           resolve() {
             return randomNumber();
           },
@@ -100,8 +100,8 @@ export const lists = createSchema({
     },
     fields: {
       label: virtual({
-        field: schema.field({
-          type: schema.String,
+        field: graphql.field({
+          type: graphql.String,
           resolve(item) {
             return `${item.type} - ${item.value}`;
           },

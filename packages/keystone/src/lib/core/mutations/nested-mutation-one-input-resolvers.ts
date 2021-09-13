@@ -1,15 +1,17 @@
-import { KeystoneContext, TypesForList, schema } from '@keystone-next/types';
+import { KeystoneContext, TypesForList, graphql } from '../../../types';
 import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
-  schema.InferValueFromArg<schema.Arg<TypesForList['relateTo']['one']['create']>>,
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<TypesForList['relateTo']['one']['create'], undefined>>
+  >,
   null | undefined
 >;
 type _UpdateValueType = Exclude<
-  schema.InferValueFromArg<
-    schema.Arg<schema.NonNullType<TypesForList['relateTo']['one']['update']>>
+  graphql.InferValueFromArg<
+    graphql.Arg<graphql.NonNullType<Exclude<TypesForList['relateTo']['one']['update'], undefined>>>
   >,
   null | undefined
 >;
@@ -26,7 +28,10 @@ async function handleCreateAndUpdate(
     const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
     // Check whether the item exists
     try {
-      await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
+      const item = await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
+      if (item === null) {
+        throw new Error(`Unable to connect a ${target}`);
+      }
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }

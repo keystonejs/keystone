@@ -29,24 +29,22 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  schema,
+  graphql,
   orderDirectionEnum,
   filters,
   FieldDefaultValue,
-} from '@keystone-next/types';
+} from '@keystone-next/keystone/types';
 
 export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
     isRequired?: boolean;
-    isIndexed?: boolean;
-    isUnique?: boolean;
+    isIndexed?: boolean | 'unique';
   };
 
 export const myInt =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isUnique,
     isRequired,
     defaultValue,
     ...config
@@ -56,16 +54,16 @@ export const myInt =
       kind: 'scalar',
       mode: 'optional',
       scalar: 'Int',
-      index: isIndexed ? 'index' : isUnique ? 'unique' : undefined,
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
       input: {
-        where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-        create: { arg: schema.arg({ type: schema.Int }) },
-        update: { arg: schema.arg({ type: schema.Int }) },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+        create: { arg: graphql.arg({ type: graphql.Int }) },
+        update: { arg: graphql.arg({ type: graphql.Int }) },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({ type: schema.Int }),
+      output: graphql.field({ type: graphql.Int }),
       views: require.resolve('./view.tsx'),
       __legacy: {
         isRequired,
@@ -85,10 +83,10 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
-  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-  create: { arg: schema.arg({ type: schema.Int }) },
-  update: { arg: schema.arg({ type: schema.Int }) },
-  orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+  create: { arg: graphql.arg({ type: graphql.Int }) },
+  update: { arg: graphql.arg({ type: graphql.Int }) },
+  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
 },
 ```
 
@@ -96,10 +94,10 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
-  where: { arg: schema.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
-  create: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
-  update: { arg: schema.arg({ type: schema.Int }), resolve: (val, context) => val },
-  orderBy: { arg: schema.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
+  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
+  create: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
+  update: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
+  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
 },
 ```
 
@@ -108,14 +106,14 @@ input: {
 The output field defines what can be fetched from the field:
 
 ```ts
-output: schema.field({ type: schema.Int })
+output: graphql.field({ type: graphql.Int })
 ```
 
 A resolver can also be provided:
 
 ```ts
-output: schema.field({
-  type: schema.Int,
+output: graphql.field({
+  type: graphql.Int,
   resolve({ value, item }, args, context, info) {
     return value;
   }
@@ -164,7 +162,7 @@ The `Field` export is a React component which is used in the **item view** and t
 // view.tsx
 
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { FieldProps } from '@keystone-next/types';
+import { FieldProps } from '@keystone-next/keystone/types';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -195,7 +193,7 @@ Note it does not allow modifying the value.
 // view.tsx
 
 import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
-import { CellComponent } from '@keystone-next/types';
+import { CellComponent } from '@keystone-next/keystone/types';
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
@@ -213,7 +211,7 @@ Note it does not allow modifying the value.
 // view.tsx
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { CardValueComponent } from '@keystone-next/types';
+import { CardValueComponent } from '@keystone-next/keystone/types';
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (

@@ -3,7 +3,7 @@ import { GraphQLError, GraphQLSchema } from 'graphql';
 import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
 import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import type { Config } from 'apollo-server-express';
-import type { CreateContext, GraphQLConfig, SessionStrategy } from '@keystone-next/types';
+import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
 import { createSessionContext } from '../../session';
 
 export const createApolloServerMicro = ({
@@ -61,27 +61,47 @@ const _createApolloServerConfig = ({
   graphQLSchema: GraphQLSchema;
   graphqlConfig?: GraphQLConfig;
 }) => {
-  // Playground config, is /api/graphql available?
+  // Playground config
   const apolloConfig = graphqlConfig?.apolloConfig;
-  const pp = apolloConfig?.playground;
+  const apolloConfigPlayground = apolloConfig?.playground;
   let playground: Config['playground'];
   const settings = { 'request.credentials': 'same-origin' };
 
-  if (typeof pp === 'boolean' && !pp) {
+  if (typeof apolloConfigPlayground === 'boolean' && !apolloConfigPlayground) {
     // graphql.apolloConfig.playground === false (playground not accessible in all cases)
     playground = false;
-  } else if (typeof pp === 'boolean') {
+  } else if (typeof apolloConfigPlayground === 'boolean') {
     // graphql.apolloConfig.playground === true (playground accessible in all cases)
     playground = { settings };
-  } else if (pp) {
+  } else if (apolloConfigPlayground) {
     // graphql.apolloConfig.playground === { settings: ... } (playground accessible in all cases with further customisation - https://www.apollographql.com/docs/apollo-server/testing/graphql-playground)
-    playground = { ...pp, settings: { ...settings, ...pp.settings } };
+    playground = {
+      ...apolloConfigPlayground,
+      settings: { ...settings, ...apolloConfigPlayground.settings },
+    };
   } else if (process.env.NODE_ENV === 'production') {
     // process.env.NODE_ENV === 'production' (playground not accessible in production)
     playground = undefined;
   } else {
     // not specified at all (playground uses defaults)
     playground = { settings };
+  }
+
+  const apolloConfigIntrospection = apolloConfig?.introspection;
+  let introspection: Config['introspection'];
+
+  if (typeof apolloConfigIntrospection === 'boolean' && !apolloConfigIntrospection) {
+    // graphql.apolloConfig.introspection === false (introspection not accessible in all cases)
+    introspection = false;
+  } else if (typeof apolloConfigIntrospection === 'boolean') {
+    // graphql.apolloConfig.introspection === true (introspection accessible in all cases)
+    introspection = true;
+  } else if (process.env.NODE_ENV === 'production') {
+    // process.env.NODE_ENV === 'production' (introspection not accessible in production)
+    introspection = undefined;
+  } else if ((typeof playground === 'boolean' && playground) || typeof playground === 'object') {
+    // not specified at all (introspection enabled if playground is enabled or defined)
+    introspection = true;
   }
 
   return {
@@ -100,8 +120,9 @@ const _createApolloServerConfig = ({
     //     }),
     ...apolloConfig,
     formatError: formatError(graphqlConfig),
-    // Carefully inject the playground
+    // Carefully inject the playground and introspection variables
     playground,
+    introspection,
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
     // maxFiles: 5,

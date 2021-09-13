@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -23,7 +23,7 @@ const runner = setupTestRunner({
           name: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       EventToGroupNoRead: list({
@@ -34,7 +34,7 @@ const runner = setupTestRunner({
       }),
       GroupNoReadHard: list({
         fields: { name: text() },
-        access: { read: false },
+        graphql: { omit: ['query'] },
       }),
       EventToGroupNoReadHard: list({
         fields: {
@@ -44,10 +44,10 @@ const runner = setupTestRunner({
       }),
       GroupNoCreate: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       EventToGroupNoCreate: list({
@@ -58,7 +58,7 @@ const runner = setupTestRunner({
       }),
       GroupNoCreateHard: list({
         fields: { name: text() },
-        access: { create: false },
+        graphql: { omit: ['create'] },
       }),
       EventToGroupNoCreateHard: list({
         fields: {
@@ -68,7 +68,7 @@ const runner = setupTestRunner({
       }),
       GroupNoUpdate: list({
         fields: { name: text() },
-        access: { update: () => false },
+        access: { operation: { update: () => false } },
       }),
       EventToGroupNoUpdate: list({
         fields: {
@@ -78,7 +78,7 @@ const runner = setupTestRunner({
       }),
       GroupNoUpdateHard: list({
         fields: { name: text() },
-        access: { update: false },
+        graphql: { omit: ['update'] },
       }),
       EventToGroupNoUpdateHard: list({
         fields: {
@@ -271,7 +271,7 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
-            const groupModel = await context.lists[group.name].createOne({
+            const groupModel = await context.sudo().lists[group.name].createOne({
               data: { name: groupName },
             });
             expect(groupModel.id).toBeTruthy();
@@ -313,7 +313,7 @@ describe('with access control', () => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
-            const { id } = await context.lists[group.name].createOne({
+            const { id } = await context.sudo().lists[group.name].createOne({
               data: { name: groupName },
             });
             expect(id).toBeTruthy();

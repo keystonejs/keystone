@@ -131,9 +131,8 @@ export function DocsPage({
               css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
             >
               <Breadcrumbs />
-              {!isUpdatesPage && (
-                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
-              )}
+
+              <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
             </Stack>
             {children}
           </main>

@@ -1,5 +1,11 @@
 # @keystone-next/admin-ui-utils
 
+## 6.0.0
+
+### Major Changes
+
+- [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
+
 ## 5.0.6
 
 ### Patch Changes

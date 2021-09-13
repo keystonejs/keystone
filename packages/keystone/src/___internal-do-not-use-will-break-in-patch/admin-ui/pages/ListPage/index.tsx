@@ -1,8 +1,8 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
@@ -11,12 +11,13 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
   DataGetter,
   DeepNullable,
   makeDataGetter,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
@@ -32,9 +33,7 @@ import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { useSort } from './useSort';
 
-type ListPageProps = {
-  listKey: string;
-};
+type ListPageProps = { listKey: string };
 
 let listMetaGraphqlQuery: TypedDocumentNode<
   {
@@ -43,13 +42,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list: {
           hideCreate: boolean;
           hideDelete: boolean;
-
-          fields: {
-            path: string;
-            listView: {
-              fieldMode: 'read' | 'hidden';
-            };
-          }[];
+          fields: { path: string; listView: { fieldMode: 'read' | 'hidden' } }[];
         } | null;
       };
     };
@@ -82,9 +75,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey);
-    router.replace({
-      pathname: router.pathname,
-    });
+    router.replace({ pathname: router.pathname });
   };
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
@@ -102,12 +93,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
           parsed = JSON.parse(queryParamsFromLocalStorage!);
         } catch (err) {}
         if (parsed) {
-          router.replace({
-            query: {
-              ...router.query,
-              ...parsed,
-            },
-          });
+          router.replace({ query: { ...router.query, ...parsed } });
         }
       }
     },
@@ -207,19 +193,13 @@ const ListPage = ({ listKey }: ListPageProps) => {
   let [dataState, setDataState] = useState({ data: newData, error: newError });
 
   if (newData && dataState.data !== newData) {
-    setDataState({
-      data: newData,
-      error: newError,
-    });
+    setDataState({ data: newData, error: newError });
   }
 
   const { data, error } = dataState;
 
   const dataGetter = makeDataGetter<
-    DeepNullable<{
-      count: number;
-      items: { id: string; [key: string]: any }[];
-    }>
+    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
   >(data, error?.graphQLErrors);
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
@@ -236,10 +216,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         newSelectedItems.add(item.id);
       }
     });
-    setSelectedItems({
-      itemsFromServer: data.items,
-      selectedItems: newSelectedItems,
-    });
+    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems });
   }
 
   const theme = useTheme();
@@ -444,9 +421,7 @@ function DeleteManyButton({
 `,
       [list]
     ),
-    {
-      errorPolicy: 'all',
-    }
+    { errorPolicy: 'all' }
   );
   const [isOpen, setIsOpen] = useState(false);
   const toasts = useToasts();
@@ -494,8 +469,8 @@ function DeleteManyButton({
                     acc.successfulItems++;
                     acc.successMessage =
                       acc.successMessage === ''
-                        ? (acc.successMessage += curr.label)
-                        : (acc.successMessage += `, ${curr.label}`);
+                        ? (acc.successMessage += curr[list.labelField])
+                        : (acc.successMessage += `, ${curr[list.labelField]}`);
                   } else {
                     acc.unsuccessfulItems++;
                   }
@@ -671,7 +646,6 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      position: 'relative',
                     }}
                   >
                     <CheckboxControl
@@ -799,7 +773,6 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
         padding: spacing.small,
         textAlign: 'left',
         position: 'sticky',
-        zIndex: 1,
         top: 0,
       }}
       {...props}

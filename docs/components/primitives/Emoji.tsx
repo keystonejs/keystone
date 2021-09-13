@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/react';
 import { useRef, useState, useEffect, HTMLAttributes, ReactNode } from 'react';

@@ -1,10 +1,10 @@
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
-import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-next/types';
 import { Center } from '@keystone-ui/core';
 import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
 import { createUploadLink } from 'apollo-upload-client';
+import type { AdminConfig, AdminMeta, FieldViews } from '../types';
 import { useAdminMeta } from './utils/useAdminMeta';
 import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import {
@@ -24,6 +24,7 @@ type KeystoneContextType = {
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
   reinitContext: () => void;
+  apiPath: string;
 };
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined);
@@ -34,6 +35,7 @@ type KeystoneProviderProps = {
   adminMetaHash: string;
   fieldViews: FieldViews;
   lazyMetadataQuery: DocumentNode;
+  apiPath: string;
 };
 
 function InternalKeystoneProvider({
@@ -42,6 +44,7 @@ function InternalKeystoneProvider({
   adminMetaHash,
   children,
   lazyMetadataQuery,
+  apiPath,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
@@ -70,6 +73,7 @@ function InternalKeystoneProvider({
             reinitContext,
             visibleLists,
             createViewFieldModes,
+            apiPath,
           }}
         >
           {children}
@@ -84,10 +88,9 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        // FIXME: Use config.graphql.path
-        link: createUploadLink({ uri: '/api/graphql' }),
+        link: createUploadLink({ uri: props.apiPath }),
       }),
-    []
+    [props.apiPath]
   );
 
   return (
@@ -103,6 +106,7 @@ export const useKeystone = (): {
   authenticatedItem: AuthenticatedItem;
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
+  apiPath: string;
 } => {
   const value = useContext(KeystoneContext);
   if (!value) {
@@ -124,6 +128,7 @@ export const useKeystone = (): {
     authenticatedItem: value.authenticatedItem,
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
+    apiPath: value.apiPath,
   };
 };
 

@@ -1,5 +1,5 @@
-import { ListMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
+import { ListMeta } from '../../../../types';
 import { useRouter } from '../../../../admin-ui/router';
 
 export function useSort(list: ListMeta) {
@@ -15,9 +15,6 @@ export function useSort(list: ListMeta) {
       direction = 'DESC';
     }
     if (!list.fields[sortByField].isOrderable) return null;
-    return {
-      field: sortByField,
-      direction,
-    };
+    return { field: sortByField, direction };
   }, [sortByFromUrl, list]);
 }

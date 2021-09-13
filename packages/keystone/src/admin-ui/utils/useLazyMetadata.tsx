@@ -1,10 +1,10 @@
 import { GraphQLError } from 'graphql';
-import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '@keystone-next/types';
 import { useMemo } from 'react';
-import { DeepNullable, makeDataGetter } from '@keystone-next/admin-ui-utils';
+import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '../../types';
 import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
+import { DeepNullable, makeDataGetter } from './dataGetter';
 
-export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '@keystone-next/types';
+export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes };
 
 export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
@@ -31,12 +31,7 @@ export function useLazyMetadata(query: DocumentNode): {
             lists: {
               key: string;
               isHidden: boolean;
-              fields: {
-                path: string;
-                createView: {
-                  fieldMode: 'edit' | 'hidden';
-                };
-              }[];
+              fields: { path: string; createView: { fieldMode: 'edit' | 'hidden' } }[];
             }[];
           };
         };
@@ -68,10 +63,7 @@ function getCreateViewFieldModes(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): CreateViewFieldModes {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {};
@@ -81,15 +73,10 @@ function getCreateViewFieldModes(
         lists[list.key][field.path] = field.createView.fieldMode;
       });
     });
-    return {
-      state: 'loaded',
-      lists,
-    };
+    return { state: 'loaded', lists };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }
 
 function getVisibleLists(
@@ -97,10 +84,7 @@ function getVisibleLists(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): VisibleLists {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     const lists = new Set<string>();
@@ -109,15 +93,10 @@ function getVisibleLists(
         lists.add(list.key);
       }
     });
-    return {
-      state: 'loaded',
-      lists,
-    };
+    return { state: 'loaded', lists };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }
 
 function getAuthenticatedItem(
@@ -125,10 +104,7 @@ function getAuthenticatedItem(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): AuthenticatedItem {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     if (
@@ -139,9 +115,7 @@ function getAuthenticatedItem(
       // (yes, undefined is very specific and very intentional, it should not be checking for null)
       data.authenticatedItem.id === undefined
     ) {
-      return {
-        state: 'unauthenticated',
-      };
+      return { state: 'unauthenticated' };
     }
     const labelField = Object.keys(data.authenticatedItem).filter(
       x => x !== '__typename' && x !== 'id'
@@ -154,7 +128,5 @@ function getAuthenticatedItem(
     };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }

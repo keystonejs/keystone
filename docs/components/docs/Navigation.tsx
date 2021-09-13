@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 import parseISO from 'date-fns/parseISO';
@@ -12,7 +13,7 @@ import { Badge } from '../primitives/Badge';
 import { Type } from '../primitives/Type';
 import { Emoji } from '../primitives/Emoji';
 
-type SectionProps = { label: string; children: ReactNode };
+type SectionProps = { label?: string; children: ReactNode };
 export function Section({ label, children }: SectionProps) {
   return (
     <div
@@ -21,18 +22,20 @@ export function Section({ label, children }: SectionProps) {
         marginTop: 'var(--space-xlarge)',
       }}
     >
-      <Type
-        as="h3"
-        look="body16bold"
-        margin="var(--space-xlarge) 0 var(--space-large) 0"
-        color="var(--text-heading)"
-        css={{
-          textTransform: 'uppercase',
-          fontWeight: 700,
-        }}
-      >
-        {label}
-      </Type>
+      {label && (
+        <Type
+          as="h3"
+          look="body16bold"
+          margin="var(--space-xlarge) 0 var(--space-large) 0"
+          color="var(--text-heading)"
+          css={{
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
+          {label}
+        </Type>
+      )}
       {children}
     </div>
   );
@@ -141,8 +144,14 @@ export function DocsNavigation() {
     >
       <PrimaryNavItem href="/docs">Docs Home</PrimaryNavItem>
       <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
-      <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
-      <Section label="Guides">
+      <Section>
+        <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
+        <NavItem href="/docs/examples/#base-projects">Basic</NavItem>
+        <NavItem href="/docs/examples/#feature-projects">Feature</NavItem>
+        <NavItem href="/docs/examples/#deployment-projects">Deployment</NavItem>
+      </Section>
+      <Section>
+        <PrimaryNavItem href="/docs/guides">Guides</PrimaryNavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/filters">
@@ -177,12 +186,15 @@ export function DocsNavigation() {
           Custom Field Views
         </NavItem>
       </Section>
-      <Section label="API">
+      <Section>
+        <PrimaryNavItem href="/docs/apis">APIs</PrimaryNavItem>
         <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
-        <NavItem href="/docs/apis/access-control">Access Control API</NavItem>
+        <NavItem href="/docs/apis/access-control">
+          Access Control API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
@@ -224,6 +236,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
+        <NavItem href="/updates/new-access-control">
+          <Emoji symbol="🔐" alt="Padlock" />
+          &nbsp; New Access Control API
+        </NavItem>
         <NavItem href="/updates/new-graphql-api">
           <Emoji symbol="💎" alt="Gemstone" />
           &nbsp; New GraphQL API

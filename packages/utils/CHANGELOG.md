@@ -1,5 +1,11 @@
 # @keystone-next/utils
 
+## 2.0.0
+
+### Major Changes
+
+- [#6368](https://github.com/keystonejs/keystone/pull/6368) [`783290796`](https://github.com/keystonejs/keystone/commit/78329079606d74a2eedd63f96a985116bf0b449c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/utils` to `@keystone-next/keystone/fields/types/image/utils` for image ref related utilities and `@keystone-next/keystone/fields/types/file/utils` for file ref related utilities.
+
 ## 1.0.4
 
 ### Patch Changes

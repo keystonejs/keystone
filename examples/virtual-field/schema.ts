@@ -1,6 +1,6 @@
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { select, relationship, text, timestamp, virtual } from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
+import { createSchema, list } from '@keystone-next/keystone';
+import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
+import { graphql } from '@keystone-next/keystone/types';
 
 export const lists = createSchema({
   Post: list({
@@ -15,8 +15,8 @@ export const lists = createSchema({
       }),
       // A virtual field returning a value derived from the item data.
       isPublished: virtual({
-        field: schema.field({
-          type: schema.Boolean,
+        field: graphql.field({
+          type: graphql.Boolean,
           resolve(item: any) {
             return item.status === 'published';
           },
@@ -25,17 +25,17 @@ export const lists = createSchema({
       content: text({ ui: { displayMode: 'textarea' } }),
       // A virtual field returning a custom GraphQL object type.
       counts: virtual({
-        field: schema.field({
-          type: schema.object<{
+        field: graphql.field({
+          type: graphql.object<{
             words: number;
             sentences: number;
             paragraphs: number;
           }>()({
             name: 'PostCounts',
             fields: {
-              words: schema.field({ type: schema.Int }),
-              sentences: schema.field({ type: schema.Int }),
-              paragraphs: schema.field({ type: schema.Int }),
+              words: graphql.field({ type: graphql.Int }),
+              sentences: graphql.field({ type: graphql.Int }),
+              paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
           resolve(item: any) {
@@ -51,10 +51,10 @@ export const lists = createSchema({
       }),
       // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
-        field: schema.field({
-          type: schema.String,
+        field: graphql.field({
+          type: graphql.String,
           args: {
-            length: schema.arg({ type: schema.nonNull(schema.Int), defaultValue: 200 }),
+            length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
           },
           resolve(item, { length }) {
             if (!item.content) {
@@ -74,8 +74,8 @@ export const lists = createSchema({
       author: relationship({ ref: 'Author.posts', many: false }),
       // A virtual field which uses `item` and `context` to query data.
       authorName: virtual({
-        field: schema.field({
-          type: schema.String,
+        field: graphql.field({
+          type: graphql.String,
           async resolve(item, args, context) {
             const { author } = await context.lists.Post.findOne({
               where: { id: item.id.toString() },
@@ -90,12 +90,12 @@ export const lists = createSchema({
   Author: list({
     fields: {
       name: text({ isRequired: true }),
-      email: text({ isRequired: true, isUnique: true }),
+      email: text({ isRequired: true, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
       // A virtual field which returns a type derived from a Keystone list.
       latestPost: virtual({
         field: lists =>
-          schema.field({
+          graphql.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.lists.Author.findOne({
