@@ -71,7 +71,7 @@ export const lists = createSchema({
             }
           },
         }),
-        graphQLReturnFragment: '(length: 10)',
+        ui: { query: '(length: 10)' },
       }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
@@ -113,7 +113,7 @@ export const lists = createSchema({
               }
             },
           }),
-        graphQLReturnFragment: '{ title publishDate }',
+        ui: { query: '{ title publishDate }' },
       }),
     },
   }),
