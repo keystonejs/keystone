@@ -1,7 +1,7 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';
-import { FieldMeta, JSONValue } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
@@ -11,19 +11,13 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { OptionPrimitive, Options } from '@keystone-ui/options';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
+import { FieldMeta, JSONValue } from '../../../../types';
 import { useList } from '../../../../admin-ui/context';
 import { useRouter } from '../../../../admin-ui/router';
 
 type State =
-  | {
-      kind: 'selecting-field';
-    }
-  | {
-      kind: 'filter-value';
-      fieldPath: string;
-      filterType: string;
-      filterValue: JSONValue;
-    };
+  | { kind: 'selecting-field' }
+  | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue };
 
 const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
   Option: ({ children, ...props }) => {
@@ -50,14 +44,7 @@ const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
 export function FilterAdd({ listKey }: { listKey: string }) {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
+    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
   });
 
   return (
@@ -75,8 +62,7 @@ export function FilterAdd({ listKey }: { listKey: string }) {
         <ChevronDownIcon size="small" />
       </Button>
       <PopoverDialog
-        aria-label="Filters options"
-        aria-description={`list of filters to apply to the ${listKey} list`}
+        aria-label={`Filters options, list of filters to apply to the ${listKey} list`}
         arrow={arrow}
         isVisible={isOpen}
         {...dialog.props}
@@ -105,7 +91,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     > = {};
     Object.keys(list.fields).forEach(fieldPath => {
       const field = list.fields[fieldPath];
-      if (field.controller.filter) {
+      if (field.isFilterable && field.controller.filter) {
         // TODO: make all the things readonly so this works
         fieldsWithFilters[fieldPath] = field as any;
       }
@@ -156,9 +142,7 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
           <button
             type="button"
             onClick={() => {
-              setState({
-                kind: 'selecting-field',
-              });
+              setState({ kind: 'selecting-field' });
             }}
             css={{
               border: 0,

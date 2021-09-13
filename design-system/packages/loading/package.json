@@ -1,15 +1,15 @@
 {
   "name": "@keystone-ui/loading",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "license": "MIT",
   "main": "dist/loading.cjs.js",
   "module": "dist/loading.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.15"
+    "@types/react": "^17.0.20"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.8",
-    "@keystone-ui/core": "^3.0.0",
+    "@babel/runtime": "^7.15.4",
+    "@keystone-ui/core": "^3.2.0",
     "react": "^17.0.2"
   },
   "engines": {

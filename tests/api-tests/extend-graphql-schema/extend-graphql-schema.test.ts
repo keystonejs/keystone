@@ -1,6 +1,6 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
-import { setupTestRunner } from '@keystone-next/testing';
+import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const falseFn: (...args: any) => boolean = () => false;
@@ -70,13 +70,15 @@ describe('extendGraphqlSchema', () => {
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
-              query {
-                quads(x: 10)
-              }
-            `,
+          query {
+            quads(x: 10)
+          }
+        `,
       });
       expect(body.data).toEqual({ quads: null });
-      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }]);
+      expectInternalServerError(body.errors, false, [
+        { path: ['quads'], message: 'Access denied' },
+      ]);
     })
   );
   it(

@@ -1,21 +1,12 @@
 import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
+import fetch from 'node-fetch';
 import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 import { findRootSync } from '@manypkg/find-root';
 import dotenv from 'dotenv';
-
-async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
-
-  let prisma = new PrismaClient();
-
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
-
-  await prisma.$disconnect();
-}
 
 const treeKill = promisify(_treeKill);
 
@@ -29,13 +20,47 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   });
   return Object.assign(promise, { resolve: resolve as any });
 };
+const projectRoot = findRootSync(process.cwd());
+
+export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
+  const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  }).then(res => res.json());
+
+  if (errors) {
+    throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
+  }
+
+  return data;
+};
+
+export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
+  const { PrismaClient } = require(path.resolve(
+    projectRoot,
+    projectDir,
+    'node_modules/.prisma/client'
+  ));
+
+  let prisma = new PrismaClient();
+
+  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+
+  await prisma.$disconnect();
+};
 
 export const adminUITests = (
   pathToTest: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectRoot = findRootSync(process.cwd());
   const projectDir = path.join(projectRoot, pathToTest);
+
   dotenv.config();
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
@@ -60,7 +85,7 @@ export const adminUITests = (
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
-        if (stringified.includes('API ready')) {
+        if (stringified.includes('Admin UI ready')) {
           adminUIReady.resolve();
         }
       };

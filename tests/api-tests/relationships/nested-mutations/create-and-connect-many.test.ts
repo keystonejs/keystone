@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -27,7 +27,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -41,7 +41,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -84,7 +84,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const allNotes = await context.lists.Note.findMany({
-        where: { id_in: user.notes.map(({ id }) => id) },
+        where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
 
@@ -125,7 +125,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const allNotes = await context.lists.Note.findMany({
-        where: { id_in: user.notes.map(({ id }) => id) },
+        where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
 
@@ -152,7 +152,8 @@ describe('errors on incomplete data', () => {
       expectRelationshipError(errors, [
         {
           path: ['createUser'],
-          message: 'Nested mutation operation invalid for User.notes<Note>',
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
         },
       ]);
     })
@@ -168,12 +169,12 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNoteNoRead = await context.lists.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().lists.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
         // Create an item that does the linking
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -205,7 +206,7 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().lists.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
@@ -215,7 +216,7 @@ describe('with access control', () => {
         });
 
         // Update the item and link the relationship field
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -237,7 +238,8 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })

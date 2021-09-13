@@ -6,8 +6,8 @@ import {
   KeystoneContext,
   AdminUIConfig,
   SessionStrategy,
-} from '@keystone-next/types';
-import { password, timestamp } from '@keystone-next/fields';
+} from '@keystone-next/keystone/types';
+import { password, timestamp } from '@keystone-next/keystone/fields';
 
 import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
@@ -227,7 +227,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       ...sessionStrategy,
       get: async ({ req, createContext }) => {
         const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
+        const sudoContext = createContext({ sudo: true });
         if (
           !session ||
           !session.listKey ||

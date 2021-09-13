@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx, Stack } from '@keystone-ui/core';
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';

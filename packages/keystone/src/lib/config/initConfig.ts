@@ -1,4 +1,4 @@
-import { KeystoneConfig } from '@keystone-next/types';
+import { KeystoneConfig } from '../../types';
 
 import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 
@@ -8,5 +8,11 @@ import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 */
 
 export function initConfig(config: KeystoneConfig) {
+  if (!['postgresql', 'sqlite'].includes(config.db.provider)) {
+    throw new Error(
+      'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
+    );
+  }
+
   return { ...config, lists: applyIdFieldDefaults(config) };
 }

@@ -1,8 +1,8 @@
-import { CacheScope } from 'apollo-cache-control';
-import { text, relationship, integer } from '@keystone-next/fields';
-import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestRunner } from '@keystone-next/testing';
+import { CacheScope } from 'apollo-server-types';
+import { text, relationship, integer } from '@keystone-next/keystone/fields';
+import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
@@ -19,9 +19,7 @@ const runner = setupTestRunner({
       }),
       User: list({
         fields: {
-          name: text({
-            graphql: { cacheHint: { maxAge: 80 } },
-          }),
+          name: text({ graphql: { cacheHint: { maxAge: 80 } }, isFilterable: true }),
           favNumber: integer({
             graphql: { cacheHint: { maxAge: 10, scope: CacheScope.Private } },
           }),
@@ -177,7 +175,7 @@ describe('cache hints', () => {
         const { body, headers } = await graphQLRequest({
           query: `
           query {
-            users(where: { name: "nope" })  {
+            users(where: { name: { equals: "nope" } })  {
               name
             }
           }
@@ -270,7 +268,7 @@ describe('cache hints', () => {
           query: `
           query {
             posts {
-              author(where: { name: "nope" }) {
+              author(where: { name: { equals: "nope" } }) {
                 name
               }
             }

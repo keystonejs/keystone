@@ -36,7 +36,12 @@ export default function ForDevelopers() {
   const mq = useMediaQuery();
 
   return (
-    <Page title="KeystoneJS for Developers">
+    <Page
+      title={'KeystoneJS for Developers'}
+      description={
+        'How the Keystone developer experience gives you the power to design APIs on the fly, build custom editing experiences, and deliver content to any frontend framework. All in version controllable code.'
+      }
+    >
       <MWrapper>
         <Pill grad="grad3">Keystone for developers</Pill>
         <IntroWrapper>
@@ -162,9 +167,11 @@ export default function ForDevelopers() {
               doesn’t limit what you can put in an API. It’s flexible by design: tell Keystone what
               you want in your schema and get the matching APIs you need in return.
             </Type>
-            <Link href="/docs/apis/schema">
-              <a>Schema API reference →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/apis/schema">
+                <a>Schema API reference →</a>
+              </Link>
+            </Type>
           </div>
           <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad3">
             Working with @KeystoneJS is such a pleasant experience. After hand rolling a few GraphQL
@@ -183,9 +190,11 @@ export default function ForDevelopers() {
               configurable CMS built in. Program with JavaScript, store changes in version control,
               and integrate with your preferred CI tools.
             </Type>
-            <Link href="/for-content-management">
-              <a>Keystone for content management →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/for-content-management">
+                <a>Keystone for content management →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -242,9 +251,11 @@ export default function ForDevelopers() {
                 </Type>
               </li>
             </ul>
-            <Link href="/docs/guides/document-field-demo">
-              <a>Try the demo →</a>
-            </Link>
+            <Type as="p" look="body18">
+              <Link href="/docs/guides/document-field-demo">
+                <a>Try the demo →</a>
+              </Link>
+            </Type>
           </div>
           <div>
             <Image
@@ -288,9 +299,11 @@ export default function ForDevelopers() {
                 Build your own roles-based access controls. No limits on the amount and kind of
                 roles you can configure.
               </Type>
-              <Link href="/docs/apis/access-control">
-                <a>Access control API →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/apis/access-control">
+                  <a>Access control API →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Relational grad="grad3" />
@@ -300,9 +313,11 @@ export default function ForDevelopers() {
               <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
                 One to one. One to many. Many to many. Self-referential. It's all there.
               </Type>
-              <Link href="/docs/guides/relationships">
-                <a>Relationships guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/relationships">
+                  <a>Relationships guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Cli grad="grad3" />
@@ -313,9 +328,11 @@ export default function ForDevelopers() {
                 Kick start new projects and try examples on for size from the comfort of your
                 terminal.
               </Type>
-              <Link href="/docs/guides/cli">
-                <a>CLI guide →</a>
-              </Link>
+              <Type as="p" look="body18">
+                <Link href="/docs/guides/cli">
+                  <a>CLI guide →</a>
+                </Link>
+              </Type>
             </li>
             <li>
               <Typescript grad="grad3" />
@@ -446,11 +463,28 @@ export default function ForDevelopers() {
               gridTemplateRows: 'masonry', // experimental and hopefully supported soon
             })}
           >
+            <TweetBox user="nemeo" img="/assets/benoit-richert.jpg" grad="grad3">
+              How good is Keystone support! The answers are fast, thought through, technical when
+              needed, and always gentle... Kudos to the Keystone team, thank you very much!{' '}
+              <Emoji symbol="😊" alt="Blush" />
+            </TweetBox>
+            <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad3">
+              I love how Keystone’s access control lets me declare every single Create, Read,
+              Update, and Delete operation at both the <strong>model</strong> and{' '}
+              <strong>field</strong> level. It’s my favorite way of implementing Auth.
+            </TweetBox>
             <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad3">
               Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" />. The dev
+              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" /> The dev
               experience feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
               <Emoji symbol="🚀" alt="Rocket ship" />
+            </TweetBox>
+            <TweetBox user="divslingerx" img="/assets/divslingerx.jpg" grad="grad3">
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+                @KeystoneJS
+              </a>{' '}
+              is almost too good to be open source. I can’t stress enough how awesome the dev
+              experience is. This is what I wish WordPress was.
             </TweetBox>
             <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
               I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that

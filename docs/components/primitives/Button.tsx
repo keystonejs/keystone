@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment, FunctionComponent, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
@@ -93,6 +94,12 @@ const sizeMap = {
     borderRadius: '4px',
     height: '2.2rem',
     padding: '0 14px',
+  },
+  xsmall: {
+    fontSize: '.75rem',
+    borderRadius: '4px',
+    height: '2rem',
+    padding: '0 12px',
   },
 };
 

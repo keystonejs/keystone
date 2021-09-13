@@ -1,24 +1,63 @@
-import { text } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectValidationError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: createSchema({
       User: list({
-        fields: { name: text() },
+        fields: { name: text({ isOrderable: true }) },
         hooks: {
           validateInput: ({ resolvedData, addValidationError }) => {
             if (resolvedData.name === 'bad') {
-              addValidationError('Bad name');
+              addValidationError('This is not a valid name');
             }
           },
           validateDelete: ({ existingItem, addValidationError }) => {
             if (existingItem.name.startsWith('no delete')) {
-              addValidationError('Bad name');
+              addValidationError('Deleting this item would be bad');
             }
           },
+        },
+      }),
+      Post: list({
+        fields: {
+          neverValid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('never change me');
+                }
+              },
+            },
+          }),
+          sometimesValid: text({
+            hooks: {
+              validateInput: ({ resolvedData, addValidationError }) => {
+                if (resolvedData.sometimesValid === 'invalid') {
+                  addValidationError('not this time');
+                }
+              },
+            },
+          }),
+          doubleInvalid: text({
+            hooks: {
+              validateInput: ({ operation, addValidationError }) => {
+                if (operation === 'update') {
+                  addValidationError('first error');
+                  addValidationError('second error');
+                }
+              },
+            },
+          }),
+          noDelete: text({
+            hooks: {
+              validateDelete: ({ addValidationError }) => {
+                addValidationError('I am invincible!');
+              },
+            },
+          }),
         },
       }),
     }),
@@ -40,7 +79,9 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectValidationError(errors, [{ path: ['createUser'] }]);
+      expectValidationError(errors, [
+        { path: ['createUser'], messages: ['User: This is not a valid name'] },
+      ]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -63,7 +104,9 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectValidationError(errors, [{ path: ['updateUser'] }]);
+      expectValidationError(errors, [
+        { path: ['updateUser'], messages: ['User: This is not a valid name'] },
+      ]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -87,7 +130,9 @@ describe('List Hooks: #validateInput()', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectValidationError(errors, [{ path: ['deleteUser'] }]);
+      expectValidationError(errors, [
+        { path: ['deleteUser'], messages: ['User: Deleting this item would be bad'] },
+      ]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -123,7 +168,10 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid creates should have errors which point to the nulls in their path
-      expectValidationError(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
+      expectValidationError(errors, [
+        { path: ['createUsers', 1], messages: ['User: This is not a valid name'] },
+        { path: ['createUsers', 3], messages: ['User: This is not a valid name'] },
+      ]);
 
       // Three users should exist in the database
       const users = await context.lists.User.findMany({
@@ -172,7 +220,10 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid updates should have errors which point to the nulls in their path
-      expectValidationError(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectValidationError(errors, [
+        { path: ['updateUsers', 1], messages: ['User: This is not a valid name'] },
+        { path: ['updateUsers', 3], messages: ['User: This is not a valid name'] },
+      ]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -222,7 +273,10 @@ describe('List Hooks: #validateInput()', () => {
         ],
       });
       // The invalid deletes should have errors which point to the nulls in their path
-      expectValidationError(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
+      expectValidationError(errors, [
+        { path: ['deleteUsers', 1], messages: ['User: Deleting this item would be bad'] },
+        { path: ['deleteUsers', 3], messages: ['User: Deleting this item would be bad'] },
+      ]);
 
       // Three users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -230,6 +284,46 @@ describe('List Hooks: #validateInput()', () => {
         query: 'id name',
       });
       expect(_users.map(({ name }) => name)).toEqual(['good 5', 'no delete 1', 'no delete 2']);
+    })
+  );
+});
+
+describe('Field Hooks: #validateInput()', () => {
+  test(
+    'update',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID! $data: PostUpdateInput!) { updatePost(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: post.id, data: {} },
+      });
+      expectValidationError(errors, [
+        {
+          path: ['updatePost'],
+          messages: [
+            'Post.neverValid: never change me',
+            'Post.doubleInvalid: first error',
+            'Post.doubleInvalid: second error',
+          ],
+        },
+      ]);
+      expect(data).toEqual({ updatePost: null });
+    })
+  );
+
+  test(
+    'delete',
+    runner(async ({ context }) => {
+      const post = await context.lists.Post.createOne({ data: {} });
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
+        variables: { id: post.id },
+      });
+      expectValidationError(errors, [
+        { path: ['deletePost'], messages: ['Post.noDelete: I am invincible!'] },
+      ]);
+      expect(data).toEqual({ deletePost: null });
     })
   );
 });

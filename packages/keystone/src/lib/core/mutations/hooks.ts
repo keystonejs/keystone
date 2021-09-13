@@ -1,4 +1,4 @@
-import { promiseAllRejectWithAllErrors } from '../utils';
+import { extensionError } from '../graphql-errors';
 
 export async function runSideEffectOnlyHook<
   HookName extends string,
@@ -7,13 +7,14 @@ export async function runSideEffectOnlyHook<
       string,
       {
         hooks: {
-          [Key in HookName]?: (args: { fieldPath: string } & Args) => Promise<void> | void;
+          [Key in HookName]?: (args: { fieldKey: string } & Args) => Promise<void> | void;
         };
       }
     >;
     hooks: {
       [Key in HookName]?: (args: any) => Promise<void> | void;
     };
+    listKey: string;
   },
   Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
 >(list: List, hookName: HookName, args: Args) {
@@ -30,14 +31,24 @@ export async function runSideEffectOnlyHook<
   }
 
   // Field hooks
-  await promiseAllRejectWithAllErrors(
-    Object.entries(list.fields).map(async ([fieldKey, field]) => {
-      if (shouldRunFieldLevelHook(fieldKey)) {
-        await field.hooks[hookName]?.({ fieldPath: fieldKey, ...args });
+  const fieldsErrors: { error: Error; tag: string }[] = [];
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
+    if (shouldRunFieldLevelHook(fieldKey)) {
+      try {
+        await field.hooks[hookName]?.({ fieldKey, ...args });
+      } catch (error: any) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
       }
-    })
-  );
+    }
+  }
+  if (fieldsErrors.length) {
+    throw extensionError(hookName, fieldsErrors);
+  }
 
   // List hooks
-  await list.hooks[hookName]?.(args);
+  try {
+    await list.hooks[hookName]?.(args);
+  } catch (error: any) {
+    throw extensionError(hookName, [{ error, tag: list.listKey }]);
+  }
 }

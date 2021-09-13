@@ -2,9 +2,9 @@ import { AddressInfo } from 'net';
 // @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text, password } from '@keystone-next/fields';
-import { setupTestRunner } from '@keystone-next/testing';
+import { createSchema, list } from '@keystone-next/keystone';
+import { text, password } from '@keystone-next/keystone/fields';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
@@ -246,7 +246,7 @@ describe('Auth Hooks', () => {
         expect(authenticateUserWithPassword).toBe(null);
         expect(errors).not.toBe(undefined);
         expect(errors).toHaveLength(1);
-        expect(errors[0].message).toEqual('You attempted to perform an invalid mutation');
+        expect(errors[0].message).toEqual('You provided invalid data for this operation.');
         expect(errors[0].path).toEqual(['authenticateUserWithPassword']);
       });
     })

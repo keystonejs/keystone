@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig, expectAccessDenied, expectRelationshipError } from '../../utils';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -13,7 +13,7 @@ const runner = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          content: text(),
+          content: text({ isOrderable: true }),
         },
       }),
       User: list({
@@ -27,7 +27,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -38,15 +38,15 @@ const runner = setupTestRunner({
       }),
       NoteNoCreate: list({
         fields: {
-          content: text(),
+          content: text({ isFilterable: true }),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
         fields: {
-          username: text(),
+          username: text({ isFilterable: true }),
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
@@ -61,7 +61,7 @@ const runner2 = setupTestRunner({
     lists: createSchema({
       Note: list({
         fields: {
-          content: text(),
+          content: text({ isOrderable: true }),
         },
         hooks: {
           afterChange() {
@@ -131,7 +131,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: user1.notes.map(({ id }) => id) },
+        where: { id: { in: user1.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(user1.notes.length);
 
@@ -187,7 +187,7 @@ describe('no access control', () => {
 
       // Sanity check that the items are actually created
       const notes = await context.lists.Note.findMany({
-        where: { id_in: _user.notes.map(({ id }) => id) },
+        where: { id: { in: _user.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(_user.notes.length);
     })
@@ -202,7 +202,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -217,8 +217,8 @@ describe('with access control', () => {
                 }`,
         });
 
-        expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: null } });
-        expectAccessDenied(errors, [{ path: ['createUserToNotesNoRead', 'notes'] }]);
+        expect(data).toEqual({ createUserToNotesNoRead: { id: expect.any(String), notes: [] } });
+        expect(errors).toBe(undefined);
       })
     );
 
@@ -228,7 +228,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -256,7 +256,7 @@ describe('with access control', () => {
         });
 
         // Update an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -284,7 +284,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -307,10 +307,10 @@ describe('with access control', () => {
 
         // Confirm it didn't insert either of the records anyway
         const allNoteNoCreates = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         const allUserToNotesNoCreates = await context.lists.UserToNotesNoCreate.findMany({
-          where: { username: userName },
+          where: { username: { equals: userName } },
         });
         expect(allNoteNoCreates).toMatchObject([]);
         expect(allUserToNotesNoCreates).toMatchObject([]);
@@ -328,7 +328,7 @@ describe('with access control', () => {
         });
 
         // Update an item that does the nested create
-        const { data, errors } = await context.exitSudo().graphql.raw({
+        const { data, errors } = await context.graphql.raw({
           query: `
                 mutation {
                   updateUserToNotesNoCreate(
@@ -348,13 +348,14 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoCreate'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>',
           },
         ]);
 
         // Confirm it didn't insert the record anyway
         const items = await context.lists.NoteNoCreate.findMany({
-          where: { content: noteContent },
+          where: { content: { equals: noteContent } },
         });
         expect(items).toMatchObject([]);
       })

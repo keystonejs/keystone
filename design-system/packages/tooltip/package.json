@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/tooltip",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "license": "MIT",
   "main": "dist/tooltip.cjs.js",
   "module": "dist/tooltip.esm.js",
@@ -13,9 +13,9 @@
     "react-dom": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.8",
-    "@keystone-ui/core": "^3.0.0",
-    "@keystone-ui/popover": "^4.0.0",
+    "@babel/runtime": "^7.15.4",
+    "@keystone-ui/core": "^3.2.0",
+    "@keystone-ui/popover": "^4.0.3",
     "apply-ref": "^1.0.0"
   },
   "engines": {

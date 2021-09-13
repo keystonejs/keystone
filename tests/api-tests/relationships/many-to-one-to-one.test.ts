@@ -1,8 +1,8 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -86,28 +86,28 @@ const runner = setupTestRunner({
     lists: createSchema({
       Owner: list({
         fields: {
-          name: text(),
-          companies: relationship({ ref: 'Company.owners', many: true }),
+          name: text({ isFilterable: true }),
+          companies: relationship({ ref: 'Company.owners', many: true, isFilterable: true }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          location: relationship({ ref: 'Location.company' }),
-          owners: relationship({ ref: 'Owner.companies', many: true }),
+          location: relationship({ ref: 'Location.company', isFilterable: true }),
+          owners: relationship({ ref: 'Owner.companies', many: true, isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
           name: text(),
-          company: relationship({ ref: 'Company.location' }),
-          custodians: relationship({ ref: 'Custodian.locations', many: true }),
+          company: relationship({ ref: 'Company.location', isFilterable: true }),
+          custodians: relationship({ ref: 'Custodian.locations', many: true, isFilterable: true }),
         },
       }),
       Custodian: list({
         fields: {
-          name: text(),
-          locations: relationship({ ref: 'Location.custodians', many: true }),
+          name: text({ isFilterable: true }),
+          locations: relationship({ ref: 'Location.custodians', many: true, isFilterable: true }),
         },
       }),
     }),
@@ -123,7 +123,11 @@ describe(`One-to-one relationships`, () => {
         const owner = await createCompanyAndLocation(context);
         const name1 = owner.companies[0].location.custodians[0].name;
         const owners = await context.lists.Owner.findMany({
-          where: { companies_some: { location: { custodians_some: { name: name1 } } } },
+          where: {
+            companies: {
+              some: { location: { custodians: { some: { name: { equals: name1 } } } } },
+            },
+          },
           query: 'id companies { location { custodians { name } } }',
         });
         expect(owners.length).toEqual(1);
@@ -137,7 +141,9 @@ describe(`One-to-one relationships`, () => {
         const owner = await createCompanyAndLocation(context);
         const name1 = owner.name;
         const custodians = await context.lists.Custodian.findMany({
-          where: { locations_some: { company: { owners_some: { name: name1 } } } },
+          where: {
+            locations: { some: { company: { owners: { some: { name: { equals: name1 } } } } } },
+          },
           query: 'id locations { company { owners { name } } }',
         });
         expect(custodians.length).toEqual(2);
@@ -151,10 +157,16 @@ describe(`One-to-one relationships`, () => {
         const name1 = owner.name;
         const owners = await context.lists.Owner.findMany({
           where: {
-            companies_some: {
-              location: {
-                custodians_some: {
-                  locations_some: { company: { owners_some: { name: name1 } } },
+            companies: {
+              some: {
+                location: {
+                  custodians: {
+                    some: {
+                      locations: {
+                        some: { company: { owners: { some: { name: { equals: name1 } } } } },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -174,10 +186,16 @@ describe(`One-to-one relationships`, () => {
 
         const custodians = await context.lists.Custodian.findMany({
           where: {
-            locations_some: {
-              company: {
-                owners_some: {
-                  companies_some: { location: { custodians_some: { name: name1 } } },
+            locations: {
+              some: {
+                company: {
+                  owners: {
+                    some: {
+                      companies: {
+                        some: { location: { custodians: { some: { name: { equals: name1 } } } } },
+                      },
+                    },
+                  },
                 },
               },
             },

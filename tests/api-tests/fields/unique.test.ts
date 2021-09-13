@@ -1,7 +1,7 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
-import { setupTestEnv, setupTestRunner } from '@keystone-next/testing';
+import { createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestEnv, setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectPrismaError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -16,7 +16,7 @@ testModules
   )
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-      describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
+      describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
             mod.beforeEach();
@@ -44,7 +44,7 @@ testModules
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
-                    isUnique: true,
+                    isIndexed: 'unique',
                     ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                   }),
                 },
@@ -74,8 +74,10 @@ testModules
               {
                 path: ['createTest'],
                 message: expect.stringMatching(
-                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
                 ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })
@@ -102,8 +104,10 @@ testModules
               {
                 path: ['bar'],
                 message: expect.stringMatching(
-                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
                 ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })
@@ -136,7 +140,7 @@ testModules
   )
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-      describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
+      describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         test('Ensure non-supporting fields throw an error', async () => {
           // Try to create a thing and have it fail
           let erroredOut = false;
@@ -148,7 +152,7 @@ testModules
                     fields: {
                       name: text(),
                       testField: mod.typeFunction({
-                        isUnique: true,
+                        isIndexed: 'unique',
                         ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                       }),
                     },
@@ -158,8 +162,10 @@ testModules
                 files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),
             });
-          } catch (error) {
-            expect(error.message).toMatch('isUnique is not a supported option for field type');
+          } catch (error: any) {
+            expect(error.message).toMatch(
+              "isIndexed: 'unique' is not a supported option for field type"
+            );
             erroredOut = true;
           }
           expect(erroredOut).toEqual(true);

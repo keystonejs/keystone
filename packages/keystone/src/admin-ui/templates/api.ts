@@ -1,6 +1,6 @@
 export const apiTemplate = `
 import keystoneConfig from '../../../../keystone';
-import { initConfig, createSystem, createApolloServerMicro } from '@keystone-next/keystone';
+import { initConfig, createSystem, createApolloServerMicro } from '@keystone-next/keystone/system';
 import { PrismaClient } from '.prisma/client';
 
 const initializedKeystoneConfig = initConfig(keystoneConfig);
@@ -9,7 +9,7 @@ const apolloServer = createApolloServerMicro({
   graphQLSchema,
   createContext,
   sessionStrategy: initializedKeystoneConfig.session ? initializedKeystoneConfig.session() : undefined,
-  apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
+  graphqlConfig: initializedKeystoneConfig.graphql,
   connectionPromise: keystone.connect(),
 });
 
@@ -18,5 +18,5 @@ export const config = {
     bodyParser: false,
   },
 };
-export default apolloServer.createHandler({ path: '/api/graphql' });
+export default apolloServer.createHandler({ path: initializedKeystoneConfig.graphql?.path || '/api/graphql' });
 `;

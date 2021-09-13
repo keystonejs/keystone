@@ -10,23 +10,18 @@ type GraphQLErrorNoticeProps = {
 
 export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeProps) {
   if (networkError) {
-    return <Notice tone="negative">{networkError.message}</Notice>;
+    return (
+      <Notice tone="negative" marginBottom="large">
+        {networkError.message}
+      </Notice>
+    );
   }
   if (errors?.length) {
     return (
-      <Stack gap="small">
-        {errors.map(err => {
-          const errButAny: any = err;
-          if (
-            err.message === 'You attempted to perform an invalid mutation' &&
-            errButAny.data?.messages?.length
-          ) {
-            return errButAny.data.messages.map((message: string) => (
-              <Notice tone="negative">{message}</Notice>
-            ));
-          }
-          return <Notice tone="negative">{err.message}</Notice>;
-        })}
+      <Stack gap="small" marginBottom="large">
+        {errors.map(err => (
+          <Notice tone="negative">{err.message}</Notice>
+        ))}
       </Stack>
     );
   }

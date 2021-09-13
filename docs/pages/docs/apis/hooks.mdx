@@ -1,4 +1,6 @@
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Hooks API
 
@@ -13,8 +15,8 @@ All hook functions are async and, with the exception of `resolveInput`, do not r
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -70,7 +72,7 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | Argument        | Description                                                                                                                                                                       |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                            |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                       |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                        |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                         |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                     |
 | `existingItem`  | The currently stored item (`undefined` for `create` operations). This object is an unresolved list item. [list item API](./list-items) for more details on unresolved list items. |
@@ -78,8 +80,8 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                   |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -102,7 +104,7 @@ export default config({
           hooks: {
             resolveInput: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -132,7 +134,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | Argument                  | Description                                                                                                                                                                                                 |
 | :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`                 | The key of the list being operated on.                                                                                                                                                                      |
-| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                                                                 |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                                  |
 | `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
 | `originalInput`           | The value of `data` passed into the mutation.                                                                                                                                                               |
 | `existingItem`            | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -141,8 +143,8 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -163,7 +165,7 @@ export default config({
           hooks: {
             validateInput: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -188,7 +190,7 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 | Argument        | Description                                                                                                                                                                                                 |
 | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                                                      |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                                                 |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                                  |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                               |
 | `existingItem`  | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -196,8 +198,8 @@ It is invoked after all `validateInput` hooks have been run, but before the data
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                             |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -217,7 +219,7 @@ export default config({
           hooks: {
             beforeChange: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -239,7 +241,7 @@ The `afterChange` function is used to perform side effects after the data for a 
 | Argument        | Description                                                                                                                                                                                                  |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`       | The key of the list being operated on.                                                                                                                                                                       |
-| `fieldPath`     | The path of the field being operated on (field hooks only).                                                                                                                                                  |
+| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                                   |
 | `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                                    |
 | `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                                |
 | `existingItem`  | The previous value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
@@ -247,8 +249,8 @@ The `afterChange` function is used to perform side effects after the data for a 
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -268,7 +270,7 @@ export default config({
           hooks: {
             afterChange: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               originalInput,
               existingItem,
@@ -300,15 +302,15 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | Argument                  | Description                                                                                                                                                   |
 | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`                 | The key of the list being operated on.                                                                                                                        |
-| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                   |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                    |
 | `operation`               | The operation being performed (`'delete'`).                                                                                                                   |
 | `existingItem`            | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`                 | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -327,7 +329,7 @@ export default config({
           hooks: {
             validateDelete: async ({
               listKey,
-              fieldPath,
+              fieldKey,
               operation,
               existingItem,
               context,
@@ -350,14 +352,14 @@ It is invoked after all `validateDelete` hooks have been run.
 | Argument       | Description                                                                                                                                                   |
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`      | The key of the list being operated on.                                                                                                                        |
-| `fieldPath`    | The path of the field being operated on (field hooks only).                                                                                                   |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                    |
 | `operation`    | The operation being performed (`'delete'`).                                                                                                                   |
 | `existingItem` | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -370,7 +372,7 @@ export default config({
       fields: {
         fieldName: text({
           hooks: {
-            beforeDelete: async ({ listKey, fieldPath, operation, existingItem, context }) => {
+            beforeDelete: async ({ listKey, fieldKey, operation, existingItem, context }) => {
               /* ... */
             },
           },
@@ -388,14 +390,14 @@ The `afterDelete` function is used to perform side effects after the data for a 
 | Argument       | Description                                                                                                                                                  |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `listKey`      | The key of the list being operated on.                                                                                                                       |
-| `fieldPath`    | The path of the field being operated on (field hooks only).                                                                                                  |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                   |
 | `operation`    | The operation being performed (`'delete'`).                                                                                                                  |
 | `existingItem` | The value of the item, now deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                              |
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
 
 export default config({
   lists: createSchema({
@@ -408,7 +410,7 @@ export default config({
       fields: {
         fieldName: text({
           hooks: {
-            afterDelete: async ({ listKey, fieldPath, operation, existingItem, context }) => {
+            afterDelete: async ({ listKey, fieldKey, operation, existingItem, context }) => {
               /* ... */
             },
           },
@@ -438,4 +440,15 @@ The data resolving steps are applied in the following order:
 5. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field, which will the current field value on `resolvedData`.
 6. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Hooks Guide"
+    href="/docs/guides/hooks"
+    >
+    Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs with your own business logic.
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="Hooks let you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.">{children}</Markdown>;

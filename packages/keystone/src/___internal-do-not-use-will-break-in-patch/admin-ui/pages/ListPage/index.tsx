@@ -1,8 +1,8 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
@@ -11,12 +11,13 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
   DataGetter,
   DeepNullable,
   makeDataGetter,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
@@ -32,9 +33,7 @@ import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { useSort } from './useSort';
 
-type ListPageProps = {
-  listKey: string;
-};
+type ListPageProps = { listKey: string };
 
 let listMetaGraphqlQuery: TypedDocumentNode<
   {
@@ -43,13 +42,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list: {
           hideCreate: boolean;
           hideDelete: boolean;
-
-          fields: {
-            path: string;
-            listView: {
-              fieldMode: 'read' | 'hidden';
-            };
-          }[];
+          fields: { path: string; listView: { fieldMode: 'read' | 'hidden' } }[];
         } | null;
       };
     };
@@ -82,9 +75,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey);
-    router.replace({
-      pathname: router.pathname,
-    });
+    router.replace({ pathname: router.pathname });
   };
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
@@ -102,12 +93,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
           parsed = JSON.parse(queryParamsFromLocalStorage!);
         } catch (err) {}
         if (parsed) {
-          router.replace({
-            query: {
-              ...router.query,
-              ...parsed,
-            },
-          });
+          router.replace({ query: { ...router.query, ...parsed } });
         }
       }
     },
@@ -176,12 +162,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $orderBy: [${
+      query ($where: ${list.gqlNames.whereInputName}, $take: Int!, $skip: Int!, $orderBy: [${
         list.gqlNames.listOrderName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,first: $first, skip: $skip, orderBy: $orderBy) {
+        }(where: $where,take: $take, skip: $skip, orderBy: $orderBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
@@ -197,7 +183,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
       errorPolicy: 'all',
       variables: {
         where: filters.where,
-        first: pageSize,
+        take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
       },
@@ -207,19 +193,13 @@ const ListPage = ({ listKey }: ListPageProps) => {
   let [dataState, setDataState] = useState({ data: newData, error: newError });
 
   if (newData && dataState.data !== newData) {
-    setDataState({
-      data: newData,
-      error: newError,
-    });
+    setDataState({ data: newData, error: newError });
   }
 
   const { data, error } = dataState;
 
   const dataGetter = makeDataGetter<
-    DeepNullable<{
-      count: number;
-      items: { id: string; [key: string]: any }[];
-    }>
+    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
   >(data, error?.graphQLErrors);
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
@@ -236,15 +216,11 @@ const ListPage = ({ listKey }: ListPageProps) => {
         newSelectedItems.add(item.id);
       }
     });
-    setSelectedItems({
-      itemsFromServer: data.items,
-      selectedItems: newSelectedItems,
-    });
+    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems });
   }
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
-
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
@@ -436,14 +412,16 @@ function DeleteManyButton({
     useMemo(
       () =>
         gql`
-  mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
-    ${list.gqlNames.deleteManyMutationName}(where: $where) {
-      id
-    }
-  }
+        mutation($where: [${list.gqlNames.whereUniqueInputName}!]!) {
+          ${list.gqlNames.deleteManyMutationName}(where: $where) {
+            id
+            ${list.labelField}
+          }
+        }
 `,
       [list]
-    )
+    ),
+    { errorPolicy: 'all' }
   );
   const [isOpen, setIsOpen] = useState(false);
   const toasts = useToasts();
@@ -467,20 +445,75 @@ function DeleteManyButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItems({
+              const { data, errors } = await deleteItems({
                 variables: { where: [...selectedItems].map(id => ({ id })) },
-              }).catch(err => {
+              });
+              /*
+                Data returns an array where successful deletions are item objects
+                and unsuccessful deletions are null values.
+                Run a reduce to count success and failure as well as
+                to generate the success message to be passed to the success toast
+               */
+              const { successfulItems, unsuccessfulItems, successMessage } = data[
+                list.gqlNames.deleteManyMutationName
+              ].reduce(
+                (
+                  acc: {
+                    successfulItems: number;
+                    unsuccessfulItems: number;
+                    successMessage: string;
+                  },
+                  curr: any
+                ) => {
+                  if (curr) {
+                    acc.successfulItems++;
+                    acc.successMessage =
+                      acc.successMessage === ''
+                        ? (acc.successMessage += curr[list.labelField])
+                        : (acc.successMessage += `, ${curr[list.labelField]}`);
+                  } else {
+                    acc.unsuccessfulItems++;
+                  }
+                  return acc;
+                },
+                { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
+                  successfulItems: number;
+                  unsuccessfulItems: number;
+                  successMessage: string;
+                }
+              );
+
+              // If there are errors
+              if (errors?.length) {
+                // Find out how many items failed to delete.
+                // Reduce error messages down to unique instances, and append to the toast as a message.
                 toasts.addToast({
-                  title: 'Failed to delete items',
-                  message: err.message,
                   tone: 'negative',
+                  title: `Failed to delete ${unsuccessfulItems} of ${
+                    data[list.gqlNames.deleteManyMutationName].length
+                  } ${list.plural}`,
+                  message: errors
+                    .reduce((acc, error) => {
+                      if (acc.indexOf(error.message) < 0) {
+                        acc.push(error.message);
+                      }
+                      return acc;
+                    }, [] as string[])
+                    .join('\n'),
                 });
-              });
-              toasts.addToast({
-                title: 'Deleted items successfully',
-                tone: 'positive',
-              });
-              refetch();
+              }
+
+              if (successfulItems) {
+                toasts.addToast({
+                  tone: 'positive',
+                  title: `Deleted ${successfulItems} of ${
+                    data[list.gqlNames.deleteManyMutationName].length
+                  } ${list.plural} successfully`,
+                  message: successMessage,
+                });
+              }
+
+              return refetch();
             },
           },
           cancel: {
@@ -523,7 +556,6 @@ function ListTable({
   const { query } = useRouter();
   const shouldShowLinkIcon =
     !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo;
-
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
@@ -614,7 +646,6 @@ function ListTable({
                       minHeight: 38,
                       alignItems: 'center',
                       justifyContent: 'start',
-                      // cursor: 'pointer',
                     }}
                   >
                     <CheckboxControl

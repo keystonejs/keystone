@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -39,7 +39,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -219,11 +219,11 @@ describe('no access control', () => {
         data: [
           {
             where: { id: createUser.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote.id }] } },
+            data: { notes: { set: [{ id: createNote.id }] } },
           },
           {
             where: { id: createUser2.id },
-            data: { notes: { disconnectAll: true, connect: [{ id: createNote2.id }] } },
+            data: { notes: { set: [{ id: createNote2.id }] } },
           },
         ],
         query: 'id notes { id content }',
@@ -290,7 +290,40 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ updateUser: null });
       expectRelationshipError(errors, [
-        { path: ['updateUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+        {
+          path: ['updateUser'],
+          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'errors on incomplete data',
+    runner(async ({ context }) => {
+      // Create an item to link against
+      const createUser = await context.lists.User.createOne({ data: {} });
+
+      // Create an item that does the linking
+      const { data, errors } = await context.graphql.raw({
+        query: `
+              mutation {
+                updateUser(
+                  where: { id: "${createUser.id}" },
+                  data: { notes: {} }
+                ) {
+                  id
+                }
+              }`,
+      });
+
+      expect(data).toEqual({ updateUser: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateUser'],
+          message:
+            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+        },
       ]);
     })
   );
@@ -364,7 +397,8 @@ describe('with access control', () => {
         expectRelationshipError(errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            message:
+              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
           },
         ]);
       })

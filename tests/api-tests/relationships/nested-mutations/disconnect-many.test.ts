@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { apiTestConfig } from '../../utils';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -39,7 +39,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -88,72 +88,54 @@ describe('no access control', () => {
   );
 
   test(
-    'silently succeeds if used during create',
-    runner(async ({ context }) => {
-      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
-
-      // Create an item that does the linking
-      const user = await context.lists.User.createOne({
-        data: { notes: { disconnect: [{ id: FAKE_ID }] } },
-        query: 'id notes { id content }',
-      });
-      expect(user).toMatchObject({ id: expect.any(String), notes: [] });
+    'causes a validation error if used during create',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
+          mutation {
+            createUser(data: { notes: { disconnect: [{ id: "c5b84f38256d3c2df59a0d9bf" }] } }) {
+              id
+            }
+          }
+        `,
+      }).expect(400);
+      expectGraphQLValidationError(body.errors, [
+        {
+          message: `Field "disconnect" is not defined by type "NoteRelateToManyForCreateInput". Did you mean \"connect\"?`,
+        },
+      ]);
     })
   );
 });
 
 describe('non-matching filter', () => {
   test(
-    'silently succeeds if items to disconnect cannot be found during update',
+    'errors if items to disconnect cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
-
       // Create an item to link against
       const createUser = await context.lists.User.createOne({ data: {} });
 
       // Create an item that does the linking
-      const user = await context.lists.User.updateOne({
-        where: { id: createUser.id },
-        data: { notes: { disconnect: [{ id: FAKE_ID }] } },
-        query: 'id notes { id }',
+      const { data, errors } = await context.graphql.raw({
+        query: `
+          mutation ($id: ID!) {
+            updateUser(
+              where: { id: $id }
+              data: { notes: { disconnect: [{ id: "c5b84f38256d3c2df59a0d9bf" }] } }
+            ) {
+              id
+            }
+          }
+        `,
+        variables: { id: createUser.id },
       });
-
-      expect(user).toMatchObject({ id: expect.any(String), notes: [] });
-    })
-  );
-
-  test(
-    'removes items that match, silently ignores those that do not',
-    runner(async ({ context }) => {
-      const FAKE_ID = 'c5b84f38256d3c2df59a0d9bf';
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
-
-      // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
-        data: { content: noteContent2 },
-      });
-
-      // Create an item to update
-      const createUser = await context.lists.User.createOne({
-        data: {
-          username: 'A thing',
-          notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
+      expect(data).toEqual({ updateUser: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateUser'],
+          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
         },
-      });
-
-      // Update the item and link the relationship field
-      const user = await context.lists.User.updateOne({
-        where: { id: createUser.id },
-        data: { notes: { disconnect: [{ id: createNote.id }, { id: FAKE_ID }] } },
-        query: 'id notes { id content }',
-      });
-
-      expect(user).toMatchObject({
-        id: expect.any(String),
-        notes: [{ id: expect.any(String), content: noteContent2 }],
-      });
+      ]);
     })
   );
 });
@@ -161,7 +143,7 @@ describe('non-matching filter', () => {
 describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
-      'has no impact when disconnecting directly with an id',
+      'throws when disconnecting directly with an id',
       runner(async ({ context }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
@@ -177,19 +159,36 @@ describe('with access control', () => {
             notes: { connect: [{ id: createNote.id }] },
           },
         });
-
-        // Update the item and link the relationship field
-        await context.lists.UserToNotesNoRead.updateOne({
-          where: { id: createUser.id },
-          data: { username: 'A thing', notes: { disconnect: [{ id: createNote.id }] } },
-        });
+        {
+          const { data, errors } = await context.graphql.raw({
+            query: `
+            mutation ($id: ID!, $idToDisconnect: ID!) {
+              updateUserToNotesNoRead(
+                where: { id: $id }
+                data: { notes: { disconnect: [{ id: $idToDisconnect }] } }
+              ) {
+                id
+              }
+            }
+          `,
+            variables: { id: createUser.id, idToDisconnect: createNote.id },
+          });
+          expect(data).toEqual({ updateUserToNotesNoRead: null });
+          expectRelationshipError(errors, [
+            {
+              path: ['updateUserToNotesNoRead'],
+              message:
+                'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+            },
+          ]);
+        }
 
         const data = await context.sudo().lists.UserToNotesNoRead.findOne({
           where: { id: createUser.id },
           query: 'id notes { id }',
         });
 
-        expect(data.notes).toHaveLength(0);
+        expect(data.notes).toHaveLength(1);
       })
     );
   });

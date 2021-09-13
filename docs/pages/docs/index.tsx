@@ -1,5 +1,7 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 
 import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
 import { Examples } from '../../components/docs/ExamplesList';
@@ -13,7 +15,13 @@ export default function Docs() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Keystone Docs Home'}
+      description={'Developer docs for KeystoneJS: The superpowered headless CMS for developers.'}
+      isIndexPage
+    >
       <Type as="h1" look="heading64">
         Keystone Docs
       </Type>
@@ -35,7 +43,10 @@ export default function Docs() {
             Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
             and how it delivers a developer experience that combines features, flexibility, and the
             perfect amount of abstraction to get started fast, and grow as you learn.{' '}
-            <a href="/updates/prisma-day-2021">Read the full transcript</a>.
+            <Link href="/updates/prisma-day-2021">
+              <a>Read the full transcript</a>
+            </Link>
+            .
           </Type>
         </div>
         <div>
@@ -61,7 +72,7 @@ export default function Docs() {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </div>
       </div>
@@ -96,7 +107,7 @@ export default function Docs() {
         <Well
           grad="grad2"
           heading="Keystone 5 vs Next. Which should you use?"
-          href="/docs/guides/keystone-5-vs-keystone-6-preview"
+          href="/updates/keystone-5-vs-keystone-6-preview"
         >
           We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
           with today, this guide is for you.

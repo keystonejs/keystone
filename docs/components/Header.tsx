@@ -1,12 +1,20 @@
 /** @jsx jsx  */
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  ReactNode,
+} from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
+import debounce from 'lodash.debounce';
 
-import { useCallback } from 'react';
+import { BREAK_POINTS } from '../lib/media';
 import { useMediaQuery } from '../lib/media';
-
 import { SearchField } from './primitives/SearchField';
 import { Highlight } from './primitives/Highlight';
 import { Wrapper } from './primitives/Wrapper';
@@ -20,8 +28,11 @@ import { GitHub } from './icons/GitHub';
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean };
-const HeaderContext = createContext<HeaderContextType>({ mobileNavIsOpen: false });
+type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number };
+const HeaderContext = createContext<HeaderContextType>({
+  mobileNavIsOpen: false,
+  desktopOpenState: -1,
+});
 export const useHeaderContext = () => useContext(HeaderContext);
 
 function Logo() {
@@ -94,6 +105,7 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
     <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
       <NavItem
         isActive={isActive}
+        alwaysVisible
         href={href}
         css={{
           padding: '0 !important',
@@ -108,9 +120,36 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
 export function Header() {
   const mq = useMediaQuery();
   const router = useRouter();
-  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+
+  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
+  const [desktopOpenState, setDesktopOpenState] = useState(-1);
+
+  useEffect(() => {
+    const listener = () => {
+      setMobileNavIsOpen(false);
+      setDesktopOpenState(-1);
+      const width = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      if (width > BREAK_POINTS.sm) {
+        setDesktopOpenState(-1);
+      } else {
+        setDesktopOpenState(-1);
+      }
+    };
+    window.addEventListener('resize', debounce(listener, 130));
+
+    return () => {
+      window.removeEventListener('resize', debounce(listener, 130));
+    };
+  }, [setDesktopOpenState]);
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
@@ -128,6 +167,9 @@ export function Header() {
           apiKey: '211e94c001e6b4c6744ae72fb252eaba',
           indexName: 'keystonejs',
           inputSelector: '#search-field',
+          algoliaOptions: {
+            facetFilters: ['tags:stable'],
+          },
         });
       } else if (searchAttempt >= 10) {
         // @ts-ignore
@@ -217,7 +259,6 @@ export function Header() {
 
         <LinkItem href="/why-keystone">Why Keystone</LinkItem>
         <LinkItem href="/updates">Updates</LinkItem>
-        <LinkItem href="/docs">Docs</LinkItem>
 
         {/* TODO: Add in search for mobile via this button */}
         {/*
@@ -236,8 +277,6 @@ export function Header() {
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
         </button>
         */}
-
-        <DarkModeBtn />
         <Button
           as="a"
           href="/docs"
@@ -248,8 +287,9 @@ export function Header() {
             },
           })}
         >
-          Get Started
+          Documentation
         </Button>
+        <DarkModeBtn />
         <a
           href="https://github.com/keystonejs/keystone"
           target="_blank"
@@ -268,7 +308,7 @@ export function Header() {
         >
           <GitHub css={{ height: '1.5em' }} />
         </a>
-        <HeaderContext.Provider value={{ mobileNavIsOpen }}>
+        <HeaderContext.Provider value={{ mobileNavIsOpen, desktopOpenState }}>
           <div
             ref={menuRef}
             css={mq({

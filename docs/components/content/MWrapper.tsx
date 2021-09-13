@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import type { ElementType, HTMLAttributes } from 'react';
 import { jsx } from '@emotion/react';
@@ -14,7 +15,7 @@ export function MWrapper({ as: Tag = 'div', ...props }: MWrapperProps) {
   return (
     <Tag
       css={mq({
-        margin: '0 auto',
+        margin: '4rem auto 0',
         paddingLeft: [0, null, null, null, '7.5rem'],
         paddingRight: [0, null, null, null, '7.5rem'],
       })}

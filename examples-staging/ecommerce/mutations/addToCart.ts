@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { Session } from '../types';
 
 async function addToCart(
@@ -14,7 +14,7 @@ async function addToCart(
   }
   // 2. Query the current users cart
   const allCartItems = await context.lists.CartItem.findMany({
-    where: { user: { id: sesh.itemId }, product: { id: productId } },
+    where: { user: { id: { equals: sesh.itemId } }, product: { id: { equals: productId } } },
     query: 'id quantity',
   });
 

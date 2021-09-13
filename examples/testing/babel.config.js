@@ -23,10 +23,4 @@ module.exports = {
     '@babel/proposal-object-rest-spread',
     '@babel/plugin-syntax-dynamic-import',
   ],
-  overrides: [
-    {
-      include: 'packages/fields/src/Controller.js',
-      presets: ['@babel/preset-env'],
-    },
-  ],
 };

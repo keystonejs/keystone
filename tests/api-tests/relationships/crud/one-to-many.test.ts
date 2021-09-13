@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import type { KeystoneContext } from '@keystone-next/types';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -90,14 +90,14 @@ const runner = setupTestRunner({
     lists: createSchema({
       Company: list({
         fields: {
-          name: text(),
-          locations: relationship({ ref: 'Location.company', many: true }),
+          name: text({ isFilterable: true, isOrderable: true }),
+          locations: relationship({ ref: 'Location.company', many: true, isFilterable: true }),
         },
       }),
       Location: list({
         fields: {
-          name: text(),
-          company: relationship({ ref: 'Company.locations' }),
+          name: text({ isFilterable: true }),
+          company: relationship({ ref: 'Company.locations', isFilterable: true }),
         },
       }),
     }),
@@ -118,7 +118,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const locations = await context.lists.Location.findMany({
-              where: { company: { name_contains: name } },
+              where: { company: { name: { contains: name } } },
             });
             expect(locations.length).toEqual(count);
           })
@@ -126,27 +126,27 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      'is_null: true',
+      'is null',
       runner(async ({ context }) => {
         await createReadData(context);
         const locations = await context.lists.Location.findMany({
-          where: { company_is_null: true },
+          where: { company: null },
         });
         expect(locations.length).toEqual(1);
       })
     );
     test(
-      'is_null: false',
+      'is not null',
       runner(async ({ context }) => {
         await createReadData(context);
         const locations = await context.lists.Location.findMany({
-          where: { company_is_null: false },
+          where: { NOT: { company: null } },
         });
         expect(locations.length).toEqual(6);
       })
     );
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -157,7 +157,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_some: { name } },
+              where: { locations: { some: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -165,7 +165,7 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -176,7 +176,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 4],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_none: { name } },
+              where: { locations: { none: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -184,7 +184,7 @@ describe(`One-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -195,7 +195,7 @@ describe(`One-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const companies = await context.lists.Company.findMany({
-              where: { locations_every: { name } },
+              where: { locations: { every: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
           })
@@ -427,7 +427,7 @@ describe(`One-to-many relationships`, () => {
     );
 
     test(
-      'With disconnectAll',
+      'With set: []',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createCompanyAndLocation(context);
@@ -435,7 +435,7 @@ describe(`One-to-many relationships`, () => {
         // Run the query to disconnect the location from company
         const _company = await context.lists.Company.updateOne({
           where: { id: company.id },
-          data: { locations: { disconnectAll: true } },
+          data: { locations: { set: [] } },
           query: 'id locations { id name }',
         });
         expect(_company.id).toEqual(company.id);

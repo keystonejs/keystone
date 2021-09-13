@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -19,12 +19,14 @@ const runner = setupTestRunner({
       }),
       PostLimitedRead: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           content: text(),
         },
         access: {
-          // Limit read access to the first post only
-          read: { name_in: [postNames[1]] },
+          filter: {
+            // Limit read access to the first post only
+            query: () => ({ name: { in: [postNames[1]] } }),
+          },
         },
       }),
     }),
@@ -97,7 +99,7 @@ describe('relationship filtering with access control', () => {
         where: { id: user.id },
         // Knowingly filter to an ID I don't have read access to
         // to see if the filter is correctly "AND"d with the access control
-        query: `id username posts(where: { id_in: ["${postIds[2]}"] }) { id }`,
+        query: `id username posts(where: { id: { in: ["${postIds[2]}"] } }) { id }`,
       });
 
       expect(item).toMatchObject({ id: expect.any(String), username, posts: [] });

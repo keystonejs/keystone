@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestRunner } from '@keystone-next/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import config from '../keystone';
 
 const FAKE_ID = 'cinjfgbkjnfg';
@@ -311,13 +311,13 @@ describe(`Custom mutations`, () => {
         await q({ query, variables: { productId: product2.id } });
         await q({ query, variables: { productId: product1.id } });
         const result1 = await context.sudo().lists.CartItem.findMany({
-          where: { product: { id: product1.id } },
+          where: { product: { id: { equals: product1.id } } },
           query: 'quantity',
         });
         expect(result1).toHaveLength(1);
         expect(result1[0].quantity).toEqual(3);
         const result2 = await context.sudo().lists.CartItem.findMany({
-          where: { product: { id: product2.id } },
+          where: { product: { id: { equals: product2.id } } },
           query: 'quantity',
         });
         expect(result2).toHaveLength(1);

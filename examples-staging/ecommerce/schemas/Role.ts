@@ -1,14 +1,16 @@
-import { relationship, text } from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+import { relationship, text } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-next/keystone';
 import { permissions } from '../access';
 import { permissionFields } from './fields';
 
 export const Role = list({
   access: {
-    create: permissions.canManageRoles,
-    read: permissions.canManageRoles,
-    update: permissions.canManageRoles,
-    delete: permissions.canManageRoles,
+    operation: {
+      create: permissions.canManageRoles,
+      query: permissions.canManageRoles,
+      update: permissions.canManageRoles,
+      delete: permissions.canManageRoles,
+    },
   },
   ui: {
     hideCreate: args => !permissions.canManageRoles(args),

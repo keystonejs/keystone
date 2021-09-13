@@ -1,23 +1,22 @@
-import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '@keystone-next/types';
+import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 
-export function getDBProvider(db: KeystoneConfig['db']): DatabaseProvider {
-  if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
-    return 'postgresql';
-  } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
-    return 'sqlite';
-  } else {
-    throw new Error(
-      'Invalid db configuration. Please specify db.provider as either "sqlite" or "postgresql"'
-    );
-  }
-}
-
-function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
+function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
+  // This function creates a GraphQLSchema based on a modified version of the provided config.
+  // The modifications are:
+  //  * All list level access control is disabled
+  //  * All field level access control is disabled
+  //  * All graphql.omit configuration is disabled
+  //  * All fields are explicitly made filterable and orderable
+  //
+  // These changes result in a schema without any restrictions on the CRUD
+  // operations that can be run.
+  //
+  // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
   const transformedConfig: KeystoneConfig = {
     ...config,
     lists: Object.fromEntries(
@@ -26,13 +25,21 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
           listKey,
           {
             ...list,
-            access: true,
+            access: { operation: {}, item: {}, filter: {} },
+            graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
                 return [
                   fieldKey,
                   (data: FieldData) => {
-                    return { ...field(data), access: true };
+                    const f = field(data);
+                    return {
+                      ...f,
+                      access: () => true,
+                      isFilterable: true,
+                      isOrderable: true,
+                      graphql: { ...(f.graphql || {}), omit: [] },
+                    };
                   },
                 ];
               })
@@ -48,14 +55,13 @@ function getInternalGraphQLSchema(config: KeystoneConfig, provider: DatabaseProv
 }
 
 export function createSystem(config: KeystoneConfig) {
-  const provider = getDBProvider(config.db);
-  const lists = initialiseLists(config.lists, provider);
+  const lists = initialiseLists(config.lists, config.db.provider);
 
   const adminMeta = createAdminMeta(config, lists);
 
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
 
-  const internalGraphQLSchema = getInternalGraphQLSchema(config, provider);
+  const sudoGraphQLSchema = getSudoGraphQLSchema(config, config.db.provider);
 
   return {
     graphQLSchema,
@@ -63,7 +69,7 @@ export function createSystem(config: KeystoneConfig) {
     getKeystone: (PrismaClient: any) => {
       const prismaClient = new PrismaClient({
         log: config.db.enableLogging && ['query'],
-        datasources: { [provider]: { url: config.db.url } },
+        datasources: { [config.db.provider]: { url: config.db.url } },
       });
       prismaClient.$on('beforeExit', async () => {
         // Prisma is failing to properly clean up its child processes
@@ -75,18 +81,19 @@ export function createSystem(config: KeystoneConfig) {
 
       const createContext = makeCreateContext({
         graphQLSchema,
-        internalSchema: internalGraphQLSchema,
+        sudoGraphQLSchema,
         config,
         prismaClient,
         gqlNamesByList: Object.fromEntries(
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
+        lists,
       });
 
       return {
         async connect() {
           await prismaClient.$connect();
-          const context = createContext({ skipAccessControl: true, schemaName: 'internal' });
+          const context = createContext({ sudo: true });
           await config.db.onConnect?.(context);
         },
         async disconnect() {

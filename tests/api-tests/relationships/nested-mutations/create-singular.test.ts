@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -24,7 +24,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { read: () => false },
+        access: { operation: { query: () => false } },
       }),
 
       EventToGroupNoRead: list({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { read: false },
+        graphql: { omit: ['query'] },
       }),
 
       EventToGroupNoReadHard: list({
@@ -50,28 +50,28 @@ const runner = setupTestRunner({
 
       GroupNoCreate: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
         },
-        access: { create: () => false },
+        access: { operation: { create: () => false } },
       }),
 
       EventToGroupNoCreate: list({
         fields: {
-          title: text(),
+          title: text({ isFilterable: true }),
           group: relationship({ ref: 'GroupNoCreate' }),
         },
       }),
 
       GroupNoCreateHard: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
         },
-        access: { create: false },
+        graphql: { omit: ['create'] },
       }),
 
       EventToGroupNoCreateHard: list({
         fields: {
-          title: text(),
+          title: text({ isFilterable: true }),
           group: relationship({ ref: 'GroupNoCreateHard' }),
         },
       }),
@@ -80,7 +80,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { update: () => false },
+        access: { operation: { update: () => false } },
       }),
 
       EventToGroupNoUpdate: list({
@@ -94,7 +94,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        access: { update: false },
+        graphql: { omit: ['update'] },
       }),
 
       EventToGroupNoUpdateHard: list({
@@ -164,7 +164,7 @@ describe('no access control', () => {
 describe('with access control', () => {
   [
     { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: true, func: 'read: false' },
+    { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
     { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
     { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
     { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
@@ -264,15 +264,15 @@ describe('with access control', () => {
               ]);
             }
             // Confirm it didn't insert either of the records anyway
-            const data1 = await context.lists[group.name].findMany({
-              where: { name: groupName },
+            const data1 = await context.sudo().lists[group.name].findMany({
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(data1).toMatchObject([]);
 
             // Confirm it didn't insert either of the records anyway
-            const data2 = await context.lists[`EventTo${group.name}`].findMany({
-              where: { title: eventName },
+            const data2 = await context.sudo().lists[`EventTo${group.name}`].findMany({
+              where: { title: { equals: eventName } },
               query: 'id title',
             });
             expect(data2).toMatchObject([]);
@@ -325,8 +325,8 @@ describe('with access control', () => {
             }
 
             // Confirm it didn't insert the record anyway
-            const groups = await context.lists[group.name].findMany({
-              where: { name: groupName },
+            const groups = await context.sudo().lists[group.name].findMany({
+              where: { name: { equals: groupName } },
               query: 'id name',
             });
             expect(groups).toMatchObject([]);

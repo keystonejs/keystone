@@ -1,15 +1,16 @@
 /** @jsx jsx  */
-import { ComponentProps, HTMLAttributes, ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
-import { getServerSideProps } from '../../components/Markdown';
+import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
 import { Button } from '../../components/primitives/Button';
 import { Alert } from '../../components/primitives/Alert';
 import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
+import { Emoji } from '../../components/primitives/Emoji';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -119,11 +120,17 @@ function Box({ link, heading, children, ...props }: BoxProps) {
   );
 }
 
-export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
+export default function WhatsNew() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Latest News" {...props}>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Latest News'}
+      description={'What’s new with Keystone. A snapshot of announcements and recent releases.'}
+      isIndexPage
+    >
       <Type as="h1" look="heading64">
         Latest News
       </Type>
@@ -138,6 +145,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         , and subscribe to notifications on
         <a href="https://github.com/keystonejs/keystone"> GitHub</a>.
       </Type>
+
       <Alert look="tip" css={{ margin: '2rem 0' }}>
         <span
           css={{
@@ -159,7 +167,63 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           gap: 0,
         })}
       >
-        <Timeline date="10th July 2021" isLatest />
+        <Timeline date="17th August 2021" isLatest />
+        <Box heading="New & improved GraphQL API">
+          A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
+          for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
+          <Emoji symbol="🎉" alt="Celebration" />
+          <br />
+          <br />
+          We’ve made the experience of working with Keystone’s GraphQL API easier to program and
+          reason about: We've{' '}
+          <Link href="/updates/new-graphql-api">
+            <a>written a complete guide</a>
+          </Link>{' '}
+          to the improvements we've made, and it includes a{' '}
+          <Link href="/updates/new-graphql-api#upgrade-checklist">
+            <a>checklist of the steps you need to take to upgrade your Keystone projects</a>
+          </Link>
+          .
+          <br />
+          <br />
+          Be sure to check it out!
+        </Box>
+        <Timeline date="29th July 2021" />
+        <Box heading="Admin UI Customizations">
+          We're opening Admin UI up to support a more personal content experience. Now you can:
+          <ul>
+            <li>
+              embed your own{' '}
+              <Link href="/docs/guides/custom-admin-ui-logo">
+                <a>custom logo</a>
+              </Link>
+              ,
+            </li>
+            <li>
+              add{' '}
+              <Link href="/docs/guides/custom-admin-ui-pages">
+                <a>custom pages</a>
+              </Link>{' '}
+              with Admin UI routes, and
+            </li>
+            <li>
+              link to them (and elsewhere) with{' '}
+              <Link href="/docs/guides/custom-admin-ui-navigation">
+                <a>custom navigation</a>
+              </Link>
+              .
+            </li>
+          </ul>
+          To deliver a more productive editor experience that's aligned with the needs and brand of
+          your organisation.
+        </Box>
+        <Timeline date="29th July 2021" />
+        <Box link="/docs/apis/config#health-check" heading="New Health Check endpoint">
+          We've added an optional <InlineCode>/_healthcheck</InlineCode> endpoint to Keystone's
+          express server. Use it to ensure your Keystone instance is up and running with website
+          monitoring solutions.
+        </Box>
+        <Timeline date="10th July 2021" />
         <Box heading="Watch Jed's Prisma Day workshop">
           <div
             css={{
@@ -184,7 +248,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <a href="https://github.com/keystonejs/prisma-day-2021-workshop">
             Follow along in with the repo
@@ -193,13 +257,23 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           Next.js and Tailwind, that gives you:
           <ul>
             <li>
-              Public <a href="/docs/guides/auth">auth</a> and signup
+              Public{' '}
+              <Link href="/docs/guides/auth">
+                <a>auth</a>
+              </Link>{' '}
+              and signup
             </li>
             <li>
-              Role-based <a href="/docs/guides/access-control">access control</a>
+              Role-based{' '}
+              <Link href="/docs/guides/access-control">
+                <a>access control</a>
+              </Link>
             </li>
             <li>
-              Custom components in the <a href="/docs/guides/document-field-demo">document field</a>
+              Custom components in the{' '}
+              <Link href="/docs/guides/document-field-demo">
+                <a>document field</a>
+              </Link>
             </li>
           </ul>
           Editors can embed audience Polls in post content, and authenticated visitors can make
@@ -217,7 +291,11 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         <Timeline date="10th July 2021" />
         <Box heading="Watch Jed's Prisma Day talk">
           Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
-          below, or <a href="/updates/prisma-day-2021">read the full transcript</a>.
+          below, or{' '}
+          <Link href="/updates/prisma-day-2021">
+            <a>read the full transcript</a>
+          </Link>
+          .
           <div
             css={{
               position: 'relative',
@@ -241,16 +319,30 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </Box>
         <Timeline date="29th June 2021" />
         <Box heading="New website">
           We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
-          and background on <a href="/why-keystone">why Keystone</a> is built for projects that need
-          to scale on their own terms. Navigating the docs is easier with breadcrumbs, index pages
-          for <a href="/docs/walkthroughs">Walkthroughs</a>, <a href="/docs/guides">Guides</a>, and{' '}
-          <a href="/docs/apis">APIs</a>, and a better mobile experience. We hope you like it ❤️
+          and background on{' '}
+          <Link href="/why-keystone">
+            <a>why Keystone</a>
+          </Link>{' '}
+          is built for projects that need to scale on their own terms. Navigating the docs is easier
+          with breadcrumbs, index pages for{' '}
+          <Link href="/docs/walkthroughs">
+            <a>Walkthroughs</a>
+          </Link>
+          ,{' '}
+          <Link href="/docs/guides">
+            <a>Guides</a>
+          </Link>
+          , and{' '}
+          <Link href="/docs/apis">
+            <a>APIs</a>
+          </Link>
+          , and a better mobile experience. We hope you like it ❤️
         </Box>
         <Timeline date="21st June 2021" />
         <Box heading="New guides">
@@ -258,19 +350,29 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           written the following guides:
           <ul>
             <li>
-              <a href="/docs/guides/virtual-fields">Virtual fields</a>
+              <Link href="/docs/guides/virtual-fields">
+                <a>Virtual fields</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/relationships">Relationships</a>
+              <Link href="/docs/guides/relationships">
+                <a>Relationships</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/hooks">Hooks</a>
+              <Link href="/docs/guides/hooks">
+                <a>Hooks</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/filters">Query Filters</a>
+              <Link href="/docs/guides/filters">
+                <a>Query Filters</a>
+              </Link>
             </li>
             <li>
-              <a href="/docs/guides/testing">Testing</a>
+              <Link href="/docs/guides/testing">
+                <a>Testing</a>
+              </Link>
             </li>
           </ul>
         </Box>
@@ -292,11 +394,15 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           A long awaited feature: you can now find an item by unique fields in your schema. It works
           for{' '}
           <InlineCode>
-            <a href="/docs/apis/fields#text">text</a>
+            <Link href="/docs/apis/fields#text">
+              <a>text</a>
+            </Link>
           </InlineCode>{' '}
           and{' '}
           <InlineCode>
-            <a href="/docs/apis/fields#integer">integer</a>
+            <Link href="/docs/apis/fields#integer">
+              <a>integer</a>
+            </Link>
           </InlineCode>{' '}
           fields that have <InlineCode>isUnique: true</InlineCode> set.
         </Box>
@@ -338,9 +444,9 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
           You can now use SQLite to store data via Prisma. It includes support for the{' '}
           <InlineCode>file</InlineCode> and <InlineCode>cloudinary</InlineCode> field types, and
           lets you{' '}
-          <a href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
-            embed Keystone inside a Next.js frontend app
-          </a>
+          <Link href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
+            <a>embed Keystone inside a Next.js frontend app</a>
+          </Link>
           .
         </Box>
         <Timeline date="6th April 2021" />
@@ -361,7 +467,7 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
         </Box>
         <Timeline date="19th March 2021" isFirst />
         <Box
-          link="/docs/guides/keystone-5-vs-keystone-6-preview"
+          link="/updates/keystone-5-vs-keystone-6-preview"
           heading="Guidance on using Keystone 5 vs Keystone 6 "
         >
           Keystone 5 is now in maintenance mode while we focus all our efforts on building Keystone
@@ -391,4 +497,4 @@ export default function WhatsNew(props: ComponentProps<typeof DocsPage>) {
   );
 }
 
-export { getServerSideProps };
+export { getStaticProps };

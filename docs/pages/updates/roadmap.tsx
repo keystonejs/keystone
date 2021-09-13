@@ -2,7 +2,7 @@
 import { ComponentProps, Fragment, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 
-import { getServerSideProps } from '../../components/Markdown';
+import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
 import { Button } from '../../components/primitives/Button';
 import { Highlight } from '../../components/primitives/Highlight';
@@ -162,11 +162,16 @@ function RoadmapItem({ title, status = 'not started', children }: RoadmapItemPro
   );
 }
 
-export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
+export default function Roadmap() {
   const mq = useMediaQuery();
 
   return (
-    <DocsPage noRightNav noProse title="Roadmap" {...props}>
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Roadmap'}
+      description={'Discover where KeystoneJS is headed, and why we’re going there.'}
+    >
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
@@ -235,7 +240,7 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
 
       {/* <Alert css={{ margin: '2rem 0 4rem' }}>
         If you're assessing whether to start a project today on Keystone 5 or 6, check our{' '}
-        <Link href="/docs/guides/keystone-5-vs-keystone-6-preview">
+        <Link href="/updates/keystone-5-vs-keystone-6-preview">
           <a>Comparison Page</a>
         </Link>
       </Alert> */}
@@ -411,4 +416,4 @@ export default function Roadmap(props: ComponentProps<typeof DocsPage>) {
   );
 }
 
-export { getServerSideProps };
+export { getStaticProps };

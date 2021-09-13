@@ -29,13 +29,15 @@ function ConstructionIllustration() {
   );
 }
 
+// Modifying this code may have security implications
+// See.. https://github.com/keystonejs/keystone/pull/6411#issuecomment-906085389
 const v5PathList = ['/tutorials', '/guides', '/keystonejs', '/api', '/discussions'];
 
 export default function NotFoundPage() {
   const { asPath } = useRouter();
-  const tryV5Link = v5PathList.some(i => asPath.startsWith(i));
+  const tryV5Link = asPath.startsWith('/') && v5PathList.some(i => asPath.startsWith(i));
   return (
-    <Page title="Page Not Found (404)">
+    <Page title={'Page Not Found (404)'} description={'Page Not Found (404)'}>
       <div
         css={{
           display: 'grid',
@@ -53,7 +55,7 @@ export default function NotFoundPage() {
         {tryV5Link ? (
           <Type as="p" look="body18bold" margin="2rem 0 0">
             If you were looking for a page in the Keystone 5 docs, try{' '}
-            <a href="https://v5.keystonejs.com">v5.keystonejs.com{asPath}</a>.
+            <a href={'https://v5.keystonejs.com' + asPath}>https://v5.keystonejs.com{asPath}</a>.
           </Type>
         ) : null}
         <ConstructionIllustration />

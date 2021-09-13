@@ -1,9 +1,9 @@
-import { text, timestamp, password } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text, timestamp, password } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-import type { KeystoneContext } from '@keystone-next/types';
-import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/testing';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
@@ -36,14 +36,16 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text({ isUnique: true }),
+            email: text({ isIndexed: 'unique', isFilterable: true }),
             password: password(),
           },
           access: {
-            create: defaultAccess,
-            read: defaultAccess,
-            update: defaultAccess,
-            delete: defaultAccess,
+            operation: {
+              create: defaultAccess,
+              query: defaultAccess,
+              update: defaultAccess,
+              delete: defaultAccess,
+            },
           },
         }),
       }),
@@ -82,8 +84,14 @@ describe('Auth testing', () => {
         await context.sudo().lists[listKey].createMany({ data });
       }
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
-      expect(data).toEqual({ users: null });
-      expectAccessDenied(errors, [{ path: ['users'] }]);
+      expect(data).toEqual({ users: [] });
+      expect(errors).toBe(undefined);
+
+      const result = await context.graphql.raw({
+        query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
+      });
+      expect(result.data).toEqual({ updateUser: null });
+      expectAccessDenied('dev', false, undefined, result.errors, [{ path: ['updateUser'] }]);
     })
   );
 
@@ -113,13 +121,12 @@ describe('Auth testing', () => {
         ),
       })
     ).rejects.toMatchInlineSnapshot(
-      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isUnique: true\` to the field at User.email]`
+      `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique', isFilterable: true\` to the field at User.email]`
     );
   });
 
   describe('logged in', () => {
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip(
+    test(
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {

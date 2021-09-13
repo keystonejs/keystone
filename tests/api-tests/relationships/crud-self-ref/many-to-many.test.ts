@@ -1,8 +1,8 @@
 import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import type { KeystoneContext } from '@keystone-next/types';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -87,9 +87,9 @@ const runner = setupTestRunner({
     lists: createSchema({
       User: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           friendOf: relationship({ ref: 'User.friends', many: true }),
-          friends: relationship({ ref: 'User.friendOf', many: true }),
+          friends: relationship({ ref: 'User.friendOf', many: true, isFilterable: true }),
         },
       }),
     }),
@@ -99,7 +99,7 @@ const runner = setupTestRunner({
 describe(`Many-to-many relationships`, () => {
   describe('Read', () => {
     test(
-      '_some',
+      'some',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -110,7 +110,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 0],
           ].map(async ([name, count]) => {
             const _users = await context.lists.User.findMany({
-              where: { friends_some: { name } },
+              where: { friends: { some: { name: { equals: name } } } },
             });
             expect(_users.length).toEqual(count);
           })
@@ -118,7 +118,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_none',
+      'none',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -129,7 +129,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 9],
           ].map(async ([name, count]) => {
             const _users = await context.lists.User.findMany({
-              where: { friends_none: { name } },
+              where: { friends: { none: { name: { equals: name } } } },
             });
             expect(_users.length).toEqual(count);
           })
@@ -137,7 +137,7 @@ describe(`Many-to-many relationships`, () => {
       })
     );
     test(
-      '_every',
+      'every',
       runner(async ({ context }) => {
         await createReadData(context);
         await Promise.all(
@@ -148,7 +148,7 @@ describe(`Many-to-many relationships`, () => {
             ['D', 1],
           ].map(async ([name, count]) => {
             const users = await context.lists.User.findMany({
-              where: { friends_every: { name } },
+              where: { friends: { every: { name: { equals: name } } } },
             });
             expect(users.length).toEqual(count);
           })
@@ -360,7 +360,7 @@ describe(`Many-to-many relationships`, () => {
     );
 
     test(
-      'With disconnectAll',
+      'With set: []',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { user, friend } = await createUserAndFriend(context);
@@ -368,7 +368,7 @@ describe(`Many-to-many relationships`, () => {
         // Run the query to disconnect the location from company
         const _user = await context.lists.User.updateOne({
           where: { id: user.id },
-          data: { friends: { disconnectAll: true } },
+          data: { friends: { set: [] } },
           query: 'id friends { id name }',
         });
         expect(_user.id).toEqual(user.id);

@@ -2,8 +2,7 @@ import fs from 'fs';
 import mime from 'mime';
 import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { text } from '@keystone-next/fields';
-import { DatabaseProvider } from '@keystone-next/types';
+import { DatabaseProvider } from '@keystone-next/keystone/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');
@@ -31,6 +30,7 @@ const prepareFile = (_filePath: string) => {
 export const name = 'CloudinaryImage';
 export const typeFunction = cloudinaryImage;
 export const supportsUnique = false;
+export const skipRequiredTest = true;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
 
@@ -51,7 +51,6 @@ export const fieldConfig = () => ({
   },
 });
 export const getTestFields = () => ({
-  name: text(),
   image: cloudinaryImage({
     cloudinary: {
       cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',

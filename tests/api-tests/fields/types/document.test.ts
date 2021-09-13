@@ -1,8 +1,8 @@
-import { text } from '@keystone-next/fields';
+import { text } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestRunner } from '@keystone-next/testing';
-import { KeystoneContext } from '../../../../packages/types/src';
+import { createSchema, list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -24,7 +24,7 @@ const runner = setupTestRunner({
       }),
       Author: list({
         fields: {
-          name: text(),
+          name: text({ isFilterable: true }),
           bio: document({
             relationships: {
               mention: {
@@ -46,7 +46,7 @@ const runner = setupTestRunner({
             },
           }),
         },
-        access: { read: { name_not: 'Charlie' } },
+        access: { filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) } },
       }),
     }),
   }),
@@ -284,7 +284,7 @@ describe('Document field type', () => {
       });
       // FIXME: The path doesn't match the null field here!
       expect(body.data).toEqual({ author: { badBio: null } });
-      expectInternalServerError(body.errors, [
+      expectInternalServerError(body.errors, true, [
         {
           path: ['author', 'badBio', 'document'],
           message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',

@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
@@ -8,7 +9,7 @@ import {
   FieldController,
   FieldControllerConfig,
   IdFieldConfig,
-} from '@keystone-next/types';
+} from '../../types';
 import { CellLink, CellContainer } from '../../admin-ui/components';
 
 export const Field = () => null;
@@ -53,13 +54,18 @@ export const controller = (
       },
 
       graphql: ({ type, value }) => {
-        const key = type === 'is' ? config.path : `${config.path}_${type}`;
+        if (type === 'not') {
+          return { [config.path]: { not: { equals: value } } };
+        }
         const valueWithoutWhitespace = value.replace(/\s/g, '');
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
 
         return {
-          [key]: ['in', 'not_in'].includes(type)
-            ? valueWithoutWhitespace.split(',')
-            : valueWithoutWhitespace,
+          [config.path]: {
+            [key]: ['in', 'not_in'].includes(type)
+              ? valueWithoutWhitespace.split(',')
+              : valueWithoutWhitespace,
+          },
         };
       },
       Label({ label, value, type }) {
@@ -70,38 +76,14 @@ export const controller = (
         return `${label.toLowerCase()}: ${renderedValue}`;
       },
       types: {
-        is: {
-          label: 'Is exactly',
-          initialValue: '',
-        },
-        not: {
-          label: 'Is not exactly',
-          initialValue: '',
-        },
-        gt: {
-          label: 'Is greater than',
-          initialValue: '',
-        },
-        lt: {
-          label: 'Is less than',
-          initialValue: '',
-        },
-        gte: {
-          label: 'Is greater than or equal to',
-          initialValue: '',
-        },
-        lte: {
-          label: 'Is less than or equal to',
-          initialValue: '',
-        },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
-        },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
-        },
+        is: { label: 'Is exactly', initialValue: '' },
+        not: { label: 'Is not exactly', initialValue: '' },
+        gt: { label: 'Is greater than', initialValue: '' },
+        lt: { label: 'Is less than', initialValue: '' },
+        gte: { label: 'Is greater than or equal to', initialValue: '' },
+        lte: { label: 'Is less than or equal to', initialValue: '' },
+        in: { label: 'Is one of', initialValue: '' },
+        not_in: { label: 'Is not one of', initialValue: '' },
       },
     },
   };

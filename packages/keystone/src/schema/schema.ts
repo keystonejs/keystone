@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/merge';
+import { mergeSchemas } from '@graphql-tools/schema';
 
 import type {
   BaseFields,
@@ -9,7 +9,7 @@ import type {
   KeystoneConfig,
   ListConfig,
   ListSchemaConfig,
-} from '@keystone-next/types';
+} from '../types';
 
 export function createSchema(config: ListSchemaConfig) {
   return config;

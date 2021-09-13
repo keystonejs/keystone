@@ -1,18 +1,18 @@
 import path from 'path';
+import { validate } from 'uuid';
+import { isCuid } from 'cuid';
 import {
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
-  legacyFilters,
   orderDirectionEnum,
   ScalarDBField,
-  schema,
-} from '@keystone-next/types';
-import { validate } from 'uuid';
-import { isCuid } from 'cuid';
+  graphql,
+} from '../types';
+import { packagePath } from '../package-path';
 
 const views = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  packagePath,
   '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
 );
 
@@ -43,6 +43,63 @@ const idParsers = {
   },
 };
 
+const nonCircularFields = {
+  equals: graphql.arg({ type: graphql.ID }),
+  in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
+  notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
+  lt: graphql.arg({ type: graphql.ID }),
+  lte: graphql.arg({ type: graphql.ID }),
+  gt: graphql.arg({ type: graphql.ID }),
+  gte: graphql.arg({ type: graphql.ID }),
+};
+
+type IDFilterType = graphql.InputObjectType<
+  typeof nonCircularFields & {
+    not: graphql.Arg<typeof IDFilter>;
+  }
+>;
+
+const IDFilter: IDFilterType = graphql.inputObject({
+  name: 'IDFilter',
+  fields: () => ({
+    ...nonCircularFields,
+    not: graphql.arg({ type: IDFilter }),
+  }),
+});
+
+const filterArg = graphql.arg({ type: IDFilter });
+
+function resolveVal(
+  input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
+  kind: IdFieldConfig['kind']
+): any {
+  if (input === null) {
+    throw new Error('id filter cannot be null');
+  }
+  const idParser = idParsers[kind];
+  const obj: any = {};
+  for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
+    const val = input[key];
+    if (val !== undefined) {
+      const parsed = idParser(val);
+      obj[key] = parsed;
+    }
+  }
+  for (const key of ['in', 'notIn'] as const) {
+    const val = input[key];
+    if (val !== undefined) {
+      if (val === null) {
+        throw new Error(`${key} id filter cannot be null`);
+      }
+      obj[key] = val.map(x => idParser(x));
+    }
+  }
+  if (input.not !== undefined) {
+    obj.not = resolveVal(input.not, kind);
+  }
+  return obj;
+}
+
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc =>
   meta => {
@@ -54,12 +111,22 @@ export const idFieldType =
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
+      ...config,
+      // The ID field is always filterable and orderable.
+      isFilterable: true,
+      isOrderable: true,
       input: {
-        uniqueWhere: { arg: schema.arg({ type: schema.ID }), resolve: parseVal },
-        orderBy: { arg: schema.arg({ type: orderDirectionEnum }) },
+        where: {
+          arg: filterArg,
+          resolve(val) {
+            return resolveVal(val, config.kind);
+          },
+        },
+        uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parseVal },
+        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: schema.field({
-        type: schema.nonNull(schema.ID),
+      output: graphql.field({
+        type: graphql.nonNull(graphql.ID),
         resolve({ value }) {
           return value.toString();
         },
@@ -74,50 +141,5 @@ export const idFieldType =
           fieldMode: 'hidden',
         },
       },
-      __legacy: {
-        filters: {
-          fields: {
-            ...legacyFilters.fields.equalityInputFields(meta.fieldKey, schema.ID),
-            ...legacyFilters.fields.orderingInputFields(meta.fieldKey, schema.ID),
-            [`${meta.fieldKey}_in`]: schema.arg({ type: schema.list(schema.nonNull(schema.ID)) }),
-            [`${meta.fieldKey}_not_in`]: schema.arg({
-              type: schema.list(schema.nonNull(schema.ID)),
-            }),
-          },
-          impls: {
-            ...equalityConditions(meta.fieldKey, parseVal),
-            ...legacyFilters.impls.orderingConditions(meta.fieldKey, parseVal),
-            ...inConditions(meta.fieldKey, parseVal),
-          },
-        },
-      },
     });
   };
-
-function equalityConditions(fieldKey: string, f: (a: string | null) => any) {
-  return {
-    [fieldKey]: (value: string | null) => ({ [fieldKey]: f(value) }),
-    [`${fieldKey}_not`]: (value: string | null) => ({ NOT: { [fieldKey]: f(value) } }),
-  };
-}
-
-function inConditions(fieldKey: string, f: (a: string | null) => any) {
-  return {
-    [`${fieldKey}_in`]: (value: string[] | null) => {
-      if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_in filters`);
-      }
-      return {
-        [fieldKey]: { in: value.map(x => f(x)) },
-      };
-    },
-    [`${fieldKey}_not_in`]: (value: string[] | null) => {
-      if (value === null) {
-        throw new Error(`null cannot be passed to ${fieldKey}_not_in filters`);
-      }
-      return {
-        NOT: { [fieldKey]: { in: value.map(x => f(x)) } },
-      };
-    },
-  };
-}

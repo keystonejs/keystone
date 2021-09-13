@@ -5,7 +5,7 @@ import {
   KeystoneListsAPI,
   KeystoneContext,
   GqlNames,
-} from '@keystone-next/types';
+} from '../../types';
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 
@@ -40,15 +40,13 @@ export function getDbAPIFactory(
     deleteOne: f(mutationFields[gqlNames.deleteMutationName]),
     deleteMany: f(mutationFields[gqlNames.deleteManyMutationName]),
   };
-  return (context: KeystoneContext) => {
-    let obj = Object.fromEntries(
+  return (context: KeystoneContext) =>
+    Object.fromEntries(
       objectEntriesButUsingKeyof(api).map(([key, impl]) => [
         key,
         (args: Record<string, any>) => impl(args, context),
       ])
-    );
-    return obj;
-  };
+    ) as Record<keyof typeof api, any>;
 }
 
 function defaultQueryParam(query?: string, resolveFields?: string | false) {

@@ -2,29 +2,33 @@
 
 This project implements a basic **Blog**, with `Posts` and `Authors`.
 
-You can use it as a starting place for learning how to use Keystone.
+Use it as a starting place for learning how to use Keystone.
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally then navigate to this directory and run:
+To run this project:
 
-```shell
-yarn dev
-```
+1. Clone the Keystone repository locally
+2. Navigate to this directory `cd examples/blog`
+3. Run `yarn dev`
 
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
 You can use the Admin UI to create items in your database.
 
-You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
+You can also access a Apollo Sandbox at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-🚀 Congratulations, you're now up and running with Keystone!
+Congratulations, you're now up and running with Keystone! 🚀
+
+### Optional: add sample data
+
+This example includes sample data. To add it to your database:
+
+1. Ensure you’ve initialised your project with `yarn dev` at least once.
+2. Run `yarn seed-data`. This will populate your database with sample content.
+3. Run `yarn dev` again to startup Admin UI with sample data in place.
 
 ## Next steps
 
-This project is bare bones, and doesn't use any of Keystone's advanced features.
-We encourage you to experiment with the code here to see how Keystone works, become familiar with the Admin UI, and learn about the GraphQL Playground.
+Experiment with the code in this example to see how Keystone works, familiarise yourself with the Admin UI, and learn about the Apollo Sandbox.
 
-Once you've got the hang of using this project, you can check out the [feature examples](../).
-These projects build on this starter project and show you how to use Keystones advanced features to take your project to the next level.
-
-When you've got the hang of the Blog app, try a [feature project](../) to learn Keystone's advanced features and take your knowledge to the next level.
+When you’ve got the hang of this base project, try a [feature project](../) to learn Keystone’s advanced features and take your knowledge to the next level.

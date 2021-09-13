@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
@@ -8,7 +9,15 @@ import { DocsPage } from '../../components/Page';
 
 export default function Docs() {
   return (
-    <DocsPage noRightNav noProse title="Examples">
+    <DocsPage
+      noRightNav
+      noProse
+      title={'Examples'}
+      description={
+        'A growing collection of projects you can run locally to learn more about Keystone’s many features. Use them as a reference for best practice, and springboard when adding features to your own project.'
+      }
+      editPath={'docs/examples.tsx'}
+    >
       <Type as="h1" look="heading64">
         Examples
       </Type>

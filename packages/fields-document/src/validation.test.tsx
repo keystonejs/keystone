@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { component, ComponentBlock, fields } from './DocumentEditor/component-blocks/api';
 import { Relationships } from './DocumentEditor/relationship';

@@ -1,5 +1,5 @@
-import { KeystoneContext, DatabaseProvider, ItemRootValue } from '@keystone-next/types';
 import pLimit, { Limit } from 'p-limit';
+import { KeystoneContext, DatabaseProvider, ItemRootValue } from '../../../types';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -8,7 +8,9 @@ import {
   IdType,
   runWithPrisma,
 } from '../utils';
-import { resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
+import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
+import { accessDeniedError, extensionError } from '../graphql-errors';
+import { checkOperationAccess, getAccessFilters } from '../access-control';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -25,8 +27,15 @@ async function createSingle(
   { data: rawData }: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
+  operationAccess: boolean,
   writeLimit: Limit
 ) {
+  // Operation level access control
+  if (!operationAccess) {
+    throw accessDeniedError();
+  }
+
+  //  Item access control. Will throw an accessDeniedError if not allowed.
   await applyAccessControlForCreate(list, context, rawData);
 
   const { afterChange, data } = await resolveInputForCreateOrUpdate(
@@ -53,7 +62,16 @@ export class NestedMutationState {
     const context = this.#context;
     const writeLimit = pLimit(1);
 
-    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
+    // Check operation permission to pass into single operation
+    const operationAccess = await checkOperationAccess(list, context, 'create');
+
+    const { item, afterChange } = await createSingle(
+      { data },
+      list,
+      context,
+      operationAccess,
+      writeLimit
+    );
 
     this.#afterChanges.push(() => afterChange(item));
     return { id: item.id as IdType };
@@ -71,22 +89,41 @@ export async function createOne(
 ) {
   const writeLimit = pLimit(1);
 
-  const { item, afterChange } = await createSingle(createInput, list, context, writeLimit);
+  // Check operation permission to pass into single operation
+  const operationAccess = await checkOperationAccess(list, context, 'create');
+
+  const { item, afterChange } = await createSingle(
+    createInput,
+    list,
+    context,
+    operationAccess,
+    writeLimit
+  );
 
   await afterChange(item);
 
   return item;
 }
 
-export function createMany(
+export async function createMany(
   createInputs: { data: Record<string, any>[] },
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
+
+  // Check operation permission to pass into single operation
+  const operationAccess = await checkOperationAccess(list, context, 'create');
+
   return createInputs.data.map(async data => {
-    const { item, afterChange } = await createSingle({ data }, list, context, writeLimit);
+    const { item, afterChange } = await createSingle(
+      { data },
+      list,
+      context,
+      operationAccess,
+      writeLimit
+    );
 
     await afterChange(item);
 
@@ -98,25 +135,37 @@ async function updateSingle(
   updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
+  accessFilters: boolean | InputFilter,
+  operationAccess: boolean,
   writeLimit: Limit
 ) {
+  // Operation level access control
+  if (!operationAccess) {
+    throw accessDeniedError();
+  }
+
   const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
 
-  // Apply access control
-  const item = await getAccessControlledItemForUpdate(
+  // Filter and Item access control. Will throw an accessDeniedError if not allowed.
+  const existingItem = await getAccessControlledItemForUpdate(
     list,
     context,
-    uniqueInput,
     uniqueWhere,
+    accessFilters,
     rawData
   );
 
-  const { afterChange, data } = await resolveInputForCreateOrUpdate(list, context, rawData, item);
+  const { afterChange, data } = await resolveInputForCreateOrUpdate(
+    list,
+    context,
+    rawData,
+    existingItem
+  );
 
   const updatedItem = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))
+    runWithPrisma(context, list, model => model.update({ where: { id: existingItem.id }, data }))
   );
 
   await afterChange(updatedItem);
@@ -130,17 +179,33 @@ export async function updateOne(
   context: KeystoneContext
 ) {
   const writeLimit = pLimit(1);
-  return updateSingle(updateInput, list, context, writeLimit);
+
+  // Check operation permission to pass into single operation
+  const operationAccess = await checkOperationAccess(list, context, 'update');
+
+  // Get list-level access control filters
+  const accessFilters = await getAccessFilters(list, context, 'update');
+
+  return updateSingle(updateInput, list, context, accessFilters, operationAccess, writeLimit);
 }
 
-export function updateMany(
+export async function updateMany(
   { data }: { data: { where: UniqueInputFilter; data: Record<string, any> }[] },
   list: InitialisedList,
   context: KeystoneContext,
   provider: DatabaseProvider
 ) {
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-  return data.map(async updateInput => updateSingle(updateInput, list, context, writeLimit));
+
+  // Check operation permission to pass into single operation
+  const operationAccess = await checkOperationAccess(list, context, 'update');
+
+  // Get list-level access control filters
+  const accessFilters = await getAccessFilters(list, context, 'update');
+
+  return data.map(async updateInput =>
+    updateSingle(updateInput, list, context, accessFilters, operationAccess, writeLimit)
+  );
 }
 
 async function getResolvedData(
@@ -179,21 +244,32 @@ async function getResolvedData(
     );
   }
 
-  // Apply field type input resolvers
+  // Apply non-relationship field type input resolvers
   resolvedData = Object.fromEntries(
     await promiseAllRejectWithAllErrors(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
-        if (inputResolver) {
+        if (inputResolver && field.dbField.kind !== 'relation') {
+          input = await inputResolver(input, context, undefined);
+        }
+        return [fieldKey, input] as const;
+      })
+    )
+  );
+
+  // Apply relationship field type input resolvers
+  resolvedData = Object.fromEntries(
+    await promiseAllRejectWithAllErrors(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        const inputResolver = field.input?.[operation]?.resolve;
+        let input = resolvedData[fieldKey];
+        if (inputResolver && field.dbField.kind === 'relation') {
           input = await inputResolver(
             input,
             context,
+            // This third argument only applies to relationship fields
             (() => {
-              // This third argument only applies to relationship fields
-              if (field.dbField.kind !== 'relation') {
-                return undefined;
-              }
               if (input === undefined) {
                 // No-op: This is what we want
                 return () => undefined;
@@ -228,23 +304,37 @@ async function getResolvedData(
   );
 
   // Resolve input hooks
-  resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
-      Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        if (field.hooks.resolveInput === undefined) {
-          return [fieldKey, resolvedData[fieldKey]];
-        }
-        const value = await field.hooks.resolveInput({
+  const hookName = 'resolveInput';
+  // Field hooks
+  let _resolvedData: Record<string, any> = {};
+  const fieldsErrors: { error: Error; tag: string }[] = [];
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
+    if (field.hooks.resolveInput === undefined) {
+      _resolvedData[fieldKey] = resolvedData[fieldKey];
+    } else {
+      try {
+        _resolvedData[fieldKey] = await field.hooks.resolveInput({
           ...hookArgs,
           resolvedData,
-          fieldPath: fieldKey,
+          fieldKey,
         });
-        return [fieldKey, value];
-      })
-    )
-  );
+      } catch (error: any) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+      }
+    }
+  }
+  if (fieldsErrors.length) {
+    throw extensionError(hookName, fieldsErrors);
+  }
+  resolvedData = _resolvedData;
+
+  // List hooks
   if (list.hooks.resolveInput) {
-    resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+    try {
+      resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
+    } catch (error: any) {
+      throw extensionError(hookName, [{ error, tag: list.listKey }]);
+    }
   }
 
   return resolvedData;

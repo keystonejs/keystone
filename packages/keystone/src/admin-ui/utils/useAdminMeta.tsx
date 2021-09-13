@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import hashString from '@emotion/hash';
-import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { AdminMeta, FieldViews, getGqlNames } from '../../types';
 import { useLazyQuery } from '../apollo';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
@@ -71,10 +71,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     adminMeta.lists.forEach(list => {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
-        gqlNames: getGqlNames({
-          listKey: list.key,
-          pluralGraphQLName: list.listQueryName,
-        }),
+        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }),
         fields: {},
       };
       list.fields.forEach(field => {
@@ -112,6 +109,9 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         }
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
+          itemView: {
+            fieldMode: field.itemView?.fieldMode ?? null,
+          },
           views,
           controller: fieldViews[field.viewsIndex].controller({
             listKey: list.key,
@@ -126,10 +126,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     if (typeof window !== 'undefined' && !adminMetaFromLocalStorage) {
       localStorage.setItem(
         adminMetaLocalStorageKey,
-        JSON.stringify({
-          hash: hashString(JSON.stringify(adminMeta)),
-          meta: adminMeta,
-        })
+        JSON.stringify({ hash: hashString(JSON.stringify(adminMeta)), meta: adminMeta })
       );
     }
     return runtimeAdminMeta;
@@ -138,15 +135,10 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
   const mustRenderServerResult = useMustRenderServerResult();
 
   if (mustRenderServerResult) {
-    return {
-      state: 'loading' as const,
-    };
+    return { state: 'loading' as const };
   }
   if (runtimeAdminMeta) {
-    return {
-      state: 'loaded' as const,
-      value: runtimeAdminMeta,
-    };
+    return { state: 'loaded' as const, value: runtimeAdminMeta };
   }
   if (error) {
     return {
@@ -157,7 +149,5 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       },
     };
   }
-  return {
-    state: 'loading' as const,
-  };
+  return { state: 'loading' as const };
 }

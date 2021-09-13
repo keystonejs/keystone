@@ -1,0 +1,17 @@
+{
+  "name": "@keystone-next/prisma-utils",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/prisma-utils.cjs.js",
+  "dependencies": {
+    "@prisma/generator-helper": "2.30.2",
+    "@prisma/sdk": "2.30.2",
+    "fs-extra": "^10.0.0",
+    "prettier": "^2.3.2"
+  },
+  "scripts": {
+    "generate": "node .",
+    "verify": "VERIFY=1 node ."
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/prisma-utils"
+}

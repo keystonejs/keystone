@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-next/types';
-import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-next/testing';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-next/keystone/testing';
 import config from './keystone';
 
 // Setup a test runner which will provide a clean test environment
@@ -57,7 +57,9 @@ describe('Example tests using test runner', () => {
       expect(data!.createPerson).toBe(null);
       expect(errors).toHaveLength(1);
       expect(errors![0].path).toEqual(['createPerson']);
-      expect(errors![0].message).toEqual('You attempted to perform an invalid mutation');
+      expect(errors![0].message).toEqual(
+        'You provided invalid data for this operation.\n  - Person.name: Required field "name" is null or undefined.'
+      );
     })
   );
 

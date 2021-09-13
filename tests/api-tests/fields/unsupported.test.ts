@@ -1,13 +1,12 @@
-import path from 'path';
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { setupTestEnv } from '@keystone-next/testing';
+import { createSchema, list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestEnv } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/src/tests/test-fixtures.ts'));
 
 const unsupportedModules = testModules
   .map(require)
@@ -47,7 +46,9 @@ if (unsupportedModules.length > 0) {
               await setupTestEnv({
                 config: apiTestConfig({
                   lists: createSchema({
-                    [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+                    [listKey]: list({
+                      fields: { name: text(), ...mod.getTestFields(matrixValue) },
+                    }),
                   }),
                   images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                   files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },

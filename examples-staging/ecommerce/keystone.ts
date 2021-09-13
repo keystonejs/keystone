@@ -1,5 +1,5 @@
 import { createAuth } from '@keystone-next/auth';
-import { config, createSchema } from '@keystone-next/keystone/schema';
+import { config, createSchema } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';

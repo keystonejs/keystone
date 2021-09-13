@@ -1,4 +1,5 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy';
 import Link from 'next/link';
@@ -15,7 +16,6 @@ import {
   useState,
 } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -26,6 +26,7 @@ import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { FieldLabel, TextInput } from '@keystone-ui/fields';
+import { ListMeta } from '../../../../types';
 import {
   DataGetter,
   DeepNullable,
@@ -35,7 +36,7 @@ import {
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,
-} from '@keystone-next/admin-ui-utils';
+} from '../../../../admin-ui/utils';
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { useList } from '../../../../admin-ui/context';
@@ -80,9 +81,7 @@ function ItemForm({
         ${selectedFields}
       }
     }`,
-    {
-      errorPolicy: 'all',
-    }
+    { errorPolicy: 'all' }
   );
   itemGetter =
     useMemo(() => {
@@ -93,26 +92,20 @@ function ItemForm({
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(list.fields, itemGetter);
-    return {
-      value,
-      item: itemGetter.data,
-    };
+    return { value, item: itemGetter };
   });
   if (
     !loading &&
-    state.item !== itemGetter.data &&
+    state.item.data !== itemGetter.data &&
     (itemGetter.errors || []).every(x => x.path?.length !== 1)
   ) {
     const value = deserializeValue(list.fields, itemGetter);
-    setValue({
-      value,
-      item: itemGetter.data,
-    });
+    setValue({ value, item: itemGetter });
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
     list.fields,
-    itemGetter,
+    state.item,
     state.value
   );
 
@@ -125,12 +118,7 @@ function ItemForm({
     setForceValidation(newForceValidation);
     if (newForceValidation) return;
 
-    update({
-      variables: {
-        data: dataForUpdate,
-        id: itemGetter.get('id').data,
-      },
-    })
+    update({ variables: { data: dataForUpdate, id: state.item.get('id').data } })
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
       // out below. If we're happy with this, clean up the unused lines.
       .then(({ /* data, */ errors }) => {
@@ -154,15 +142,11 @@ function ItemForm({
         }
       })
       .catch(err => {
-        toasts.addToast({
-          title: 'Failed to update item',
-          tone: 'negative',
-          message: err.message,
-        });
+        toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message });
       });
   });
-  const labelFieldValue = itemGetter.data?.[list.labelField];
-  const itemId = itemGetter.data?.id!;
+  const labelFieldValue = state.item.data?.[list.labelField];
+  const itemId = state.item.data?.id!;
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
@@ -178,10 +162,7 @@ function ItemForm({
         invalidFields={invalidFields}
         onChange={useCallback(
           value => {
-            setValue(state => ({
-              item: state.item,
-              value: value(state.value),
-            }));
+            setValue(state => ({ item: state.item, value: value(state.value) }));
           },
           [setValue]
         )}
@@ -191,10 +172,10 @@ function ItemForm({
         onSave={onSave}
         hasChangedFields={!!changedFields.size}
         onReset={useEventCallback(() => {
-          setValue({
-            item: itemGetter.data,
-            value: deserializeValue(list.fields, itemGetter),
-          });
+          setValue(state => ({
+            item: state.item,
+            value: deserializeValue(list.fields, state.item),
+          }));
         })}
         loading={loading}
         deleteButton={useMemo(
@@ -253,17 +234,19 @@ function DeleteButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItem().catch(err => {
-                toasts.addToast({
-                  title: 'Failed to delete item',
+              try {
+                await deleteItem();
+              } catch (err: any) {
+                return toasts.addToast({
+                  title: `Failed to delete ${list.singular} item: ${itemLabel}`,
                   message: err.message,
                   tone: 'negative',
                 });
-              });
+              }
               router.push(`/${list.path}`);
-              toasts.addToast({
+              return toasts.addToast({
                 title: itemLabel,
-                message: 'Deleted successfully',
+                message: `Deleted ${list.singular} item successfully`,
                 tone: 'positive',
               });
             },
@@ -292,9 +275,15 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const { palette, spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
-    let selectedFields = Object.keys(list.fields)
-      .map(fieldPath => {
-        return list.fields[fieldPath].controller.graphqlSelection;
+    let selectedFields = Object.entries(list.fields)
+      .filter(
+        ([fieldKey, field]) =>
+          field.itemView.fieldMode !== 'hidden' ||
+          // the id field is hidden but we still need to fetch it
+          fieldKey === 'id'
+      )
+      .map(([fieldKey]) => {
+        return list.fields[fieldKey].controller.graphqlSelection;
       })
       .join('\n');
     return {
@@ -334,14 +323,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       item: ItemData;
       keystone: {
         adminMeta: {
-          list: {
-            fields: {
-              path: string;
-              itemView: {
-                fieldMode: 'edit' | 'read' | 'hidden';
-              };
-            }[];
-          };
+          list: { fields: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }[] };
         };
       };
     }>

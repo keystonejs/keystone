@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -226,7 +227,7 @@ export function DocumentEditor({
   documentFeatures: DocumentFeatures;
 }) {
   const isShiftPressedRef = useKeyDownRef('Shift');
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
@@ -235,7 +236,11 @@ export function DocumentEditor({
 
   return (
     <div
-      css={
+      css={[
+        {
+          display: 'flex',
+          flexDirection: 'column',
+        },
         expanded && {
           background: colors.background,
           bottom: 0,
@@ -245,8 +250,8 @@ export function DocumentEditor({
           right: 0,
           top: 0,
           zIndex: 100,
-        }
-      }
+        },
+      ]}
     >
       <DocumentEditorProvider
         componentBlocks={componentBlocks}
@@ -282,7 +287,17 @@ export function DocumentEditor({
           ),
           [expanded, documentFeatures]
         )}
-        <DocumentEditorEditable autoFocus={autoFocus} readOnly={onChange === undefined} />
+
+        <DocumentEditorEditable
+          css={
+            expanded && {
+              marginLeft: spacing.medium,
+              marginRight: spacing.medium,
+            }
+          }
+          autoFocus={autoFocus}
+          readOnly={onChange === undefined}
+        />
         {
           // for debugging
           false && <Debugger />
@@ -345,9 +360,11 @@ export function DocumentEditorProvider({
 export function DocumentEditorEditable({
   autoFocus,
   readOnly,
+  className,
 }: {
   autoFocus?: boolean;
   readOnly?: boolean;
+  className?: string;
 }) {
   const editor = useSlate();
   const componentBlocks = useContext(ComponentBlockContext);
@@ -401,6 +418,7 @@ export function DocumentEditorEditable({
       readOnly={readOnly}
       renderElement={renderElement}
       renderLeaf={renderLeaf}
+      className={className}
     />
   );
 }
@@ -429,7 +447,9 @@ function Debugger() {
 const orderedListStyles = ['lower-roman', 'decimal', 'lower-alpha'];
 const unorderedListStyles = ['square', 'disc', 'circle'];
 
-let styles: any = {};
+let styles: any = {
+  flex: 1,
+};
 
 let listDepth = 10;
 
