@@ -735,8 +735,8 @@ export const lists = createSchema({
             color="var(--muted)"
             css={{ maxWidth: '34rem', margin: '1rem 0' }}
           >
-            Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
-            natural. A tool your team can grow with.
+            Enable a content culture that’s productive, collaborative, and fun. Open and flexible. A
+            tool your whole team can grow with.
           </Type>
           <div
             css={mq({
@@ -786,8 +786,7 @@ export const lists = createSchema({
                     color: 'inherit',
                   }}
                 >
-                  Built the way you’d want it made, Keystone is at home with the tools you know and
-                  love.
+                  Built the way you’d want it made. Keystone fits with the tools you know and love.
                 </Type>
               </a>
             </Link>

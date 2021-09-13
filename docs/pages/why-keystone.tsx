@@ -168,7 +168,7 @@ export default function WhyKeystonePage() {
 
         <Section>
           <Type as="h2" look="heading30">
-            The platform made for teams
+            Made for teams
           </Type>
           <Type
             as="p"
@@ -176,12 +176,8 @@ export default function WhyKeystonePage() {
             color="var(--muted)"
             css={{ maxWidth: '34rem', margin: '1rem 0' }}
           >
-            It takes a village to build and nurture great digital experiences. Keystone’s built with
-            this in mind. Open source and flexible, it
-            {/* Code is  
-            provides for a tool for all your team can grow with. Keystone solves for than code
-            content culture that’s productive, collaborative, and fun. Open, flexible, and natural.A
-            tool your team can grow with. */}
+            It takes a village to build and nurture great digital experiences. Keystone enables a
+            content culture where everybody gets what they need to do their best work.
           </Type>
           <div
             css={mq({
@@ -231,8 +227,7 @@ export default function WhyKeystonePage() {
                     color: 'inherit',
                   }}
                 >
-                  Built the way you’d want it made, Keystone is at home with the tools you know and
-                  love.
+                  Built the way you’d want it made. Keystone fits with the tools you know and love.
                 </Type>
               </a>
             </Link>
