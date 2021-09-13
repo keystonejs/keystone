@@ -12,7 +12,7 @@ import {
   FieldReadItemAccessArgs,
 } from '../../../types';
 import {
-  checkOperationAccess,
+  getOperationAccess,
   getAccessFilters,
   validateFieldAccessControl,
 } from '../access-control';
@@ -44,7 +44,7 @@ function getRelationVal(
   } else {
     return async () => {
       // Check operation permission to pass into single operation
-      const operationAccess = await checkOperationAccess(foreignList, context, 'query');
+      const operationAccess = await getOperationAccess(foreignList, context, 'query');
       if (!operationAccess) {
         return null;
       }
