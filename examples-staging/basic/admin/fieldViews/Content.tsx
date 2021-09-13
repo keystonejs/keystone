@@ -268,12 +268,12 @@ export const componentBlocks = {
             backgroundColor: '#f3f5f6',
             padding: '4px 12px 16px 48px',
             position: 'relative',
-            borderRadius: '6px',
+            borderRadius: 6,
             ':after': {
               content: '"\\201C"',
               position: 'absolute',
-              top: '0',
-              left: '16px',
+              top: 0,
+              left: 16,
               fontSize: '4rem',
             },
           }}
