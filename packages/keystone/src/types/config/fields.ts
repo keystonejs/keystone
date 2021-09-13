@@ -1,6 +1,7 @@
 import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
 import type { BaseGeneratedListTypes } from '../utils';
+import { KeystoneContext, MaybePromise } from '..';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
@@ -10,6 +11,12 @@ export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   [key: string]: FieldTypeFunc;
 };
 
+export type FilterOrderArgs = {
+  context: KeystoneContext;
+  session: KeystoneContext['session'];
+  listKey: string;
+  fieldKey: string;
+};
 export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   access?: FieldAccessControl<TGeneratedListTypes>;
   hooks?: FieldHooks<TGeneratedListTypes>;
@@ -35,6 +42,6 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     omit?: true | ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
-  isFilterable?: boolean; // Does this field exist in the WhereInput for both unique and ... not unique type?
-  isOrderable?: boolean; // Does this field exist in the OrderBy type?
+  isFilterable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+  isOrderable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
 };
