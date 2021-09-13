@@ -1,5 +1,5 @@
 import { text, password } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { apiTestConfig } from '../utils';
@@ -103,7 +103,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   }),
 });
 
-const lists = createSchema({
+const lists = {
   User: list({
     fields: {
       name: text(),
@@ -113,7 +113,7 @@ const lists = createSchema({
       yesRead: text({ access: { read: () => true } }),
     },
   }),
-});
+};
 
 listAccessVariations.forEach(access => {
   lists[getOperationListName(access)] = list({

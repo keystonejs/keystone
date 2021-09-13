@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectPrismaError } from '../utils';
@@ -39,7 +39,7 @@ testModules
         });
         const runner = setupTestRunner({
           config: apiTestConfig({
-            lists: createSchema({
+            lists: {
               Test: list({
                 fields: {
                   name: text(),
@@ -49,7 +49,7 @@ testModules
                   }),
                 },
               }),
-            }),
+            },
             images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
             files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           }),
@@ -147,7 +147,7 @@ testModules
           try {
             await setupTestEnv({
               config: apiTestConfig({
-                lists: createSchema({
+                lists: {
                   Test: list({
                     fields: {
                       name: text(),
@@ -157,7 +157,7 @@ testModules
                       }),
                     },
                   }),
-                }),
+                },
                 images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                 files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),

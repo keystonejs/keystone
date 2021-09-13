@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, password, relationship, text } from '@keystone-next/keystone/fields';
 
 import { isSignedIn, permissions, rules } from './access';
@@ -12,7 +12,7 @@ import { isSignedIn, permissions, rules } from './access';
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists = createSchema({
+export const lists = {
   Todo: list({
     /*
       SPEC
@@ -228,4 +228,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

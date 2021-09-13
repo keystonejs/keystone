@@ -1,12 +1,12 @@
 const { text, relationship } = require('@keystone-next/keystone/fields');
-const { createSchema, list } = require('@keystone-next/keystone');
+const { list } = require('@keystone-next/keystone');
 const { setupTestRunner } = require('@keystone-next/keystone/testing');
 const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           name: text(),
@@ -18,7 +18,7 @@ const runner = setupTestRunner({
           title: text(),
         },
       }),
-    }),
+    },
   }),
 });
 

@@ -39,15 +39,14 @@ This type definition should be considered the source of truth for the available 
 The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
 This is where you define and configure the `lists` and their `fields` of the data model.
-In general you will use the `createSchema()` function to create this configuration option.
 See the [Schema API](./schema) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-next/keystone/types';
-import { config, createSchema } from '@keystone-next/keystone';
+import { config } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({ /* ... */ }),
+  lists: { /* ... */ },
   /* ... */
 });
 ```
