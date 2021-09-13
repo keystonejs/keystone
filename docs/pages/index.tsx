@@ -398,21 +398,15 @@ export default function IndexPage() {
               >
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18">
-                    100% TypeScript (or JavaScript)
-                  </Type>
+                  <Type look="body18">100% TypeScript (or JavaScript)</Type>
                 </li>
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18">
-                    Fits your git-based workflow & CI
-                  </Type>
+                  <Type look="body18">Fits your git-based workflow & CI</Type>
                 </li>
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18">
-                    Automatic db migrations with Prisma
-                  </Type>
+                  <Type look="body18">Automatic db migrations with Prisma</Type>
                 </li>
               </ul>
             </div>
@@ -480,21 +474,15 @@ export const lists = createSchema({
               >
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18">
-                    Powerful access control
-                  </Type>
+                  <Type look="body18">Powerful access control</Type>
                 </li>
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18">
-                    Next-gen rich text WYSIWYG
-                  </Type>
+                  <Type look="body18">Next-gen rich text WYSIWYG</Type>
                 </li>
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18">
-                    BYO custom React components{' '}
-                  </Type>
+                  <Type look="body18">BYO custom React components </Type>
                 </li>
               </ul>
             </div>
@@ -541,21 +529,15 @@ export const lists = createSchema({
               >
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18">
-                    Powerful CRUD scaffolding
-                  </Type>
+                  <Type look="body18">Powerful CRUD scaffolding</Type>
                 </li>
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18">
-                    Evolve with bespoke logic for your app
-                  </Type>
+                  <Type look="body18">Evolve with bespoke logic for your app</Type>
                 </li>
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18">
-                    Integrate microservices & external APIs
-                  </Type>
+                  <Type look="body18">Integrate microservices & external APIs</Type>
                 </li>
               </ul>
             </div>
