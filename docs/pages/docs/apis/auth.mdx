@@ -10,7 +10,7 @@ Additional options to this function provide support for creating an initial item
 For examples of how to use authentication in your system please see the [authentication guide](../guides/auth).
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, password, checkbox } from '@keystone-next/keystone/fields';
 import { createAuth } from '@keystone-next/auth';
 
@@ -39,7 +39,7 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           email: text({ isIndexed: 'unique', isFilterable: true }),
@@ -48,7 +48,7 @@ export default withAuth(
         },
       }),
       session: { /* ... */ },
-    }),
+    },
   })
 );
 ```

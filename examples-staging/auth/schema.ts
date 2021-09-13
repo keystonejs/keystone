@@ -1,7 +1,7 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text, checkbox, password } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   User: list({
     access: {
       operation: {
@@ -80,4 +80,4 @@ export const lists = createSchema({
       */
     },
   }),
-});
+};

@@ -1,7 +1,7 @@
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
@@ -83,7 +83,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Owner: list({
         fields: {
           name: text({ isFilterable: true }),
@@ -110,7 +110,7 @@ const runner = setupTestRunner({
           locations: relationship({ ref: 'Location.custodians', many: true, isFilterable: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

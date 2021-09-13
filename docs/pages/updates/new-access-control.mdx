@@ -13,16 +13,16 @@ Previous versions of Keystone allowed you to control which operations were inclu
 For example, the following access control definition would omit all delete operations for the list from the GraphQL API.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         delete: false,
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -32,16 +32,16 @@ If you would like to exclude an operation from the GraphQL API, you can use the 
 To exclude all `delete` operations, you would write:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       graphql: {
         omit: ['delete'],
       }
     }),
-  }),
+  },
 });
 ```
 
@@ -75,10 +75,10 @@ If you are using **static** access control, you will generally want to update th
 If you previously had the following:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         create: false,
@@ -87,17 +87,17 @@ export default config({
         delete: false,
       },
     }),
-  }),
+  },
 });
 ```
 
 you will need to change it to:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         operation: {
@@ -108,7 +108,7 @@ export default config({
         }
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -120,10 +120,10 @@ If you are using **declarative** access control, you will neeed to update this t
 If you previously had the following:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         read: { isAdmin: { equals: true } },
@@ -131,17 +131,17 @@ export default config({
         delete: { isAdmin: { equals: true } },
       },
     }),
-  }),
+  },
 });
 ```
 
 you will need to change it to:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListKey: list({
       access: {
         filter: {
@@ -151,7 +151,7 @@ export default config({
         }
       },
     }),
-  }),
+  },
 });
 ```
 

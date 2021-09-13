@@ -1,5 +1,5 @@
 import { integer, relationship, text, virtual } from '@keystone-next/keystone/fields';
-import { BaseFields, createSchema, list } from '@keystone-next/keystone';
+import { BaseFields, list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { graphql } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
@@ -7,14 +7,14 @@ import { apiTestConfig } from '../../utils';
 function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
     config: apiTestConfig({
-      lists: createSchema({
+      lists: {
         Post: list({
           fields: {
             value: integer(),
             ...fields,
           },
         }),
-      }),
+      },
     }),
   });
 }
@@ -91,7 +91,7 @@ describe('Virtual field type', () => {
     'referencing other list type',
     setupTestRunner({
       config: apiTestConfig({
-        lists: createSchema({
+        lists: {
           Organisation: list({
             fields: {
               name: text(),
@@ -147,7 +147,7 @@ describe('Virtual field type', () => {
               }),
             },
           }),
-        }),
+        },
       }),
     })(async ({ context }) => {
       const data = await context.lists.Post.createOne({

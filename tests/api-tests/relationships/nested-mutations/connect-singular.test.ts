@@ -1,12 +1,12 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Group: list({
         fields: {
           name: text(),
@@ -86,7 +86,7 @@ const runner = setupTestRunner({
           group: relationship({ ref: 'GroupNoUpdateHard' }),
         },
       }),
-    }),
+    },
   }),
 });
 
