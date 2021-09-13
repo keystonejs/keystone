@@ -1,13 +1,13 @@
 import { CacheScope } from 'apollo-server-types';
 import { text, relationship, integer } from '@keystone-next/keystone/fields';
-import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           title: text(),
@@ -40,7 +40,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
     extendGraphqlSchema: graphQLSchemaExtension({
       typeDefs: `
         type MyType {

@@ -18,11 +18,11 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, list, graphql } from '@keystone-next/keystone';
+import { config, list, graphql } from '@keystone-next/keystone';
 import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     Example: list({
       fields: {
         hello: virtual({
@@ -35,7 +35,7 @@ export default config({
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -87,7 +87,7 @@ We can do this with a `virtual` field which queries for the related `author` and
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -111,7 +111,7 @@ export default config({
         name: text({ isRequired: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -126,7 +126,7 @@ We use the `args` option to define the GraphQL field arguments we want to suppor
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -155,7 +155,7 @@ export default config({
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -193,7 +193,7 @@ We can set up a GraphQL type called `PostCounts` to represent this data using th
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -224,7 +224,7 @@ export default config({
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -262,7 +262,7 @@ The argument `lists` contains the type information for all of the Keystone lists
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
 ```ts
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text(),
@@ -299,7 +299,7 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};
 ```
 
 Once again we need to specify `ui.query` on this virtual field to specify which fields of the `Post` to display in the Admin UI.

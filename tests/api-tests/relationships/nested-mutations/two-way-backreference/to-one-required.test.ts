@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../../utils';
 
@@ -8,7 +8,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Company: list({
         fields: {
           name: text(),
@@ -23,7 +23,7 @@ const runner = setupTestRunner({
           company: relationship({ ref: 'Company.location', isRequired: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

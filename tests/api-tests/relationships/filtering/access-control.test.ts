@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../utils';
 
@@ -10,7 +10,7 @@ const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       UserToPostLimitedRead: list({
         fields: {
           username: text(),
@@ -29,7 +29,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
   }),
 });
 

@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { isCuid } from 'cuid';
@@ -13,9 +13,9 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: { idField: { kind } },
-      lists: createSchema({
+      lists: {
         User: list({ fields: { name: text() } }),
-      }),
+      },
     }),
   });
   test(
@@ -131,9 +131,9 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: { idField: { kind: 'uuid' } },
-      lists: createSchema({
+      lists: {
         User: list({ fields: { name: text() } }),
-      }),
+      },
     }),
   });
   test(
@@ -155,9 +155,9 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: { idField: { kind: 'cuid' } },
-      lists: createSchema({
+      lists: {
         User: list({ fields: { name: text() } }),
-      }),
+      },
     }),
   });
   test(

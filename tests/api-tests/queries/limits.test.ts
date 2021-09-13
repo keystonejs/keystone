@@ -1,12 +1,12 @@
 import { text, integer, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           title: text({ isFilterable: true, isOrderable: true }),
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
     graphql: {
       queryLimits: { maxTotalResults: 6 },
       apolloConfig: {

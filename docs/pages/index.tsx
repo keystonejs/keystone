@@ -414,10 +414,10 @@ export default function IndexPage() {
               <CodeWindow lines={21}>
                 <WindowL>
                   <SourceCode>
-                    {`import { createSchema, list } from '@keystone-next/keystone';
+                    {`import { list } from '@keystone-next/keystone';
 import { document, text, timestamp, password, relationship } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -434,7 +434,7 @@ export const lists = createSchema({
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-});`}
+};`}
                   </SourceCode>
                 </WindowL>
               </CodeWindow>

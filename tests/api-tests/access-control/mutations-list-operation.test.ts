@@ -1,11 +1,11 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       BadAccess: list({
         fields: { name: text({ isFilterable: true, isOrderable: true }) },
         access: {
@@ -29,7 +29,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
   }),
 });
 

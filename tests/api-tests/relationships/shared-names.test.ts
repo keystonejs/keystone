@@ -1,5 +1,5 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../utils';
@@ -93,7 +93,7 @@ const createInitialData = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Employee: list({
         fields: {
           name: text(),
@@ -120,7 +120,7 @@ const runner = setupTestRunner({
           employees: relationship({ ref: 'Employee', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

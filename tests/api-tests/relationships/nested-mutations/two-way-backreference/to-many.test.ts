@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../../utils';
@@ -13,7 +13,7 @@ const toStr = (items: any[]) => items.map(item => item.toString());
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Student: list({
         fields: {
           name: text(),
@@ -26,7 +26,7 @@ const runner = setupTestRunner({
           students: relationship({ ref: 'Student.teachers', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

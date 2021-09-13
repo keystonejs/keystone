@@ -1,11 +1,11 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import type { BaseFields } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../utils';
 
 const setupList = (fields: BaseFields<any>) =>
-  setupTestRunner({ config: apiTestConfig({ lists: createSchema({ User: list({ fields }) }) }) });
+  setupTestRunner({ config: apiTestConfig({ lists: { User: list({ fields }) } }) });
 
 describe('defaultValue field config', () => {
   test(
