@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useMediaQuery } from '../lib/media';
 import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
+import { Code as SourceCode, InlineCode } from '../components/primitives/Code';
+import { ContentEditorMockUI } from '../components/svgs/ContentEditorMockUI';
 import { CommunityCta } from '../components/content/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
 import { Organization } from '../components/icons/Organization';
@@ -15,7 +17,6 @@ import { MWrapper } from '../components/content/MWrapper';
 import { Relational } from '../components/icons/Relational';
 import { TweetBox } from '../components/content/TweetBox';
 import { Typescript } from '../components/icons/Typescript';
-import { Code as SourceCode, InlineCode } from '../components/primitives/Code';
 import { Automated } from '../components/icons/Automated';
 import { Section } from '../components/content/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
@@ -487,6 +488,7 @@ export const lists = createSchema({
               </ul>
             </div>
             <div>
+              <ContentEditorMockUI />
               <Image
                 src={contentEditorMockui}
                 alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom & virtual fields; flexible relationships; powerful sort & filtering."
