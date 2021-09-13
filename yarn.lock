@@ -4713,10 +4713,10 @@ cloudinary-core@^2.10.2:
   resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.11.4.tgz#1d191935bcdcd412d499a91b928a94b266fee49d"
   integrity sha512-F1BZczD6f5mB73D0c8gl/iuacVQQO+UhckNZxeeS9ZIVeIHbsfqwWiAZMQmIvEb7Wti/9MLU0xVwaWOak2THHA==
 
-cloudinary@^1.26.3:
-  version "1.26.3"
-  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.26.3.tgz#dd79a1e50395abcf7abec970f5973200c77430cb"
-  integrity sha512-80ItEXYLbhOGPM42ksOsqG6320jbsU6kqszjVjl5QwDwzbjouktRlw/NdGva1beSu8sp/0lj1mtSGPymGsNiQA==
+cloudinary@^1.27.0:
+  version "1.27.0"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.27.0.tgz#1939f4767c32d596c8cd74ea3db66094bf25fa96"
+  integrity sha512-3Slh8gTmEfaut+ZBIMByOXaD60QP5uw46zn3lyYYEA0mhTQ82FIrwfj98s0eZ6PciQJIJ+Ea4QPBl7Ji21TQEA==
   dependencies:
     cloudinary-core "^2.10.2"
     core-js "3.6.5"
