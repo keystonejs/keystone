@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
   FieldTypeFunc,
   legacyFilters,
+  JSONValue,
 } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import { getIndexType } from '../../get-index-type';
@@ -68,7 +69,7 @@ export const text =
           displayMode: config.ui?.displayMode ?? 'input',
           maxLength: maxLength,
           fixedLength: fixedLength,
-        };
+        } as JSONValue;
       },
       __legacy: {
         filters: {
