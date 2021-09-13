@@ -10,6 +10,12 @@ import { Type } from '../../components/primitives/Type';
 import { Well } from '../../components/primitives/Well';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
+import { CommunityCta } from '../../components/content/CommunityCta';
+import { Content } from '../../components/icons/Content';
+import { Code } from '../../components/icons/Code';
+import { Bulb } from '../../components/icons/Bulb';
+import { Video } from '../../components/icons/Video';
+import { Organization } from '../../components/icons/Organization';
 
 export default function Docs() {
   const mq = useMediaQuery();
@@ -23,58 +29,210 @@ export default function Docs() {
       isIndexPage
     >
       <Type as="h1" look="heading64">
-        Keystone Docs
+        Developer Docs
       </Type>
 
       <CommunitySlackCTA />
 
+      <Type as="h2" look="heading30" margin="0 0 1rem 0">
+        The Keystone Experience
+      </Type>
+      <div>
+        <Type as="p" look="body18" css={{ maxWidth: '90ch', margin: '0 0 1.25rem' }}>
+          Discover the vision behind Keystone and what it's like to work with. If you’ve just heard
+          of Keystone, start here first:
+        </Type>
+        <div
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', '1fr 1fr'],
+            gap: ['1.5rem'],
+            alignItems: 'stretch',
+            '& > a': {
+              borderRadius: '1rem',
+              boxShadow: '0 0 5px var(--shadow)',
+              padding: '1.5rem',
+              color: 'var(--app-bg)',
+              transition: 'box-shadow 0.2s ease, transform 0.2s ease, padding 0.2s ease',
+              textDecoration: 'none !important',
+              '&:hover, &:focus': {
+                boxShadow: '0 7px 21px var(--shadow)',
+                transform: 'translateY(-4px)',
+              },
+              '& svg': {
+                height: '2rem',
+              },
+            },
+          })}
+        >
+          <Link href="https://youtu.be/fPWRlmedCbo" passHref>
+            <a
+              css={{
+                backgroundImage: `linear-gradient(116.01deg, var(--grad1-2), var(--grad1-1))`,
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Video />
+              <Type
+                as="h2"
+                look="heading20bold"
+                css={{
+                  margin: '.5rem 0 .5rem 0 !important',
+                  color: 'inherit',
+                }}
+              >
+                Video Intro →
+              </Type>
+              <Type
+                as="p"
+                look="body18"
+                css={{
+                  color: 'inherit',
+                }}
+              >
+                Learn how Keystone’s leading a new paradigm generation of content management tools.
+              </Type>
+            </a>
+          </Link>
+          <Link href="/why-keystone" passHref>
+            <a
+              css={{
+                backgroundImage: `linear-gradient(116.01deg, var(--grad2-2), var(--grad2-1))`,
+              }}
+            >
+              <Bulb />
+              <Type
+                as="h2"
+                look="heading20bold"
+                css={{
+                  margin: '.5rem 0 .5rem 0 !important',
+                  color: 'inherit',
+                }}
+              >
+                Why Keystone →
+              </Type>
+              <Type
+                as="p"
+                look="body18"
+                css={{
+                  color: 'inherit',
+                }}
+              >
+                The makers. The vision. What’s in the box, and what you can build with it.
+              </Type>
+            </a>
+          </Link>
+        </div>
+      </div>
       <div
         css={mq({
           display: 'grid',
-          gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr', '.4fr .6fr'],
-          gap: 'var(--space-xlarge)',
+          gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr'],
+          gap: ['1.5rem'],
+          alignItems: 'stretch',
+          margin: '1.5rem 0 2.5rem',
+          '& > a': {
+            borderRadius: '1rem',
+            boxShadow: '0 0 5px var(--shadow)',
+            padding: '1.5rem',
+            color: 'var(--app-bg)',
+            transition: 'box-shadow 0.2s ease, transform 0.2s ease, padding 0.2s ease',
+            textDecoration: 'none !important',
+            '&:hover, &:focus': {
+              boxShadow: '0 7px 21px var(--shadow)',
+              transform: 'translateY(-4px)',
+            },
+            '& svg': {
+              height: '2rem',
+            },
+          },
         })}
       >
-        <div>
-          <Type as="h2" look="heading30" margin="0 0 1rem 0">
-            Understanding Keystone
-          </Type>
-          <Type as="p" look="body18" margin="0 0 1.25rem">
-            Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
-            and how it delivers a developer experience that combines features, flexibility, and the
-            perfect amount of abstraction to get started fast, and grow as you learn.{' '}
-            <Link href="/updates/prisma-day-2021">
-              <a>Read the full transcript</a>
-            </Link>
-            .
-          </Type>
-        </div>
-        <div>
-          <div
+        <Link href="/for-developers" passHref>
+          <a
             css={{
-              position: 'relative',
-              paddingBottom: '56.25%',
-              height: '0',
+              backgroundImage: `linear-gradient(116.01deg, var(--grad3-2), var(--grad3-1))`,
             }}
           >
-            <iframe
+            <Code />
+            <Type
+              as="h2"
+              look="heading20bold"
               css={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
+                margin: '.5rem 0 .5rem 0 !important',
+                color: 'inherit',
               }}
-              width="560"
-              height="315"
-              src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
+            >
+              For Developers →
+            </Type>
+            <Type
+              as="p"
+              look="body18"
+              css={{
+                color: 'inherit',
+              }}
+            >
+              Built the way you’d want it made. Keystone fits with the tools you know and love.
+            </Type>
+          </a>
+        </Link>
+        <Link href="/for-content-management" passHref>
+          <a
+            css={{
+              backgroundImage: `linear-gradient(116.01deg, var(--grad5-2), var(--grad5-1))`,
+            }}
+          >
+            <Content />
+            <Type
+              as="h2"
+              look="heading20bold"
+              css={{
+                margin: '.5rem 0 .5rem 0 !important',
+                color: 'inherit',
+              }}
+            >
+              For Editors →
+            </Type>
+            <Type
+              as="p"
+              look="body18"
+              css={{
+                color: 'inherit',
+              }}
+            >
+              The configurable editing environment you need to do your best work.
+            </Type>
+          </a>
+        </Link>
+        <Link href="/for-organisations" passHref>
+          <a
+            css={{
+              backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+            }}
+          >
+            <Organization />
+            <Type
+              as="h2"
+              look="heading20bold"
+              css={{
+                margin: '.5rem 0 .5rem 0 !important',
+                color: 'inherit',
+              }}
+            >
+              For Organisations →
+            </Type>
+            <Type
+              as="p"
+              look="body18"
+              css={{
+                color: 'inherit',
+              }}
+            >
+              Own your data. Start fast. Find your audience anywhere. Scale on your terms.
+            </Type>
+          </a>
+        </Link>
       </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
@@ -237,6 +395,7 @@ export default function Docs() {
           A list of the filters you can query against for each field type.
         </Well>
       </div>
+      <CommunityCta />
     </DocsPage>
   );
 }

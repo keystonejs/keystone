@@ -8,7 +8,6 @@ import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/conte
 import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
 import { CommunityCta } from '../components/content/CommunityCta';
 import { FrontEndLogos } from '../components/icons/FrontEndLogos';
-import { Organization } from '../components/icons/Organization';
 import { Highlight } from '../components/primitives/Highlight';
 import { WhyKeystone } from '../components/icons/WhyKeystone';
 import { MWrapper } from '../components/content/MWrapper';
@@ -24,7 +23,6 @@ import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
 import { EndCta } from '../components/content/EndCta';
 import { Emoji } from '../components/primitives/Emoji';
-import { Content } from '../components/icons/Content';
 import { Updates } from '../components/icons/Updates';
 import { Type } from '../components/primitives/Type';
 import { ArrowR } from '../components/icons/ArrowR';
@@ -32,10 +30,11 @@ import { Custom } from '../components/icons/Custom';
 import { Filter } from '../components/icons/Filter';
 import { Shield } from '../components/icons/Shield';
 import { Watch } from '../components/icons/Watch';
-import { Code } from '../components/icons/Code';
 import { Tick } from '../components/icons/Tick';
 import { Page } from '../components/Page';
-
+import { Organization } from '../components/icons/Organization';
+import { Content } from '../components/icons/Content';
+import { Code } from '../components/icons/Code';
 import contentEditorMockui from '../public/assets/content-editor-mockui.png';
 import docEditorHome from '../public/assets/doc-editor-home.png';
 import deployTargets from '../public/assets/deploy-targets.png';
@@ -290,9 +289,9 @@ export default function IndexPage() {
             How it works
           </Type>
           <Type as="p" look="body20" color="var(--muted)" margin="0.5rem 0 1.5rem 0">
-            Enable a content culture that’s productive, collaborative, and fun.
+            A developer experience that lets you start fast, and ship at speed
             <br />
-            Open, flexible, and natural. A tool your team can grow with.
+            without sacrificing your long view.
           </Type>
         </Section>
 
@@ -720,6 +719,137 @@ export const lists = createSchema({
         </Section>
 
         <Section
+          css={mq({
+            border: '1px solid var(--border-muted)',
+            borderRadius: '1rem',
+            padding: ['1.5rem', '2.5rem', null, '3.5rem'],
+            boxShadow: '0 1.4375rem 2.8125rem var(--shadow)',
+          })}
+        >
+          <Type as="h2" look="heading30">
+            Unify your team dynamic
+          </Type>
+          <Type
+            as="p"
+            look="body18"
+            color="var(--muted)"
+            css={{ maxWidth: '34rem', margin: '1rem 0' }}
+          >
+            Enable a content culture that’s productive, collaborative, and fun. Open and flexible. A
+            tool your whole team can grow with.
+          </Type>
+          <div
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr'],
+              gap: ['1rem', '2rem', '2.5rem', null],
+              alignItems: 'stretch',
+              marginTop: '2.5rem',
+              '& > a': {
+                borderRadius: '1rem',
+                boxShadow: '0 0 5px var(--shadow)',
+                padding: '1.5rem',
+                color: 'var(--app-bg)',
+                transition: 'box-shadow 0.2s ease, transform 0.2s ease, padding 0.2s ease',
+                textDecoration: 'none !important',
+                '&:hover, &:focus': {
+                  boxShadow: '0 7px 21px var(--shadow)',
+                  transform: 'translateY(-4px)',
+                },
+                '& svg': {
+                  height: '2rem',
+                },
+              },
+            })}
+          >
+            <Link href="/for-developers" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad3-2), var(--grad3-1))`,
+                }}
+              >
+                <Code />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  Developer Experience →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  Built the way you’d want it made. Keystone fits with the tools you know and love.
+                </Type>
+              </a>
+            </Link>
+            <Link href="/for-content-management" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad5-2), var(--grad5-1))`,
+                }}
+              >
+                <Content />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  Editor Experience →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  The configurable editing environment you need to do your best work.
+                </Type>
+              </a>
+            </Link>
+            <Link href="/for-organisations" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+                }}
+              >
+                <Organization />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  For Organisations →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  Own your data. Start fast. Find your audience anywhere. Scale on your terms.
+                </Type>
+              </a>
+            </Link>
+          </div>
+        </Section>
+
+        <Section
           css={{
             textAlign: 'center',
           }}
@@ -753,86 +883,6 @@ export const lists = createSchema({
               height={731}
             />
           </div>
-        </Section>
-
-        <Section>
-          <Type as="h2" look="heading48">
-            Unify your <Highlight look="grad3">team dynamic</Highlight>
-          </Type>
-          <Type
-            as="p"
-            look="body20"
-            margin="0.5rem 0 1.5rem 0"
-            color="var(--muted)"
-            css={{ maxWidth: '37.5rem' }}
-          >
-            Enable a content culture that’s productive, collaborative, and fun. Open, flexible, and
-            natural. A tool your team can grow with.
-          </Type>
-          <ul
-            css={mq({
-              display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '3rem',
-              listStyle: 'none',
-              padding: 0,
-              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
-              '& svg': {
-                height: '3rem',
-              },
-              '& svg, & h3, & p': {
-                marginBottom: '1rem',
-              },
-            })}
-          >
-            <li>
-              <Code grad="grad3" />
-              <Type as="h3" look="heading24">
-                Developers
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
-                at home with the tools you know and love.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-developers">
-                  <a>Keystone for Developers →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Content grad="grad3" />
-              <Type as="h3" look="heading24">
-                Content people
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Get the fields, forms, and workflows you need to do your best work. Tell the full
-                story with a rich text editor that can be configured for any content need.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-content-management">
-                  <a>Keystone for Content Management →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Organization grad="grad3" />
-              <Type as="h3" look="heading24">
-                Organisations
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Realise your vision with a backend you can shape to fit your logic. Own your data,
-                cultivate a productive content culture, send your message anywhere, and scale on
-                your terms.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-organisations">
-                  <a>Keystone for Organisations →</a>
-                </Link>
-              </Type>
-            </li>
-          </ul>
         </Section>
 
         <CommunityCta />
