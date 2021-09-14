@@ -165,11 +165,11 @@ Have PR reviewed and merged into `master`.
 
 When we do a release we need to make sure `master` and `website_live` are both in sync with each other, this is done by:
 
-Creating a branch off `master` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - https://github.com/keystonejs/keystone/pull/6470
+Creating a branch off `master` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
 
-Then the other way around, create a branch off `website_live` such as `bring-in-latest-master-changes`, and merging in `master` changes, opening a PR and getting it merged, example - https://github.com/keystonejs/keystone/pull/6472
+Then the other way around, create a branch off `website_live` such as `bring-in-latest-master-changes`, and merging in `master` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
 
-Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind, if you look at the branches page - https://github.com/keystonejs/keystone/branches
+Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
 
 To resolve this in the CLI:
 
