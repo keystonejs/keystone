@@ -167,7 +167,7 @@ describe('Virtual field type', () => {
     await expect(
       setupTestEnv({
         config: apiTestConfig({
-          lists: createSchema({
+          lists: {
             Post: list({
               fields: {
                 virtual: virtual({
@@ -181,7 +181,7 @@ describe('Virtual field type', () => {
                   }),
                 }),
               },
-            }),
+            },
           }),
         }),
       })
