@@ -594,7 +594,17 @@ See the [virtual fields guide](../guides/virtual-fields) for details on how to u
 Options:
 
 - `field` (required): The GraphQL field that defines the type, resolver and arguments.
-- `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
+- `ui.query` (default: `''` ):  
+  Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:
+  ```graphql
+  query {
+    item(where: { id: "..." }) {
+      field${ui.query}
+    }
+  }
+  ```
+  This is only needed when you your field returns a GraphQL type other than a scalar(String and etc.)
+  or an enum or you need to provide arguments to the field.
 
 ```typescript
 import { config, list, graphql } from '@keystone-next/keystone';
