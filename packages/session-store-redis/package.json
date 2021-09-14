@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@types/redis": "^2.8.31"
+    "@types/redis": "^2.8.32"
   },
   "peerDependencies": {
     "@keystone-next/keystone": "^25.0.0"
