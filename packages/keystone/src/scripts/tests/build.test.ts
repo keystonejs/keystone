@@ -91,8 +91,8 @@ test('build works with typescript without the user defining a babel config', asy
     next build size report
     λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
     ○  (Static)  automatically rendered as static HTML (uses no initial props)
-    ●  (SSG)     automatically generated as static HTML + JSON (uses [36mgetStaticProps[39m)
-       (ISR)     incremental static regeneration (uses revalidate in [36mgetStaticProps[39m)
+    ●  (SSG)     automatically generated as static HTML + JSON (uses getStaticProps)
+       (ISR)     incremental static regeneration (uses revalidate in getStaticProps)
     "
   `);
   expect(result.exitCode).toBe(0);
