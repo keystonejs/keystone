@@ -37,12 +37,12 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 const createViewValue = Symbol('create view virtual field value');
 
 export const controller = (
-  config: FieldControllerConfig<{ graphQLReturnFragment: string }>
+  config: FieldControllerConfig<{ query: string }>
 ): FieldController<any> => {
   return {
     path: config.path,
     label: config.label,
-    graphqlSelection: `${config.path}${config.fieldMeta.graphQLReturnFragment}`,
+    graphqlSelection: `${config.path}${config.fieldMeta.query}`,
     defaultValue: createViewValue,
     deserialize: data => {
       return data[config.path];
