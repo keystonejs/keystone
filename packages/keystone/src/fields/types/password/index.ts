@@ -11,7 +11,7 @@ import {
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
 
-type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
+export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     /**
      * @default 8

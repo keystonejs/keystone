@@ -105,7 +105,7 @@ export default function IndexPage() {
                 gap: '1rem',
               }}
             >
-              <Type as="p" look="body18" color="var(--muted)">
+              <Type as="p" look="body18">
                 We're an Australian design + development consultancy with a long history working on
                 big products at scale for names you know. <br css={{ padding: '0 0 2rem 0' }} />
                 <Link href="/why-keystone">
@@ -139,7 +139,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad1">1m+</Highlight>
                 </Type>
-                <Type as="p" look="body18" color="var(--muted)">
+                <Type as="p" look="body18">
                   <InlineCode>npm</InlineCode> Installs
                 </Type>
               </li>
@@ -147,7 +147,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad1">160+</Highlight>
                 </Type>
-                <Type as="p" look="body18" color="var(--muted)">
+                <Type as="p" look="body18">
                   Contributors
                 </Type>
               </li>
@@ -155,7 +155,7 @@ export default function IndexPage() {
                 <Type as="h3" look="heading48">
                   <Highlight look="grad1">2013</Highlight>
                 </Type>
-                <Type as="p" look="body18" color="var(--muted)">
+                <Type as="p" look="body18">
                   First Commit
                 </Type>
               </li>
@@ -374,10 +374,10 @@ export default function IndexPage() {
               <Type as="h3" look="heading24">
                 Design your schema
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0">
                 Rapidly spec your backend with all the primitive and advanced field types you need.
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18">
                 Add logic, access control, and custom queries & mutations to create an API that's
                 unique to your app.
               </Type>
@@ -398,21 +398,15 @@ export default function IndexPage() {
               >
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18" color="var(--muted)">
-                    100% TypeScript (or JavaScript)
-                  </Type>
+                  <Type look="body18">100% TypeScript (or JavaScript)</Type>
                 </li>
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18" color="var(--muted)">
-                    Fits your git-based workflow & CI
-                  </Type>
+                  <Type look="body18">Fits your git-based workflow & CI</Type>
                 </li>
                 <li>
                   <Tick grad="grad2" />
-                  <Type look="body18" color="var(--muted)">
-                    Automatic db migrations with Prisma
-                  </Type>
+                  <Type look="body18">Automatic db migrations with Prisma</Type>
                 </li>
               </ul>
             </div>
@@ -420,10 +414,10 @@ export default function IndexPage() {
               <CodeWindow lines={21}>
                 <WindowL>
                   <SourceCode>
-                    {`import { createSchema, list } from '@keystone-next/keystone';
+                    {`import { list } from '@keystone-next/keystone';
 import { document, text, timestamp, password, relationship } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -440,7 +434,7 @@ export const lists = createSchema({
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-});`}
+};`}
                   </SourceCode>
                 </WindowL>
               </CodeWindow>
@@ -458,7 +452,7 @@ export const lists = createSchema({
               <Type as="h3" look="heading24">
                 Customise your content story
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0">
                 A flexible and intuitive editing environment that does what your schema says:
                 Keystone’s Admin UI understands your access control, so you can shape it to your
                 unique needs.
@@ -480,21 +474,15 @@ export const lists = createSchema({
               >
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18" color="var(--muted)">
-                    Powerful access control
-                  </Type>
+                  <Type look="body18">Powerful access control</Type>
                 </li>
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18" color="var(--muted)">
-                    Next-gen rich text WYSIWYG
-                  </Type>
+                  <Type look="body18">Next-gen rich text WYSIWYG</Type>
                 </li>
                 <li>
                   <Tick grad="grad3" />
-                  <Type look="body18" color="var(--muted)">
-                    BYO custom React components{' '}
-                  </Type>
+                  <Type look="body18">BYO custom React components </Type>
                 </li>
               </ul>
             </div>
@@ -519,7 +507,7 @@ export const lists = createSchema({
               <Type as="h3" look="heading24">
                 Query your data
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0">
                 Get what you need, fast. Keystone's GraphQL API gives you session management, access
                 control, pagination, sorting, and filtering out of the box. Customise it without
                 losing the bits that work for you.
@@ -541,21 +529,15 @@ export const lists = createSchema({
               >
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18" color="var(--muted)">
-                    Powerful CRUD scaffolding
-                  </Type>
+                  <Type look="body18">Powerful CRUD scaffolding</Type>
                 </li>
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18" color="var(--muted)">
-                    Evolve with bespoke logic for your app
-                  </Type>
+                  <Type look="body18">Evolve with bespoke logic for your app</Type>
                 </li>
                 <li>
                   <Tick grad="grad5" />
-                  <Type look="body18" color="var(--muted)">
-                    Integrate microservices & external APIs
-                  </Type>
+                  <Type look="body18">Integrate microservices & external APIs</Type>
                 </li>
               </ul>
             </div>
@@ -630,11 +612,11 @@ export const lists = createSchema({
               <Type as="h3" look="heading24">
                 Deploy anywhere
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0">
                 Keystone is open source. Deploy it to managed services like Digital Ocean, Heroku,
                 and Render, or your own custom infrastructure.
               </Type>
-              <Type as="p" look="body18" margin="1rem 0 0 0" color="var(--muted)">
+              <Type as="p" look="body18" margin="1rem 0 0 0">
                 The source of truth is your codebase, so Keystone fits naturally into your git-based
                 development workflow, and you can use all the CI & Automation tooling you already
                 know.

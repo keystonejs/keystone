@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
@@ -10,7 +10,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Note: list({
         fields: {
           content: text({ isOrderable: true }),
@@ -50,7 +50,7 @@ const runner = setupTestRunner({
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -58,7 +58,7 @@ let afterChangeWasCalled = false;
 
 const runner2 = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Note: list({
         fields: {
           content: text({ isOrderable: true }),
@@ -75,7 +75,7 @@ const runner2 = setupTestRunner({
           notes: relationship({ ref: 'Note', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

@@ -1,13 +1,13 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           company: relationship({ ref: 'Company', isFilterable: true }),
@@ -16,7 +16,7 @@ const runner = setupTestRunner({
       }),
       Company: list({ fields: { name: text() } }),
       Post: list({ fields: { content: text({ isFilterable: true }) } }),
-    }),
+    },
   }),
 });
 

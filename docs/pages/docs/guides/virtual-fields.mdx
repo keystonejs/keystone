@@ -18,11 +18,11 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, list, graphql } from '@keystone-next/keystone';
+import { config, list, graphql } from '@keystone-next/keystone';
 import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     Example: list({
       fields: {
         hello: virtual({
@@ -35,7 +35,7 @@ export default config({
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -87,7 +87,7 @@ We can do this with a `virtual` field which queries for the related `author` and
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -111,7 +111,7 @@ export default config({
         name: text({ isRequired: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -126,7 +126,7 @@ We use the `args` option to define the GraphQL field arguments we want to suppor
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -151,11 +151,11 @@ export default config({
               }
             },
           }),
-          graphQLReturnFragment: '(length: 500)',
+          ui: { query: '(length: 500)' },
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -180,9 +180,9 @@ We can now perform the following query to get all the excerpts without over-fetc
 }
 ```
 
-As well as passing in the `field` definition, we have also passed in `graphQLReturnFragment: '(length: 500)'`.
+As well as passing in the `field` definition, we have also passed in `ui: { query: '(length: 500)' }`.
 This is the value used when displaying the field in the Admin UI, where we want to have a different length the default of `200`.
-Had we not specified `defaultValue` in our field, the `graphQLReturnFragment` argument would be **required**, as the Admin UI would not be able to query this field without it.
+Had we not specified `defaultValue` in our field, the `ui.query` argument would be **required**, as the Admin UI would not be able to query this field without it.
 
 ## GraphQL objects
 
@@ -193,7 +193,7 @@ We can set up a GraphQL type called `PostCounts` to represent this data using th
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     Post: list({
       fields: {
         content: text(),
@@ -220,18 +220,18 @@ export default config({
               };
             },
           }),
-          graphQLReturnFragment: '{ words sentences paragraphs }',
+          ui: { query: '{ words sentences paragraphs }' },
         }),
       },
     }),
-  }),
+  },
 });
 ```
 
 This example is written in TypeScript, so we need to specify the type of the root value expected by the `PostCounts` type.
 This type must correspond to the return type of the `resolve` function.
 
-Because our `virtual` field has an object type, we also need to provide a value for the option `graphQLReturnFragment`.
+Because our `virtual` field has an object type, we also need to provide a value for the option `ui.query`.
 This fragment tells the Keystone Admin UI which values to show in the item page for this field.
 
 #### Self-referencing objects
@@ -262,7 +262,7 @@ The argument `lists` contains the type information for all of the Keystone lists
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
 ```ts
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text(),
@@ -295,14 +295,14 @@ export const lists = createSchema({
               }
             },
           }),
-        graphQLReturnFragment: '{ title publishDate }',
+        ui: { query: '{ title publishDate }' },
       }),
     },
   }),
-});
+};
 ```
 
-Once again we need to specify `graphQLReturnFragment` on this virtual field to specify which fields of the `Post` to display in the Admin UI.
+Once again we need to specify `ui.query` on this virtual field to specify which fields of the `Post` to display in the Admin UI.
 
 ## Working with virtual fields
 
