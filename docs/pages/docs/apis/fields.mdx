@@ -12,7 +12,7 @@ This document covers the different field types which are available and the confi
 To see how to access fields in the GraphQL API please see the [GraphQL API](./graphql) docs.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import {
   // Scalar types
   checkbox,
@@ -43,7 +43,7 @@ import { document } from '@keystone-next/fields-document';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: text({ /* ... */ }),
@@ -51,7 +51,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -94,7 +94,7 @@ Options:
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: text({
@@ -124,7 +124,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -137,29 +137,40 @@ A `checkbox` field represents a boolean (`true`/`false`) value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a boolean value or an async function which takes an argument `({ context, originalInput })` and returns a boolean value.
-  This value will be used for the field when creating items if no explicit value is set.
-  `context` is a [`KeystoneContext`](./context) object.
-  `originalInput` is an object containing the data passed in to the `create` mutation.
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `defaultValue` (default: `false`): This value will be used for the field when creating items if no explicit value is set.
+- `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
+  you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
+  when access is denied, `null` will be returned which will cause an error since the field is non-nullable and the error
+  will propagate up until a nullable field is found which means the entire item will be unreadable and when doing an `items` query, all the items will be unreadable.
+- `graphql.create.isNonNull` (default: `false`): If you have no create access control and you want to explicitly show that this is field is non-nullable in the create input
+  you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
+  This is only allowed when you have no create access control because otherwise, the item will always fail access control
+  if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { checkbox } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: checkbox({
           defaultValue: true,
-          isRequired: true,
+          graphql: {
+            read: {
+              isNonNull: true
+            },
+            create: {
+              isNonNull: true
+            },
+          }
         }),
         /* ... */
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -180,11 +191,11 @@ Options:
   - If `'unique'` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { integer } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: integer({
@@ -196,7 +207,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -209,11 +220,11 @@ Currently the `json` field is non-orderable and non-filterable.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { json } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: json({
@@ -223,7 +234,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -244,11 +255,11 @@ Options:
   - If `'unique'` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { float } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: float({
@@ -260,7 +271,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -283,11 +294,11 @@ Options:
   - If `'unique'` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { decimal } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: decimal({
@@ -301,7 +312,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -319,11 +330,11 @@ Options:
   This module will be used for all encryption routines in the `password` field.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { password } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: password({
@@ -336,7 +347,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -367,11 +378,11 @@ Options:
   Can be one of `['select', 'segmented-control']`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { select } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: select({
@@ -389,7 +400,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -412,11 +423,11 @@ Options:
   Can be one of `['input', 'textarea']`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: text({
@@ -429,7 +440,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -451,11 +462,11 @@ Options:
   - If `'unique'` then all values of this field must be unique.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { timestamp } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: timestamp({
@@ -467,7 +478,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -501,11 +512,11 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 - `ui.displayMode === 'count'` only supports `many` relationships
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: relationship({
@@ -534,7 +545,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -552,11 +563,11 @@ Options:
 - `isIndexed`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { autoIncrement } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: autoIncrement({
@@ -568,7 +579,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -586,11 +597,11 @@ Options:
 - `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
 
 ```typescript
-import { config, createSchema, list, graphql } from '@keystone-next/keystone';
+import { config, list, graphql } from '@keystone-next/keystone';
 import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: virtual({
@@ -606,7 +617,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -621,26 +632,20 @@ A `file` field represents a file of any type.
 
 See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
 
-Options:
-
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { file } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
-        repo: file({
-          isRequired: true,
-        }),
+        repo: file(),
         /* ... */
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -651,26 +656,20 @@ An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gi
 
 See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
 
-Options:
-
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { image } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
-        avatar: image({
-          isRequired: true,
-        }),
+        avatar: image(),
         /* ... */
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -691,11 +690,11 @@ Options:
 - `layouts`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: document({
@@ -713,7 +712,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```
@@ -722,7 +721,6 @@ export default config({
 
 (coming soon)
 
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `cloudinary`: Configuration for the connected Cloudinary account.
   - `cloudName`
   - `apiKey`
@@ -730,15 +728,14 @@ export default config({
   - `folder`
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: cloudinaryImage({
-          isRequired: true,
           cloudinary: {
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,
             apiKey: process.env.CLOUDINARY_API_KEY,
@@ -750,7 +747,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 ```

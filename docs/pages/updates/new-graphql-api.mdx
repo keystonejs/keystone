@@ -13,8 +13,8 @@ This guide describes the improvements we've made, and walks you through the step
 
 To illustrate the changes, we’ll refer to the `Task` list in the following schema, from our [Task Manager](https://github.com/keystonejs/keystone/tree/master/examples/task-manager) example project.
 
-```
-export const lists = createSchema({
+```ts
+export const lists = {
   Task: list({
     fields: {
       label: text({ isRequired: true }),
@@ -43,7 +43,7 @@ export const lists = createSchema({
       name: text(),
     },
   }),
-});
+};
 ```
 
 ## Query

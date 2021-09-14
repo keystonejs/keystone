@@ -1,12 +1,12 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Group: list({
         fields: {
           name: text(),
@@ -86,7 +86,7 @@ const runner = setupTestRunner({
           group: relationship({ ref: 'GroupNoUpdateHard' }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -191,6 +191,34 @@ describe('non-matching filter', () => {
       ]);
     })
   );
+
+  test(
+    'errors on incomplete data',
+    runner(async ({ context }) => {
+      // Create an item to link against
+      const createEvent = await context.lists.Event.createOne({ data: {} });
+
+      // Create an item that does the linking
+      const { data, errors } = await context.graphql.raw({
+        query: `
+              mutation {
+                updateEvent(
+                  where: { id: "${createEvent.id}" },
+                  data: { group: {} }
+                ) {
+                  id
+                }
+              }`,
+      });
+      expect(data).toEqual({ updateEvent: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateEvent'],
+          message: `Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
+        },
+      ]);
+    })
+  );
 });
 
 describe('with access control', () => {
@@ -217,7 +245,7 @@ describe('with access control', () => {
             expect(id).toBeTruthy();
 
             // Create an item that does the linking
-            const data = await context.exitSudo().lists[`EventTo${group.name}`].createOne({
+            const data = await context.lists[`EventTo${group.name}`].createOne({
               data: { title: 'A thing', group: { connect: { id } } },
               query: 'id group { id }',
             });
@@ -283,7 +311,7 @@ describe('with access control', () => {
             expect(eventModel.id).toBeTruthy();
 
             // Update the item and link the relationship field
-            const { data, errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.graphql.raw({
               query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -319,7 +347,7 @@ describe('with access control', () => {
             expect(id).toBeTruthy();
 
             // Create an item that does the linking
-            const { data, errors } = await context.exitSudo().graphql.raw({
+            const { data, errors } = await context.graphql.raw({
               query: `
                     mutation {
                       createEventTo${group.name}(data: {

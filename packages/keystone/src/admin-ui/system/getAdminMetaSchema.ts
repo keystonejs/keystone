@@ -8,6 +8,7 @@ import {
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
+  ItemRootValue,
 } from '../../types';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
@@ -125,26 +126,24 @@ export function getAdminMetaSchema({
       itemView: graphql.field({
         args: {
           id: graphql.arg({
-            type: graphql.nonNull(graphql.ID),
+            type: graphql.ID,
           }),
         },
         resolve(rootVal, args) {
-          return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id ?? null };
         },
-        type: graphql.object<FieldIdentifier & { itemId: string }>()({
+        type: graphql.object<FieldIdentifier & { itemId: string | null }>()({
           name: 'KeystoneAdminUIFieldMetaItemView',
           fields: {
             fieldMode: graphql.field({
-              type: graphql.nonNull(
-                graphql.enum({
-                  name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-                  values: graphql.enumValues(['edit', 'read', 'hidden']),
-                })
-              ),
-              async resolve(rootVal, args, context) {
-                if ('isAdminUIBuildProcess' in context) {
+              type: graphql.enum({
+                name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
+                values: graphql.enumValues(['edit', 'read', 'hidden']),
+              }),
+              resolve(rootVal, args, context) {
+                if ('isAdminUIBuildProcess' in context && rootVal.itemId !== null) {
                   throw new Error(
-                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
+                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process if an id is provided'
                   );
                 }
                 if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
@@ -154,17 +153,37 @@ export function getAdminMetaSchema({
                 ) {
                   return 'read';
                 }
-                const item = await context
-                  .sudo()
-                  .db.lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
                 const listConfig = config.lists[rootVal.listKey];
+
                 const sessionFunction =
                   lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
-                  listConfig.ui?.itemView?.defaultFieldMode;
-                return runMaybeFunction(sessionFunction, 'edit', {
-                  session: context.session,
-                  item,
+                  listConfig.ui?.itemView?.defaultFieldMode ??
+                  'edit';
+                if (typeof sessionFunction === 'string') {
+                  return sessionFunction;
+                }
+
+                if (rootVal.itemId === null) {
+                  return null;
+                }
+
+                fakeAssert<KeystoneContext>(context);
+
+                // uhhh, for some reason TypeScript only understands this if it's assigned
+                // to a variable and then returned
+                let ret = fetchItemForItemViewFieldMode(context)(
+                  rootVal.listKey,
+                  rootVal.itemId
+                ).then(item => {
+                  if (item === null) {
+                    return 'hidden' as const;
+                  }
+                  return runMaybeFunction(sessionFunction, 'edit', {
+                    session: context.session,
+                    item,
+                  });
                 });
+                return ret;
               },
             }),
           },
@@ -339,4 +358,36 @@ function runMaybeFunction<Return extends string | boolean, T>(
     return defaultValue;
   }
   return sessionFunction;
+}
+
+function fakeAssert<T>(val: any): asserts val is T {}
+
+const fetchItemForItemViewFieldMode = extendContext(context => {
+  type ListKey = string;
+  type ItemId = string;
+  const lists = new Map<ListKey, Map<ItemId, Promise<ItemRootValue | null>>>();
+  return (listKey: ListKey, id: ItemId) => {
+    if (!lists.has(listKey)) {
+      lists.set(listKey, new Map());
+    }
+    const items = lists.get(listKey)!;
+    if (items.has(id)) {
+      return items.get(id)!;
+    }
+    let promise = context.db.lists[listKey].findOne({ where: { id } });
+    items.set(id, promise);
+    return promise;
+  };
+});
+
+function extendContext<T>(cb: (context: KeystoneContext) => T) {
+  const cache = new WeakMap<KeystoneContext, T>();
+  return (context: KeystoneContext) => {
+    if (cache.has(context)) {
+      return cache.get(context)!;
+    }
+    const result = cb(context);
+    cache.set(context, result);
+    return result;
+  };
 }

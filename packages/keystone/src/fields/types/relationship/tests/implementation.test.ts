@@ -128,17 +128,6 @@ describe('Type Generation', () => {
 }"
 `);
   });
-
-  test('to-many relationships can have meta disabled', () => {
-    const schema = getSchema(relationship({ many: true, ref: 'Zip', withMeta: false }));
-
-    expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
-"type Test {
-  id: ID!
-  foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], take: Int, skip: Int! = 0): [Zip!]
-}"
-`);
-  });
 });
 
 describe('Referenced list errors', () => {

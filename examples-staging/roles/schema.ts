@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, password, relationship, text } from '@keystone-next/keystone/fields';
 
 import { isSignedIn, permissions, rules } from './access';
@@ -12,7 +12,7 @@ import { isSignedIn, permissions, rules } from './access';
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists = createSchema({
+export const lists = {
   Todo: list({
     /*
       SPEC
@@ -64,9 +64,16 @@ export const lists = createSchema({
             fieldMode: args => (permissions.canManageAllTodos(args) ? 'edit' : 'read'),
           },
         },
-        // Always default new todo items to the current user; this is important because users
-        // without canManageAllTodos don't see this field when creating new items
-        defaultValue: ({ context: { session } }) => ({ connect: { id: session.itemId } }),
+        hooks: {
+          resolveInput({ operation, resolvedData, context }) {
+            if (operation === 'create' && !resolvedData.assignedTo) {
+              // Always default new todo items to the current user; this is important because users
+              // without canManageAllTodos don't see this field when creating new items
+              return { connect: { id: context.session.itemId } };
+            }
+            return resolvedData.assignedTo;
+          },
+        },
       }),
     },
   }),
@@ -221,4 +228,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

@@ -1,11 +1,11 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       // Filter access control
       User: list({
         fields: { name: text({ isOrderable: true }) },
@@ -17,7 +17,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -25,7 +25,6 @@ describe('Access control - Filter', () => {
   test(
     'updateOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid name should pass
       const user = await context.lists.User.createOne({ data: { name: 'good' } });
       await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
@@ -52,7 +51,6 @@ describe('Access control - Filter', () => {
   test(
     'deleteOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid names should pass
       const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
       const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
@@ -77,7 +75,6 @@ describe('Access control - Filter', () => {
   test(
     'updateMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [
@@ -144,7 +141,6 @@ describe('Access control - Filter', () => {
   test(
     'deleteMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
       const users = await context.lists.User.createMany({
         data: [

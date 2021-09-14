@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { FindManyArgsValue, ItemRootValue, KeystoneContext, OrderDirection } from '../../../types';
-import { checkOperationAccess, getAccessFilters } from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import {
   PrismaFilter,
   UniquePrismaFilter,
@@ -59,7 +59,7 @@ export async function findOne(
   context: KeystoneContext
 ) {
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return null;
   }
@@ -89,7 +89,7 @@ export async function findMany(
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
   // Check operation permission, throw access denied if not allowed
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return [];
   }
@@ -147,6 +147,8 @@ async function resolveOrderBy(
       const resolve = field.input!.orderBy!.resolve;
       const resolvedValue = resolve ? await resolve(value, context) : value;
       if (field.dbField.kind === 'multi') {
+        // Note: no built-in field types support multi valued database fields *and* orderBy.
+        // This code path is only relevent to custom fields which fit that criteria.
         const keys = Object.keys(resolvedValue);
         if (keys.length !== 1) {
           throw new Error(
@@ -172,7 +174,7 @@ export async function count(
   extraFilter?: PrismaFilter
 ) {
   // Check operation permission, throw access denied if not allowed
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return 0;
   }

@@ -1,10 +1,10 @@
+import { CacheHint } from 'apollo-server-types';
 import {
   graphql,
   ItemRootValue,
   TypesForList,
   getGqlNames,
   NextFieldType,
-  CacheHint,
   BaseGeneratedListTypes,
   ListInfo,
   ListHooks,

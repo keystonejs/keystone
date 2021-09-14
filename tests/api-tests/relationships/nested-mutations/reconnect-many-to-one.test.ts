@@ -1,5 +1,5 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../utils';
 
@@ -7,7 +7,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Note: list({
         fields: {
           title: text({ isOrderable: true }),
@@ -20,7 +20,7 @@ const runner = setupTestRunner({
           notes: relationship({ ref: 'Note.author', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 

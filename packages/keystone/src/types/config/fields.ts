@@ -1,4 +1,4 @@
-import type { CacheHint } from '../next-fields';
+import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
 import type { BaseGeneratedListTypes } from '../utils';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';

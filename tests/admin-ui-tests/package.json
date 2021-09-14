@@ -26,7 +26,7 @@
   "dependencies": {
     "@manypkg/find-root": "^1.1.0",
     "dotenv": "^10.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.2",
     "tree-kill": "^1.2.2"
   }
 }

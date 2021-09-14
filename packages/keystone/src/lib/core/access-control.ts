@@ -16,7 +16,7 @@ import {
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
-export async function checkOperationAccess(
+export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'delete' | 'create' | 'update' | 'query'
@@ -53,7 +53,7 @@ export async function getAccessFilters(
 }
 
 export async function validateFieldAccessControl<
-  Args extends { listKey: string; fieldKey: string; operation: 'query' | 'create' | 'update' }
+  Args extends { listKey: string; fieldKey: string; operation: 'read' | 'create' | 'update' }
 >({
   access,
   args,

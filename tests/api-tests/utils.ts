@@ -5,7 +5,7 @@ import { KeystoneConfig, DatabaseProvider } from '@keystone-next/keystone/types'
 // export it from `@keystone-next/keystone/testing`.
 export const apiTestConfig = (
   config: Omit<KeystoneConfig, 'db'> & {
-    db?: Omit<KeystoneConfig['db'], 'provider' | 'url' | 'adapter'>;
+    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
   }
 ): KeystoneConfig => ({
   ...config,
@@ -136,7 +136,7 @@ export const expectExtensionError = (
         extensions: {
           code: 'INTERNAL_SERVER_ERROR',
           ...(expectException
-            ? { exception: { debug, stacktrace: expect.arrayContaining(stacktrace) } }
+            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),
           ...(expectDebug ? { debug } : {}),
         },
@@ -156,7 +156,7 @@ export const expectPrismaError = (
     args.map(({ path, message, code, target }) => ({
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
-        exception: { clientVersion: '2.30.2', code, meta: { target } },
+        prisma: { clientVersion: '2.30.2', code, meta: { target } },
       },
       path,
       message,

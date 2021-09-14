@@ -1,5 +1,5 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectExtensionError } from '../utils';
@@ -7,7 +7,7 @@ import { apiTestConfig, expectExtensionError } from '../utils';
 const runner = (debug: boolean | undefined) =>
   setupTestRunner({
     config: apiTestConfig({
-      lists: createSchema({
+      lists: {
         User: list({
           fields: { name: text({ isFilterable: true, isOrderable: true }) },
           hooks: {
@@ -85,7 +85,7 @@ const runner = (debug: boolean | undefined) =>
             }),
           },
         }),
-      }),
+      },
       graphql: { debug },
     }),
   });

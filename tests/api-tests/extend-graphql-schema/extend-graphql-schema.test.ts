@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
@@ -23,11 +23,11 @@ const withAccessCheck = <T, Args extends unknown[]>(
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: { name: text() },
       }),
-    }),
+    },
     extendGraphqlSchema: graphQLSchemaExtension({
       typeDefs: gql`
         type Query {

@@ -519,11 +519,9 @@ export function component<
 >(
   options: {
     /** The preview component shown in the editor */
-    component: (
-      props: {
-        [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
-      }
-    ) => ReactElement | null;
+    component: (props: {
+      [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
+    }) => ReactElement | null;
     /** The props that the preview component, toolbar and rendered component will receive */
     props: PropsOption;
     /** The label to show in the insert menu and chrome around the block if chromeless is false */

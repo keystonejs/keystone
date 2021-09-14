@@ -1,8 +1,8 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
 import { graphql } from '@keystone-next/keystone/types';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
@@ -25,6 +25,10 @@ export const lists = createSchema({
       content: text({ ui: { displayMode: 'textarea' } }),
       // A virtual field returning a custom GraphQL object type.
       counts: virtual({
+        ui: {
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'hidden' },
+        },
         field: graphql.field({
           type: graphql.object<{
             words: number;
@@ -47,7 +51,6 @@ export const lists = createSchema({
             };
           },
         }),
-        graphQLReturnFragment: '{ words sentences paragraphs }',
       }),
       // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
@@ -114,4 +117,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

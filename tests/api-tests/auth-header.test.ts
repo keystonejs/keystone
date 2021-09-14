@@ -1,5 +1,5 @@
 import { text, timestamp, password } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import type { KeystoneContext } from '@keystone-next/keystone/types';
@@ -26,7 +26,7 @@ const auth = createAuth({
 const runner = setupTestRunner({
   config: auth.withAuth(
     apiTestConfig({
-      lists: createSchema({
+      lists: {
         Post: list({
           fields: {
             title: text(),
@@ -48,7 +48,7 @@ const runner = setupTestRunner({
             },
           },
         }),
-      }),
+      },
       session: statelessSessions({ secret: COOKIE_SECRET }),
     })
   ),
@@ -106,7 +106,7 @@ describe('Auth testing', () => {
       setupTestEnv({
         config: auth.withAuth(
           apiTestConfig({
-            lists: createSchema({
+            lists: {
               User: list({
                 fields: {
                   name: text(),
@@ -114,7 +114,7 @@ describe('Auth testing', () => {
                   password: password(),
                 },
               }),
-            }),
+            },
 
             session: statelessSessions({ secret: COOKIE_SECRET }),
           })

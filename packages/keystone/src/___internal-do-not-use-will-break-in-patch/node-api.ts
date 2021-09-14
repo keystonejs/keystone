@@ -6,5 +6,5 @@ export function createListsAPI(config: KeystoneConfig, prismaClient: any) {
   const { getKeystone } = createSystem(initConfig(config));
   const keystone = getKeystone(prismaClient);
   keystone.connect();
-  return keystone.createContext().sudo().lists;
+  return keystone.createContext({ sudo: true }).lists;
 }
