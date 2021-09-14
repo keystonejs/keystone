@@ -70,7 +70,7 @@ counts: virtual({
       return { content: item.content || '' };
     },
   }),
-  graphQLReturnFragment: '{ words sentences paragraphs }',
+  ui: { query: '{ words sentences paragraphs }' },
 }),
 ```
 
@@ -114,6 +114,6 @@ relatedPosts: virtual({
         });
       },
     }),
-  graphQLReturnFragment: '{ title }',
+  ui: { query: '{ title }' },
 }),
 ```
