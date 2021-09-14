@@ -181,8 +181,8 @@ describe('Virtual field type', () => {
                   }),
                 }),
               },
-            },
-          }),
+            }),
+          },
         }),
       })
     ).rejects.toMatchInlineSnapshot(`
