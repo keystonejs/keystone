@@ -40,7 +40,7 @@ describe('errors on incomplete data', () => {
         {
           path: ['createEvent'],
           message:
-            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
+            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })
@@ -67,7 +67,7 @@ describe('errors on incomplete data', () => {
         {
           path: ['createEvent'],
           message:
-            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
+            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })

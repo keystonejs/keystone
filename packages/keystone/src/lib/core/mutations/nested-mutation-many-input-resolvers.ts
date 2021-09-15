@@ -3,6 +3,7 @@ import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { NestedMutationState } from './create-update';
+import { userInputError } from '../graphql-errors';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
@@ -43,7 +44,7 @@ export function resolveRelateToManyForCreateInput(
 ) {
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
-      throw new Error(
+      throw userInputError(
         `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
@@ -90,12 +91,12 @@ export function resolveRelateToManyForUpdateInput(
       !Array.isArray(value.disconnect) &&
       !Array.isArray(value.set)
     ) {
-      throw new Error(
+      throw userInputError(
         `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
     if (value.set && value.disconnect) {
-      throw new Error(
+      throw userInputError(
         `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
       );
     }

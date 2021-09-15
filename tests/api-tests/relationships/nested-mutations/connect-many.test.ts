@@ -322,7 +322,7 @@ describe('non-matching filter', () => {
         {
           path: ['updateUser'],
           message:
-            'You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
         },
       ]);
     })

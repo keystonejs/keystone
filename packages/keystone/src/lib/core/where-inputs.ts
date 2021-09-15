@@ -1,4 +1,5 @@
 import { DBField, KeystoneContext } from '../../types';
+import { userInputError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
@@ -33,14 +34,14 @@ export async function resolveUniqueWhereInput(
 ): Promise<UniquePrismaFilter> {
   const inputKeys = Object.keys(input);
   if (inputKeys.length !== 1) {
-    throw new Error(
+    throw userInputError(
       `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
     );
   }
   const key = inputKeys[0];
   const val = input[key];
   if (val === null) {
-    throw new Error(`The unique value provided in a unique where input must not be null`);
+    throw userInputError(`The unique value provided in a unique where input must not be null`);
   }
   const resolver = fields[key].input!.uniqueWhere!.resolve;
   return { [key]: resolver ? await resolver(val, context) : val };
@@ -79,13 +80,13 @@ export async function resolveWhereInput(
                 if (field.dbField.mode === 'many') {
                   return async () => {
                     if (value === null) {
-                      throw new Error('A many relation filter cannot be set to null');
+                      throw userInputError('A many relation filter cannot be set to null');
                     }
                     return Object.fromEntries(
                       await Promise.all(
                         Object.entries(value).map(async ([key, val]) => {
                           if (val === null) {
-                            throw new Error(
+                            throw userInputError(
                               `The key "${key}" in a many relation filter cannot be set to null`
                             );
                           }
