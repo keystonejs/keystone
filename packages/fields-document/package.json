@@ -53,6 +53,7 @@
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-document",
   "devDependencies": {
+    "@keystone-next/keystone": "*",
     "@testing-library/react": "^12.1.0",
     "array.prototype.flat": "^1.2.4",
     "jest-diff": "^27.2.0",
