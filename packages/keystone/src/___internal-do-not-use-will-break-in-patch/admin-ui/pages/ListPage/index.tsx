@@ -122,7 +122,7 @@ export const getListPage = (props: ListPageProps) => () => <ListPage {...props} 
 const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
-  const { query } = useRouter();
+  const { query, push, pathname } = useRouter();
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
@@ -221,6 +221,18 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
+  useEffect(() => {
+    if (data && currentPage > Math.ceil(data.count / pageSize)) {
+      push({
+        pathname,
+        query: {
+          ...query,
+          page: currentPage - 1,
+        },
+      });
+    }
+  }, [data, pageSize, currentPage, pathname, query, push]);
+
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
@@ -512,7 +524,6 @@ function DeleteManyButton({
                   message: successMessage,
                 });
               }
-
               return refetch();
             },
           },
