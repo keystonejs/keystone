@@ -2,7 +2,7 @@
 '@keystone-next/fields-document': major
 ---
 
-The `document` field is now non-nullable in the database. The field no longer has `defaultValue` or `isRequired` options. The same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively. The field will default to `[{ "type": "paragraph", "children": [{ "text": "" }] }]`.
+The `document` field is now non-nullable in the database. The field no longer has `defaultValue` or `isRequired` options. The same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively. The field will default to `[{ "type": "paragraph", "children": [{ "text": "" }] }]`. The output type has also been renamed to `ListKey_fieldKey_Document`
 
 If you're using SQLite, Prisma will generate a migration that makes the column non-nullable and sets any rows that have null values to an empty paragraph.
 
