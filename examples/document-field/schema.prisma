@@ -16,7 +16,7 @@ model Post {
   title       String?
   slug        String?   @unique
   status      String?
-  content     String?
+  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
   author      Author?   @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
@@ -29,5 +29,5 @@ model Author {
   name  String?
   email String? @unique
   posts Post[]  @relation("Post_author")
-  bio   String?
+  bio   String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 }

@@ -13,6 +13,7 @@ export const updateReturnedValue = [
 ];
 
 export const supportsUnique = false;
+export const skipRequiredTest = true;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
@@ -39,7 +40,7 @@ export const initItems = () => {
       name: 'd',
       content: [{ type: 'paragraph', children: [{ text: 'text' }] }],
     },
-    { name: 'e', content: null },
+    { name: 'e', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
     { name: 'f' },
     { name: 'g' },
   ];
@@ -69,9 +70,9 @@ export const storedValues = () => [
     name: 'd',
     content: { document: [{ type: 'paragraph', children: [{ text: 'text' }] }] },
   },
-  { name: 'e', content: null },
-  { name: 'f', content: null },
-  { name: 'g', content: null },
+  { name: 'e', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
+  { name: 'f', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
+  { name: 'g', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
 ];
 
 export const supportedFilters = () => [];
