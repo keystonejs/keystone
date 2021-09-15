@@ -39,7 +39,7 @@ export const initItems = () => {
       name: 'd',
       content: [{ type: 'paragraph', children: [{ text: 'text' }] }],
     },
-    { name: 'e', content: null },
+    { name: 'e', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
     { name: 'f' },
     { name: 'g' },
   ];
@@ -69,9 +69,9 @@ export const storedValues = () => [
     name: 'd',
     content: { document: [{ type: 'paragraph', children: [{ text: 'text' }] }] },
   },
-  { name: 'e', content: null },
-  { name: 'f', content: null },
-  { name: 'g', content: null },
+  { name: 'e', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
+  { name: 'f', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
+  { name: 'g', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
 ];
 
 export const supportedFilters = () => [];
