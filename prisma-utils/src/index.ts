@@ -19,8 +19,9 @@ type Provider = typeof providers[number];
 // the missing ones are:
 // - Bytes
 // - BigInt
+// - Json
 // - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
-const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Json', 'Decimal'] as const;
+const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal'] as const;
 
 const getScalarTypesForProvider = (provider: Provider): readonly typeof scalarTypes[number][] =>
   provider === 'sqlite' ? scalarTypes.filter(x => x !== 'Json') : scalarTypes;
