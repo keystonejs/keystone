@@ -2,8 +2,8 @@ import { KeystoneContext, TypesForList, graphql } from '../../../types';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
-import { NestedMutationState } from './create-update';
 import { userInputError } from '../graphql-errors';
+import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<

@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectBadUserInput, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
