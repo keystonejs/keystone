@@ -1,6 +1,7 @@
 import { KeystoneContext, TypesForList, graphql } from '../../../types';
 import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
+import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
@@ -60,7 +61,7 @@ export function resolveRelateToOneForCreateInput(
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
-      throw new Error(
+      throw userInputError(
         `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
       );
     }
@@ -76,7 +77,7 @@ export function resolveRelateToOneForUpdateInput(
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
-      throw new Error(
+      throw userInputError(
         `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
       );
     }
