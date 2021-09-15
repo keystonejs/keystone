@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { DatabaseProvider, KeystoneContext } from '@keystone-next/keystone/types';
+import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
 import { expectAccessDenied } from '../utils';
 import {
@@ -37,12 +37,11 @@ const expectNoAccessMany = <N extends string>(
 type IdType = any;
 
 describe(`List access`, () => {
-  let testEnv: TestEnv, context: KeystoneContext, provider: DatabaseProvider;
+  let testEnv: TestEnv, context: KeystoneContext;
   let items: Record<string, { id: IdType; name: string }[]>;
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
-    provider = config.db.provider!;
 
     await testEnv.connect();
 
@@ -114,14 +113,14 @@ describe(`List access`, () => {
         listAccessVariations.forEach(access => {
           test(`single not existing: ${JSON.stringify(access)}`, async () => {
             const { itemQueryName } = context.gqlNames(nameFn[mode](access));
-            const query = `query { ${itemQueryName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
+            const query = `query { ${itemQueryName}(where: { id: "${FAKE_ID}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             expect(errors).toBe(undefined);
             expect(data![itemQueryName]).toBe(null);
           });
           test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
             const _items = await context.lists[nameFn[mode](access)].findMany({
-              where: { id: { in: [FAKE_ID[provider], FAKE_ID_2[provider]] } },
+              where: { id: { in: [FAKE_ID, FAKE_ID_2] } },
             });
             expect(_items).toHaveLength(0);
           });
@@ -247,7 +246,7 @@ describe(`List access`, () => {
         listAccessVariations.forEach(access => {
           test(`denies missing: ${JSON.stringify(access)}`, async () => {
             const updateMutationName = `update${nameFn[mode](access)}`;
-            const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID[provider]}" }, data: { name: "bar" }) { id } }`;
+            const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID}" }, data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             expectNoAccess(data, errors, updateMutationName, false);
           });
@@ -362,13 +361,13 @@ describe(`List access`, () => {
         listAccessVariations.forEach(access => {
           test(`single denies missing: ${JSON.stringify(access)}`, async () => {
             const deleteMutationName = `delete${nameFn[mode](access)}`;
-            const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
+            const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             expectNoAccess(data, errors, deleteMutationName, false);
           });
           test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
             const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-            const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID[provider]}" }, { id: "${FAKE_ID_2[provider]}" }]) { id } }`;
+            const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID}" }, { id: "${FAKE_ID_2}" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             expectAccessDenied('dev', false, undefined, errors, [
               { path: [multiDeleteMutationName, 0] },
