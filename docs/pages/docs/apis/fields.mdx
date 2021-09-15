@@ -586,7 +586,8 @@ Options:
 - `graphQLReturnFragment` (default: `''` ): The sub-fields that should be fetched by the Admin UI when displaying this field.
 
 ```typescript
-import { config, createSchema, list, graphql } from '@keystone-next/keystone';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { graphql } from '@keystone-next/keystone/types';
 import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
