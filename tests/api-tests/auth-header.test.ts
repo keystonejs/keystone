@@ -91,7 +91,12 @@ describe('Auth testing', () => {
         query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
       });
       expect(result.data).toEqual({ updateUser: null });
-      expectAccessDenied(result.errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(result.errors, [
+        {
+          path: ['updateUser'],
+          msg: "You cannot perform the 'update' operation on the list 'User'.",
+        },
+      ]);
     })
   );
 

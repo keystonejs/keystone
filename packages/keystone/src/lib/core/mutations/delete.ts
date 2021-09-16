@@ -20,7 +20,9 @@ async function deleteSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'delete' operation on the list '${list.listKey}'.`
+    );
   }
 
   // Validate and resolve the input filter

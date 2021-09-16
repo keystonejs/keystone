@@ -61,7 +61,12 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectAccessDenied(errors, [{ path: ['createUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['createUser'],
+          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+        },
+      ]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -108,7 +113,12 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUser'],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${user.id}"}'. It may not exist.`,
+        },
+      ]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -158,7 +168,12 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectAccessDenied(errors, [{ path: ['deleteUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['deleteUser'],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${user2.id}"}'. It may not exist.`,
+        },
+      ]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -221,7 +236,16 @@ describe('Access control - Item', () => {
       });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['createUsers', 1],
+          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+        },
+        {
+          path: ['createUsers', 3],
+          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+        },
+      ]);
 
       // The good users should exist in the database
       const users = await context.lists.User.findMany();
@@ -269,7 +293,16 @@ describe('Access control - Item', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUsers', 1],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+        },
+        {
+          path: ['updateUsers', 3],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+        },
+      ]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -318,7 +351,16 @@ describe('Access control - Item', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['deleteUsers', 1],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+        },
+        {
+          path: ['deleteUsers', 3],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+        },
+      ]);
 
       const _users = await context.lists.User.findMany({
         orderBy: { name: 'asc' },

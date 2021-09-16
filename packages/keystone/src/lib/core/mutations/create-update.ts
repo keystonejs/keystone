@@ -33,7 +33,9 @@ async function createSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'create' operation on the list '${list.listKey}'.`
+    );
   }
 
   //  Item access control. Will throw an accessDeniedError if not allowed.
@@ -142,7 +144,9 @@ async function updateSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'update' operation on the list '${list.listKey}'.`
+    );
   }
 
   const { where: uniqueInput, data: rawData } = updateInput;

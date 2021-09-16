@@ -56,16 +56,16 @@ export const expectGraphQLValidationError = (
 
 export const expectAccessDenied = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: (string | number)[]; msg: string }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }));
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
+    args.map(({ path, msg }) => ({
       extensions: { code: undefined },
       path,
-      message: 'You do not have access to this resource',
+      message: `Access denied: ${msg}`,
     }))
   );
 };

@@ -83,7 +83,12 @@ describe('Access control', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectAccessDenied(errors, [{ path: ['createUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['createUser'],
+          msg: `You cannot perform the 'create' operation on the item '{"other":"b","name":"bad"}'. You cannot create the fields ["name"].`,
+        },
+      ]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name other' });
@@ -138,7 +143,12 @@ describe('Access control', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUser'],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${user.id}"}'. You cannot update the fields ["name"].`,
+        },
+      ]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name other' });
@@ -208,7 +218,16 @@ describe('Access control', () => {
       });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['createUsers', 1],
+          msg: `You cannot perform the 'create' operation on the item '{"other":"a","name":"bad"}'. You cannot create the fields [\"name\"].`,
+        },
+        {
+          path: ['createUsers', 3],
+          msg: `You cannot perform the 'create' operation on the item '{"other":"a","name":"bad"}'. You cannot create the fields [\"name\"].`,
+        },
+      ]);
 
       // Valid users should exist in the database
       const users = await context.lists.User.findMany({
@@ -261,7 +280,16 @@ describe('Access control', () => {
       });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUsers', 1],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[1].id}"}'. You cannot update the fields [\"name\"].`,
+        },
+        {
+          path: ['updateUsers', 3],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[3].id}"}'. You cannot update the fields [\"name\"].`,
+        },
+      ]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
