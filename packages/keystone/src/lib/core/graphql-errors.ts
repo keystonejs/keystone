@@ -1,13 +1,23 @@
 import { ApolloError } from 'apollo-server-errors';
 
-// KS_USER_INPUT_ERROR      1
-// KS_ACCESS_DENIED_ERROR   1
-// KS_PRISMA_ERROR          1
-// KS_LIMITS_EXCEEDED_ERROR 1
-// KS_VALIDATION_ERROR      1/N
+// KS_USER_INPUT_ERROR      1 - The user provided input which is invalid at a system level. E.g. `null` where it never makes sense
+// KS_ACCESS_DENIED_ERROR   1 - The user cannot perform the operation due to access control
+// KS_PRISMA_ERROR          1 - There was a problem issuing an operation to Prisma
+// KS_LIMITS_EXCEEDED_ERROR 1 - The query would exceed the configured query limites.
+// KS_VALIDATION_ERROR      1/N -
 // KS_EXTENSION_ERROR       1/N
 // KS_SYSTEM_ERROR          N
 // KS_RELATIONSHIP_ERROR    N
+
+// If there's an error with a field resolver, we open the doors wide open.
+// Most fields can return a single error:
+//
+// ```
+// Field resolver errors:
+//   - ${field1}: ${msg}
+//   - ${field2}: ${msg}
+// ```
+// KS_FIELD_INPUT_ERROR     N
 
 export const userInputError = (msg: string) =>
   new ApolloError(`Input error: ${msg}`, 'KS_USER_INPUT_ERROR');
