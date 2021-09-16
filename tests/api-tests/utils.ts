@@ -189,7 +189,7 @@ export const expectBadUserInput = (
     args.map(({ path, message }) => ({
       extensions: { code: 'INTERNAL_SERVER_ERROR' },
       path,
-      message,
+      message: `Input error: ${message}`,
     }))
   );
 };

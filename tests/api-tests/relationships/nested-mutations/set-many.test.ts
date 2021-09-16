@@ -147,7 +147,7 @@ describe('no access control', () => {
         {
           path: ['updateUser'],
           message:
-            'The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at User.notes<Note>',
+            'Input error: The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at User.notes<Note>',
         },
       ]);
     })
