@@ -1,9 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { adminUITests, deleteAllData, makeGqlRequest } from './utils';
-
-function generateDataArray(map: (key: number) => any, range: number) {
-  return Array.from(Array(range).keys()).map(map);
-}
+import { adminUITests, deleteAllData, generateDataArray, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
