@@ -1,3 +1,4 @@
+import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   BaseGeneratedListTypes,
   CommonFieldConfig,
@@ -50,7 +51,7 @@ export const checkbox =
           }),
           resolve(val) {
             if (val === null) {
-              throw new Error('checkbox fields cannot be set to null');
+              throw userInputError('checkbox fields cannot be set to null');
             }
             return val ?? defaultValue;
           },
@@ -59,7 +60,7 @@ export const checkbox =
           arg: graphql.arg({ type: graphql.Boolean }),
           resolve(val) {
             if (val === null) {
-              throw new Error('checkbox fields cannot be set to null');
+              throw userInputError('checkbox fields cannot be set to null');
             }
             return val;
           },

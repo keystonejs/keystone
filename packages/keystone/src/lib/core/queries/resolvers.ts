@@ -9,7 +9,7 @@ import {
   UniqueInputFilter,
   InputFilter,
 } from '../where-inputs';
-import { limitsExceededError } from '../graphql-errors';
+import { limitsExceededError, userInputError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 
@@ -132,7 +132,7 @@ async function resolveOrderBy(
     orderBy.map(async orderBySelection => {
       const keys = Object.keys(orderBySelection);
       if (keys.length !== 1) {
-        throw new Error(
+        throw userInputError(
           `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
         );
       }
@@ -140,7 +140,7 @@ async function resolveOrderBy(
       const fieldKey = keys[0];
       const value = orderBySelection[fieldKey];
       if (value === null) {
-        throw new Error('null cannot be passed as an order direction');
+        throw userInputError('null cannot be passed as an order direction');
       }
 
       const field = list.fields[fieldKey];

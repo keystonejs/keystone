@@ -6,7 +6,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
   graphql,
   JSONValue,
-  FieldDefaultValue,
 } from '@keystone-next/keystone/types';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
@@ -75,8 +74,6 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
-    isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<Record<string, any>[], TGeneratedListTypes>;
   };
 
 const views = path.join(path.dirname(__dirname), 'views');
@@ -89,8 +86,6 @@ export const document =
     layouts,
     relationships: configRelationships,
     links,
-    isRequired,
-    defaultValue,
     ...config
   }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -103,7 +98,10 @@ export const document =
     const relationships = normaliseRelationships(configRelationships);
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
-      if (data === null || data === undefined) {
+      if (data === null) {
+        throw new Error(`Document fields cannot be set to null`);
+      }
+      if (data === undefined) {
         return data;
       }
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
@@ -113,55 +111,72 @@ export const document =
       throw Error("isIndexed: 'unique' is not a supported option for field type document");
     }
 
-    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
-      ...config,
-      input: {
-        create: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
-        update: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
-      },
-      output: graphql.field({
-        type: graphql.object<{ document: JSONValue }>()({
-          name: `${meta.listKey}_${meta.fieldKey}_DocumentField`,
-          fields: {
-            document: graphql.field({
-              args: {
-                hydrateRelationships: graphql.arg({
-                  type: graphql.nonNull(graphql.Boolean),
-                  defaultValue: false,
-                }),
-              },
-              type: graphql.nonNull(graphql.JSON),
-              resolve({ document }, { hydrateRelationships }, context) {
-                return hydrateRelationships
-                  ? addRelationshipData(
-                      document as any,
-                      context.graphql,
-                      relationships,
-                      componentBlocks,
-                      context.gqlNames as any
-                    )
-                  : (document as any);
-              },
-            }),
+    return jsonFieldTypePolyfilledForSQLite(
+      meta.provider,
+      {
+        ...config,
+        input: {
+          create: {
+            arg: graphql.arg({ type: graphql.JSON }),
+            resolve(val) {
+              if (val === undefined) {
+                val = [{ type: 'paragraph', children: [{ text: '' }] }];
+              }
+              return inputResolver(val);
+            },
+          },
+          update: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
+        },
+        output: graphql.field({
+          type: graphql.object<{ document: JSONValue }>()({
+            name: `${meta.listKey}_${meta.fieldKey}_Document`,
+            fields: {
+              document: graphql.field({
+                args: {
+                  hydrateRelationships: graphql.arg({
+                    type: graphql.nonNull(graphql.Boolean),
+                    defaultValue: false,
+                  }),
+                },
+                type: graphql.nonNull(graphql.JSON),
+                resolve({ document }, { hydrateRelationships }, context) {
+                  return hydrateRelationships
+                    ? addRelationshipData(
+                        document as any,
+                        context.graphql,
+                        relationships,
+                        componentBlocks,
+                        context.gqlNames
+                      )
+                    : (document as any);
+                },
+              }),
+            },
+          }),
+          resolve({ value }) {
+            if (value === null) {
+              return null;
+            }
+            return { document: value };
           },
         }),
-        resolve({ value }) {
-          if (value === null) {
-            return null;
-          }
-          return { document: value };
+        views,
+        getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+          return {
+            relationships,
+            documentFeatures,
+            componentBlocksPassedOnServer: Object.keys(componentBlocks),
+          };
         },
-      }),
-      views,
-      getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
-        return {
-          relationships,
-          documentFeatures,
-          componentBlocksPassedOnServer: Object.keys(componentBlocks),
-        };
       },
-      __legacy: { isRequired, defaultValue },
-    });
+      {
+        mode: 'required',
+        default: {
+          kind: 'literal',
+          value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
+        },
+      }
+    );
   };
 
 function normaliseRelationships(

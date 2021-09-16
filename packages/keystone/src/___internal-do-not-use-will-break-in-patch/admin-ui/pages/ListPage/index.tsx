@@ -513,6 +513,7 @@ function DeleteManyButton({
                   message: successMessage,
                 });
               }
+
               return refetch();
             },
           },
