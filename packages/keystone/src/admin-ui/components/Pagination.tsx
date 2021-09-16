@@ -53,7 +53,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
         pathname,
         query: {
           ...query,
-          page: currentPage - 1,
+          page: Math.ceil(total / pageSize),
         },
       });
     }
