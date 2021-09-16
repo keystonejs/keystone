@@ -324,12 +324,12 @@ type Post {
   id: ID!
   title: String
   status: String
-  content: Post_content_DocumentField
+  content: Post_content_Document
   publishDate: String
   author: User
 }
 
-type Post_content_DocumentField {
+type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 

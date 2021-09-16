@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectBadUserInput } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -80,7 +80,7 @@ describe('filtering on relationships', () => {
       });
       // Returns null and throws an error
       expect(body.data).toEqual({ secondaryLists: null });
-      expectInternalServerError(body.errors, false, [
+      expectBadUserInput(body.errors, [
         {
           message: 'A many relation filter cannot be set to null',
           path: ['secondaryLists'],
@@ -97,7 +97,7 @@ describe('filtering on relationships', () => {
       });
       // Returns null and throws an error
       expect(body.data).toEqual({ secondaryLists: null });
-      expectInternalServerError(body.errors, false, [
+      expectBadUserInput(body.errors, [
         {
           message: 'The key "some" in a many relation filter cannot be set to null',
           path: ['secondaryLists'],
@@ -144,7 +144,7 @@ describe('searching by unique fields', () => {
       const { body } = await graphQLRequest({ query: '{ user(where: {}) { id email } }' });
       // Returns null and throws an error
       expect(body.data).toEqual({ user: null });
-      expectInternalServerError(body.errors, false, [
+      expectBadUserInput(body.errors, [
         {
           message: 'Exactly one key must be passed in a unique where input but 0 keys were passed',
           path: ['user'],
@@ -162,7 +162,7 @@ describe('searching by unique fields', () => {
       });
       // Returns null and throws an error
       expect(body.data).toEqual({ user: null });
-      expectInternalServerError(body.errors, false, [
+      expectBadUserInput(body.errors, [
         {
           message: 'Exactly one key must be passed in a unique where input but 2 keys were passed',
           path: ['user'],
@@ -179,7 +179,7 @@ describe('searching by unique fields', () => {
       });
       // Returns null and throws an error
       expect(body.data).toEqual({ user: null });
-      expectInternalServerError(body.errors, false, [
+      expectBadUserInput(body.errors, [
         {
           message: 'The unique value provided in a unique where input must not be null',
           path: ['user'],

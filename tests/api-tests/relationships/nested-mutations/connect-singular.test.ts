@@ -214,7 +214,7 @@ describe('non-matching filter', () => {
       expectRelationshipError(errors, [
         {
           path: ['updateEvent'],
-          message: `Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
+          message: `Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
         },
       ]);
     })

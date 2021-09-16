@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords';
+import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   BaseGeneratedListTypes,
   FieldDefaultValue,
@@ -100,7 +101,7 @@ export const password =
           arg: graphql.arg({ type: PasswordFilter }),
           resolve(val) {
             if (val === null) {
-              throw new Error('Password filters cannot be set to null');
+              throw userInputError('Password filters cannot be set to null');
             }
             if (val.isSet) {
               return {
