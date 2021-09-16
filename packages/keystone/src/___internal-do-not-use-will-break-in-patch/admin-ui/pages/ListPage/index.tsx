@@ -221,21 +221,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
-  useEffect(() => {
-    // If there's data
-    // Check if the current page is larger than
-    // the maximal page given the data.count and associated page size value.
-    // (This could happen due to a deletion event, in which case we want to reroute the user to a previous page).
-    if (data && currentPage > Math.ceil(data.count / pageSize)) {
-      push({
-        pathname,
-        query: {
-          ...query,
-          page: currentPage - 1,
-        },
-      });
-    }
-  }, [data, pageSize, currentPage, pathname, query, push]);
 
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
