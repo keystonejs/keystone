@@ -122,7 +122,7 @@ export const getListPage = (props: ListPageProps) => () => <ListPage {...props} 
 const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
-  const { query, push, pathname } = useRouter();
+  const { query } = useRouter();
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
