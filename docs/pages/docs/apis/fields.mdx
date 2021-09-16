@@ -27,9 +27,6 @@ import {
   // Relationship type
   relationship,
 
-  // Index types
-  autoIncrement,
-
   // Virtual type
   virtual,
 
@@ -177,15 +174,20 @@ export default config({
 
 ### integer
 
-An `integer` field represents an integer value.
+An `integer` field represents an 32 bit signed integer value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either an integer value or an async function which takes an argument `({ context, originalInput })` and returns an integer value.
+- `defaultValue` (default: `undefined`): Can be either an integer value or `{ kind: 'autoincrement' }`.
   This value will be used for the field when creating items if no explicit value is set.
-  `context` is a [`KeystoneContext`](./context) object.
-  `originalInput` is an object containing the data passed in to the `create` mutation.
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
+  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
+  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+- `validation.min` (default: `-2147483647`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
+- `validation.max` (default: `2147483647`): This describes the maximum number allowed. If you attempt to submit a number under this, you will get a validation error.
+  - If you want to specify a range within which the numbers must fall, specify both a minimum and a maximum value.
 - `isIndexed` (default: `false`)
   - If `true` then this field will be indexed by the database.
   - If `'unique'` then all values of this field must be unique.
@@ -540,40 +542,6 @@ export default config({
             // requires many: true above
             displayMode: 'count',
            },
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
-  },
-  /* ... */
-});
-```
-
-## Index types
-
-### autoIncrement
-
-(coming soon)
-
-Options:
-
-- `defaultValue`
-- `isRequired`
-- `isIndexed`
-
-```typescript
-import { config, list } from '@keystone-next/keystone';
-import { autoIncrement } from '@keystone-next/keystone/fields';
-
-export default config({
-  lists: {
-    ListName: list({
-      fields: {
-        fieldName: autoIncrement({
-          defaultValue: 0,
-          isRequired: true,
-          isIndexed: 'unique',
         }),
         /* ... */
       },

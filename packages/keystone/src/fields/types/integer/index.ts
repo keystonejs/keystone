@@ -178,6 +178,7 @@ export const integer =
             max: validation?.max ?? MAX_INT,
             isRequired: validation?.isRequired ?? false,
           },
+          defaultValue: defaultValue ?? null,
         };
       },
     });
