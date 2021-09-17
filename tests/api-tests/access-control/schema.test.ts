@@ -248,13 +248,14 @@ describe(`Public schema`, () => {
               expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
             }
           });
-          test(`adminMeta - build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+          test(`adminMeta - isFilterable and isOrderable ${JSON.stringify(
+            config
+          )} on ${listName}`, async () => {
             const query = `
               query q($listName: String!) {
                 keystone {
                   adminMeta {
                     list(key: $listName) {
-                      key
                       fields {
                         path
                         isFilterable
@@ -265,8 +266,6 @@ describe(`Public schema`, () => {
                 }
               }`;
             const variables = { listName };
-            // @ts-ignore - Hack to allow us to query adminMeta
-            context.isAdminUIBuildProcess = true;
             const { data, errors } = await context.graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
