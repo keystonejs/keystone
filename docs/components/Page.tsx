@@ -20,13 +20,18 @@ import { Footer } from './Footer';
 function Announcement() {
   return (
     <Announce>
-      Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
-      visit{' '}
-      <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
-        v5.keystonejs.com
-      </a>
+      <a href="https://306ucv95ugh.typeform.com/to/TbFERbep" rel="noopener noreferrer" target="_blank">Join us</a> for our first <strong>Community Q&A event</strong> next <strong>Tuesday September 21st @ 3–4pm AEST</strong> – <a href="https://306ucv95ugh.typeform.com/to/TbFERbep" rel="noopener noreferrer" target="_blank">Register now</a>!
     </Announce>
   );
+  // return (
+  //   <Announce>
+  //     Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
+  //     visit{' '}
+  //     <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
+  //       v5.keystonejs.com
+  //     </a>
+  //   </Announce>
+  // );
 }
 
 function OpenGraph({
