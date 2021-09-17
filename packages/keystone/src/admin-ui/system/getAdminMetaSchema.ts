@@ -56,7 +56,7 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
             );
           }
-          const isOrderable = lists[rootVal.listKey].fields[rootVal.path].isOrderable;
+          const isOrderable = lists[rootVal.listKey].fields[rootVal.path].graphql.isEnabled.orderBy;
           if (typeof isOrderable === 'function') {
             return isOrderable({
               context,
@@ -65,7 +65,7 @@ export function getAdminMetaSchema({
               session: context.session,
             });
           }
-          return isOrderable ?? false;
+          return isOrderable;
         },
       }),
       isFilterable: graphql.field({
@@ -76,7 +76,7 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
             );
           }
-          const isFilterable = lists[rootVal.listKey].fields[rootVal.path].isFilterable;
+          const isFilterable = lists[rootVal.listKey].fields[rootVal.path].graphql.isEnabled.filter;
           if (typeof isFilterable === 'function') {
             return isFilterable({
               context,
