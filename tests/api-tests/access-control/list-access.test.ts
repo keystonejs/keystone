@@ -17,21 +17,19 @@ import {
 const expectNoAccess = <N extends string>(
   data: Record<N, null> | null | undefined,
   errors: readonly GraphQLError[] | undefined,
-  name: N,
-  httpQuery: boolean
+  name: N
 ) => {
   expect(data?.[name]).toBe(null);
-  expectAccessDenied('dev', httpQuery, undefined, errors, [{ path: [name] }]);
+  expectAccessDenied(errors, [{ path: [name] }]);
 };
 
 const expectNoAccessMany = <N extends string>(
   data: Record<N, null> | null | undefined,
   errors: readonly GraphQLError[] | undefined,
-  name: N,
-  httpQuery: boolean
+  name: N
 ) => {
   expect(data?.[name]).toEqual([null]);
-  expectAccessDenied('dev', httpQuery, undefined, errors, [{ path: [name, 0] }]);
+  expectAccessDenied(errors, [{ path: [name, 0] }]);
 };
 
 type IdType = any;
@@ -78,7 +76,7 @@ describe(`List access`, () => {
             const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.create) {
-              expectNoAccess(data, errors, createMutationName, false);
+              expectNoAccess(data, errors, createMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![createMutationName]).not.toEqual(null);
@@ -93,7 +91,7 @@ describe(`List access`, () => {
             const query = `mutation { ${createMutationName}(data: [{ name: "bar" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.create) {
-              expectNoAccessMany(data, errors, createMutationName, false);
+              expectNoAccessMany(data, errors, createMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![createMutationName]).not.toEqual(null);
@@ -248,7 +246,7 @@ describe(`List access`, () => {
             const updateMutationName = `update${nameFn[mode](access)}`;
             const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID}" }, data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            expectNoAccess(data, errors, updateMutationName, false);
+            expectNoAccess(data, errors, updateMutationName);
           });
         });
       });
@@ -262,7 +260,7 @@ describe(`List access`, () => {
             const query = `mutation { ${updateMutationName}(where: { id: "${item.id}" }, data: { name: "bar" }) { id name } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.update) {
-              expectNoAccess(data, errors, updateMutationName, false);
+              expectNoAccess(data, errors, updateMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![updateMutationName]).toEqual({ id: item.id, name: 'bar' });
@@ -276,7 +274,7 @@ describe(`List access`, () => {
             const query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item.id}" }, data: { name: "bar" } }]) { id name } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.update) {
-              expectNoAccessMany(data, errors, updateMutationName, false);
+              expectNoAccessMany(data, errors, updateMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![updateMutationName]).toEqual([{ id: item.id, name: 'bar' }]);
@@ -302,17 +300,17 @@ describe(`List access`, () => {
             const query = `mutation { ${updateMutationName}(where: { id: "${item1.id}" }, data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.update) {
-              expectNoAccess(data, errors, updateMutationName, false);
+              expectNoAccess(data, errors, updateMutationName);
             } else {
               // Filtered out
-              expectNoAccess(data, errors, updateMutationName, false);
+              expectNoAccess(data, errors, updateMutationName);
             }
             await context.sudo().lists[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
 
             const _query = `mutation { ${updateMutationName}(where: { id: "${item2.id}" }, data: { name: "bar" }) { id } }`;
             const result = await context.graphql.raw({ query: _query });
             if (!access.update) {
-              expectNoAccess(result.data, result.errors, updateMutationName, false);
+              expectNoAccess(result.data, result.errors, updateMutationName);
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
@@ -332,17 +330,17 @@ describe(`List access`, () => {
             const query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item1.id}" }, data: { name: "bar" } }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.update) {
-              expectNoAccessMany(data, errors, updateMutationName, false);
+              expectNoAccessMany(data, errors, updateMutationName);
             } else {
               // Filtered out
-              expectNoAccessMany(data, errors, updateMutationName, false);
+              expectNoAccessMany(data, errors, updateMutationName);
             }
             await context.sudo().lists[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
 
             const _query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item2.id}" }, data: { name: "bar" } }]) { id } }`;
             const result = await context.graphql.raw({ query: _query });
             if (!access.update) {
-              expectNoAccessMany(result.data, result.errors, updateMutationName, false);
+              expectNoAccessMany(result.data, result.errors, updateMutationName);
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
@@ -363,13 +361,13 @@ describe(`List access`, () => {
             const deleteMutationName = `delete${nameFn[mode](access)}`;
             const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            expectNoAccess(data, errors, deleteMutationName, false);
+            expectNoAccess(data, errors, deleteMutationName);
           });
           test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
             const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
             const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID}" }, { id: "${FAKE_ID_2}" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            expectAccessDenied('dev', false, undefined, errors, [
+            expectAccessDenied(errors, [
               { path: [multiDeleteMutationName, 0] },
               { path: [multiDeleteMutationName, 1] },
             ]);
@@ -390,7 +388,7 @@ describe(`List access`, () => {
             const { data, errors } = await context.graphql.raw({ query });
 
             if (!access.delete) {
-              expectNoAccess(data, errors, deleteMutationName, false);
+              expectNoAccess(data, errors, deleteMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![deleteMutationName]).not.toEqual(null);
@@ -410,7 +408,7 @@ describe(`List access`, () => {
             const { data, errors } = await context.graphql.raw({ query });
 
             if (!access.delete) {
-              expectNoAccessMany(data, errors, multiDeleteMutationName, false);
+              expectNoAccessMany(data, errors, multiDeleteMutationName);
             } else {
               expect(errors).toBe(undefined);
               expect(data![multiDeleteMutationName]).not.toEqual(null);
@@ -440,10 +438,10 @@ describe(`List access`, () => {
             const query = `mutation { ${deleteMutationName}(where: {id: "${item1.id}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.delete) {
-              expectNoAccess(data, errors, deleteMutationName, false);
+              expectNoAccess(data, errors, deleteMutationName);
             } else {
               // Filtered out
-              expectNoAccess(data, errors, deleteMutationName, false);
+              expectNoAccess(data, errors, deleteMutationName);
             }
 
             if (!access.delete) {
@@ -455,7 +453,7 @@ describe(`List access`, () => {
             const _query = `mutation { ${deleteMutationName}(where: {id: "${item2.id}" }) { id } }`;
             const result = await context.graphql.raw({ query: _query });
             if (!access.delete) {
-              expectNoAccess(result.data, result.errors, deleteMutationName, false);
+              expectNoAccess(result.data, result.errors, deleteMutationName);
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
@@ -481,10 +479,10 @@ describe(`List access`, () => {
             const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${item1.id}" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (!access.delete) {
-              expectNoAccessMany(data, errors, multiDeleteMutationName, false);
+              expectNoAccessMany(data, errors, multiDeleteMutationName);
             } else {
               // Filtered out
-              expectNoAccessMany(data, errors, multiDeleteMutationName, false);
+              expectNoAccessMany(data, errors, multiDeleteMutationName);
             }
             if (!access.delete) {
               await context
@@ -495,7 +493,7 @@ describe(`List access`, () => {
             const _query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${item2.id}" }]) { id } }`;
             const result = await context.graphql.raw({ query: _query });
             if (!access.delete) {
-              expectNoAccessMany(result.data, result.errors, multiDeleteMutationName, false);
+              expectNoAccessMany(result.data, result.errors, multiDeleteMutationName);
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
