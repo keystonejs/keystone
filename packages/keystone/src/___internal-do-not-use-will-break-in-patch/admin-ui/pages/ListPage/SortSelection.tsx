@@ -11,8 +11,14 @@ import { useRouter } from '../../../../admin-ui/router';
 import { fieldSelectionOptionsComponents } from './FieldSelection';
 import { useSort } from './useSort';
 
-export function SortSelection({ list }: { list: ListMeta }) {
-  const sort = useSort(list);
+export function SortSelection({
+  list,
+  orderableFields,
+}: {
+  list: ListMeta;
+  orderableFields: Set<string>;
+}) {
+  const sort = useSort(list, orderableFields);
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
@@ -50,6 +56,7 @@ export function SortSelection({ list }: { list: ListMeta }) {
               setOpen(false);
             }}
             list={list}
+            orderableFields={orderableFields}
           />
         )}
       </PopoverDialog>
@@ -62,8 +69,16 @@ const noFieldOption = {
   value: '___________NO_FIELD___________',
 };
 
-function SortSelectionPopoverContent({ onClose, list }: { onClose: () => void; list: ListMeta }) {
-  const sort = useSort(list);
+function SortSelectionPopoverContent({
+  onClose,
+  list,
+  orderableFields,
+}: {
+  onClose: () => void;
+  list: ListMeta;
+  orderableFields: Set<string>;
+}) {
+  const sort = useSort(list, orderableFields);
   const router = useRouter();
 
   return (
@@ -96,8 +111,7 @@ function SortSelectionPopoverContent({ onClose, list }: { onClose: () => void; l
 
           onClose();
         }}
-        options={Object.keys(list.fields)
-          .filter(fieldPath => list.fields[fieldPath].isOrderable)
+        options={[...orderableFields]
           .map(fieldPath => ({ label: list.fields[fieldPath].label, value: fieldPath }))
           .concat(noFieldOption)}
       />

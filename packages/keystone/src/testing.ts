@@ -42,7 +42,7 @@ export async function setupTestEnv({
   config: KeystoneConfig;
 }): Promise<TestEnv> {
   // Force the UI to always be disabled.
-  const config = initConfig({ ..._config, ui: { isDisabled: true } });
+  const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
 
   const artifacts = await getCommittedArtifacts(graphQLSchema, config);

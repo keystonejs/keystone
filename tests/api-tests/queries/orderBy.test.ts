@@ -2,7 +2,12 @@ import { integer } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectBadUserInput } from '../utils';
+import {
+  apiTestConfig,
+  expectBadUserInput,
+  expectGraphQLValidationError,
+  expectInternalServerError,
+} from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -11,7 +16,44 @@ const runner = setupTestRunner({
         fields: {
           a: integer({ isOrderable: true }),
           b: integer({ isOrderable: true }),
+          orderFalse: integer({ isOrderable: false }),
+          orderTrue: integer({ isOrderable: true }),
+          orderFunctionFalse: integer({ isOrderable: () => false }),
+          orderFunctionTrue: integer({ isOrderable: () => true }),
+          // @ts-ignore
+          orderFunctionOtherFalsey: integer({ isOrderable: () => null }),
+          // @ts-ignore
+          orderFunctionOtherTruthy: integer({ isOrderable: () => ({}) }),
+          orderFunctionFalseToo: integer({ isOrderable: () => false }),
         },
+      }),
+      DefaultOrderUndefined: list({ fields: { a: integer(), b: integer({ isOrderable: true }) } }),
+      DefaultOrderFalse: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        // @ts-ignore
+        defaultIsOrderable: false,
+      }),
+      DefaultOrderTrue: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        defaultIsOrderable: true,
+      }),
+      DefaultOrderFunctionFalse: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        defaultIsOrderable: () => false,
+      }),
+      DefaultOrderFunctionTrue: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        defaultIsOrderable: () => true,
+      }),
+      DefaultOrderFunctionFalsey: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        // @ts-ignore
+        defaultIsOrderable: () => null,
+      }),
+      DefaultOrderFunctionTruthy: list({
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        // @ts-ignore
+        defaultIsOrderable: () => ({}),
       }),
     },
   }),
@@ -19,19 +61,21 @@ const runner = setupTestRunner({
 
 const initialiseData = async ({ context }: { context: KeystoneContext }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  await context.lists.User.createMany({
-    data: [
-      { a: 1, b: 10 },
-      { a: 1, b: 30 },
-      { a: 1, b: 20 },
-      { a: 3, b: 30 },
-      { a: 3, b: 10 },
-      { a: 3, b: 20 },
-      { a: 2, b: 30 },
-      { a: 2, b: 20 },
-      { a: 2, b: 10 },
-    ],
-  });
+  for (const listKey of Object.keys(context.lists)) {
+    await context.lists[listKey].createMany({
+      data: [
+        { a: 1, b: 10 },
+        { a: 1, b: 30 },
+        { a: 1, b: 20 },
+        { a: 3, b: 30 },
+        { a: 3, b: 10 },
+        { a: 3, b: 20 },
+        { a: 2, b: 30 },
+        { a: 2, b: 20 },
+        { a: 2, b: 10 },
+      ],
+    });
+  }
 };
 
 describe('Ordering by a single field', () => {
@@ -76,7 +120,9 @@ describe('Ordering by a single field', () => {
       expect(users.map(({ a }) => a)).toEqual([1, 1, 1, 2, 2, 2, 3, 3, 3]);
     })
   );
+});
 
+describe('Ordering by Multiple', () => {
   test(
     'Multi ascending/ascending filter - a,b ',
     runner(async ({ context }) => {
@@ -290,6 +336,233 @@ describe('Ordering by a single field', () => {
       expect(body.data).toEqual({ users: null });
       expectBadUserInput(body.errors, [
         { path: ['users'], message: 'null cannot be passed as an order direction' },
+      ]);
+    })
+  );
+});
+
+describe('isOrderable', () => {
+  test(
+    'isOrderable: false',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderFalse: asc}]) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "orderFalse" is not defined by type "UserOrderByInput". Did you mean "orderTrue"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isOrderable: true',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderTrue: asc}]) { id } }',
+      });
+      expect(body.data.users).toHaveLength(9);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'isOrderable: () => false',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderFunctionFalse: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'You do not have access to perform \'orderBy\' operations on the fields ["User.orderFunctionFalse"].',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isOrderable: () => true',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderFunctionTrue: asc}]) { id } }',
+      });
+      expect(body.data.users).toHaveLength(9);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'isOrderable: () => null',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderFunctionOtherFalsey: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'Must return a Boolean from User.orderFunctionOtherFalsey.isOrderable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isOrderable: () => ({})',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ users(orderBy: [{orderFunctionOtherTruthy: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'Must return a Boolean from User.orderFunctionOtherTruthy.isOrderable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isOrderable: multiple () => false',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query:
+          '{ users(orderBy: [{orderFunctionTrue: asc}, {orderFunctionFalse: asc}, {orderFunctionFalseToo: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'You do not have access to perform \'orderBy\' operations on the fields ["User.orderFunctionFalse","User.orderFunctionFalseToo"].',
+        },
+      ]);
+    })
+  );
+});
+
+describe('defaultIsOrderable', () => {
+  test(
+    'defaultIsOrderable: undefined',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderUndefineds(orderBy: [{a: asc}]) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "a" is not defined by type "DefaultOrderUndefinedOrderByInput". Did you mean "b"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: false',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderFalses(orderBy: [{a: asc}]) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "a" is not defined by type "DefaultOrderFalseOrderByInput". Did you mean "b"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: true',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderTrues(orderBy: [{a: asc}]) { id } }',
+      });
+      expect(body.data.defaultOrderTrues).toHaveLength(9);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: () => false',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderFunctionFalses(orderBy: [{a: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ defaultOrderFunctionFalses: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultOrderFunctionFalses'],
+          message:
+            'You do not have access to perform \'orderBy\' operations on the fields ["DefaultOrderFunctionFalse.a"].',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: () => true',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderFunctionTrues(orderBy: [{a: asc}]) { id } }',
+      });
+      expect(body.data.defaultOrderFunctionTrues).toHaveLength(9);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: () => null',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderFunctionFalseys(orderBy: [{a: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ defaultOrderFunctionFalseys: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultOrderFunctionFalseys'],
+          message:
+            'Must return a Boolean from DefaultOrderFunctionFalsey.a.isOrderable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsOrderable: () => ({})',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultOrderFunctionTruthies(orderBy: [{a: asc}]) { id } }',
+      });
+      expect(body.data).toEqual({ defaultOrderFunctionTruthies: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultOrderFunctionTruthies'],
+          message:
+            'Must return a Boolean from DefaultOrderFunctionTruthy.a.isOrderable(). Got object',
+        },
       ]);
     })
   );

@@ -1,7 +1,13 @@
-import { text, relationship } from '@keystone-next/keystone/fields';
+import { text, relationship, integer } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectBadUserInput } from '../utils';
+import { KeystoneContext } from '@keystone-next/keystone/types';
+import {
+  apiTestConfig,
+  expectBadUserInput,
+  expectGraphQLValidationError,
+  expectInternalServerError,
+} from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -13,17 +19,78 @@ const runner = setupTestRunner({
           many_many_many_dashes: text({ isFilterable: true }),
           multi____dash: text({ isFilterable: true }),
           email: text({ isIndexed: 'unique', isFilterable: true }),
+
+          filterFalse: integer({ isFilterable: false }),
+          filterTrue: integer({ isFilterable: true }),
+          filterFunctionFalse: integer({ isFilterable: () => false }),
+          filterFunctionTrue: integer({ isFilterable: () => true }),
+          // @ts-ignore
+          filterFunctionOtherFalsey: integer({ isFilterable: () => null }),
+          // @ts-ignore
+          filterFunctionOtherTruthy: integer({ isFilterable: () => ({}) }),
         },
       }),
       SecondaryList: list({
         fields: {
+          filterFunctionFalse: integer({ isFilterable: () => false }),
           someUser: relationship({ ref: 'User', isFilterable: true }),
           otherUsers: relationship({ ref: 'User', isFilterable: true, many: true }),
         },
       }),
+
+      DefaultFilterUndefined: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+      }),
+      DefaultFilterFalse: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        // @ts-ignore
+        defaultIsFilterable: false,
+      }),
+      DefaultFilterTrue: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        defaultIsFilterable: true,
+      }),
+      DefaultFilterFunctionFalse: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        defaultIsFilterable: () => false,
+      }),
+      DefaultFilterFunctionTrue: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        defaultIsFilterable: () => true,
+      }),
+      DefaultFilterFunctionFalsey: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        // @ts-ignore
+        defaultIsFilterable: () => null,
+      }),
+      DefaultFilterFunctionTruthy: list({
+        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        // @ts-ignore
+        defaultIsFilterable: () => ({}),
+      }),
     },
   }),
 });
+
+const initialiseData = async ({ context }: { context: KeystoneContext }) => {
+  // Use shuffled data to ensure that ordering is actually happening.
+  for (const listKey of Object.keys(context.lists)) {
+    if (listKey === 'User' || listKey === 'SecondaryList') continue;
+    await context.lists[listKey].createMany({
+      data: [
+        { a: 1, b: 10 },
+        { a: 1, b: 30 },
+        { a: 1, b: 20 },
+        { a: 3, b: 30 },
+        { a: 3, b: 10 },
+        { a: 3, b: 20 },
+        { a: 2, b: 30 },
+        { a: 2, b: 20 },
+        { a: 2, b: 10 },
+      ],
+    });
+  }
+};
 
 describe('filtering on field name', () => {
   test(
@@ -183,6 +250,225 @@ describe('searching by unique fields', () => {
         {
           message: 'The unique value provided in a unique where input must not be null',
           path: ['user'],
+        },
+      ]);
+    })
+  );
+});
+
+describe('isFilterable', () => {
+  test(
+    'isFilterable: false',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterFalse: { equals: 10 } }) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "filterFalse" is not defined by type "UserWhereInput". Did you mean "filterTrue"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isFilterable: true',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterTrue: { equals: 10 } }) { id } }',
+      });
+      expect(body.data.users).toHaveLength(0);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'isFilterable: () => false',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterFunctionFalse: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'You do not have access to perform \'filter\' operations on the fields ["User.filterFunctionFalse"].',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isFilterable: () => true',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterFunctionTrue: { equals: 10 } }) { id } }',
+      });
+      expect(body.data.users).toHaveLength(0);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'isFilterable: () => null',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterFunctionOtherFalsey: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'Must return a Boolean from User.filterFunctionOtherFalsey.isFilterable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isFilterable: () => ({})',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ users(where: { filterFunctionOtherTruthy: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ users: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['users'],
+          message:
+            'Must return a Boolean from User.filterFunctionOtherTruthy.isFilterable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'isFilterable: multiple () => false',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `{ secondaryLists(where: {
+          OR: [
+            { filterFunctionFalse: { gt: 10 } }
+            { filterFunctionFalse: { lt: 20 } }
+            { someUser: { filterFunctionFalse: { equals: 10 } } }
+          ]
+        } ) { id } }`,
+      });
+      expect(body.data).toEqual({ secondaryLists: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['secondaryLists'],
+          message:
+            'You do not have access to perform \'filter\' operations on the fields ["SecondaryList.filterFunctionFalse","User.filterFunctionFalse"].',
+        },
+      ]);
+    })
+  );
+});
+
+describe('defaultIsFilterable', () => {
+  test(
+    'defaultIsFilterable: undefined',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterUndefineds(where: { a: { equals: 10 } }) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "a" is not defined by type "DefaultFilterUndefinedWhereInput". Did you mean "b"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: false',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterFalses(where: { a: { equals: 10 } }) { id } }',
+      });
+      expectGraphQLValidationError(body.errors, [
+        {
+          message:
+            'Field "a" is not defined by type "DefaultFilterFalseWhereInput". Did you mean "b"?',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: true',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterTrues(where: { a: { equals: 10 } }) { id } }',
+      });
+      expect(body.data.defaultFilterTrues).toHaveLength(0);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: () => false',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterFunctionFalses(where: { a: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ defaultFilterFunctionFalses: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultFilterFunctionFalses'],
+          message:
+            'You do not have access to perform \'filter\' operations on the fields ["DefaultFilterFunctionFalse.a"].',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: () => true',
+    runner(async ({ context, graphQLRequest }) => {
+      await initialiseData({ context });
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterFunctionTrues(where: { a: { equals: 10 } }) { id } }',
+      });
+      expect(body.data.defaultFilterFunctionTrues).toHaveLength(0);
+      expect(body.errors).toBe(undefined);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: () => null',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterFunctionFalseys(where: { a: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ defaultFilterFunctionFalseys: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultFilterFunctionFalseys'],
+          message:
+            'Must return a Boolean from DefaultFilterFunctionFalsey.a.isFilterable(). Got object',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'defaultIsFilterable: () => ({})',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: '{ defaultFilterFunctionTruthies(where: { a: { equals: 10 } }) { id } }',
+      });
+      expect(body.data).toEqual({ defaultFilterFunctionTruthies: null });
+      expectInternalServerError(body.errors, false, [
+        {
+          path: ['defaultFilterFunctionTruthies'],
+          message:
+            'Must return a Boolean from DefaultFilterFunctionTruthy.a.isFilterable(). Got object',
         },
       ]);
     })
