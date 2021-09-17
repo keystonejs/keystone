@@ -4,6 +4,7 @@ import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
+import { Keystone5DocsCTA } from '../../components/docs/Keystone5DocsCTA';
 import { Examples } from '../../components/docs/ExamplesList';
 import { Walkthroughs } from '../../components/docs/WalkthroughsList';
 import { Type } from '../../components/primitives/Type';
@@ -32,6 +33,7 @@ export default function Docs() {
         Developer Docs
       </Type>
 
+      <Keystone5DocsCTA />
       <CommunitySlackCTA />
 
       <Type as="h2" look="heading30" margin="0 0 1rem 0">
