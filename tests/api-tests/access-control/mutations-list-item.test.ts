@@ -61,7 +61,7 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['createUser'] }]);
+      expectAccessDenied(errors, [{ path: ['createUser'] }]);
 
       // Only the original user should exist
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -108,7 +108,7 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(errors, [{ path: ['updateUser'] }]);
 
       // User should have its original name
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -158,7 +158,7 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['deleteUser'] }]);
+      expectAccessDenied(errors, [{ path: ['deleteUser'] }]);
 
       // Bad users should still be in the database.
       const _users = await context.lists.User.findMany({ query: 'id name' });
@@ -221,10 +221,7 @@ describe('Access control - Item', () => {
       });
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied('dev', false, undefined, errors, [
-        { path: ['createUsers', 1] },
-        { path: ['createUsers', 3] },
-      ]);
+      expectAccessDenied(errors, [{ path: ['createUsers', 1] }, { path: ['createUsers', 3] }]);
 
       // The good users should exist in the database
       const users = await context.lists.User.findMany();
@@ -272,10 +269,7 @@ describe('Access control - Item', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied('dev', false, undefined, errors, [
-        { path: ['updateUsers', 1] },
-        { path: ['updateUsers', 3] },
-      ]);
+      expectAccessDenied(errors, [{ path: ['updateUsers', 1] }, { path: ['updateUsers', 3] }]);
 
       // All users should still exist in the database
       const _users = await context.lists.User.findMany({
@@ -324,10 +318,7 @@ describe('Access control - Item', () => {
       ]);
 
       // The invalid updates should have errors which point to the nulls in their path
-      expectAccessDenied('dev', false, undefined, errors, [
-        { path: ['deleteUsers', 1] },
-        { path: ['deleteUsers', 3] },
-      ]);
+      expectAccessDenied(errors, [{ path: ['deleteUsers', 1] }, { path: ['deleteUsers', 3] }]);
 
       const _users = await context.lists.User.findMany({
         orderBy: { name: 'asc' },
