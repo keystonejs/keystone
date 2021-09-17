@@ -48,8 +48,46 @@ export function getAdminMetaSchema({
     fields: {
       path: graphql.field({ type: graphql.nonNull(graphql.String) }),
       label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      isOrderable: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
-      isFilterable: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+      isOrderable: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
+            );
+          }
+          const isOrderable = lists[rootVal.listKey].fields[rootVal.path].isOrderable;
+          if (typeof isOrderable === 'function') {
+            return isOrderable({
+              context,
+              fieldKey: rootVal.path,
+              listKey: rootVal.listKey,
+              session: context.session,
+            });
+          }
+          return isOrderable ?? false;
+        },
+      }),
+      isFilterable: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
+            );
+          }
+          const isFilterable = lists[rootVal.listKey].fields[rootVal.path].isFilterable;
+          if (typeof isFilterable === 'function') {
+            return isFilterable({
+              context,
+              fieldKey: rootVal.path,
+              listKey: rootVal.listKey,
+              session: context.session,
+            });
+          }
+          return isFilterable ?? false;
+        },
+      }),
       fieldMeta: graphql.field({ type: jsonScalar }),
       viewsIndex: graphql.field({ type: graphql.nonNull(graphql.Int) }),
       customViewsIndex: graphql.field({ type: graphql.Int }),
