@@ -182,11 +182,6 @@ export const HomePage = () => {
                 return null;
               }
               const result = dataGetter.get(key);
-              // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
-              // Keystone to fix it and that's a whole other can of worms...
-              if (result.errors?.[0].message === 'You do not have access to this resource') {
-                return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
-              }
               return (
                 <ListCard
                   count={
