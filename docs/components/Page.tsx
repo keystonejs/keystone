@@ -29,8 +29,8 @@ function Announcement() {
       >
         Join us
       </a>{' '}
-      for our first <strong>Community Q&A event</strong> next{' '}
-      <strong>Tuesday September 21st @ 3–4pm AEST</strong> –{' '}
+      for our first <strong>Community Q&A</strong> next{' '}
+      <strong>Tuesday Sep 21st @ 3–4pm AEST</strong> –{' '}
       <a
         href="https://306ucv95ugh.typeform.com/to/TbFERbep"
         rel="noopener noreferrer"
