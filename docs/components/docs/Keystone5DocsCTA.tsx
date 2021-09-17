@@ -3,8 +3,6 @@
 import { jsx } from '@emotion/react';
 
 import { Alert } from '../primitives/Alert';
-import { Button } from '../primitives/Button';
-import { ArrowR } from '../icons/ArrowR';
 
 export function Keystone5DocsCTA() {
   return (

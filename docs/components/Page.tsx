@@ -3,7 +3,6 @@ import { useRef, Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Head from 'next/head';
-import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
