@@ -109,7 +109,9 @@ describe('Example tests using test runner', () => {
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);
-        expect(errors![0].message).toEqual('You do not have access to this resource');
+        expect(errors![0].message).toEqual(
+          `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
+        );
       }
 
       {
@@ -143,7 +145,9 @@ describe('Example tests using test runner', () => {
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);
-        expect(errors![0].message).toEqual('You do not have access to this resource');
+        expect(errors![0].message).toEqual(
+          `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
+        );
       }
     })
   );

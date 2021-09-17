@@ -2,7 +2,7 @@ import { ApolloError } from 'apollo-server-errors';
 
 export const userInputError = (msg: string) => new ApolloError(`Input error: ${msg}`);
 
-export const accessDeniedError = () => new ApolloError('You do not have access to this resource');
+export const accessDeniedError = (msg: string) => new ApolloError(`Access denied: ${msg}`);
 
 export const prismaError = (err: Error) => {
   return new ApolloError(
