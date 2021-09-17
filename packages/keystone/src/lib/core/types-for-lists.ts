@@ -12,8 +12,10 @@ import {
   DatabaseProvider,
   FindManyArgs,
   CacheHintArgs,
+  MaybePromise,
 } from '../../types';
 import { FieldHooks } from '../../types/config/hooks';
+import { FilterOrderArgs } from '../../types/config/fields';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,
@@ -34,8 +36,8 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
       read: boolean;
       create: boolean;
       update: boolean;
-      filter: boolean;
-      orderBy: boolean;
+      filter: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+      orderBy: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
     };
     cacheHint?: CacheHint | undefined;
   };
@@ -79,14 +81,29 @@ export function initialiseLists(
       create: boolean;
       update: boolean;
       delete: boolean;
-      filter: boolean;
-      orderBy: boolean;
+      filter: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+      orderBy: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
     }
   > = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const omit = listConfig.graphql?.omit;
     const { defaultIsFilterable, defaultIsOrderable } = listConfig;
+    if (!omit) {
+      // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
+      // when defining these values. We avoid duck-typing here as this is security related
+      // and we want to make it hard to write incorrect code.
+      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsFilterable)) {
+        throw new Error(
+          `Configuration option '${listKey}.defaultIsFilterable' must be either a boolean value or a function. Recieved '${typeof defaultIsFilterable}'.`
+        );
+      }
+      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsOrderable)) {
+        throw new Error(
+          `Configuration option '${listKey}.defaultIsOrderable' must be either a boolean value or a function. Recieved '${typeof defaultIsOrderable}'.`
+        );
+      }
+    }
     if (omit === true) {
       isEnabled[listKey] = {
         type: false,
@@ -104,8 +121,8 @@ export function initialiseLists(
         create: true,
         update: true,
         delete: true,
-        filter: !!defaultIsFilterable,
-        orderBy: !!defaultIsOrderable,
+        filter: defaultIsFilterable || false,
+        orderBy: defaultIsOrderable || false,
       };
     } else {
       isEnabled[listKey] = {
@@ -114,8 +131,8 @@ export function initialiseLists(
         create: !omit.includes('create'),
         update: !omit.includes('update'),
         delete: !omit.includes('delete'),
-        filter: !!defaultIsFilterable,
-        orderBy: !!defaultIsOrderable,
+        filter: defaultIsFilterable || false,
+        orderBy: defaultIsOrderable || false,
       };
     }
   }
@@ -355,6 +372,21 @@ export function initialiseLists(
 
             const omit = f.graphql?.omit;
             const read = omit !== true && !omit?.includes('read');
+
+            // We explicity check for boolean values here to ensure the dev hasn't made a mistake
+            // when defining these values. We avoid duck-typing here as this is security related
+            // and we want to make it hard to write incorrect code.
+            if (!['boolean', 'function', 'undefined'].includes(typeof f.isFilterable)) {
+              throw new Error(
+                `Configuration option '${listKey}.${fieldKey}.isFilterable' must be either a boolean value or a function. Recieved '${typeof f.isFilterable}'.`
+              );
+            }
+            if (!['boolean', 'function', 'undefined'].includes(typeof f.isOrderable)) {
+              throw new Error(
+                `Configuration option '${listKey}.${fieldKey}.isOrderable' must be either a boolean value or a function. Recieved '${typeof f.isOrderable}'.`
+              );
+            }
+
             const _isEnabled = {
               read,
               update: omit !== true && !omit?.includes('update'),

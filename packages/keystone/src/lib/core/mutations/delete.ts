@@ -1,6 +1,7 @@
 import pLimit, { Limit } from 'p-limit';
 import { DatabaseProvider, KeystoneContext } from '../../../types';
 import { getOperationAccess, getAccessFilters } from '../access-control';
+import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
@@ -24,6 +25,10 @@ async function deleteSingle(
 
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
+  // Check filter access
+  const fieldKey = Object.keys(uniqueWhere)[0];
+  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Filter and Item access control. Will throw an accessDeniedError if not allowed.
   const existingItem = await getAccessControlledItemForDelete(

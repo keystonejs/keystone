@@ -63,8 +63,14 @@ All options are optional.
 
 Options:
 
-- `isFilterable` (default: `false`): If `true`, the GraphQL API and Admin UI will support filtering by this field.
-- `isOrderable` (default: `false`): If `true`, the GraphQL API and Admin UI will support ordering by this field.
+- `isFilterable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support filtering by this field.
+  If `true`, the GraphQL API and Admin UI will support filtering by this field.
+  If a function is provided, it will be evaluated dynamically each time this field is used as a filter in a GraphQL operation.
+  If the function returns `false`, the operation will return an error indicating that filtering on this field is not allowed.
+- `isOrderable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support ordering by this field.
+  If `true`, the GraphQL API and Admin UI will support ordering by this field.
+  If a function is provided, it will be evaluated dynamically each time this field is used as an ordering field in a GraphQL operation.
+  If the function returns `false`, the operation will return an error indicating this ordering by this field is not allowed.
 - `access`: Defines the [Access Control](../guides/access-control) rules for the field.
   See the [Access Control API](./access-control) for full details on the available access control options.
 - `hooks`: The `hooks` option defines [hook](../guides/hooks) functions for the field.
@@ -98,8 +104,8 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          isFilterable: true,
-          isOrderable: true,
+          isFilterable: ({ context, session, fieldKey, listKey }) => true,
+          isOrderable: ({ context, session, fieldKey, listKey }) => true,
           access: { /* ... */ },
           hooks: { /* ... */ },
           label: '...',
@@ -594,7 +600,7 @@ See the [virtual fields guide](../guides/virtual-fields) for details on how to u
 Options:
 
 - `field` (required): The GraphQL field that defines the type, resolver and arguments.
-- `ui.query` (default: `''` ):  
+- `ui.query` (default: `''` ):
   Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:
   ```graphql
   query {

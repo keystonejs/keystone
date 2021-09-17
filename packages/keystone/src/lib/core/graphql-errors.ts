@@ -32,3 +32,16 @@ export const extensionError = (extension: string, things: { error: Error; tag: s
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
   new ApolloError('Your request exceeded server limits');
+
+export const filterAccessError = ({
+  operation,
+  fieldKeys,
+}: {
+  operation: 'filter' | 'orderBy';
+  fieldKeys: string[];
+}) =>
+  new ApolloError(
+    `You do not have access to perform '${operation}' operations on the fields ${JSON.stringify(
+      fieldKeys
+    )}.`
+  );
