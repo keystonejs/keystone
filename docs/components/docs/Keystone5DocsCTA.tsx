@@ -12,7 +12,7 @@ export function Keystone5DocsCTA() {
       <span
         css={{
           display: 'inline-block',
-          margin: '0 1rem 0.5rem 0',
+          margin: '0 1rem 0rem 0',
         }}
       >
         Using <strong>Keystone 5</strong>? Find the docs at{' '}
