@@ -15,7 +15,11 @@ export function Keystone5DocsCTA() {
           margin: '0 1rem 0.5rem 0',
         }}
       >
-        Using <strong>Keystone 5</strong>? Please visit <a href="https://v5.keystonejs.com/documentation" target="_blank">v5.keystonejs.com</a> for the most up-to-date information.
+        Using <strong>Keystone 5</strong>? Please visit{' '}
+        <a href="https://v5.keystonejs.com/documentation" target="_blank">
+          v5.keystonejs.com
+        </a>{' '}
+        for the most up-to-date information.
       </span>
       <Button
         as="a"
