@@ -174,7 +174,7 @@ export default config({
 
 ### integer
 
-An `integer` field represents an 32 bit signed integer value.
+An `integer` field represents a 32 bit signed integer value.
 
 Options:
 
@@ -186,7 +186,7 @@ Options:
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
   If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
 - `validation.min` (default: `-2147483647`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
-- `validation.max` (default: `2147483647`): This describes the maximum number allowed. If you attempt to submit a number under this, you will get a validation error.
+- `validation.max` (default: `2147483647`): This describes the maximum number allowed. If you attempt to submit a number over this, you will get a validation error.
   - If you want to specify a range within which the numbers must fall, specify both a minimum and a maximum value.
 - `isIndexed` (default: `false`)
   - If `true` then this field will be indexed by the database.
