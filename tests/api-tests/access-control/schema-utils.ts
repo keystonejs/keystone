@@ -121,6 +121,9 @@ lists.RelatedToAll = list({
 const config = apiTestConfig({
   lists,
   session: statelessSessions({ secret: COOKIE_SECRET }),
+  ui: {
+    isAccessAllowed: () => true,
+  },
 });
 
 export { getListName, listConfigVariables, fieldMatrix, getFieldName, config };

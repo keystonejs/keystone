@@ -87,7 +87,12 @@ describe(`Field access`, () => {
         const { data, errors } = await context.graphql.raw({ query });
         if (!access.create) {
           expect(data).toEqual({ [createMutationName]: null });
-          expectAccessDenied('dev', false, undefined, errors, [{ path: [createMutationName] }]);
+          expectAccessDenied(errors, [
+            {
+              path: [createMutationName],
+              msg: `You cannot perform the 'create' operation on the item '{"${fieldName}":"bar"}'. You cannot create the fields ["${fieldName}"].`,
+            },
+          ]);
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {
@@ -116,7 +121,12 @@ describe(`Field access`, () => {
         const { data, errors } = await context.graphql.raw({ query });
         if (!access.update) {
           expect(data).toEqual({ [updateMutationName]: null });
-          expectAccessDenied('dev', false, undefined, errors, [{ path: [updateMutationName] }]);
+          expectAccessDenied(errors, [
+            {
+              path: [updateMutationName],
+              msg: `You cannot perform the 'update' operation on the item '{"id":"${item.id}"}'. You cannot update the fields ["${fieldName}"].`,
+            },
+          ]);
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {

@@ -11,6 +11,7 @@ import {
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { accessDeniedError, extensionError } from '../graphql-errors';
 import { getOperationAccess, getAccessFilters } from '../access-control';
+import { checkFilterOrderAccess } from '../filter-order-access';
 import {
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
@@ -32,7 +33,9 @@ async function createSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'create' operation on the list '${list.listKey}'.`
+    );
   }
 
   //  Item access control. Will throw an accessDeniedError if not allowed.
@@ -141,12 +144,18 @@ async function updateSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'update' operation on the list '${list.listKey}'.`
+    );
   }
 
   const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
+  // Check filter access
+  const fieldKey = Object.keys(uniqueWhere)[0];
+  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Filter and Item access control. Will throw an accessDeniedError if not allowed.
   const existingItem = await getAccessControlledItemForUpdate(

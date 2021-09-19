@@ -54,6 +54,11 @@ function getRelationVal(
         return null;
       }
 
+      // Check filter access?
+      // There's no need to check filter access here (c.f. `findOne()`), as
+      // the filter has been construct internally, not as part of user input.
+
+      // Apply access control
       const resolvedWhere = await accessControlledFilter(
         foreignList,
         context,
