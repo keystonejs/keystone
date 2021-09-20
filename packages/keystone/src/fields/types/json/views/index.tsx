@@ -9,6 +9,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
+  JSONValue,
 } from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
@@ -26,6 +27,7 @@ export const Field = ({
         {onChange ? (
           <Stack>
             <TextArea
+              css={{ fontFamily: 'monospace' }}
               autoFocus={autoFocus}
               onChange={event => onChange(event.target.value)}
               value={value}
@@ -59,14 +61,17 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig;
+type Config = FieldControllerConfig<{ defaultValue: JSONValue }>;
 
 export const controller = (config: Config): FieldController<string, string> => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: '',
+    defaultValue:
+      config.fieldMeta.defaultValue === null
+        ? ''
+        : JSON.stringify(config.fieldMeta.defaultValue, null, 2),
     validate: value => {
       if (!value) return true;
       try {

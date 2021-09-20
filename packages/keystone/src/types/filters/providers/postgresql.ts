@@ -468,59 +468,6 @@ const DateTimeNullableListFilter: DateTimeNullableListFilterType = graphql.input
   }),
 });
 
-type JsonNullableFilterType = graphql.InputObjectType<{
-  // can be null
-  equals: graphql.Arg<typeof graphql.JSON>;
-  // can be null
-  not: graphql.Arg<typeof graphql.JSON>;
-}>;
-
-const JsonNullableFilter: JsonNullableFilterType = graphql.inputObject({
-  name: 'JsonNullableFilter',
-  fields: () => ({
-    // can be null
-    equals: graphql.arg({ type: graphql.JSON }),
-    // can be null
-    not: graphql.arg({ type: graphql.JSON }),
-  }),
-});
-
-type JsonFilterType = graphql.InputObjectType<{
-  equals: graphql.Arg<typeof graphql.JSON>;
-  not: graphql.Arg<typeof graphql.JSON>;
-}>;
-
-const JsonFilter: JsonFilterType = graphql.inputObject({
-  name: 'JsonFilter',
-  fields: () => ({
-    equals: graphql.arg({ type: graphql.JSON }),
-    not: graphql.arg({ type: graphql.JSON }),
-  }),
-});
-
-type JsonNullableListFilterType = graphql.InputObjectType<{
-  // can be null
-  equals: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.JSON>>>;
-  // can be null
-  has: graphql.Arg<typeof graphql.JSON>;
-  hasEvery: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.JSON>>>;
-  hasSome: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.JSON>>>;
-  isEmpty: graphql.Arg<typeof graphql.Boolean>;
-}>;
-
-const JsonNullableListFilter: JsonNullableListFilterType = graphql.inputObject({
-  name: 'JsonNullableListFilter',
-  fields: () => ({
-    // can be null
-    equals: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.JSON)) }),
-    // can be null
-    has: graphql.arg({ type: graphql.JSON }),
-    hasEvery: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.JSON)) }),
-    hasSome: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.JSON)) }),
-    isEmpty: graphql.arg({ type: graphql.Boolean }),
-  }),
-});
-
 type DecimalNullableFilterType = graphql.InputObjectType<{
   // can be null
   equals: graphql.Arg<typeof graphql.String>;
@@ -630,12 +577,6 @@ export const DateTime = {
   optional: DateTimeNullableFilter,
   required: DateTimeFilter,
   many: DateTimeNullableListFilter,
-};
-
-export const Json = {
-  optional: JsonNullableFilter,
-  required: JsonFilter,
-  many: JsonNullableListFilter,
 };
 
 export const Decimal = {
