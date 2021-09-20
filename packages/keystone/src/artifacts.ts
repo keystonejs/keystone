@@ -123,10 +123,10 @@ const nodeAPIJS = (
   config: KeystoneConfig
 ) => `import keystoneConfig from '../../keystone';
 import { PrismaClient } from '.prisma/client';
-import { createListsAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
+import { createQueryAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
-export const lists = createListsAPI(keystoneConfig, PrismaClient);
+export const lists = createQueryAPI(keystoneConfig, PrismaClient);
 `;
 
 const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/keystone/types';
