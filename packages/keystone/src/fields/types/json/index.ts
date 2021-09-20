@@ -23,7 +23,8 @@ export const json =
       throw Error("isIndexed: 'unique' is not a supported option for field type json");
     }
 
-    const resolve = (val: JSONValue | undefined) => (val === null ? 'DbNull' : val);
+    const resolve = (val: JSONValue | undefined) =>
+      val === null && meta.provider === 'postgresql' ? 'DbNull' : val;
 
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
