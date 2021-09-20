@@ -20,16 +20,14 @@ function IntegerInput({
   id,
   autoFocus,
   forceValidation,
-  validation,
-  label,
+  validationMessage,
 }: {
   id: string;
   autoFocus?: boolean;
   value: number | string | null;
   onChange: (value: number | string | null) => void;
   forceValidation?: boolean;
-  validation: Validation;
-  label: string;
+  validationMessage?: string;
 }) {
   const [hasBlurred, setHasBlurred] = useState(false);
   const props = useFormattedInput<number | null>(
@@ -58,7 +56,6 @@ function IntegerInput({
       },
     }
   );
-  const validationMessage = validate(value, validation, label);
   return (
     <span>
       <TextInput id={id} autoFocus={autoFocus} inputMode="numeric" {...props} />
@@ -76,6 +73,8 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
+  const message = validate(value, field.validation, field.label);
+
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
@@ -83,15 +82,16 @@ export const Field = ({
         <IntegerInput
           id={field.path}
           autoFocus={autoFocus}
-          onChange={onChange}
-          value={value}
-          validation={field.validation}
-          label={field.label}
+          onChange={val => {
+            onChange({ ...value, value: val });
+          }}
+          value={value.value}
+          forceValidation={forceValidation}
+          validationMessage={message}
         />
       ) : (
         value
       )}
-      {forceValidation && 'invalid!'}
     </FieldContainer>
   );
 };
@@ -111,23 +111,28 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-function validate(
-  value: string | number | null,
-  validation: Validation,
-  label: string
-): string | undefined {
-  if (typeof value === 'string') {
+function validate(value: Value, validation: Validation, label: string): string | undefined {
+  const val = value.value;
+  if (typeof val === 'string') {
     return `${label} must be a whole number`;
   }
 
-  if (validation.isRequired && value === null) {
+  if (
+    validation.isRequired &&
+    val === null &&
+    // if we recieve null initially on the item view and the current value is null,
+    // we should always allow saving it because:
+    // - the value might be null in the database and we don't want to prevent saving the whole item because of that
+    // - we might have null because of an access control error
+    (value.kind !== 'update' || value.initial !== null)
+  ) {
     return `${label} is required`;
   }
-  if (typeof value === 'number') {
-    if (value < validation.min) {
+  if (typeof val === 'number') {
+    if (val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (value > validation.max) {
+    if (val > validation.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
@@ -141,18 +146,32 @@ type Validation = {
   max: number;
 };
 
+type Value =
+  | { kind: 'update'; initial: number | null; value: string | number | null }
+  | { kind: 'create'; value: string | number | null };
+
 export const controller = (
-  config: FieldControllerConfig<{ validation: Validation }>
-): FieldController<string | number | null, string> & { validation: Validation } => {
+  config: FieldControllerConfig<{
+    validation: Validation;
+    defaultValue: number | null | 'autoincrement';
+  }>
+): FieldController<Value, string> & {
+  validation: Validation;
+  hasAutoIncrementDefault: boolean;
+} => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     validation: config.fieldMeta.validation,
-    defaultValue: null,
+    defaultValue: {
+      kind: 'create',
+      value:
+        config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
+    },
     deserialize: data => data[config.path],
     serialize: value => ({ [config.path]: value }),
-
+    hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
     validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
     filter: {
       Filter(props) {
