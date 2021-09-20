@@ -7,7 +7,7 @@
     "@prisma/generator-helper": "3.0.2",
     "@prisma/sdk": "3.0.2",
     "fs-extra": "^10.0.0",
-    "prettier": "^2.4.0"
+    "prettier": "^2.4.1"
   },
   "scripts": {
     "generate": "node .",
