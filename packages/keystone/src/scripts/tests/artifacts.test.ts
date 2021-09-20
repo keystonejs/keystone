@@ -123,7 +123,7 @@ describe('postinstall', () => {
 
           path.join(__dirname, "../../../app.db");
           path.join(process.cwd(), "app.db");
-
+          
 
       export const lists = createQueryAPI(keystoneConfig, PrismaClient);
 
@@ -155,7 +155,7 @@ describe('postinstall', () => {
 
           path.join(__dirname, "../../../app.db");
           path.join(process.cwd(), "app.db");
-
+          
 
       export const config = {
         api: {
