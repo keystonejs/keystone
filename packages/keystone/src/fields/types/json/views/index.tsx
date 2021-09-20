@@ -27,6 +27,7 @@ export const Field = ({
         {onChange ? (
           <Stack>
             <TextArea
+              css={{ fontFamily: 'monospace' }}
               autoFocus={autoFocus}
               onChange={event => onChange(event.target.value)}
               value={value}
