@@ -75,6 +75,7 @@ Advanced configuration:
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   This can also be customised at the list level `db.idField`.
+- `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
 
 ```typescript
 export default config({
