@@ -58,6 +58,7 @@ export type DatabaseConfig = {
   enableLogging?: boolean;
   idField?: IdFieldConfig;
   provider: 'postgresql' | 'sqlite';
+  prismaPreviewFeatures?: string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 };
 
 // config.ui

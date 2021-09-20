@@ -130,8 +130,6 @@ export function createAdminMeta(
         viewsIndex: getViewId(field.views),
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
         fieldMeta: null,
-        isOrderable: field.graphql.isEnabled.orderBy,
-        isFilterable: field.graphql.isEnabled.filter,
         path: fieldKey,
         listKey: key,
         search,

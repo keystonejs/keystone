@@ -74,8 +74,6 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type FieldMeta = {
   path: string;
   label: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
   fieldMeta: JSONValue;
   viewsIndex: number;
   customViewsIndex: number | null;
@@ -160,8 +158,6 @@ export type CardValueComponent<
 export type FieldMetaRootVal = {
   path: string;
   label: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
   fieldMeta: JSONValue | null;
   viewsIndex: number;
   customViewsIndex: number | null;

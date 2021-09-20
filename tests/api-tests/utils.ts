@@ -55,38 +55,17 @@ export const expectGraphQLValidationError = (
 };
 
 export const expectAccessDenied = (
-  mode: 'dev' | 'production',
-  httpQuery: boolean,
-  _debug: boolean | undefined,
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
+  args: { path: (string | number)[]; msg: string }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }));
-  const message = 'You do not have access to this resource';
-  // We expect to see debug details if:
-  //   - httpQuery is false
-  //   - graphql.debug is true or
-  //   - graphql.debug is undefined and mode !== production or
-  // const expectDebug =
-  //   _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
-  // We expect to see the Apollo exception under the same conditions, but only if
-  // httpQuery is also true.
-  const expectException = false;
-  // httpQuery && expectDebug;
-  // console.log({ expectDebug, httpQuery, expectException });
-
   expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({
-      extensions: {
-        code: httpQuery ? 'INTERNAL_SERVER_ERROR' : undefined,
-        ...(expectException
-          ? { exception: { stacktrace: expect.arrayContaining([`Error: ${message}`]) } }
-          : {}),
-      },
+    args.map(({ path, msg }) => ({
+      extensions: { code: undefined },
       path,
-      message,
+      message: `Access denied: ${msg}`,
     }))
   );
 };

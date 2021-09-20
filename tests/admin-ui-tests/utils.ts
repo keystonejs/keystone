@@ -22,6 +22,7 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 };
 const projectRoot = findRootSync(process.cwd());
 
+// Light wrapper around node-fetch for making graphql requests to the graphql api of the test instance.
 export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
   const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
@@ -40,6 +41,11 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
 
   return data;
 };
+
+// Simple utility to create an Array of records given a map function and a range.
+export function generateDataArray(map: (key: number) => any, range: number) {
+  return Array.from(Array(range).keys()).map(map);
+}
 
 export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
   const { PrismaClient } = require(path.resolve(

@@ -10,11 +10,14 @@ async function getFilteredItem(
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
-  accessFilters: boolean | InputFilter
+  accessFilters: boolean | InputFilter,
+  operation: 'update' | 'delete'
 ) {
   if (accessFilters === false) {
     // Early exit if they want to exclude everything
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the list '${list.listKey}'.`
+    );
   }
 
   // Merge the filter access control and try to get the item.
@@ -24,7 +27,11 @@ async function getFilteredItem(
   }
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
   if (item === null) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
   }
 
   return item;
@@ -38,7 +45,7 @@ export async function getAccessControlledItemForDelete(
 ) {
   const operation = 'delete' as const;
   // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters);
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
 
   // Apply item level access control
   const access = list.access.item[operation];
@@ -57,7 +64,11 @@ export async function getAccessControlledItemForDelete(
   }
 
   if (!result) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
   }
 
   // No field level access control for delete
@@ -74,7 +85,7 @@ export async function getAccessControlledItemForUpdate(
 ) {
   const operation = 'update' as const;
   // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters);
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
 
   // Apply item level access control
   const access = list.access.item[operation];
@@ -100,21 +111,35 @@ export async function getAccessControlledItemForUpdate(
   }
 
   if (!result) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
   }
 
   // Field level 'item' access control
-  const results = await Promise.all(
-    Object.keys(originalInput!).map(fieldKey =>
-      validateFieldAccessControl({
-        access: list.fields[fieldKey].access[operation],
-        args: { ...args, fieldKey },
-      })
+  const fieldsDenied = (
+    await Promise.all(
+      Object.keys(originalInput!).map(async fieldKey => [
+        fieldKey,
+        await validateFieldAccessControl({
+          access: list.fields[fieldKey].access[operation],
+          args: { ...args, fieldKey },
+        }),
+      ])
     )
-  );
+  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, result]) => !result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .map(([fieldKey, _]) => fieldKey);
 
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError();
+  if (fieldsDenied.length) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
+    );
   }
 
   return item;
@@ -150,20 +175,35 @@ export async function applyAccessControlForCreate(
   }
 
   if (!result) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        originalInput
+      )}'.`
+    );
   }
 
   // Field level 'item' access control
-  const results = await Promise.all(
-    Object.keys(originalInput!).map(fieldKey =>
-      validateFieldAccessControl({
-        access: list.fields[fieldKey].access[operation],
-        args: { ...args, fieldKey },
-      })
-    )
-  );
 
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError();
+  const fieldsDenied = (
+    await Promise.all(
+      Object.keys(originalInput!).map(async fieldKey => [
+        fieldKey,
+        await validateFieldAccessControl({
+          access: list.fields[fieldKey].access[operation],
+          args: { ...args, fieldKey },
+        }),
+      ])
+    )
+  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, result]) => !result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .map(([fieldKey, _]) => fieldKey);
+
+  if (fieldsDenied.length) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        originalInput
+      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
+    );
   }
 }

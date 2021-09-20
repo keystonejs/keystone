@@ -10,13 +10,10 @@ export async function findMatchingIdentity(
   | { success: false; code: AuthTokenRequestErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  try {
-    const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
+  const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
+  if (item) {
     return { success: true, item };
-  } catch (err: any) {
-    if (err.message === 'You do not have access to this resource') {
-      return { success: false, code: 'IDENTITY_NOT_FOUND' };
-    }
-    throw err;
+  } else {
+    return { success: false, code: 'IDENTITY_NOT_FOUND' };
   }
 }
