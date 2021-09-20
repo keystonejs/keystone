@@ -114,7 +114,7 @@ describe('postinstall', () => {
       import { KeystoneListsAPI } from '@keystone-next/keystone/types';
       import { KeystoneListsTypeInfo } from './types';
 
-      export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
+      export const query: KeystoneListsAPI<KeystoneListsTypeInfo>;
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
       import keystoneConfig from '../../keystone';
       import { PrismaClient } from '.prisma/client';
@@ -125,7 +125,7 @@ describe('postinstall', () => {
           path.join(process.cwd(), "app.db");
           
 
-      export const lists = createQueryAPI(keystoneConfig, PrismaClient);
+      export const query = createQueryAPI(keystoneConfig, PrismaClient);
 
     `);
     expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
