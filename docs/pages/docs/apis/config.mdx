@@ -212,7 +212,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
-    extendExpressApp: (app) => { /* ... */ },
+    extendExpressApp: (app, createContext) => { /* ... */ },
   },
   /* ... */
 });
