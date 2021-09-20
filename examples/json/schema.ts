@@ -5,7 +5,7 @@ export const lists = {
   Package: list({
     fields: {
       label: text({ isRequired: true }),
-      pkgjson: json({ isRequired: true }),
+      pkgjson: json(),
       isPrivate: checkbox(),
       ownedBy: relationship({ ref: 'Person.packages', many: false }),
     },
