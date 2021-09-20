@@ -7,7 +7,6 @@ export async function validateSecret(
   identityField: string,
   identity: string,
   secretField: string,
-  protectIdentities: boolean,
   secret: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
@@ -25,11 +24,8 @@ export async function validateSecret(
 
   if (code) {
     // See "Identity Protection" in the README as to why this is a thing
-    if (protectIdentities) {
-      await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack');
-      code = 'FAILURE';
-    }
-    return { success: false, code };
+    await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack');
+    return { success: false, code: 'FAILURE' };
   }
 
   const { item } = match as { success: true; item: { id: any; [prop: string]: any } };
@@ -37,6 +33,6 @@ export async function validateSecret(
     // Authenticated!
     return { success: true, item };
   } else {
-    return { success: false, code: protectIdentities ? 'FAILURE' : 'SECRET_MISMATCH' };
+    return { success: false, code: 'FAILURE' };
   }
 }

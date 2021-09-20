@@ -10,7 +10,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
-  protectIdentities,
   gqlNames,
   passwordResetLink,
   passwordResetTokenSecretFieldImpl,
@@ -18,7 +17,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   listKey: string;
   identityField: I;
   secretField: S;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
   passwordResetTokenSecretFieldImpl: SecretFieldImpl;
@@ -67,15 +65,10 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const tokenType = 'passwordReset';
           const identity = args[identityField];
 
-          const result = await createAuthToken(
-            identityField,
-            protectIdentities,
-            identity,
-            dbItemAPI
-          );
+          const result = await createAuthToken(identityField, identity, dbItemAPI);
 
           // Note: `success` can be false with no code
-          // If protectIdentities === true then result.code will *always* be undefined.
+          // result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
@@ -116,7 +109,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             tokenType,
             identityField,
             args[identityField],
-            protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
             dbItemAPI
@@ -168,7 +160,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             tokenType,
             identityField,
             args[identityField],
-            protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
             dbItemAPI
