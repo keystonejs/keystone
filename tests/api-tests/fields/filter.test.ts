@@ -32,7 +32,7 @@ testModules
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
           // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-          for (const data of mod.initItems(matrixValue)) {
+          for (const data of mod.initItems(matrixValue, context)) {
             await context.lists[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider, ...rest });
@@ -421,7 +421,7 @@ testModules
                 })(async ({ context }) => {
                   // Populate the database before running the tests
                   // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-                  for (const data of mod.initItems(matrixValue)) {
+                  for (const data of mod.initItems(matrixValue, context)) {
                     await context.lists[listKey].createOne({
                       data: { field: data[fieldName] },
                     });
