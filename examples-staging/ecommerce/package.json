@@ -21,11 +21,11 @@
     "@keystone-next/keystone": "^25.0.0",
     "@types/nodemailer": "^6.4.4",
     "dotenv": "^10.0.0",
-    "next": "^11.1.0",
+    "next": "^11.1.2",
     "nodemailer": "^6.6.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.174.0"
+    "stripe": "^8.176.0"
   },
   "devDependencies": {
     "typescript": "^4.4.3"
