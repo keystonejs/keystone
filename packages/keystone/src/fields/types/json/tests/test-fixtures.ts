@@ -1,5 +1,4 @@
 import { json } from '..';
-import { KeystoneContext } from '../../../../types';
 
 export const name = 'Json';
 export const typeFunction = json;
