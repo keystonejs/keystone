@@ -343,7 +343,8 @@ type CountRelationshipValue = {
 };
 
 type RelationshipController = FieldController<
-  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue
+  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue,
+  { id: string; label: string }[]
 > & {
   display:
     | {
@@ -481,6 +482,60 @@ export const controller = (
         value,
         initialValue: value,
       };
+    },
+    filter: {
+      Filter: ({ onChange, value }) => {
+        const state: {
+          kind: 'many';
+          value: typeof value;
+          onChange: (newItems: { label: string; id: string }[]) => void;
+        } = {
+          kind: 'many',
+          value: value,
+          onChange(newItems) {
+            onChange(newItems);
+          },
+        };
+        const foreignList = useList(config.fieldMeta.refListKey);
+        return (
+          <RelationshipSelect
+            controlShouldRenderValue
+            list={foreignList}
+            isLoading={false}
+            isDisabled={onChange === undefined}
+            state={state}
+          />
+        );
+      },
+      graphql: ({ value }) => {
+        if (config.fieldMeta.many) {
+          return {
+            [config.path]: {
+              id: {
+                some: {
+                  in: value.map(x => x.id),
+                },
+              },
+            },
+          };
+        }
+        return {
+          [config.path]: {
+            id: {
+              in: value.map(x => x.id),
+            },
+          },
+        };
+      },
+      Label({ value }) {
+        return value?.length ? 'is set' : 'is not set';
+      },
+      types: {
+        matches: {
+          label: 'Matches',
+          initialValue: [],
+        },
+      },
     },
     validate(value) {
       return (
