@@ -23,6 +23,8 @@ export const json =
       throw Error("isIndexed: 'unique' is not a supported option for field type json");
     }
 
+    const resolve = (val: JSONValue | undefined) => (val === null ? 'DbNull' : val);
+
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
@@ -31,13 +33,10 @@ export const json =
           create: {
             arg: graphql.arg({ type: graphql.JSON }),
             resolve(val) {
-              if (val === undefined) {
-                return defaultValue;
-              }
-              return val;
+              return resolve(val === undefined ? defaultValue : val);
             },
           },
-          update: { arg: graphql.arg({ type: graphql.JSON }) },
+          update: { arg: graphql.arg({ type: graphql.JSON }), resolve },
         },
         output: graphql.field({ type: graphql.JSON }),
         views: resolveView('json/views'),
