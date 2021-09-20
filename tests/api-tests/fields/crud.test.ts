@@ -36,7 +36,7 @@ testModules
       const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
-          for (const data of mod.initItems(matrixValue)) {
+          for (const data of mod.initItems(matrixValue, context)) {
             await context.lists[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider: process.env.TEST_ADAPTER, ...rest });

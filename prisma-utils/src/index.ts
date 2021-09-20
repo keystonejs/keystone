@@ -19,14 +19,11 @@ type Provider = typeof providers[number];
 // the missing ones are:
 // - Bytes
 // - BigInt
+// - Json
 // - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
-const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Json', 'Decimal'] as const;
-
-const getScalarTypesForProvider = (provider: Provider): readonly typeof scalarTypes[number][] =>
-  provider === 'sqlite' ? scalarTypes.filter(x => x !== 'Json') : scalarTypes;
+const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal'] as const;
 
 const getSchemaForProvider = (provider: Provider) => {
-  const scalarTypesForProvider = getScalarTypesForProvider(provider);
   return `datasource ${provider} {
   url = env("DATABASE_URL")
   provider = "${provider}"
@@ -38,19 +35,19 @@ generator client {
 
 model Optional {
   id Int @id @default(autoincrement())
-  ${scalarTypesForProvider.map(scalarType => `${scalarType} ${scalarType}?`).join('\n')}
+  ${scalarTypes.map(scalarType => `${scalarType} ${scalarType}?`).join('\n')}
 }
 
 model Required {
   id Int @id @default(autoincrement())
-  ${scalarTypesForProvider.map(scalarType => `${scalarType} ${scalarType}`).join('\n')}
+  ${scalarTypes.map(scalarType => `${scalarType} ${scalarType}`).join('\n')}
 }
 
 ${
   provider === 'postgresql'
     ? `model Many {
   id Int @id @default(autoincrement())
-  ${scalarTypesForProvider.map(scalarType => `${scalarType} ${scalarType}[]`).join('\n')}
+  ${scalarTypes.map(scalarType => `${scalarType} ${scalarType}[]`).join('\n')}
 }`
     : ''
 }
@@ -70,7 +67,7 @@ ${
       JSON.stringify(dmmf.schema.inputObjectTypes, null, 2)
     );
     const types = getInputTypesByName(dmmf.schema.inputObjectTypes.prisma);
-    const rootTypes = getScalarTypesForProvider(provider).flatMap((scalar: string) => {
+    const rootTypes = scalarTypes.flatMap((scalar: string) => {
       if (scalar === 'Boolean') {
         scalar = 'Bool';
       }
@@ -121,7 +118,7 @@ ${provider !== 'sqlite' ? `import { QueryMode } from '../../next-fields'` : ''}
 
 ${[...referencedTypes].map(typeName => printInputTypeForGraphQLTS(typeName, types)).join('\n\n')}
 
-${getScalarTypesForProvider(provider)
+${scalarTypes
   .map(scalar => {
     const scalarInFilterName = scalar === 'Boolean' ? 'Bool' : scalar;
     return `export const ${scalar} = {

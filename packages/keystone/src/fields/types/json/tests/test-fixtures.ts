@@ -1,4 +1,5 @@
 import { json } from '..';
+import { KeystoneContext } from '../../../../types';
 
 export const name = 'Json';
 export const typeFunction = json;
@@ -14,14 +15,14 @@ export const fieldName = 'testField';
 
 export const getTestFields = () => ({ testField: json() });
 
-export const initItems = () => {
+export const initItems = (_: any, context: KeystoneContext) => {
   return [
     { name: 'a', testField: { a: [] } },
     { name: 'b', testField: { b: 'string' } },
     { name: 'c', testField: { c: 42 } },
     { name: 'd', testField: { d: { i: 25 } } },
     { name: 'e', testField: { e: null } },
-    { name: 'f', testField: null },
+    { name: 'f', testField: context.prisma.DbNull },
     { name: 'g' },
   ];
 };
