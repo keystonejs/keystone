@@ -9,14 +9,12 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
-  protectIdentities,
   gqlNames,
   secretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
@@ -65,7 +63,6 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             identityField,
             args[identityField],
             secretField,
-            protectIdentities,
             args[secretField],
             dbItemAPI
           );
