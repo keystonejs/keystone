@@ -1,4 +1,5 @@
 import { json } from '..';
+import { KeystoneContext } from '../../../../types';
 
 export const name = 'Json';
 export const typeFunction = json;
@@ -13,7 +14,7 @@ export const fieldName = 'testField';
 
 export const getTestFields = () => ({ testField: json() });
 
-export const initItems = (_, context) => {
+export const initItems = (_: any, context: KeystoneContext) => {
   return [
     { name: 'a', testField: { a: [] } },
     { name: 'b', testField: { b: 'string' } },
