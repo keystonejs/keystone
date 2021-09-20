@@ -34,7 +34,7 @@
     "@types/react": "^17.0.21",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.2",
-    "graphql": "^15.5.3",
+    "graphql": "^15.6.0",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
