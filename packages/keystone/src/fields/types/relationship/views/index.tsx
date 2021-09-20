@@ -154,6 +154,7 @@ export const Field = ({
               autoFocus={autoFocus}
               isDisabled={onChange === undefined}
               list={foreignList}
+              portalMenu
               state={
                 value.kind === 'many'
                   ? {
@@ -511,8 +512,8 @@ export const controller = (
         if (config.fieldMeta.many) {
           return {
             [config.path]: {
-              id: {
-                some: {
+              some: {
+                id: {
                   in: value.map(x => x.id),
                 },
               },
