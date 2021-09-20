@@ -29,6 +29,7 @@ function LinkToRelatedItems({
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
+  console.log(list.fields);
   const commonProps = {
     size: 'small',
     tone: 'active',
@@ -529,7 +530,15 @@ export const controller = (
         };
       },
       Label({ value }) {
-        return value?.length ? 'is set' : 'is not set';
+        if (!value.length) {
+          return `has no value`;
+        }
+        if (value.length > 1) {
+          const values = value.map(i => i.label).join(', ');
+          return `is in [${values}]`;
+        }
+        const optionLabel = value[0].label;
+        return `is ${optionLabel}`;
       },
       types: {
         matches: {
