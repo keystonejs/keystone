@@ -1,6 +1,5 @@
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   JSONValue,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -11,14 +10,12 @@ import { resolveView } from '../../resolve-view';
 
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<JSONValue, TGeneratedListTypes>;
-    isRequired?: boolean;
+    defaultValue?: JSONValue;
   };
 
 export const json =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    isRequired,
-    defaultValue,
+    defaultValue = null,
     ...config
   }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -26,17 +23,34 @@ export const json =
       throw Error("isIndexed: 'unique' is not a supported option for field type json");
     }
 
-    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
-      ...config,
-      input: {
-        create: { arg: graphql.arg({ type: graphql.JSON }) },
-        update: { arg: graphql.arg({ type: graphql.JSON }) },
+    return jsonFieldTypePolyfilledForSQLite(
+      meta.provider,
+      {
+        ...config,
+        input: {
+          create: {
+            arg: graphql.arg({ type: graphql.JSON }),
+            resolve(val) {
+              if (val === undefined) {
+                return defaultValue;
+              }
+              return val;
+            },
+          },
+          update: { arg: graphql.arg({ type: graphql.JSON }) },
+        },
+        output: graphql.field({ type: graphql.JSON }),
+        views: resolveView('json/views'),
+        getAdminMeta: () => ({ defaultValue }),
       },
-      output: graphql.field({ type: graphql.JSON }),
-      views: resolveView('json/views'),
-      __legacy: {
-        defaultValue,
-        isRequired,
-      },
-    });
+      {
+        default:
+          defaultValue === null
+            ? undefined
+            : {
+                kind: 'literal',
+                value: JSON.stringify(defaultValue),
+              },
+      }
+    );
   };
