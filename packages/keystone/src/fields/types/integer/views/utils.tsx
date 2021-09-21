@@ -24,7 +24,6 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase>(
   // typeof value === 'string' implies the unparsed form
   // typeof value !== 'string' implies the parsed form
   if (typeof value === 'string' && typeof config.parse(value) !== 'string') {
-    debugger;
     throw new Error(
       `Valid values must be passed in as a parsed value, not a raw value. The value you passed was \`${JSON.stringify(
         value

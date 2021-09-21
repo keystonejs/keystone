@@ -34,30 +34,34 @@ const MIN_INT = -2147483648;
 export const integer =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    defaultValue,
+    defaultValue: _defaultValue,
     validation,
     ...config
   }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
+    const defaultValue = _defaultValue ?? null;
     if (
       typeof defaultValue === 'object' &&
-      defaultValue.kind === 'autoincrement' &&
-      !config.isNullable
-    ) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify isNullable: false.\n` +
-          `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
-          `https://github.com/prisma/prisma/issues/8663`
-      );
-    }
-    if (
-      validation?.isRequired &&
-      typeof defaultValue === 'object' &&
+      defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
     ) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } and validation.isRequired: true, this is not allowed`
-      );
+      if (meta.provider === 'sqlite') {
+        throw new Error(
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
+        );
+      }
+      if (config.isNullable !== false) {
+        throw new Error(
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify isNullable: false.\n` +
+            `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
+            `https://github.com/prisma/prisma/issues/8663`
+        );
+      }
+      if (validation?.isRequired) {
+        throw new Error(
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } and validation.isRequired: true, this is not allowed`
+        );
+      }
     }
 
     if (validation?.min !== undefined && !Number.isInteger(validation.min)) {
@@ -178,7 +182,10 @@ export const integer =
             max: validation?.max ?? MAX_INT,
             isRequired: validation?.isRequired ?? false,
           },
-          defaultValue: defaultValue ?? null,
+          defaultValue:
+            defaultValue === null || typeof defaultValue === 'number'
+              ? defaultValue
+              : 'autoincrement',
         };
       },
     });
