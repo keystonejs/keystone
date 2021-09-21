@@ -157,6 +157,10 @@ export const integer =
         create: {
           arg: graphql.arg({
             type: config.graphql?.create?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
+            defaultValue:
+              config.graphql?.create?.isNonNull && typeof defaultValue === 'number'
+                ? defaultValue
+                : undefined,
           }),
           resolve(value) {
             if (value === undefined && typeof defaultValue === 'number') {
