@@ -21,6 +21,7 @@ function IntegerInput({
   autoFocus,
   forceValidation,
   validationMessage,
+  placeholder,
 }: {
   id: string;
   autoFocus?: boolean;
@@ -28,6 +29,7 @@ function IntegerInput({
   onChange: (value: number | string | null) => void;
   forceValidation?: boolean;
   validationMessage?: string;
+  placeholder?: string;
 }) {
   const [hasBlurred, setHasBlurred] = useState(false);
   const props = useFormattedInput<number | null>(
@@ -58,7 +60,13 @@ function IntegerInput({
   );
   return (
     <span>
-      <TextInput id={id} autoFocus={autoFocus} inputMode="numeric" {...props} />
+      <TextInput
+        placeholder={placeholder}
+        id={id}
+        autoFocus={autoFocus}
+        inputMode="numeric"
+        {...props}
+      />
       {(hasBlurred || forceValidation) && validationMessage && (
         <span css={{ color: 'red' }}>{validationMessage}</span>
       )}
@@ -79,16 +87,23 @@ export const Field = ({
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
       {onChange ? (
-        <IntegerInput
-          id={field.path}
-          autoFocus={autoFocus}
-          onChange={val => {
-            onChange({ ...value, value: val });
-          }}
-          value={value.value}
-          forceValidation={forceValidation}
-          validationMessage={message}
-        />
+        <span>
+          <IntegerInput
+            id={field.path}
+            autoFocus={autoFocus}
+            onChange={val => {
+              onChange({ ...value, value: val });
+            }}
+            value={value.value}
+            forceValidation={forceValidation}
+            placeholder={
+              field.hasAutoIncrementDefault && value.kind === 'create'
+                ? "If you don't provide a value, this will default to an incremented number from the last generated value of this field"
+                : undefined
+            }
+            validationMessage={message}
+          />
+        </span>
       ) : (
         value
       )}
@@ -169,7 +184,7 @@ export const controller = (
       value:
         config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
     },
-    deserialize: data => data[config.path],
+    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value }),
     hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
     validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
