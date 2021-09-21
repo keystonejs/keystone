@@ -11,7 +11,7 @@ import { Announce } from '../components/Announce';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
 import { EditButton } from './primitives/EditButton';
-import { Emoji } from './primitives/Emoji';
+// import { Emoji } from './primitives/Emoji';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Sidebar } from './docs/Sidebar';
 import { Stack } from './primitives/Stack';
