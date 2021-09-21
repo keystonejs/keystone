@@ -83,7 +83,7 @@ test(
   'afterChange is called for nested creates',
   runner2(async ({ context }) => {
     // Update an item that does the nested create
-    const item = await context.lists.User.createOne({
+    const item = await context.query.User.createOne({
       data: { username: 'something', notes: { create: [{ content: 'some content' }] } },
       query: 'username notes {content}',
     });
@@ -100,7 +100,7 @@ describe('no access control', () => {
       const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
       // Create an item that does the nested create
-      const user = await context.lists.User.createOne({
+      const user = await context.query.User.createOne({
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes(orderBy: { content: asc }) { id content }',
       });
@@ -113,7 +113,7 @@ describe('no access control', () => {
       // Create an item that does the nested create
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
 
-      const user1 = (await context.lists.User.createOne({
+      const user1 = (await context.query.User.createOne({
         data: {
           username: 'A thing',
           notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
@@ -130,13 +130,13 @@ describe('no access control', () => {
       });
 
       // Sanity check that the items are actually created
-      const notes = await context.lists.Note.findMany({
+      const notes = await context.query.Note.findMany({
         where: { id: { in: user1.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(user1.notes.length);
 
       // Test an empty list of related notes
-      const user2 = await context.lists.User.createOne({
+      const user2 = await context.query.User.createOne({
         data: { username: 'A thing', notes: { create: [] } },
         query: 'id notes { id }',
       });
@@ -152,10 +152,10 @@ describe('no access control', () => {
       const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
+      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } });
 
       // Update an item that does the nested create
-      const user = await context.lists.User.updateOne({
+      const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
         query: 'id notes { id content }',
@@ -167,7 +167,7 @@ describe('no access control', () => {
       });
 
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
-      const _user = (await context.lists.User.updateOne({
+      const _user = (await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {
           username: 'A thing',
@@ -186,7 +186,7 @@ describe('no access control', () => {
       });
 
       // Sanity check that the items are actually created
-      const notes = await context.lists.Note.findMany({
+      const notes = await context.query.Note.findMany({
         where: { id: { in: _user.notes.map(({ id }) => id) } },
       });
       expect(notes).toHaveLength(_user.notes.length);
@@ -251,7 +251,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to update
-        const createUser = await context.lists.UserToNotesNoRead.createOne({
+        const createUser = await context.query.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
         });
 
@@ -306,10 +306,10 @@ describe('with access control', () => {
         ]);
 
         // Confirm it didn't insert either of the records anyway
-        const allNoteNoCreates = await context.lists.NoteNoCreate.findMany({
+        const allNoteNoCreates = await context.query.NoteNoCreate.findMany({
           where: { content: { equals: noteContent } },
         });
-        const allUserToNotesNoCreates = await context.lists.UserToNotesNoCreate.findMany({
+        const allUserToNotesNoCreates = await context.query.UserToNotesNoCreate.findMany({
           where: { username: { equals: userName } },
         });
         expect(allNoteNoCreates).toMatchObject([]);
@@ -323,7 +323,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to update
-        const createUserToNotesNoCreate = await context.lists.UserToNotesNoCreate.createOne({
+        const createUserToNotesNoCreate = await context.query.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
         });
 
@@ -354,7 +354,7 @@ describe('with access control', () => {
         ]);
 
         // Confirm it didn't insert the record anyway
-        const items = await context.lists.NoteNoCreate.findMany({
+        const items = await context.query.NoteNoCreate.findMany({
           where: { content: { equals: noteContent } },
         });
         expect(items).toMatchObject([]);

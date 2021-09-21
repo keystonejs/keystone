@@ -36,7 +36,7 @@ describe(`Custom mutations`, () => {
     test(
       'A users cart should correctly convert into an order',
       runner(async ({ context }) => {
-        const { Product, User } = context.sudo().lists;
+        const { Product, User } = context.sudo().query;
 
         // Create some products: FIXME: createMany
         const product1 = await Product.createOne({
@@ -178,7 +178,7 @@ describe(`Custom mutations`, () => {
     test(
       'Adding DRAFT product should throw',
       runner(async ({ context }) => {
-        const { User, Product } = context.sudo().lists;
+        const { User, Product } = context.sudo().query;
         // Setup user
         const user = await User.createOne({
           data: { name: 'Test User', email: 'test@example.com' },
@@ -203,7 +203,7 @@ describe(`Custom mutations`, () => {
     test(
       'Adding UNAVAILABLE product should throw',
       runner(async ({ context }) => {
-        const { User, Product } = context.sudo().lists;
+        const { User, Product } = context.sudo().query;
         // Setup user
         const user = await User.createOne({
           data: { name: 'Test User', email: 'test@example.com' },
@@ -228,7 +228,7 @@ describe(`Custom mutations`, () => {
     test(
       'Adding AVAILABLE product should return a cart item with a quantity of 1',
       runner(async ({ context }) => {
-        const { User, Product } = context.sudo().lists;
+        const { User, Product } = context.sudo().query;
         // Setup user
         const user = await User.createOne({
           data: { name: 'Test User', email: 'test@example.com' },
@@ -255,7 +255,7 @@ describe(`Custom mutations`, () => {
     test(
       'Adding a product multiple times should return a cart item with the correct quantity',
       runner(async ({ context }) => {
-        const { User, Product } = context.sudo().lists;
+        const { User, Product } = context.sudo().query;
         // Setup user
         const user = await User.createOne({
           data: { name: 'Test User', email: 'test@example.com' },
@@ -289,7 +289,7 @@ describe(`Custom mutations`, () => {
     test(
       'Adding different products multiple times should return cart items with the correct quantity',
       runner(async ({ context }) => {
-        const { User, Product } = context.sudo().lists;
+        const { User, Product } = context.sudo().query;
         // Setup user
         const user = await User.createOne({
           data: { name: 'Test User', email: 'test@example.com' },
@@ -310,13 +310,13 @@ describe(`Custom mutations`, () => {
         await q({ query, variables: { productId: product1.id } });
         await q({ query, variables: { productId: product2.id } });
         await q({ query, variables: { productId: product1.id } });
-        const result1 = await context.sudo().lists.CartItem.findMany({
+        const result1 = await context.sudo().query.CartItem.findMany({
           where: { product: { id: { equals: product1.id } } },
           query: 'quantity',
         });
         expect(result1).toHaveLength(1);
         expect(result1[0].quantity).toEqual(3);
-        const result2 = await context.sudo().lists.CartItem.findMany({
+        const result2 = await context.sudo().query.CartItem.findMany({
           where: { product: { id: { equals: product2.id } } },
           query: 'quantity',
         });

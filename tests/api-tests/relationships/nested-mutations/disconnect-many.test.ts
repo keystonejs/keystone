@@ -60,13 +60,13 @@ describe('no access control', () => {
       const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
       // Create two items with content that can be matched
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
       });
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({
+      const createUser = await context.query.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
@@ -74,7 +74,7 @@ describe('no access control', () => {
       });
 
       // Update the item and link the relationship field
-      const user = await context.lists.User.updateOne({
+      const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { disconnect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
@@ -113,7 +113,7 @@ describe('non-matching filter', () => {
     'errors if items to disconnect cannot be found during update',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createUser = await context.lists.User.createOne({ data: {} });
+      const createUser = await context.query.User.createOne({ data: {} });
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -148,12 +148,12 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.sudo().lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
         // Create an item to update
-        const createUser = await context.sudo().lists.UserToNotesNoRead.createOne({
+        const createUser = await context.sudo().query.UserToNotesNoRead.createOne({
           data: {
             username: 'A thing',
             notes: { connect: [{ id: createNote.id }] },
@@ -183,7 +183,7 @@ describe('with access control', () => {
           ]);
         }
 
-        const data = await context.sudo().lists.UserToNotesNoRead.findOne({
+        const data = await context.sudo().query.UserToNotesNoRead.findOne({
           where: { id: createUser.id },
           query: 'id notes { id }',
         });

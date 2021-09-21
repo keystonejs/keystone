@@ -214,8 +214,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
         // note this usage of the type is important because it tests that the generated
         // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-        const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
-        return lists.Post.createMany({ data });
+        const query = context.query as KeystoneListsAPI<KeystoneListsTypeInfo>;
+        return query.Post.createMany({ data });
       },
     },
     Query: {

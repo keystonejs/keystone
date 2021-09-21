@@ -74,9 +74,9 @@ const runner = setupTestRunner({
 
 const initialiseData = async ({ context }: { context: KeystoneContext }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.lists)) {
+  for (const listKey of Object.keys(context.query)) {
     if (listKey === 'User' || listKey === 'SecondaryList') continue;
-    await context.lists[listKey].createMany({
+    await context.query[listKey].createMany({
       data: [
         { a: 1, b: 10 },
         { a: 1, b: 30 },
@@ -96,14 +96,14 @@ describe('filtering on field name', () => {
   test(
     'filter works when there is no dash in field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({ where: { noDash: { equals: 'aValue' } } });
+      const users = await context.query.User.findMany({ where: { noDash: { equals: 'aValue' } } });
       expect(users).toEqual([]);
     })
   );
   test(
     'filter works when there is one dash in field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         where: { single_dash: { equals: 'aValue' } },
       });
       expect(users).toEqual([]);
@@ -112,7 +112,7 @@ describe('filtering on field name', () => {
   test(
     'filter works when there are multiple dashes in field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         where: { many_many_many_dashes: { equals: 'aValue' } },
       });
       expect(users).toEqual([]);
@@ -121,7 +121,7 @@ describe('filtering on field name', () => {
   test(
     'filter works when there are multiple dashes in a row in a field name',
     runner(async ({ context }) => {
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         where: { multi____dash: { equals: 'aValue' } },
       });
       expect(users).toEqual([]);
@@ -130,7 +130,7 @@ describe('filtering on field name', () => {
   test(
     'filter works when there is one dash in field name as part of a relationship',
     runner(async ({ context }) => {
-      const secondaries = await context.lists.SecondaryList.findMany({
+      const secondaries = await context.query.SecondaryList.findMany({
         where: { NOT: { someUser: null } },
       });
       expect(secondaries).toEqual([]);
@@ -176,7 +176,7 @@ describe('filtering on relationships', () => {
   test(
     'findMany returns all items with empty relationship query value',
     runner(async ({ context, graphQLRequest }) => {
-      await context.lists.SecondaryList.createOne({
+      await context.query.SecondaryList.createOne({
         data: { otherUsers: { create: [{ noDash: 'a' }, { noDash: 'b' }] } },
       });
       const { body } = await graphQLRequest({
@@ -196,7 +196,7 @@ describe('searching by unique fields', () => {
   test(
     'findOne works on a unique text field',
     runner(async ({ context }) => {
-      const item = await context.lists.User.createOne({ data: { email: 'test@example.com' } });
+      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } });
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: "test@example.com" }) { id email } }',
       });
@@ -223,7 +223,7 @@ describe('searching by unique fields', () => {
   test(
     'findOne throws error with more than one where values',
     runner(async ({ context, graphQLRequest }) => {
-      const item = await context.lists.User.createOne({ data: { email: 'test@example.com' } });
+      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } });
       const { body } = await graphQLRequest({
         query: `{ user(where: { id: "${item.id}" email: "test@example.com" }) { id email } }`,
       });
