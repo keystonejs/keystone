@@ -6,8 +6,8 @@ import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
   req?: IncomingMessage;
-  db: { lists: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>> };
-  lists: KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>;
+  db: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>;
+  query: KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>;
   graphql: KeystoneGraphQLAPI<any>;
   sudo: () => KeystoneContext;
   exitSudo: () => KeystoneContext;
@@ -91,7 +91,7 @@ type ResolveFields = {
    * @deprecated
    *
    * resolveFields has been deprecated. Please use the `query` param to query fields,
-   * or `context.db.lists.{List}` instead of passing `resolveFields: false`
+   * or `context.db.{List}` instead of passing `resolveFields: false`
    */
   readonly resolveFields?: false | string;
 };

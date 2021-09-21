@@ -14,7 +14,7 @@ const runner = setupTestRunner({
 test(
   'Smoke test',
   runner(async ({ context }) => {
-    const users = await context.db.lists.User.findMany({});
+    const users = await context.db.User.findMany({});
     expect(users).toEqual([]);
   })
 );

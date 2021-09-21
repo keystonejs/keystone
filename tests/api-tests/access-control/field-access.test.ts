@@ -22,7 +22,7 @@ describe(`Field access`, () => {
 
     items = {};
     for (const [listKey, _items] of Object.entries(initialData)) {
-      items[listKey] = (await context.sudo().lists[listKey].createMany({
+      items[listKey] = (await context.sudo().query[listKey].createMany({
         data: _items,
         query: 'id, name',
       })) as { id: IdType; name: string }[];
@@ -38,7 +38,7 @@ describe(`Field access`, () => {
         const item = items[listKey][0];
         const fieldName = getFieldName(access);
         const singleQueryName = context.gqlNames(listKey).itemQueryName;
-        await context.sudo().lists[listKey].updateOne({
+        await context.sudo().query[listKey].updateOne({
           where: { id: item.id },
           data: { [fieldName]: 'hello' },
         });
@@ -55,7 +55,7 @@ describe(`Field access`, () => {
         const item = items[listKey][0];
         const fieldName = getFieldName(access);
         const allQueryName = context.gqlNames(listKey).listQueryName;
-        await context.sudo().lists[listKey].updateOne({
+        await context.sudo().query[listKey].updateOne({
           where: { id: item.id },
           data: { [fieldName]: 'hello' },
         });

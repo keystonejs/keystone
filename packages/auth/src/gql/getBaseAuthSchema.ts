@@ -57,7 +57,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
             secretFieldImpl,
             identityField,
@@ -89,7 +89,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       Query: {
         async authenticatedItem(root, args, { session, db }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
+            return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
         },

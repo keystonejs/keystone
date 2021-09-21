@@ -23,7 +23,7 @@ export const lists = {
     access: {
       item: {
         update: async ({ session, item, context }) => {
-          const task = await context.lists.Task.findOne({
+          const task = await context.query.Task.findOne({
             where: { id: item.id },
             query: 'assignedTo { id }',
           });
