@@ -220,7 +220,7 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   value: Input,
   context: KeystoneContext,
   relationshipInputResolver: RelationshipInputResolver
-) => Output;
+) => MaybePromise<Output>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
