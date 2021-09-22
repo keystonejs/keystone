@@ -13,7 +13,6 @@ import { resolveView } from '../../resolve-view';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: number | { kind: 'autoincrement' };
     isIndexed?: boolean | 'unique';
     validation?: {
       isRequired?: boolean;
@@ -25,7 +24,14 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
         isNonNull?: boolean;
       };
     };
-  } & ({ isNullable?: true } | { isNullable: false; graphql?: { read?: { isNonNull?: boolean } } });
+  } & (
+      | { isNullable?: true; defaultValue?: number }
+      | {
+          isNullable: false;
+          defaultValue?: number | { kind: 'autoincrement' };
+          graphql?: { read?: { isNonNull?: boolean } };
+        }
+    );
 
 // These are the max and min ints available to a 32 bit number
 const MAX_INT = 2147483647;
@@ -50,6 +56,8 @@ export const integer =
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
         );
       }
+      // our types technically enforce this but it's the kind of thing where i could totally imagine people going
+      // ughhh, why is TS complaining about this!?!?!?!?! when TS is indeed correct
       if (config.isNullable !== false) {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify isNullable: false.\n` +
