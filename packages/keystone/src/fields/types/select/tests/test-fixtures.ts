@@ -13,7 +13,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
       isFilterable: true as const,
-      dataType: matrixValue,
+      type: matrixValue,
       options:
         matrixValue === 'enum'
           ? [
@@ -35,7 +35,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
   }
   return {
     isFilterable: true as const,
-    dataType: matrixValue,
+    type: matrixValue,
     options: [
       { label: 'One', value: 1 },
       { label: 'Two', value: 2 },

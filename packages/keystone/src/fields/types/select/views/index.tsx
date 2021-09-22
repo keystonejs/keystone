@@ -1,9 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { jsx, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import {
   CardValueComponent,
   CellComponent,
@@ -41,6 +42,17 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
             onChange?.(field.options[index]);
           }}
         />
+        {value !== null && onChange !== undefined && (
+          <button
+            onClick={() => {
+              onChange(null);
+            }}
+            css={{ border: 0, appearance: 'none' }}
+          >
+            <XIcon />
+            <VisuallyHidden>Clear</VisuallyHidden>
+          </button>
+        )}
       </Fragment>
     )}
   </FieldContainer>
@@ -66,15 +78,16 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 
 type Config = FieldControllerConfig<{
   options: { label: string; value: string | number }[];
-  dataType: 'string' | 'enum' | 'integer';
+  kind: 'string' | 'integer';
   displayMode: 'select' | 'segmented-control';
+  isRequired: boolean;
 }>;
 
 export const controller = (
   config: Config
 ): FieldController<{ label: string; value: string } | null, { label: string; value: string }[]> & {
   options: { label: string; value: string }[];
-  dataType: 'string' | 'enum' | 'integer';
+  kind: 'string' | 'integer';
   displayMode: 'select' | 'segmented-control';
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
@@ -84,14 +97,14 @@ export const controller = (
 
   // Transform from string value to dataType appropriate value
   const t = (v: string | null) =>
-    v === null ? null : config.fieldMeta.dataType === 'integer' ? parseInt(v) : v;
+    v === null ? null : config.fieldMeta.kind === 'integer' ? parseInt(v) : v;
 
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: null,
-    dataType: config.fieldMeta.dataType,
+    kind: config.fieldMeta.kind,
     displayMode: config.fieldMeta.displayMode,
     options: optionsWithStringValues,
     deserialize: data => {

@@ -121,7 +121,7 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   name: string;
   values: Value[];
   mode: Mode;
-  default?: Value;
+  default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
 };
 
@@ -220,7 +220,7 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   value: Input,
   context: KeystoneContext,
   relationshipInputResolver: RelationshipInputResolver
-) => MaybePromise<Output>;
+) => Output;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;

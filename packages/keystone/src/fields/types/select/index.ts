@@ -1,7 +1,7 @@
 import inflection from 'inflection';
+import { humanize } from '../../../lib/utils';
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -16,20 +16,37 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
   CommonFieldConfig<TGeneratedListTypes> &
     (
       | {
-          options: { label: string; value: string }[];
-          dataType?: 'string' | 'enum';
-          defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
+          /**
+           * When a value is provided as just a string, it will be formatted in the same way
+           * as field labels are to create the label.
+           */
+          options: ({ label: string; value: string } | string)[];
+
+          /**
+           * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
+           */
+          type?: 'string' | 'enum';
+          defaultValue?: string;
         }
       | {
           options: { label: string; value: number }[];
-          dataType: 'integer';
-          defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
+          type: 'integer';
+          defaultValue?: number;
         }
     ) & {
       ui?: {
         displayMode?: 'select' | 'segmented-control';
       };
-      isRequired?: boolean;
+      /**
+       * @default true
+       */
+      isNullable?: boolean;
+      validation?: {
+        /**
+         * @default false
+         */
+        isRequired?: boolean;
+      };
       isIndexed?: boolean | 'unique';
     };
 
@@ -37,8 +54,8 @@ export const select =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
     ui: { displayMode = 'select', ...ui } = {},
-    isRequired,
-    defaultValue,
+    isNullable = true,
+    defaultValue: _defaultValue,
     ...config
   }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -48,82 +65,112 @@ export const select =
       views: resolveView('select/views'),
       getAdminMeta: () => ({
         options: config.options,
-        dataType: config.dataType ?? 'string',
+        kind: config.type === 'integer' ? 'integer' : 'string',
         displayMode: displayMode,
+        isRequired: config.validation?.isRequired ?? false,
       }),
     };
 
-    const index = isIndexed === true ? 'index' : isIndexed || undefined;
+    const defaultValue = _defaultValue ?? null;
 
-    if (config.dataType === 'integer') {
-      return fieldType({
-        kind: 'scalar',
-        scalar: 'Int',
-        mode: 'optional',
-        index,
-      })({
-        ...commonConfig,
-        input: {
-          where: {
-            arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
-            resolve: filters.resolveCommon,
-          },
-          create: { arg: graphql.arg({ type: graphql.Int }) },
-          update: { arg: graphql.arg({ type: graphql.Int }) },
-          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
-        },
-        output: graphql.field({ type: graphql.Int }),
-        __legacy: { defaultValue, isRequired },
-      });
-    }
-    if (config.dataType === 'enum') {
-      const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
-      const graphQLType = graphql.enum({
-        name: enumName,
-        values: graphql.enumValues(config.options.map(x => x.value)),
-      });
-      // i do not like this "let's just magically use strings on sqlite"
-      return fieldType(
-        meta.provider === 'sqlite'
-          ? { kind: 'scalar', scalar: 'String', mode: 'optional', index }
-          : {
-              kind: 'enum',
-              values: config.options.map(x => x.value),
-              mode: 'optional',
-              name: enumName,
-              index,
-            }
-      )({
-        ...commonConfig,
-        input: {
-          where: {
-            arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
-            resolve: filters.resolveCommon,
-          },
-          create: { arg: graphql.arg({ type: graphQLType }) },
-          update: { arg: graphql.arg({ type: graphQLType }) },
-          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
-        },
-        output: graphql.field({
-          type: graphQLType,
-        }),
-        __legacy: { defaultValue, isRequired },
-      });
-    }
-    return fieldType({ kind: 'scalar', scalar: 'String', mode: 'optional', index })({
+    const mode = isNullable === false ? 'required' : 'optional';
+    const commonDbFieldOptions = {
+      mode,
+      index: isIndexed === true ? 'index' : isIndexed || undefined,
+      default:
+        defaultValue === null
+          ? undefined
+          : { kind: 'literal' as const, value: defaultValue as any },
+    } as const;
+
+    const options = config.options.map(option => {
+      if (typeof option === 'string') {
+        return {
+          label: humanize(option),
+          value: option,
+        };
+      }
+      return option;
+    });
+
+    const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
+
+    const dbField =
+      config.type === 'integer'
+        ? ({ kind: 'scalar', scalar: 'String', ...commonDbFieldOptions } as const)
+        : config.type === 'enum' && meta.provider !== 'sqlite'
+        ? ({
+            kind: 'enum',
+            values: options.map(x => x.value as string),
+            name: enumName,
+            ...commonDbFieldOptions,
+          } as const)
+        : ({ kind: 'scalar', scalar: 'String', ...commonDbFieldOptions } as const);
+
+    const graphQLType =
+      config.type === 'integer'
+        ? graphql.Int
+        : config.type === 'enum'
+        ? graphql.enum({
+            name: enumName,
+            values: graphql.enumValues(options.map(x => x.value as string)),
+          })
+        : graphql.String;
+
+    const values = new Set(options.map(x => x.value));
+
+    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+
+    return fieldType(dbField)({
       ...commonConfig,
-      input: {
-        where: {
-          arg: graphql.arg({ type: filters[meta.provider].String.optional }),
-          resolve: filters.resolveString,
+      hooks: {
+        ...config.hooks,
+        async validateInput(args) {
+          const value = args.resolvedData[meta.fieldKey];
+          if (value != null) {
+            if (!values.has(value)) {
+              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
+            }
+          }
+          if (
+            config.validation?.isRequired &&
+            (value === null || (value === undefined && args.operation === 'create'))
+          ) {
+            args.addValidationError(`${fieldLabel} is required`);
+          }
+          await config.hooks?.validateInput?.(args);
         },
-        create: { arg: graphql.arg({ type: graphql.String }) },
-        update: { arg: graphql.arg({ type: graphql.String }) },
+      },
+      input: {
+        where: (config.type === undefined || config.type === 'string'
+          ? {
+              arg: graphql.arg({ type: filters[meta.provider].String[mode] }),
+              resolve: mode === 'optional' ? filters.resolveString : undefined,
+            }
+          : {
+              arg: graphql.arg({
+                type:
+                  graphQLType.kind === 'enum'
+                    ? // while the enum filters are technically postgres only
+                      // the enum filters are essentially a subset of
+                      // the string filters so this is fine
+                      filters.postgresql.enum(graphQLType)[mode]
+                    : filters[meta.provider].Int[mode],
+              }),
+              resolve: mode === 'optional' ? filters.resolveCommon : undefined,
+            }) as any,
+        create: {
+          arg: graphql.arg({ type: graphQLType }),
+          resolve(val) {
+            if (val === undefined) {
+              return defaultValue;
+            }
+            return val;
+          },
+        },
+        update: { arg: graphql.arg({ type: graphQLType }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.String,
-      }),
-      __legacy: { defaultValue, isRequired },
+      output: graphql.field({ type: graphQLType }),
     });
   };
