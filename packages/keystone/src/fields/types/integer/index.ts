@@ -40,11 +40,11 @@ export const integer =
   }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     const defaultValue = _defaultValue ?? null;
-    if (
-      typeof defaultValue === 'object' &&
+    const hasAutoIncDefault =
+      typeof defaultValue == 'object' &&
       defaultValue !== null &&
-      defaultValue.kind === 'autoincrement'
-    ) {
+      defaultValue.kind === 'autoincrement';
+    if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite') {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
@@ -55,11 +55,6 @@ export const integer =
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
-        );
-      }
-      if (validation?.isRequired) {
-        throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } and validation.isRequired: true, this is not allowed`
         );
       }
     }
@@ -126,7 +121,8 @@ export const integer =
 
           if (
             validation?.isRequired &&
-            (value === null || (args.operation === 'create' && value === undefined))
+            (value === null ||
+              (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
           ) {
             args.addValidationError(`${fieldLabel} is required`);
           }

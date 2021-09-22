@@ -81,7 +81,7 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const message = validate(value, field.validation, field.label);
+  const message = validate(value, field.validation, field.label, field.hasAutoIncrementDefault);
 
   return (
     <FieldContainer>
@@ -98,7 +98,7 @@ export const Field = ({
             forceValidation={forceValidation}
             placeholder={
               field.hasAutoIncrementDefault && value.kind === 'create'
-                ? "If you don't provide a value, this will default to an incremented number from the last generated value of this field"
+                ? 'Defaults to an incremented number'
                 : undefined
             }
             validationMessage={message}
@@ -126,21 +126,30 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-function validate(value: Value, validation: Validation, label: string): string | undefined {
+function validate(
+  value: Value,
+  validation: Validation,
+  label: string,
+  hasAutoIncrementDefault: boolean
+): string | undefined {
   const val = value.value;
   if (typeof val === 'string') {
     return `${label} must be a whole number`;
   }
 
-  if (
-    validation.isRequired &&
-    val === null &&
-    // if we recieve null initially on the item view and the current value is null,
-    // we should always allow saving it because:
-    // - the value might be null in the database and we don't want to prevent saving the whole item because of that
-    // - we might have null because of an access control error
-    (value.kind !== 'update' || value.initial !== null)
-  ) {
+  // if we recieve null initially on the item view and the current value is null,
+  // we should always allow saving it because:
+  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
+  // - we might have null because of an access control error
+  if (value.kind === 'update' && value.initial === null && val === null) {
+    return undefined;
+  }
+
+  if (value.kind === 'create' && value.value === null && hasAutoIncrementDefault) {
+    return undefined;
+  }
+
+  if (validation.isRequired && val === null) {
     return `${label} is required`;
   }
   if (typeof val === 'number') {
@@ -187,7 +196,13 @@ export const controller = (
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value }),
     hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
-    validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
+    validate: value =>
+      validate(
+        value,
+        config.fieldMeta.validation,
+        config.label,
+        config.fieldMeta.defaultValue === 'autoincrement'
+      ) === undefined,
     filter: {
       Filter(props) {
         return (
