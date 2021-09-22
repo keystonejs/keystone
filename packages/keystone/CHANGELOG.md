@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 25.0.4
+
+### Patch Changes
+
+- [`7e0cae544`](https://github.com/keystonejs/keystone/commit/7e0cae54484b19c6adb267e1fda3cbc4058c0381) Thanks [@timleslie](https://github.com/timleslie)! - Keystone Cloud assets integration has been fixed
+
 ## 25.0.3
 
 ### Patch Changes
