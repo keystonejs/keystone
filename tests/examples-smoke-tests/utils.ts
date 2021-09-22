@@ -9,7 +9,7 @@ async function deleteAllData(projectDir: string) {
 
   let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
   await prisma.$disconnect();
 }
