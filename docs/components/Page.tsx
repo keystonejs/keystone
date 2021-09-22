@@ -3,6 +3,7 @@ import { useRef, Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Head from 'next/head';
+import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
@@ -10,7 +11,7 @@ import { Announce } from '../components/Announce';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
 import { EditButton } from './primitives/EditButton';
-import { Emoji } from './primitives/Emoji';
+// import { Emoji } from './primitives/Emoji';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Sidebar } from './docs/Sidebar';
 import { Stack } from './primitives/Stack';
@@ -18,37 +19,39 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 
 function Announcement() {
-  return (
-    <Announce>
-      <Emoji symbol="🎤" alt="Microphone" />{' '}
-      <a
-        href="https://306ucv95ugh.typeform.com/to/TbFERbep"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Join us
-      </a>{' '}
-      for our first <strong>Community Q&A</strong> next{' '}
-      <strong>Tuesday Sep 21st @ 3–4pm AEST</strong> –{' '}
-      <a
-        href="https://306ucv95ugh.typeform.com/to/TbFERbep"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Register now
-      </a>
-      !
-    </Announce>
-  );
+  // special announcement
   // return (
   //   <Announce>
-  //     Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
-  //     visit{' '}
-  //     <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
-  //       v5.keystonejs.com
+  //     <Emoji symbol="🎤" alt="Microphone" />{' '}
+  //     <a
+  //       href="https://306ucv95ugh.typeform.com/to/TbFERbep"
+  //       rel="noopener noreferrer"
+  //       target="_blank"
+  //     >
+  //       Join us
+  //     </a>{' '}
+  //     for our first <strong>Community Q&A</strong> next{' '}
+  //     <strong>Tuesday Sep 21st @ 3–4pm AEST</strong> –{' '}
+  //     <a
+  //       href="https://306ucv95ugh.typeform.com/to/TbFERbep"
+  //       rel="noopener noreferrer"
+  //       target="_blank"
+  //     >
+  //       Register now
   //     </a>
+  //     !
   //   </Announce>
   // );
+  // standard announcement
+  return (
+    <Announce>
+      Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
+      visit{' '}
+      <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
+        v5.keystonejs.com
+      </a>
+    </Announce>
+  );
 }
 
 function OpenGraph({
