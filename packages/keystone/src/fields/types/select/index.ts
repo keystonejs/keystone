@@ -65,7 +65,7 @@ export const select =
       views: resolveView('select/views'),
       getAdminMeta: () => ({
         options: config.options,
-        kind: config.type === 'integer' ? 'integer' : 'string',
+        kind: config.type ?? 'string',
         displayMode: displayMode,
         isRequired: config.validation?.isRequired ?? false,
       }),

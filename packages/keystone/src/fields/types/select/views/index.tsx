@@ -78,7 +78,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 
 type Config = FieldControllerConfig<{
   options: { label: string; value: string | number }[];
-  kind: 'string' | 'integer';
+  type: 'string' | 'integer' | 'enum';
   displayMode: 'select' | 'segmented-control';
   isRequired: boolean;
 }>;
@@ -87,7 +87,7 @@ export const controller = (
   config: Config
 ): FieldController<{ label: string; value: string } | null, { label: string; value: string }[]> & {
   options: { label: string; value: string }[];
-  kind: 'string' | 'integer';
+  type: 'string' | 'integer' | 'enum';
   displayMode: 'select' | 'segmented-control';
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
@@ -97,14 +97,14 @@ export const controller = (
 
   // Transform from string value to dataType appropriate value
   const t = (v: string | null) =>
-    v === null ? null : config.fieldMeta.kind === 'integer' ? parseInt(v) : v;
+    v === null ? null : config.fieldMeta.type === 'integer' ? parseInt(v) : v;
 
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: null,
-    kind: config.fieldMeta.kind,
+    type: config.fieldMeta.type,
     displayMode: config.fieldMeta.displayMode,
     options: optionsWithStringValues,
     deserialize: data => {
