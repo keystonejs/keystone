@@ -44,7 +44,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     'setting a password below the minLength fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
-        context.lists.Test.createOne({
+        context.query.Test.createOne({
           data: { password: '123' },
         })
       ).rejects.toMatchInlineSnapshot(
@@ -56,14 +56,14 @@ export const crudTests = (keystoneTestWrapper: any) => {
     'setting a common password fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
-        context.lists.Test.createOne({
+        context.query.Test.createOne({
           data: { passwordRejectCommon: 'password' },
           query: ``,
         })
       ).rejects.toMatchInlineSnapshot(
         `[GraphQLError: [password:rejectCommon:Test:passwordRejectCommon] Common and frequently-used passwords are not allowed.]`
       );
-      const data = await context.lists.Test.createOne({
+      const data = await context.query.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,
       });

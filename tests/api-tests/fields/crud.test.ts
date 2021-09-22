@@ -37,7 +37,7 @@ testModules
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
           for (const data of mod.initItems(matrixValue, context)) {
-            await context.lists[listKey].createOne({ data });
+            await context.query[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider: process.env.TEST_ADAPTER, ...rest });
         });
@@ -114,7 +114,7 @@ testModules
             }) => void | Promise<void>
           ) => {
             return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
-              const items = await context.lists[listKey].findMany({
+              const items = await context.query[listKey].findMany({
                 orderBy: { name: 'asc' },
                 query,
               });
@@ -129,7 +129,7 @@ testModules
               'Create',
               keystoneTestWrapper(
                 withHelpers(async ({ context, listKey }) => {
-                  const data = await context.lists[listKey].createOne({
+                  const data = await context.query[listKey].createOne({
                     data: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
                     query,
                   });
@@ -147,7 +147,7 @@ testModules
               'Read',
               keystoneTestWrapper(
                 withHelpers(async ({ context, listKey, items }) => {
-                  const data = await context.lists[listKey].findOne({
+                  const data = await context.query[listKey].findOne({
                     where: { id: items[0].id },
                     query,
                   });
@@ -166,7 +166,7 @@ testModules
                 'Updating the value',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
+                    const data = await context.query[listKey].updateOne({
                       where: { id: items[0].id },
                       data: { [fieldName]: exampleValue2(matrixValue) },
                       query,
@@ -185,7 +185,7 @@ testModules
                 'Updating the value to null',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
+                    const data = await context.query[listKey].updateOne({
                       where: { id: items[0].id },
                       data: { [fieldName]: null },
                       query,
@@ -200,7 +200,7 @@ testModules
                 'Updating without this field',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
+                    const data = await context.query[listKey].updateOne({
                       where: { id: items[0].id },
                       data: { name: 'Updated value' },
                       query,
@@ -223,7 +223,7 @@ testModules
               'Delete',
               keystoneTestWrapper(
                 withHelpers(async ({ context, items, listKey }) => {
-                  const data = await context.lists[listKey].deleteOne({
+                  const data = await context.query[listKey].deleteOne({
                     where: { id: items[0].id },
                     query,
                   });
@@ -233,7 +233,7 @@ testModules
                     subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                   ).toEqual(subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]);
 
-                  const allItems = await context.lists[listKey].findMany({ query });
+                  const allItems = await context.query[listKey].findMany({ query });
                   expect(allItems).toEqual(expect.not.arrayContaining([data]));
                 })
               )

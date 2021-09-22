@@ -32,7 +32,7 @@ describe('update one to one relationship back reference', () => {
     'nested create',
     runner(async ({ context }) => {
       const locationName = sampleOne(alphanumGenerator);
-      const _company = await context.lists.Company.createOne({
+      const _company = await context.query.Company.createOne({
         data: { location: { create: { name: locationName } } },
         query: 'id location { id }',
       });
@@ -40,7 +40,7 @@ describe('update one to one relationship back reference', () => {
       const companyId = _company.id;
       const locationId = _company.location.id;
 
-      const company = (await context.lists.Company.findOne({
+      const company = (await context.query.Company.findOne({
         where: { id: companyId },
         query: 'id location { id }',
       })) as { id: any; location: { id: any } };

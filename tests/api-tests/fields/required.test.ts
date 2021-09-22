@@ -77,7 +77,7 @@ testModules
         test(
           'Update an object with the required field having a null value',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
@@ -102,13 +102,13 @@ testModules
         test(
           'Update an object without the required field',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
               },
             });
-            const data = await context.lists.Test.updateOne({
+            const data = await context.query.Test.updateOne({
               where: { id: data0.id },
               data: { name: 'updated test entry' },
               query: 'id name',

@@ -26,11 +26,11 @@ describe('Access control - Filter', () => {
     'updateOne',
     runner(async ({ context }) => {
       // Valid name should pass
-      const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
+      const user = await context.query.User.createOne({ data: { name: 'good' } });
+      await context.query.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Setting up a bad name
-      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
+      await context.query.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
 
       // Now it has a bad name, we can't update it.
       const { data, errors } = await context.graphql.raw({
@@ -48,7 +48,7 @@ describe('Access control - Filter', () => {
       ]);
 
       // User should have its original name
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['bad']);
     })
   );
@@ -57,9 +57,9 @@ describe('Access control - Filter', () => {
     'deleteOne',
     runner(async ({ context }) => {
       // Valid names should pass
-      const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
-      const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ where: { id: user1.id } });
+      const user1 = await context.query.User.createOne({ data: { name: 'good' } });
+      const user2 = await context.query.User.createOne({ data: { name: 'no delete' } });
+      await context.query.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -77,7 +77,7 @@ describe('Access control - Filter', () => {
       ]);
 
       // Bad users should still be in the database.
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['no delete']);
     })
   );
@@ -86,7 +86,7 @@ describe('Access control - Filter', () => {
     'updateMany',
     runner(async ({ context }) => {
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'good 2' },
@@ -98,7 +98,7 @@ describe('Access control - Filter', () => {
       });
 
       // Set up some of them with bad names
-      await context.lists.User.updateMany({
+      await context.query.User.updateMany({
         data: [
           { where: { id: users[1].id }, data: { name: 'bad' } },
           { where: { id: users[3].id }, data: { name: 'bad' } },
@@ -140,7 +140,7 @@ describe('Access control - Filter', () => {
       ]);
 
       // All users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -158,7 +158,7 @@ describe('Access control - Filter', () => {
     'deleteMany',
     runner(async ({ context }) => {
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'no delete 1' },
@@ -200,7 +200,7 @@ describe('Access control - Filter', () => {
       });
 
       // Three users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });

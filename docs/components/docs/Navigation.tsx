@@ -192,8 +192,8 @@ export function DocsNavigation() {
 
         <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>
-        <NavItem href="/docs/apis/list-items">List Item API</NavItem>
-        <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
+        <NavItem href="/docs/apis/query">Query API</NavItem>
+        <NavItem href="/docs/apis/db-items">DB API</NavItem>
 
         <SubHeading>GraphQL</SubHeading>
         <NavItem href="/docs/apis/graphql">

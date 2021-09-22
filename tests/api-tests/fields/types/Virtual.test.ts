@@ -32,7 +32,7 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo',
       });
@@ -55,7 +55,7 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo(x: 10, y: 20)',
       });
@@ -103,12 +103,12 @@ describe('Virtual field type', () => {
                     }),
                     async resolve(rootVal, args, context) {
                       const [personAuthors, organisationAuthors] = await Promise.all([
-                        context.db.lists.Person.findMany({
+                        context.db.Person.findMany({
                           where: {
                             authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
                           },
                         }),
-                        context.db.lists.Organisation.findMany({
+                        context.db.Organisation.findMany({
                           where: {
                             authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
                           },
@@ -128,7 +128,7 @@ describe('Virtual field type', () => {
         },
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { personAuthor: { create: { name: 'person author' } } },
         query: `
                 author {
@@ -144,7 +144,7 @@ describe('Virtual field type', () => {
       });
       expect(data.author.name).toEqual('person author');
       expect(data.author.__typename).toEqual('Person');
-      const data2 = await context.lists.Post.createOne({
+      const data2 = await context.query.Post.createOne({
         data: { organisationAuthor: { create: { name: 'organisation author' } } },
         query: `
                 author {

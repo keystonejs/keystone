@@ -31,7 +31,7 @@ export const lists = {
           // Dynamic default: Find an anonymous user and assign the task to them
           async resolveInput({ context, operation, resolvedData }) {
             if (operation === 'create' && !resolvedData.assignedTo) {
-              const anonymous = await context.db.lists.Person.findMany({
+              const anonymous = await context.db.Person.findMany({
                 where: { name: { equals: 'Anonymous' } },
               });
               if (anonymous.length > 0) {

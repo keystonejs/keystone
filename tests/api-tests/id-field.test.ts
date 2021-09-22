@@ -105,7 +105,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   test(
     'Creating an item',
     runner(async ({ context }) => {
-      const { id } = await context.lists.User.createOne({ data: { name: 'something' } });
+      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
       switch (kind) {
         case 'autoincrement': {
           expect(id).toEqual('1');
@@ -139,10 +139,10 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   test(
     'searching for uppercased uuid works',
     runner(async ({ context }) => {
-      const { id } = (await context.lists.User.createOne({
+      const { id } = (await context.query.User.createOne({
         data: { name: 'something' },
       })) as { id: string };
-      const { id: fromFound } = await context.lists.User.findOne({
+      const { id: fromFound } = await context.query.User.findOne({
         where: { id: id.toUpperCase() },
       });
       // it returns lower-cased
@@ -163,7 +163,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   test(
     'searching for uppercased cuid does not work',
     runner(async ({ context, graphQLRequest }) => {
-      const { id } = (await context.lists.User.createOne({
+      const { id } = (await context.query.User.createOne({
         data: { name: 'something' },
       })) as { id: string };
 
