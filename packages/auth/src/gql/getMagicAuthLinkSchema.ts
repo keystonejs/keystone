@@ -9,14 +9,12 @@ import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 export function getMagicAuthLinkSchema<I extends string>({
   listKey,
   identityField,
-  protectIdentities,
   gqlNames,
   magicAuthLink,
   magicAuthTokenSecretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
   magicAuthTokenSecretFieldImpl: SecretFieldImpl;
@@ -58,19 +56,14 @@ export function getMagicAuthLinkSchema<I extends string>({
     resolvers: {
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
-          const result = await createAuthToken(
-            identityField,
-            protectIdentities,
-            identity,
-            dbItemAPI
-          );
+          const result = await createAuthToken(identityField, identity, dbItemAPI);
 
           // Note: `success` can be false with no code
-          // If protectIdentities === true then result.code will *always* be undefined.
+          // result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
@@ -107,7 +100,7 @@ export function getMagicAuthLinkSchema<I extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             listKey,
@@ -115,7 +108,6 @@ export function getMagicAuthLinkSchema<I extends string>({
             tokenType,
             identityField,
             args[identityField],
-            protectIdentities,
             magicAuthLink.tokensValidForMins,
             args.token,
             dbItemAPI

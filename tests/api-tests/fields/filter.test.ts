@@ -32,8 +32,8 @@ testModules
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
           // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-          for (const data of mod.initItems(matrixValue)) {
-            await context.lists[listKey].createOne({ data });
+          for (const data of mod.initItems(matrixValue, context)) {
+            await context.query[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider, ...rest });
         });
@@ -106,7 +106,7 @@ testModules
                 expected = storedValues.filter((v: any) => !expectedWithoutNegation.has(v));
               }
               expect(
-                await context.lists[listKey].findMany({
+                await context.query[listKey].findMany({
                   where: kind === 'with negation' ? { NOT: where } : where,
                   orderBy: { name: 'asc' },
                   query,
@@ -421,14 +421,14 @@ testModules
                 })(async ({ context }) => {
                   // Populate the database before running the tests
                   // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-                  for (const data of mod.initItems(matrixValue)) {
-                    await context.lists[listKey].createOne({
+                  for (const data of mod.initItems(matrixValue, context)) {
+                    await context.query[listKey].createOne({
                       data: { field: data[fieldName] },
                     });
                   }
                   await Promise.all(
                     storedValues.map(async (val: any) => {
-                      const promise = context.lists[listKey].findOne({
+                      const promise = context.query[listKey].findOne({
                         where: { field: val[fieldName] },
                         query: 'field',
                       });

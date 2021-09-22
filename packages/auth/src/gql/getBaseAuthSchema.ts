@@ -9,14 +9,12 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
-  protectIdentities,
   gqlNames,
   secretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
@@ -59,13 +57,12 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
             secretFieldImpl,
             identityField,
             args[identityField],
             secretField,
-            protectIdentities,
             args[secretField],
             dbItemAPI
           );
@@ -92,7 +89,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       Query: {
         async authenticatedItem(root, args, { session, db }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
+            return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
         },

@@ -14,7 +14,6 @@ function generateToken(length: number): string {
 // We don't (currently) make any effort to mitigate the time taken to record the new token or sent the email when successful
 export async function createAuthToken(
   identityField: string,
-  protectIdentities: boolean,
   identity: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
@@ -22,11 +21,11 @@ export async function createAuthToken(
   | { success: true; itemId: string | number; token: string }
 > {
   const match = await findMatchingIdentity(identityField, identity, dbItemAPI);
-  // Identity failures with helpful errors (unless it would violate our protectIdentities config)
+  // Identity failures with helpful errors.
   if (match.success) {
     return { success: true, itemId: match.item.id, token: generateToken(20) };
   } else {
     // There is no generic `AUTH_TOKEN_REQUEST_FAILURE` code; it's existance would alow values in the identity field to be probed
-    return { success: false, code: protectIdentities ? undefined : match.code };
+    return { success: false, code: undefined };
   }
 }

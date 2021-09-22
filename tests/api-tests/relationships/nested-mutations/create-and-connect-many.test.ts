@@ -62,11 +62,11 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
 
       // Create an item that does the linking
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
-      const user = (await context.lists.User.createOne({
+      const user = (await context.query.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
@@ -83,7 +83,7 @@ describe('no access control', () => {
       });
 
       // Sanity check that the items are actually created
-      const allNotes = await context.lists.Note.findMany({
+      const allNotes = await context.query.Note.findMany({
         where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
@@ -99,14 +99,14 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
+      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } });
 
       // Update the item and link the relationship field
       type T = { id: IdType; notes: { id: IdType; content: string }[] };
-      const user = (await context.lists.User.updateOne({
+      const user = (await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {
           username: 'A thing',
@@ -124,7 +124,7 @@ describe('no access control', () => {
       });
 
       // Sanity check that the items are actually created
-      const allNotes = await context.lists.Note.findMany({
+      const allNotes = await context.query.Note.findMany({
         where: { id: { in: user.notes.map(({ id }) => id) } },
         query: 'id content',
       });
@@ -169,7 +169,7 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNoteNoRead = await context.sudo().lists.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
@@ -206,12 +206,12 @@ describe('with access control', () => {
         const noteContent2 = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.sudo().lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
         // Create an item to update
-        const createUser = await context.lists.UserToNotesNoRead.createOne({
+        const createUser = await context.query.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
         });
 

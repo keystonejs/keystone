@@ -233,7 +233,8 @@ export default config({
 A `json` field represents a JSON blob.
 Currently the `json` field is non-orderable and non-filterable.
 
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `defaultValue` (default: `null`): Can be set to any JSON value.
+  This value will be used for the field when creating items if no explicit value is set.
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -244,7 +245,7 @@ export default config({
     ListName: list({
       fields: {
         fieldName: json({
-          isRequired: true,
+          defaultValue: { something: true },
         }),
         /* ... */
       },

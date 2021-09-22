@@ -28,12 +28,12 @@ const afterConnect = async ({ context }: { context: KeystoneContext }) => {
   type T = { id: IdType; name: string }[];
   const items: Record<string, T> = {};
   for (const [listKey, _items] of Object.entries(initialData)) {
-    items[listKey] = (await context.lists[listKey].createMany({
+    items[listKey] = (await context.query[listKey].createMany({
       data: _items,
       query: 'id name',
     })) as T;
   }
-  const user = (await context.lists.User.createOne({
+  const user = (await context.query.User.createOne({
     data: { name: 'test', yesRead: 'yes', noRead: 'no' },
     query: 'id name yesRead noRead',
   })) as { id: IdType; name: string; yesRead: string; noRead: string };

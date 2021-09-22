@@ -61,8 +61,8 @@ const runner = setupTestRunner({
 
 const initialiseData = async ({ context }: { context: KeystoneContext }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.lists)) {
-    await context.lists[listKey].createMany({
+  for (const listKey of Object.keys(context.query)) {
+    await context.query[listKey].createMany({
       data: [
         { a: 1, b: 10 },
         { a: 1, b: 30 },
@@ -83,7 +83,7 @@ describe('Ordering by a single field', () => {
     'Single ascending filter - a',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({ orderBy: [{ a: 'asc' }], query: 'a' });
+      const users = await context.query.User.findMany({ orderBy: [{ a: 'asc' }], query: 'a' });
       expect(users.map(({ a }) => a)).toEqual([1, 1, 1, 2, 2, 2, 3, 3, 3]);
     })
   );
@@ -91,7 +91,7 @@ describe('Ordering by a single field', () => {
     'Single descending filter - a',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({ orderBy: [{ a: 'desc' }], query: 'a' });
+      const users = await context.query.User.findMany({ orderBy: [{ a: 'desc' }], query: 'a' });
       expect(users.map(({ a }) => a)).toEqual([3, 3, 3, 2, 2, 2, 1, 1, 1]);
     })
   );
@@ -99,7 +99,7 @@ describe('Ordering by a single field', () => {
     'Single ascending filter - b',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({ orderBy: [{ b: 'asc' }], query: 'b' });
+      const users = await context.query.User.findMany({ orderBy: [{ b: 'asc' }], query: 'b' });
       expect(users.map(({ b }) => b)).toEqual([10, 10, 10, 20, 20, 20, 30, 30, 30]);
     })
   );
@@ -107,7 +107,7 @@ describe('Ordering by a single field', () => {
     'Single descending filter - b',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({ orderBy: [{ b: 'desc' }], query: 'b' });
+      const users = await context.query.User.findMany({ orderBy: [{ b: 'desc' }], query: 'b' });
       expect(users.map(({ b }) => b)).toEqual([30, 30, 30, 20, 20, 20, 10, 10, 10]);
     })
   );
@@ -116,7 +116,7 @@ describe('Ordering by a single field', () => {
     'Single ascending filter - non-list - a',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({ orderBy: { a: 'asc' }, query: 'a' });
+      const users = await context.query.User.findMany({ orderBy: { a: 'asc' }, query: 'a' });
       expect(users.map(({ a }) => a)).toEqual([1, 1, 1, 2, 2, 2, 3, 3, 3]);
     })
   );
@@ -127,7 +127,7 @@ describe('Ordering by Multiple', () => {
     'Multi ascending/ascending filter - a,b ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ a: 'asc' }, { b: 'asc' }],
         query: 'a b',
       });
@@ -148,7 +148,7 @@ describe('Ordering by Multiple', () => {
     'Multi ascending/ascending filter - b,a ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ b: 'asc' }, { a: 'asc' }],
         query: 'a b',
       });
@@ -170,7 +170,7 @@ describe('Ordering by Multiple', () => {
     'Multi ascending/descending filter - a,b ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ a: 'asc' }, { b: 'desc' }],
         query: 'a b',
       });
@@ -191,7 +191,7 @@ describe('Ordering by Multiple', () => {
     'Multi ascending/descending filter - b,a ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ b: 'asc' }, { a: 'desc' }],
         query: 'a b',
       });
@@ -213,7 +213,7 @@ describe('Ordering by Multiple', () => {
     'Multi descending/ascending filter - a,b ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ a: 'desc' }, { b: 'asc' }],
         query: 'a b',
       });
@@ -234,7 +234,7 @@ describe('Ordering by Multiple', () => {
     'Multi descending/ascending filter - b,a ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ b: 'desc' }, { a: 'asc' }],
         query: 'a b',
       });
@@ -256,7 +256,7 @@ describe('Ordering by Multiple', () => {
     'Multi descending/descending filter - a,b ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ a: 'desc' }, { b: 'desc' }],
         query: 'a b',
       });
@@ -277,7 +277,7 @@ describe('Ordering by Multiple', () => {
     'Multi descending/descending filter - b,a ',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: [{ b: 'desc' }, { a: 'desc' }],
         query: 'a b',
       });

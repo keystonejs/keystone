@@ -73,11 +73,11 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
-    const dbAPI: KeystoneContext['db']['lists'] = {};
-    const itemAPI: KeystoneContext['lists'] = {};
+    const dbAPI: KeystoneContext['db'] = {};
+    const itemAPI: KeystoneContext['query'] = {};
     const contextToReturn: KeystoneContext = {
-      db: { lists: dbAPI },
-      lists: itemAPI,
+      db: dbAPI,
+      query: itemAPI,
       totalResults: 0,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
