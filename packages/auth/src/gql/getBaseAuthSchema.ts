@@ -3,7 +3,6 @@ import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/key
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
-import { getPasswordAuthError } from '../lib/getErrorMessage';
 
 export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
@@ -68,14 +67,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           );
 
           if (!result.success) {
-            const message = getPasswordAuthError({
-              identityField,
-              secretField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
+            return { code: 'FAILURE', message: 'Authentication failed.' };
           }
 
           // Update system state

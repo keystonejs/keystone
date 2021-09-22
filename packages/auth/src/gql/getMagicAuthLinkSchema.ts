@@ -62,18 +62,6 @@ export function getMagicAuthLinkSchema<I extends string>({
 
           const result = await createAuthToken(identityField, identity, dbItemAPI);
 
-          // Note: `success` can be false with no code
-          // result.code will *always* be undefined.
-          if (!result.success && result.code) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
-          }
-
           // Update system state
           if (result.success) {
             // Save the token and related info back to the item
@@ -114,14 +102,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           );
 
           if (!result.success) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-
-            return { code: result.code, message };
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
           }
           // Update system state
           // Save the token and related info back to the item
