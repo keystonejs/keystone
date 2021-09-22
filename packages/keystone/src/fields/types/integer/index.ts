@@ -33,7 +33,7 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
         }
     );
 
-// These are the max and min ints available to a 32 bit number
+// These are the max and min values available to a 32 bit signed integer
 const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
