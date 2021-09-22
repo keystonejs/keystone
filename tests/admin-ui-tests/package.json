@@ -15,7 +15,7 @@
     "@keystone-next/keystone": "*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
-    "playwright": "^1.14.1",
+    "playwright": "^1.15.0",
     "treekill": "^1.0.0"
   },
   "scripts": {

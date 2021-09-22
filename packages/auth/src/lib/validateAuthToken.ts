@@ -31,15 +31,11 @@ export async function validateAuthToken(
     dbItemAPI
   );
   if (!result.success) {
-    // Rewrite error codes
-    if (result.code === 'SECRET_NOT_SET') return { success: false, code: 'TOKEN_NOT_SET' };
-    if (result.code === 'SECRET_MISMATCH') return { success: false, code: 'TOKEN_MISMATCH' };
-    // Will generally be { success: false, code: 'FAILURE' }
     // Could be due to:
     // - Missing identity
     // - Missing secret
     // - Secret mismatch.
-    return result as { success: false; code: AuthTokenRedemptionErrorCode };
+    return { success: false, code: 'FAILURE' };
   }
 
   // Now that we know the identity and token are valid, we can always return 'helpful' errors and stop worrying about protecting identities.
