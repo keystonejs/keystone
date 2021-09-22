@@ -1,8 +1,9 @@
-import { KeystoneContext } from '../../../../types';
-import { autoIncrement } from '..';
+import { KeystoneContext } from '../../../../../types';
+import { integer } from '../../index';
 
-export const name = 'AutoIncrement';
-export const typeFunction = autoIncrement;
+export const name = 'Integer with autoincrement default';
+export const typeFunction = (config: any) =>
+  integer({ ...config, defaultValue: { kind: 'autoincrement' } });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;
 export const supportsUnique = true;
@@ -12,7 +13,9 @@ export const skipUpdateTest = true;
 
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({ orderNumber: autoIncrement({ isFilterable: true }) });
+export const getTestFields = () => ({
+  orderNumber: integer({ isFilterable: true, defaultValue: { kind: 'autoincrement' } }),
+});
 
 export const initItems = () => {
   return [
