@@ -16,7 +16,11 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  orderNumber: integer({ isFilterable: true, defaultValue: { kind: 'autoincrement' } }),
+  orderNumber: integer({
+    isFilterable: true,
+    isNullable: false,
+    defaultValue: { kind: 'autoincrement' },
+  }),
 });
 
 export const initItems = () => {
