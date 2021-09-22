@@ -121,10 +121,12 @@ const SPLITBEE = [
   {
     source: '/sb.js',
     destination: 'https://cdn.splitbee.io/sb.js',
+    permanent: false,
   },
   {
     source: '/_sb/:slug',
     destination: 'https://hive.splitbee.io/:slug',
+    permanent: false,
   },
 ];
 
