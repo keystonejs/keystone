@@ -3,40 +3,16 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { ImageMetadata } from '../../types';
 
-/**
- * This function and request to the cloud API will not be necessary if we can
- * encode the project's image subdomain in the apiKey.
- */
-const getImagesSubdomain = async ({
-  apiKey,
-  graphqlApiEndpoint,
-}: {
-  apiKey: string;
-  graphqlApiEndpoint: string;
-}): Promise<string> => {
-  const response = await fetch(graphqlApiEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
-        query($apiKey:String) {
-          allImgixSources(where: { project: { apiKeys: { apiKey: $apiKey } } }) {
-            domain
-          }
-        }
-      `,
-      variables: {
-        apiKey,
-      },
-    }),
-  });
-  const json = await response.json();
-  const { data } = json;
-  const { allImgixSources } = data;
+const getImagesSubdomain = ({ apiKey }: { apiKey: string }): string => {
+  const [, domain] = apiKey.split('__IMAGES_DOMAIN__');
 
-  return allImgixSources[0].domain;
+  if (!domain) {
+    throw new Error(
+      'Your API key is outdated, please regenerate it and add the new key to your Keystone config'
+    );
+  }
+
+  return domain;
 };
 
 const getS3Bucket = async ({
@@ -54,7 +30,7 @@ const getS3Bucket = async ({
     body: JSON.stringify({
       query: `
         query($apiKey:String) {
-          allAmazonS3Buckets(where: { project: { apiKeys: { apiKey: $apiKey } } }) {
+          allAmazonS3Buckets(where: { project: { apiKey: { apiKey: $apiKey } } }) {
             bucketName,
             prefix,
             region
@@ -105,16 +81,14 @@ const uploadAsset = async ({
 
 export const buildKeystoneCloudImageSrc = async ({
   apiKey,
-  graphqlApiEndpoint,
   filename,
   imagesDomain,
 }: {
   apiKey: string;
-  graphqlApiEndpoint: string;
   filename: string;
   imagesDomain: string;
 }) => {
-  const imagesSubdomain = await getImagesSubdomain({ apiKey, graphqlApiEndpoint });
+  const imagesSubdomain = getImagesSubdomain({ apiKey });
 
   return `http://${imagesSubdomain}.${imagesDomain}/${filename}`;
 };
