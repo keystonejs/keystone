@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-rest-api",
-  "version": "4.0.7",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
