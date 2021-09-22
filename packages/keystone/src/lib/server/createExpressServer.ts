@@ -1,8 +1,10 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
+import { createSessionContext } from '../../session';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -72,7 +74,15 @@ export const createExpressServer = async (
   addHealthCheck({ config, server });
 
   if (config.server?.extendExpressApp) {
-    config.server?.extendExpressApp(server, createContext);
+    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
+      createContext({
+        sessionContext: config.session
+          ? await createSessionContext(config.session, req, res, createContext)
+          : undefined,
+        req,
+      });
+
+    config.server?.extendExpressApp(server, createRequestContext);
   }
 
   await addApolloServer({
