@@ -138,6 +138,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     console.log(`⭐️ Dev Server Starting on http://localhost:${port}`);
     // We start initialising Keystone after the dev server is ready,
     console.log(`⭐️ GraphQL API Starting on http://localhost:${port}/api/graphql`);
+    console.log(
+      `⭐️ GraphQL API Starting on http://localhost:${port}${
+        config.graphql?.path || '/api/graphql'
+      }`
+    );
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
     initKeystone()
