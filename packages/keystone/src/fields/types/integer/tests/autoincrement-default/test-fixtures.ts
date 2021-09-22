@@ -73,13 +73,6 @@ export const filterTests = (withKeystone: (arg: any) => any) => {
   );
 
   test(
-    'Filter: not null',
-    withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber: { not: null } }, [0, 1, 2, 3, 4, 5, 6])
-    )
-  );
-
-  test(
     'Filter: lt',
     withKeystone(({ context }: { context: KeystoneContext }) =>
       match(context, { orderNumber: { lt: 2 } }, [0])

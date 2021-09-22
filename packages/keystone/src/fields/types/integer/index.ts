@@ -156,7 +156,7 @@ export const integer =
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
-          resolve: filters.resolveCommon,
+          resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
           arg: graphql.arg({
