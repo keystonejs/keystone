@@ -2,7 +2,7 @@
 '@keystone-next/keystone': major
 ---
 
-The `checkbox` field is now non-nullable in the database, if you need three states, you should use `select()`. The field no longer accepts dynamic default values and it will default to `false` unless a different `defaultValue` is specified. `graphql.read.isNonNull` can also be set if you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the input non-nullable
+The `checkbox` field is now non-nullable in the database, if you need three states, you should use `select()`. The field no longer accepts dynamic default values and it will default to `false` unless a different `defaultValue` is specified. `graphql.read.isNonNull` can also be set if you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
 
 If you're using SQLite, Prisma will generate a migration that makes the column non-nullable and sets any rows that have null values to the `defaultValue`.
 
