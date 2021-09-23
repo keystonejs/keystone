@@ -76,12 +76,15 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
   );
 };
 
-type Config = FieldControllerConfig<{
+export type AdminSelectFieldMeta = {
   options: { label: string; value: string | number }[];
   type: 'string' | 'integer' | 'enum';
   displayMode: 'select' | 'segmented-control';
   isRequired: boolean;
-}>;
+  defaultValue: string | number | null;
+};
+
+type Config = FieldControllerConfig<AdminSelectFieldMeta>;
 
 export const controller = (
   config: Config
@@ -99,11 +102,13 @@ export const controller = (
   const t = (v: string | null) =>
     v === null ? null : config.fieldMeta.type === 'integer' ? parseInt(v) : v;
 
+  const stringifiedDefault = config.fieldMeta.defaultValue?.toString();
+
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: null,
+    defaultValue: optionsWithStringValues.find(x => x.value === stringifiedDefault) ?? null,
     type: config.fieldMeta.type,
     displayMode: config.fieldMeta.displayMode,
     options: optionsWithStringValues,
