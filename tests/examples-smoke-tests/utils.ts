@@ -55,7 +55,7 @@ export const exampleProjectTests = (
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
-  describe.each(['dev'] as ('dev' | 'prod')[])('%s', mode => {
+  describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
     afterAll(async () => {
@@ -118,12 +118,12 @@ export const exampleProjectTests = (
 
     describe.each([
       'chromium',
-      // 'firefox',
+      'firefox',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
       // webkit doesn't treat localhost as a secure context
       // and we enable secure cookies in production
-      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);
