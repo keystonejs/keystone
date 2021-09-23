@@ -124,6 +124,9 @@ export default config({
 !> Filter access control cannot be used on `create` operations, as there is no pre-existing item to filter against.
 To restrict `create` operations configure either `access.operation.create` or `access.item.create`.
 
+?> Filter based access control can impact the performance when querying related items on a list.
+Keystone optimises queries for to-one relationships, however these optimisations cannot be used in conjunction with access control filters.
+
 ### Item (mutations only)
 
 `item` is the final and most powerful level of access control.

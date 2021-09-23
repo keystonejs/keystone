@@ -60,7 +60,7 @@ function getRelationVal(
         return null;
       }
 
-      if (accessFilters === true && fk) {
+      if (accessFilters === true && fk !== undefined) {
         // We know the exact item we're looking for, and there are no other filters to apply,
         // so we can use findUnique to get the item. This allows Prisma to group multiple
         // findUnique operations into a single database query, which solves the N+1 problem
@@ -73,9 +73,10 @@ function getRelationVal(
         // If we have a foreign key, we'll search directly on this ID, and merge in the access filters.
         // If we don't have a foreign key, we'll use the general solution, which is a filter based
         // on the original item's ID, merged with any access control filters.
-        const relationFilter = fk
-          ? { id: fk }
-          : { [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id } };
+        const relationFilter =
+          fk !== undefined
+            ? { id: fk }
+            : { [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id } };
 
         // There's no need to check isFilterable access here (c.f. `findOne()`), as
         // the filter has been constructed internally, not as part of user input.
