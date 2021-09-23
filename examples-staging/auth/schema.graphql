@@ -2,8 +2,8 @@
 # Modify your Keystone config when you want to change this.
 
 input CreateInitialUserInput {
-  name: String! = ""
-  email: String! = ""
+  name: String
+  email: String
   password: String
 }
 
@@ -70,7 +70,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringFilter
+  email: StringNullableFilter
 }
 
 input IDFilter {
@@ -84,7 +84,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringFilter {
+input StringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -95,10 +95,10 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
-input NestedStringFilter {
+input NestedStringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -109,7 +109,7 @@ input NestedStringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
 input UserOrderByInput {
@@ -134,8 +134,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String! = ""
-  email: String! = ""
+  name: String
+  email: String
   password: String
   isAdmin: Boolean
 }
@@ -201,7 +201,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -224,7 +224,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

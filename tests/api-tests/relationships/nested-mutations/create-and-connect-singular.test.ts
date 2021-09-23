@@ -1,11 +1,11 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Group: list({
         fields: {
           name: text(),
@@ -17,7 +17,7 @@ const runner = setupTestRunner({
           group: relationship({ ref: 'Group' }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -40,7 +40,7 @@ describe('errors on incomplete data', () => {
         {
           path: ['createEvent'],
           message:
-            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
+            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })
@@ -67,7 +67,7 @@ describe('errors on incomplete data', () => {
         {
           path: ['createEvent'],
           message:
-            "Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
+            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
         },
       ]);
     })

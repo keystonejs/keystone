@@ -4,19 +4,19 @@ import { useRouter } from '../../../../admin-ui/router';
 
 export type Filter = { field: string; type: string; value: JSONValue };
 
-export function useFilters(list: ListMeta) {
+export function useFilters(list: ListMeta, filterableFields: Set<string>) {
   const { query } = useRouter();
   const possibleFilters = useMemo(() => {
     const possibleFilters: Record<string, { type: string; field: string }> = {};
     Object.entries(list.fields).forEach(([fieldPath, field]) => {
-      if (field.controller.filter) {
+      if (field.controller.filter && filterableFields.has(fieldPath)) {
         Object.keys(field.controller.filter.types).forEach(type => {
           possibleFilters[`!${fieldPath}_${type}`] = { type, field: fieldPath };
         });
       }
     });
     return possibleFilters;
-  }, [list]);
+  }, [list, filterableFields]);
   const filters = useMemo(() => {
     let filters: Filter[] = [];
     Object.keys(query).forEach(key => {

@@ -2,8 +2,8 @@
 # Modify your Keystone config when you want to change this.
 
 input CreateInitialUserInput {
-  name: String! = ""
-  email: String! = ""
+  name: String
+  email: String
   password: String
 }
 
@@ -88,7 +88,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringFilter
+  email: StringNullableFilter
 }
 
 input IDFilter {
@@ -102,7 +102,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringFilter {
+input StringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -114,7 +114,7 @@ input StringFilter {
   startsWith: String
   endsWith: String
   mode: QueryMode
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
 enum QueryMode {
@@ -122,7 +122,7 @@ enum QueryMode {
   insensitive
 }
 
-input NestedStringFilter {
+input NestedStringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -133,7 +133,7 @@ input NestedStringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
 input UserOrderByInput {
@@ -165,8 +165,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String! = ""
-  email: String! = ""
+  name: String
+  email: String
   password: String
   posts: PostRelateToManyForCreateInput
 }
@@ -180,7 +180,7 @@ type Post {
   id: ID!
   title: String
   status: String
-  content: Post_content_DocumentField
+  content: Post_content_Document
   publishDate: String
   author: User
   tags(
@@ -192,7 +192,7 @@ type Post {
   tagsCount(where: TagWhereInput! = {}): Int
 }
 
-type Post_content_DocumentField {
+type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
@@ -239,7 +239,7 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String! = ""
+  title: String
   status: String
   content: JSON
   publishDate: String
@@ -295,7 +295,7 @@ input TagUpdateArgs {
 }
 
 input TagCreateInput {
-  name: String! = ""
+  name: String
   posts: PostRelateToManyForCreateInput
 }
 
@@ -376,7 +376,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -399,7 +399,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

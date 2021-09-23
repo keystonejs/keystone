@@ -26,9 +26,9 @@ input TaskWhereInput {
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
   id: IDFilter
-  label: StringFilter
+  label: StringNullableFilter
   priority: TaskPriorityTypeNullableFilter
-  isComplete: BooleanNullableFilter
+  isComplete: BooleanFilter
   assignedTo: PersonWhereInput
   finishBy: DateTimeNullableFilter
 }
@@ -44,7 +44,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringFilter {
+input StringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -55,10 +55,10 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
-input NestedStringFilter {
+input NestedStringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -69,7 +69,7 @@ input NestedStringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
 input TaskPriorityTypeNullableFilter {
@@ -79,9 +79,9 @@ input TaskPriorityTypeNullableFilter {
   not: TaskPriorityTypeNullableFilter
 }
 
-input BooleanNullableFilter {
+input BooleanFilter {
   equals: Boolean
-  not: BooleanNullableFilter
+  not: BooleanFilter
 }
 
 input DateTimeNullableFilter {
@@ -129,7 +129,7 @@ input TaskUpdateArgs {
 }
 
 input TaskCreateInput {
-  label: String! = ""
+  label: String
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
@@ -163,7 +163,7 @@ input PersonWhereInput {
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
   id: IDFilter
-  name: StringFilter
+  name: StringNullableFilter
   tasks: TaskManyRelationFilter
 }
 
@@ -196,7 +196,7 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String! = ""
+  name: String
   tasks: TaskRelateToManyForCreateInput
 }
 
@@ -288,7 +288,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -311,7 +311,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

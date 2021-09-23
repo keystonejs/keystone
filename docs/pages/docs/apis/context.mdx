@@ -57,7 +57,6 @@ context = {
   // Internal state
   totalResults,
   maxTotalResults,
-  schemaName,
 
   // Deprecated
   gqlNames,
@@ -68,13 +67,13 @@ context = {
 
 `req`: The [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) object from the HTTP request which called the GraphQL API.
 
-### List item API
+### Query API
 
-`lists`: The [list items API](./list-items), which can be used to perform CRUD operations against your GraphQL API.
+`query`: The [Query API](./query), which can be used to perform CRUD operations against your GraphQL API and return a queried value.
 
-### Database item API
+### Database API
 
-`db.lists`: The [database items API](./db-items), which can be used to retrieve objects suitable for return from mutations in [schema extensions](../guides/schema-extension).
+`db`: The [Database API](./db-items), which can be used to perform CRUD operations against your GraphQL API and return database objects suitable for return from mutations in [schema extensions](../guides/schema-extension).
 
 ### GraphQL helpers
 
@@ -108,7 +107,7 @@ See the [session API](./session#session-context) for more details.
 
 ### New context creators
 
-When using the `context.lists`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
+When using the `context.query`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
 The following functions will create a new `KeystoneContext` object with this behaviour modified.
 
 `sudo()`: A function which returns a new `KeystoneContext` object with all access control disabled and all filters enabled for subsequent API calls.
@@ -155,8 +154,6 @@ These properties are used internally by Keystone and generally do not need to be
 
 `maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](./apis/config#graphql).
 
-`schemaName`: The internal name used by Keystone to refer to the GraphQL schema.
-
 ### Deprecated
 
 The following properties are deprecated and should not be used.
@@ -168,13 +165,13 @@ They will be removed in future releases.
 
 <RelatedContent>
   <Well
-    heading="List Items API Reference"
-    href="/docs/apis/list-items"
+    heading="Query API Reference"
+    href="/docs/apis/query"
     >
-    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.lists.&lt;listName&gt;</InlineCode>
+    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.query.&lt;listName&gt;</InlineCode>
   </Well>
   <Well
-    heading="DB Items API Reference"
+    heading="DB API Reference"
     href="/docs/apis/db-items"
     >
     The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.

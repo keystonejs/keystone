@@ -61,7 +61,7 @@ function defaultQueryParam(query?: string, resolveFields?: string | false) {
 /* NOTE
  *
  * The `resolveFields` param has been deprecated in favor of `query` (when selecting fields to
- * query) or the new dbAPI which is available via `context.db.lists.{List}`, which replaces
+ * query) or the new dbAPI which is available via `context.db.{List}`, which replaces
  * the previous `resolveFields: false` behaviour.
  *
  * We'll be removing the option to use `resolveFields` entirely in a future release.

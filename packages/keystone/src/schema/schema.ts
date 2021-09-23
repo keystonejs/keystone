@@ -8,12 +8,7 @@ import type {
   GraphQLSchemaExtension,
   KeystoneConfig,
   ListConfig,
-  ListSchemaConfig,
 } from '../types';
-
-export function createSchema(config: ListSchemaConfig) {
-  return config;
-}
 
 export function config(config: KeystoneConfig) {
   return config;

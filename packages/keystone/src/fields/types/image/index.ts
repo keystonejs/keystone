@@ -1,7 +1,7 @@
 import { FileUpload } from 'graphql-upload';
+import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -14,10 +14,7 @@ import { resolveView } from '../../resolve-view';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
 export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<ImageFieldInputType, TGeneratedListTypes>;
-    isRequired?: boolean;
-  };
+  CommonFieldConfig<TGeneratedListTypes>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
@@ -79,12 +76,12 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
 
   if (data.ref) {
     if (data.upload) {
-      throw new Error('Only one of ref and upload can be passed to ImageFieldInput');
+      throw userInputError('Only one of ref and upload can be passed to ImageFieldInput');
     }
     return context.images!.getDataFromRef(data.ref);
   }
   if (!data.upload) {
-    throw new Error('Either ref or upload must be passed to ImageFieldInput');
+    throw userInputError('Either ref or upload must be passed to ImageFieldInput');
   }
   return context.images!.getDataFromStream((await data.upload).createReadStream());
 }
@@ -96,11 +93,9 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 }
 
 export const image =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    isRequired,
-    defaultValue,
-    ...config
-  }: ImageFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  <TGeneratedListTypes extends BaseGeneratedListTypes>(
+    config: ImageFieldConfig<TGeneratedListTypes> = {}
+  ): FieldTypeFunc =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type image");
@@ -142,9 +137,5 @@ export const image =
       }),
       unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],
       views: resolveView('image/views'),
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });
   };

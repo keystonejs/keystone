@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectRelationshipError } from '../../utils';
 
@@ -8,7 +8,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Note: list({
         fields: {
           content: text(),
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          read: () => false,
+          operation: { query: () => false },
         },
       }),
       UserToNotesNoRead: list({
@@ -39,7 +39,7 @@ const runner = setupTestRunner({
           content: text(),
         },
         access: {
-          create: () => false,
+          operation: { create: () => false },
         },
       }),
       UserToNotesNoCreate: list({
@@ -48,7 +48,7 @@ const runner = setupTestRunner({
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -59,10 +59,10 @@ describe('no access control', () => {
       const noteContent = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
 
       // Create an item that does the linking
-      const user = await context.lists.User.createOne({
+      const user = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id }',
       });
@@ -70,7 +70,7 @@ describe('no access control', () => {
       expect(user).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
       // Create an item that does the linking
-      const user1 = await context.lists.User.createOne({
+      const user1 = await context.query.User.createOne({
         data: {
           username: 'A thing',
           notes: { connect: [{ id: createNote.id }, { id: createNote.id }] },
@@ -81,7 +81,7 @@ describe('no access control', () => {
       expect(user1).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
       // Test an empty list of related notes
-      const user2 = await context.lists.User.createOne({
+      const user2 = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [] } },
         query: 'id notes { id }',
       });
@@ -97,13 +97,13 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
       });
 
       // Create an item that does the linking
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
           { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
@@ -121,16 +121,16 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
       });
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
+      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } });
 
       // Update the item and link the relationship field
-      const user = await context.lists.User.updateOne({
+      const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
@@ -142,7 +142,7 @@ describe('no access control', () => {
       });
 
       // Update the item and link multiple relationship fields
-      const _user = await context.lists.User.updateOne({
+      const _user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {
           username: 'A thing',
@@ -167,18 +167,18 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
       });
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({
+      const createUser = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
       });
 
       // Update the item and link the relationship field
-      const user = await context.lists.User.updateOne({
+      const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
@@ -201,21 +201,21 @@ describe('no access control', () => {
       const noteContent2 = sampleOne(alphanumGenerator);
 
       // Create an item to link against
-      const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
-      const createNote2 = await context.lists.Note.createOne({
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
       });
 
       // Create an item to update
-      const createUser = await context.lists.User.createOne({
+      const createUser = await context.query.User.createOne({
         data: {
           username: 'user1',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
         },
       });
-      const createUser2 = await context.lists.User.createOne({ data: { username: 'user2' } });
+      const createUser2 = await context.query.User.createOne({ data: { username: 'user2' } });
 
-      const users = await context.lists.User.updateMany({
+      const users = await context.query.User.updateMany({
         data: [
           {
             where: { id: createUser.id },
@@ -269,7 +269,7 @@ describe('non-matching filter', () => {
       const FAKE_ID = 'cabc123';
 
       // Create an item to link against
-      const createUser = await context.lists.User.createOne({ data: {} });
+      const createUser = await context.query.User.createOne({ data: {} });
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -297,6 +297,36 @@ describe('non-matching filter', () => {
       ]);
     })
   );
+
+  test(
+    'errors on incomplete data',
+    runner(async ({ context }) => {
+      // Create an item to link against
+      const createUser = await context.query.User.createOne({ data: {} });
+
+      // Create an item that does the linking
+      const { data, errors } = await context.graphql.raw({
+        query: `
+              mutation {
+                updateUser(
+                  where: { id: "${createUser.id}" },
+                  data: { notes: {} }
+                ) {
+                  id
+                }
+              }`,
+      });
+
+      expect(data).toEqual({ updateUser: null });
+      expectRelationshipError(errors, [
+        {
+          path: ['updateUser'],
+          message:
+            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+        },
+      ]);
+    })
+  );
 });
 
 describe('with access control', () => {
@@ -307,7 +337,7 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNoteNoRead = await context.sudo().lists.NoteNoRead.createOne({
+        const createNoteNoRead = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
@@ -339,12 +369,12 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.sudo().lists.NoteNoRead.createOne({
+        const createNote = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
         });
 
         // Create an item to update
-        const createUser = await context.sudo().lists.UserToNotesNoRead.createOne({
+        const createUser = await context.sudo().query.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
         });
 
@@ -382,12 +412,12 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNoteNoCreate = await context.sudo().lists.NoteNoCreate.createOne({
+        const createNoteNoCreate = await context.sudo().query.NoteNoCreate.createOne({
           data: { content: noteContent },
         });
 
         // Create an item that does the linking
-        const data = await context.lists.UserToNotesNoCreate.createOne({
+        const data = await context.query.UserToNotesNoCreate.createOne({
           data: { username: 'A thing', notes: { connect: [{ id: createNoteNoCreate.id }] } },
         });
 
@@ -401,17 +431,17 @@ describe('with access control', () => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createNote = await context.sudo().lists.NoteNoCreate.createOne({
+        const createNote = await context.sudo().query.NoteNoCreate.createOne({
           data: { content: noteContent },
         });
 
         // Create an item to update
-        const createUser = await context.sudo().lists.UserToNotesNoCreate.createOne({
+        const createUser = await context.sudo().query.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
         });
 
         // Update the item and link the relationship field
-        const data = await context.lists.UserToNotesNoCreate.updateOne({
+        const data = await context.query.UserToNotesNoCreate.updateOne({
           where: { id: createUser.id },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         });

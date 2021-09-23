@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 
 import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
 import { Examples } from '../../components/docs/ExamplesList';
@@ -19,6 +20,7 @@ export default function Docs() {
       noProse
       title={'Keystone Docs Home'}
       description={'Developer docs for KeystoneJS: The superpowered headless CMS for developers.'}
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Keystone Docs
@@ -41,7 +43,10 @@ export default function Docs() {
             Watch Jed's Prisma Day talk to learn about what’s driving the development of Keystone 6,
             and how it delivers a developer experience that combines features, flexibility, and the
             perfect amount of abstraction to get started fast, and grow as you learn.{' '}
-            <a href="/updates/prisma-day-2021">Read the full transcript</a>.
+            <Link href="/updates/prisma-day-2021">
+              <a>Read the full transcript</a>
+            </Link>
+            .
           </Type>
         </div>
         <div>
@@ -204,10 +209,10 @@ export default function Docs() {
         <Well grad="grad4" heading="Context API" href="/docs/apis/context">
           The primary API entry point for all of the run-time functionally of your Keystone system.
         </Well>
-        <Well grad="grad4" heading="List Items API" href="/docs/apis/list-items">
+        <Well grad="grad4" heading="Query API" href="/docs/apis/query">
           A programmatic API for running CRUD operations against your GraphQL API.
         </Well>
-        <Well grad="grad4" heading="Database Items API" href="/docs/apis/db-items">
+        <Well grad="grad4" heading="Database API" href="/docs/apis/db-items">
           A programmatic API for running CRUD operations against the internal GraphQL resolvers in
           your system.
         </Well>

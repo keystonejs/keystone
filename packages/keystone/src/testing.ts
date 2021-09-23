@@ -42,7 +42,7 @@ export async function setupTestEnv({
   config: KeystoneConfig;
 }): Promise<TestEnv> {
   // Force the UI to always be disabled.
-  const config = initConfig({ ..._config, ui: { isDisabled: true } });
+  const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
 
   const artifacts = await getCommittedArtifacts(graphQLSchema, config);
@@ -66,11 +66,11 @@ export async function setupTestEnv({
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
   // (config, graphQLSchema, createContext, dev, projectAdminPath, isVerbose)
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
+  const app = await createExpressServer(config, graphQLSchema, createContext);
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
-      .post('/api/graphql')
+      .post(config.graphql?.path || '/api/graphql')
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 

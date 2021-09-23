@@ -7,14 +7,15 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model Todo {
   id           String    @id @default(cuid())
-  label        String    @default("")
-  isComplete   Boolean?
+  label        String?
+  isComplete   Boolean   @default(false)
   assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
@@ -26,8 +27,8 @@ model Todo {
 
 model User {
   id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @default("")
+  name      String?
+  email     String?
   password  String?
   tasks     Todo[]    @relation("Todo_assignedTo")
   createdAt DateTime?

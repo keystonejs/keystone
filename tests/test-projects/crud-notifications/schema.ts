@@ -1,17 +1,15 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { select } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   Task: list({
     access: {
-      delete: async ({ itemId, context }) => {
-        const item: any = await context.lists.Task.findOne({
-          where: { id: itemId },
-          query: 'label',
-        });
-        const matchString = item.label.replace(/([\d])+/g, '').trim();
-        return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
+      item: {
+        delete: async ({ item }) => {
+          const matchString = item.label.replace(/([\d])+/g, '').trim();
+          return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
+        },
       },
     },
     fields: {
@@ -39,4 +37,4 @@ export const lists = createSchema({
     defaultIsFilterable: true,
     defaultIsOrderable: true,
   }),
-});
+};

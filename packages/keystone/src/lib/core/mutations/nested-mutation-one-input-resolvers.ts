@@ -1,6 +1,7 @@
 import { KeystoneContext, TypesForList, graphql } from '../../../types';
 import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
+import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
@@ -28,7 +29,10 @@ async function handleCreateAndUpdate(
     const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
     // Check whether the item exists
     try {
-      await context.db.lists[foreignList.listKey].findOne({ where: value.connect });
+      const item = await context.db[foreignList.listKey].findOne({ where: value.connect });
+      if (item === null) {
+        throw new Error(`Unable to connect a ${target}`);
+      }
     } catch (err) {
       throw new Error(`Unable to connect a ${target}`);
     }
@@ -57,7 +61,7 @@ export function resolveRelateToOneForCreateInput(
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
-      throw new Error(
+      throw userInputError(
         `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
       );
     }
@@ -73,7 +77,7 @@ export function resolveRelateToOneForUpdateInput(
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
-      throw new Error(
+      throw userInputError(
         `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
       );
     }

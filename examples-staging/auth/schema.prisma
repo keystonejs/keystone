@@ -7,14 +7,15 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model User {
-  id       String   @id @default(cuid())
-  name     String   @default("")
-  email    String   @unique @default("")
+  id       String  @id @default(cuid())
+  name     String?
+  email    String? @unique
   password String?
-  isAdmin  Boolean?
+  isAdmin  Boolean @default(false)
 }

@@ -1,5 +1,15 @@
 # @keystone-ui/core
 
+## 3.2.0
+
+### Minor Changes
+
+- [#6453](https://github.com/keystonejs/keystone/pull/6453) [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added functionality to ensure that Inline elements that are 'ul' or 'ol' automatically wrap children in 'li' rather than 'div'
+
+### Patch Changes
+
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
+
 ## 3.1.1
 
 ### Patch Changes

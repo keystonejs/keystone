@@ -5,7 +5,6 @@ import fetch from 'node-fetch';
 import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
-import { findRootSync } from '@manypkg/find-root';
 import dotenv from 'dotenv';
 
 const treeKill = promisify(_treeKill);
@@ -20,10 +19,11 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   });
   return Object.assign(promise, { resolve: resolve as any });
 };
-const projectRoot = findRootSync(process.cwd());
+const projectRoot = path.resolve(__dirname, '..', '..');
 
+// Light wrapper around node-fetch for making graphql requests to the graphql api of the test instance.
 export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
-  const { errors } = await fetch('http://localhost:3000/api/graphql', {
+  const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,20 +37,32 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
   if (errors) {
     throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`);
   }
+
+  return data;
 };
 
+// Simple utility to create an Array of records given a map function and a range.
+export function generateDataArray(map: (key: number) => any, range: number) {
+  return Array.from(Array(range).keys()).map(map);
+}
+
 export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
-  const { PrismaClient } = require(path.resolve(
-    projectRoot,
-    projectDir,
-    'node_modules/.prisma/client'
-  ));
+  const resolvedProjectDir = path.resolve(projectRoot, projectDir);
+  const prevCwd = process.cwd;
+  try {
+    process.cwd = () => {
+      return resolvedProjectDir;
+    };
+    const { PrismaClient } = require(path.join(resolvedProjectDir, 'node_modules/.prisma/client'));
 
-  let prisma = new PrismaClient();
+    let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
-  await prisma.$disconnect();
+    await prisma.$disconnect();
+  } finally {
+    process.cwd = prevCwd;
+  }
 };
 
 export const adminUITests = (
@@ -83,7 +95,7 @@ export const adminUITests = (
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
-        if (stringified.includes('API ready')) {
+        if (stringified.includes('Admin UI ready')) {
           adminUIReady.resolve();
         }
       };

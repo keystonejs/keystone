@@ -50,7 +50,6 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
   const {
     apiKey = '',
     imagesDomain = '',
-    graphqlApiEndpoint = '',
     restApiEndpoint = '',
   } = experimental?.keystoneCloud || {};
 
@@ -66,7 +65,6 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
         return await buildKeystoneCloudImageSrc({
           apiKey,
           imagesDomain,
-          graphqlApiEndpoint,
           filename,
         });
       }

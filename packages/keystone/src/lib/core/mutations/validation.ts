@@ -52,11 +52,11 @@ export async function validateUpdateCreate({
     }
 
     // Field validation hooks
-    for (const [fieldPath, field] of Object.entries(list.fields)) {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
       const addValidationError = (msg: string) =>
-        _addValidationError(`${list.listKey}.${fieldPath}: ${msg}`);
+        _addValidationError(`${list.listKey}.${fieldKey}: ${msg}`);
       // @ts-ignore
-      await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldPath });
+      await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldKey });
     }
 
     // List validation hooks
@@ -76,10 +76,10 @@ export async function validateDelete({
 }) {
   await validationHook(async _addValidationError => {
     // Field validation
-    for (const [fieldPath, field] of Object.entries(list.fields)) {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
       const addValidationError = (msg: string) =>
-        _addValidationError(`${list.listKey}.${fieldPath}: ${msg}`);
-      await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldPath });
+        _addValidationError(`${list.listKey}.${fieldKey}: ${msg}`);
+      await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldKey });
     }
 
     // List validation

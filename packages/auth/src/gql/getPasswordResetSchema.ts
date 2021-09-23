@@ -10,7 +10,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
-  protectIdentities,
   gqlNames,
   passwordResetLink,
   passwordResetTokenSecretFieldImpl,
@@ -18,7 +17,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   listKey: string;
   identityField: I;
   secretField: S;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
   passwordResetTokenSecretFieldImpl: SecretFieldImpl;
@@ -63,28 +61,11 @@ export function getPasswordResetSchema<I extends string, S extends string>({
     resolvers: {
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
 
-          const result = await createAuthToken(
-            identityField,
-            protectIdentities,
-            identity,
-            dbItemAPI
-          );
-
-          // Note: `success` can be false with no code
-          // If protectIdentities === true then result.code will *always* be undefined.
-          if (!result.success && result.code) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              context,
-              listKey,
-              code: result.code,
-            });
-            return { code: result.code, message };
-          }
+          const result = await createAuthToken(identityField, identity, dbItemAPI);
 
           // Update system state
           if (result.success) {
@@ -108,7 +89,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           args: { [P in I]: string } & { [P in S]: string } & { token: string },
           context
         ) {
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
@@ -116,23 +97,13 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             tokenType,
             identityField,
             args[identityField],
-            protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
             dbItemAPI
           );
 
           if (!result.success) {
-            // Code could be FAILURE, TOKEN_REDEEMED, or TOKEN_EXPIRED
-            // Message will be 'Auth token redemption failed.', 'Auth tokens are single use and the auth token provided has already been redeemed.'
-            // or 'The auth token provided has expired.'
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
           }
 
           // Update system state
@@ -160,7 +131,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           args: { [P in I]: string } & { token: string },
           context
         ) {
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             listKey,
@@ -168,20 +139,13 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             tokenType,
             identityField,
             args[identityField],
-            protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
             dbItemAPI
           );
 
-          if (!result.success && result.code) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
+          if (!result.success) {
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
           }
           return null;
         },

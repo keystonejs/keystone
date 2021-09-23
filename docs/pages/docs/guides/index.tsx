@@ -19,6 +19,7 @@ export default function Docs() {
       description={
         'Practical explanations of Keystone’s fundamental building blocks. Learn how to think about, and get the most out of Keystone’s many features.'
       }
+      isIndexPage
     >
       <Type as="h1" look="heading64">
         Keystone Guides

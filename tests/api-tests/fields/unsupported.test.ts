@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestEnv } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
@@ -45,11 +45,11 @@ if (unsupportedModules.length > 0) {
             async () =>
               await setupTestEnv({
                 config: apiTestConfig({
-                  lists: createSchema({
+                  lists: {
                     [listKey]: list({
                       fields: { name: text(), ...mod.getTestFields(matrixValue) },
                     }),
-                  }),
+                  },
                   images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                   files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
                 }),

@@ -183,15 +183,17 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
         <NavItem href="/docs/apis/fields">Fields API</NavItem>
-        <NavItem href="/docs/apis/access-control">Access Control API</NavItem>
+        <NavItem href="/docs/apis/access-control">
+          Access Control API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
         <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>
-        <NavItem href="/docs/apis/list-items">List Item API</NavItem>
-        <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
+        <NavItem href="/docs/apis/query">Query API</NavItem>
+        <NavItem href="/docs/apis/db-items">DB API</NavItem>
 
         <SubHeading>GraphQL</SubHeading>
         <NavItem href="/docs/apis/graphql">
@@ -225,6 +227,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
+        <NavItem href="/updates/new-access-control">
+          <Emoji symbol="🔐" alt="Padlock" />
+          &nbsp; New Access Control API
+        </NavItem>
         <NavItem href="/updates/new-graphql-api">
           <Emoji symbol="💎" alt="Gemstone" />
           &nbsp; New GraphQL API

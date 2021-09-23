@@ -9,7 +9,6 @@ import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema';
-import { getDBProvider } from './lib/createSystem';
 
 export function getSchemaPaths(cwd: string) {
   return {
@@ -27,11 +26,12 @@ export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
-  const lists = initialiseLists(config.lists, getDBProvider(config.db));
+  const lists = initialiseLists(config.lists, config.db.provider);
   const prismaSchema = printPrismaSchema(
     lists,
-    getDBProvider(config.db),
-    'node_modules/.prisma/client'
+    config.db.provider,
+    'node_modules/.prisma/client',
+    config.db.prismaPreviewFeatures
   );
   return {
     graphql: format(
@@ -123,23 +123,23 @@ const nodeAPIJS = (
   config: KeystoneConfig
 ) => `import keystoneConfig from '../../keystone';
 import { PrismaClient } from '.prisma/client';
-import { createListsAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
+import { createQueryAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
-export const lists = createListsAPI(keystoneConfig, PrismaClient);
+export const query = createQueryAPI(keystoneConfig, PrismaClient);
 `;
 
 const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/keystone/types';
 import { KeystoneListsTypeInfo } from './types';
 
-export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;`;
+export const query: KeystoneListsAPI<KeystoneListsTypeInfo>;`;
 
 const makeVercelIncludeTheSQLiteDB = (
   cwd: string,
   directoryOfFileToBeWritten: string,
   config: KeystoneConfig
 ) => {
-  if (config.db.adapter === 'prisma_sqlite' || config.db.provider === 'sqlite') {
+  if (config.db.provider === 'sqlite') {
     const sqliteDbAbsolutePath = path.resolve(cwd, config.db.url.replace('file:', ''));
 
     return `import path from 'path';
@@ -180,7 +180,7 @@ export async function generateNodeModulesArtifacts(
   config: KeystoneConfig,
   cwd: string
 ) {
-  const lists = initialiseLists(config.lists, getDBProvider(config.db));
+  const lists = initialiseLists(config.lists, config.db.provider);
 
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');

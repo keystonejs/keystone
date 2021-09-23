@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
@@ -19,11 +19,11 @@ testModules
       const listKey = 'Test';
       const runner = setupTestRunner({
         config: apiTestConfig({
-          lists: createSchema({
+          lists: {
             [listKey]: list({
               fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
             }),
-          }),
+          },
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
           files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
         }),
@@ -32,8 +32,8 @@ testModules
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
           // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-          for (const data of mod.initItems(matrixValue)) {
-            await context.lists[listKey].createOne({ data });
+          for (const data of mod.initItems(matrixValue, context)) {
+            await context.query[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider, ...rest });
         });
@@ -106,7 +106,7 @@ testModules
                 expected = storedValues.filter((v: any) => !expectedWithoutNegation.has(v));
               }
               expect(
-                await context.lists[listKey].findMany({
+                await context.query[listKey].findMany({
                   where: kind === 'with negation' ? { NOT: where } : where,
                   orderBy: { name: 'asc' },
                   query,
@@ -410,25 +410,25 @@ testModules
                 'Unique equality',
                 setupTestRunner({
                   config: apiTestConfig({
-                    lists: createSchema({
+                    lists: {
                       [listKey]: list({
                         fields: {
                           field: mod.typeFunction({ isIndexed: 'unique', isFilterable: true }),
                         },
                       }),
-                    }),
+                    },
                   }),
                 })(async ({ context }) => {
                   // Populate the database before running the tests
                   // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-                  for (const data of mod.initItems(matrixValue)) {
-                    await context.lists[listKey].createOne({
+                  for (const data of mod.initItems(matrixValue, context)) {
+                    await context.query[listKey].createOne({
                       data: { field: data[fieldName] },
                     });
                   }
                   await Promise.all(
                     storedValues.map(async (val: any) => {
-                      const promise = context.lists[listKey].findOne({
+                      const promise = context.query[listKey].findOne({
                         where: { field: val[fieldName] },
                         query: 'field',
                       });

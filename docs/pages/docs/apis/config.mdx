@@ -39,15 +39,14 @@ This type definition should be considered the source of truth for the available 
 The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
 This is where you define and configure the `lists` and their `fields` of the data model.
-In general you will use the `createSchema()` function to create this configuration option.
 See the [Schema API](./schema) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-next/keystone/types';
-import { config, createSchema } from '@keystone-next/keystone';
+import { config } from '@keystone-next/keystone';
 
 export default config({
-  lists: createSchema({ /* ... */ }),
+  lists: { /* ... */ },
   /* ... */
 });
 ```
@@ -76,6 +75,7 @@ Advanced configuration:
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   This can also be customised at the list level `db.idField`.
+- `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
 
 ```typescript
 export default config({
@@ -125,7 +125,6 @@ The `sqlite` provider is not intended to be used in production systems, and has 
 - `text`: The `text` field type does not support setting a filter as case sensitive or insensitive.
   Assuming default collation, all the filters except `contains`, `startsWith` and `endsWith` will be case sensitive
   and `contains`, `startsWith` and `endsWith` will be case insensitive but only for ASCII characters.
-- `autoIncrement`: The `autoIncrement` field type is not supported.
 - `select`: Using the `dataType: 'enum'` will use a GraphQL `String` type, rather than an `Enum` type.
 
 ## ui
@@ -203,6 +202,7 @@ Options:
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
+- `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 
 ```typescript
 export default config({
@@ -211,6 +211,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
+    extendExpressApp: (app, createContext) => { /* ... */ },
   },
   /* ... */
 });
@@ -228,8 +229,8 @@ config({
     healthCheck: {
       path: '/my-health-check',
       data: { status: 'healthy' },
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -245,10 +246,66 @@ config({
         timestamp: Date.now(),
         uptime: process.uptime(),
       }),
-    }
-  }
+    },
+  },
 })
 ```
+
+### extendExpressApp
+
+This lets you modify the express app that Keystone creates _before_ the Apollo Server and Admin UI Middleware are added to it (but after the `cors` and `healthcheck` options are applied).
+
+The function is passed two arguments:
+
+- `app`: The express app keystone has created
+- `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+
+For example, you could add your own request logging middleware:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.use((req, res, next) => {
+        console.log('A request!');
+        next();
+      });
+    },
+  },
+});
+```
+
+Or add a custom route handler:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app) => {
+      app.get('/_version', (req, res) => {
+        res.send('v6.0.0-rc.2');
+      });
+    },
+  },
+});
+```
+
+You could also use it to add custom REST endpoints to your server, by creating a context for the request and using the Query API Keystone provides:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app, createContext) => {
+      app.get('/api/users', async (req, res) => {
+        const context = await createContext(req, res);
+        const users = await context.query.User.findMany();
+        res.json(users);
+      });
+    },
+  },
+});
+```
+
+The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
 
 ## session
 
@@ -287,19 +344,18 @@ Options:
   These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
-- `apolloConfig` (default: `undefined`): Allows you to pass extra options into the `ApolloServer` constructor.
-  - `playground` (default: `process.env.NODE_ENV !== 'production'`): If truthy, will enable the GraphQL Playground for testing queries and mutations in the browser.
-    To configure behaviour, pass an object of [GraphQL Playground settings](https://github.com/graphql/graphql-playground#settings). See the [Apollo docs](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) for more supported options.
-  - `introspection` (default: `undefined`): Introspection enables you to query a GraphQL server for information about the underlying schema. If the playground is enabled then introspection is automatically enabled, unless specifically disabled.
+- `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
+- `cors` (default: `rocess.env.NODE_ENV !== 'production' ? { origin: 'https://studio.apollographql.com', credentials: true } : undefined`): The CORS configuration to use on the GraphQL API endpoint. The default is setup to allow access access to API from the Apollo Sandbox during development
+- `apolloConfig` (default: `undefined`): Allows you to pass [extra options](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) into the `ApolloServer` constructor.
 
 ```typescript
 export default config({
   graphql: {
     debug: process.env.NODE_ENV !== 'production',
     queryLimits: { maxTotalResults: 100 },
+    path: '/api/graphql',
     apolloConfig: {
-      playground: process.env.NODE_ENV !== 'production',
-      introspection: process.env.NODE_ENV !== 'production',
+      debug: true,
       /* ... */
     },
   },

@@ -61,6 +61,7 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
 };
 
 const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
+  const { apiPath } = useKeystone();
   const { spacing, typography } = useTheme();
   return (
     <div
@@ -78,7 +79,7 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
           Signed in as <strong>{item.label}</strong>
         </div>
       ) : (
-        <div css={{ fontSize: typography.fontSize.small }}>Graqhql Playground and Docs</div>
+        <div css={{ fontSize: typography.fontSize.small }}>GraphQL Playground and Docs</div>
       )}
 
       <Popover
@@ -95,8 +96,7 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
         )}
       >
         <Stack gap="medium" padding="large" dividers="between">
-          {/* FIXME: Use config.graphql.path */}
-          <PopoverLink target="_blank" href="/api/graphql">
+          <PopoverLink target="_blank" href={apiPath}>
             API Explorer
           </PopoverLink>
           <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">

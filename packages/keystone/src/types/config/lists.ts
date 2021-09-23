@@ -1,8 +1,8 @@
-import type { CacheHint } from '../next-fields';
+import type { CacheHint } from 'apollo-server-types';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
-import type { BaseFields } from './fields';
+import type { BaseFields, FilterOrderArgs } from './fields';
 
 export type ListSchemaConfig = Record<
   string,
@@ -30,7 +30,7 @@ export type ListConfig<
    * @default true
    * @see https://www.keystonejs.com/guides/access-control
    */
-  access?: ListAccessControl<TGeneratedListTypes> | boolean;
+  access?: ListAccessControl<TGeneratedListTypes>;
 
   /** Config for how this list should act in the Admin UI */
   ui?: ListAdminUIConfig<TGeneratedListTypes, Fields>;
@@ -51,8 +51,8 @@ export type ListConfig<
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
   // Defaults to apply to all fields.
-  defaultIsFilterable?: true; // The default value to use for graphql.isEnabled.filter on all fields for this list
-  defaultIsOrderable?: true; // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+  defaultIsFilterable?: true | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?: true | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
 
   /**
    * The label used for the list

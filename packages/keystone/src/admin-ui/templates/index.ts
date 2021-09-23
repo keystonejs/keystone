@@ -16,33 +16,49 @@ export const writeAdminFiles = (
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean,
   projectAdminPath: string
-): AdminFileToWrite[] => [
-  ...['next.config.js', 'tsconfig.json'].map(
-    outputPath =>
-      ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
-  ),
-  { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
-  {
-    mode: 'write',
-    src: appTemplate(adminMeta, graphQLSchema, { configFileExists, projectAdminPath }),
-    outputPath: 'pages/_app.js',
-  },
-  { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
-  ...adminMeta.lists.map(
-    ({ path, key }) =>
-      ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
-  ),
-  ...adminMeta.lists.map(
-    ({ path, key }) =>
-      ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
-  ),
-  ...(config.experimental?.enableNextJsGraphqlApiEndpoint
-    ? [
-        {
-          mode: 'write' as const,
-          src: apiTemplate,
-          outputPath: 'pages/api/graphql.js',
-        },
-      ]
-    : []),
-];
+): AdminFileToWrite[] => {
+  if (
+    config.experimental?.enableNextJsGraphqlApiEndpoint &&
+    config.graphql?.path &&
+    !config.graphql.path.startsWith('/api/')
+  ) {
+    throw new Error(
+      'config.graphql.path must start with "/api/" when using config.experimental.enableNextJsGraphqlApiEndpoint'
+    );
+  }
+  return [
+    ...['next.config.js', 'tsconfig.json'].map(
+      outputPath =>
+        ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
+    ),
+    { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
+    {
+      mode: 'write',
+      src: appTemplate(
+        adminMeta,
+        graphQLSchema,
+        { configFileExists, projectAdminPath },
+        config.graphql?.path || '/api/graphql'
+      ),
+      outputPath: 'pages/_app.js',
+    },
+    { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
+    ...adminMeta.lists.map(
+      ({ path, key }) =>
+        ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
+    ),
+    ...adminMeta.lists.map(
+      ({ path, key }) =>
+        ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
+    ),
+    ...(config.experimental?.enableNextJsGraphqlApiEndpoint
+      ? [
+          {
+            mode: 'write' as const,
+            src: apiTemplate,
+            outputPath: `pages/${config.graphql?.path || '/api/graphql'}.js`,
+          },
+        ]
+      : []),
+  ];
+};

@@ -24,7 +24,7 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  title: StringFilter
+  title: StringNullableFilter
 }
 
 input IDFilter {
@@ -38,7 +38,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringFilter {
+input StringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -49,10 +49,10 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
-input NestedStringFilter {
+input NestedStringNullableFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -63,7 +63,7 @@ input NestedStringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringFilter
+  not: NestedStringNullableFilter
 }
 
 input PostOrderByInput {
@@ -95,9 +95,9 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String! = ""
+  title: String
   status: PostStatusType
-  content: String! = ""
+  content: String
   publishDate: String
   author: AuthorRelateToOneForCreateInput
 }
@@ -154,8 +154,8 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  name: String! = ""
-  email: String! = ""
+  name: String
+  email: String
   posts: PostRelateToManyForCreateInput
 }
 
@@ -247,7 +247,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -270,7 +270,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

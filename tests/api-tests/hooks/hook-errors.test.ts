@@ -1,13 +1,13 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectAccessDenied, expectExtensionError } from '../utils';
+import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = (debug: boolean | undefined) =>
   setupTestRunner({
     config: apiTestConfig({
-      lists: createSchema({
+      lists: {
         User: list({
           fields: { name: text({ isFilterable: true, isOrderable: true }) },
           hooks: {
@@ -85,7 +85,7 @@ const runner = (debug: boolean | undefined) =>
             }),
           },
         }),
-      }),
+      },
       graphql: { debug },
     }),
   });
@@ -122,7 +122,7 @@ const runner = (debug: boolean | undefined) =>
               'createOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid name should pass
-                await context.lists.User.createOne({ data: { name: 'good' } });
+                await context.query.User.createOne({ data: { name: 'good' } });
 
                 // Trigger an error
                 const { data, errors } = await runQuery(context, graphQLRequest, {
@@ -149,7 +149,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Only the original user should exist for 'before', both exist for 'after'
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['good'] : ['good', 'trigger after']
                 );
@@ -160,8 +160,8 @@ const runner = (debug: boolean | undefined) =>
               'updateOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid name should pass
-                const user = await context.lists.User.createOne({ data: { name: 'good' } });
-                await context.lists.User.updateOne({
+                const user = await context.query.User.createOne({ data: { name: 'good' } });
+                await context.query.User.updateOne({
                   where: { id: user.id },
                   data: { name: 'better' },
                 });
@@ -191,7 +191,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // User should have its original name for 'before', and the new name for 'after'.
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['better'] : ['trigger after']
                 );
@@ -202,11 +202,11 @@ const runner = (debug: boolean | undefined) =>
               'deleteOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid names should pass
-                const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
-                const user2 = await context.lists.User.createOne({
+                const user1 = await context.query.User.createOne({ data: { name: 'good' } });
+                const user2 = await context.query.User.createOne({
                   data: { name: `trigger ${phase} delete` },
                 });
-                await context.lists.User.deleteOne({ where: { id: user1.id } });
+                await context.query.User.deleteOne({ where: { id: user1.id } });
 
                 // Invalid name
                 const { data, errors } = await runQuery(context, graphQLRequest, {
@@ -233,7 +233,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Bad users should still be in the database for 'before', deleted for 'after'.
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['trigger before delete'] : []
                 );
@@ -297,7 +297,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Three users should exist in the database for 'before,' five for 'after'.
-                const users = await context.lists.User.findMany({
+                const users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -313,7 +313,7 @@ const runner = (debug: boolean | undefined) =>
               'updateMany',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Start with some users
-                const users = await context.lists.User.createMany({
+                const users = await context.query.User.createMany({
                   data: [
                     { name: 'good 1' },
                     { name: 'good 2' },
@@ -376,7 +376,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // All users should still exist in the database, un-changed for `before`, changed for `after`.
-                const _users = await context.lists.User.findMany({
+                const _users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -392,7 +392,7 @@ const runner = (debug: boolean | undefined) =>
               'deleteMany',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Start with some users
-                const users = await context.lists.User.createMany({
+                const users = await context.query.User.createMany({
                   data: [
                     { name: 'good 1' },
                     { name: `trigger ${phase} delete` },
@@ -450,7 +450,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Three users should still exist in the database for `before`, only 1 for `after`.
-                const _users = await context.lists.User.findMany({
+                const _users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -469,7 +469,7 @@ const runner = (debug: boolean | undefined) =>
             test(
               'update',
               runner(debug)(async ({ context, graphQLRequest }) => {
-                const post = await context.lists.Post.createOne({
+                const post = await context.query.Post.createOne({
                   data: { title: 'original title', content: 'original content' },
                 });
 
@@ -505,7 +505,7 @@ const runner = (debug: boolean | undefined) =>
                 expect(data).toEqual({ updatePost: null });
 
                 // Post should have its original data for 'before', and the new data for 'after'.
-                const _post = await context.lists.Post.findOne({
+                const _post = await context.query.Post.findOne({
                   where: { id: post.id },
                   query: 'title content',
                 });
@@ -520,7 +520,7 @@ const runner = (debug: boolean | undefined) =>
             test(
               `delete`,
               runner(debug)(async ({ context, graphQLRequest }) => {
-                const post = await context.lists.Post.createOne({
+                const post = await context.query.Post.createOne({
                   data: { title: `trigger ${phase} delete`, content: `trigger ${phase} delete` },
                 });
                 const { data, errors } = await runQuery(context, graphQLRequest, {
@@ -562,7 +562,7 @@ const runner = (debug: boolean | undefined) =>
                     post: { title: 'trigger before delete', content: 'trigger before delete' },
                   });
                 } else {
-                  expectAccessDenied(mode, useHttp, debug, result.errors, [{ path: ['post'] }]);
+                  expect(result.errors).toBe(undefined);
                   expect(result.data).toEqual({ post: null });
                 }
               })

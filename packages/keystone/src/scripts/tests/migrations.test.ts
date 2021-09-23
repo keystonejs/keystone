@@ -56,9 +56,7 @@ async function getGeneratedMigration(
   const migrations: {
     migration_name: string;
     finished_at: string;
-  }[] = await prismaClient.$queryRaw(
-    'SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC'
-  );
+  }[] = await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
   await prismaClient.$disconnect();
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
@@ -97,11 +95,8 @@ model Todo {
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ Your database is now in sync with your schema. Done in 0ms
 ✨ Connecting to the database
-✨ Skipping Admin UI code generation
 ✨ Creating server
-✨ Preparing GraphQL Server
-✨ Skipping Admin UI app
-👋 Admin UI and GraphQL API ready`);
+✅ GraphQL API ready`);
   return tmp;
 }
 
@@ -116,17 +111,14 @@ describe('useMigrations: false', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ The database is already in sync with the Prisma schema.
-      ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
-      ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
-    `);
+"✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ The database is already in sync with the Prisma schema.
+✨ Connecting to the database
+✨ Creating server
+✅ GraphQL API ready"
+`);
   });
   test('warns when dropping field that has data in it', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -159,22 +151,19 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
-      ✨ Generating GraphQL and Prisma schemas
+"✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
 
-      ⚠️  Warnings:
+⚠️  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost. true
-      ✨ Your database is now in sync with your schema. Done in 0ms
-      ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
-      ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
-    `);
+  • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+Prompt: Do you want to continue? Some data will be lost. true
+✨ Your database is now in sync with your schema. Done in 0ms
+✨ Connecting to the database
+✨ Creating server
+✅ GraphQL API ready"
+`);
   });
   test('exits when refusing data loss prompt', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -241,11 +230,8 @@ describe('useMigrations: false', () => {
       ✨ Your database has been reset
       ✨ Your database is now in sync with your schema. Done in 0ms
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
 });
@@ -292,11 +278,8 @@ Prompt: Name of migration init
 Prompt: Would you like to apply this migration? true
 ✅ The migration has been applied
 ✨ Connecting to the database
-✨ Skipping Admin UI code generation
 ✨ Creating server
-✨ Preparing GraphQL Server
-✨ Skipping Admin UI app
-👋 Admin UI and GraphQL API ready`);
+✅ GraphQL API ready`);
   return tmp;
 }
 
@@ -335,9 +318,9 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id         String   @id
+        id         String  @id
         title      String?
-        isComplete Boolean?
+        isComplete Boolean @default(false)
       }
       "
     `);
@@ -345,8 +328,18 @@ describe('useMigrations: true', () => {
     const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete');
 
     expect(migration).toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT,
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 
@@ -361,11 +354,8 @@ describe('useMigrations: true', () => {
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
   test('warns when dropping field that has data in it', async () => {
@@ -441,11 +431,8 @@ describe('useMigrations: true', () => {
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
@@ -517,11 +504,8 @@ describe('useMigrations: true', () => {
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
   test("doesn't drop when prompt denied", async () => {
@@ -604,8 +588,18 @@ describe('useMigrations: true', () => {
     );
     expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
       .toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT,
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 
@@ -659,11 +653,8 @@ describe('useMigrations: true', () => {
           └─ migration.sql
       ✨ Your migrations are up to date, no new migrations need to be created
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
   test('--reset-db flag', async () => {
@@ -695,11 +686,8 @@ describe('useMigrations: true', () => {
           └─ migration.sql
       ✨ Your migrations are up to date, no new migrations need to be created
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
   test('logs correctly when no migrations need to be created or applied', async () => {
@@ -713,11 +701,8 @@ describe('useMigrations: true', () => {
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database is up to date, no migrations need to be created or applied
       ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
       ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and GraphQL API ready"
+      ✅ GraphQL API ready"
     `);
   });
 });

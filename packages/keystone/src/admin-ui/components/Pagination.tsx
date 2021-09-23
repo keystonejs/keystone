@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { useEffect } from 'react';
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
 import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons';
@@ -42,6 +43,21 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
 
   const limit = Math.ceil(total / pageSize);
   const pages = [];
+
+  useEffect(() => {
+    // Check if the current page is larger than
+    // the maximal page given the total and associated page size value.
+    // (This could happen due to a deletion event, in which case we want to reroute the user to a previous page).
+    if (currentPage > Math.ceil(total / pageSize)) {
+      push({
+        pathname,
+        query: {
+          ...query,
+          page: Math.ceil(total / pageSize),
+        },
+      });
+    }
+  }, [total, pageSize, currentPage, pathname, query, push]);
 
   // Don't render the pagiantion component if the pageSize is greater than the total number of items in the list.
   if (total <= pageSize) return null;

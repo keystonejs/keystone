@@ -91,11 +91,11 @@ const componentBlocks = {
 type DocumentFieldConfig = Parameters<typeof import('@keystone-next/fields-document').document>[0];
 
 function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
-  return `import { config, createSchema, list } from '@keystone-next/keystone';
+  return `import { config, list } from '@keystone-next/keystone';
 import { document } from '@keystone-next/fields-document';
 
 export default config({
-  lists: createSchema({
+  lists: {
     ListName: list({
       fields: {
         fieldName: document({
@@ -128,7 +128,7 @@ export default config({
       },
     }),
     /* ... */
-  }),
+  },
   /* ... */
 });
 `;

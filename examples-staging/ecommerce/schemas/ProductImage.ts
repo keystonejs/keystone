@@ -13,10 +13,12 @@ export const cloudinary = {
 
 export const ProductImage = list({
   access: {
-    create: isSignedIn,
-    read: () => true,
-    update: permissions.canManageProducts,
-    delete: permissions.canManageProducts,
+    operation: {
+      create: isSignedIn,
+      query: () => true,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+    },
   },
   fields: {
     image: cloudinaryImage({

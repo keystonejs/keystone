@@ -1,12 +1,12 @@
 const { text, relationship } = require('@keystone-next/keystone/fields');
-const { createSchema, list } = require('@keystone-next/keystone');
+const { list } = require('@keystone-next/keystone');
 const { setupTestRunner } = require('@keystone-next/keystone/testing');
 const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           name: text(),
@@ -18,7 +18,7 @@ const runner = setupTestRunner({
           title: text(),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -26,7 +26,7 @@ const group = new FixtureGroup(runner);
 
 group.add({
   fn: async ({ context, provider }) => {
-    const { id: userId } = await context.lists.User.createOne({
+    const { id: userId } = await context.query.User.createOne({
       data: { name: 'test', posts: { create: [] } },
     });
     const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -37,7 +37,7 @@ group.add({
 
 group.add({
   fn: async ({ context, provider }) => {
-    const { id: userId } = await context.lists.User.createOne({
+    const { id: userId } = await context.query.User.createOne({
       data: { name: 'test', posts: { create: [] } },
     });
     const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -57,7 +57,7 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
@@ -85,7 +85,7 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
@@ -112,7 +112,7 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;
@@ -139,7 +139,7 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
       });
       const userId = users[0].id;

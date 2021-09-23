@@ -134,8 +134,8 @@ function getRootValGivenOutputType(originalType: OutputType, value: any): any {
   if (originalType instanceof GraphQLNonNull) {
     return getRootValGivenOutputType(originalType.ofType, value);
   }
+  if (value === null) return null;
   if (originalType instanceof GraphQLList) {
-    if (value === null) return null;
     return value.map((x: any) => getRootValGivenOutputType(originalType.ofType, x));
   }
   return value[rawField];

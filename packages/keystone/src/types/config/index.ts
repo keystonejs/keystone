@@ -1,8 +1,9 @@
-import { CorsOptions } from 'cors';
-import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
+import { CorsOptions } from 'cors';
+import express from 'express';
+import type { GraphQLSchema } from 'graphql';
 
-import type { AssetMode, KeystoneContext } from '..';
+import type { AssetMode, CreateRequestContext, KeystoneContext } from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -46,14 +47,7 @@ export type KeystoneConfig = {
 
 // config.lists
 
-export type {
-  ListSchemaConfig,
-  ListConfig,
-  BaseFields,
-  MaybeSessionFunction,
-  MaybeItemFunction,
-  // CacheHint,
-};
+export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
 
 // config.db
 
@@ -63,32 +57,9 @@ export type DatabaseConfig = {
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-} & (
-  | (
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-          adapter: 'prisma_postgresql';
-          provider?: undefined;
-        }
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-          adapter?: undefined;
-          provider: 'postgresql';
-        }
-    )
-  | (
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-          adapter: 'prisma_sqlite';
-          provider?: undefined;
-        }
-      | {
-          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-          adapter?: undefined;
-          provider: 'sqlite';
-        }
-    )
-);
+  provider: 'postgresql' | 'sqlite';
+  prismaPreviewFeatures?: string[]; // https://www.prisma.io/docs/concepts/components/preview-features
+};
 
 // config.ui
 
@@ -131,14 +102,18 @@ export type ServerConfig = {
   maxFileSize?: number;
   /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
   healthCheck?: HealthCheckConfig | true;
+  /** Hook to extend the Express App that Keystone creates */
+  extendExpressApp?: (app: express.Express, createContext: CreateRequestContext) => void;
 };
 
 // config.graphql
 
 export type GraphQLConfig = {
-  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
-  // We should be able to use config.graphql.path to set this path.
-  // path?: string;
+  // The path of the GraphQL API endpoint. Default: '/api/graphql'.
+  path?: string;
+  // The CORS configuration to use on the GraphQL API endpoint.
+  // Default: { origin: 'https://studio.apollographql.com', credentials: true }
+  cors?: CorsOptions;
   queryLimits?: {
     maxTotalResults?: number;
   };
@@ -238,14 +213,15 @@ export type KeystoneCloudConfig = {
 export type { ListHooks, ListAccessControl, FieldAccessControl };
 
 export type {
-  FieldCreateAccessArgs,
-  FieldReadAccessArgs,
-  FieldUpdateAccessArgs,
+  FieldCreateItemAccessArgs,
+  FieldReadItemAccessArgs,
+  FieldUpdateItemAccessArgs,
   IndividualFieldAccessControl,
-  CreateAccessControl,
-  ReadListAccessControl,
-  DeleteListAccessControl,
-  UpdateListAccessControl,
+  CreateListItemAccessControl,
+  UpdateListItemAccessControl,
+  DeleteListItemAccessControl,
+  ListOperationAccessControl,
+  ListFilterAccessControl,
 } from './access-control';
 export type { CommonFieldConfig } from './fields';
 export type { CacheHintArgs, IdFieldConfig } from './lists';

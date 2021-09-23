@@ -49,7 +49,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     expected: any,
     orderBy: Record<string, 'asc' | 'desc'> = { name: 'asc' }
   ) =>
-    expect(await context.lists.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
+    expect(await context.query.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
       expected
     );
 

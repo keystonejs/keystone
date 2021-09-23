@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
 import {
   text,
   relationship,
@@ -34,7 +34,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-export const lists = createSchema({
+export const lists = {
   User: list({
     ui: {
       listView: {
@@ -43,19 +43,9 @@ export const lists = createSchema({
     },
     fields: {
       /** The user's first and last name. */
-      name: text({ validation: { length: { min: 1 } } }),
+      name: text({ isRequired: true }),
       /** Email is used to log into the system. */
-      email: text({
-        isIndexed: 'unique',
-        isFilterable: true,
-        validation: {
-          match: {
-            regex:
-              /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-            explanation: 'must be a valid email address',
-          },
-        },
-      }),
+      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
@@ -64,8 +54,8 @@ export const lists = createSchema({
       /** Administrators have more access to various lists and fields. */
       isAdmin: checkbox({
         access: {
-          create: access.isAdmin,
           read: access.isAdmin,
+          create: access.isAdmin,
           update: access.isAdmin,
         },
         ui: {
@@ -141,7 +131,7 @@ export const lists = createSchema({
   }),
   Post: list({
     fields: {
-      title: text({ validation: { length: { min: 5 } }, isNullable: true }),
+      title: text(),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
       // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
@@ -196,7 +186,7 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: gql`
@@ -224,8 +214,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
         // note this usage of the type is important because it tests that the generated
         // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-        const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
-        return lists.Post.createMany({ data });
+        const query = context.query as KeystoneListsAPI<KeystoneListsTypeInfo>;
+        return query.Post.createMany({ data });
       },
     },
     Query: {

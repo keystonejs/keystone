@@ -1,46 +1,77 @@
-import { ItemRootValue, KeystoneContext } from '../../../types';
-import {
-  validateCreateListAccessControl,
-  validateFieldAccessControl,
-  validateNonCreateListAccessControl,
-} from '../access-control';
+import { KeystoneContext } from '../../../types';
+import { validateFieldAccessControl } from '../access-control';
 import { accessDeniedError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
-import {
-  UniqueInputFilter,
-  PrismaFilter,
-  resolveWhereInput,
-  UniquePrismaFilter,
-} from '../where-inputs';
+import { InputFilter, resolveWhereInput, UniquePrismaFilter } from '../where-inputs';
+
+async function getFilteredItem(
+  list: InitialisedList,
+  context: KeystoneContext,
+  uniqueWhere: UniquePrismaFilter,
+  accessFilters: boolean | InputFilter,
+  operation: 'update' | 'delete'
+) {
+  if (accessFilters === false) {
+    // Early exit if they want to exclude everything
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the list '${list.listKey}'.`
+    );
+  }
+
+  // Merge the filter access control and try to get the item.
+  let where = mapUniqueWhereToWhere(list, uniqueWhere);
+  if (typeof accessFilters === 'object') {
+    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
+  }
+  const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
+  if (item === null) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
+  }
+
+  return item;
+}
 
 export async function getAccessControlledItemForDelete(
   list: InitialisedList,
   context: KeystoneContext,
-  uniqueInput: UniqueInputFilter,
-  uniqueWhere: UniquePrismaFilter
-): Promise<ItemRootValue> {
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
+  uniqueWhere: UniquePrismaFilter,
+  accessFilters: boolean | InputFilter
+) {
+  const operation = 'delete' as const;
+  // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
 
-  // List access: pass 1
-  const access = await validateNonCreateListAccessControl({
-    access: list.access.delete,
-    args: { context, listKey: list.listKey, operation: 'delete', session: context.session, itemId },
-  });
-  if (access === false) {
-    throw accessDeniedError();
+  // Apply item level access control
+  const access = list.access.item[operation];
+  const args = { operation, session: context.session, listKey: list.listKey, context, item };
+
+  // List level 'item' access control
+  const result = await access(args);
+  const resultType = typeof result;
+
+  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
+  // has accidentally tried to return a filter.
+  if (resultType !== 'boolean') {
+    throw new Error(
+      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
+    );
   }
 
-  // List access: pass 2
-  let where: PrismaFilter = mapUniqueWhereToWhere(list, uniqueWhere);
-  if (typeof access === 'object') {
-    where = { AND: [where, await resolveWhereInput(access, list, context)] };
+  if (!result) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
   }
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
-  if (item === null) {
-    throw accessDeniedError();
-  }
+
+  // No field level access control for delete
 
   return item;
 }
@@ -48,58 +79,67 @@ export async function getAccessControlledItemForDelete(
 export async function getAccessControlledItemForUpdate(
   list: InitialisedList,
   context: KeystoneContext,
-  uniqueInput: UniqueInputFilter,
   uniqueWhere: UniquePrismaFilter,
-  update: Record<string, any>
+  accessFilters: boolean | InputFilter,
+  originalInput: Record<string, any>
 ) {
-  const itemId = await getStringifiedItemIdFromUniqueWhereInput(uniqueInput, list.listKey, context);
+  const operation = 'update' as const;
+  // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
+
+  // Apply item level access control
+  const access = list.access.item[operation];
   const args = {
-    context,
-    itemId,
-    listKey: list.listKey,
-    operation: 'update' as const,
-    originalInput: update,
+    operation,
     session: context.session,
+    listKey: list.listKey,
+    context,
+    item,
+    originalInput,
   };
 
-  // List access: pass 1
-  const accessControl = await validateNonCreateListAccessControl({
-    access: list.access.update,
-    args,
-  });
-  if (accessControl === false) {
-    throw accessDeniedError();
+  // List level 'item' access control
+  const result = await access(args);
+  const resultType = typeof result;
+
+  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
+  // has accidentally tried to return a filter.
+  if (resultType !== 'boolean') {
+    throw new Error(
+      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
+    );
   }
 
-  // List access: pass 2
-  const uniqueWhereInWhereForm = mapUniqueWhereToWhere(list, uniqueWhere);
-  const item = await runWithPrisma(context, list, async model =>
-    model.findFirst({
-      where:
-        accessControl === true
-          ? uniqueWhereInWhereForm
-          : {
-              AND: [uniqueWhereInWhereForm, await resolveWhereInput(accessControl, list, context)],
-            },
-    })
-  );
-  if (!item) {
-    throw accessDeniedError();
+  if (!result) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. It may not exist.`
+    );
   }
 
-  // Field access
-  const results = await Promise.all(
-    Object.keys(update).map(fieldKey => {
-      const field = list.fields[fieldKey];
-      return validateFieldAccessControl({
-        access: field.access.update,
-        args: { ...args, fieldKey, item },
-      });
-    })
-  );
+  // Field level 'item' access control
+  const fieldsDenied = (
+    await Promise.all(
+      Object.keys(originalInput!).map(async fieldKey => [
+        fieldKey,
+        await validateFieldAccessControl({
+          access: list.fields[fieldKey].access[operation],
+          args: { ...args, fieldKey },
+        }),
+      ])
+    )
+  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, result]) => !result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .map(([fieldKey, _]) => fieldKey);
 
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError();
+  if (fieldsDenied.length) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        uniqueWhere
+      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
+    );
   }
 
   return item;
@@ -110,48 +150,60 @@ export async function applyAccessControlForCreate(
   context: KeystoneContext,
   originalInput: Record<string, unknown>
 ) {
+  const operation = 'create' as const;
+
+  // Apply item level access control
+  const access = list.access.item[operation];
   const args = {
-    context,
-    listKey: list.listKey,
-    operation: 'create' as const,
-    originalInput,
+    operation,
     session: context.session,
+    listKey: list.listKey,
+    context,
+    originalInput,
   };
 
-  // List access
-  const result = await validateCreateListAccessControl({ access: list.access.create, args });
+  // List level 'item' access control
+  const result = await access(args);
+  const resultType = typeof result;
+
+  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
+  // has accidentally tried to return a filter.
+  if (resultType !== 'boolean') {
+    throw new Error(
+      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
+    );
+  }
+
   if (!result) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        originalInput
+      )}'.`
+    );
   }
 
-  // Field access
-  const results = await Promise.all(
-    Object.keys(originalInput).map(fieldKey => {
-      const field = list.fields[fieldKey];
-      return validateFieldAccessControl({
-        access: field.access.create,
-        args: { fieldKey, ...args },
-      });
-    })
-  );
+  // Field level 'item' access control
 
-  if (results.some(canAccess => !canAccess)) {
-    throw accessDeniedError();
-  }
-}
+  const fieldsDenied = (
+    await Promise.all(
+      Object.keys(originalInput!).map(async fieldKey => [
+        fieldKey,
+        await validateFieldAccessControl({
+          access: list.fields[fieldKey].access[operation],
+          args: { ...args, fieldKey },
+        }),
+      ])
+    )
+  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, result]) => !result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .map(([fieldKey, _]) => fieldKey);
 
-async function getStringifiedItemIdFromUniqueWhereInput(
-  uniqueInput: UniqueInputFilter,
-  listKey: string,
-  context: KeystoneContext
-): Promise<string> {
-  if (uniqueInput.id !== undefined) {
-    return uniqueInput.id;
-  }
-  try {
-    const item = await context.sudo().lists[listKey].findOne({ where: uniqueInput });
-    return item.id;
-  } catch (err) {
-    throw accessDeniedError();
+  if (fieldsDenied.length) {
+    throw accessDeniedError(
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+        originalInput
+      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
+    );
   }
 }

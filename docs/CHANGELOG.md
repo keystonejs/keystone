@@ -1,5 +1,20 @@
 # @keystone-next/website
 
+## 3.1.5
+
+### Patch Changes
+
+- [#6391](https://github.com/keystonejs/keystone/pull/6391) [`bc9088f05`](https://github.com/keystonejs/keystone/commit/bc9088f0574af27be6a068483a789a80f7a46a41) Thanks [@bladey](https://github.com/bladey)! - Adds support for `introspection` in the Apollo Server config. Introspection enables you to query a GraphQL server for information about the underlying schema. If the playground is enabled then introspection is automatically enabled - unless specifically disabled.
+
+* [#6443](https://github.com/keystonejs/keystone/pull/6443) [`b45536e22`](https://github.com/keystonejs/keystone/commit/b45536e22f9c3a61c781161602f6f01268b303c7) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependency `@types/webpack`.
+
+- [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
+
+* [#6467](https://github.com/keystonejs/keystone/pull/6467) [`e0f935eb2`](https://github.com/keystonejs/keystone/commit/e0f935eb2ef8ac311a43423c6691e56cd27b6bed) Thanks [@JedWatson](https://github.com/JedWatson)! - Add extendExpressApp config option for configuring the express app that Keystone creates
+
+* Updated dependencies [[`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22), [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208), [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`8f2786535`](https://github.com/keystonejs/keystone/commit/8f2786535272976678427fd13758e63b2c59d955), [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b), [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9)]:
+  - @keystone-next/fields-document@9.0.0
+
 ## 3.1.4
 
 ### Patch Changes

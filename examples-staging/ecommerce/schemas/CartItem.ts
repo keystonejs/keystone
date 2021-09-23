@@ -4,10 +4,14 @@ import { rules, isSignedIn } from '../access';
 
 export const CartItem = list({
   access: {
-    create: isSignedIn,
-    read: rules.canOrder,
-    update: rules.canOrder,
-    delete: rules.canOrder,
+    operation: {
+      create: isSignedIn,
+    },
+    filter: {
+      query: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
   },
   ui: {
     listView: {
@@ -18,7 +22,10 @@ export const CartItem = list({
     // TODO: Custom Label in here
     quantity: integer({
       defaultValue: 1,
-      isRequired: true,
+      isNullable: false,
+      validation: {
+        isRequired: true,
+      },
     }),
     product: relationship({ ref: 'Product', isFilterable: true }),
     user: relationship({ ref: 'User.cart', isFilterable: true }),

@@ -7,14 +7,15 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model User {
   id                      String     @id @default(cuid())
-  name                    String     @default("")
-  email                   String     @unique @default("")
+  name                    String?
+  email                   String?    @unique
   password                String?
   cart                    CartItem[] @relation("CartItem_user")
   orders                  Order[]    @relation("Order_user")
@@ -30,8 +31,8 @@ model User {
 
 model Product {
   id                    String        @id @default(cuid())
-  name                  String        @default("")
-  description           String        @default("")
+  name                  String?
+  description           String?
   photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
   photoId               String?       @unique @map("photo")
   status                String?
@@ -46,14 +47,14 @@ model Product {
 model ProductImage {
   id                   String      @id @default(cuid())
   image                String?
-  altText              String      @default("")
+  altText              String?
   product              Product?    @relation("Product_photo")
   from_OrderItem_photo OrderItem[] @relation("OrderItem_photo")
 }
 
 model CartItem {
   id        String   @id @default(cuid())
-  quantity  Int?
+  quantity  Int      @default(1)
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId String?  @map("product")
   user      User?    @relation("CartItem_user", fields: [userId], references: [id])
@@ -65,8 +66,8 @@ model CartItem {
 
 model OrderItem {
   id          String        @id @default(cuid())
-  name        String        @default("")
-  description String        @default("")
+  name        String?
+  description String?
   photo       ProductImage? @relation("OrderItem_photo", fields: [photoId], references: [id])
   photoId     String?       @map("photo")
   price       Int?
@@ -84,19 +85,19 @@ model Order {
   items  OrderItem[] @relation("OrderItem_order")
   user   User?       @relation("Order_user", fields: [userId], references: [id])
   userId String?     @map("user")
-  charge String      @default("")
+  charge String?
 
   @@index([userId])
 }
 
 model Role {
-  id                String   @id @default(cuid())
-  name              String   @default("")
-  canManageProducts Boolean?
-  canSeeOtherUsers  Boolean?
-  canManageUsers    Boolean?
-  canManageRoles    Boolean?
-  canManageCart     Boolean?
-  canManageOrders   Boolean?
-  assignedTo        User[]   @relation("User_role")
+  id                String  @id @default(cuid())
+  name              String?
+  canManageProducts Boolean @default(false)
+  canSeeOtherUsers  Boolean @default(false)
+  canManageUsers    Boolean @default(false)
+  canManageRoles    Boolean @default(false)
+  canManageCart     Boolean @default(false)
+  canManageOrders   Boolean @default(false)
+  assignedTo        User[]  @relation("User_role")
 }
