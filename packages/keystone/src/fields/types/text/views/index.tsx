@@ -107,6 +107,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 type Config = FieldControllerConfig<import('..').TextFieldMeta>;
 
 type Validation = {
+  isRequired: boolean;
   match: { regex: RegExp; explanation: string | null } | null;
   length: { min: number | null; max: number | null };
 };
@@ -143,6 +144,7 @@ export const controller = (
   isNullable: boolean;
 } => {
   const validation: Validation = {
+    isRequired: config.fieldMeta.validation.isRequired,
     length: config.fieldMeta.validation.length,
     match: config.fieldMeta.validation.match
       ? {

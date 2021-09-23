@@ -8,6 +8,7 @@ import {
   FieldTypeFunc,
   filters,
 } from '../../../types';
+import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -17,16 +18,13 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
       displayMode?: 'input' | 'textarea';
     };
     validation?: {
+      isRequired?: boolean;
       match?: { regex: RegExp; explanation?: string };
       length?: { min?: number; max?: number };
     };
     defaultValue?: string;
-  } & ({ isNullable?: false; graphql?: { isNonNull?: true } } | { isNullable: true });
-
-function validateLen(num: number | undefined, kind: 'min' | 'max') {
-  if (num !== undefined && (!Number.isInteger(num) || num < 0)) {
-  }
-}
+    graphql?: { create?: { isNonNull?: boolean } };
+  } & ({ isNullable?: false; graphql?: { read?: { isNonNull?: boolean } } } | { isNullable: true });
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -37,34 +35,23 @@ export const text =
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     const { isNullable = false } = config;
-    if (
-      (config.access === false ||
-        typeof config.access === 'function' ||
-        (typeof config.access === 'object' && config.access.read !== true)) &&
-      !config.isNullable &&
-      config.graphql?.isNonNull
-    ) {
-      throw new Error(
-        `The text field at ${meta.listKey}.${meta.fieldKey} sets access.read and also sets graphql.isNonNull === true ` +
-          `but graphql.isNonNull === true is only allowed when a field does not set access.read`
-      );
-    }
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
+
+    if (!config.isNullable) {
+      assertReadIsNonNullAllowed(meta, config);
+    }
+    assertCreateIsNonNullAllowed(meta, config);
+
+    const mode = isNullable ? 'optional' : 'required';
 
     const defaultValue =
       isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined;
     return fieldType({
       kind: 'scalar',
-      mode: isNullable ? 'optional' : 'required',
+      mode,
       scalar: 'String',
-      default:
-        defaultValue != null
-          ? {
-              kind: 'literal',
-              value: defaultValue,
-            }
-          : undefined,
+      default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
     })({
       ...config,
@@ -102,14 +89,16 @@ export const text =
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
         where: {
           arg: graphql.arg({
-            type: filters[meta.provider].String[isNullable ? 'optional' : 'required'],
+            type: filters[meta.provider].String[mode],
           }),
-          resolve: filters.resolveString,
+          resolve: mode === 'required' ? undefined : filters.resolveString,
         },
         create: {
           arg: graphql.arg({
-            type: isNullable ? graphql.String : graphql.nonNull(graphql.String),
-            defaultValue,
+            type: config.graphql?.create?.isNonNull
+              ? graphql.nonNull(graphql.String)
+              : graphql.String,
+            defaultValue: config.graphql?.create?.isNonNull ? defaultValue : undefined,
           }),
         },
         update: { arg: graphql.arg({ type: graphql.String }) },
@@ -117,7 +106,7 @@ export const text =
       },
       output: graphql.field({
         type:
-          config.isNullable !== true && config.graphql?.isNonNull
+          config.isNullable !== true && config.graphql?.read?.isNonNull
             ? graphql.nonNull(graphql.String)
             : graphql.String,
       }),
@@ -127,6 +116,7 @@ export const text =
           displayMode: config.ui?.displayMode ?? 'input',
           shouldUseModeInsensitive: meta.provider === 'postgresql',
           validation: {
+            isRequired: validation?.isRequired ?? false,
             match: validation?.match
               ? {
                   regex: {
@@ -150,6 +140,7 @@ export type TextFieldMeta = {
   shouldUseModeInsensitive: boolean;
   isNullable: boolean;
   validation: {
+    isRequired: boolean;
     match: { regex: { source: string; flags: string }; explanation: string | null } | null;
     length: { min: number | null; max: number | null };
   };

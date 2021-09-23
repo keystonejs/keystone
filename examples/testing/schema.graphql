@@ -78,7 +78,7 @@ input TaskWhereInput {
   OR: [TaskWhereInput!]
   NOT: [TaskWhereInput!]
   id: IDFilter
-  label: StringNullableFilter
+  label: StringFilter
   priority: TaskPriorityTypeNullableFilter
   isComplete: BooleanFilter
   assignedTo: PersonWhereInput
@@ -96,7 +96,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -107,10 +107,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -121,7 +121,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input TaskPriorityTypeNullableFilter {
@@ -220,8 +220,8 @@ input PersonWhereInput {
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
   id: IDFilter
-  name: StringNullableFilter
-  email: StringNullableFilter
+  name: StringFilter
+  email: StringFilter
   password: PasswordFilter
   tasks: TaskManyRelationFilter
 }

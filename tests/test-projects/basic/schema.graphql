@@ -127,7 +127,7 @@ input TaskUpdateArgs {
 }
 
 input TaskCreateInput {
-  label: String! = ""
+  label: String
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
@@ -193,7 +193,7 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String! = ""
+  name: String
   tasks: TaskRelateToManyForCreateInput
 }
 
@@ -234,8 +234,8 @@ input SecretPlanUpdateArgs {
 }
 
 input SecretPlanCreateInput {
-  label: String! = ""
-  description: String! = ""
+  label: String
+  description: String
 }
 
 """
