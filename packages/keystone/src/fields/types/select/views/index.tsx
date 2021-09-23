@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment } from 'react';
-import { jsx, VisuallyHidden } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
-import { XIcon } from '@keystone-ui/icons/icons/XIcon';
+import { Button } from '@keystone-ui/button';
 import {
   CardValueComponent,
   CellComponent,
@@ -35,24 +35,26 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
     ) : (
       <Fragment>
         <FieldLabel as="legend">{field.label}</FieldLabel>
-        <SegmentedControl
-          segments={field.options.map(x => x.label)}
-          selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
-          onChange={index => {
-            onChange?.(field.options[index]);
-          }}
-        />
-        {value !== null && onChange !== undefined && (
-          <button
-            onClick={() => {
-              onChange(null);
+        <Stack across gap="small" align="center">
+          <SegmentedControl
+            segments={field.options.map(x => x.label)}
+            selectedIndex={
+              value ? field.options.findIndex(x => x.value === value.value) : undefined
+            }
+            onChange={index => {
+              onChange?.(field.options[index]);
             }}
-            css={{ border: 0, appearance: 'none' }}
-          >
-            <XIcon />
-            <VisuallyHidden>Clear</VisuallyHidden>
-          </button>
-        )}
+          />
+          {value !== null && onChange !== undefined && (
+            <Button
+              onClick={() => {
+                onChange(null);
+              }}
+            >
+              Clear
+            </Button>
+          )}
+        </Stack>
       </Fragment>
     )}
   </FieldContainer>
@@ -66,7 +68,8 @@ export const Cell: CellComponent<typeof controller> = ({ item, field, linkTo }) 
 Cell.supportsLinkTo = true;
 
 export const CardValue: CardValueComponent<typeof controller> = ({ item, field }) => {
-  const label = field.options.find(x => x.value === item[field.path])?.label;
+  let value = item[field.path] + '';
+  const label = field.options.find(x => x.value === value)?.label;
 
   return (
     <FieldContainer>

@@ -70,6 +70,11 @@ export const select =
       getAdminMeta: () => import('./views').AdminSelectFieldMeta;
     } => {
       const values = new Set(options.map(x => x.value));
+      if (values.size !== options.length) {
+        throw new Error(
+          `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+        );
+      }
       return {
         ...config,
         ui,
