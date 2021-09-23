@@ -7,19 +7,23 @@ export const lists = {
     fields: {
       label: text({ isRequired: true }),
       priority: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },
           { label: 'High', value: 'high' },
         ],
-        // Dynamic default: Use the label field to determine the priority
-        defaultValue: ({ originalInput }) => {
-          if (originalInput.label && originalInput.label.toLowerCase().includes('urgent')) {
-            return 'high';
-          } else {
-            return 'low';
-          }
+        hooks: {
+          resolveInput({ resolvedData, originalInput }) {
+            if (originalInput.priority === undefined) {
+              if (originalInput.label && originalInput.label.toLowerCase().includes('urgent')) {
+                return 'high';
+              } else {
+                return 'low';
+              }
+            }
+            return resolvedData.priority;
+          },
         },
       }),
       // Static default: When a task is first created, it is incomplete

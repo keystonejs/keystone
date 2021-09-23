@@ -13,7 +13,6 @@
  */
 
 import {
-  ChangeEvent,
   ChangeEventHandler,
   HTMLAttributes,
   ReactNode,
@@ -21,6 +20,7 @@ import {
   useEffect,
   useRef,
   useState,
+  InputHTMLAttributes,
 } from 'react';
 
 import {
@@ -29,7 +29,6 @@ import {
   jsx,
   ManagedChangeHandler,
   useId,
-  useManagedState,
   useTheme,
   VisuallyHidden,
   css,
@@ -47,14 +46,12 @@ type SegmentedControlProps = {
   animate?: boolean;
   /** Whether the controls should take up the full width of their container. */
   fill?: boolean;
-  /** Provide an initial index for an uncontrolled segmented control. */
-  initialIndex?: Index;
   /** Function to be called when one of the segments is selected. */
-  onChange?: ManagedChangeHandler<Index>;
+  onChange: ManagedChangeHandler<Index>;
   /** Provide labels for each segment. */
   segments: string[];
   /** The the selected index of the segmented control. */
-  selectedIndex?: Index;
+  selectedIndex: Index | undefined;
   /** The size of the controls. */
   size?: SizeKey;
   /** The width of the controls. */
@@ -64,25 +61,15 @@ type SegmentedControlProps = {
 export const SegmentedControl = ({
   animate = false,
   fill = false,
-  initialIndex: initialIndexProp = -1,
-  onChange: onChangeProp,
+  onChange,
   segments,
   size = 'medium',
   width = 'large',
-  selectedIndex: selectedIndexProp,
+  selectedIndex,
   ...props
 }: SegmentedControlProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const [selectedRect, setSelectedRect] = useState({});
-  const [selectedIndex, setIndex] = useManagedState<Index>(
-    selectedIndexProp,
-    initialIndexProp,
-    onChangeProp
-  );
-
-  const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
-    setIndex(index, event);
-  };
 
   // Because we use radio buttons for the segments, they should share a unique `name`
   const name = String(useId());
@@ -141,7 +128,9 @@ export const SegmentedControl = ({
               isSelected={isSelected}
               key={label}
               name={name}
-              onChange={handleChange(idx)}
+              onChange={event => {
+                onChange(idx, event);
+              }}
               size={size}
               value={idx}
             >
@@ -194,16 +183,18 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...prop
   );
 });
 
-type ItemProps = {
+type BaseInputProps = {
   children: ReactNode;
   fill: boolean;
   isAnimated: boolean;
   isSelected: boolean;
-  onChange: ChangeEventHandler;
+  onChange: ChangeEventHandler<HTMLInputElement>;
   name: string;
   size: SizeKey;
   value: Index;
-} & HTMLAttributes<HTMLInputElement>;
+};
+
+type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
 
 const Item = (props: ItemProps) => {
   const { children, fill, isAnimated, isSelected, onChange, size, value, ...attrs } = props;
