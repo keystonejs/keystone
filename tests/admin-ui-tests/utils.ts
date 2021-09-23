@@ -48,17 +48,21 @@ export function generateDataArray(map: (key: number) => any, range: number) {
 }
 
 export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
-  const { PrismaClient } = require(path.resolve(
-    projectRoot,
-    projectDir,
-    'node_modules/.prisma/client'
-  ));
+  const prevCwd = process.cwd;
+  try {
+    process.cwd = () => {
+      return projectDir;
+    };
+    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
-  let prisma = new PrismaClient();
+    let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
-  await prisma.$disconnect();
+    await prisma.$disconnect();
+  } finally {
+    process.cwd = prevCwd;
+  }
 };
 
 export const adminUITests = (

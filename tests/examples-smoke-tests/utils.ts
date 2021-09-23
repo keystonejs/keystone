@@ -5,13 +5,21 @@ import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
+  const prevCwd = process.cwd;
+  try {
+    process.cwd = () => {
+      return projectDir;
+    };
+    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
-  let prisma = new PrismaClient();
+    let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
+    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
-  await prisma.$disconnect();
+    await prisma.$disconnect();
+  } finally {
+    process.cwd = prevCwd;
+  }
 }
 
 const treeKill = promisify(_treeKill);
@@ -47,7 +55,7 @@ export const exampleProjectTests = (
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
-  describe.each(['dev', 'prod'] as const)('%s', mode => {
+  describe.each(['dev'] as ('dev' | 'prod')[])('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
     afterAll(async () => {
@@ -110,12 +118,12 @@ export const exampleProjectTests = (
 
     describe.each([
       'chromium',
-      'firefox',
+      // 'firefox',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
       // webkit doesn't treat localhost as a secure context
       // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);
