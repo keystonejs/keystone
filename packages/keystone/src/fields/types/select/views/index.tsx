@@ -1,10 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 import { Button } from '@keystone-ui/button';
+import { Text } from '@keystone-ui/core';
 import {
   CardValueComponent,
   CellComponent,
@@ -14,51 +15,73 @@ import {
 } from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer as={field.displayMode === 'select' ? 'div' : 'fieldset'}>
-    {field.displayMode === 'select' ? (
-      <Fragment>
-        <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-        <Select
-          id={field.path}
-          isClearable
-          autoFocus={autoFocus}
-          options={field.options}
-          isDisabled={onChange === undefined}
-          onChange={value => {
-            onChange?.(value);
-          }}
-          value={value}
-          portalMenu
-        />
-      </Fragment>
-    ) : (
-      <Fragment>
-        <FieldLabel as="legend">{field.label}</FieldLabel>
-        <Stack across gap="small" align="center">
-          <SegmentedControl
-            segments={field.options.map(x => x.label)}
-            selectedIndex={
-              value ? field.options.findIndex(x => x.value === value.value) : undefined
-            }
-            onChange={index => {
-              onChange?.(field.options[index]);
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) => {
+  const [hasChanged, setHasChanged] = useState(false);
+  const validationMessage =
+    (hasChanged || forceValidation) && !validate(value, field.isRequired) ? (
+      <Text color="red600" size="small">
+        {field.label} is required
+      </Text>
+    ) : null;
+  return (
+    <FieldContainer as={field.displayMode === 'select' ? 'div' : 'fieldset'}>
+      {field.displayMode === 'select' ? (
+        <Fragment>
+          <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+          <Select
+            id={field.path}
+            isClearable
+            autoFocus={autoFocus}
+            options={field.options}
+            isDisabled={onChange === undefined}
+            onChange={newVal => {
+              onChange?.({ ...value, value: newVal });
+              setHasChanged(true);
             }}
+            value={value.value}
+            portalMenu
           />
-          {value !== null && onChange !== undefined && (
-            <Button
-              onClick={() => {
-                onChange(null);
+          {validationMessage}
+        </Fragment>
+      ) : (
+        <Fragment>
+          <FieldLabel as="legend">{field.label}</FieldLabel>
+          <Stack across gap="small" align="center">
+            <SegmentedControl
+              segments={field.options.map(x => x.label)}
+              selectedIndex={
+                value.value
+                  ? field.options.findIndex(x => x.value === value.value!.value)
+                  : undefined
+              }
+              onChange={index => {
+                onChange?.({ ...value, value: field.options[index] });
+                setHasChanged(true);
               }}
-            >
-              Clear
-            </Button>
-          )}
-        </Stack>
-      </Fragment>
-    )}
-  </FieldContainer>
-);
+            />
+            {value.value !== null && onChange !== undefined && (
+              <Button
+                onClick={() => {
+                  onChange({ ...value, value: null });
+                  setHasChanged(true);
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </Stack>
+          {validationMessage}
+        </Fragment>
+      )}
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent<typeof controller> = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
@@ -89,12 +112,31 @@ export type AdminSelectFieldMeta = {
 
 type Config = FieldControllerConfig<AdminSelectFieldMeta>;
 
+type Option = { label: string; value: string };
+
+type Value =
+  | { value: Option | null; kind: 'create' }
+  | { value: Option | null; initial: Option | null; kind: 'update' };
+
+function validate(value: Value, isRequired: boolean) {
+  if (isRequired) {
+    // if you got null initially on the update screen, we want to allow saving
+    // since the user probably doesn't have read access control
+    if (value.kind === 'update' && value.initial === null) {
+      return true;
+    }
+    return value.value !== null;
+  }
+  return true;
+}
+
 export const controller = (
   config: Config
-): FieldController<{ label: string; value: string } | null, { label: string; value: string }[]> & {
-  options: { label: string; value: string }[];
+): FieldController<Value, Option[]> & {
+  options: Option[];
   type: 'string' | 'integer' | 'enum';
   displayMode: 'select' | 'segmented-control';
+  isRequired: boolean;
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,
@@ -111,22 +153,29 @@ export const controller = (
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: optionsWithStringValues.find(x => x.value === stringifiedDefault) ?? null,
+    defaultValue: {
+      kind: 'create',
+      value: optionsWithStringValues.find(x => x.value === stringifiedDefault) ?? null,
+    },
     type: config.fieldMeta.type,
     displayMode: config.fieldMeta.displayMode,
+    isRequired: config.fieldMeta.isRequired,
     options: optionsWithStringValues,
     deserialize: data => {
       for (const option of config.fieldMeta.options) {
         if (option.value === data[config.path]) {
+          const stringifiedOption = { label: option.label, value: option.value.toString() };
           return {
-            label: option.label,
-            value: option.value.toString(),
+            kind: 'update',
+            initial: stringifiedOption,
+            value: stringifiedOption,
           };
         }
       }
-      return null;
+      return { kind: 'update', initial: null, value: null };
     },
-    serialize: value => ({ [config.path]: t(value?.value ?? null) }),
+    serialize: value => ({ [config.path]: t(value.value?.value ?? null) }),
+    validate: value => validate(value, config.fieldMeta.isRequired),
     filter: {
       Filter(props) {
         return (
