@@ -7,6 +7,7 @@ export {
   supportsUnique,
   fieldConfig,
   fieldName,
+  skipRequiredTest,
 } from '../test-fixtures';
 
 type MatrixValue = typeof testMatrix[number];
@@ -14,7 +15,7 @@ type MatrixValue = typeof testMatrix[number];
 export const name = 'Select with isNullable: false';
 export const typeFunction = (config: any) => select({ ...config, isNullable: false });
 
-export const supportedFilters = () => ['equality', 'in_equal'];
+export const supportedFilters = () => [];
 
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 
