@@ -72,6 +72,7 @@ class MyDocument extends Document {
             async
             src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
           />
+          <script async data-api="/_sb" src="/sb.js" />
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
