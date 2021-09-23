@@ -5,13 +5,21 @@ import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
+  const prevCwd = process.cwd;
+  try {
+    process.cwd = () => {
+      return projectDir;
+    };
+    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
-  let prisma = new PrismaClient();
+    let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
-  await prisma.$disconnect();
+    await prisma.$disconnect();
+  } finally {
+    process.cwd = prevCwd;
+  }
 }
 
 const treeKill = promisify(_treeKill);
