@@ -75,7 +75,7 @@ function printField(
   }
   if (field.kind === 'enum') {
     const index = printIndex(fieldPath, field.index);
-    const defaultValue = field.default ? ` @default(${field.default})` : '';
+    const defaultValue = field.default ? ` @default(${field.default.value})` : '';
     return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${index}`;
   }
   if (field.kind === 'multi') {
