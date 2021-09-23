@@ -14,13 +14,19 @@ const runner = setupTestRunner({
       UserToPostLimitedRead: list({
         fields: {
           username: text(),
-          posts: relationship({ ref: 'PostLimitedRead', many: true }),
+          posts: relationship({ ref: 'PostLimitedRead.author', many: true }),
+        },
+        access: {
+          filter: {
+            query: () => ({ username: { not: { equals: 'bad' } } }),
+          },
         },
       }),
       PostLimitedRead: list({
         fields: {
           name: text({ isFilterable: true }),
           content: text(),
+          author: relationship({ ref: 'UserToPostLimitedRead.posts', many: false }),
         },
         access: {
           filter: {
@@ -60,13 +66,13 @@ describe('relationship filtering with access control', () => {
       // Create an item that does the linking
       const item = await context.query.UserToPostLimitedRead.findOne({
         where: { id: user.id },
-        query: 'id username posts { id }',
+        query: 'id username posts { id author { id username } }',
       });
 
       expect(item).toMatchObject({
         id: expect.any(String),
         username,
-        posts: [{ id: postIds[1] }],
+        posts: [{ id: postIds[1], author: { id: user.id, username } }],
       });
     })
   );
