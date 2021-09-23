@@ -9,7 +9,7 @@ import {
   graphql,
   filters,
 } from '../../../types';
-// @ts-ignore
+import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -36,10 +36,7 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       ui?: {
         displayMode?: 'select' | 'segmented-control';
       };
-      /**
-       * @default true
-       */
-      isNullable?: boolean;
+
       validation?: {
         /**
          * @default false
@@ -47,7 +44,22 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
         isRequired?: boolean;
       };
       isIndexed?: boolean | 'unique';
-    };
+      graphql?: {
+        create?: {
+          isNonNull?: boolean;
+        };
+      };
+    } & (
+      | { isNullable?: true }
+      | {
+          isNullable: false;
+          graphql?: {
+            read?: {
+              isNonNull?: boolean;
+            };
+          };
+        }
+    );
 
 // These are the max and min values available to a 32 bit signed integer
 const MAX_INT = 2147483647;
@@ -63,6 +75,10 @@ export const select =
   }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    if (config.isNullable === false) {
+      assertReadIsNonNullAllowed(meta, config);
+    }
+    assertCreateIsNonNullAllowed(meta, config);
     const commonConfig = (
       options: { value: string | number; label: string }[]
     ): CommonFieldConfig<TGeneratedListTypes> & {
@@ -121,6 +137,19 @@ export const select =
       return val;
     };
 
+    const output = <T extends graphql.NullableOutputType>(type: T) =>
+      config.isNullable === false && config.graphql?.read?.isNonNull === true
+        ? graphql.nonNull(type)
+        : type;
+
+    const create = <T extends graphql.NullableInputType>(type: T) => {
+      const isNonNull = config.isNullable === false && config.graphql?.read?.isNonNull === true;
+      return graphql.arg({
+        type: isNonNull ? graphql.nonNull(type) : type,
+        defaultValue: isNonNull ? defaultValue : undefined,
+      });
+    };
+
     if (config.type === 'integer') {
       if (
         config.options.some(
@@ -142,11 +171,11 @@ export const select =
             arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
           },
-          create: { arg: graphql.arg({ type: graphql.Int }), resolve: resolveCreate },
+          create: { arg: create(graphql.Int), resolve: resolveCreate },
           update: { arg: graphql.arg({ type: graphql.Int }) },
           orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
-        output: graphql.field({ type: graphql.Int }),
+        output: graphql.field({ type: output(graphql.Int) }),
       });
     }
     const options = config.options.map(option => {
@@ -181,11 +210,11 @@ export const select =
             arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
           },
-          create: { arg: graphql.arg({ type: graphQLType }), resolve: resolveCreate },
+          create: { arg: create(graphQLType), resolve: resolveCreate },
           update: { arg: graphql.arg({ type: graphQLType }) },
           orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
-        output: graphql.field({ type: graphQLType }),
+        output: graphql.field({ type: output(graphQLType) }),
       });
     }
     return fieldType({ kind: 'scalar', scalar: 'String', ...commonDbFieldConfig })({
@@ -195,10 +224,10 @@ export const select =
           arg: graphql.arg({ type: filters[meta.provider].String[mode] }),
           resolve: mode === 'required' ? undefined : filters.resolveString,
         },
-        create: { arg: graphql.arg({ type: graphql.String }), resolve: resolveCreate },
+        create: { arg: create(graphql.String), resolve: resolveCreate },
         update: { arg: graphql.arg({ type: graphql.String }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.String }),
+      output: graphql.field({ type: output(graphql.String) }),
     });
   };
