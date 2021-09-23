@@ -255,6 +255,11 @@ config({
 
 This lets you modify the express app that Keystone creates _before_ the Apollo Server and Admin UI Middleware are added to it (but after the `cors` and `healthcheck` options are applied).
 
+The function is passed two arguments:
+
+- `app`: The express app keystone has created
+- `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+
 For example, you could add your own request logging middleware:
 
 ```ts
@@ -283,6 +288,24 @@ export default config({
   },
 });
 ```
+
+You could also use it to add custom REST endpoints to your server, by creating a context for the request and using the Query API Keystone provides:
+
+```ts
+export default config({
+  server: {
+    extendExpressApp: (app, createContext) => {
+      app.get('/api/users', async (req, res) => {
+        const context = await createContext(req, res);
+        const users = await context.query.User.findMany();
+        res.json(users);
+      });
+    },
+  },
+});
+```
+
+The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
 
 ## session
 
