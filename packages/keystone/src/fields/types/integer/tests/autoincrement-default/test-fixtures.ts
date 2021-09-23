@@ -1,18 +1,27 @@
-import { KeystoneContext } from '../../../../types';
-import { autoIncrement } from '..';
+import { KeystoneContext } from '../../../../../types';
+import { integer } from '../../index';
 
-export const name = 'AutoIncrement';
-export const typeFunction = autoIncrement;
+export const name = 'Integer with autoincrement default';
+export const typeFunction = (config: any) =>
+  integer({ ...config, isNullable: false, defaultValue: { kind: 'autoincrement' } });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;
 export const supportsUnique = true;
 export const fieldName = 'orderNumber';
+export const supportsGraphQLIsNonNull = true;
+export const skipRequiredTest = true;
 export const skipCreateTest = false;
 export const skipUpdateTest = true;
 
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({ orderNumber: autoIncrement({ isFilterable: true }) });
+export const getTestFields = () => ({
+  orderNumber: integer({
+    isFilterable: true,
+    isNullable: false,
+    defaultValue: { kind: 'autoincrement' },
+  }),
+});
 
 export const initItems = () => {
   return [
@@ -60,13 +69,6 @@ export const filterTests = (withKeystone: (arg: any) => any) => {
     'Filter: not',
     withKeystone(({ context }: { context: KeystoneContext }) =>
       match(context, { orderNumber: { not: { equals: 1 } } }, [1, 2, 3, 4, 5, 6])
-    )
-  );
-
-  test(
-    'Filter: not null',
-    withKeystone(({ context }: { context: KeystoneContext }) =>
-      match(context, { orderNumber: { not: null } }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 
