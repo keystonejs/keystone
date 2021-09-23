@@ -1,5 +1,3 @@
-export { autoIncrement } from './types/autoIncrement';
-export type { AutoIncrementFieldConfig } from './types/autoIncrement';
 export { checkbox } from './types/checkbox';
 export type { CheckboxFieldConfig } from './types/checkbox';
 export { decimal } from './types/decimal';
