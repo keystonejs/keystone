@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
@@ -17,6 +17,7 @@ import {
 } from '../../../../types';
 import { Link } from '../../../../admin-ui/router';
 import { useKeystone, useList } from '../../../../admin-ui/context';
+import { gql, useQuery } from '../../../../admin-ui/apollo';
 import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components';
 
 import { Cards } from './cards';
@@ -28,23 +29,24 @@ function LinkToRelatedItems({
   value,
   list,
 }: {
-  itemId: string;
+  itemId?: string;
   isDoubleSided: boolean;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
   function constructQuery({
-    // isDoubleSided,
-    // itemId,
+    isDoubleSided,
+    itemId,
     value,
   }: {
     isDoubleSided?: boolean;
     itemId?: string;
     value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   }) {
-    // if (isDoubleSided && itemId) {
-    //   return;
-    // }
+    console.log(isDoubleSided, itemId);
+    if (isDoubleSided && itemId) {
+      return `%21assignedTo_matches="${itemId}"`;
+    }
     return `!id_in="${(value?.value as { id: string; label: string }[])
       .slice(0, 100)
       .map(({ id }: { id: string }) => id)
@@ -127,6 +129,7 @@ export const Field = ({
   onChange,
   forceValidation,
 }: FieldProps<typeof controller>) => {
+  console.log(itemId);
   const keystone = useKeystone();
   const foreignList = useList(field.refListKey);
   const localList = useList(field.listKey);
@@ -370,7 +373,7 @@ type CountRelationshipValue = {
 
 type RelationshipController = FieldController<
   ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue,
-  { id: string; label: string }[]
+  string
 > & {
   display:
     | {
@@ -514,35 +517,74 @@ export const controller = (
     },
     filter: {
       Filter: ({ onChange, value }) => {
+        const foreignList = useList(config.fieldMeta.refListKey);
+        const foreignIds = getForeignIds(value);
+        const where = config.fieldMeta.many
+          ? {
+              some: {
+                id: {
+                  in: foreignIds,
+                },
+              },
+            }
+          : {
+              id: {
+                in: foreignIds,
+              },
+            };
+        const query = gql`
+          query FOREIGNLIST_QUERY($where: ${foreignList.gqlNames.whereInputName}!) {
+            items: ${foreignList.gqlNames.listQueryName}(where: $where) {
+              id 
+              ${foreignList.labelField}
+            }
+          }
+        `;
+        const { data, loading } = useQuery(query, {
+          variables: {
+            where,
+          },
+        });
+        const stateValue =
+          data?.items?.map((item: any) => {
+            return {
+              id: item.id,
+              label: item[foreignList.labelField],
+            };
+          }) || [];
+        console.log(stateValue);
+
         const state: {
           kind: 'many';
-          value: typeof value;
+          value: { label: string; id: string }[];
           onChange: (newItems: { label: string; id: string }[]) => void;
         } = {
           kind: 'many',
-          value: value,
+          value: stateValue,
           onChange(newItems) {
-            onChange(newItems);
+            console.log();
+            onChange(newItems.map(item => item.id).join(','));
           },
         };
-        const foreignList = useList(config.fieldMeta.refListKey);
+
         return (
           <RelationshipSelect
             controlShouldRenderValue
             list={foreignList}
-            isLoading={false}
+            isLoading={loading}
             isDisabled={onChange === undefined}
             state={state}
           />
         );
       },
       graphql: ({ value }) => {
+        const foreignIds = getForeignIds(value);
         if (config.fieldMeta.many) {
           return {
             [config.path]: {
               some: {
                 id: {
-                  in: value.map(x => x.id),
+                  in: foreignIds,
                 },
               },
             },
@@ -551,26 +593,61 @@ export const controller = (
         return {
           [config.path]: {
             id: {
-              in: value.map(x => x.id),
+              in: foreignIds,
             },
           },
         };
       },
       Label({ value }) {
-        if (!value.length) {
+        const foreignList = useList(config.fieldMeta.refListKey);
+        const foreignIds = getForeignIds(value);
+        const where = config.fieldMeta.many
+          ? {
+              some: {
+                id: {
+                  in: foreignIds,
+                },
+              },
+            }
+          : {
+              id: {
+                in: foreignIds,
+              },
+            };
+        const query = gql`
+          query FOREIGNLIST_QUERY($where: ${foreignList.gqlNames.whereInputName}!) {
+            items: ${foreignList.gqlNames.listQueryName}(where: $where) {
+              id 
+              ${foreignList.labelField}
+            }
+          }
+        `;
+        const { data, error } = useQuery(query, {
+          variables: {
+            where,
+          },
+        });
+        const stateValue =
+          data?.items?.map((item: any) => {
+            return {
+              id: item.id,
+              label: item[foreignList.labelField],
+            };
+          }) || [];
+        if (!stateValue.length) {
           return `has no value`;
         }
-        if (value.length > 1) {
-          const values = value.map(i => i.label).join(', ');
+        if (stateValue.length > 1) {
+          const values = stateValue.map((i: any) => i.label).join(', ');
           return `is in [${values}]`;
         }
-        const optionLabel = value[0].label;
+        const optionLabel = stateValue[0].label;
         return `is ${optionLabel}`;
       },
       types: {
         matches: {
           label: 'Matches',
-          initialValue: [],
+          initialValue: '',
         },
       },
     },
@@ -646,3 +723,10 @@ export const controller = (
     },
   };
 };
+
+function getForeignIds(value: string) {
+  if (typeof value === 'string') {
+    return value.split(',');
+  }
+  return value;
+}

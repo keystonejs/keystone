@@ -6,6 +6,7 @@ import { FieldMeta } from '../../types';
 import { Value } from '.';
 
 type RenderFieldProps = {
+  itemId?: string;
   field: FieldMeta;
   value: unknown;
   onChange?(value: (value: Value) => Value): void;
@@ -14,6 +15,7 @@ type RenderFieldProps = {
 };
 
 const RenderField = memo(function RenderField({
+  itemId,
   field,
   value,
   autoFocus,
@@ -22,6 +24,7 @@ const RenderField = memo(function RenderField({
 }: RenderFieldProps) {
   return (
     <field.views.Field
+      itemId={itemId}
       field={field.controller}
       onChange={useMemo(() => {
         if (onChange === undefined) return undefined;
@@ -37,7 +40,7 @@ const RenderField = memo(function RenderField({
 });
 
 type FieldsProps = {
-  itemId: string;
+  itemId?: string;
   fields: Record<string, FieldMeta>;
   value: Value;
   forceValidation: boolean;
