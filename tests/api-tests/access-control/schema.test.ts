@@ -303,7 +303,7 @@ describe(`Public schema`, () => {
           });
 
           test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
-            const item = await context.sudo().lists[listName].createOne({ data: {} });
+            const item = await context.sudo().query[listName].createOne({ data: {} });
             const query = `
               query q($listName: String!) {
                 keystone {

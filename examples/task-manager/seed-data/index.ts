@@ -19,13 +19,13 @@ export async function insertSeedData(context: KeystoneContext) {
   const createPerson = async (personData: PersonProps) => {
     let person = null;
     try {
-      person = await context.lists.Person.findOne({
+      person = await context.query.Person.findOne({
         where: { name: personData.name },
         query: 'id',
       });
     } catch (e) {}
     if (!person) {
-      person = await context.lists.Person.createOne({
+      person = await context.query.Person.createOne({
         data: personData,
         query: 'id',
       });
@@ -36,7 +36,7 @@ export async function insertSeedData(context: KeystoneContext) {
   const createTask = async (taskData: TaskProps) => {
     let persons;
     try {
-      persons = await context.lists.Person.findMany({
+      persons = await context.query.Person.findMany({
         where: { name: { equals: taskData.assignedTo } },
         query: 'id',
       });
@@ -44,7 +44,7 @@ export async function insertSeedData(context: KeystoneContext) {
       persons = [];
     }
     taskData.assignedTo = { connect: { id: persons[0].id } };
-    const task = await context.lists.Task.createOne({
+    const task = await context.query.Task.createOne({
       data: taskData,
       query: 'id',
     });

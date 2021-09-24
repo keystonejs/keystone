@@ -42,7 +42,7 @@ export const filterTests = (withKeystone: (arg: any) => any) => {
   const _storedValues = storedValues();
   const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>
     expect(
-      await context.lists.Test.findMany({
+      await context.query.Test.findMany({
         where,
         orderBy: { name: 'asc' },
         query: 'name orderNumber',

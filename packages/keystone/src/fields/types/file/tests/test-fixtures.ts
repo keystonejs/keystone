@@ -65,7 +65,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       'upload values should match expected',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const filename = 'keystone.jpeg';
-        const data = await context.lists.Test.createOne({
+        const data = await context.query.Test.createOne({
           data: { secretFile: prepareFile(filename) },
           query: `
               secretFile {
@@ -90,7 +90,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       'From existing item succeeds',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         // Create an initial item
-        const initialItem = await context.lists.Test.createOne({
+        const initialItem = await context.query.Test.createOne({
           data: { secretFile: prepareFile('keystone.jpg') },
           query: `
             secretFile {
@@ -106,7 +106,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         // Create a new item base on the first items ref
         const ref = initialItem.secretFile.ref;
-        const newItem = await context.lists.Test.createOne({
+        const newItem = await context.query.Test.createOne({
           data: { secretFile: { ref } },
           query: `
             secretFile {
@@ -167,7 +167,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     test(
       'Both upload and ref fails - valid ref',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const initialItem = await context.lists.Test.createOne({
+        const initialItem = await context.query.Test.createOne({
           data: { secretFile: prepareFile('keystone.jpg') },
           query: `secretFile { ref }`,
         });

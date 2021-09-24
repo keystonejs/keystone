@@ -52,7 +52,7 @@ describe('Access control - Item', () => {
       ]);
 
       // No items should exist
-      const _items = await context.sudo().lists.BadAccess.findMany({ query: 'id name' });
+      const _items = await context.sudo().query.BadAccess.findMany({ query: 'id name' });
       expect(_items.map(({ name }) => name)).toEqual([]);
     })
   );
@@ -76,7 +76,7 @@ describe('Access control - Item', () => {
       ]);
 
       // No items should exist
-      const _users = await context.sudo().lists.BadAccess.findMany({ query: 'id name' });
+      const _users = await context.sudo().query.BadAccess.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual([]);
     })
   );
@@ -84,7 +84,7 @@ describe('Access control - Item', () => {
   test(
     'updateOne - Bad function return value',
     runner(async ({ context, graphQLRequest }) => {
-      const item = await context.sudo().lists.BadAccess.createOne({ data: { name: 'good' } });
+      const item = await context.sudo().query.BadAccess.createOne({ data: { name: 'good' } });
 
       // Valid name
       const { body } = await graphQLRequest({
@@ -102,7 +102,7 @@ describe('Access control - Item', () => {
       ]);
 
       // Item should have its original name
-      const _items = await context.sudo().lists.BadAccess.findMany({ query: 'id name' });
+      const _items = await context.sudo().query.BadAccess.findMany({ query: 'id name' });
       expect(_items.map(({ name }) => name)).toEqual(['good']);
     })
   );
@@ -110,7 +110,7 @@ describe('Access control - Item', () => {
   test(
     'deleteOne - Bad function return value',
     runner(async ({ context, graphQLRequest }) => {
-      const item = await context.sudo().lists.BadAccess.createOne({ data: { name: 'good' } });
+      const item = await context.sudo().query.BadAccess.createOne({ data: { name: 'good' } });
 
       // Valid name
       const { body } = await graphQLRequest({
@@ -128,7 +128,7 @@ describe('Access control - Item', () => {
       ]);
 
       // Item should have its original name
-      const _items = await context.sudo().lists.BadAccess.findMany({ query: 'id name' });
+      const _items = await context.sudo().query.BadAccess.findMany({ query: 'id name' });
       expect(_items.map(({ name }) => name)).toEqual(['good']);
     })
   );

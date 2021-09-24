@@ -56,6 +56,9 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
             );
           }
+          if (!lists[rootVal.listKey].fields[rootVal.path].input?.orderBy) {
+            return false;
+          }
           const isOrderable = lists[rootVal.listKey].fields[rootVal.path].graphql.isEnabled.orderBy;
           if (typeof isOrderable === 'function') {
             return isOrderable({
@@ -75,6 +78,9 @@ export function getAdminMetaSchema({
             throw new Error(
               'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
             );
+          }
+          if (!lists[rootVal.listKey].fields[rootVal.path].input?.where) {
+            return false;
           }
           const isFilterable = lists[rootVal.listKey].fields[rootVal.path].graphql.isEnabled.filter;
           if (typeof isFilterable === 'function') {
@@ -412,7 +418,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
     if (items.has(id)) {
       return items.get(id)!;
     }
-    let promise = context.db.lists[listKey].findOne({ where: { id } });
+    let promise = context.db[listKey].findOne({ where: { id } });
     items.set(id, promise);
     return promise;
   };

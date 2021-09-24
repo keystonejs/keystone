@@ -81,7 +81,7 @@ describe('Auth testing', () => {
     runner(async ({ context }) => {
       // seed the db
       for (const [listKey, data] of Object.entries(initialData)) {
-        await context.sudo().lists[listKey].createMany({ data });
+        await context.sudo().query[listKey].createMany({ data });
       }
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
       expect(data).toEqual({ users: [] });
@@ -135,7 +135,7 @@ describe('Auth testing', () => {
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().lists[listKey].createMany({ data });
+          await context.sudo().query[listKey].createMany({ data });
         }
         const { sessionToken } = await login(
           graphQLRequest,
@@ -159,7 +159,7 @@ describe('Auth testing', () => {
       'Allows access with cookie',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().lists[listKey].createMany({ data });
+          await context.sudo().query[listKey].createMany({ data });
         }
         const { sessionToken } = await login(
           graphQLRequest,

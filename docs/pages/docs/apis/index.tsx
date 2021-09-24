@@ -76,10 +76,10 @@ export default function Docs() {
         <Well grad="grad4" heading="Context API" href="/docs/apis/context">
           The primary API entry point for all of the run-time functionally of your Keystone system.
         </Well>
-        <Well grad="grad4" heading="List Items API" href="/docs/apis/list-items">
+        <Well grad="grad4" heading="Query API" href="/docs/apis/query">
           A programmatic API for running CRUD operations against your GraphQL API.
         </Well>
-        <Well grad="grad4" heading="Database Items API" href="/docs/apis/db-items">
+        <Well grad="grad4" heading="Database API" href="/docs/apis/db-items">
           A programmatic API for running CRUD operations against the internal GraphQL resolvers in
           your system.
         </Well>

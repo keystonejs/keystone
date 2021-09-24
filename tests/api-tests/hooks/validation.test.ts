@@ -69,7 +69,7 @@ describe('List Hooks: #validateInput()', () => {
     'createOne',
     runner(async ({ context }) => {
       // Valid name should pass
-      await context.lists.User.createOne({ data: { name: 'good' } });
+      await context.query.User.createOne({ data: { name: 'good' } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -84,7 +84,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // Only the original user should exist
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['good']);
     })
   );
@@ -93,8 +93,8 @@ describe('List Hooks: #validateInput()', () => {
     'updateOne',
     runner(async ({ context }) => {
       // Valid name should pass
-      const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
+      const user = await context.query.User.createOne({ data: { name: 'good' } });
+      await context.query.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -109,7 +109,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // User should have its original name
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
     })
   );
@@ -118,9 +118,9 @@ describe('List Hooks: #validateInput()', () => {
     'deleteOne',
     runner(async ({ context }) => {
       // Valid names should pass
-      const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
-      const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ where: { id: user1.id } });
+      const user1 = await context.query.User.createOne({ data: { name: 'good' } });
+      const user2 = await context.query.User.createOne({ data: { name: 'no delete' } });
+      await context.query.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -135,7 +135,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // Bad users should still be in the database.
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['no delete']);
     })
   );
@@ -174,7 +174,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // Three users should exist in the database
-      const users = await context.lists.User.findMany({
+      const users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -186,7 +186,7 @@ describe('List Hooks: #validateInput()', () => {
     'updateMany',
     runner(async ({ context }) => {
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'good 2' },
@@ -226,7 +226,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // All users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -244,7 +244,7 @@ describe('List Hooks: #validateInput()', () => {
     'deleteMany',
     runner(async ({ context }) => {
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'no delete 1' },
@@ -279,7 +279,7 @@ describe('List Hooks: #validateInput()', () => {
       ]);
 
       // Three users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -292,7 +292,7 @@ describe('Field Hooks: #validateInput()', () => {
   test(
     'update',
     runner(async ({ context }) => {
-      const post = await context.lists.Post.createOne({ data: {} });
+      const post = await context.query.Post.createOne({ data: {} });
 
       const { data, errors } = await context.graphql.raw({
         query: `mutation ($id: ID! $data: PostUpdateInput!) { updatePost(where: { id: $id }, data: $data) { id } }`,
@@ -315,7 +315,7 @@ describe('Field Hooks: #validateInput()', () => {
   test(
     'delete',
     runner(async ({ context }) => {
-      const post = await context.lists.Post.createOne({ data: {} });
+      const post = await context.query.Post.createOne({ data: {} });
       const { data, errors } = await context.graphql.raw({
         query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
         variables: { id: post.id },
