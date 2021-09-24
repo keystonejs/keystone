@@ -35,7 +35,7 @@ model Product {
   description           String        @default("")
   photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
   photoId               String?       @unique @map("photo")
-  status                String?
+  status                String?       @default("DRAFT")
   price                 Int?
   user                  User?         @relation("Product_user", fields: [userId], references: [id])
   userId                String?       @map("user")

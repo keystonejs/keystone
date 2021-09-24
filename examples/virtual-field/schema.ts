@@ -7,7 +7,7 @@ export const lists = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       status: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },

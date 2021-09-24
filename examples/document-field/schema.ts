@@ -8,7 +8,7 @@ export const lists = {
       title: text({ validation: { isRequired: true } }),
       slug: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       status: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },

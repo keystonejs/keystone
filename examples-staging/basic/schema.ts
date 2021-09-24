@@ -143,6 +143,11 @@ export const lists = {
         ui: {
           displayMode: 'segmented-control',
         },
+        isNullable: false,
+        validation: {
+          isRequired: true,
+        },
+        defaultValue: 'draft',
       }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
