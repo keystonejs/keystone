@@ -249,7 +249,7 @@ describe('Auth testing', () => {
           {
             path: ['createUser'], // I don't like this!
             message:
-              'You provided invalid data for this operation.\n  - User.email: Required field "email" is null or undefined.',
+              'You provided invalid data for this operation.\n  - User.email: Email must not be empty',
           },
         ]);
         expect(body.data).toEqual(null);
