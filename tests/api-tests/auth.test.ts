@@ -79,7 +79,6 @@ async function authenticateWithPassword(
             item { id }
           }
           ... on UserAuthenticationWithPasswordFailure {
-            code
             message
           }
         }
@@ -139,7 +138,7 @@ describe('Auth testing', () => {
         expect(sessionHeader).toBe(undefined);
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({
-          authenticateUserWithPassword: { code: 'FAILURE', message: 'Authentication failed.' },
+          authenticateUserWithPassword: { message: 'Authentication failed.' },
         });
       })
     );
@@ -162,7 +161,7 @@ describe('Auth testing', () => {
         expect(sessionHeader).toBe(undefined);
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({
-          authenticateUserWithPassword: { code: 'FAILURE', message: 'Authentication failed.' },
+          authenticateUserWithPassword: { message: 'Authentication failed.' },
         });
       })
     );
@@ -266,9 +265,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -307,9 +304,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'bores@keystone.com' },
@@ -326,9 +321,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'bad@keystone.com' },
@@ -358,9 +351,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -447,9 +438,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -487,9 +476,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -544,9 +531,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -581,9 +566,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserMagicAuthLink(email: $email) {
-                code message
-              }
+              sendUserMagicAuthLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -629,9 +612,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -671,9 +652,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'bores@keystone.com' },
@@ -690,9 +669,7 @@ describe('Auth testing', () => {
         const { body } = await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'bad@keystone.com' },
@@ -722,9 +699,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -766,9 +741,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -801,9 +774,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -840,9 +811,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -887,9 +856,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -919,9 +886,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -961,9 +926,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -990,9 +953,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -1025,9 +986,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -1060,9 +1019,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -1107,9 +1064,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },
@@ -1139,9 +1094,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `
             mutation($email: String!) {
-              sendUserPasswordResetLink(email: $email) {
-                code message
-              }
+              sendUserPasswordResetLink(email: $email)
             }
           `,
           variables: { email: 'boris@keystone.com' },

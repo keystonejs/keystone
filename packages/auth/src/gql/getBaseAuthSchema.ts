@@ -34,15 +34,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
         item: ${listKey}!
       }
       type ${gqlNames.ItemAuthenticationWithPasswordFailure} {
-        code: PasswordAuthErrorCode!
         message: String!
-      }
-      enum PasswordAuthErrorCode {
-        FAILURE
-        IDENTITY_NOT_FOUND
-        SECRET_NOT_SET
-        MULTIPLE_IDENTITY_MATCHES
-        SECRET_MISMATCH
       }
     `,
     resolvers: {
