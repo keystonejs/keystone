@@ -10,8 +10,8 @@ export const lists = {
       },
     },
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
       password: password(),
       posts: relationship({ ref: 'Post.author', many: true }),
     },

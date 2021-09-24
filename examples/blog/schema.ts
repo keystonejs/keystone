@@ -19,8 +19,8 @@ export const lists = {
   }),
   Author: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique' }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

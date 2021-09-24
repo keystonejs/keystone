@@ -4,7 +4,7 @@ import { select, relationship, text, timestamp } from '@keystone-next/keystone/f
 export const lists = {
   Post: list({
     fields: {
-      title: text({ isRequired: true }),
+      title: text({ validation: { isRequired: true } }),
       status: select({
         dataType: 'enum',
         options: [
@@ -19,8 +19,8 @@ export const lists = {
   }),
   Author: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique' }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

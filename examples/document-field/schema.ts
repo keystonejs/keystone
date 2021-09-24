@@ -5,8 +5,8 @@ import { document } from '@keystone-next/fields-document';
 export const lists = {
   Post: list({
     fields: {
-      title: text({ isRequired: true }),
-      slug: text({ isRequired: true, isIndexed: 'unique' }),
+      title: text({ validation: { isRequired: true } }),
+      slug: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       status: select({
         dataType: 'enum',
         options: [
@@ -42,8 +42,8 @@ export const lists = {
   }),
   Author: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique' }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
       bio: document({
         // We want to constrain the formatting in Author bios to a limited set of options.

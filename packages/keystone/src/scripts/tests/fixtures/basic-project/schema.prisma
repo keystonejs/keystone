@@ -13,6 +13,6 @@ generator client {
 }
 
 model Todo {
-  id    String  @id @default(cuid())
-  title String?
+  id    String @id @default(cuid())
+  title String @default("")
 }

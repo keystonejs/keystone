@@ -4,7 +4,7 @@ import { checkbox, json, relationship, text } from '@keystone-next/keystone/fiel
 export const lists = {
   Package: list({
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       pkgjson: json(),
       isPrivate: checkbox(),
       ownedBy: relationship({ ref: 'Person.packages', many: false }),
@@ -12,7 +12,7 @@ export const lists = {
   }),
   Person: list({
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       packages: relationship({ ref: 'Package.ownedBy', many: true }),
     },
   }),
