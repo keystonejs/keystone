@@ -156,7 +156,6 @@ function ItemForm({
         errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
       />
       <Fields
-        itemId={itemId}
         fieldModes={fieldModes}
         fields={list.fields}
         forceValidation={forceValidation}
