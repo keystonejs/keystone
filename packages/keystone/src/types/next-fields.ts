@@ -121,7 +121,7 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   name: string;
   values: Value[];
   mode: Mode;
-  default?: Value;
+  default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
 };
 

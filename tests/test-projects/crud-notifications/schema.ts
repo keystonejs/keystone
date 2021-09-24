@@ -15,7 +15,7 @@ export const lists = {
     fields: {
       label: text({ isRequired: true }),
       priority: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },

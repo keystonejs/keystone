@@ -28,16 +28,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
         ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
       }
       type Mutation {
-        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): ${gqlNames.SendItemPasswordResetLinkResult}
+        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): Boolean
         ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
-      }
-      type ${gqlNames.SendItemPasswordResetLinkResult} {
-        code: PasswordResetRequestErrorCode!
-        message: String!
-      }
-      enum PasswordResetRequestErrorCode {
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
       }
 
       type ${gqlNames.ValidateItemPasswordResetTokenResult} {
@@ -50,10 +42,6 @@ export function getPasswordResetSchema<I extends string, S extends string>({
       }
       enum PasswordResetRedemptionErrorCode {
         FAILURE
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
-        TOKEN_NOT_SET
-        TOKEN_MISMATCH
         TOKEN_EXPIRED
         TOKEN_REDEEMED
       }
