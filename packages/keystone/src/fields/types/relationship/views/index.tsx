@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode, useContext, useEffect, useState } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
@@ -29,7 +29,7 @@ function LinkToRelatedItems({
   value,
   list,
 }: {
-  itemId?: string;
+  itemId: string | null;
   isDoubleSided: boolean;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
@@ -122,14 +122,12 @@ const RelationshipDisplay = ({
 };
 
 export const Field = ({
-  itemId,
   field,
   autoFocus,
   value,
   onChange,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  console.log(itemId);
   const keystone = useKeystone();
   const foreignList = useList(field.refListKey);
   const localList = useList(field.listKey);
@@ -249,7 +247,7 @@ export const Field = ({
                 ? value.value.length
                 : value.kind === 'one' && value.value) && (
                 <LinkToRelatedItems
-                  itemId={itemId}
+                  itemId={value.id}
                   isDoubleSided={!!field.refFieldKey}
                   list={foreignList}
                   value={value}
@@ -350,11 +348,13 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 
 type SingleRelationshipValue = {
   kind: 'one';
+  id: null | string;
   initialValue: { label: string; id: string } | null;
   value: { label: string; id: string } | null;
 };
 type ManyRelationshipValue = {
   kind: 'many';
+  id: null | string;
   initialValue: { label: string; id: string }[];
   value: { label: string; id: string }[];
 };
@@ -368,6 +368,7 @@ type CardsRelationshipValue = {
 };
 type CountRelationshipValue = {
   kind: 'count';
+  id: null | string;
   count: number;
 };
 
@@ -449,9 +450,7 @@ export const controller = (
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'cards'
-        ? // TODO: namespace this stuff at the Keystone level
-          `${config.path}__id: id
-           ${config.path} {
+        ? `${config.path} {
             id
             label: ${config.fieldMeta.refLabelField}
            }`
@@ -464,14 +463,15 @@ export const controller = (
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
       ? {
+          id: null,
           kind: 'many',
           initialValue: [],
           value: [],
         }
-      : { kind: 'one', value: null, initialValue: null },
+      : { id: null, kind: 'one', value: null, initialValue: null },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'count') {
-        return { kind: 'count', count: data[`${config.path}Count`] ?? 0 };
+        return { id: data.id, kind: 'count', count: data[`${config.path}Count`] ?? 0 };
       }
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
@@ -484,7 +484,7 @@ export const controller = (
         );
         return {
           kind: 'cards-view',
-          id: data[`${config.path}__id`],
+          id: data.id,
           itemsBeingEdited: new Set(),
           itemBeingCreated: false,
           initialIds,
@@ -498,6 +498,7 @@ export const controller = (
         }));
         return {
           kind: 'many',
+          id: data.id,
           initialValue: value,
           value,
         };
@@ -511,6 +512,7 @@ export const controller = (
       }
       return {
         kind: 'one',
+        id: data.id,
         value,
         initialValue: value,
       };
@@ -552,7 +554,6 @@ export const controller = (
               label: item[foreignList.labelField],
             };
           }) || [];
-        console.log(stateValue);
 
         const state: {
           kind: 'many';
