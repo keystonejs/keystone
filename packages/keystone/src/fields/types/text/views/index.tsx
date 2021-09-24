@@ -23,8 +23,8 @@ export const Field = ({
   const [shouldShowErrors, setShouldShowErrors] = useState(false);
   const validationMessages = validate(value, field.validation, field.label);
   return (
-    <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
       {onChange ? (
         <Stack gap="small">
           {field.displayMode === 'textarea' ? (
@@ -88,7 +88,7 @@ export const Field = ({
             (shouldShowErrors || forceValidation) &&
             validationMessages.map((message, i) => (
               <span key={i} css={{ color: 'red' }}>
-                {field.label} {message}
+                {message}
               </span>
             ))}
         </Stack>
