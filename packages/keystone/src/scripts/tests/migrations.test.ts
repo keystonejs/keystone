@@ -84,8 +84,8 @@ async function setupInitialProjectWithoutMigrations() {
 }
 
 model Todo {
-  id    String  @id
-  title String?
+  id    String @id
+  title String @default("")
 }
 `);
 

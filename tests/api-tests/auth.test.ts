@@ -51,7 +51,11 @@ const runner = setupTestRunner({
         User: list({
           fields: {
             name: text(),
-            email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+            email: text({
+              validation: { isRequired: true },
+              isIndexed: 'unique',
+              isFilterable: true,
+            }),
             password: password(),
           },
         }),
