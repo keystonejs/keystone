@@ -57,16 +57,7 @@ type UserAuthenticationWithPasswordSuccess {
 }
 
 type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
   message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
 }
 
 type User {

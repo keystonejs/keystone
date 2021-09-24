@@ -23,16 +23,8 @@ export function getMagicAuthLinkSchema<I extends string>({
     typeDefs: `
       # Magic links
       type Mutation {
-        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}
+        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): Boolean
         ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
-      }
-      type ${gqlNames.SendItemMagicAuthLinkResult} {
-        code: MagicLinkRequestErrorCode!
-        message: String!
-      }
-      enum MagicLinkRequestErrorCode {
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -45,10 +37,6 @@ export function getMagicAuthLinkSchema<I extends string>({
       }
       enum MagicLinkRedemptionErrorCode {
         FAILURE
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
-        TOKEN_NOT_SET
-        TOKEN_MISMATCH
         TOKEN_EXPIRED
         TOKEN_REDEEMED
       }
