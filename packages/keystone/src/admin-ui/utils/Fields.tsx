@@ -37,6 +37,7 @@ const RenderField = memo(function RenderField({
 });
 
 type FieldsProps = {
+  itemId: string;
   fields: Record<string, FieldMeta>;
   value: Value;
   forceValidation: boolean;
@@ -46,6 +47,7 @@ type FieldsProps = {
 };
 
 export function Fields({
+  itemId,
   fields,
   value,
   fieldModes,
@@ -69,6 +71,7 @@ export function Fields({
       }
       return (
         <RenderField
+          itemId={itemId}
           key={fieldPath}
           field={field}
           value={val.value}

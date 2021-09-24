@@ -110,6 +110,7 @@ export type AdminMeta = {
 };
 
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
+  itemId?: string;
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
   onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;

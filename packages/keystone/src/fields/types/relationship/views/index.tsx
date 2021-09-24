@@ -23,13 +23,33 @@ import { Cards } from './cards';
 import { RelationshipSelect } from './RelationshipSelect';
 
 function LinkToRelatedItems({
+  itemId,
+  isDoubleSided,
   value,
   list,
 }: {
+  itemId: string;
+  isDoubleSided: boolean;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
-  console.log(list.fields);
+  function constructQuery({
+    // isDoubleSided,
+    // itemId,
+    value,
+  }: {
+    isDoubleSided?: boolean;
+    itemId?: string;
+    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
+  }) {
+    // if (isDoubleSided && itemId) {
+    //   return;
+    // }
+    return `!id_in="${(value?.value as { id: string; label: string }[])
+      .slice(0, 100)
+      .map(({ id }: { id: string }) => id)
+      .join(',')}"`;
+  }
   const commonProps = {
     size: 'small',
     tone: 'active',
@@ -37,6 +57,7 @@ function LinkToRelatedItems({
   } as const;
 
   if (value.kind === 'many') {
+    const query = constructQuery({ isDoubleSided, value, itemId });
     return (
       <Button
         {...commonProps}
@@ -44,10 +65,7 @@ function LinkToRelatedItems({
         // What happens when there are 10,000 ids? The URL would be too
         // big, so we arbitrarily limit it to the first 100
         // TODO: we should be able to filter by this, no?
-        href={`/${list.path}?!id_in="${value.value
-          .slice(0, 100)
-          .map(({ id }) => id)
-          .join(',')}"`}
+        href={`/${list.path}?${query}`}
       >
         View related {list.plural}
       </Button>
@@ -102,6 +120,7 @@ const RelationshipDisplay = ({
 };
 
 export const Field = ({
+  itemId,
   field,
   autoFocus,
   value,
@@ -226,7 +245,12 @@ export const Field = ({
               {!!(value.kind === 'many'
                 ? value.value.length
                 : value.kind === 'one' && value.value) && (
-                <LinkToRelatedItems list={foreignList} value={value} />
+                <LinkToRelatedItems
+                  itemId={itemId}
+                  isDoubleSided={!!field.refFieldKey}
+                  list={foreignList}
+                  value={value}
+                />
               )}
             </Stack>
           </Stack>
@@ -365,6 +389,7 @@ type RelationshipController = FieldController<
     | { mode: 'count' };
   listKey: string;
   refListKey: string;
+  refFieldKey?: string;
   hideCreate: boolean;
   many: boolean;
 };
@@ -372,6 +397,7 @@ type RelationshipController = FieldController<
 export const controller = (
   config: FieldControllerConfig<
     {
+      refFieldKey?: string;
       refListKey: string;
       many: boolean;
       hideCreate: boolean;
@@ -395,6 +421,7 @@ export const controller = (
   >
 ): RelationshipController => {
   return {
+    refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
     listKey: config.listKey,
     path: config.path,
