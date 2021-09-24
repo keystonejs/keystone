@@ -18,6 +18,9 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
       displayMode?: 'input' | 'textarea';
     };
     validation?: {
+      /**
+       * Makes the field disallow null values and require a string at least 1 character long
+       */
       isRequired?: boolean;
       match?: { regex: RegExp; explanation?: string };
       length?: { min?: number; max?: number };
@@ -30,11 +33,43 @@ export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
     defaultValue: _defaultValue,
-    validation,
+    validation: _validation,
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     const { isNullable = false } = config;
+
+    for (const type of ['min', 'max'] as const) {
+      const val = _validation?.length?.[type];
+      if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
+        throw new Error(
+          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`
+        );
+      }
+      if (_validation?.isRequired && val !== undefined && val === 0) {
+        throw new Error(
+          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
+        );
+      }
+    }
+
+    if (
+      _validation?.length?.min !== undefined &&
+      _validation?.length?.max !== undefined &&
+      _validation?.length?.min > _validation?.length?.max
+    ) {
+      throw new Error(
+        `The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+      );
+    }
+
+    const validation = {
+      ..._validation,
+      length: {
+        min: _validation?.isRequired ? _validation?.length?.min ?? 1 : _validation?.length?.min,
+        max: _validation?.length?.max,
+      },
+    };
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
@@ -59,8 +94,11 @@ export const text =
         ...config.hooks,
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
+          if (val === null && validation?.isRequired) {
+            args.addValidationError(`${fieldLabel} is required`);
+          }
           if (val != null) {
-            if (validation?.length?.min && val.length < validation.length.min) {
+            if (validation?.length?.min !== undefined && val.length < validation.length.min) {
               if (validation.length.min === 1) {
                 args.addValidationError(`${fieldLabel} must not be empty`);
               } else {
@@ -69,7 +107,7 @@ export const text =
                 );
               }
             }
-            if (validation?.length?.max && val.length > validation.length.max) {
+            if (validation?.length?.max !== undefined && val.length > validation.length.max) {
               args.addValidationError(
                 `${fieldLabel} must be no longer than ${validation.length.min} characters`
               );
@@ -100,6 +138,12 @@ export const text =
               : graphql.String,
             defaultValue: config.graphql?.create?.isNonNull ? defaultValue : undefined,
           }),
+          resolve(val) {
+            if (val === undefined) {
+              return defaultValue ?? null;
+            }
+            return val;
+          },
         },
         update: { arg: graphql.arg({ type: graphql.String }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },

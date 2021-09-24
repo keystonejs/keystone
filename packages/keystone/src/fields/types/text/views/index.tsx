@@ -21,7 +21,7 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   const { typography, fields } = useTheme();
   const [shouldShowErrors, setShouldShowErrors] = useState(false);
-  const validationMessages = value.kind === 'null' ? [] : validate(value.value, field.validation);
+  const validationMessages = validate(value, field.validation, field.label);
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -31,9 +31,11 @@ export const Field = ({
             <TextArea
               id={field.path}
               autoFocus={autoFocus}
-              onChange={event => onChange({ kind: 'value', value: event.target.value })}
-              value={value.kind === 'null' ? '' : value.value}
-              disabled={value.kind === 'null'}
+              onChange={event =>
+                onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
+              }
+              value={value.inner.kind === 'null' ? '' : value.inner.value}
+              disabled={value.inner.kind === 'null'}
               onBlur={() => {
                 setShouldShowErrors(true);
               }}
@@ -42,9 +44,11 @@ export const Field = ({
             <TextInput
               id={field.path}
               autoFocus={autoFocus}
-              onChange={event => onChange({ kind: 'value', value: event.target.value })}
-              value={value.kind === 'null' ? '' : value.value}
-              disabled={value.kind === 'null'}
+              onChange={event =>
+                onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
+              }
+              value={value.inner.kind === 'null' ? '' : value.inner.value}
+              disabled={value.inner.kind === 'null'}
               onBlur={() => {
                 setShouldShowErrors(true);
               }}
@@ -55,19 +59,25 @@ export const Field = ({
               autoFocus={autoFocus}
               disabled={onChange === undefined}
               onChange={() => {
-                if (value.kind === 'value') {
+                if (value.inner.kind === 'value') {
                   onChange({
-                    kind: 'null',
-                    prev: value.value,
+                    ...value,
+                    inner: {
+                      kind: 'null',
+                      prev: value.inner.value,
+                    },
                   });
                 } else {
                   onChange({
-                    kind: 'value',
-                    value: value.prev,
+                    ...value,
+                    inner: {
+                      kind: 'value',
+                      value: value.inner.prev,
+                    },
                   });
                 }
               }}
-              checked={value.kind === 'null'}
+              checked={value.inner.kind === 'null'}
             >
               <span css={{ fontWeight: typography.fontWeight.semibold, color: fields.labelColor }}>
                 Set field as null
@@ -112,24 +122,55 @@ type Validation = {
   length: { min: number | null; max: number | null };
 };
 
-function validate(val: string, validation: Validation): string[] {
+function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
+  // if the value is the same as the initial for an update, we don't want to block saving
+  // since we're not gonna send it anyway if it's the same
+  // and going "fix this thing that is unrelated to the thing you're doing" is bad
+  // and also bc it could be null bc of read access control
+  if (
+    value.kind === 'update' &&
+    ((value.initial.kind === 'null' && value.inner.kind === 'null') ||
+      (value.initial.kind === 'value' &&
+        value.inner.kind === 'value' &&
+        value.inner.value === value.initial.value))
+  ) {
+    return [];
+  }
+
+  if (value.inner.kind === 'null') {
+    if (validation.isRequired) {
+      return [`${fieldLabel} is required`];
+    }
+    return [];
+  }
+
+  const val = value.inner.value;
+
   let messages: string[] = [];
   if (validation.length.min !== null && val.length < validation.length.min) {
-    messages.push(`must be at least ${validation.length.min} characters long`);
+    if (validation.length.min === 1) {
+      messages.push(`${fieldLabel} must not be empty`);
+    } else {
+      messages.push(`${fieldLabel} must be at least ${validation.length.min} characters long`);
+    }
   }
   if (validation.length.max !== null && val.length > validation.length.max) {
-    messages.push(`must be no longer than ${validation.length.min} characters`);
+    messages.push(`${fieldLabel} must be no longer than ${validation.length.min} characters`);
   }
-  console.log(validation.match);
   if (validation.match && !validation.match.regex.test(val)) {
-    messages.push(validation.match.explanation || `must match ${validation.match.regex}`);
+    messages.push(
+      validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`
+    );
   }
   return messages;
 }
+type InnerTextValue = { kind: 'null'; prev: string } | { kind: 'value'; value: string };
 
-type TextValue = { kind: 'null'; prev: string } | { kind: 'value'; value: string };
+type TextValue =
+  | { kind: 'create'; inner: InnerTextValue }
+  | { kind: 'update'; inner: InnerTextValue; initial: InnerTextValue };
 
-function deserializeTextValue(value: string | null): TextValue {
+function deserializeTextValue(value: string | null): InnerTextValue {
   if (value === null) {
     return { kind: 'null', prev: '' };
   }
@@ -160,13 +201,16 @@ export const controller = (
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: deserializeTextValue(config.fieldMeta.defaultValue),
+    defaultValue: { kind: 'create', inner: deserializeTextValue(config.fieldMeta.defaultValue) },
     displayMode: config.fieldMeta.displayMode,
     isNullable: config.fieldMeta.isNullable,
-    deserialize: data => deserializeTextValue(data[config.path]),
-    serialize: value => ({ [config.path]: value.kind === 'null' ? null : value.value }),
+    deserialize: data => {
+      const inner = deserializeTextValue(data[config.path]);
+      return { kind: 'update', inner, initial: inner };
+    },
+    serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
     validation,
-    validate: val => val.kind === 'null' || validate(val.value, validation).length === 0,
+    validate: val => validate(val, validation, config.label).length === 0,
     filter: {
       Filter(props) {
         return (
