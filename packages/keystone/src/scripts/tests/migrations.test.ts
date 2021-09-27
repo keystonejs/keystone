@@ -90,7 +90,8 @@ model Todo {
 `);
 
   expect(recording()).toEqual(`✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ Your database is now in sync with your schema. Done in 0ms
@@ -111,14 +112,15 @@ describe('useMigrations: false', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ The database is already in sync with the Prisma schema.
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
-    `);
+"✨ Starting Keystone
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+✨ Generating GraphQL and Prisma schemas
+✨ The database is already in sync with the Prisma schema.
+✨ Connecting to the database
+✨ Creating server
+✅ GraphQL API ready"
+`);
   });
   test('warns when dropping field that has data in it', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -151,19 +153,20 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
-      ✨ Generating GraphQL and Prisma schemas
+"✨ Starting Keystone
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+✨ Generating GraphQL and Prisma schemas
 
-      ⚠️  Warnings:
+⚠️  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost. true
-      ✨ Your database is now in sync with your schema. Done in 0ms
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
-    `);
+  • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+Prompt: Do you want to continue? Some data will be lost. true
+✨ Your database is now in sync with your schema. Done in 0ms
+✨ Connecting to the database
+✨ Creating server
+✅ GraphQL API ready"
+`);
   });
   test('exits when refusing data loss prompt', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -198,7 +201,8 @@ describe('useMigrations: false', () => {
     `);
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
 
       ⚠️  Warnings:
@@ -225,7 +229,8 @@ describe('useMigrations: false', () => {
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database has been reset
       ✨ Your database is now in sync with your schema. Done in 0ms
@@ -268,7 +273,8 @@ CREATE TABLE "Todo" (
 `);
 
   expect(recording().replace(migrationName, 'migration_name')).toEqual(`✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ There has been a change to your Keystone schema that requires a migration
@@ -345,7 +351,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -418,7 +425,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -480,7 +488,8 @@ describe('useMigrations: true', () => {
         .replace(oldMigrationName, 'old_migration_name')
     ).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
@@ -527,7 +536,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
@@ -605,7 +615,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName!, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -643,7 +654,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ sqlite database \\"app.db\\" created at file:./app.db
       ✨ The following migration(s) have been applied:
@@ -676,7 +688,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database has been reset
       ✨ The following migration(s) have been applied:
@@ -697,7 +710,8 @@ describe('useMigrations: true', () => {
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database is up to date, no migrations need to be created or applied
       ✨ Connecting to the database
