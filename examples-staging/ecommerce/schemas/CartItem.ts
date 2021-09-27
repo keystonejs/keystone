@@ -22,7 +22,10 @@ export const CartItem = list({
     // TODO: Custom Label in here
     quantity: integer({
       defaultValue: 1,
-      isRequired: true,
+      isNullable: false,
+      validation: {
+        isRequired: true,
+      },
     }),
     product: relationship({ ref: 'Product', isFilterable: true }),
     user: relationship({ ref: 'User.cart', isFilterable: true }),

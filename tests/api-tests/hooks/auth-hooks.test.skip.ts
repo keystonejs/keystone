@@ -2,14 +2,14 @@ import { AddressInfo } from 'net';
 // @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text, password } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           name: text(),
@@ -17,7 +17,7 @@ const runner = setupTestRunner({
           password: password(),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -124,7 +124,7 @@ describe('Auth Hooks', () => {
     'Auth/unauth with valid creds',
     runner(async ({ context }) => {
       // Add a user with a password
-      const user = await context.lists.User.createOne({
+      const user = await context.query.User.createOne({
         data: { name: 'test', email: 'test@example.com', password: 'testing123' },
       });
 
@@ -162,7 +162,7 @@ describe('Auth Hooks', () => {
     'Auth with bad resolveAuthInput return value',
     runner(async ({ context }) => {
       // Add a user with a password
-      await context.lists.User.createOne({
+      await context.query.User.createOne({
         data: { name: 'test', email: 'test@example.com', password: 'testing123' },
       });
       // FIXME: move this functionality into the `testing` package
@@ -191,7 +191,7 @@ describe('Auth Hooks', () => {
     'Auth/unauth with good resolveAuthInput return value',
     runner(async ({ context }) => {
       // Add a user with a password
-      const user = await context.lists.User.createOne({
+      const user = await context.query.User.createOne({
         data: { name: 'test', email: 'test@example.com', password: 'testing123' },
       });
       // FIXME: move this functionality into the `testing` package
@@ -228,7 +228,7 @@ describe('Auth Hooks', () => {
     'Auth with values caught in validation hook return value',
     runner(async ({ context }) => {
       // Add a user with a password
-      await context.lists.User.createOne({
+      await context.query.User.createOne({
         data: { name: 'test', email: 'test@example.com', password: 'testing123' },
       });
       // FIXME: move this functionality into the `testing` package

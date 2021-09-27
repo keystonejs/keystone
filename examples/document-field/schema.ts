@@ -1,14 +1,14 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { select, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
       slug: text({ isRequired: true, isIndexed: 'unique' }),
       status: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
@@ -60,4 +60,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

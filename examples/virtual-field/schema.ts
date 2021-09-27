@@ -1,13 +1,13 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
 import { graphql } from '@keystone-next/keystone/types';
 
-export const lists = createSchema({
+export const lists = {
   Post: list({
     fields: {
       title: text({ isRequired: true }),
       status: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
@@ -25,6 +25,10 @@ export const lists = createSchema({
       content: text({ ui: { displayMode: 'textarea' } }),
       // A virtual field returning a custom GraphQL object type.
       counts: virtual({
+        ui: {
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'hidden' },
+        },
         field: graphql.field({
           type: graphql.object<{
             words: number;
@@ -47,7 +51,6 @@ export const lists = createSchema({
             };
           },
         }),
-        graphQLReturnFragment: '{ words sentences paragraphs }',
       }),
       // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
@@ -68,7 +71,7 @@ export const lists = createSchema({
             }
           },
         }),
-        graphQLReturnFragment: '(length: 10)',
+        ui: { query: '(length: 10)' },
       }),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
@@ -77,7 +80,7 @@ export const lists = createSchema({
         field: graphql.field({
           type: graphql.String,
           async resolve(item, args, context) {
-            const { author } = await context.lists.Post.findOne({
+            const { author } = await context.query.Post.findOne({
               where: { id: item.id.toString() },
               query: 'author { name }',
             });
@@ -98,7 +101,7 @@ export const lists = createSchema({
           graphql.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
-              const { posts } = await context.lists.Author.findOne({
+              const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },
                 query: `posts(
                     orderBy: { publishDate: desc }
@@ -106,12 +109,12 @@ export const lists = createSchema({
                   ) { id }`,
               });
               if (posts.length > 0) {
-                return context.db.lists.Post.findOne({ where: { id: posts[0].id } });
+                return context.db.Post.findOne({ where: { id: posts[0].id } });
               }
             },
           }),
-        graphQLReturnFragment: '{ title publishDate }',
+        ui: { query: '{ title publishDate }' },
       }),
     },
   }),
-});
+};

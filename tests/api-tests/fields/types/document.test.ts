@@ -1,13 +1,13 @@
 import { text } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           content: document({
@@ -48,13 +48,13 @@ const runner = setupTestRunner({
         },
         access: { filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) } },
       }),
-    }),
+    },
   }),
 });
 
 const initData = async ({ context }: { context: KeystoneContext }) => {
-  const alice = await context.lists.Author.createOne({ data: { name: 'Alice' } });
-  const bob = await context.lists.Author.createOne({
+  const alice = await context.query.Author.createOne({ data: { name: 'Alice' } });
+  const bob = await context.query.Author.createOne({
     data: {
       name: 'Bob',
       bio: [
@@ -74,7 +74,7 @@ const initData = async ({ context }: { context: KeystoneContext }) => {
       ],
     },
   });
-  const charlie = await context.lists.Author.createOne({ data: { name: 'Charlie' } });
+  const charlie = await context.query.Author.createOne({ data: { name: 'Charlie' } });
   const bio = [
     {
       type: 'paragraph',
@@ -103,7 +103,7 @@ const initData = async ({ context }: { context: KeystoneContext }) => {
       ],
     },
   ];
-  const dave = await context.lists.Author.createOne({ data: { name: 'Dave', bio } });
+  const dave = await context.query.Author.createOne({ data: { name: 'Dave', bio } });
   type T = { id: string; label?: string; data?: Record<string, any> | null };
   const content = [
     {
@@ -159,7 +159,7 @@ const initData = async ({ context }: { context: KeystoneContext }) => {
       ],
     },
   ];
-  const post = await context.lists.Post.createOne({ data: { content } });
+  const post = await context.query.Post.createOne({ data: { content } });
   return { alice, bob, charlie, dave, post, content, bio };
 };
 
@@ -169,7 +169,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context });
 
-      const _post = await context.lists.Post.findOne({
+      const _post = await context.query.Post.findOne({
         where: { id: post.id },
         query: 'content { document }',
       });
@@ -182,7 +182,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { post, content } = await initData({ context });
 
-      const _post = await context.lists.Post.findOne({
+      const _post = await context.query.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: false) }',
       });
@@ -195,7 +195,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context });
 
-      const _post = await context.lists.Post.findOne({
+      const _post = await context.query.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: true) }',
       });
@@ -215,8 +215,8 @@ describe('Document field type', () => {
     'hydrateRelationships: true - dangling reference',
     runner(async ({ context }) => {
       const { alice, bob, charlie, post, content } = await initData({ context });
-      await context.lists.Author.deleteOne({ where: { id: bob.id } });
-      const _post = await context.lists.Post.findOne({
+      await context.query.Author.deleteOne({ where: { id: bob.id } });
+      const _post = await context.query.Post.findOne({
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: true) }',
       });
@@ -238,7 +238,7 @@ describe('Document field type', () => {
     runner(async ({ context }) => {
       const { alice, charlie, dave, bio } = await initData({ context });
 
-      const _dave = await context.lists.Author.findOne({
+      const _dave = await context.query.Author.findOne({
         where: { id: dave.id },
         query: 'bio { document(hydrateRelationships: true) }',
       });
@@ -256,7 +256,7 @@ describe('Document field type', () => {
     'hydrateRelationships: true - selection has bad fields',
     runner(async ({ context, graphQLRequest }) => {
       const { alice } = await initData({ context });
-      const badBob = await context.lists.Author.createOne({
+      const badBob = await context.query.Author.createOne({
         data: {
           name: 'Bob',
           badBio: [

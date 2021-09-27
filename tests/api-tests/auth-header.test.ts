@@ -1,5 +1,5 @@
 import { text, timestamp, password } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import type { KeystoneContext } from '@keystone-next/keystone/types';
@@ -26,7 +26,7 @@ const auth = createAuth({
 const runner = setupTestRunner({
   config: auth.withAuth(
     apiTestConfig({
-      lists: createSchema({
+      lists: {
         Post: list({
           fields: {
             title: text(),
@@ -48,7 +48,7 @@ const runner = setupTestRunner({
             },
           },
         }),
-      }),
+      },
       session: statelessSessions({ secret: COOKIE_SECRET }),
     })
   ),
@@ -81,7 +81,7 @@ describe('Auth testing', () => {
     runner(async ({ context }) => {
       // seed the db
       for (const [listKey, data] of Object.entries(initialData)) {
-        await context.sudo().lists[listKey].createMany({ data });
+        await context.sudo().query[listKey].createMany({ data });
       }
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
       expect(data).toEqual({ users: [] });
@@ -91,7 +91,12 @@ describe('Auth testing', () => {
         query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
       });
       expect(result.data).toEqual({ updateUser: null });
-      expectAccessDenied('dev', false, undefined, result.errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(result.errors, [
+        {
+          path: ['updateUser'],
+          msg: "You cannot perform the 'update' operation on the list 'User'.",
+        },
+      ]);
     })
   );
 
@@ -106,7 +111,7 @@ describe('Auth testing', () => {
       setupTestEnv({
         config: auth.withAuth(
           apiTestConfig({
-            lists: createSchema({
+            lists: {
               User: list({
                 fields: {
                   name: text(),
@@ -114,7 +119,7 @@ describe('Auth testing', () => {
                   password: password(),
                 },
               }),
-            }),
+            },
 
             session: statelessSessions({ secret: COOKIE_SECRET }),
           })
@@ -130,7 +135,7 @@ describe('Auth testing', () => {
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().lists[listKey].createMany({ data });
+          await context.sudo().query[listKey].createMany({ data });
         }
         const { sessionToken } = await login(
           graphQLRequest,
@@ -154,7 +159,7 @@ describe('Auth testing', () => {
       'Allows access with cookie',
       runner(async ({ context, graphQLRequest }) => {
         for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().lists[listKey].createMany({ data });
+          await context.sudo().query[listKey].createMany({ data });
         }
         const { sessionToken } = await login(
           graphQLRequest,

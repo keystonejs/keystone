@@ -6,7 +6,7 @@ type Post {
   title: String
   slug: String
   status: PostStatusType
-  content: Post_content_DocumentField
+  content: Post_content_Document
   publishDate: String
   author: Author
 }
@@ -16,7 +16,7 @@ enum PostStatusType {
   published
 }
 
-type Post_content_DocumentField {
+type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
@@ -96,10 +96,10 @@ type Author {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  bio: Author_bio_DocumentField
+  bio: Author_bio_Document
 }
 
-type Author_bio_DocumentField {
+type Author_bio_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
@@ -232,7 +232,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -255,7 +255,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

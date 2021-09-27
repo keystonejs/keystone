@@ -3,20 +3,17 @@ import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/key
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
-import { getPasswordAuthError } from '../lib/getErrorMessage';
 
 export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
-  protectIdentities,
   gqlNames,
   secretFieldImpl,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
-  protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
 }): GraphQLSchemaExtension {
@@ -37,15 +34,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
         item: ${listKey}!
       }
       type ${gqlNames.ItemAuthenticationWithPasswordFailure} {
-        code: PasswordAuthErrorCode!
         message: String!
-      }
-      enum PasswordAuthErrorCode {
-        FAILURE
-        IDENTITY_NOT_FOUND
-        SECRET_NOT_SET
-        MULTIPLE_IDENTITY_MATCHES
-        SECRET_MISMATCH
       }
     `,
     resolvers: {
@@ -59,26 +48,18 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             throw new Error('No session implementation available on context');
           }
 
-          const dbItemAPI = context.sudo().db.lists[listKey];
+          const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
             secretFieldImpl,
             identityField,
             args[identityField],
             secretField,
-            protectIdentities,
             args[secretField],
             dbItemAPI
           );
 
           if (!result.success) {
-            const message = getPasswordAuthError({
-              identityField,
-              secretField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
+            return { code: 'FAILURE', message: 'Authentication failed.' };
           }
 
           // Update system state
@@ -92,7 +73,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       Query: {
         async authenticatedItem(root, args, { session, db }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
+            return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
         },

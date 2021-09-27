@@ -15,9 +15,14 @@ export type FieldDefaultValue<T, TGeneratedListTypes extends BaseGeneratedListTy
   | null
   | ((args: FieldDefaultValueArgs<TGeneratedListTypes>) => MaybePromise<T | null | undefined>);
 
+export type CreateRequestContext = (
+  req: IncomingMessage,
+  res: ServerResponse
+) => Promise<KeystoneContext>;
+
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
-  skipAccessControl?: boolean;
+  sudo?: boolean;
   req?: IncomingMessage;
 }) => KeystoneContext;
 

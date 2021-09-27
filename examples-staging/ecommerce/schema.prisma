@@ -7,8 +7,9 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model User {
@@ -34,7 +35,7 @@ model Product {
   description           String?
   photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
   photoId               String?       @unique @map("photo")
-  status                String?
+  status                String?       @default("DRAFT")
   price                 Int?
   user                  User?         @relation("Product_user", fields: [userId], references: [id])
   userId                String?       @map("user")
@@ -53,7 +54,7 @@ model ProductImage {
 
 model CartItem {
   id        String   @id @default(cuid())
-  quantity  Int?
+  quantity  Int      @default(1)
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId String?  @map("product")
   user      User?    @relation("CartItem_user", fields: [userId], references: [id])
@@ -90,13 +91,13 @@ model Order {
 }
 
 model Role {
-  id                String   @id @default(cuid())
+  id                String  @id @default(cuid())
   name              String?
-  canManageProducts Boolean?
-  canSeeOtherUsers  Boolean?
-  canManageUsers    Boolean?
-  canManageRoles    Boolean?
-  canManageCart     Boolean?
-  canManageOrders   Boolean?
-  assignedTo        User[]   @relation("User_role")
+  canManageProducts Boolean @default(false)
+  canSeeOtherUsers  Boolean @default(false)
+  canManageUsers    Boolean @default(false)
+  canManageRoles    Boolean @default(false)
+  canManageCart     Boolean @default(false)
+  canManageOrders   Boolean @default(false)
+  assignedTo        User[]  @relation("User_role")
 }

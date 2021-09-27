@@ -1,13 +1,13 @@
-import { CacheScope } from 'apollo-cache-control';
+import { CacheScope } from 'apollo-server-types';
 import { text, relationship, integer } from '@keystone-next/keystone/fields';
-import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           title: text(),
@@ -40,7 +40,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
     extendGraphqlSchema: graphQLSchemaExtension({
       typeDefs: `
         type MyType {
@@ -72,7 +72,7 @@ const runner = setupTestRunner({
 });
 
 const addFixtures = async (context: KeystoneContext) => {
-  const users = await context.lists.User.createMany({
+  const users = await context.query.User.createMany({
     data: [
       { name: 'Jess', favNumber: 1 },
       { name: 'Johanna', favNumber: 8 },
@@ -80,7 +80,7 @@ const addFixtures = async (context: KeystoneContext) => {
     ],
   });
 
-  const posts = await context.lists.Post.createMany({
+  const posts = await context.query.Post.createMany({
     data: [
       { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
       { author: { connect: [{ id: users[0].id }, { id: users[1].id }] }, title: 'Two authors' },

@@ -1,12 +1,12 @@
 import { text, integer, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
           title: text({ isFilterable: true, isOrderable: true }),
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
     graphql: {
       queryLimits: { maxTotalResults: 6 },
       apolloConfig: {
@@ -40,7 +40,7 @@ describe('maxResults Limit', () => {
     test(
       'users',
       runner(async ({ context }) => {
-        const users = await context.lists.User.createMany({
+        const users = await context.query.User.createMany({
           data: [
             { name: 'Jess', favNumber: 1 },
             { name: 'Johanna', favNumber: 8 },
@@ -159,14 +159,14 @@ describe('maxResults Limit', () => {
     test(
       'posts by user',
       runner(async ({ context }) => {
-        const users = await context.lists.User.createMany({
+        const users = await context.query.User.createMany({
           data: [
             { name: 'Jess', favNumber: 1 },
             { name: 'Johanna', favNumber: 8 },
             { name: 'Sam', favNumber: 5 },
           ],
         });
-        await context.lists.Post.createMany({
+        await context.query.Post.createMany({
           data: [
             { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
             {
@@ -182,7 +182,7 @@ describe('maxResults Limit', () => {
         // Reset the count for each query
         context.totalResults = 0;
         // A basic query that should work
-        let posts = await context.lists.Post.findMany({
+        let posts = await context.query.Post.findMany({
           where: { title: { equals: 'One author' } },
           query: 'title author { name }',
         });
@@ -192,7 +192,7 @@ describe('maxResults Limit', () => {
         // Reset the count for each query
         context.totalResults = 0;
         // Each subquery is within the limit (even though the total isn't)
-        posts = await context.lists.Post.findMany({
+        posts = await context.query.Post.findMany({
           where: {
             OR: [{ title: { equals: 'One author' } }, { title: { equals: 'Two authors' } }],
           },
@@ -228,7 +228,7 @@ describe('maxResults Limit', () => {
         // Requesting the too-many-authors post is okay as long as the authors aren't returned
         // Reset the count for each query
         context.totalResults = 0;
-        posts = await context.lists.Post.findMany({
+        posts = await context.query.Post.findMany({
           where: { title: { equals: 'Three authors' } },
           query: 'title',
         });

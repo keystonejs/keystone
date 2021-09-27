@@ -13,13 +13,13 @@ This guide describes the improvements we've made, and walks you through the step
 
 To illustrate the changes, we’ll refer to the `Task` list in the following schema, from our [Task Manager](https://github.com/keystonejs/keystone/tree/master/examples/task-manager) example project.
 
-```
-export const lists = createSchema({
+```ts
+export const lists = {
   Task: list({
     fields: {
       label: text({ isRequired: true }),
       priority: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },
@@ -43,7 +43,7 @@ export const lists = createSchema({
       name: text(),
     },
   }),
-});
+};
 ```
 
 ## Query
@@ -396,7 +396,7 @@ While there are a lot of changes to this API, we've put a lot of effort into mak
 3. Update mutation arguments to match the new input types. Make sure you replace `{ id: "..."}` with `{where: { id: "..."} }` in your `update` and `delete` operations.
 4. Update relationship inputs to `create` and `update` operations. Ensure you've replaced usage of `{ disconnectAll: true }` with `{ set: [] }` in to-many relationships, and have used `{ disconnect: true }` rather than `{ disconnect: { id: "..."} }` in to-one relationships.
 
-!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [List Items API](/docs/apis/list-items).
+!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [Query API](/docs/apis/query).
 
 ---
 

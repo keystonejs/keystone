@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectGraphQLValidationError } from '../../utils';
 
@@ -8,7 +8,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Group: list({
         fields: {
           name: text(),
@@ -34,7 +34,7 @@ const runner = setupTestRunner({
           group: relationship({ ref: 'GroupNoRead' }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -44,10 +44,10 @@ describe('no access control', () => {
     runner(async ({ context }) => {
       const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
-      const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
+      const createGroup = await context.query.Group.createOne({ data: { name: groupName } });
 
       // Create an item to update
-      const createEvent = await context.lists.Event.createOne({
+      const createEvent = await context.query.Event.createOne({
         data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
         query: 'id group { id }',
       });
@@ -57,7 +57,7 @@ describe('no access control', () => {
       expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
       // Update the item and link the relationship field
-      const event = await context.lists.Event.updateOne({
+      const event = await context.query.Event.updateOne({
         where: { id: createEvent.id },
         data: { group: { disconnect: true } },
         query: 'id group { id }',
@@ -66,7 +66,7 @@ describe('no access control', () => {
       expect(event).toMatchObject({ id: expect.any(String), group: null });
 
       // Avoid false-positives by checking the database directly
-      const eventData = await context.lists.Event.findOne({
+      const eventData = await context.query.Event.findOne({
         where: { id: createEvent.id },
         query: 'id group { id }',
       });
@@ -102,10 +102,10 @@ describe('no access control', () => {
     'silently succeeds if no item to disconnect during update',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createEvent = await context.lists.Event.createOne({ data: {} });
+      const createEvent = await context.query.Event.createOne({ data: {} });
 
       // Create an item that does the linking
-      const event = await context.lists.Event.updateOne({
+      const event = await context.query.Event.updateOne({
         where: { id: createEvent.id },
         data: { group: { disconnect: true } },
         query: 'id group { id }',
@@ -124,12 +124,12 @@ describe('with access control', () => {
         const groupName = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createGroup = await context.sudo().lists.GroupNoRead.createOne({
+        const createGroup = await context.sudo().query.GroupNoRead.createOne({
           data: { name: groupName },
         });
 
         // Create an item to update
-        const createEvent = await context.sudo().lists.EventToGroupNoRead.createOne({
+        const createEvent = await context.sudo().query.EventToGroupNoRead.createOne({
           data: { group: { connect: { id: createGroup.id } } },
           query: 'id group { id }',
         });
@@ -139,13 +139,13 @@ describe('with access control', () => {
         expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
         // Update the item and link the relationship field
-        await context.lists.EventToGroupNoRead.updateOne({
+        await context.query.EventToGroupNoRead.updateOne({
           where: { id: createEvent.id },
           data: { group: { disconnect: true } },
         });
 
         // Avoid false-positives by checking the database directly
-        const eventData = await context.sudo().lists.EventToGroupNoRead.findOne({
+        const eventData = await context.sudo().query.EventToGroupNoRead.findOne({
           where: { id: createEvent.id },
           query: 'id group { id }',
         });

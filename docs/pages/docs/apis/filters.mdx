@@ -59,9 +59,9 @@ The `json` field type does not support filters.
 
 ### select
 
-- If the `dataType` is `string`(the default), the same filters as `text` will be available.
-- If the `dataType` is `integer`, the same filters as `integer` will be available.
-- If the `dataType` is `enum`, the following filters will be available:
+- If the `type` is `string`(the default), the same filters as `text` will be available.
+- If the `type` is `integer`, the same filters as `integer` will be available.
+- If the `type` is `enum`, the following filters will be available:
   | **Filter name** | **Type** | **Description** |
   | --------------- | ---------- | ------------------- |
   | `equals` | `ListKeyFieldKeyType` | Equals |
@@ -121,21 +121,6 @@ The `json` field type does not support filters.
 | **Filter name** | **Type**        | **Description**           |
 | --------------- | --------------- | ------------------------- |
 | `foo`           | `FooWhereInput` | Matches the nested filter |
-
-## Index types
-
-### autoIncrement
-
-| **Filter name** | **Type**            | **Description**                 |
-| --------------- | ------------------- | ------------------------------- |
-| `equals`        | `Int`               | Equals                          |
-| `lt`            | `Int`               | Less than                       |
-| `lte`           | `Int`               | Less than or equal              |
-| `gt`            | `Int`               | Greater than                    |
-| `gte`           | `Int`               | Greater than or equal           |
-| `in`            | `[Int!]`            | Is in the array                 |
-| `notIn`         | `[Int!]`            | Is not in the array             |
-| `not`           | `IntNullableFilter` | Does not match the inner filter |
 
 ## Virtual type
 

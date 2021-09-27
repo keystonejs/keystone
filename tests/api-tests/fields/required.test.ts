@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectValidationError } from '../utils';
@@ -39,7 +39,7 @@ testModules
 
         const runner = setupTestRunner({
           config: apiTestConfig({
-            lists: createSchema({
+            lists: {
               Test: list({
                 fields: {
                   name: text(),
@@ -49,7 +49,7 @@ testModules
                   }),
                 },
               }),
-            }),
+            },
             images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
             files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           }),
@@ -77,7 +77,7 @@ testModules
         test(
           'Update an object with the required field having a null value',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
@@ -102,13 +102,13 @@ testModules
         test(
           'Update an object without the required field',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
               },
             });
-            const data = await context.lists.Test.updateOne({
+            const data = await context.query.Test.updateOne({
               where: { id: data0.id },
               data: { name: 'updated test entry' },
               query: 'id name',

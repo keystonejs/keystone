@@ -1,5 +1,5 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../utils';
@@ -7,15 +7,15 @@ import { apiTestConfig } from '../utils';
 type IdType = any;
 
 const createInitialData = async (context: KeystoneContext) => {
-  const roles = (await context.lists.Role.createMany({
+  const roles = (await context.query.Role.createMany({
     data: [{ name: 'RoleA' }, { name: 'RoleB' }, { name: 'RoleC' }],
     query: 'id name',
   })) as { id: IdType; name: string }[];
-  const companies = (await context.lists.Company.createMany({
+  const companies = (await context.query.Company.createMany({
     data: [{ name: 'CompanyA' }, { name: 'CompanyB' }, { name: 'CompanyC' }],
     query: 'id name',
   })) as { id: IdType; name: string }[];
-  const employees = (await context.lists.Employee.createMany({
+  const employees = (await context.query.Employee.createMany({
     data: [
       {
         name: 'EmployeeA',
@@ -35,7 +35,7 @@ const createInitialData = async (context: KeystoneContext) => {
     ],
     query: 'id name',
   })) as { id: IdType; name: string }[];
-  await context.lists.Location.createMany({
+  await context.query.Location.createMany({
     data: [
       {
         name: 'LocationA',
@@ -64,7 +64,7 @@ const createInitialData = async (context: KeystoneContext) => {
     ],
     query: 'id name',
   });
-  await context.lists.Role.updateMany({
+  await context.query.Role.updateMany({
     data: [
       {
         where: { id: roles.find(({ name }) => name === 'RoleA')!.id },
@@ -93,7 +93,7 @@ const createInitialData = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Employee: list({
         fields: {
           name: text(),
@@ -120,7 +120,7 @@ const runner = setupTestRunner({
           employees: relationship({ ref: 'Employee', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -128,7 +128,7 @@ test(
   'Query',
   runner(async ({ context }) => {
     await createInitialData(context);
-    const employees = await context.lists.Employee.findMany({
+    const employees = await context.query.Employee.findMany({
       where: { company: { employees: { some: { role: { name: { equals: 'RoleA' } } } } } },
       query: 'id name',
     });

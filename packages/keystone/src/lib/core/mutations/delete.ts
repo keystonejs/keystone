@@ -1,6 +1,7 @@
 import pLimit, { Limit } from 'p-limit';
 import { DatabaseProvider, KeystoneContext } from '../../../types';
-import { checkOperationAccess, getAccessFilters } from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
+import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
@@ -19,11 +20,17 @@ async function deleteSingle(
 ) {
   // Operation level access control
   if (!operationAccess) {
-    throw accessDeniedError();
+    throw accessDeniedError(
+      `You cannot perform the 'delete' operation on the list '${list.listKey}'.`
+    );
   }
 
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+
+  // Check filter access
+  const fieldKey = Object.keys(uniqueWhere)[0];
+  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Filter and Item access control. Will throw an accessDeniedError if not allowed.
   const existingItem = await getAccessControlledItemForDelete(
@@ -59,7 +66,7 @@ export async function deleteMany(
   const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
 
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'delete');
+  const operationAccess = await getOperationAccess(list, context, 'delete');
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
@@ -75,7 +82,7 @@ export async function deleteOne(
   context: KeystoneContext
 ) {
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'delete');
+  const operationAccess = await getOperationAccess(list, context, 'delete');
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');

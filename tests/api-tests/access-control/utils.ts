@@ -1,11 +1,11 @@
 import { text, password } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list, ListSchemaConfig } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { apiTestConfig } from '../utils';
 
-const FAKE_ID = { postgresql: 'cdsfasfafafadfasdf', sqlite: 'cdsfasfafafadfasdf' } as const;
-const FAKE_ID_2 = { postgresql: 'csdfbstrsbaf', sqlite: 'csdfbstrsbaf' } as const;
+const FAKE_ID = 'cdsfasfafafadfasdf';
+const FAKE_ID_2 = 'csdfbstrsbaf';
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
@@ -103,7 +103,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   }),
 });
 
-const lists = createSchema({
+const lists: ListSchemaConfig = {
   User: list({
     fields: {
       name: text(),
@@ -113,7 +113,7 @@ const lists = createSchema({
       yesRead: text({ access: { read: () => true } }),
     },
   }),
-});
+};
 
 listAccessVariations.forEach(access => {
   lists[getOperationListName(access)] = list({

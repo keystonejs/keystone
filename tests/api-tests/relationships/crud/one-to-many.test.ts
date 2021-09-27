@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig } from '../../utils';
@@ -10,14 +10,14 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  const companies = await context.lists.Company.createMany({
+  const companies = await context.query.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
     ],
   });
-  const locations = await context.lists.Location.createMany({
+  const locations = await context.query.Location.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
       { name: sampleOne(alphanumGenerator) },
@@ -28,7 +28,7 @@ const createInitialData = async (context: KeystoneContext) => {
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
-  const company = await context.lists.Company.createOne({
+  const company = await context.query.Company.createOne({
     data: { locations: { create: [{ name: sampleOne(alphanumGenerator) }] } },
     query: 'id locations { id company { id } }',
   });
@@ -68,7 +68,7 @@ const getCompanyAndLocation = async (
 
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C, D];
-  const locations = await context.lists.Location.createMany({
+  const locations = await context.query.Location.createMany({
     data: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ name })),
     query: 'id name',
   });
@@ -80,14 +80,14 @@ const createReadData = async (context: KeystoneContext) => {
       '': [], //  -> []
     }).map(async ([name, locationIdxs]) => {
       const ids = locationIdxs.map((i: number) => ({ id: locations[i].id }));
-      await context.lists.Company.createOne({ data: { name, locations: { connect: ids } } });
+      await context.query.Company.createOne({ data: { name, locations: { connect: ids } } });
     })
   );
 };
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Company: list({
         fields: {
           name: text({ isFilterable: true, isOrderable: true }),
@@ -100,7 +100,7 @@ const runner = setupTestRunner({
           company: relationship({ ref: 'Company.locations', isFilterable: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -117,7 +117,7 @@ describe(`One-to-many relationships`, () => {
             ['C', 4],
             ['D', 0],
           ].map(async ([name, count]) => {
-            const locations = await context.lists.Location.findMany({
+            const locations = await context.query.Location.findMany({
               where: { company: { name: { contains: name } } },
             });
             expect(locations.length).toEqual(count);
@@ -129,7 +129,7 @@ describe(`One-to-many relationships`, () => {
       'is null',
       runner(async ({ context }) => {
         await createReadData(context);
-        const locations = await context.lists.Location.findMany({
+        const locations = await context.query.Location.findMany({
           where: { company: null },
         });
         expect(locations.length).toEqual(1);
@@ -139,7 +139,7 @@ describe(`One-to-many relationships`, () => {
       'is not null',
       runner(async ({ context }) => {
         await createReadData(context);
-        const locations = await context.lists.Location.findMany({
+        const locations = await context.query.Location.findMany({
           where: { NOT: { company: null } },
         });
         expect(locations.length).toEqual(6);
@@ -156,7 +156,7 @@ describe(`One-to-many relationships`, () => {
             ['C', 2],
             ['D', 0],
           ].map(async ([name, count]) => {
-            const companies = await context.lists.Company.findMany({
+            const companies = await context.query.Company.findMany({
               where: { locations: { some: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
@@ -175,7 +175,7 @@ describe(`One-to-many relationships`, () => {
             ['C', 2],
             ['D', 4],
           ].map(async ([name, count]) => {
-            const companies = await context.lists.Company.findMany({
+            const companies = await context.query.Company.findMany({
               where: { locations: { none: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
@@ -194,7 +194,7 @@ describe(`One-to-many relationships`, () => {
             ['C', 2],
             ['D', 1],
           ].map(async ([name, count]) => {
-            const companies = await context.lists.Company.findMany({
+            const companies = await context.query.Company.findMany({
               where: { locations: { every: { name: { equals: name } } } },
             });
             expect(companies.length).toEqual(count);
@@ -209,8 +209,8 @@ describe(`One-to-many relationships`, () => {
       'Count',
       runner(async ({ context }) => {
         await createInitialData(context);
-        const companiesCount = await context.lists.Company.count();
-        const locationsCount = await context.lists.Location.count();
+        const companiesCount = await context.query.Company.count();
+        const locationsCount = await context.query.Location.count();
         expect(companiesCount).toEqual(3);
         expect(locationsCount).toEqual(3);
       })
@@ -224,7 +224,7 @@ describe(`One-to-many relationships`, () => {
         const { locations } = await createInitialData(context);
         const location = locations[0];
         type T = { id: IdType; locations: { id: IdType }[] };
-        const company = (await context.lists.Company.createOne({
+        const company = (await context.query.Company.createOne({
           data: { locations: { connect: [{ id: location.id }] } },
           query: 'id locations { id }',
         })) as T;
@@ -243,7 +243,7 @@ describe(`One-to-many relationships`, () => {
       'With create',
       runner(async ({ context }) => {
         const locationName = sampleOne(alphanumGenerator);
-        const company = await context.lists.Company.createOne({
+        const company = await context.query.Company.createOne({
           data: { locations: { create: [{ name: locationName }] } },
           query: 'id locations { id }',
         });
@@ -268,7 +268,7 @@ describe(`One-to-many relationships`, () => {
 
         const locationName = sampleOne(alphanumGenerator);
 
-        const _company = await context.lists.Company.createOne({
+        const _company = await context.query.Company.createOne({
           data: {
             locations: {
               create: [{ name: locationName, company: { connect: { id: company.id } } }],
@@ -287,7 +287,7 @@ describe(`One-to-many relationships`, () => {
         expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id]);
         expect(Location.company.id.toString()).toBe(Company.id.toString());
 
-        const allCompanies = await context.lists.Company.findMany({
+        const allCompanies = await context.query.Company.findMany({
           query: 'id locations { id company { id } }',
         });
 
@@ -309,7 +309,7 @@ describe(`One-to-many relationships`, () => {
         const locationName = sampleOne(alphanumGenerator);
         const companyName = sampleOne(alphanumGenerator);
 
-        const company = await context.lists.Company.createOne({
+        const company = await context.query.Company.createOne({
           data: {
             locations: {
               create: [{ name: locationName, company: { create: { name: companyName } } }],
@@ -328,7 +328,7 @@ describe(`One-to-many relationships`, () => {
         expect(Location.company.id.toString()).toBe(Company.id.toString());
 
         // The nested company should not have a location
-        const companies = await context.lists.Company.findMany({
+        const companies = await context.query.Company.findMany({
           query: 'id locations { id company { id } }',
         });
         expect(companies.filter(({ id }) => id === Company.id)[0].locations[0].company.id).toEqual(
@@ -345,7 +345,7 @@ describe(`One-to-many relationships`, () => {
     test(
       'With null',
       runner(async ({ context }) => {
-        const company = await context.lists.Company.createOne({
+        const company = await context.query.Company.createOne({
           data: { locations: null },
           query: 'id locations { id }',
         });
@@ -368,7 +368,7 @@ describe(`One-to-many relationships`, () => {
         expect(company.locations).not.toBe(expect.anything());
         expect(location.company).not.toBe(expect.anything());
 
-        await context.lists.Company.updateOne({
+        await context.query.Company.updateOne({
           where: { id: company.id },
           data: { locations: { connect: [{ id: location.id }] } },
         });
@@ -386,7 +386,7 @@ describe(`One-to-many relationships`, () => {
         const { companies } = await createInitialData(context);
         let company = companies[0];
         const locationName = sampleOne(alphanumGenerator);
-        const _company = await context.lists.Company.updateOne({
+        const _company = await context.query.Company.updateOne({
           where: { id: company.id },
           data: { locations: { create: [{ name: locationName }] } },
           query: 'id locations { id name }',
@@ -411,7 +411,7 @@ describe(`One-to-many relationships`, () => {
         const { location, company } = await createCompanyAndLocation(context);
 
         // Run the query to disconnect the location from company
-        const _company = await context.lists.Company.updateOne({
+        const _company = await context.query.Company.updateOne({
           where: { id: company.id },
           data: { locations: { disconnect: [{ id: location.id }] } },
           query: 'id locations { id name }',
@@ -433,7 +433,7 @@ describe(`One-to-many relationships`, () => {
         const { location, company } = await createCompanyAndLocation(context);
 
         // Run the query to disconnect the location from company
-        const _company = await context.lists.Company.updateOne({
+        const _company = await context.query.Company.updateOne({
           where: { id: company.id },
           data: { locations: { set: [] } },
           query: 'id locations { id name }',
@@ -455,7 +455,7 @@ describe(`One-to-many relationships`, () => {
         const { location, company } = await createCompanyAndLocation(context);
 
         // Run the query with a null operation
-        const _company = await context.lists.Company.updateOne({
+        const _company = await context.query.Company.updateOne({
           where: { id: company.id },
           data: { locations: null },
           query: 'id locations { id name }',
@@ -477,7 +477,7 @@ describe(`One-to-many relationships`, () => {
         const { location, company } = await createCompanyAndLocation(context);
 
         // Run the query to disconnect the location from company
-        const _company = await context.lists.Company.deleteOne({ where: { id: company.id } });
+        const _company = await context.query.Company.deleteOne({ where: { id: company.id } });
         expect(_company?.id).toBe(company.id);
 
         // Check the link has been broken

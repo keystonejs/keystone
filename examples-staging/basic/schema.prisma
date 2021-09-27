@@ -7,8 +7,9 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model User {
@@ -25,7 +26,7 @@ model User {
   attachment_mode     String?
   attachment_filename String?
   password            String?
-  isAdmin             Boolean?
+  isAdmin             Boolean       @default(false)
   roles               String?
   phoneNumbers        PhoneNumber[] @relation("PhoneNumber_user")
   posts               Post[]        @relation("Post_author")
@@ -44,8 +45,8 @@ model PhoneNumber {
 model Post {
   id          String    @id @default(cuid())
   title       String?
-  status      String?
-  content     String?
+  status      String    @default("draft")
+  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")

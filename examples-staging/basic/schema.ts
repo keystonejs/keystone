@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
 import {
   text,
   relationship,
@@ -34,7 +34,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-export const lists = createSchema({
+export const lists = {
   User: list({
     ui: {
       listView: {
@@ -143,6 +143,11 @@ export const lists = createSchema({
         ui: {
           displayMode: 'segmented-control',
         },
+        isNullable: false,
+        validation: {
+          isRequired: true,
+        },
+        defaultValue: 'draft',
       }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
@@ -186,7 +191,7 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: gql`
@@ -214,8 +219,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
         // note this usage of the type is important because it tests that the generated
         // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-        const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
-        return lists.Post.createMany({ data });
+        const query = context.query as KeystoneListsAPI<KeystoneListsTypeInfo>;
+        return query.Post.createMany({ data });
       },
     },
     Query: {

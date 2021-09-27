@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { FindManyArgsValue, ItemRootValue, KeystoneContext, OrderDirection } from '../../../types';
-import { checkOperationAccess, getAccessFilters } from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import {
   PrismaFilter,
   UniquePrismaFilter,
@@ -9,9 +9,10 @@ import {
   UniqueInputFilter,
   InputFilter,
 } from '../where-inputs';
-import { limitsExceededError } from '../graphql-errors';
+import { limitsExceededError, userInputError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
+import { checkFilterOrderAccess } from '../filter-order-access';
 
 // doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
 // we want to do this explicit mapping because:
@@ -39,6 +40,44 @@ export function mapUniqueWhereToWhere(
   return { [key]: val };
 }
 
+function traverseQuery(
+  list: InitialisedList,
+  context: KeystoneContext,
+  inputFilter: InputFilter,
+  filterFields: Record<string, { fieldKey: string; list: InitialisedList }>
+) {
+  // Recursively traverse a where filter to find all the fields which are being
+  // filtered on.
+  Object.entries(inputFilter).forEach(([fieldKey, value]) => {
+    if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
+      value.forEach((value: any) => {
+        traverseQuery(list, context, value, filterFields);
+      });
+    } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
+      traverseQuery(list, context, value, filterFields);
+    } else {
+      filterFields[`${list.listKey}.${fieldKey}`] = { fieldKey, list };
+      // If it's a relationship, check the nested filters.
+      const field = list.fields[fieldKey];
+      if (field.dbField.kind === 'relation' && value !== null) {
+        const foreignList = field.dbField.list;
+        traverseQuery(list.lists[foreignList], context, value, filterFields);
+      }
+    }
+  });
+}
+
+export async function checkFilterAccess(
+  list: InitialisedList,
+  context: KeystoneContext,
+  inputFilter: InputFilter
+) {
+  if (!inputFilter) return;
+  const filterFields: Record<string, { fieldKey: string; list: InitialisedList }> = {};
+  traverseQuery(list, context, inputFilter, filterFields);
+  await checkFilterOrderAccess(Object.values(filterFields), context, 'filter');
+}
+
 export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
@@ -59,7 +98,7 @@ export async function findOne(
   context: KeystoneContext
 ) {
   // Check operation permission to pass into single operation
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return null;
   }
@@ -72,6 +111,10 @@ export async function findOne(
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
   const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
+
+  // Check filter access
+  const fieldKey = Object.keys(args.where)[0];
+  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
@@ -89,7 +132,7 @@ export async function findMany(
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
   // Check operation permission, throw access denied if not allowed
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return [];
   }
@@ -102,6 +145,10 @@ export async function findMany(
   applyEarlyMaxResults(take, list);
 
   let resolvedWhere = await resolveWhereInput(where, list, context);
+
+  // Check filter access
+  await checkFilterAccess(list, context, where);
+
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const results = await runWithPrisma(context, list, model =>
@@ -128,25 +175,40 @@ async function resolveOrderBy(
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
+  // Check input format. FIXME: Group all errors
+  orderBy.forEach(orderBySelection => {
+    const keys = Object.keys(orderBySelection);
+    if (keys.length !== 1) {
+      throw userInputError(
+        `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+      );
+    }
+
+    const fieldKey = keys[0];
+    const value = orderBySelection[fieldKey];
+    if (value === null) {
+      throw userInputError('null cannot be passed as an order direction');
+    }
+  });
+
+  // Check orderBy access
+  const orderByKeys = orderBy.map(orderBySelection => ({
+    fieldKey: Object.keys(orderBySelection)[0],
+    list,
+  }));
+  await checkFilterOrderAccess(orderByKeys, context, 'orderBy');
+
   return await Promise.all(
     orderBy.map(async orderBySelection => {
       const keys = Object.keys(orderBySelection);
-      if (keys.length !== 1) {
-        throw new Error(
-          `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
-        );
-      }
-
       const fieldKey = keys[0];
       const value = orderBySelection[fieldKey];
-      if (value === null) {
-        throw new Error('null cannot be passed as an order direction');
-      }
-
       const field = list.fields[fieldKey];
       const resolve = field.input!.orderBy!.resolve;
       const resolvedValue = resolve ? await resolve(value, context) : value;
       if (field.dbField.kind === 'multi') {
+        // Note: no built-in field types support multi valued database fields *and* orderBy.
+        // This code path is only relevent to custom fields which fit that criteria.
         const keys = Object.keys(resolvedValue);
         if (keys.length !== 1) {
           throw new Error(
@@ -171,8 +233,8 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  // Check operation permission, throw access denied if not allowed
-  const operationAccess = await checkOperationAccess(list, context, 'query');
+  // Check operation permission, return zero if not allowed
+  const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return 0;
   }
@@ -183,6 +245,10 @@ export async function count(
   }
 
   let resolvedWhere = await resolveWhereInput(where, list, context);
+
+  // Check filter access
+  await checkFilterAccess(list, context, where);
+
   resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const count = await runWithPrisma(context, list, model =>

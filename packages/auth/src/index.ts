@@ -28,11 +28,6 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   passwordResetLink,
   sessionData,
 }: AuthConfig<GeneratedListTypes>) {
-  // The protectIdentities flag is currently under review to see whether it should be
-  // part of the createAuth API (in which case its use cases need to be documented and tested)
-  // or whether always being true is what we want, in which case we can refactor our code
-  // to match this. -TL
-  const protectIdentities = true;
   const gqlNames: AuthGqlNames = {
     // Core
     authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
@@ -105,7 +100,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const count = await context.sudo().lists[listKey].count({});
+      const count = await context.sudo().query[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return { kind: 'redirect', to: '/init' };
@@ -163,7 +158,6 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const extendGraphqlSchema = getSchemaExtension({
     identityField,
     listKey,
-    protectIdentities,
     secretField,
     gqlNames,
     initFirstItem,
@@ -227,13 +221,13 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       ...sessionStrategy,
       get: async ({ req, createContext }) => {
         const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
+        const sudoContext = createContext({ sudo: true });
         if (
           !session ||
           !session.listKey ||
           session.listKey !== listKey ||
           !session.itemId ||
-          !sudoContext.lists[session.listKey]
+          !sudoContext.query[session.listKey]
         ) {
           return;
         }
@@ -244,7 +238,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         try {
           // If no field selection is specified, just load the id. We still load the item,
           // because doing so validates that it exists in the database
-          const data = await sudoContext.lists[listKey].findOne({
+          const data = await sudoContext.query[listKey].findOne({
             where: { id: session.itemId },
             query: sessionData || 'id',
           });
@@ -288,7 +282,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           const accessingInitPage =
             url?.pathname === '/init' &&
             url?.host === host &&
-            (await context.sudo().lists[listKey].count({})) === 0;
+            (await context.sudo().query[listKey].count({})) === 0;
           return (
             accessingInitPage ||
             (keystoneConfig.ui?.isAccessAllowed

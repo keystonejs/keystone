@@ -56,9 +56,7 @@ async function getGeneratedMigration(
   const migrations: {
     migration_name: string;
     finished_at: string;
-  }[] = await prismaClient.$queryRaw(
-    'SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC'
-  );
+  }[] = await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
   await prismaClient.$disconnect();
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
@@ -320,9 +318,9 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id         String   @id
+        id         String  @id
         title      String?
-        isComplete Boolean?
+        isComplete Boolean @default(false)
       }
       "
     `);
@@ -330,8 +328,18 @@ describe('useMigrations: true', () => {
     const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete');
 
     expect(migration).toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT,
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 
@@ -580,8 +588,18 @@ describe('useMigrations: true', () => {
     );
     expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
       .toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT,
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 

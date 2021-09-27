@@ -1,6 +1,16 @@
 import { ApolloError } from 'apollo-server-errors';
 
-export const accessDeniedError = () => new ApolloError('You do not have access to this resource');
+export const userInputError = (msg: string) => new ApolloError(`Input error: ${msg}`);
+
+export const accessDeniedError = (msg: string) => new ApolloError(`Access denied: ${msg}`);
+
+export const prismaError = (err: Error) => {
+  return new ApolloError(
+    `Prisma error: ${err.message.split('\n').slice(-1)[0].trim()}`,
+    'INTERNAL_SERVER_ERROR',
+    { prisma: { ...err } }
+  );
+};
 
 export const validationFailureError = (messages: string[]) => {
   const s = messages.map(m => `  - ${m}`).join('\n');
@@ -22,3 +32,16 @@ export const extensionError = (extension: string, things: { error: Error; tag: s
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
   new ApolloError('Your request exceeded server limits');
+
+export const filterAccessError = ({
+  operation,
+  fieldKeys,
+}: {
+  operation: 'filter' | 'orderBy';
+  fieldKeys: string[];
+}) =>
+  new ApolloError(
+    `You do not have access to perform '${operation}' operations on the fields ${JSON.stringify(
+      fieldKeys
+    )}.`
+  );

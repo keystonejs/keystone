@@ -4,10 +4,10 @@
   "private": true,
   "main": "dist/prisma-utils.cjs.js",
   "dependencies": {
-    "@prisma/generator-helper": "2.30.2",
-    "@prisma/sdk": "2.30.2",
+    "@prisma/generator-helper": "3.1.1",
+    "@prisma/sdk": "3.1.1",
     "fs-extra": "^10.0.0",
-    "prettier": "^2.3.2"
+    "prettier": "^2.4.1"
   },
   "scripts": {
     "generate": "node .",

@@ -16,8 +16,17 @@ export function createAdminMeta(
     views: [],
   };
 
+  const omittedLists: string[] = [];
+
   for (const [key, list] of Object.entries(initialisedLists)) {
     const listConfig = lists[key];
+    if (list.graphql.isEnabled.query === false) {
+      // If graphql querying is disabled on the list,
+      // push the key into the ommittedLists array for use further down in the procedure and skip.
+      omittedLists.push(key);
+
+      continue;
+    }
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
       (listConfig.ui?.labelField as string | undefined) ??
@@ -80,6 +89,7 @@ export function createAdminMeta(
   }
   // Populate .fields array
   for (const [key, list] of Object.entries(initialisedLists)) {
+    if (omittedLists.includes(key)) continue;
     const searchFields = new Set(config.lists[key].ui?.searchFields ?? []);
     if (searchFields.has('id')) {
       throw new Error(
@@ -98,6 +108,8 @@ export function createAdminMeta(
     }
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
+      // If the field is a relationship field and is related to an omitted list, skip.
+      if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
       // FIXME: Disabling this entirely for now until the Admin UI can properly
       // handle `omit: ['read']` correctly.
       if (field.graphql.isEnabled.read === false) continue;
@@ -118,8 +130,6 @@ export function createAdminMeta(
         viewsIndex: getViewId(field.views),
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
         fieldMeta: null,
-        isOrderable: field.graphql.isEnabled.orderBy,
-        isFilterable: field.graphql.isEnabled.filter,
         path: fieldKey,
         listKey: key,
         search,
@@ -130,7 +140,13 @@ export function createAdminMeta(
   // we do this seperately to the above so that fields can check other fields to validate their config or etc.
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
+    if (list.graphql.isEnabled.query === false) continue;
     for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
+      const dbField = list.fields[fieldMetaRootVal.path].dbField;
+      // If the field is a relationship field and is related to an omitted list, skip.
+      if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) {
+        continue;
+      }
       fieldMetaRootVal.fieldMeta =
         list.fields[fieldMetaRootVal.path].getAdminMeta?.(adminMetaRoot) ?? null;
     }

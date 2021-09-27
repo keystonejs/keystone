@@ -105,13 +105,22 @@ export function jsonFieldTypePolyfilledForSQLite<
       uniqueWhere?: undefined;
       orderBy?: undefined;
     };
+  },
+  dbFieldConfig?: {
+    mode?: 'required' | 'optional';
+    default?: ScalarDBField<'Json', 'optional'>['default'];
   }
 ) {
   if (provider === 'sqlite') {
-    return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'String' })({
+    return fieldType({
+      kind: 'scalar',
+      mode: dbFieldConfig?.mode ?? 'optional',
+      scalar: 'String',
+      default: dbFieldConfig?.default,
+    })({
       ...config,
       input: {
-        create: mapCreateInputArgToSQLite(config.input?.create),
+        create: mapCreateInputArgToSQLite(config.input?.create) as any,
         update: mapUpdateInputArgToSQLite(config.input?.update),
       },
       output: mapOutputFieldToSQLite(config.output),
@@ -123,5 +132,10 @@ export function jsonFieldTypePolyfilledForSQLite<
       ),
     });
   }
-  return fieldType({ kind: 'scalar', mode: 'optional', scalar: 'Json' })(config);
+  return fieldType({
+    kind: 'scalar',
+    mode: (dbFieldConfig?.mode ?? 'optional') as 'optional',
+    scalar: 'Json',
+    default: dbFieldConfig?.default,
+  })(config);
 }
