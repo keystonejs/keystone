@@ -4,6 +4,8 @@ import { GraphQLJSON } from 'graphql-type-json';
 // @ts-ignore
 import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
 import type { FileUpload } from 'graphql-upload';
+import { GraphQLError, GraphQLScalarType } from 'graphql';
+import DecimalValue from 'decimal.js';
 import { KeystoneContext } from '../context';
 import { JSONValue } from '../utils';
 export {
@@ -42,6 +44,41 @@ export type Context = KeystoneContext;
 
 export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
 export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload);
+
+// - Decimal.js throws on invalid inputs
+// - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal but NaN is
+//   .isFinite refers to +Infinity, -Infinity and NaN
+export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue>(
+  new GraphQLScalarType({
+    name: 'Decimal',
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('Decimal only accepts values as strings');
+      }
+      let decimal = new DecimalValue(value.value);
+      if (!decimal.isFinite() && !decimal.isNaN()) {
+        throw new GraphQLError('Decimal values must be finite');
+      }
+      return decimal;
+    },
+    parseValue(value) {
+      if (DecimalValue.isDecimal(value)) {
+        if (!value.isFinite() && !value.isNaN()) {
+          throw new GraphQLError('Decimal values must be finite');
+        }
+        return value;
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError('Decimal only accepts values as strings');
+      }
+      let decimal = new DecimalValue(value);
+      if (!decimal.isFinite() && !decimal.isNaN()) {
+        throw new GraphQLError('Decimal values must be finite');
+      }
+      return decimal;
+    },
+  })
+);
 
 export type NullableType = graphqlTsSchema.NullableType<Context>;
 export type Type = graphqlTsSchema.Type<Context>;
