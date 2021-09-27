@@ -94,7 +94,7 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, validation.max, 'validation.max');
 
-    if (min !== undefined && max !== undefined && max.greaterThanOrEqualTo(min)) {
+    if (min !== undefined && max !== undefined && max.lessThan(min)) {
       throw new Error(
         `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
@@ -169,10 +169,15 @@ export const decimal =
       },
       output: graphql.field({ type: graphql.Decimal }),
       views: resolveView('decimal/views'),
-      getAdminMeta: () => ({
+      getAdminMeta: (): import('./views').DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,
         precision,
         scale,
+        validation: {
+          isRequired: validation?.isRequired ?? false,
+          max: validation?.max ?? null,
+          min: validation?.min ?? null,
+        },
       }),
     });
   };

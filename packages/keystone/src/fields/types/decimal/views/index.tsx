@@ -4,6 +4,7 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { Decimal } from 'decimal.js';
+import { useState } from 'react';
 import {
   CardValueComponent,
   CellComponent,
@@ -14,17 +15,26 @@ import {
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
 import { useFormattedInput } from '../../integer/views/utils';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) => {
+  const [hasBlurred, setHasBlurred] = useState(false);
   const inputProps = useFormattedInput<Decimal | null>(
     {
       format(decimal) {
         if (decimal === null) {
           return '';
         }
-        return decimal.toFixed(field.scale);
+
+        return decimal.toFixed(Math.min(field.scale, decimal.decimalPlaces()));
       },
       parse(value) {
-        if (value.trim() === '') {
+        value = value.trim();
+        if (value === '') {
           return null;
         }
         let decimal: Decimal;
@@ -41,12 +51,19 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         onChange?.({ ...value, value: val });
       },
       value: value.value,
+      onBlur() {
+        setHasBlurred(true);
+      },
     }
   );
+  const validationMessage = validate(value, field.validation, field.label);
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
       {onChange ? <TextInput id={field.path} autoFocus={autoFocus} {...inputProps} /> : value}
+      {(hasBlurred || forceValidation) && validationMessage && (
+        <span css={{ color: 'red' }}>{validationMessage}</span>
+      )}
     </FieldContainer>
   );
 };
@@ -66,7 +83,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig<{
+export type DecimalFieldMeta = {
   precision: number;
   scale: number;
   defaultValue: string | null;
@@ -75,7 +92,9 @@ type Config = FieldControllerConfig<{
     max: string | null;
     min: string | null;
   };
-}>;
+};
+
+type Config = FieldControllerConfig<DecimalFieldMeta>;
 
 type Validation = {
   isRequired: boolean;
@@ -99,7 +118,7 @@ type Value =
 function validate(value: Value, validation: Validation, label: string): string | undefined {
   const val = value.value;
   if (typeof val === 'string') {
-    return `${label} must be a whole number`;
+    return `${label} must be a number`;
   }
 
   // if we recieve null initially on the item view and the current value is null,
@@ -129,7 +148,9 @@ function validate(value: Value, validation: Validation, label: string): string |
   return undefined;
 }
 
-export const controller = (config: Config): FieldController<Value, string> & { scale: number } => {
+export const controller = (
+  config: Config
+): FieldController<Value, string> & { scale: number; validation: Validation } => {
   const _validation = config.fieldMeta.validation;
   const validation: Validation = {
     isRequired: _validation.isRequired,
@@ -141,6 +162,7 @@ export const controller = (config: Config): FieldController<Value, string> & { s
     label: config.label,
     graphqlSelection: config.path,
     scale: config.fieldMeta.scale,
+    validation,
     defaultValue: {
       kind: 'create',
       value:
@@ -154,7 +176,14 @@ export const controller = (config: Config): FieldController<Value, string> & { s
         value,
       };
     },
-    serialize: value => ({ [config.path]: value === null ? null : value.toString() }),
+    serialize: value => ({
+      [config.path]:
+        value.value === null
+          ? null
+          : typeof value.value === 'string'
+          ? value.value
+          : value.value.toFixed(Math.min(config.fieldMeta.scale, value.value.decimalPlaces())),
+    }),
     validate: val => validate(val, validation, config.label) === undefined,
     filter: {
       Filter(props) {
