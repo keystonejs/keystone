@@ -43,9 +43,9 @@ export const lists = {
     },
     fields: {
       /** The user's first and last name. */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),

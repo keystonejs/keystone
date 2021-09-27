@@ -1,16 +1,16 @@
-import { text } from '..';
+import { DatabaseProvider } from '../../../../../types';
+import { text } from '../..';
 
-export const name = 'Text';
-export const typeFunction = text;
+export const name = 'Text with isNullable: true';
+export const typeFunction = (config: any) => text({ ...config, isNullable: true });
 export const exampleValue = () => 'foo';
 export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const skipRequiredTest = true;
-export const supportsGraphQLIsNonNull = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({
-  testField: text({ isFilterable: true }),
+  testField: text({ isFilterable: true, isNullable: true }),
 });
 
 export const initItems = () => {
@@ -20,7 +20,7 @@ export const initItems = () => {
     { name: 'c', testField: 'FOOBAR' },
     { name: 'd', testField: 'fooBAR' },
     { name: 'e', testField: 'foobar' },
-    { name: 'f' },
+    { name: 'f', testField: null },
     { name: 'g' },
   ];
 };
@@ -31,8 +31,17 @@ export const storedValues = () => [
   { name: 'c', testField: 'FOOBAR' },
   { name: 'd', testField: 'fooBAR' },
   { name: 'e', testField: 'foobar' },
-  { name: 'f', testField: '' },
-  { name: 'g', testField: '' },
+  { name: 'f', testField: null },
+  { name: 'g', testField: null },
 ];
 
-export const supportedFilters = () => [];
+export const supportedFilters = (provider: DatabaseProvider) => [
+  'null_equality',
+  'equality',
+  provider !== 'sqlite' && 'equality_case_insensitive',
+  'in_empty_null',
+  'in_value',
+  provider !== 'sqlite' && 'string',
+  provider !== 'sqlite' && 'string_case_insensitive',
+  'unique_equality',
+];

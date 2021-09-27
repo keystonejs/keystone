@@ -84,8 +84,8 @@ async function setupInitialProjectWithoutMigrations() {
 }
 
 model Todo {
-  id    String  @id
-  title String?
+  id    String @id
+  title String @default("")
 }
 `);
 
@@ -111,14 +111,14 @@ describe('useMigrations: false', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-"✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
-✨ Generating GraphQL and Prisma schemas
-✨ The database is already in sync with the Prisma schema.
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready"
-`);
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ The database is already in sync with the Prisma schema.
+      ✨ Connecting to the database
+      ✨ Creating server
+      ✅ GraphQL API ready"
+    `);
   });
   test('warns when dropping field that has data in it', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -151,19 +151,19 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-"✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
-✨ Generating GraphQL and Prisma schemas
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
 
-⚠️  Warnings:
+      ⚠️  Warnings:
 
-  • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-Prompt: Do you want to continue? Some data will be lost. true
-✨ Your database is now in sync with your schema. Done in 0ms
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready"
-`);
+        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+      Prompt: Do you want to continue? Some data will be lost. true
+      ✨ Your database is now in sync with your schema. Done in 0ms
+      ✨ Connecting to the database
+      ✨ Creating server
+      ✅ GraphQL API ready"
+    `);
   });
   test('exits when refusing data loss prompt', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -191,8 +191,8 @@ Prompt: Do you want to continue? Some data will be lost. true
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -253,8 +253,8 @@ async function setupInitialProjectWithMigrations() {
 }
 
 model Todo {
-  id    String  @id
-  title String?
+  id    String @id
+  title String @default("")
 }
 `);
 
@@ -263,7 +263,7 @@ model Todo {
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "title" TEXT
+    "title" TEXT NOT NULL DEFAULT ''
 );
 `);
 
@@ -319,7 +319,7 @@ describe('useMigrations: true', () => {
 
       model Todo {
         id         String  @id
-        title      String?
+        title      String  @default(\\"\\")
         isComplete Boolean @default(false)
       }
       "
@@ -332,7 +332,7 @@ describe('useMigrations: true', () => {
       PRAGMA foreign_keys=OFF;
       CREATE TABLE \\"new_Todo\\" (
           \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT,
+          \\"title\\" TEXT NOT NULL DEFAULT '',
           \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
       );
       INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
@@ -457,8 +457,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -469,7 +469,7 @@ describe('useMigrations: true', () => {
       "-- CreateTable
       CREATE TABLE \\"Todo\\" (
           \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT
+          \\"title\\" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
@@ -575,8 +575,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -592,7 +592,7 @@ describe('useMigrations: true', () => {
       PRAGMA foreign_keys=OFF;
       CREATE TABLE \\"new_Todo\\" (
           \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT,
+          \\"title\\" TEXT NOT NULL DEFAULT '',
           \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
       );
       INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
@@ -633,8 +633,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
