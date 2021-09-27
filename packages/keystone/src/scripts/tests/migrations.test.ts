@@ -536,7 +536,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
