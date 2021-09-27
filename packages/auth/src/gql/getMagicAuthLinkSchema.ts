@@ -23,16 +23,8 @@ export function getMagicAuthLinkSchema<I extends string>({
     typeDefs: `
       # Magic links
       type Mutation {
-        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}
+        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): Boolean
         ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
-      }
-      type ${gqlNames.SendItemMagicAuthLinkResult} {
-        code: MagicLinkRequestErrorCode!
-        message: String!
-      }
-      enum MagicLinkRequestErrorCode {
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -45,10 +37,6 @@ export function getMagicAuthLinkSchema<I extends string>({
       }
       enum MagicLinkRedemptionErrorCode {
         FAILURE
-        IDENTITY_NOT_FOUND
-        MULTIPLE_IDENTITY_MATCHES
-        TOKEN_NOT_SET
-        TOKEN_MISMATCH
         TOKEN_EXPIRED
         TOKEN_REDEEMED
       }
@@ -61,18 +49,6 @@ export function getMagicAuthLinkSchema<I extends string>({
           const identity = args[identityField];
 
           const result = await createAuthToken(identityField, identity, dbItemAPI);
-
-          // Note: `success` can be false with no code
-          // result.code will *always* be undefined.
-          if (!result.success && result.code) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-            return { code: result.code, message };
-          }
 
           // Update system state
           if (result.success) {
@@ -114,14 +90,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           );
 
           if (!result.success) {
-            const message = getAuthTokenErrorMessage({
-              identityField,
-              listKey,
-              context,
-              code: result.code,
-            });
-
-            return { code: result.code, message };
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
           }
           // Update system state
           // Save the token and related info back to the item

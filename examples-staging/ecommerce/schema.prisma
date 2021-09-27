@@ -35,7 +35,7 @@ model Product {
   description           String?
   photo                 ProductImage? @relation("Product_photo", fields: [photoId], references: [id])
   photoId               String?       @unique @map("photo")
-  status                String?
+  status                String?       @default("DRAFT")
   price                 Int?
   user                  User?         @relation("Product_user", fields: [userId], references: [id])
   userId                String?       @map("user")
@@ -54,7 +54,7 @@ model ProductImage {
 
 model CartItem {
   id        String   @id @default(cuid())
-  quantity  Int?
+  quantity  Int      @default(1)
   product   Product? @relation("CartItem_product", fields: [productId], references: [id])
   productId String?  @map("product")
   user      User?    @relation("CartItem_user", fields: [userId], references: [id])

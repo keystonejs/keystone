@@ -9,11 +9,12 @@ export const exampleValue = (matrixValue: MatrixValue) =>
 export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'atlassian' : matrixValue === 'string' ? '1number' : 2;
 export const supportsUnique = true;
+export const skipRequiredTest = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
       isFilterable: true as const,
-      dataType: matrixValue,
+      type: matrixValue,
       options:
         matrixValue === 'enum'
           ? [
@@ -35,7 +36,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
   }
   return {
     isFilterable: true as const,
-    dataType: matrixValue,
+    type: matrixValue,
     options: [
       { label: 'One', value: 1 },
       { label: 'Two', value: 2 },

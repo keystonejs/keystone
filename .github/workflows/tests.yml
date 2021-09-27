@@ -255,6 +255,7 @@ jobs:
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
             'json.test.ts',
+            'rest-api.test.ts',
             'roles.test.ts',
             'task-manager.test.ts',
             'testing.test.ts',
