@@ -59,14 +59,14 @@
     "@types/cookie": "^0.4.1",
     "@types/express": "^4.17.13",
     "@types/form-data": "2.5.0",
-    "@types/fs-extra": "^9.0.12",
+    "@types/fs-extra": "^9.0.13",
     "@types/graphql-upload": "^8.0.7",
     "@types/inflection": "^1.13.0",
     "@types/node-fetch": "^2.5.12",
     "@types/pluralize": "^0.0.29",
-    "@types/prettier": "^2.3.2",
+    "@types/prettier": "^2.4.0",
     "@types/prompts": "^2.0.14",
-    "@types/react": "^17.0.22",
+    "@types/react": "^17.0.24",
     "@types/source-map-support": "^0.5.4",
     "@types/supertest": "^2.0.11",
     "@types/uid-safe": "^2.1.2",
@@ -104,8 +104,8 @@
     "memoize-one": "^5.2.1",
     "meow": "^9.0.0",
     "micro": "^9.3.4",
-    "next": "^11.1.0",
-    "node-fetch": "^2.6.3",
+    "next": "^11.1.2",
+    "node-fetch": "^2.6.5",
     "object-hash": "^2.2.0",
     "p-limit": "^2.3.0",
     "pirates": "^4.0.1",
@@ -122,7 +122,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@testing-library/dom": "^8.5.0",
+    "@testing-library/dom": "^8.6.0",
     "@testing-library/react": "^12.1.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/bytes": "^3.1.1",
@@ -130,7 +130,7 @@
     "mime": "^2.5.2",
     "outdent": "^0.8.0",
     "string-argv": "^0.3.1",
-    "strip-ansi": "^6.0.0"
+    "strip-ansi": "^6.0.1"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
