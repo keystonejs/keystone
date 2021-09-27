@@ -40,12 +40,11 @@ function LinkToRelatedItems({
     value,
   }: {
     isDoubleSided?: boolean;
-    itemId?: string;
+    itemId: string | null;
     value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   }) {
-    console.log(isDoubleSided, itemId);
     if (isDoubleSided && itemId) {
-      return `%21assignedTo_matches="${itemId}"`;
+      return `!assignedTo_matches="${itemId}"`;
     }
     return `!id_in="${(value?.value as { id: string; label: string }[])
       .slice(0, 100)
@@ -453,13 +452,13 @@ export const controller = (
         ? `${config.path} {
             id
             label: ${config.fieldMeta.refLabelField}
-           }`
+          }`
         : config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
         : `${config.path} {
-             id
-             label: ${config.fieldMeta.refLabelField}
-           }`,
+              id
+              label: ${config.fieldMeta.refLabelField}
+            }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
       ? {
@@ -520,50 +519,19 @@ export const controller = (
     filter: {
       Filter: ({ onChange, value }) => {
         const foreignList = useList(config.fieldMeta.refListKey);
-        const foreignIds = getForeignIds(value);
-        const where = config.fieldMeta.many
-          ? {
-              some: {
-                id: {
-                  in: foreignIds,
-                },
-              },
-            }
-          : {
-              id: {
-                in: foreignIds,
-              },
-            };
-        const query = gql`
-          query FOREIGNLIST_QUERY($where: ${foreignList.gqlNames.whereInputName}!) {
-            items: ${foreignList.gqlNames.listQueryName}(where: $where) {
-              id 
-              ${foreignList.labelField}
-            }
-          }
-        `;
-        const { data, loading } = useQuery(query, {
-          variables: {
-            where,
-          },
+        const { filterValues, loading } = useRelationshipFilterValues({
+          many: config.fieldMeta.many,
+          value,
+          list: foreignList,
         });
-        const stateValue =
-          data?.items?.map((item: any) => {
-            return {
-              id: item.id,
-              label: item[foreignList.labelField],
-            };
-          }) || [];
-
         const state: {
           kind: 'many';
           value: { label: string; id: string }[];
           onChange: (newItems: { label: string; id: string }[]) => void;
         } = {
           kind: 'many',
-          value: stateValue,
+          value: filterValues,
           onChange(newItems) {
-            console.log();
             onChange(newItems.map(item => item.id).join(','));
           },
         };
@@ -601,48 +569,20 @@ export const controller = (
       },
       Label({ value }) {
         const foreignList = useList(config.fieldMeta.refListKey);
-        const foreignIds = getForeignIds(value);
-        const where = config.fieldMeta.many
-          ? {
-              some: {
-                id: {
-                  in: foreignIds,
-                },
-              },
-            }
-          : {
-              id: {
-                in: foreignIds,
-              },
-            };
-        const query = gql`
-          query FOREIGNLIST_QUERY($where: ${foreignList.gqlNames.whereInputName}!) {
-            items: ${foreignList.gqlNames.listQueryName}(where: $where) {
-              id 
-              ${foreignList.labelField}
-            }
-          }
-        `;
-        const { data, error } = useQuery(query, {
-          variables: {
-            where,
-          },
+        const { filterValues } = useRelationshipFilterValues({
+          many: config.fieldMeta.many,
+          value,
+          list: foreignList,
         });
-        const stateValue =
-          data?.items?.map((item: any) => {
-            return {
-              id: item.id,
-              label: item[foreignList.labelField],
-            };
-          }) || [];
-        if (!stateValue.length) {
+
+        if (!filterValues.length) {
           return `has no value`;
         }
-        if (stateValue.length > 1) {
-          const values = stateValue.map((i: any) => i.label).join(', ');
+        if (filterValues.length > 1) {
+          const values = filterValues.map((i: any) => i.label).join(', ');
           return `is in [${values}]`;
         }
-        const optionLabel = stateValue[0].label;
+        const optionLabel = filterValues[0].label;
         return `is ${optionLabel}`;
       },
       types: {
@@ -725,9 +665,48 @@ export const controller = (
   };
 };
 
+function useRelationshipFilterValues({
+  many,
+  value,
+  list,
+}: {
+  many: boolean;
+  value: string;
+  list: ListMeta;
+}) {
+  const foreignIds = getForeignIds(value);
+  const where = many ? { some: { id: { in: foreignIds } } } : { id: { in: foreignIds } };
+
+  const query = gql`
+    query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
+      items: ${list.gqlNames.listQueryName}(where: $where) {
+        id 
+        ${list.labelField}
+      }
+    }
+  `;
+
+  const { data, loading } = useQuery(query, {
+    variables: {
+      where,
+    },
+  });
+
+  return {
+    filterValues:
+      data?.items?.map((item: any) => {
+        return {
+          id: item.id,
+          label: item[list.labelField],
+        };
+      }) || foreignIds,
+    loading: loading,
+  };
+}
+
 function getForeignIds(value: string) {
-  if (typeof value === 'string') {
+  if (typeof value === 'string' && value.length > 0) {
     return value.split(',');
   }
-  return value;
+  return [];
 }
