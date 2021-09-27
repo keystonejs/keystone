@@ -33,7 +33,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
             }
         }
       `;
-      await makeGqlRequest(TASK_MUTATION_CREATE, {
+      const { assignedTask } = await makeGqlRequest(TASK_MUTATION_CREATE, {
         $name: 'Task-assigned',
         $assignedTo: 'James Joyce',
       });
@@ -46,8 +46,28 @@ adminUITests('./tests/test-projects/basic', browserType => {
         ),
       });
       await page.goto('http://localhost:3000/tasks');
+      await page.waitForSelector('table tr');
+      const elements = await page.$$('table tr');
+      expect(elements.length).toBe(21);
+      // apply filter
+      await page.click('button[aria-popup=true]:has-text("Filter List")');
+      await page.click('div:has-text("Assigned To")');
+      await page.click('div:has-text("Select...")');
+      await page.click('div:has-text("James Joyce")');
+      await Promise.all([
+        page.waitForNavigation({
+          url: `http://localhost:3000/tasks%21assignedTo_matches="${assignedTask.assignedTo.id}"`,
+        }),
+        page.click('button[type="submit"]:has-text("Apply")'),
+      ]);
+
+      // Assert that there's only one result.
+      await page.waitForSelector('table tr');
+      const filteredElements = await page.$$('table tr');
+      expect(filteredElements.length).toBe(1);
     });
     test('One way relationships can only be filterable by the List with the relationship declared', async () => {});
+    test('Deeplinking a url with the appropriate relationship filter query params will apply the filter', async () => {});
   });
 
   afterAll(async () => {
