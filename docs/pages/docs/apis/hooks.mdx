@@ -434,7 +434,7 @@ The data resolving steps are applied in the following order:
 2. Defaults (built in, `create` only): Any fields which have a default value and are `undefined` in `resolvedData` will be set to their default value.
 3. Relationships (built in): The values for relationship fields on `resolvedData` are [Prisma nested write objects](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries/#connect-an-existing-record).
    This is the format expected when saving relationship fields to the database.
-   Any nested create operations are performed as part of this process, and their IDs are returned, and combined with any `connect` inputs.
+   Any nested create operations are performed during this phase. Their IDs are returned, and combined with any `connect` inputs.
    All items provided for `connect`, `set`, and `disconnect` are checked to ensure they exist.
    For to-many relationships, an object with the shape `{ connect: [...], set: [...], disconnect: [...] }` is returned.
    For to-one relationships, an object with the shape `{ connect }` or `{ disconnect: true }` is returned.
