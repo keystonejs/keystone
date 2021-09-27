@@ -202,7 +202,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
 
     useEffect(() => {
       if (focusTrapRef?.current) {
-        focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current, {});
+        focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current);
       }
     }, [focusTrapRef]);
 
