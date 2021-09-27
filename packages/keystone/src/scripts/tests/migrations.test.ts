@@ -158,15 +158,15 @@ describe('useMigrations: false', () => {
 ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 
-      ⚠️  Warnings:
+⚠️  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost. true
-      ✨ Your database is now in sync with your schema. Done in 0ms
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
-    `);
+  • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+Prompt: Do you want to continue? Some data will be lost. true
+✨ Your database is now in sync with your schema. Done in 0ms
+✨ Connecting to the database
+✨ Creating server
+✅ GraphQL API ready"
+`);
   });
   test('exits when refusing data loss prompt', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
