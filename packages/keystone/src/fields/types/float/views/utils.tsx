@@ -24,15 +24,13 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase>(
   // typeof value === 'string' implies the unparsed form
   // typeof value !== 'string' implies the parsed form
 
-  console.log({ internal: typeof value });
-
-  // if (typeof value === 'string' && typeof config.parse(value) !== 'string') {
-  //   throw new Error(
-  //     `Valid values must be passed in as a parsed value, not a raw value. The value you passed was \`${JSON.stringify(
-  //       value
-  //     )}\`, you should pass \`${JSON.stringify(config.parse(value))}\` instead`
-  //   );
-  // }
+  if (typeof value === 'string' && typeof config.parse(value) !== 'string') {
+    throw new Error(
+      `Valid values must be passed in as a parsed value, not a raw value. The value you passed was \`${JSON.stringify(
+        value
+      )}\`, you should pass \`${JSON.stringify(config.parse(value))}\` instead`
+    );
+  }
   let [internalValueState, setInternalValueState] = useState(() =>
     typeof value === 'string' ? value : config.format(value)
   );
