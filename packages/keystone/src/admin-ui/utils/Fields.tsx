@@ -37,7 +37,6 @@ const RenderField = memo(function RenderField({
 });
 
 type FieldsProps = {
-  itemId?: string;
   fields: Record<string, FieldMeta>;
   value: Value;
   forceValidation: boolean;

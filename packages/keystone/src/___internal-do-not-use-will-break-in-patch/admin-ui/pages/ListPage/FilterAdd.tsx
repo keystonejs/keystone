@@ -140,7 +140,6 @@ function FilterAddPopoverContent({
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
         if (state.kind === 'filter-value') {
-          console.log(state);
           router.push({
             query: {
               ...router.query,
