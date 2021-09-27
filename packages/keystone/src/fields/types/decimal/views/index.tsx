@@ -3,6 +3,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { Decimal } from 'decimal.js';
 import {
   CardValueComponent,
   CellComponent,
@@ -11,22 +12,44 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
+import { useFormattedInput } from '../../integer/views/utils';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-    {onChange ? (
-      <TextInput
-        id={field.path}
-        autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value.replace(/[^\d\.-]/, ''))}
-        value={value}
-      />
-    ) : (
-      value
-    )}
-  </FieldContainer>
-);
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
+  const inputProps = useFormattedInput<Decimal | null>(
+    {
+      format(decimal) {
+        if (decimal === null) {
+          return '';
+        }
+        return decimal.toFixed(field.scale);
+      },
+      parse(value) {
+        if (value.trim() === '') {
+          return null;
+        }
+        let decimal: Decimal;
+        try {
+          decimal = new Decimal(value);
+        } catch (err) {
+          return value;
+        }
+        return decimal;
+      },
+    },
+    {
+      onChange(val) {
+        onChange?.({ ...value, value: val });
+      },
+      value: value.value,
+    }
+  );
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      {onChange ? <TextInput id={field.path} autoFocus={autoFocus} {...inputProps} /> : value}
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] || '';
@@ -46,16 +69,93 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 type Config = FieldControllerConfig<{
   precision: number;
   scale: number;
+  defaultValue: string | null;
+  validation: {
+    isRequired: boolean;
+    max: string | null;
+    min: string | null;
+  };
 }>;
 
-export const controller = (config: Config): FieldController<string, string> => {
+type Validation = {
+  isRequired: boolean;
+  max: Decimal | null;
+  min: Decimal | null;
+};
+
+type InnerValue = string | Decimal | null;
+
+type Value =
+  | {
+      kind: 'create';
+      value: InnerValue;
+    }
+  | {
+      kind: 'update';
+      initial: InnerValue;
+      value: InnerValue;
+    };
+
+function validate(value: Value, validation: Validation, label: string): string | undefined {
+  const val = value.value;
+  if (typeof val === 'string') {
+    return `${label} must be a whole number`;
+  }
+
+  // if we recieve null initially on the item view and the current value is null,
+  // we should always allow saving it because:
+  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
+  // - we might have null because of an access control error
+  if (value.kind === 'update' && value.initial === null && val === null) {
+    return undefined;
+  }
+
+  if (val !== null && !val.isFinite() && !val.isNaN()) {
+    return `${label} must be finite`;
+  }
+
+  if (validation.isRequired && (val === null || val.isNaN())) {
+    return `${label} is required`;
+  }
+  if (val !== null) {
+    if (validation.min !== null && val.lessThan(validation.min)) {
+      return `${label} must be greater than or equal to ${validation.min}`;
+    }
+    if (validation.max !== null && val.greaterThan(validation.max)) {
+      return `${label} must be less than or equal to ${validation.max}`;
+    }
+  }
+
+  return undefined;
+}
+
+export const controller = (config: Config): FieldController<Value, string> & { scale: number } => {
+  const _validation = config.fieldMeta.validation;
+  const validation: Validation = {
+    isRequired: _validation.isRequired,
+    max: _validation.max === null ? null : new Decimal(_validation.max),
+    min: _validation.min === null ? null : new Decimal(_validation.min),
+  };
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: '',
-    deserialize: data => data[config.path] || '',
-    serialize: value => ({ [config.path]: value === '' ? null : value }),
+    scale: config.fieldMeta.scale,
+    defaultValue: {
+      kind: 'create',
+      value:
+        config.fieldMeta.defaultValue === null ? null : new Decimal(config.fieldMeta.defaultValue),
+    },
+    deserialize: data => {
+      const value = data[config.path] === null ? null : new Decimal(data[config.path]);
+      return {
+        kind: 'update',
+        initial: value,
+        value,
+      };
+    },
+    serialize: value => ({ [config.path]: value === null ? null : value.toString() }),
+    validate: val => validate(val, validation, config.label) === undefined,
     filter: {
       Filter(props) {
         return (

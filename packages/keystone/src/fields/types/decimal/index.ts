@@ -100,19 +100,22 @@ export const decimal =
       );
     }
 
-    if (defaultValue !== undefined) {
-      parseDecimalValueOption(meta, defaultValue, 'defaultValue');
-    }
+    const parsedDefaultValue =
+      defaultValue === undefined
+        ? undefined
+        : parseDecimalValueOption(meta, defaultValue, 'defaultValue');
 
     if (config.isNullable === false) {
       assertReadIsNonNullAllowed(meta, config);
     }
     assertCreateIsNonNullAllowed(meta, config);
 
+    const mode = config.isNullable === false ? 'required' : 'optional';
+
     const index = isIndexed === true ? 'index' : isIndexed || undefined;
     const dbField = {
       kind: 'scalar',
-      mode: 'optional',
+      mode,
       scalar: 'Decimal',
       nativeType: `Decimal(${precision}, ${scale})`,
       index,
@@ -144,17 +147,17 @@ export const decimal =
       },
       input: {
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Decimal.optional }),
-          resolve: filters.resolveCommon,
+          arg: graphql.arg({ type: filters[meta.provider].Decimal[mode] }),
+          resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({ type: graphql.Decimal }),
+          arg: graphql.arg({
+            type: graphql.Decimal,
+            defaultValue: config.graphql?.create?.isNonNull ? parsedDefaultValue : undefined,
+          }),
           resolve(val) {
             if (val === undefined) {
-              if (defaultValue === undefined) {
-                return null;
-              }
-              return new Decimal(defaultValue);
+              return parsedDefaultValue ?? null;
             }
             return val;
           },
@@ -164,13 +167,7 @@ export const decimal =
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.String,
-        resolve({ value }) {
-          if (value === null) return null;
-          return value.toFixed(scale);
-        },
-      }),
+      output: graphql.field({ type: graphql.Decimal }),
       views: resolveView('decimal/views'),
       getAdminMeta: () => ({
         defaultValue: defaultValue ?? null,

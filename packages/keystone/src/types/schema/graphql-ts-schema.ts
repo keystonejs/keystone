@@ -5,7 +5,7 @@ import { GraphQLJSON } from 'graphql-type-json';
 import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
 import type { FileUpload } from 'graphql-upload';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
-import DecimalValue from 'decimal.js';
+import { Decimal as DecimalValue } from 'decimal.js';
 import { KeystoneContext } from '../context';
 import { JSONValue } from '../utils';
 export {
@@ -51,6 +51,9 @@ export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQ
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue>(
   new GraphQLScalarType({
     name: 'Decimal',
+    serialize(value: DecimalValue) {
+      return value.toString();
+    },
     parseLiteral(value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('Decimal only accepts values as strings');
