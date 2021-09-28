@@ -13,6 +13,7 @@ import {
   ListFilterAccessControl,
   KeystoneContext,
 } from '../../types';
+import { accessReturnError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
@@ -32,9 +33,9 @@ export async function getOperationAccess(
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.access.operation.${args.operation}(). Got ${resultType}`
-    );
+    throw accessReturnError([
+      { tag: `${args.listKey}.access.operation.${args.operation}`, returned: resultType },
+    ]);
   }
 
   return result;
@@ -61,15 +62,7 @@ export async function validateFieldAccessControl<
   access: ((args: Args) => boolean | Promise<boolean>) | boolean;
   args: Args;
 }) {
-  let result = typeof access === 'function' ? await access(args) : access;
-  if (typeof result !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.fields.${args.fieldKey}.access.${
-        args.operation
-      }(). Got ${typeof result}`
-    );
-  }
-  return result;
+  return typeof access === 'function' ? await access(args) : access;
 }
 
 export function parseFieldAccessControl(
