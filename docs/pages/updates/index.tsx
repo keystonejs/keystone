@@ -195,7 +195,7 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="15th September 2021" />
         <Box heading="Deployment examples for Heroku and Railway">
-          Learn how to get your Keystone project on the web with out new one-click starters for{' '}
+          Learn how to get your Keystone project on the web with our new one-click starters for{' '}
           <a
             href="https://github.com/keystonejs/keystone-6-heroku-example"
             target="_blank"
