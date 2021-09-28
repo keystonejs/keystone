@@ -152,7 +152,9 @@ export const decimal =
         },
         create: {
           arg: graphql.arg({
-            type: graphql.Decimal,
+            type: config.graphql?.create?.isNonNull
+              ? graphql.nonNull(graphql.Decimal)
+              : graphql.Decimal,
             defaultValue: config.graphql?.create?.isNonNull ? parsedDefaultValue : undefined,
           }),
           resolve(val) {
@@ -168,7 +170,10 @@ export const decimal =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: graphql.Decimal,
+        type:
+          config.isNullable === false && config.graphql?.read?.isNonNull
+            ? graphql.nonNull(graphql.Decimal)
+            : graphql.Decimal,
         resolve({ value }) {
           if (value === null) {
             return null;
