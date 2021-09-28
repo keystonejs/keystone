@@ -170,6 +170,14 @@ export function Header() {
           algoliaOptions: {
             facetFilters: ['tags:stable'],
           },
+          transformData: (results: any) => {
+            if (window.location.hostname == 'keystonejs.com') return results;
+            return results.map((result: object) => {
+              // @ts-ignore
+              result.url = result.url.replace('https://keystonejs.com', window.location.origin);
+              return result;
+            });
+          },
         });
       } else if (searchAttempt >= 10) {
         // @ts-ignore
