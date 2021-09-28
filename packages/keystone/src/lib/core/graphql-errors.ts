@@ -27,6 +27,14 @@ export const extensionError = (extension: string, things: { error: Error; tag: s
   );
 };
 
+export const accessReturnError = (things: { tag: string; returned: string }[]) => {
+  const s = things.map(t => `  - ${t.tag}: Returned: ${t.returned}. Expected: boolean.`).join('\n');
+  return new ApolloError(
+    `Invalid values returned from access control function.\n${s}`,
+    'INTERNAL_SERVER_ERROR'
+  );
+};
+
 // FIXME: In an upcoming PR we will use these args to construct a better
 // error message, so leaving the, here for now. - TL
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

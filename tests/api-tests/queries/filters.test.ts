@@ -4,6 +4,7 @@ import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import {
   apiTestConfig,
+  expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
   expectInternalServerError,
@@ -318,11 +319,10 @@ describe('isFilterable', () => {
         query: '{ users(where: { filterFunctionOtherFalsey: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['users'],
-          message:
-            'Must return a Boolean from User.filterFunctionOtherFalsey.isFilterable(). Got object',
+          errors: [{ tag: 'User.filterFunctionOtherFalsey.isFilterable', returned: 'object' }],
         },
       ]);
     })
@@ -335,11 +335,10 @@ describe('isFilterable', () => {
         query: '{ users(where: { filterFunctionOtherTruthy: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['users'],
-          message:
-            'Must return a Boolean from User.filterFunctionOtherTruthy.isFilterable(). Got object',
+          errors: [{ tag: 'User.filterFunctionOtherTruthy.isFilterable', returned: 'object' }],
         },
       ]);
     })
@@ -447,11 +446,10 @@ describe('defaultIsFilterable', () => {
         query: '{ defaultFilterFunctionFalseys(where: { a: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ defaultFilterFunctionFalseys: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['defaultFilterFunctionFalseys'],
-          message:
-            'Must return a Boolean from DefaultFilterFunctionFalsey.a.isFilterable(). Got object',
+          errors: [{ tag: 'DefaultFilterFunctionFalsey.a.isFilterable', returned: 'object' }],
         },
       ]);
     })
@@ -464,11 +462,10 @@ describe('defaultIsFilterable', () => {
         query: '{ defaultFilterFunctionTruthies(where: { a: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ defaultFilterFunctionTruthies: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['defaultFilterFunctionTruthies'],
-          message:
-            'Must return a Boolean from DefaultFilterFunctionTruthy.a.isFilterable(). Got object',
+          errors: [{ tag: 'DefaultFilterFunctionTruthy.a.isFilterable', returned: 'object' }],
         },
       ]);
     })

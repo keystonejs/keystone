@@ -1,6 +1,6 @@
 import { KeystoneContext } from '../../../types';
 import { validateFieldAccessControl } from '../access-control';
-import { accessDeniedError } from '../graphql-errors';
+import { accessDeniedError, accessReturnError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
@@ -58,9 +58,12 @@ export async function getAccessControlledItemForDelete(
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
-    );
+    throw accessReturnError([
+      {
+        tag: `${args.listKey}.access.item.${args.operation}`,
+        returned: resultType,
+      },
+    ]);
   }
 
   if (!result) {
@@ -105,9 +108,12 @@ export async function getAccessControlledItemForUpdate(
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
-    );
+    throw accessReturnError([
+      {
+        tag: `${args.listKey}.access.item.${args.operation}`,
+        returned: resultType,
+      },
+    ]);
   }
 
   if (!result) {
@@ -119,17 +125,29 @@ export async function getAccessControlledItemForUpdate(
   }
 
   // Field level 'item' access control
-  const fieldsDenied = (
-    await Promise.all(
-      Object.keys(originalInput!).map(async fieldKey => [
-        fieldKey,
-        await validateFieldAccessControl({
-          access: list.fields[fieldKey].access[operation],
-          args: { ...args, fieldKey },
-        }),
-      ])
-    )
-  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const fieldAccess = await Promise.all(
+    Object.keys(originalInput!).map(async fieldKey => [
+      fieldKey,
+      await validateFieldAccessControl({
+        access: list.fields[fieldKey].access[operation],
+        args: { ...args, fieldKey },
+      }),
+    ])
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const nonBooleans = fieldAccess.filter(([_, result]) => typeof result !== 'boolean');
+  if (nonBooleans.length) {
+    throw accessReturnError(
+      nonBooleans.map(([fieldKey, result]) => ({
+        tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+        returned: typeof result,
+      }))
+    );
+  }
+
+  const fieldsDenied = fieldAccess
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([_, result]) => !result)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .map(([fieldKey, _]) => fieldKey);
@@ -169,9 +187,12 @@ export async function applyAccessControlForCreate(
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.access.item.${operation}(). Got ${resultType}`
-    );
+    throw accessReturnError([
+      {
+        tag: `${args.listKey}.access.item.${args.operation}`,
+        returned: resultType,
+      },
+    ]);
   }
 
   if (!result) {
@@ -183,18 +204,29 @@ export async function applyAccessControlForCreate(
   }
 
   // Field level 'item' access control
+  const fieldAccess = await Promise.all(
+    Object.keys(originalInput!).map(async fieldKey => [
+      fieldKey,
+      await validateFieldAccessControl({
+        access: list.fields[fieldKey].access[operation],
+        args: { ...args, fieldKey },
+      }),
+    ])
+  );
 
-  const fieldsDenied = (
-    await Promise.all(
-      Object.keys(originalInput!).map(async fieldKey => [
-        fieldKey,
-        await validateFieldAccessControl({
-          access: list.fields[fieldKey].access[operation],
-          args: { ...args, fieldKey },
-        }),
-      ])
-    )
-  ) // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const nonBooleans = fieldAccess.filter(([_, result]) => typeof result !== 'boolean');
+  if (nonBooleans.length) {
+    throw accessReturnError(
+      nonBooleans.map(([fieldKey, result]) => ({
+        tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+        returned: typeof result,
+      }))
+    );
+  }
+
+  const fieldsDenied = fieldAccess
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([_, result]) => !result)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .map(([fieldKey, _]) => fieldKey);

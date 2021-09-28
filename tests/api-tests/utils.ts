@@ -173,6 +173,22 @@ export const expectBadUserInput = (
   );
 };
 
+export const expectAccessReturnError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; errors: { tag: string; returned: string }[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, errors }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message: `Invalid values returned from access control function.\n${j(
+        errors.map(e => `${e.tag}: Returned: ${e.returned}. Expected: boolean.`)
+      )}`,
+    }))
+  );
+};
+
 export const expectRelationshipError = (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[]; message: string }[]
