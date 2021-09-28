@@ -1,6 +1,6 @@
 import { ChangeEvent, FocusEvent, useState } from 'react';
 
-type ParsedValueBase = undefined | symbol | boolean | number | null | bigint;
+type ParsedValueBase = undefined | symbol | boolean | object | number | null | bigint;
 
 type Config<ParsedValue extends ParsedValueBase> = {
   parse: (value: string) => ParsedValue | string;
@@ -39,17 +39,20 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase>(
   }
   // If the value is not a string, we know it's in the parsed form
   if (typeof value !== 'string') {
+    const formatted = config.format(value);
     // When the input is blurred, we want to show always show the formatted
     // version so if we're not focussed and the formatted version is different
     // to the current version, we need to update it.
-    if (!isFocused && config.format(value) !== internalValueState) {
-      setInternalValueState(config.format(value));
+    if (!isFocused && formatted !== internalValueState) {
+      setInternalValueState(formatted);
     }
+
+    const parsedInternal = config.parse(internalValueState);
 
     // We updating the internal value here because the
     // external value has changed.
-    if (config.parse(internalValueState) !== value) {
-      setInternalValueState(config.format(value));
+    if (typeof parsedInternal !== 'string' && config.format(parsedInternal) !== formatted) {
+      setInternalValueState(formatted);
     }
   }
 
