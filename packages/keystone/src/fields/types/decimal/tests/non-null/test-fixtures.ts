@@ -18,11 +18,11 @@ export const initItems = () => {
   return [
     { name: 'price1', price: '-123.45' },
     { name: 'price2', price: '0.01' },
-    { name: 'price3', price: '50' },
-    { name: 'price4', price: '2000' },
-    { name: 'price5', price: '40000' },
-    { name: 'price6', price: '1' },
-    { name: 'price7', price: '2' },
+    { name: 'price3', price: '50.00' },
+    { name: 'price4', price: '2000.00' },
+    { name: 'price5', price: '40000.00' },
+    { name: 'price6', price: '1.00' },
+    { name: 'price7', price: '2.00' },
   ];
 };
 
@@ -32,8 +32,8 @@ export const storedValues = () => [
   { name: 'price3', price: '50.00' },
   { name: 'price4', price: '2000.00' },
   { name: 'price5', price: '40000.00' },
-  { name: 'price6', price: '1' },
-  { name: 'price7', price: '2' },
+  { name: 'price6', price: '1.00' },
+  { name: 'price7', price: '2.00' },
 ];
 
 export const supportedFilters = () => [];

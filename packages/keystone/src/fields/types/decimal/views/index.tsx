@@ -30,7 +30,7 @@ export const Field = ({
           return '';
         }
 
-        return decimal.toFixed(Math.min(field.scale, decimal.decimalPlaces()));
+        return decimal.toFixed(field.scale);
       },
       parse(value) {
         value = value.trim();
@@ -182,7 +182,7 @@ export const controller = (
           ? null
           : typeof value.value === 'string'
           ? value.value
-          : value.value.toFixed(Math.min(config.fieldMeta.scale, value.value.decimalPlaces())),
+          : value.value.toFixed(config.fieldMeta.scale),
     }),
     validate: val => validate(val, validation, config.label) === undefined,
     filter: {

@@ -167,7 +167,17 @@ export const decimal =
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Decimal }),
+      output: graphql.field({
+        type: graphql.Decimal,
+        resolve({ value }) {
+          if (value === null) {
+            return null;
+          }
+          const val: Decimal & { scaleToPrint?: number } = new Decimal(value);
+          val.scaleToPrint = scale;
+          return val;
+        },
+      }),
       views: resolveView('decimal/views'),
       getAdminMeta: (): import('./views').DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,

@@ -48,10 +48,13 @@ export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQ
 // - Decimal.js throws on invalid inputs
 // - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal but NaN is
 //   .isFinite refers to +Infinity, -Infinity and NaN
-export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue>(
+export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
-    serialize(value: DecimalValue) {
+    serialize(value: DecimalValue & { scaleToPrint?: number }) {
+      if (value.scaleToPrint) {
+        return value.toFixed(value.scaleToPrint);
+      }
       return value.toString();
     },
     parseLiteral(value) {
