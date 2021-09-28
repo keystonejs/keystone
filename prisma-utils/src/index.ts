@@ -306,5 +306,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Float: 'graphql.Float',
   Json: 'graphql.JSON',
   DateTime: 'graphql.String',
-  Decimal: 'graphql.String',
+  Decimal: 'graphql.Decimal',
 };

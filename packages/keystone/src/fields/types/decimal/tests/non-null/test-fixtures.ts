@@ -1,16 +1,18 @@
-import { DatabaseProvider } from '../../../../types';
-import { decimal } from '..';
+import { decimal } from '../..';
 
-export const name = 'Decimal';
-export const typeFunction = decimal;
+export const name = 'Decimal with isNullable: false';
+export const typeFunction = (x: any) => decimal({ isNullable: false, ...x });
 export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
+export const supportsGraphQLIsNonNull = true;
 export const supportsUnique = true;
 export const skipRequiredTest = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({ price: decimal({ scale: 2, isFilterable: true }) });
+export const getTestFields = () => ({
+  price: decimal({ scale: 2, isFilterable: true, isNullable: false }),
+});
 
 export const initItems = () => {
   return [
@@ -19,8 +21,8 @@ export const initItems = () => {
     { name: 'price3', price: '50.00' },
     { name: 'price4', price: '2000.00' },
     { name: 'price5', price: '40000.00' },
-    { name: 'price6', price: null },
-    { name: 'price7' },
+    { name: 'price6', price: '1.00' },
+    { name: 'price7', price: '2.00' },
   ];
 };
 
@@ -30,14 +32,8 @@ export const storedValues = () => [
   { name: 'price3', price: '50.00' },
   { name: 'price4', price: '2000.00' },
   { name: 'price5', price: '40000.00' },
-  { name: 'price6', price: null },
-  { name: 'price7', price: null },
+  { name: 'price6', price: '1.00' },
+  { name: 'price7', price: '2.00' },
 ];
 
-export const supportedFilters = (provider: DatabaseProvider) => [
-  'null_equality',
-  'equality',
-  'ordering',
-  provider !== 'postgresql' && 'in_empty_null',
-  provider !== 'postgresql' && 'in_equal',
-];
+export const supportedFilters = () => [];
