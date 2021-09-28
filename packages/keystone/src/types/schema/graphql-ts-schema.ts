@@ -56,7 +56,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       if (!DecimalValue.isDecimal(value)) {
         throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`);
       }
-      if (value.scaleToPrint) {
+      if (value.scaleToPrint !== undefined) {
         return value.toFixed(value.scaleToPrint);
       }
       return value.toString();
