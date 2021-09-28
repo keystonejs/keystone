@@ -157,7 +157,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  email: StringFilter
 }
 
 input IDFilter {
@@ -171,7 +171,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -182,10 +182,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -196,7 +196,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input UserOrderByInput {

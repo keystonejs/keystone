@@ -84,6 +84,7 @@ export function printGeneratedTypes(
     Int: 'number',
     Float: 'number',
     JSON: 'import("@keystone-next/keystone/types").JSONValue',
+    Decimal: 'import("@keystone-next/keystone/types").Decimal | string',
   };
 
   let prelude = `import {

@@ -52,7 +52,7 @@ export const lists = {
       },
     },
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'User.tasks' }),
       finishBy: timestamp(),
@@ -66,7 +66,7 @@ export const lists = {
       },
     },
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       email: text(),
       password: password(),
       tasks: relationship({

@@ -5,7 +5,7 @@ import { json, select } from '@keystone-next/keystone/fields';
 export const lists = {
   Task: list({
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       priority: select({
         type: 'enum',
         options: [
@@ -32,7 +32,7 @@ export const lists = {
   }),
   Person: list({
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
     defaultIsFilterable: true,

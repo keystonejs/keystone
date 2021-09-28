@@ -61,8 +61,8 @@ export default config({
   lists: {
     Post: list({
       fields: {
-        title: text({ isRequired: true }),
-        content: text({ isRequired: true }),
+        title: text({ validation: { isRequired: true } }),
+        content: text({ validation: { isRequired: true } }),
        },
       hooks: {
         resolveInput: ({ resolvedData }) => {
@@ -108,8 +108,8 @@ export default config({
   lists: {
     Post: list({
       fields: {
-        title: text({ isRequired: true }),
-        content: text({ isRequired: true }),
+        title: text({ validation: { isRequired: true } }),
+        content: text({ validation: { isRequired: true } }),
        },
       hooks: {
         validateInput: ({ resolvedData, addValidationError }) => {
@@ -207,6 +207,7 @@ export default config({
       fields: {
         name: text(),
         email: text({
+          isNullable: true,
           hooks: {
             validateInput: ({ addValidationError, resolvedData, fieldKey }) => {
               const email = resolvedData[fieldKey];

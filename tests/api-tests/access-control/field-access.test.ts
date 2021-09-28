@@ -71,7 +71,7 @@ describe(`Field access`, () => {
           });
         } else {
           expect(data![allQueryName]).toHaveLength(2);
-          expect(data![allQueryName]).toContainEqual({ id: expect.any(String), [fieldName]: null });
+          expect(data![allQueryName]).toContainEqual({ id: expect.any(String), [fieldName]: '' });
           expect(data![allQueryName]).toContainEqual({ id: item.id, [fieldName]: 'hello' });
         }
       });
