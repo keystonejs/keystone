@@ -46,12 +46,16 @@ export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
 export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload);
 
 // - Decimal.js throws on invalid inputs
-// - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal but NaN is
+// - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal,
+//   NaN is but Prisma doesn't support it
 //   .isFinite refers to +Infinity, -Infinity and NaN
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
     serialize(value: DecimalValue & { scaleToPrint?: number }) {
+      if (!DecimalValue.isDecimal(value)) {
+        throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`);
+      }
       if (value.scaleToPrint) {
         return value.toFixed(value.scaleToPrint);
       }
@@ -62,14 +66,14 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
         throw new GraphQLError('Decimal only accepts values as strings');
       }
       let decimal = new DecimalValue(value.value);
-      if (!decimal.isFinite() && !decimal.isNaN()) {
+      if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite');
       }
       return decimal;
     },
     parseValue(value) {
       if (DecimalValue.isDecimal(value)) {
-        if (!value.isFinite() && !value.isNaN()) {
+        if (!value.isFinite()) {
           throw new GraphQLError('Decimal values must be finite');
         }
         return value;
@@ -78,7 +82,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
         throw new GraphQLError('Decimal only accepts values as strings');
       }
       let decimal = new DecimalValue(value);
-      if (!decimal.isFinite() && !decimal.isNaN()) {
+      if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite');
       }
       return decimal;

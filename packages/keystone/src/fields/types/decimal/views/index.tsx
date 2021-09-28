@@ -129,11 +129,11 @@ function validate(value: Value, validation: Validation, label: string): string |
     return undefined;
   }
 
-  if (val !== null && !val.isFinite() && !val.isNaN()) {
+  if (val !== null && !val.isFinite()) {
     return `${label} must be finite`;
   }
 
-  if (validation.isRequired && (val === null || val.isNaN())) {
+  if (validation.isRequired && val === null) {
     return `${label} is required`;
   }
   if (val !== null) {

@@ -129,7 +129,7 @@ export const decimal =
         async validateInput(args) {
           const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey];
 
-          if ((val === null || (val !== undefined && val.isNaN())) && validation?.isRequired) {
+          if (val === null && validation?.isRequired) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {
