@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -85,10 +85,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ createBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.item.create(). Got object',
           path: ['createBadAccess'],
+          errors: [{ tag: 'BadAccess.access.item.create', returned: 'object' }],
         },
       ]);
 
@@ -139,10 +139,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ updateBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.item.update(). Got object',
           path: ['updateBadAccess'],
+          errors: [{ tag: 'BadAccess.access.item.update', returned: 'object' }],
         },
       ]);
 
@@ -194,10 +194,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ deleteBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.item.delete(). Got object',
           path: ['deleteBadAccess'],
+          errors: [{ tag: 'BadAccess.access.item.delete', returned: 'object' }],
         },
       ]);
 
