@@ -44,6 +44,9 @@ function validate(value: Value, validation: Validation, label: string) {
   }
 
   if (typeof val === 'number') {
+    if (!Number.isFinite(val)) {
+      return `${label} must be finite`;
+    }
     if (validation?.min !== undefined && val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
