@@ -303,8 +303,8 @@ Options:
   This value will be used for the field when creating items if no explicit value is set.
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`(though it will be possible to set it to `NaN`).
-- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` and it cannot be `NaN`.
+- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   Unlike `isNullable`, this will require that a value is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
   If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
