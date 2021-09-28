@@ -26,11 +26,14 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
       create?: {
         isNonNull?: boolean;
       };
-      read?: {
-        isNonNull?: boolean;
-      };
     };
-  };
+  } & (
+      | { isNullable?: true; defaultValue?: number }
+      | {
+          isNullable: false;
+          graphql?: { read?: { isNonNull?: boolean } };
+        }
+    );
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -73,7 +76,9 @@ export const float =
       );
     }
 
-    assertReadIsNonNullAllowed(meta, config);
+    if (config.isNullable === false) {
+      assertReadIsNonNullAllowed(meta, config);
+    }
     assertCreateIsNonNullAllowed(meta, config);
 
     const mode = config.isNullable === false ? 'required' : 'optional';
@@ -94,10 +99,7 @@ export const float =
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
 
-          if (
-            validation?.isRequired &&
-            (value === null || (args.operation === 'create' && value === undefined))
-          ) {
+          if (validation?.isRequired && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 
@@ -134,8 +136,8 @@ export const float =
                 : undefined,
           }),
           resolve(value) {
-            if (value === undefined && typeof defaultValue === 'number') {
-              return defaultValue;
+            if (value === undefined) {
+              return defaultValue ?? null;
             }
             return value;
           },
@@ -144,19 +146,21 @@ export const float =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Float) : graphql.Float,
+        type:
+          config.isNullable === false && config.graphql?.read?.isNonNull
+            ? graphql.nonNull(graphql.Float)
+            : graphql.Float,
       }),
       views: resolveView('float/views'),
       getAdminMeta() {
         return {
           validation: {
-            min: validation?.min ?? 0,
-            max: validation?.max ?? 0,
+            min: validation?.min || null,
+            max: validation?.max || null,
             isRequired: validation?.isRequired ?? false,
           },
           defaultValue: defaultValue ?? null,
         };
       },
-      __legacy: { isRequired: validation?.isRequired, defaultValue },
     });
   };

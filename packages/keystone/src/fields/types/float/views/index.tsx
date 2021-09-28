@@ -12,7 +12,7 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
-import { useFormattedInput } from './utils';
+import { useFormattedInput } from '../../integer/views/utils';
 
 type Validation = {
   min?: number;
@@ -44,10 +44,10 @@ function validate(value: Value, validation: Validation, label: string) {
   }
 
   if (typeof val === 'number') {
-    if (validation?.min && val < validation.min) {
+    if (validation?.min !== undefined && val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (validation?.max && val > validation?.max) {
+    if (validation?.max !== undefined && val > validation?.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
