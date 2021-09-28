@@ -7,7 +7,7 @@ import {
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
-  expectInternalServerError,
+  expectFilterDenied,
 } from '../utils';
 
 const runner = setupTestRunner({
@@ -291,7 +291,7 @@ describe('isFilterable', () => {
         query: '{ users(where: { filterFunctionFalse: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['users'],
           message:
@@ -357,7 +357,7 @@ describe('isFilterable', () => {
         } ) { id } }`,
       });
       expect(body.data).toEqual({ secondaryLists: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['secondaryLists'],
           message:
@@ -417,7 +417,7 @@ describe('defaultIsFilterable', () => {
         query: '{ defaultFilterFunctionFalses(where: { a: { equals: 10 } }) { id } }',
       });
       expect(body.data).toEqual({ defaultFilterFunctionFalses: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['defaultFilterFunctionFalses'],
           message:

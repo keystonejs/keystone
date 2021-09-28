@@ -7,7 +7,7 @@ import {
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
-  expectInternalServerError,
+  expectFilterDenied,
 } from '../utils';
 
 const runner = setupTestRunner({
@@ -379,7 +379,7 @@ describe('isOrderable', () => {
         query: '{ users(orderBy: [{orderFunctionFalse: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['users'],
           message:
@@ -444,7 +444,7 @@ describe('isOrderable', () => {
           '{ users(orderBy: [{orderFunctionTrue: asc}, {orderFunctionFalse: asc}, {orderFunctionFalseToo: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['users'],
           message:
@@ -508,7 +508,7 @@ describe('defaultIsOrderable', () => {
         query: '{ defaultOrderFunctionFalses(orderBy: [{a: asc}]) { id } }',
       });
       expect(body.data).toEqual({ defaultOrderFunctionFalses: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['defaultOrderFunctionFalses'],
           message:
