@@ -470,15 +470,15 @@ const DateTimeNullableListFilter: DateTimeNullableListFilterType = graphql.input
 
 type DecimalNullableFilterType = graphql.InputObjectType<{
   // can be null
-  equals: graphql.Arg<typeof graphql.String>;
+  equals: graphql.Arg<typeof graphql.Decimal>;
   // can be null
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
   // can be null
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  lt: graphql.Arg<typeof graphql.String>;
-  lte: graphql.Arg<typeof graphql.String>;
-  gt: graphql.Arg<typeof graphql.String>;
-  gte: graphql.Arg<typeof graphql.String>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
+  lt: graphql.Arg<typeof graphql.Decimal>;
+  lte: graphql.Arg<typeof graphql.Decimal>;
+  gt: graphql.Arg<typeof graphql.Decimal>;
+  gte: graphql.Arg<typeof graphql.Decimal>;
   // can be null
   not: graphql.Arg<typeof DecimalNullableFilter>;
 }>;
@@ -487,52 +487,52 @@ const DecimalNullableFilter: DecimalNullableFilterType = graphql.inputObject({
   name: 'DecimalNullableFilter',
   fields: () => ({
     // can be null
-    equals: graphql.arg({ type: graphql.String }),
+    equals: graphql.arg({ type: graphql.Decimal }),
     // can be null
-    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
     // can be null
-    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    lt: graphql.arg({ type: graphql.String }),
-    lte: graphql.arg({ type: graphql.String }),
-    gt: graphql.arg({ type: graphql.String }),
-    gte: graphql.arg({ type: graphql.String }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
+    lt: graphql.arg({ type: graphql.Decimal }),
+    lte: graphql.arg({ type: graphql.Decimal }),
+    gt: graphql.arg({ type: graphql.Decimal }),
+    gte: graphql.arg({ type: graphql.Decimal }),
     // can be null
     not: graphql.arg({ type: DecimalNullableFilter }),
   }),
 });
 
 type DecimalFilterType = graphql.InputObjectType<{
-  equals: graphql.Arg<typeof graphql.String>;
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  lt: graphql.Arg<typeof graphql.String>;
-  lte: graphql.Arg<typeof graphql.String>;
-  gt: graphql.Arg<typeof graphql.String>;
-  gte: graphql.Arg<typeof graphql.String>;
+  equals: graphql.Arg<typeof graphql.Decimal>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
+  lt: graphql.Arg<typeof graphql.Decimal>;
+  lte: graphql.Arg<typeof graphql.Decimal>;
+  gt: graphql.Arg<typeof graphql.Decimal>;
+  gte: graphql.Arg<typeof graphql.Decimal>;
   not: graphql.Arg<typeof DecimalFilter>;
 }>;
 
 const DecimalFilter: DecimalFilterType = graphql.inputObject({
   name: 'DecimalFilter',
   fields: () => ({
-    equals: graphql.arg({ type: graphql.String }),
-    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    lt: graphql.arg({ type: graphql.String }),
-    lte: graphql.arg({ type: graphql.String }),
-    gt: graphql.arg({ type: graphql.String }),
-    gte: graphql.arg({ type: graphql.String }),
+    equals: graphql.arg({ type: graphql.Decimal }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
+    lt: graphql.arg({ type: graphql.Decimal }),
+    lte: graphql.arg({ type: graphql.Decimal }),
+    gt: graphql.arg({ type: graphql.Decimal }),
+    gte: graphql.arg({ type: graphql.Decimal }),
     not: graphql.arg({ type: DecimalFilter }),
   }),
 });
 
 type DecimalNullableListFilterType = graphql.InputObjectType<{
   // can be null
-  equals: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  equals: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
   // can be null
-  has: graphql.Arg<typeof graphql.String>;
-  hasEvery: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  hasSome: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  has: graphql.Arg<typeof graphql.Decimal>;
+  hasEvery: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
+  hasSome: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.Decimal>>>;
   isEmpty: graphql.Arg<typeof graphql.Boolean>;
 }>;
 
@@ -540,11 +540,11 @@ const DecimalNullableListFilter: DecimalNullableListFilterType = graphql.inputOb
   name: 'DecimalNullableListFilter',
   fields: () => ({
     // can be null
-    equals: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    equals: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
     // can be null
-    has: graphql.arg({ type: graphql.String }),
-    hasEvery: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    hasSome: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    has: graphql.arg({ type: graphql.Decimal }),
+    hasEvery: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
+    hasSome: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.Decimal)) }),
     isEmpty: graphql.arg({ type: graphql.Boolean }),
   }),
 });
