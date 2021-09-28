@@ -198,3 +198,17 @@ export const expectRelationshipError = (
   }));
   expect(unpackedErrors).toEqual(args.map(({ path, message }) => ({ path, message })));
 };
+
+export const expectFilterDenied = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message,
+    }))
+  );
+};
