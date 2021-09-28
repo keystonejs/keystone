@@ -215,7 +215,7 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="9th September 2021" />
         <Box heading="Prisma Meetup Korea">
-          Jed spoke at the Prisma Meetup Korea, covering V6 general availability, user-facing
+          Jed spoke at Prisma Meetup Korea, covering V6 general availability, user-facing
           management, UI authentication, access control, business logic integrations and more.{' '}
           <a href="https://youtu.be/qKqSRTtOlmw?t=4101" target="_blank" rel="noopener noreferrer">
             Watch it online here
