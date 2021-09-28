@@ -174,7 +174,7 @@ export default function WhatsNew() {
         <Timeline date="21st September 2021" isLatest />
         <Box heading="Keystone Community Q&A + YouTube launch ">
           Taking the chance to introduce the core team and address some community questions in
-          person, the team held an online Q&A event and launched a Youtube channel at the same time.{' '}
+          person, the team held an online Q&A event and launched a YouTube channel at the same time.{' '}
           <a
             href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
             target="_blank"
