@@ -335,7 +335,11 @@ export default config({
           defaultValue: '3.142',
           precision: 12,
           scale: 3,
-          isRequired: true,
+          validation: {
+            isRequired: true,
+            max: '10000',
+            min: '2',
+          },
           isIndexed: 'unique',
         }),
         /* ... */
