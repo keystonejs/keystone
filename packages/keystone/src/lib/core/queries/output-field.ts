@@ -11,15 +11,11 @@ import {
   TypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types';
-import {
-  getOperationAccess,
-  getAccessFilters,
-  validateFieldAccessControl,
-} from '../access-control';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
-import { accessReturnError } from '../graphql-errors';
+import { accessReturnError, extensionError } from '../graphql-errors';
 import { accessControlledFilter } from './resolvers';
 import * as queries from './resolvers';
 
@@ -145,17 +141,24 @@ export function outputTypeField(
       const id = (rootVal as any).id as IdType;
 
       // Check access
-      const canAccess = await validateFieldAccessControl({
-        access,
-        args: {
-          context,
-          fieldKey,
-          item: rootVal,
-          listKey,
-          operation: 'read',
-          session: context.session,
-        },
-      });
+      let canAccess;
+      try {
+        canAccess =
+          typeof access === 'function'
+            ? await access({
+                context,
+                fieldKey,
+                item: rootVal,
+                listKey,
+                operation: 'read',
+                session: context.session,
+              })
+            : access;
+      } catch (error: any) {
+        throw extensionError('Access control', [
+          { error, tag: `${listKey}.${fieldKey}.access.read` },
+        ]);
+      }
       if (typeof canAccess !== 'boolean') {
         throw accessReturnError([
           { tag: `${listKey}.${fieldKey}.access.read`, returned: typeof canAccess },

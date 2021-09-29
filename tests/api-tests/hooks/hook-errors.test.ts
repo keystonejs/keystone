@@ -136,7 +136,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
                   {
                     path: ['createUser'],
-                    messages: [`User: Simulated error: ${phase}Change`],
+                    messages: [`User.hooks.${phase}Change: Simulated error: ${phase}Change`],
                     debug: [
                       {
                         message,
@@ -178,7 +178,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
                   {
                     path: ['updateUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Change: ${message}`],
                     debug: [
                       {
                         message,
@@ -220,7 +220,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
                   {
                     path: ['deleteUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Delete: ${message}`],
                     debug: [
                       {
                         message,
@@ -272,7 +272,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
                   {
                     path: ['createUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Change: ${message}`],
                     debug: [
                       {
                         message,
@@ -284,7 +284,7 @@ const runner = (debug: boolean | undefined) =>
                   },
                   {
                     path: ['createUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Change: ${message}`],
                     debug: [
                       {
                         message,
@@ -351,7 +351,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
                   {
                     path: ['updateUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Change: ${message}`],
                     debug: [
                       {
                         message,
@@ -363,7 +363,7 @@ const runner = (debug: boolean | undefined) =>
                   },
                   {
                     path: ['updateUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Change: ${message}`],
                     debug: [
                       {
                         message,
@@ -425,7 +425,7 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
                   {
                     path: ['deleteUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Delete: ${message}`],
                     debug: [
                       {
                         message,
@@ -437,7 +437,7 @@ const runner = (debug: boolean | undefined) =>
                   },
                   {
                     path: ['deleteUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Delete: ${message}`],
                     debug: [
                       {
                         message,
@@ -485,7 +485,10 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
                   {
                     path: ['updatePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Change: ${message1}`,
+                      `Post.content.hooks.${phase}Change: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
@@ -532,7 +535,10 @@ const runner = (debug: boolean | undefined) =>
                 expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
                   {
                     path: ['deletePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Delete: ${message1}`,
+                      `Post.content.hooks.${phase}Delete: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
