@@ -1,5 +1,5 @@
 import { KeystoneContext } from '../../types';
-import { filterAccessError } from './graphql-errors';
+import { accessReturnError, filterAccessError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 
 export async function checkFilterOrderAccess(
@@ -8,6 +8,7 @@ export async function checkFilterOrderAccess(
   operation: 'filter' | 'orderBy'
 ) {
   const failures: string[] = [];
+  const returnTypeErrors: any[] = [];
   for (const { fieldKey, list } of things) {
     const field = list.fields[fieldKey];
     const rule = field.graphql.isEnabled[operation];
@@ -28,17 +29,15 @@ export async function checkFilterOrderAccess(
       // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
       // has made a mistake.
       if (resultType !== 'boolean') {
-        throw new Error(
-          `Must return a Boolean from ${list.listKey}.${fieldKey}.${
-            operation === 'filter' ? 'isFilterable' : 'isOrderable'
-          }(). Got ${resultType}`
-        );
-      }
-
-      if (!result) {
+        const func = operation === 'filter' ? 'isFilterable' : 'isOrderable';
+        returnTypeErrors.push({ tag: `${list.listKey}.${fieldKey}.${func}`, returned: resultType });
+      } else if (!result) {
         failures.push(`${list.listKey}.${fieldKey}`);
       }
     }
+  }
+  if (returnTypeErrors.length) {
+    throw accessReturnError(returnTypeErrors);
   }
   if (failures.length) {
     throw filterAccessError({ operation, fieldKeys: failures });

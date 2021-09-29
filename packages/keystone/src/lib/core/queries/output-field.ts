@@ -19,6 +19,7 @@ import {
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
+import { accessReturnError } from '../graphql-errors';
 import { accessControlledFilter } from './resolvers';
 import * as queries from './resolvers';
 
@@ -155,6 +156,11 @@ export function outputTypeField(
           session: context.session,
         },
       });
+      if (typeof canAccess !== 'boolean') {
+        throw accessReturnError([
+          { tag: `${listKey}.${fieldKey}.access.read`, returned: typeof canAccess },
+        ]);
+      }
       if (!canAccess) {
         return null;
       }
