@@ -13,7 +13,7 @@ import {
   ListFilterAccessControl,
   KeystoneContext,
 } from '../../types';
-import { accessReturnError } from './graphql-errors';
+import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
@@ -25,8 +25,15 @@ export async function getOperationAccess(
   const args = { operation, session: context.session, listKey: list.listKey, context };
   // Check the mutation access
   const access = list.access.operation[operation];
-  // @ts-ignore
-  const result = await access(args);
+  let result;
+  try {
+    // @ts-ignore
+    result = await access(args);
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${list.listKey}.access.operation.${args.operation}` },
+    ]);
+  }
 
   const resultType = typeof result;
 
@@ -49,20 +56,14 @@ export async function getAccessFilters(
   const args = { operation, session: context.session, listKey: list.listKey, context };
   // Check the mutation access
   const access = list.access.filter[operation];
-  // @ts-ignore
-  return typeof access === 'function' ? await access(args) : access;
-}
-
-export async function validateFieldAccessControl<
-  Args extends { listKey: string; fieldKey: string; operation: 'read' | 'create' | 'update' }
->({
-  access,
-  args,
-}: {
-  access: ((args: Args) => boolean | Promise<boolean>) | boolean;
-  args: Args;
-}) {
-  return typeof access === 'function' ? await access(args) : access;
+  try {
+    // @ts-ignore
+    return typeof access === 'function' ? await access(args) : access;
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${args.listKey}.access.filter.${args.operation}` },
+    ]);
+  }
 }
 
 export function parseFieldAccessControl(
