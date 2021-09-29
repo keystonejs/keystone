@@ -51,7 +51,7 @@ export const checkbox =
           }),
           resolve(val) {
             if (val === null) {
-              throw userInputError('checkbox fields cannot be set to null');
+              throw userInputError('Checkbox fields cannot be set to null');
             }
             return val ?? defaultValue;
           },
@@ -60,7 +60,7 @@ export const checkbox =
           arg: graphql.arg({ type: graphql.Boolean }),
           resolve(val) {
             if (val === null) {
-              throw userInputError('checkbox fields cannot be set to null');
+              throw userInputError('Checkbox fields cannot be set to null');
             }
             return val;
           },

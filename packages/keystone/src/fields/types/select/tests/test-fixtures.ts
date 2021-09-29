@@ -8,6 +8,7 @@ export const exampleValue = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'thinkmill' : matrixValue === 'string' ? 'a string' : 1;
 export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'atlassian' : matrixValue === 'string' ? '1number' : 2;
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const skipRequiredTest = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {

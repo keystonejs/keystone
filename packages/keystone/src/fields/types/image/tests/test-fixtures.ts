@@ -26,6 +26,7 @@ export const exampleValue2 = () => prepareFile('react.jpg');
 export const createReturnedValue = 'jpg';
 export const updateReturnedValue = createReturnedValue;
 
+export const supportsNullInput = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'avatar';
@@ -200,7 +201,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
-          'Either ref or upload must be passed to ImageFieldInput'
+          'Input error: Either ref or upload must be passed to ImageFieldInput'
         );
       })
     );
@@ -230,7 +231,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
+          'Input error: Only one of ref and upload can be passed to ImageFieldInput'
         );
       })
     );
@@ -254,7 +255,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
+          'Input error: Only one of ref and upload can be passed to ImageFieldInput'
         );
       })
     );
