@@ -34,23 +34,6 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
         }
     );
 
-const RFC_3339_REGEX =
-  /^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60))(\.\d{1,})?(([Z])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/;
-
-function parseDate(input: string): Date {
-  if (!RFC_3339_REGEX.test(input)) {
-    throw new Error();
-  }
-  return new Date(input);
-}
-
-function inputResolver(value: string | null | undefined) {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  return parseDate(value);
-}
-
 export const timestamp =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
@@ -60,8 +43,20 @@ export const timestamp =
   }: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
     if (typeof defaultValue === 'string') {
-      parseDate(defaultValue);
+      try {
+        graphql.DateTime.graphQLType.parseValue(defaultValue);
+      } catch (err) {
+        throw new Error(
+          `The timestamp field at ${meta.listKey}.${
+            meta.fieldKey
+          } specifies defaultValue: ${defaultValue} but values must be provided as a full ISO8601 date-time string such as ${new Date().toISOString()}`
+        );
+      }
     }
+    const parsedDefaultValue =
+      typeof defaultValue === 'string'
+        ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
+        : defaultValue;
     if (config.isNullable === false) {
       assertReadIsNonNullAllowed(meta, config);
     }
@@ -107,39 +102,35 @@ export const timestamp =
         create: {
           arg: graphql.arg({
             type: config.graphql?.create?.isNonNull
-              ? graphql.nonNull(graphql.String)
-              : graphql.String,
+              ? graphql.nonNull(graphql.DateTime)
+              : graphql.DateTime,
             defaultValue:
-              config.graphql?.create?.isNonNull && typeof defaultValue === 'string'
-                ? defaultValue
+              config.graphql?.create?.isNonNull && parsedDefaultValue instanceof Date
+                ? parsedDefaultValue
                 : undefined,
           }),
           resolve(val) {
             if (val === undefined) {
-              if (defaultValue === undefined && config.db?.updatedAt) {
+              if (parsedDefaultValue === undefined && config.db?.updatedAt) {
                 return undefined;
               }
-              if (typeof defaultValue === 'string' || defaultValue === undefined) {
-                val = defaultValue ?? null;
+              if (parsedDefaultValue instanceof Date || parsedDefaultValue === undefined) {
+                val = parsedDefaultValue ?? null;
               } else {
-                val = new Date().toISOString();
+                val = new Date();
               }
             }
-            return inputResolver(val);
+            return val;
           },
         },
-        update: { arg: graphql.arg({ type: graphql.String }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: graphql.DateTime }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
         type:
           config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.String)
-            : graphql.String,
-        resolve({ value }) {
-          if (value === null) return null;
-          return value.toISOString();
-        },
+            ? graphql.nonNull(graphql.DateTime)
+            : graphql.DateTime,
       }),
       views: resolveView('timestamp/views'),
     });

@@ -90,6 +90,52 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
   })
 );
 
+const RFC_3339_REGEX =
+  /^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60))(\.\d{1,})?(([Z])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/;
+
+function parseDate(input: string): Date {
+  if (!RFC_3339_REGEX.test(input)) {
+    throw new GraphQLError(
+      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+    );
+  }
+  const parsed = new Date(input);
+  if (isNaN(parsed.valueOf())) {
+    throw new GraphQLError(
+      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+    );
+  }
+  return parsed;
+}
+
+export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
+  new GraphQLScalarType({
+    name: 'DateTime',
+    specifiedByUrl: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    serialize(value: unknown) {
+      if (!(value instanceof Date) || isNaN(value.valueOf())) {
+        throw new GraphQLError(`unexpected value provided to DateTime scalar: ${value}`);
+      }
+      return value.toISOString();
+    },
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('DateTime only accepts values as strings');
+      }
+      return parseDate(value.value);
+    },
+    parseValue(value: unknown) {
+      if (value instanceof Date) {
+        return value;
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError('DateTime only accepts values as strings');
+      }
+      return parseDate(value);
+    },
+  })
+);
+
 export type NullableType = graphqlTsSchema.NullableType<Context>;
 export type Type = graphqlTsSchema.Type<Context>;
 export type NullableOutputType = graphqlTsSchema.NullableOutputType<Context>;
