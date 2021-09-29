@@ -102,13 +102,11 @@ export const select =
               args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
             }
             if (
-              validation?.isRequired &&
-              (value === null || (value === undefined && args.operation === 'create'))
+              (validation?.isRequired &&
+                (value === null || (value === undefined && args.operation === 'create'))) ||
+              (value === null && config.isNullable === false)
             ) {
               args.addValidationError(`${fieldLabel} is required`);
-            }
-            if (value === null && config.isNullable === false) {
-              args.addValidationError(`${fieldLabel} cannot be set to 'null'`);
             }
             await config.hooks?.validateInput?.(args);
           },

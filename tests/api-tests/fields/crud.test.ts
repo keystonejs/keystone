@@ -215,7 +215,7 @@ testModules
                           {
                             path: [updateMutationName],
                             messages: [
-                              `Test.${fieldName}: ${humanize(fieldName)} cannot be set to 'null'`,
+                              `Test.${fieldName}: ${humanize(fieldName)} is required`,
                             ],
                           },
                         ]);
