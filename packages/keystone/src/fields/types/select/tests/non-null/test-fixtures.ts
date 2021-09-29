@@ -16,6 +16,7 @@ export const name = 'Select with isNullable: false';
 export const typeFunction = (config: any) => select({ ...config, isNullable: false });
 
 export const supportedFilters = () => [];
+export const supportsGraphQLIsNonNull = true;
 
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 

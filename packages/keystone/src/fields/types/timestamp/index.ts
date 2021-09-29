@@ -1,3 +1,4 @@
+import { humanize } from '../../../lib/utils';
 import {
   BaseGeneratedListTypes,
   fieldType,
@@ -68,6 +69,8 @@ export const timestamp =
 
     const mode = config.isNullable === false ? 'required' : 'optional';
 
+    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+
     return fieldType({
       kind: 'scalar',
       mode,
@@ -85,6 +88,17 @@ export const timestamp =
       updatedAt: config.db?.updatedAt,
     })({
       ...config,
+      hooks: {
+        ...config.hooks,
+        async validateInput(args) {
+          const value = args.resolvedData[meta.fieldKey];
+          if (validation?.isRequired && value === null) {
+            args.addValidationError(`${fieldLabel} is required`);
+          }
+
+          await config.hooks?.validateInput?.(args);
+        },
+      },
       input: {
         where: {
           arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
@@ -102,6 +116,9 @@ export const timestamp =
           }),
           resolve(val) {
             if (val === undefined) {
+              if (defaultValue === undefined && config.db?.updatedAt) {
+                return undefined;
+              }
               if (typeof defaultValue === 'string' || defaultValue === undefined) {
                 val = defaultValue ?? null;
               } else {
@@ -115,7 +132,10 @@ export const timestamp =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: graphql.String,
+        type:
+          config.isNullable === false && config.graphql?.read?.isNonNull
+            ? graphql.nonNull(graphql.String)
+            : graphql.String,
         resolve({ value }) {
           if (value === null) return null;
           return value.toISOString();
