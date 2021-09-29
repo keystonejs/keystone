@@ -84,7 +84,7 @@ function FloatInput({
         if (raw === '') {
           return null;
         }
-        if (/^[+-]?\d+\.?\d?$/.test(raw)) {
+        if (!isNaN(parseFloat(raw))) {
           let parsed = parseFloat(raw);
 
           return parsed;
