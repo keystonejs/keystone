@@ -43,11 +43,6 @@ export const float =
     ...config
   }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    // let us think about states and errors
-
-    // Min value too low/high
-    // Max value too low/high
-
     if (
       defaultValue !== undefined &&
       (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
@@ -59,7 +54,7 @@ export const float =
 
     if (
       validation?.min !== undefined &&
-      (typeof validation.min !== 'number' || !Number.isFinite(defaultValue))
+      (typeof validation.min !== 'number' || !Number.isFinite(validation.min))
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
@@ -68,7 +63,7 @@ export const float =
 
     if (
       validation?.max !== undefined &&
-      (typeof validation.min !== 'number' || !Number.isFinite(defaultValue))
+      (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
@@ -108,7 +103,7 @@ export const float =
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
 
-          if (validation?.isRequired && value === null) {
+          if ((validation?.isRequired || config.isNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 

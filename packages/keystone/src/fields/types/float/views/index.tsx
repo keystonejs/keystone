@@ -43,10 +43,17 @@ function validate(value: Value, validation: Validation, label: string) {
     return `${label} is required`;
   }
 
-  if (typeof val === 'number') {
-    if (!Number.isFinite(val)) {
-      return `${label} must be finite`;
+  // we don't parse infinite numbers into +-Infinity/NaN so that we don't lose the text that the user wrote
+  // so we need to try parsing it again here to provide good messages
+  if (typeof val === 'string') {
+    const number = parseFloat(val);
+    if (isNaN(number)) {
+      return `${label} must be a number`;
     }
+    return `${label} must be finite`;
+  }
+
+  if (typeof val === 'number') {
     if (typeof validation?.min === 'number' && val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
@@ -84,9 +91,8 @@ function FloatInput({
         if (raw === '') {
           return null;
         }
-        if (!isNaN(parseFloat(raw))) {
-          let parsed = parseFloat(raw);
-
+        let parsed = parseFloat(raw);
+        if (Number.isFinite(parsed)) {
           return parsed;
         }
         return raw;
