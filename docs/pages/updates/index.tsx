@@ -11,6 +11,7 @@ import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -172,7 +173,55 @@ export default function WhatsNew() {
         })}
       >
         <Timeline date="21st September 2021" isLatest />
-        <Box heading="Keystone Community Q&A + YouTube launch ">
+        <Box heading="Keystone Community Q&A + YouTube launch">
+          <Stack orientation="horizontal">
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing title"
+                src="/assets/updates/qanda-1.png"
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing Keystone team"
+                src="/assets/updates/qanda-2.png"
+              />
+            </a>
+          </Stack>
+          <Stack orientation="horizontal">
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing roadmap screenshot"
+                src="/assets/updates/qanda-3.png"
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing community question"
+                src="/assets/updates/qanda-4.png"
+              />
+            </a>
+          </Stack>
           Taking the chance to introduce the core team and address some community questions in
           person, the team held an online Q&A event and launched a YouTube channel at the same time.{' '}
           <a
@@ -223,7 +272,7 @@ export default function WhatsNew() {
           .
         </Box>
         <Timeline date="7th September 2021" />
-        <Box heading="Major updates for Access Control">
+        <Box heading="Next 11, Faster Startups, Custom Servers">
           Major release #2 of #3 planned ahead of Keystone 6 General Availability includes:
           <ul>
             <li>
