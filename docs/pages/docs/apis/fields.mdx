@@ -482,10 +482,6 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldKey>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
-- `defaultValue` (default: `undefined`): Can be either a relationship input value `{ connect: { id: ID } }` or an async function which takes an argument `({ context, originalInput })` and returns a relationship input value.
-  This value will be used for the field when creating items if no explicit value is set.
-  `context` is a [`KeystoneContext`](./context) object.
-  `originalInput` is an object containing the data passed in to the `create` mutation.
 - `ui` (default: `{ hideCreate: false, displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
   - `hideCreate` (default: `false`). If `true`, the "Create related item" button is not shown in the item view.
   - `displayMode` (default: `'select'`): Controls the mode used to display the field in the item view. The mode `'select'` displays related items in a select component, while `'cards'` displays the related items in a card layout. Each display mode supports further configuration.
@@ -511,7 +507,6 @@ export default config({
         fieldName: relationship({
           ref: '...',
           many: false,
-          defaultValue: '...',
           ui: {
             hideCreate: false,
             // Display mode: 'select'
