@@ -102,9 +102,8 @@ export const select =
               args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
             }
             if (
-              (validation?.isRequired &&
-                (value === null || (value === undefined && args.operation === 'create'))) ||
-              (value === null && config.isNullable === false)
+              (validation?.isRequired || config.isNullable === false) &&
+              (value === null || (value === undefined && args.operation === 'create'))
             ) {
               args.addValidationError(`${fieldLabel} is required`);
             }
