@@ -214,9 +214,7 @@ testModules
                         expectValidationError(errors, [
                           {
                             path: [updateMutationName],
-                            messages: [
-                              `Test.${fieldName}: ${humanize(fieldName)} is required`,
-                            ],
+                            messages: [`Test.${fieldName}: ${humanize(fieldName)} is required`],
                           },
                         ]);
                       }
