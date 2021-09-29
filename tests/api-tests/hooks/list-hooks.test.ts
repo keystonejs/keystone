@@ -61,7 +61,7 @@ describe('List Hooks: #resolveInput()', () => {
       expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
         {
           path: ['createUser'],
-          messages: [`User: ${message}`],
+          messages: [`User.hooks.resolveInput: ${message}`],
           debug: [
             {
               message,
@@ -89,7 +89,7 @@ describe('List Hooks: #resolveInput()', () => {
       expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
         {
           path: ['createUser'],
-          messages: [`User.name: ${message}`],
+          messages: [`User.name.hooks.resolveInput: ${message}`],
           debug: [
             {
               message,
