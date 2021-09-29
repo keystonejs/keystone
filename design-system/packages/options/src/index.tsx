@@ -5,11 +5,19 @@ import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
 import ReactSelect, {
+  GroupBase,
   OptionProps,
+  StylesConfig,
   components as reactSelectComponents,
   Props,
-  NamedProps,
 } from 'react-select';
+
+declare module 'react-select/dist/declarations/src/Select' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  export interface Props<Option, IsMulti extends boolean, Group extends GroupBase<Option>> {
+    shouldDisplaySearchControl?: boolean;
+  }
+}
 
 export const CheckMark = ({
   isDisabled,
@@ -149,7 +157,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-type OptionsProps = NamedProps<{ label: string; value: string; isDisabled?: boolean }, boolean>;
+type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
@@ -162,30 +170,33 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
   const displaySearch = true;
   const theme = useTheme();
 
-  const optionRendererStyles: Props['styles'] = useMemo(
-    () => ({
-      control: provided => ({
-        ...provided,
-        background: theme.fields.inputBackground,
-        boxShadow: 'none',
-        cursor: 'text',
-        padding: 0,
-        minHeight: 34,
+  // type StylesConfig = Props['styles'];
+
+  const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
+    useMemo(
+      () => ({
+        control: (provided: any) => ({
+          ...provided,
+          background: theme.fields.inputBackground,
+          boxShadow: 'none',
+          cursor: 'text',
+          padding: 0,
+          minHeight: 34,
+        }),
+        menu: () => ({
+          marginTop: 8,
+        }),
+        menuList: (provided: any) => ({
+          ...provided,
+          padding: 0,
+        }),
+        placeholder: (provided: any) => ({
+          ...provided,
+          color: theme.fields.inputPlaceholder,
+        }),
       }),
-      menu: () => ({
-        marginTop: 8,
-      }),
-      menuList: provided => ({
-        ...provided,
-        padding: 0,
-      }),
-      placeholder: provided => ({
-        ...provided,
-        color: theme.fields.inputPlaceholder,
-      }),
-    }),
-    [theme]
-  );
+      [theme]
+    );
 
   return (
     <ReactSelect
