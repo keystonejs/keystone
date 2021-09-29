@@ -264,7 +264,7 @@ A `float` field represents a floating point value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a float value or an async function which takes an argument `({ context, originalInput })` and returns a float value.
+- `defaultValue` (default: `undefined`): Can be a finite float value.
   This value will be used for the field when creating items if no explicit value is set.
 - `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
