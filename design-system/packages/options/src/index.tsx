@@ -1,6 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { createContext, useContext } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
