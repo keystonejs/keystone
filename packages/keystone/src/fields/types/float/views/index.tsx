@@ -47,10 +47,10 @@ function validate(value: Value, validation: Validation, label: string) {
     if (!Number.isFinite(val)) {
       return `${label} must be finite`;
     }
-    if (validation?.min !== undefined && val < validation.min) {
+    if (typeof validation?.min === 'number' && val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (validation?.max !== undefined && val > validation?.max) {
+    if (typeof validation?.max === 'number' && val > validation?.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
@@ -182,20 +182,7 @@ export const controller = (
       initial: data[config.path],
       value: data[config.path],
     }),
-    serialize: value => {
-      let vale = value.value;
-      let val;
-
-      if (vale === '' || vale === null) {
-        val = null;
-      } else if (typeof vale === 'string') {
-        val = parseFloat(vale);
-      } else {
-        val = vale;
-      }
-
-      return { [config.path]: val };
-    },
+    serialize: value => ({ [config.path]: value.value }),
     validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
     filter: {
       Filter(props) {
