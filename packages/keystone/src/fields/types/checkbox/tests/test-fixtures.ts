@@ -4,6 +4,7 @@ export const name = 'Checkbox';
 export const typeFunction = checkbox;
 export const exampleValue = () => true;
 export const exampleValue2 = () => false;
+export const neverNull = true;
 export const supportsUnique = false;
 export const fieldName = 'enabled';
 export const skipRequiredTest = true;

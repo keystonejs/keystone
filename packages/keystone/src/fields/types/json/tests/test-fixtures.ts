@@ -8,6 +8,7 @@ export const exampleValue = () => ({
 export const exampleValue2 = () => ({
   b: [],
 });
+export const supportsNullInput = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'testField';
