@@ -10,6 +10,8 @@ import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+// @ts-ignore
+import dumbPasswords from 'dumb-passwords';
 import {
   CardValueComponent,
   CellComponent,
@@ -18,6 +20,33 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellContainer } from '../../../../admin-ui/components';
+
+function validate(value: Value, validation: Validation, fieldLabel: string) {
+  if (args.resolvedData[meta.fieldKey] === null && validation?.isRequired) {
+    return `${fieldLabel} is required`;
+  }
+  if (value.kind === 'editing' && value.confirm !== value.value) {
+    return `The passwords do not match`;
+  }
+  if (val != null) {
+    if (val.length < validation.length.min) {
+      if (validation.length.min === 1) {
+        return `${fieldLabel} must not be empty`;
+      } else {
+        return `${fieldLabel} must be at least ${validation.length.min} characters long`;
+      }
+    }
+    if (validation.length.max !== null && val.length > validation.length.max) {
+      return `${fieldLabel} must be no longer than ${validation.length.min} characters`;
+    }
+    if (validation.match && !validation.match.regex.test(val)) {
+      return validation.match.explanation;
+    }
+    if (validation.rejectCommon && dumbPasswords.check(val)) {
+      return `${fieldLabel} is too common and is not allowed`;
+    }
+  }
+}
 
 export const Field = ({
   field,
@@ -43,7 +72,9 @@ export const Field = ({
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange === undefined ? (
-        value.isSet ? (
+        value.isSet === null ? (
+          'Password may be set'
+        ) : value.isSet ? (
           'Password is set'
         ) : (
           'Password is not set'
@@ -134,7 +165,6 @@ export const Field = ({
           )}
         </Stack>
       )}
-      {/* {item[`${field.path}_is_set`] === true ? 'Is set' : 'Is not set'} */}
     </FieldContainer>
   );
 };
@@ -152,7 +182,36 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type PasswordController = FieldController<
+type Validation = {
+  isRequired: boolean;
+  rejectCommon: boolean;
+  match: {
+    regex: RegExp;
+    explanation: string;
+  } | null;
+  length: {
+    min: number;
+    max: number | null;
+  };
+};
+
+export type PasswordFieldMeta = {
+  isNullable: boolean;
+  validation: {
+    isRequired: boolean;
+    rejectCommon: boolean;
+    match: {
+      regex: { source: string; flags: string };
+      explanation: string;
+    } | null;
+    length: {
+      min: number;
+      max: number | null;
+    };
+  };
+};
+
+type Value =
   | {
       kind: 'initial';
       isSet: boolean | null;
@@ -162,18 +221,31 @@ type PasswordController = FieldController<
       isSet: boolean | null;
       value: string;
       confirm: string;
-    },
-  boolean
-> & { minLength: number };
+    };
+
+type PasswordController = FieldController<Value, boolean> & { validation: Validation };
 
 export const controller = (
-  config: FieldControllerConfig<{ minLength: number }>
+  config: FieldControllerConfig<PasswordFieldMeta>
 ): PasswordController => {
+  const validation: Validation = {
+    ...config.fieldMeta.validation,
+    match:
+      config.fieldMeta.validation.match === null
+        ? null
+        : {
+            regex: new RegExp(
+              config.fieldMeta.validation.match.regex.source,
+              config.fieldMeta.validation.match.regex.flags
+            ),
+            explanation: config.fieldMeta.validation.match.explanation,
+          },
+  };
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {isSet}`,
-    minLength: config.fieldMeta.minLength,
+    validation,
     defaultValue: {
       kind: 'initial',
       isSet: null,
@@ -189,31 +261,34 @@ export const controller = (
       if (value.kind === 'initial') return {};
       return { [config.path]: value.value };
     },
-    filter: {
-      Filter(props) {
-        return (
-          <SegmentedControl
-            selectedIndex={Number(props.value)}
-            onChange={value => {
-              props.onChange(!!value);
-            }}
-            segments={['Is Not Set', 'Is Set']}
-          />
-        );
-      },
-      graphql: ({ value }) => {
-        return { [config.path]: { isSet: value } };
-      },
-      Label({ value }) {
-        return value ? 'is set' : 'is not set';
-      },
-      types: {
-        is_set: {
-          label: 'Is Set',
-          initialValue: true,
-        },
-      },
-    },
+    filter:
+      config.fieldMeta.isNullable === false
+        ? undefined
+        : {
+            Filter(props) {
+              return (
+                <SegmentedControl
+                  selectedIndex={Number(props.value)}
+                  onChange={value => {
+                    props.onChange(!!value);
+                  }}
+                  segments={['Is Not Set', 'Is Set']}
+                />
+              );
+            },
+            graphql: ({ value }) => {
+              return { [config.path]: { isSet: value } };
+            },
+            Label({ value }) {
+              return value ? 'is set' : 'is not set';
+            },
+            types: {
+              is_set: {
+                label: 'Is Set',
+                initialValue: true,
+              },
+            },
+          },
   };
 };
 
