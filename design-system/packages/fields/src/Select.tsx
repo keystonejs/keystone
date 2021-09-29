@@ -1,21 +1,21 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { OptionsType, mergeStyles, NamedProps } from 'react-select';
+import ReactSelect, { Options, mergeStyles, Props } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
 type Option = { label: string; value: string; isDisabled?: boolean };
 
 type BaseSelectProps = Omit<
-  NamedProps<Option, boolean>,
+  Props<Option, boolean>,
   'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'
 > & { width?: WidthType };
 
 export { components as selectComponents } from 'react-select';
 
 type ControlState = {
-  isDisabled: boolean;
+  isDisabled?: boolean;
   isFocused: boolean;
 };
 
@@ -153,9 +153,9 @@ export function MultiSelect({
   styles,
   ...props
 }: BaseSelectProps & {
-  value: OptionsType<Option>;
+  value: Options<Option>;
   portalMenu?: true;
-  onChange(value: OptionsType<Option>): void;
+  onChange(value: Options<Option>): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const defaultStyles = useStyles({ tokens, multi: true });

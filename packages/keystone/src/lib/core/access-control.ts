@@ -13,6 +13,7 @@ import {
   ListFilterAccessControl,
   KeystoneContext,
 } from '../../types';
+import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
@@ -24,17 +25,24 @@ export async function getOperationAccess(
   const args = { operation, session: context.session, listKey: list.listKey, context };
   // Check the mutation access
   const access = list.access.operation[operation];
-  // @ts-ignore
-  const result = await access(args);
+  let result;
+  try {
+    // @ts-ignore
+    result = await access(args);
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${list.listKey}.access.operation.${args.operation}` },
+    ]);
+  }
 
   const resultType = typeof result;
 
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
   if (resultType !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.access.operation.${args.operation}(). Got ${resultType}`
-    );
+    throw accessReturnError([
+      { tag: `${args.listKey}.access.operation.${args.operation}`, returned: resultType },
+    ]);
   }
 
   return result;
@@ -48,28 +56,14 @@ export async function getAccessFilters(
   const args = { operation, session: context.session, listKey: list.listKey, context };
   // Check the mutation access
   const access = list.access.filter[operation];
-  // @ts-ignore
-  return typeof access === 'function' ? await access(args) : access;
-}
-
-export async function validateFieldAccessControl<
-  Args extends { listKey: string; fieldKey: string; operation: 'read' | 'create' | 'update' }
->({
-  access,
-  args,
-}: {
-  access: ((args: Args) => boolean | Promise<boolean>) | boolean;
-  args: Args;
-}) {
-  let result = typeof access === 'function' ? await access(args) : access;
-  if (typeof result !== 'boolean') {
-    throw new Error(
-      `Must return a Boolean from ${args.listKey}.fields.${args.fieldKey}.access.${
-        args.operation
-      }(). Got ${typeof result}`
-    );
+  try {
+    // @ts-ignore
+    return typeof access === 'function' ? await access(args) : access;
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${args.listKey}.access.filter.${args.operation}` },
+    ]);
   }
-  return result;
 }
 
 export function parseFieldAccessControl(
