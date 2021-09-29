@@ -119,7 +119,10 @@ export const password =
         ...config.hooks,
         async validateInput(args) {
           const val = args.originalInput[meta.fieldKey];
-          if (args.resolvedData[meta.fieldKey] === null && validation?.isRequired) {
+          if (
+            args.resolvedData[meta.fieldKey] === null &&
+            (validation?.isRequired || isNullable === false)
+          ) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {

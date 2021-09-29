@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
 import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
@@ -21,20 +21,23 @@ import {
 } from '../../../../types';
 import { CellContainer } from '../../../../admin-ui/components';
 
-function validate(value: Value, validation: Validation, fieldLabel: string) {
-  if (args.resolvedData[meta.fieldKey] === null && validation?.isRequired) {
+function validate(value: Value, validation: Validation, fieldLabel: string): string | undefined {
+  if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
+    return undefined;
+  }
+  if (value.kind === 'initial' && validation?.isRequired) {
     return `${fieldLabel} is required`;
   }
   if (value.kind === 'editing' && value.confirm !== value.value) {
     return `The passwords do not match`;
   }
-  if (val != null) {
+  if (value.kind === 'editing') {
+    const val = value.value;
     if (val.length < validation.length.min) {
       if (validation.length.min === 1) {
         return `${fieldLabel} must not be empty`;
-      } else {
-        return `${fieldLabel} must be at least ${validation.length.min} characters long`;
       }
+      return `${fieldLabel} must be at least ${validation.length.min} characters long`;
     }
     if (validation.length.max !== null && val.length > validation.length.max) {
       return `${fieldLabel} must be no longer than ${validation.length.min} characters`;
@@ -46,6 +49,7 @@ function validate(value: Value, validation: Validation, fieldLabel: string) {
       return `${fieldLabel} is too common and is not allowed`;
     }
   }
+  return undefined;
 }
 
 export const Field = ({
@@ -59,40 +63,43 @@ export const Field = ({
   const [touchedFirstInput, setTouchedFirstInput] = useState(false);
   const [touchedSecondInput, setTouchedSecondInput] = useState(false);
   const shouldShowValidation = forceValidation || (touchedFirstInput && touchedSecondInput);
-  const validation =
-    shouldShowValidation && value.kind === 'editing'
-      ? value.value === value.confirm
-        ? value.value.length >= field.minLength
-          ? undefined
-          : `The password must be at least ${field.minLength} characters long`
-        : 'The passwords do not match'
-      : undefined;
-  const inputType = showInputValue ? ('text' as const) : ('password' as const);
+  const validationMessage = shouldShowValidation
+    ? validate(value, field.validation, field.label)
+    : undefined;
+  const validation = validationMessage && (
+    <Text color="red600" size="small">
+      {validationMessage}
+    </Text>
+  );
+  const inputType = showInputValue ? 'text' : 'password';
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange === undefined ? (
         value.isSet === null ? (
-          'Password may be set'
+          'You do not have access to whether this password is set or not'
         ) : value.isSet ? (
           'Password is set'
         ) : (
           'Password is not set'
         )
       ) : value.kind === 'initial' ? (
-        <Button
-          autoFocus={autoFocus}
-          onClick={() => {
-            onChange({
-              kind: 'editing',
-              confirm: '',
-              value: '',
-              isSet: value.isSet,
-            });
-          }}
-        >
-          {value.isSet ? 'Change Password' : 'Set Password'}
-        </Button>
+        <Fragment>
+          <Button
+            autoFocus={autoFocus}
+            onClick={() => {
+              onChange({
+                kind: 'editing',
+                confirm: '',
+                value: '',
+                isSet: value.isSet,
+              });
+            }}
+          >
+            {value.isSet ? 'Change Password' : 'Set Password'}
+          </Button>
+          {validation}
+        </Fragment>
       ) : (
         <Stack gap="small">
           <div css={{ display: 'flex' }}>
@@ -102,7 +109,7 @@ export const Field = ({
             <TextInput
               id={`${field.path}-new-password`}
               autoFocus
-              invalid={validation !== undefined}
+              invalid={validationMessage !== undefined}
               type={inputType}
               value={value.value}
               placeholder="New Password"
@@ -122,7 +129,7 @@ export const Field = ({
             </VisuallyHidden>
             <TextInput
               id={`${field.path}-confirm-password`}
-              invalid={validation !== undefined}
+              invalid={validationMessage !== undefined}
               type={inputType}
               value={value.confirm}
               placeholder="Confirm Password"
@@ -158,11 +165,7 @@ export const Field = ({
               <XIcon />
             </Button>
           </div>
-          {validation && (
-            <Text color="red600" size="small">
-              {validation}
-            </Text>
-          )}
+          {validation}
         </Stack>
       )}
     </FieldContainer>
@@ -248,14 +251,9 @@ export const controller = (
     validation,
     defaultValue: {
       kind: 'initial',
-      isSet: null,
+      isSet: false,
     },
-    validate(state) {
-      return (
-        state.kind === 'initial' ||
-        (state.value === state.confirm && state.value.length >= config.fieldMeta.minLength)
-      );
-    },
+    validate: state => validate(state, validation, config.label) === undefined,
     deserialize: data => ({ kind: 'initial', isSet: data[config.path]?.isSet ?? null }),
     serialize: value => {
       if (value.kind === 'initial') return {};

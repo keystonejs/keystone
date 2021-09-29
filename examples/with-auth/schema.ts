@@ -30,8 +30,8 @@ export const lists = {
       email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
       // The password field stores a hash of the supplied password, and
       // we want to ensure that all people have a password set, so we use
-      // the isRequired flag.
-      password: password({ isRequired: true }),
+      // the validation.isRequired and isNullable: false flags.
+      password: password({ isNullable: false, validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
     defaultIsFilterable: true,

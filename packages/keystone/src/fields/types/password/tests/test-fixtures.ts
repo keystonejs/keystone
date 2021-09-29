@@ -11,14 +11,14 @@ export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
 export const getTestFields = () => ({
-  password: password({ minLength: 4 }),
-  passwordRejectCommon: password({ rejectCommon: true }),
+  password: password({ validation: { length: { min: 4 } } }),
+  passwordRejectCommon: password({ validation: { rejectCommon: true } }),
 });
 
 export const initItems = () => {
   return [
     { name: 'person1', password: 'pass1' },
-    { name: 'person2', password: '' },
+    { name: 'person2', password: null },
     { name: 'person3', password: 'pass3' },
     { name: 'person4', password: 'pass3' },
     { name: 'person5', password: 'pass3' },
