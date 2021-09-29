@@ -75,7 +75,6 @@ function FloatInput({
   validationMessage?: string;
   placeholder?: string;
 }) {
-  console.log({ value, type: typeof value });
   const [hasBlurred, setHasBlurred] = useState(false);
   const props = useFormattedInput<number | null>(
     {
