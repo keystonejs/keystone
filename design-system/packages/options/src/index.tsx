@@ -1,23 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { createContext, useContext } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
 import ReactSelect, {
-  GroupBase,
   OptionProps,
   StylesConfig,
   components as reactSelectComponents,
   Props,
 } from 'react-select';
-
-declare module 'react-select/dist/declarations/src/Select' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  export interface Props<Option, IsMulti extends boolean, Group extends GroupBase<Option>> {
-    shouldDisplaySearchControl?: boolean;
-  }
-}
 
 export const CheckMark = ({
   isDisabled,
@@ -130,7 +123,8 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
 };
 
 const Control: typeof reactSelectComponents['Control'] = ({ selectProps, ...props }) => {
-  return selectProps.shouldDisplaySearchControl ? (
+  const { shouldDisplaySearchControl } = useContext(SearchContext);
+  return shouldDisplaySearchControl ? (
     <reactSelectComponents.Control selectProps={selectProps} {...props} />
   ) : (
     <div
@@ -159,6 +153,10 @@ const defaultComponents = {
 
 type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
+const SearchContext = createContext<{ shouldDisplaySearchControl: boolean }>({
+  shouldDisplaySearchControl: false,
+});
+
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
     () => ({
@@ -169,8 +167,6 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
   );
   const displaySearch = true;
   const theme = useTheme();
-
-  // type StylesConfig = Props['styles'];
 
   const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
     useMemo(
@@ -199,24 +195,25 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
     );
 
   return (
-    <ReactSelect
-      backspaceRemovesValue={false}
-      captureMenuScroll={false}
-      closeMenuOnSelect={false}
-      controlShouldRenderValue={false}
-      hideSelectedOptions={false}
-      isClearable={false}
-      isSearchable={displaySearch}
-      maxMenuHeight={1000}
-      menuIsOpen
-      menuShouldScrollIntoView={false}
-      shouldDisplaySearchControl={displaySearch}
-      styles={optionRendererStyles}
-      // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
-      // if we take it out. react-select bug maybe?
-      tabSelectsValue={false}
-      components={components as any}
-      {...props}
-    />
+    <SearchContext.Provider value={{ shouldDisplaySearchControl: displaySearch }}>
+      <ReactSelect
+        backspaceRemovesValue={false}
+        captureMenuScroll={false}
+        closeMenuOnSelect={false}
+        controlShouldRenderValue={false}
+        hideSelectedOptions={false}
+        isClearable={false}
+        isSearchable={displaySearch}
+        maxMenuHeight={1000}
+        menuIsOpen
+        menuShouldScrollIntoView={false}
+        styles={optionRendererStyles}
+        // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
+        // if we take it out. react-select bug maybe?
+        tabSelectsValue={false}
+        components={components as any}
+        {...props}
+      />
+    </SearchContext.Provider>
   );
 };
