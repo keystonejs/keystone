@@ -123,25 +123,7 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
 };
 
 const Control: typeof reactSelectComponents['Control'] = ({ selectProps, ...props }) => {
-  const { shouldDisplaySearchControl } = useContext(SearchContext);
-  return shouldDisplaySearchControl ? (
-    <reactSelectComponents.Control selectProps={selectProps} {...props} />
-  ) : (
-    <div
-      css={{
-        border: 0,
-        clip: 'rect(1px, 1px, 1px, 1px)',
-        height: 1,
-        overflow: 'hidden',
-        padding: 0,
-        position: 'absolute',
-        whiteSpace: 'nowrap',
-        width: 1,
-      }}
-    >
-      <reactSelectComponents.Control selectProps={selectProps} {...props} />
-    </div>
-  );
+  return <reactSelectComponents.Control selectProps={selectProps} {...props} />;
 };
 
 const defaultComponents = {
@@ -153,10 +135,6 @@ const defaultComponents = {
 
 type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
-const SearchContext = createContext<{ shouldDisplaySearchControl: boolean }>({
-  shouldDisplaySearchControl: false,
-});
-
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
     () => ({
@@ -165,7 +143,6 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
     }),
     [propComponents]
   );
-  const displaySearch = true;
   const theme = useTheme();
 
   const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
@@ -195,25 +172,23 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
     );
 
   return (
-    <SearchContext.Provider value={{ shouldDisplaySearchControl: displaySearch }}>
-      <ReactSelect
-        backspaceRemovesValue={false}
-        captureMenuScroll={false}
-        closeMenuOnSelect={false}
-        controlShouldRenderValue={false}
-        hideSelectedOptions={false}
-        isClearable={false}
-        isSearchable={displaySearch}
-        maxMenuHeight={1000}
-        menuIsOpen
-        menuShouldScrollIntoView={false}
-        styles={optionRendererStyles}
-        // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
-        // if we take it out. react-select bug maybe?
-        tabSelectsValue={false}
-        components={components as any}
-        {...props}
-      />
-    </SearchContext.Provider>
+    <ReactSelect
+      backspaceRemovesValue={false}
+      captureMenuScroll={false}
+      closeMenuOnSelect={false}
+      controlShouldRenderValue={false}
+      hideSelectedOptions={false}
+      isClearable={false}
+      isSearchable
+      maxMenuHeight={1000}
+      menuIsOpen
+      menuShouldScrollIntoView={false}
+      styles={optionRendererStyles}
+      // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
+      // if we take it out. react-select bug maybe?
+      tabSelectsValue={false}
+      components={components as any}
+      {...props}
+    />
   );
 };
