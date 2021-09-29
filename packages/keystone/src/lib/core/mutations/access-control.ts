@@ -1,6 +1,5 @@
 import { KeystoneContext } from '../../../types';
-import { validateFieldAccessControl } from '../access-control';
-import { accessDeniedError, accessReturnError } from '../graphql-errors';
+import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
@@ -52,7 +51,15 @@ export async function getAccessControlledItemForDelete(
   const args = { operation, session: context.session, listKey: list.listKey, context, item };
 
   // List level 'item' access control
-  const result = await access(args);
+  let result;
+  try {
+    result = await access(args);
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+    ]);
+  }
+
   const resultType = typeof result;
 
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
@@ -102,7 +109,14 @@ export async function getAccessControlledItemForUpdate(
   };
 
   // List level 'item' access control
-  const result = await access(args);
+  let result;
+  try {
+    result = await access(args);
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+    ]);
+  }
   const resultType = typeof result;
 
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
@@ -125,32 +139,37 @@ export async function getAccessControlledItemForUpdate(
   }
 
   // Field level 'item' access control
-  const fieldAccess = await Promise.all(
-    Object.keys(originalInput!).map(async fieldKey => [
-      fieldKey,
-      await validateFieldAccessControl({
-        access: list.fields[fieldKey].access[operation],
-        args: { ...args, fieldKey },
-      }),
-    ])
-  );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const nonBooleans = fieldAccess.filter(([_, result]) => typeof result !== 'boolean');
-  if (nonBooleans.length) {
-    throw accessReturnError(
-      nonBooleans.map(([fieldKey, result]) => ({
+  const nonBooleans = [];
+  const fieldsDenied = [];
+  const accessErrors = [];
+  for (const fieldKey of Object.keys(originalInput)) {
+    let result;
+    try {
+      result =
+        typeof list.fields[fieldKey].access[operation] === 'function'
+          ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
+          : access;
+    } catch (error: any) {
+      accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+      continue;
+    }
+    if (typeof result !== 'boolean') {
+      nonBooleans.push({
         tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
         returned: typeof result,
-      }))
-    );
+      });
+    } else if (!result) {
+      fieldsDenied.push(fieldKey);
+    }
   }
 
-  const fieldsDenied = fieldAccess
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([_, result]) => !result)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .map(([fieldKey, _]) => fieldKey);
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors);
+  }
+
+  if (nonBooleans.length) {
+    throw accessReturnError(nonBooleans);
+  }
 
   if (fieldsDenied.length) {
     throw accessDeniedError(
@@ -181,7 +200,15 @@ export async function applyAccessControlForCreate(
   };
 
   // List level 'item' access control
-  const result = await access(args);
+  let result;
+  try {
+    result = await access(args);
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+    ]);
+  }
+
   const resultType = typeof result;
 
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
@@ -204,32 +231,38 @@ export async function applyAccessControlForCreate(
   }
 
   // Field level 'item' access control
-  const fieldAccess = await Promise.all(
-    Object.keys(originalInput!).map(async fieldKey => [
-      fieldKey,
-      await validateFieldAccessControl({
-        access: list.fields[fieldKey].access[operation],
-        args: { ...args, fieldKey },
-      }),
-    ])
-  );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const nonBooleans = fieldAccess.filter(([_, result]) => typeof result !== 'boolean');
-  if (nonBooleans.length) {
-    throw accessReturnError(
-      nonBooleans.map(([fieldKey, result]) => ({
+  // Field level 'item' access control
+  const nonBooleans = [];
+  const fieldsDenied = [];
+  const accessErrors = [];
+  for (const fieldKey of Object.keys(originalInput)) {
+    let result;
+    try {
+      result =
+        typeof list.fields[fieldKey].access[operation] === 'function'
+          ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
+          : access;
+    } catch (error: any) {
+      accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+      continue;
+    }
+    if (typeof result !== 'boolean') {
+      nonBooleans.push({
         tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
         returned: typeof result,
-      }))
-    );
+      });
+    } else if (!result) {
+      fieldsDenied.push(fieldKey);
+    }
   }
 
-  const fieldsDenied = fieldAccess
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([_, result]) => !result)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .map(([fieldKey, _]) => fieldKey);
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors);
+  }
+
+  if (nonBooleans.length) {
+    throw accessReturnError(nonBooleans);
+  }
 
   if (fieldsDenied.length) {
     throw accessDeniedError(
