@@ -78,7 +78,10 @@ export const adminUITests = (
   const projectDir = path.join(projectRoot, pathToTest);
 
   dotenv.config();
-  describe.each(['dev', 'prod'] as const)('%s', mode => {
+  describe.each([
+    'dev',
+    // 'prod'
+  ] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
     afterAll(async () => {
@@ -146,12 +149,12 @@ export const adminUITests = (
 
     describe.each([
       'chromium',
-      'firefox',
+      // 'firefox',
       // we don't run the tests on webkit in production
       // because unlike chromium and firefox
       // webkit doesn't treat localhost as a secure context
       // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);

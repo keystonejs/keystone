@@ -6,9 +6,12 @@ adminUITests('./tests/test-projects/basic', browserType => {
   let page: Page = undefined as any;
 
   beforeAll(async () => {
-    browser = await browserType.launch();
+    browser = await browserType.launch({ headless: false });
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
+  });
+  afterAll(async () => {
+    await deleteAllData('./tests/test-projects/basic');
   });
   describe('relationship filters', () => {
     test('Lists are filterable by relationships', async () => {
@@ -27,15 +30,15 @@ adminUITests('./tests/test-projects/basic', browserType => {
         }
       `;
       const CREATE_TASKS = gql`
-        mutation CREATE_TASKS_MUTATION($data) {
-            createTasks(data: $data) {
-                id
-            }
+        mutation CREATE_TASKS_MUTATION($data: [TaskCreateInput!]!) {
+          createTasks(data: $data) {
+            id
+          }
         }
       `;
       const { assignedTask } = await makeGqlRequest(TASK_MUTATION_CREATE, {
-        $name: 'Task-assigned',
-        $assignedTo: 'James Joyce',
+        name: 'Task-assigned',
+        assignedTo: 'James Joyce',
       });
       await makeGqlRequest(CREATE_TASKS, {
         data: generateDataArray(
@@ -46,24 +49,24 @@ adminUITests('./tests/test-projects/basic', browserType => {
         ),
       });
       await page.goto('http://localhost:3000/tasks');
-      await page.waitForSelector('table tr');
-      const elements = await page.$$('table tr');
+      await page.waitForSelector('table tbody tr');
+      const elements = await page.$$('table tbody tr');
       expect(elements.length).toBe(21);
       // apply filter
-      await page.click('button[aria-popup=true]:has-text("Filter List")');
-      await page.click('div:has-text("Assigned To")');
-      await page.click('div:has-text("Select...")');
-      await page.click('div:has-text("James Joyce")');
+      await page.click('button[aria-haspopup=true]:has-text("Filter List")');
+      await page.click('div div div div div div div:has-text("Assigned To")');
+      await page.click('div div div div div:has-text("Select...")');
+      await page.click('div div div div div:has-text("James Joyce")');
       await Promise.all([
         page.waitForNavigation({
-          url: `http://localhost:3000/tasks%21assignedTo_matches="${assignedTask.assignedTo.id}"`,
+          url: `http://localhost:3000/tasks?%21assignedTo_matches="${assignedTask.assignedTo.id}"`,
         }),
         page.click('button[type="submit"]:has-text("Apply")'),
       ]);
 
       // Assert that there's only one result.
-      await page.waitForSelector('table tr');
-      const filteredElements = await page.$$('table tr');
+      await page.waitForSelector('table tbody tr');
+      const filteredElements = await page.$$('table tbody tr');
       expect(filteredElements.length).toBe(1);
     });
     test('One way relationships can only be filterable by the List with the relationship declared', async () => {});
