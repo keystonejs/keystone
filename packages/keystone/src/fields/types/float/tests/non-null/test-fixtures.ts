@@ -20,7 +20,6 @@ export const initItems = () => {
     { name: 'post3', testField: 1.2 },
     { name: 'post4', testField: 2.3 },
     { name: 'post5', testField: 3 },
-    { name: 'post6', testField: null },
     { name: 'post7' },
   ];
 };
