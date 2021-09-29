@@ -5,6 +5,7 @@ export const name = 'Decimal';
 export const typeFunction = decimal;
 export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const skipRequiredTest = true;
 export const fieldName = 'price';

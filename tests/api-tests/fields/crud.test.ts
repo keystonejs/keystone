@@ -3,7 +3,8 @@ import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig } from '../utils';
+import { humanize } from '@keystone-next/keystone/src/lib/utils';
+import { apiTestConfig, expectBadUserInput, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -184,13 +185,42 @@ testModules
                 'Updating the value to null',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.query[listKey].updateOne({
-                      where: { id: items[0].id },
-                      data: { [fieldName]: null },
-                      query,
-                    });
-                    expect(data).not.toBe(null);
-                    expect(data?.[fieldName]).toBe(null);
+                    const updateMutationName = `update${listKey}`;
+                    const _query = `mutation { ${updateMutationName}(where: { id: "${items[0].id}" }, data: { ${fieldName}: null }) { ${query} } }`;
+                    const { data, errors } = await context.graphql.raw({ query: _query });
+                    if (mod.supportsNullInput) {
+                      expect(data).toEqual({
+                        [updateMutationName]: {
+                          id: expect.any(String),
+                          name: expect.any(String),
+                          [fieldName]: null,
+                        },
+                      });
+                      expect(errors).toBe(undefined);
+                    } else {
+                      expect(data).toEqual({ [updateMutationName]: null });
+                      if (mod.neverNull) {
+                        expectBadUserInput(
+                          errors,
+                          [
+                            {
+                              path: [updateMutationName],
+                              message: `${mod.name} fields cannot be set to null`,
+                            },
+                          ],
+                          false
+                        );
+                      } else {
+                        expectValidationError(errors, [
+                          {
+                            path: [updateMutationName],
+                            messages: [
+                              `Test.${fieldName}: ${humanize(fieldName)} cannot be set to 'null'`,
+                            ],
+                          },
+                        ]);
+                      }
+                    }
                   })
                 )
               );

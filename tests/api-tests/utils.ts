@@ -161,12 +161,13 @@ export const expectLimitsExceededError = (
 
 export const expectBadUserInput = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[]; message: string }[],
+  httpQuery = true
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      ...(httpQuery ? { extensions: { code: 'INTERNAL_SERVER_ERROR' } } : {}),
       path,
       message: `Input error: ${message}`,
     }))

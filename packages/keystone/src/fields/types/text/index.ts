@@ -97,6 +97,9 @@ export const text =
           if (val === null && validation?.isRequired) {
             args.addValidationError(`${fieldLabel} is required`);
           }
+          if (val === null && config.isNullable !== true) {
+            args.addValidationError(`${fieldLabel} cannot be set to 'null'`);
+          }
           if (val != null) {
             if (validation?.length?.min !== undefined && val.length < validation.length.min) {
               if (validation.length.min === 1) {

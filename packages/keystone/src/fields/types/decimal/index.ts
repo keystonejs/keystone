@@ -132,6 +132,9 @@ export const decimal =
           if (val === null && validation?.isRequired) {
             args.addValidationError(`${fieldLabel} is required`);
           }
+          if (val === null && config.isNullable === false) {
+            args.addValidationError(`${fieldLabel} cannot be set to 'null'`);
+          }
           if (val != null) {
             if (min !== undefined && val.lessThan(min)) {
               args.addValidationError(`${fieldLabel} must be greater than or equal to ${min}`);

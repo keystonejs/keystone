@@ -7,6 +7,7 @@ import {
   graphql,
   JSONValue,
 } from '@keystone-next/keystone/types';
+import { userInputError } from '@keystone-next/keystone/src/lib/core/graphql-errors';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -99,7 +100,7 @@ export const document =
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
-        throw new Error(`Document fields cannot be set to null`);
+        throw userInputError(`Document fields cannot be set to null`);
       }
       if (data === undefined) {
         return data;

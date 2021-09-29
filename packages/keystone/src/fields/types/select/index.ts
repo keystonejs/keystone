@@ -107,6 +107,9 @@ export const select =
             ) {
               args.addValidationError(`${fieldLabel} is required`);
             }
+            if (value === null && config.isNullable === false) {
+              args.addValidationError(`${fieldLabel} cannot be set to 'null'`);
+            }
             await config.hooks?.validateInput?.(args);
           },
         },
