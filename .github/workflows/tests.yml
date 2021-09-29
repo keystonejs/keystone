@@ -73,9 +73,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
@@ -136,9 +136,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
@@ -191,9 +191,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
@@ -229,9 +229,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
@@ -289,9 +289,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -339,9 +339,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -378,9 +378,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
