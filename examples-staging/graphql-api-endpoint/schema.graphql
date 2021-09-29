@@ -172,7 +172,7 @@ type Post {
   title: String
   status: String
   content: Post_content_Document
-  publishDate: String
+  publishDate: DateTime
   author: User
   tags(
     where: TagWhereInput! = {}
@@ -186,6 +186,9 @@ type Post {
 type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -206,7 +209,7 @@ input PostUpdateInput {
   title: String
   status: String
   content: JSON
-  publishDate: String
+  publishDate: DateTime
   author: UserRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
 }
@@ -233,7 +236,7 @@ input PostCreateInput {
   title: String
   status: String
   content: JSON
-  publishDate: String
+  publishDate: DateTime
   author: UserRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
 }
