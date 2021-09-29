@@ -20,6 +20,8 @@ export const initItems = () => {
     { name: 'post3', testField: 1.2 },
     { name: 'post4', testField: 2.3 },
     { name: 'post5', testField: 3 },
+    { name: 'post6', testField: 5 },
+    { name: 'post7', testField: 20.8 },
   ];
 };
 
@@ -29,6 +31,8 @@ export const storedValues = () => [
   { name: 'post3', testField: 1.2 },
   { name: 'post4', testField: 2.3 },
   { name: 'post5', testField: 3 },
+  { name: 'post6', testField: 5 },
+  { name: 'post7', testField: 20.8 },
 ];
 
 export const supportedFilters = () => [];
