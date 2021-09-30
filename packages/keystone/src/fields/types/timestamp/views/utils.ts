@@ -1,33 +1,30 @@
-import { parseISO, parse, isValid, formatISO } from 'date-fns';
-import { DateType } from '@keystone-ui/fields';
+import { parse, isValid, formatISO, format } from 'date-fns';
 
-const getTime = (timeValue: string) => {
-  if (!timeValue) return [0, 0];
-  return timeValue.split(':').map(n => Number(n));
-};
+const FULL_TIME_PATTERN = 'HH:mm:ss.SSSS';
 
-export function isValidDate(date: DateType) {
-  if (!date) return false;
-  return Boolean(parseISO(date).toISOString());
+function formatFullTime(date: Date) {
+  return format(date, FULL_TIME_PATTERN);
 }
 
-export function isValidTime(time: string) {
-  if (!time) {
-    return false;
+export function formatTime(time: string) {
+  const date = parse(time, FULL_TIME_PATTERN, new Date());
+  if (date.getMilliseconds() !== 0) {
+    return format(date, FULL_TIME_PATTERN);
   }
-  return isValid(parse(time, 'HH:mm', new Date()));
+  if (date.getSeconds() !== 0) {
+    return format(date, 'HH:mm:ss');
+  }
+  return format(date, 'HH:mm');
 }
 
-export function isValidISO(value: { dateValue: DateType; timeValue: string }) {
-  try {
-    // toISOString converts our string into zulu time
-    // instead of checking for the timestamp to be specifically in zulu time
-    // we relax the validation here a little, to just be a valid ISO string.
-
-    return Boolean(parseISO(constructTimestamp(value)).toISOString());
-  } catch (err) {
-    return false;
+export function parseTime(time: string) {
+  for (const pattern of ['H:m:s.SSSS', 'H:m:s', 'H:m', 'H']) {
+    const parsed = parse(time, pattern, new Date());
+    if (isValid(parsed)) {
+      return format(parsed, FULL_TIME_PATTERN);
+    }
   }
+  return undefined;
 }
 
 export function constructTimestamp({
@@ -37,30 +34,34 @@ export function constructTimestamp({
   dateValue: string;
   timeValue: string;
 }) {
-  let formattedDate = new Date(dateValue);
-
-  const [hours, minutes] = getTime(timeValue);
-  formattedDate.setHours(hours);
-  formattedDate.setMinutes(minutes);
-  return formatISO(formattedDate);
+  return `${dateValue}T${timeValue}Z`;
 }
 
 export function deconstructTimestamp(value: string) {
-  return { dateValue: value, timeValue: resolveInitialTimeValue(value) };
+  return {
+    dateValue: formatISO(new Date(value), { representation: 'date' }),
+    timeValue: formatFullTime(new Date(value)),
+  };
 }
 
-export function formatOutput(value: string) {
+export function formatOutput(value: string | null) {
   if (!value) return '';
   const date = new Date(value);
   return date.toLocaleString();
 }
 
-export function resolveInitialTimeValue(value?: string, defaultValue?: string) {
-  const date = value || defaultValue;
-  if (!date) return '';
-  return new Date(date).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-}
+export type InnerValue = {
+  dateValue: string | null;
+  timeValue: string | { kind: 'parsed'; value: string | null };
+};
+
+export type Value =
+  | {
+      kind: 'create';
+      value: InnerValue;
+    }
+  | {
+      kind: 'update';
+      value: InnerValue;
+      initial: string | null;
+    };

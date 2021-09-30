@@ -13,13 +13,14 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
+import { useFormattedInput } from '../../integer/views/utils';
 import {
-  isValidDate,
-  isValidISO,
-  isValidTime,
   constructTimestamp,
   deconstructTimestamp,
   formatOutput,
+  Value,
+  parseTime,
+  formatTime,
 } from './utils';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
@@ -64,7 +65,7 @@ export const Field = ({
     if (!dateValue) {
       return <div css={{ color: 'red' }}>Please select a date value.</div>;
     }
-    return !isValidDate(dateValue) && <div css={{ color: 'red' }}>Incorrect date value</div>;
+    return !isValidISODate(dateValue) && <div css={{ color: 'red' }}>Incorrect date value</div>;
   };
 
   const showTimeError = (timeValue: string) => {
@@ -76,6 +77,40 @@ export const Field = ({
     );
   };
 
+  const timeInputProps = useFormattedInput<{ kind: 'parsed'; value: string | null }>(
+    {
+      format({ value }) {
+        if (value === null) {
+          return '';
+        }
+        return formatTime(value);
+      },
+      parse(value) {
+        value = value.trim();
+        if (value === '') {
+          return { kind: 'parsed', value: null };
+        }
+        const parsed = parseTime(value);
+        if (parsed !== undefined) {
+          return { kind: 'parsed', value: parsed };
+        }
+        return value;
+      },
+    },
+    {
+      value: value.value.timeValue,
+      onChange(timeValue) {
+        onChange?.({
+          ...value,
+          value: { ...value.value, timeValue },
+        });
+      },
+      onBlur() {
+        setTouchedSecondInput(true);
+      },
+    }
+  );
+
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -85,15 +120,15 @@ export const Field = ({
             <Stack>
               <DatePicker
                 onUpdate={date => {
-                  onChange({ ...value, dateValue: date || '' });
+                  onChange({ ...value, value: { ...value.value, dateValue: date } });
                 }}
                 onClear={() => {
-                  onChange({ ...value, dateValue: '' });
+                  onChange({ ...value, value: { ...value.value, dateValue: null } });
                 }}
                 onBlur={() => setTouchedFirstInput(true)}
-                value={value.dateValue}
+                value={value.value.dateValue ?? ''}
               />
-              {showValidation && showDateError(value.dateValue)}
+              {showValidation && showDateError(value.value.dateValue)}
             </Stack>
             <Stack>
               <VisuallyHidden
@@ -102,13 +137,11 @@ export const Field = ({
               >{`${field.label} time field`}</VisuallyHidden>
               <TimePicker
                 id={`${field.path}--time-input`}
-                onBlur={() => setTouchedSecondInput(true)}
                 disabled={onChange === undefined}
                 format="24hr"
-                onChange={event => onChange({ ...value, timeValue: event.target.value })}
-                value={value.timeValue || ''}
+                {...timeInputProps}
               />
-              {showValidation && showTimeError(value.timeValue)}
+              {showValidation && showTimeError(value.value.timeValue)}
             </Stack>
           </Inline>
         </Stack>
@@ -141,22 +174,29 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 export const controller = (
-  config: FieldControllerConfig
-): FieldController<{ dateValue: string; timeValue: string }, string> => {
+  config: FieldControllerConfig<{ defaultValue: string | { kind: 'now' } | null }>
+): FieldController<Value, string> => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: { dateValue: '', timeValue: '' },
+    defaultValue: {
+      kind: 'create',
+      value:
+        typeof config.fieldMeta.defaultValue === 'string'
+          ? deconstructTimestamp(config.fieldMeta.defaultValue)
+          : { dateValue: null, timeValue: '' },
+    },
     deserialize: data => {
       const value = data[config.path];
-      if (value) {
-        return deconstructTimestamp(value);
-      }
-      return { dateValue: '', timeValue: '' };
+      return {
+        kind: 'update',
+        initial: data[config.path],
+        value: value ? deconstructTimestamp(value) : { dateValue: null, timeValue: '' },
+      };
     },
-    serialize: ({ dateValue, timeValue }) => {
-      if (dateValue && isValidISO({ dateValue, timeValue })) {
+    serialize: ({ value: { dateValue, timeValue } }) => {
+      if (dateValue && typeof timeValue === 'object' && timeValue.value !== null) {
         let formattedDate = constructTimestamp({ dateValue, timeValue });
         return { [config.path]: formattedDate };
       }

@@ -87,7 +87,7 @@ export const timestamp =
         ...config.hooks,
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
-          if (validation?.isRequired && value === null) {
+          if ((validation?.isRequired || config.isNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 
