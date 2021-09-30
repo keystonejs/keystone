@@ -374,8 +374,8 @@ A `password` field represents an encrypted password value.
 Options:
 
 - `isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
-- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` or an empty string.
-  Unlike `isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
+- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
   If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
 - `validation.length.min` (default: `8`): This describes the minimum number allowed. If you attempt to submit a string shorter than this, you will get a validation error.
