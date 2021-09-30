@@ -24,8 +24,8 @@ export async function runSideEffectOnlyHook<
   // was specified in the original input.
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
   if (hookName === 'beforeChange' || hookName === 'afterChange') {
-    const originalInputKeys = new Set(Object.keys(args.originalInput));
-    shouldRunFieldLevelHook = fieldKey => originalInputKeys.has(fieldKey);
+    const inputDataKeys = new Set(Object.keys(args.inputData));
+    shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey);
   } else {
     shouldRunFieldLevelHook = () => true;
   }
