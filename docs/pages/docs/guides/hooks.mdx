@@ -27,9 +27,9 @@ export default config({
         email: text(),
        },
       hooks: {
-        afterChange: ({ operation, updatedItem }) => {
+        afterOperation: ({ operation, item }) => {
           if (operation === 'create') {
-            console.log(`New user created. Name: ${updatedItem.name}, Email: ${updatedItem.email}`);
+            console.log(`New user created. Name: ${item.name}, Email: ${item.email}`);
           }
         }
       },
@@ -38,10 +38,10 @@ export default config({
 });
 ```
 
-This function will be triggered whenever we execute one of `createUser`, `createUsers`, `updateUser`, or `updateUsers` in our GraphQL API.
-It will be executed once for each item either created or updated.
+This function will be triggered whenever we execute a `create`, `update`, or `delete` mutation in our GraphQL API.
+It will be executed once for each item being operated on.
 Because we only want to log when a user is created, we check the value of the `operation` argument.
-We then use the `updatedItem` argument to get the value of the newly created user.
+We then use the `item` argument to get the value of the newly created user.
 
 Now that we've got a sense of what a hook is, let's look at how we can use hooks to solve some common problems you'll hit when creating your system.
 
@@ -83,15 +83,14 @@ export default config({
 !> We must always return the modified `resolvedData` value from our hook, even if we didn't end up changing it.
 
 The `resolveInput` hook is called whenever we update or create an item.
-The value of `resolvedData` will contain the input provided to the mutation itself, along with any `defaultValues` applied on fields.
-If you just want to see what the original input before default values was, you can use the `originalInput` argument.
+The value of `resolvedData` will contain the input provided to the mutation itself, with any field type input resolvers applied.
+For example, a `password` will field will convert the provided text input into an encrypted hash value.
+If you just want to see what the original input was, before the field type resolvers were applied, you can use the `inputData` argument.
 
 If you're performing an update operation, you might also want to access the current value of the item stored in the database.
-This is available as the `existingItem` argument.
+This is available as the `item` argument.
 
 Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../apis/context).
-
-?> The `resolveInput` hook shouldn't be used to set default values. This is handled by the `defaultValue` field config option.
 
 ## Validating inputs
 
@@ -133,7 +132,7 @@ There might be multiple problems with the input, so you can call `addValidationE
 
 Keystone will abort the operation and convert these error messages into GraphQL errors which will be returned to the caller.
 
-The `validateInput` hook also receives the `operation`, `originalInput`, `existingItem` and `context` arguments if you want to perform more advanced checks.
+The `validateInput` hook also receives the `operation`, `inputData`, `item` and `context` arguments if you want to perform more advanced checks.
 
 ?> Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
 
@@ -141,7 +140,7 @@ The `validateInput` hook also receives the `operation`, `originalInput`, `existi
 
 When data is changed in our system we might want to trigger some external side-effect.
 For example, we might want to send a welcome email to a user when they first create their account.
-We can use the `beforeChange` and `afterChange` hooks to do this.
+We can use the `beforeOperation` and `afterOperation` hooks to do this.
 Let's send an email after a user is created.
 
 ```typescript
@@ -158,9 +157,9 @@ export default config({
         email: text(),
        },
       hooks: {
-        afterChange: ({ operation, updatedItem }) => {
+        afterOperation: ({ operation, item }) => {
           if (operation === 'create') {
-            sendWelcomeEmail(updatedItem.name, updatedItem.email);
+            sendWelcomeEmail(item.name, item.email);
           }
         }
       },
@@ -169,23 +168,13 @@ export default config({
 });
 ```
 
-The `beforeChange` and `afterChange` hooks are very similar, but serve slightly different purposes.
-The `beforeChange` hook receives a `resolvedData` argument, which contains the data we're about to write to the database, whereas `afterChange` recieves `updatedItem`, which contains the data that was written to the database.
+The `beforeOperation` and `afterOperation` hooks are very similar, but serve slightly different purposes.
+The `beforeOperation` hook receives an `item` argument, which contains the currently stored in the database before the operation.
+In the `afterOperation` hook, `item` represents the newly updated data in the database, and the original data from before the update is provided as `originalItem`.
+In a `create` operation, there won't be a pre-existing item, and for `delete` operations, the value of `item` in the `afterOperation` hook will be `null`.
 
-If the `beforeChange` hook throws an exception then the operation will return an error, and the data will not be saved to the database.
-If the `afterChange` hook throws an exception then the data will remain in the database. As such, `afterChange` hooks should be used where a failure to execute isn't a critical problem.
-
-## Delete hooks
-
-The hooks discussed above all relate to the `create` and `update` operations.
-There are also hooks which can be defined for the `delete` operation.
-
-The `delete` operation hooks are `validateDelete`, `beforeDelete`, and `afterDelete`.
-
-The `validateDelete` is used to verify that deleting an item won't cause a problem in your system.
-For example, deleting a user might leave a collection of blog posts without authors, which might be something you want to avoid.
-
-Similary, the `beforeDelete` and `afterDelete` hooks can be used to trigger side-effects related to the delete operation.
+If the `beforeOperation` hook throws an exception then the operation will return an error, and the data will not be saved to the database.
+If the `afterOperation` hook throws an exception then the data will remain in the database. As such, `afterOperation` hooks should be used where a failure to execute isn't a critical problem.
 
 ## List hooks vs field hooks
 

@@ -128,7 +128,7 @@ export const integer =
           const value = args.resolvedData[meta.fieldKey];
 
           if (
-            validation?.isRequired &&
+            (validation?.isRequired || config.isNullable === false) &&
             (value === null ||
               (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
           ) {

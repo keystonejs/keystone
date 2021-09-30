@@ -9,7 +9,7 @@ import {
   runWithPrisma,
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
-import { accessDeniedError, extensionError } from '../graphql-errors';
+import { accessDeniedError, extensionError, resolverError } from '../graphql-errors';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import {
@@ -41,7 +41,7 @@ async function createSingle(
   //  Item access control. Will throw an accessDeniedError if not allowed.
   await applyAccessControlForCreate(list, context, rawData);
 
-  const { afterChange, data } = await resolveInputForCreateOrUpdate(
+  const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
     context,
     rawData,
@@ -52,11 +52,11 @@ async function createSingle(
     runWithPrisma(context, list, model => model.create({ data }))
   );
 
-  return { item, afterChange };
+  return { item, afterOperation };
 }
 
 export class NestedMutationState {
-  #afterChanges: (() => void | Promise<void>)[] = [];
+  #afterOperations: (() => void | Promise<void>)[] = [];
   #context: KeystoneContext;
   constructor(context: KeystoneContext) {
     this.#context = context;
@@ -68,7 +68,7 @@ export class NestedMutationState {
     // Check operation permission to pass into single operation
     const operationAccess = await getOperationAccess(list, context, 'create');
 
-    const { item, afterChange } = await createSingle(
+    const { item, afterOperation } = await createSingle(
       { data },
       list,
       context,
@@ -76,12 +76,12 @@ export class NestedMutationState {
       writeLimit
     );
 
-    this.#afterChanges.push(() => afterChange(item));
+    this.#afterOperations.push(() => afterOperation(item));
     return { id: item.id as IdType };
   }
 
-  async afterChange() {
-    await promiseAllRejectWithAllErrors(this.#afterChanges.map(async x => x()));
+  async afterOperation() {
+    await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x()));
   }
 }
 
@@ -95,7 +95,7 @@ export async function createOne(
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'create');
 
-  const { item, afterChange } = await createSingle(
+  const { item, afterOperation } = await createSingle(
     createInput,
     list,
     context,
@@ -103,7 +103,7 @@ export async function createOne(
     writeLimit
   );
 
-  await afterChange(item);
+  await afterOperation(item);
 
   return item;
 }
@@ -120,7 +120,7 @@ export async function createMany(
   const operationAccess = await getOperationAccess(list, context, 'create');
 
   return createInputs.data.map(async data => {
-    const { item, afterChange } = await createSingle(
+    const { item, afterOperation } = await createSingle(
       { data },
       list,
       context,
@@ -128,7 +128,7 @@ export async function createMany(
       writeLimit
     );
 
-    await afterChange(item);
+    await afterOperation(item);
 
     return item;
   });
@@ -158,7 +158,7 @@ async function updateSingle(
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Filter and Item access control. Will throw an accessDeniedError if not allowed.
-  const existingItem = await getAccessControlledItemForUpdate(
+  const item = await getAccessControlledItemForUpdate(
     list,
     context,
     uniqueWhere,
@@ -166,18 +166,18 @@ async function updateSingle(
     rawData
   );
 
-  const { afterChange, data } = await resolveInputForCreateOrUpdate(
+  const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
     context,
     rawData,
-    existingItem
+    item
   );
 
   const updatedItem = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.update({ where: { id: existingItem.id }, data }))
+    runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))
   );
 
-  await afterChange(updatedItem);
+  await afterOperation(updatedItem);
 
   return updatedItem;
 }
@@ -223,15 +223,15 @@ async function getResolvedData(
     context: KeystoneContext;
     listKey: string;
     operation: 'create' | 'update';
-    originalInput: Record<string, any>;
-    existingItem: Record<string, any> | undefined;
+    inputData: Record<string, any>;
+    item: Record<string, any> | undefined;
   },
   nestedMutationState: NestedMutationState
 ) {
-  const { context, operation, originalInput } = hookArgs;
+  const { context, operation, inputData } = hookArgs;
 
   // Start with the original input
-  let resolvedData = hookArgs.originalInput;
+  let resolvedData = hookArgs.inputData;
 
   // Apply default values
   // We don't expect any errors from here, so we can wrap all these operations
@@ -244,7 +244,7 @@ async function getResolvedData(
           if (input === undefined && field.__legacy?.defaultValue !== undefined) {
             input =
               typeof field.__legacy.defaultValue === 'function'
-                ? await field.__legacy.defaultValue({ originalInput, context })
+                ? await field.__legacy.defaultValue({ originalInput: inputData, context })
                 : field.__legacy.defaultValue;
           }
           return [fieldKey, input] as const;
@@ -254,18 +254,26 @@ async function getResolvedData(
   }
 
   // Apply non-relationship field type input resolvers
+  const resolverErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
+    await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
         if (inputResolver && field.dbField.kind !== 'relation') {
-          input = await inputResolver(input, context, undefined);
+          try {
+            input = await inputResolver(input, context, undefined);
+          } catch (error: any) {
+            resolverErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+          }
         }
         return [fieldKey, input] as const;
       })
     )
   );
+  if (resolverErrors.length) {
+    throw resolverError(resolverErrors);
+  }
 
   // Apply relationship field type input resolvers
   resolvedData = Object.fromEntries(
@@ -352,18 +360,18 @@ async function getResolvedData(
 async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
-  originalInput: Record<string, any>,
-  existingItem: Record<string, any> | undefined
+  inputData: Record<string, any>,
+  item: Record<string, any> | undefined
 ) {
-  const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
+  const operation: 'create' | 'update' = item === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
   const { listKey } = list;
   const hookArgs = {
     context,
     listKey,
     operation,
-    originalInput,
-    existingItem,
+    inputData,
+    item,
     resolvedData: {},
   };
 
@@ -374,16 +382,20 @@ async function resolveInputForCreateOrUpdate(
   // Apply all validation checks
   await validateUpdateCreate({ list, hookArgs });
 
-  // Run beforeChange hooks
-  await runSideEffectOnlyHook(list, 'beforeChange', hookArgs);
+  // Run beforeOperation hooks
+  await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs);
 
   // Return the full resolved input (ready for prisma level operation),
-  // and the afterChange hook to be applied
+  // and the afterOperation hook to be applied
   return {
     data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
-    afterChange: async (updatedItem: ItemRootValue) => {
-      await nestedMutationState.afterChange();
-      await runSideEffectOnlyHook(list, 'afterChange', { ...hookArgs, updatedItem, existingItem });
+    afterOperation: async (updatedItem: ItemRootValue) => {
+      await nestedMutationState.afterOperation();
+      await runSideEffectOnlyHook(list, 'afterOperation', {
+        ...hookArgs,
+        item: updatedItem,
+        originalItem: item,
+      });
     },
   };
 }

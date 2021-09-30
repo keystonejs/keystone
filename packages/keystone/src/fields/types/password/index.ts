@@ -2,30 +2,35 @@ import bcryptjs from 'bcryptjs';
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords';
 import { userInputError } from '../../../lib/core/graphql-errors';
+import { humanize } from '../../../lib/utils';
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   graphql,
 } from '../../../types';
 import { resolveView } from '../../resolve-view';
+import { PasswordFieldMeta } from './views';
 
 export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     /**
-     * @default 8
-     */
-    minLength?: number;
-    /**
      * @default 10
      */
     workFactor?: number;
-    rejectCommon?: boolean;
-    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
-    defaultValue?: FieldDefaultValue<string, TGeneratedListTypes>;
-    isRequired?: boolean;
+    validation?: {
+      isRequired?: boolean;
+      rejectCommon?: boolean;
+      match?: { regex: RegExp; explanation?: string };
+      length?: {
+        /** @default 8 */
+        min?: number;
+        max?: number;
+      };
+    };
+    isNullable?: boolean;
+    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>;
   };
 
 const PasswordState = graphql.object<{ isSet: boolean }>()({
@@ -47,73 +52,131 @@ const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 export const password =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     bcrypt = bcryptjs,
-    minLength = 8,
     workFactor = 10,
-    rejectCommon = false,
-    isRequired,
-    defaultValue,
+    validation: _validation,
+    isNullable = true,
     ...config
   }: PasswordFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    // TODO: we should just throw not automatically fix it, yeah?
-    workFactor = Math.min(Math.max(workFactor, 4), 31);
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type password");
+    }
 
-    if (workFactor < 6) {
-      console.warn(
-        `The workFactor for ${meta.listKey}.${meta.fieldKey} is very low! ` +
-          `This will cause weak hashes!`
+    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+
+    const validation = {
+      isRequired: _validation?.isRequired ?? false,
+      rejectCommon: _validation?.rejectCommon ?? false,
+      match: _validation?.match
+        ? {
+            regex: _validation.match.regex,
+            explanation:
+              _validation.match.explanation ??
+              `${fieldLabel} must match ${_validation.match.regex}`,
+          }
+        : null,
+      length: {
+        min: _validation?.length?.min ?? 8,
+        max: _validation?.length?.max ?? null,
+      },
+    };
+
+    for (const type of ['min', 'max'] as const) {
+      const val = validation.length[type];
+      if (val !== null && (!Number.isInteger(val) || val < 1)) {
+        throw new Error(
+          `The password field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
+        );
+      }
+    }
+
+    if (validation.length.max !== null && validation.length.min > validation.length.max) {
+      throw new Error(
+        `The password field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+      );
+    }
+
+    if (workFactor < 6 || workFactor > 31 || !Number.isInteger(workFactor)) {
+      throw new Error(
+        `The password field at ${meta.listKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
       );
     }
 
     function inputResolver(val: string | null | undefined) {
-      if (val === '') {
-        return null;
+      if (val == null) {
+        return val;
       }
-      if (typeof val === 'string') {
-        if (rejectCommon && dumbPasswords.check(val)) {
-          throw new Error(
-            `[password:rejectCommon:${meta.listKey}:${meta.fieldKey}] Common and frequently-used passwords are not allowed.`
-          );
-        }
-        if (val.length < minLength) {
-          throw new Error(
-            `[password:minLength:${meta.listKey}:${meta.fieldKey}] Value must be at least ${minLength} characters long.`
-          );
-        }
-
-        return bcrypt.hash(val, workFactor);
-      }
-      return val;
-    }
-
-    if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type password");
+      return bcrypt.hash(val, workFactor);
     }
 
     return fieldType({
       kind: 'scalar',
       scalar: 'String',
-      mode: 'optional',
+      mode: isNullable === false ? 'required' : 'optional',
     })({
       ...config,
-      input: {
-        where: {
-          arg: graphql.arg({ type: PasswordFilter }),
-          resolve(val) {
-            if (val === null) {
-              throw userInputError('Password filters cannot be set to null');
+      hooks: {
+        ...config.hooks,
+        async validateInput(args) {
+          const val = args.inputData[meta.fieldKey];
+          if (
+            args.resolvedData[meta.fieldKey] === null &&
+            (validation?.isRequired || isNullable === false)
+          ) {
+            args.addValidationError(`${fieldLabel} is required`);
+          }
+          if (val != null) {
+            if (val.length < validation.length.min) {
+              if (validation.length.min === 1) {
+                args.addValidationError(`${fieldLabel} must not be empty`);
+              } else {
+                args.addValidationError(
+                  `${fieldLabel} must be at least ${validation.length.min} characters long`
+                );
+              }
             }
-            if (val.isSet) {
-              return {
-                not: null,
-              };
+            if (validation.length.max !== null && val.length > validation.length.max) {
+              args.addValidationError(
+                `${fieldLabel} must be no longer than ${validation.length.min} characters`
+              );
             }
-            return null;
-          },
+            if (validation.match && !validation.match.regex.test(val)) {
+              args.addValidationError(validation.match.explanation);
+            }
+            if (validation.rejectCommon && dumbPasswords.check(val)) {
+              args.addValidationError(`${fieldLabel} is too common and is not allowed`);
+            }
+          }
+
+          await config.hooks?.validateInput?.(args);
         },
+      },
+      input: {
+        where:
+          isNullable === false
+            ? undefined
+            : {
+                arg: graphql.arg({ type: PasswordFilter }),
+                resolve(val) {
+                  if (val === null) {
+                    throw userInputError('Password filters cannot be set to null');
+                  }
+                  if (val.isSet) {
+                    return {
+                      not: null,
+                    };
+                  }
+                  return null;
+                },
+              },
         create: {
           arg: graphql.arg({ type: graphql.String }),
-          resolve: inputResolver,
+          resolve(val) {
+            if (val === undefined) {
+              return null;
+            }
+            return inputResolver(val);
+          },
         },
         update: {
           arg: graphql.arg({ type: graphql.String }),
@@ -121,7 +184,21 @@ export const password =
         },
       },
       views: resolveView('password/views'),
-      getAdminMeta: () => ({ minLength: minLength }),
+      getAdminMeta: (): PasswordFieldMeta => ({
+        isNullable,
+        validation: {
+          ...validation,
+          match: validation.match
+            ? {
+                regex: {
+                  source: validation.match.regex.source,
+                  flags: validation.match.regex.flags,
+                },
+                explanation: validation.match.explanation,
+              }
+            : null,
+        },
+      }),
       output: graphql.field({
         type: PasswordState,
         resolve(val) {
@@ -138,9 +215,5 @@ export const password =
           },
         },
       }),
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });
   };

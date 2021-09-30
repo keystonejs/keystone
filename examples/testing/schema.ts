@@ -38,7 +38,7 @@ export const lists = {
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      password: password({ isRequired: true }),
+      password: password({ isNullable: false, validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
     defaultIsFilterable: true,

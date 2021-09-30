@@ -12,6 +12,7 @@ export const updateReturnedValue = [
   { type: 'paragraph', children: [{ text: '' }] },
 ];
 
+export const neverNull = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'content';

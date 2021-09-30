@@ -1,4 +1,5 @@
 import path from 'path';
+import { ApolloError } from 'apollo-server-errors';
 import {
   BaseGeneratedListTypes,
   CommonFieldConfig,
@@ -99,7 +100,7 @@ export const document =
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
-        throw new Error(`Document fields cannot be set to null`);
+        throw new ApolloError('Input error: Document fields cannot be set to null');
       }
       if (data === undefined) {
         return data;

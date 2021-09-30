@@ -4,8 +4,10 @@ export const name = 'Float';
 export const typeFunction = float;
 export const exampleValue = () => 6.28;
 export const exampleValue2 = () => 6.283;
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'testField';
+export const skipRequiredTest = true;
 
 export const getTestFields = () => ({ testField: float({ isFilterable: true }) });
 

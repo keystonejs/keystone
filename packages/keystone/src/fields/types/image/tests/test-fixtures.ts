@@ -4,6 +4,7 @@ import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { KeystoneContext } from '../../../../types';
 import { image } from '..';
+import { expectResolverError } from '../../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -26,6 +27,7 @@ export const exampleValue2 = () => prepareFile('react.jpg');
 export const createReturnedValue = 'jpg';
 export const updateReturnedValue = createReturnedValue;
 
+export const supportsNullInput = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'avatar';
@@ -112,8 +114,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: prepareFile('badfile.txt') } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('File type not found');
+        const message = `File type not found`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.avatar: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
   });
@@ -178,8 +188,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: { ref: 'Invalid ref!' } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Invalid image reference');
+        const message = `Invalid image reference`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.avatar: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -198,10 +216,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { avatar: { ref: null } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Either ref or upload must be passed to ImageFieldInput'
-        );
+        const message = `Input error: Either ref or upload must be passed to ImageFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.avatar: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -228,10 +252,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
-        );
+        const message = `Input error: Only one of ref and upload can be passed to ImageFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.avatar: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -252,10 +282,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to ImageFieldInput'
-        );
+        const message = `Input error: Only one of ref and upload can be passed to ImageFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.avatar: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
   });

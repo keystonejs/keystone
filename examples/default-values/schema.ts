@@ -14,9 +14,9 @@ export const lists = {
           { label: 'High', value: 'high' },
         ],
         hooks: {
-          resolveInput({ resolvedData, originalInput }) {
-            if (originalInput.priority === undefined) {
-              if (originalInput.label && originalInput.label.toLowerCase().includes('urgent')) {
+          resolveInput({ resolvedData, inputData }) {
+            if (inputData.priority === undefined) {
+              if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
                 return 'high';
               } else {
                 return 'low';

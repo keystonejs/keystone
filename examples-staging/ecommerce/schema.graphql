@@ -4,7 +4,7 @@
 type Mutation {
   addToCart(productId: ID): CartItem
   checkout(token: String!): Order
-  sendUserPasswordResetLink(email: String!): Boolean
+  sendUserPasswordResetLink(email: String!): Boolean!
   redeemUserPasswordResetToken(
     email: String!
     token: String!

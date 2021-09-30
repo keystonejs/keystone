@@ -216,12 +216,7 @@ input PersonWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  password: PasswordFilter
   tasks: TaskManyRelationFilter
-}
-
-input PasswordFilter {
-  isSet: Boolean!
 }
 
 input TaskManyRelationFilter {

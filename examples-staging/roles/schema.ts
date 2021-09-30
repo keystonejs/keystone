@@ -123,7 +123,8 @@ export const lists = {
       email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
       /* The password of the user */
       password: password({
-        isRequired: true,
+        isNullable: false,
+        validation: { isRequired: true },
         access: {
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session.itemId === item.id,

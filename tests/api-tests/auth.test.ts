@@ -271,7 +271,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystone.com' },
         });
         expect(body.errors).toBe(undefined);
-        expect(body.data).toEqual({ sendUserMagicAuthLink: null });
+        expect(body.data).toEqual({ sendUserMagicAuthLink: true });
 
         // Verify that token fields cant be read.
         let user = await context.query.User.findOne({
@@ -310,7 +310,7 @@ describe('Auth testing', () => {
           variables: { email: 'bores@keystone.com' },
         });
         expect(body.errors).toBe(undefined);
-        expect(body.data).toEqual({ sendUserMagicAuthLink: null });
+        expect(body.data).toEqual({ sendUserMagicAuthLink: true });
       })
     );
     test(
@@ -326,7 +326,7 @@ describe('Auth testing', () => {
           `,
           variables: { email: 'bad@keystone.com' },
         });
-        expect(body.data).toEqual({ sendUserMagicAuthLink: null });
+        expect(body.data).toEqual(null);
         expectInternalServerError(body.errors, false, [
           { path: ['sendUserMagicAuthLink'], message: 'Error in sendToken' },
         ]);
@@ -618,7 +618,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystone.com' },
         });
         expect(body.errors).toBe(undefined);
-        expect(body.data).toEqual({ sendUserPasswordResetLink: null });
+        expect(body.data).toEqual({ sendUserPasswordResetLink: true });
 
         // Verify that token fields cant be read.
         let user = await context.query.User.findOne({
@@ -658,7 +658,7 @@ describe('Auth testing', () => {
           variables: { email: 'bores@keystone.com' },
         });
         expect(body.errors).toBe(undefined);
-        expect(body.data).toEqual({ sendUserPasswordResetLink: null });
+        expect(body.data).toEqual({ sendUserPasswordResetLink: true });
       })
     );
     test(
@@ -674,7 +674,7 @@ describe('Auth testing', () => {
           `,
           variables: { email: 'bad@keystone.com' },
         });
-        expect(body.data).toEqual({ sendUserPasswordResetLink: null });
+        expect(body.data).toEqual(null);
         expectInternalServerError(body.errors, false, [
           { path: ['sendUserPasswordResetLink'], message: 'Error in sendToken' },
         ]);
