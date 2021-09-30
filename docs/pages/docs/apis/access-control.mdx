@@ -146,8 +146,8 @@ export default config({
     ListKey: list({
       access: {
         item: {
-          create: ({ session, context, listKey, operation, originalInput }) => true,
-          update: ({ session, context, listKey, operation, originalInput, item }) => true,
+          create: ({ session, context, listKey, operation, inputData }) => true,
+          update: ({ session, context, listKey, operation, inputData, item }) => true,
           delete: ({ session, context, listKey, operation, item }) => true,
         }
       },
@@ -163,14 +163,14 @@ Applying access control after fetching items would lead to inconsistent paginati
 
 List-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
-| Argument        | Description                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------- |
-| `session`       | The current session object. See the [Sessions API](./session) for details.                                    |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                               |
-| `listKey`       | The key of the list being operated on.                                                                        |
-| `operation`     | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
-| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
-| `item`          | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
+| Argument    | Description                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `session`   | The current session object. See the [Sessions API](./session) for details.                                    |
+| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                               |
+| `listKey`   | The key of the list being operated on.                                                                        |
+| `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
+| `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
+| `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
 
 ## Field Access Control
 
@@ -205,8 +205,8 @@ export default config({
         fieldName: text({
           access: {
             read: ({ session, context, listKey, fieldKey, operation, item }) => true,
-            create: ({ session, context, listKey, fieldKey, operation, originalInput }) => true,
-            update: ({ session, context, listKey, fieldKey, operation, originalInput, item }) => true,
+            create: ({ session, context, listKey, fieldKey, operation, inputData }) => true,
+            update: ({ session, context, listKey, fieldKey, operation, inputData, item }) => true,
           },
         }),
       },
@@ -221,14 +221,14 @@ export default config({
 
 Field-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
-| Argument        | Description                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------- |
-| `session`       | The current session object. See the [Sessions API](./session) for details.                  |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.             |
-| `listKey`       | The key of the list being operated on.                                                      |
-| `fieldKey`      | The key of the field being operated on.                                                     |
-| `operation`     | The operation being performed (`'read'`, `'create'`, `'update'`).                           |
-| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. |
-| `item`          | The existing item being read/updated in `read` and `update` operations.                     |
+| Argument    | Description                                                                                 |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| `session`   | The current session object. See the [Sessions API](./session) for details.                  |
+| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.             |
+| `listKey`   | The key of the list being operated on.                                                      |
+| `fieldKey`  | The key of the field being operated on.                                                     |
+| `operation` | The operation being performed (`'read'`, `'create'`, `'update'`).                           |
+| `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. |
+| `item`      | The existing item being read/updated in `read` and `update` operations.                     |
 
 export default ({ children }) => <Markdown description="Complete reference docs for Keystone’s Access Control API. Configure who can read, create, update, and delete items in your Keystone system.">{children}</Markdown>;

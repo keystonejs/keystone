@@ -13,18 +13,18 @@ const runner = setupTestRunner({
           name: text({
             access: {
               read: () => true,
-              create: ({ originalInput }: any) => {
-                if (Array.isArray(originalInput)) {
-                  return !originalInput.some(item => item.data.name === 'bad');
+              create: ({ inputData }: any) => {
+                if (Array.isArray(inputData)) {
+                  return !inputData.some(item => item.data.name === 'bad');
                 } else {
-                  return (originalInput as any).name !== 'bad';
+                  return (inputData as any).name !== 'bad';
                 }
               },
-              update: ({ originalInput }: any) => {
-                if (Array.isArray(originalInput)) {
-                  return !originalInput.some(item => item.data.name === 'bad');
+              update: ({ inputData }: any) => {
+                if (Array.isArray(inputData)) {
+                  return !inputData.some(item => item.data.name === 'bad');
                 } else {
-                  return (originalInput as any).name !== 'bad';
+                  return (inputData as any).name !== 'bad';
                 }
               },
             },
