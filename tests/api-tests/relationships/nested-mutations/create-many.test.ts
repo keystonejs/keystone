@@ -54,7 +54,7 @@ const runner = setupTestRunner({
   }),
 });
 
-let afterChangeWasCalled = false;
+let afterOperationWasCalled = false;
 
 const runner2 = setupTestRunner({
   config: apiTestConfig({
@@ -64,8 +64,8 @@ const runner2 = setupTestRunner({
           content: text({ isOrderable: true }),
         },
         hooks: {
-          afterChange() {
-            afterChangeWasCalled = true;
+          afterOperation() {
+            afterOperationWasCalled = true;
           },
         },
       }),
@@ -80,7 +80,7 @@ const runner2 = setupTestRunner({
 });
 
 test(
-  'afterChange is called for nested creates',
+  'afterOperation is called for nested creates',
   runner2(async ({ context }) => {
     // Update an item that does the nested create
     const item = await context.query.User.createOne({
@@ -88,7 +88,7 @@ test(
       query: 'username notes {content}',
     });
     expect(item).toEqual({ username: 'something', notes: [{ content: 'some content' }] });
-    expect(afterChangeWasCalled).toBe(true);
+    expect(afterOperationWasCalled).toBe(true);
   })
 );
 describe('no access control', () => {
