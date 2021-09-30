@@ -5,6 +5,7 @@ export const name = 'Text with isNullable: true';
 export const typeFunction = (config: any) => text({ ...config, isNullable: true });
 export const exampleValue = () => 'foo';
 export const exampleValue2 = () => 'bar';
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const skipRequiredTest = true;
 export const fieldName = 'testField';

@@ -27,7 +27,7 @@ import { SigninContainer } from '../components/SigninContainer';
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
-  const [subscribe, setSubscribe] = useState<boolean>(true);
+  const [subscribe, setSubscribe] = useState<boolean>(false);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

@@ -11,11 +11,11 @@ const runner = setupTestRunner({
         fields: { name: text({ isFilterable: true, isOrderable: true }) },
         access: {
           item: {
-            create: ({ originalInput }) => {
-              return originalInput.name !== 'bad';
+            create: ({ inputData }) => {
+              return inputData.name !== 'bad';
             },
-            update: ({ originalInput }) => {
-              return originalInput.name !== 'bad';
+            update: ({ inputData }) => {
+              return inputData.name !== 'bad';
             },
             delete: async ({ item }) => {
               return !item.name.startsWith('no delete');
