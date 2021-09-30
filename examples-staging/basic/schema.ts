@@ -50,9 +50,7 @@ export const lists = {
       avatar: image(),
       attachment: file(),
       /** Used to log in. */
-      password: password({
-        validation: { rejectCommon: true },
-      }),
+      password: password(),
       /** Administrators have more access to various lists and fields. */
       isAdmin: checkbox({
         access: {
