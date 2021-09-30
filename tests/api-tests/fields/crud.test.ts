@@ -4,12 +4,7 @@ import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { humanize } from '@keystone-next/keystone/src/lib/utils';
-import {
-  apiTestConfig,
-  expectBadUserInput,
-  expectResolverError,
-  expectValidationError,
-} from '../utils';
+import { apiTestConfig, expectResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
