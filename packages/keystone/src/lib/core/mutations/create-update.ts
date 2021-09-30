@@ -56,7 +56,7 @@ async function createSingle(
 }
 
 export class NestedMutationState {
-  #afterOpertions: (() => void | Promise<void>)[] = [];
+  #afterOperations: (() => void | Promise<void>)[] = [];
   #context: KeystoneContext;
   constructor(context: KeystoneContext) {
     this.#context = context;
@@ -76,12 +76,12 @@ export class NestedMutationState {
       writeLimit
     );
 
-    this.#afterOpertions.push(() => afterOperation(item));
+    this.#afterOperations.push(() => afterOperation(item));
     return { id: item.id as IdType };
   }
 
   async afterOperation() {
-    await promiseAllRejectWithAllErrors(this.#afterOpertions.map(async x => x()));
+    await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x()));
   }
 }
 
