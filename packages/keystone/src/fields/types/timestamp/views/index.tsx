@@ -72,9 +72,9 @@ export const Field = ({
 
   return (
     <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
-      {onChange ? (
-        <Stack>
+      <Stack>
+        <FieldLabel as="legend">{field.label}</FieldLabel>
+        {onChange ? (
           <Inline gap="small">
             <Stack>
               <DatePicker
@@ -121,20 +121,27 @@ export const Field = ({
               )}
             </Stack>
           </Inline>
-          {((value.kind === 'create' &&
-            typeof field.fieldMeta.defaultValue !== 'string' &&
-            field.fieldMeta.defaultValue?.kind === 'now') ||
-            field.fieldMeta.updatedAt) && (
+        ) : (
+          value.value.dateValue !== null &&
+          typeof value.value.timeValue === 'object' &&
+          value.value.timeValue.value !== null && (
             <Text>
-              When this item is saved, this field will be set to the current date and time
+              {formatOutput(
+                constructTimestamp({
+                  dateValue: value.value.dateValue,
+                  timeValue: value.value.timeValue.value,
+                })
+              )}
             </Text>
-          )}
-        </Stack>
-      ) : value.kind === 'update' && value.initial !== null ? (
-        new Date(value.initial).toLocaleString()
-      ) : (
-        ''
-      )}
+          )
+        )}
+        {((value.kind === 'create' &&
+          typeof field.fieldMeta.defaultValue !== 'string' &&
+          field.fieldMeta.defaultValue?.kind === 'now') ||
+          field.fieldMeta.updatedAt) && (
+          <Text>When this item is saved, this field will be set to the current date and time</Text>
+        )}
+      </Stack>
     </FieldContainer>
   );
 };
@@ -206,7 +213,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
+      {formatOutput(item[field.path])}
     </FieldContainer>
   );
 };
