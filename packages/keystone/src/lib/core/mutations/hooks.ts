@@ -18,16 +18,17 @@ export async function runSideEffectOnlyHook<
   },
   Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
 >(list: List, hookName: HookName, args: Args) {
-  // Runs the before/after change/delete hooks
+  // Runs the before/after operation hooks
 
-  // Only run field hooks on change operations if the field
-  // was specified in the original input.
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
-  if (hookName === 'beforeChange' || hookName === 'afterChange') {
+  if (args.operation === 'delete') {
+    // Always run field hooks for delete operations
+    shouldRunFieldLevelHook = () => true;
+  } else {
+    // Only run field hooks on if the field was specified in the
+    // original input for create and update operations.
     const inputDataKeys = new Set(Object.keys(args.inputData));
     shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey);
-  } else {
-    shouldRunFieldLevelHook = () => true;
   }
 
   // Field hooks

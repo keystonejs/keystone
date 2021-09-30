@@ -14,8 +14,8 @@ const runner = setupTestRunner({
               addValidationError('This is not a valid name');
             }
           },
-          validateDelete: ({ existingItem, addValidationError }) => {
-            if (existingItem.name.startsWith('no delete')) {
+          validateDelete: ({ item, addValidationError }) => {
+            if (item.name.startsWith('no delete')) {
               addValidationError('Deleting this item would be bad');
             }
           },
