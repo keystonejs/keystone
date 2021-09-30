@@ -373,9 +373,17 @@ A `password` field represents an encrypted password value.
 
 Options:
 
-- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `minLength` (default: `8`): The minimum length password accepted.
-- `rejectCommon` (default: `false`): Rejects passwords from a list of commonly used passwords.
+- `isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
+- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
+  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
+  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+- `validation.length.min` (default: `8`): This describes the minimum length allowed. If you attempt to submit a string shorter than this, you will get a validation error.
+- `validation.length.max` (default: `undefined`): This describes the maximum length allowed. If you attempt to submit a string longer than this, you will get a validation error.
+- `validation.match` (default: `undefined`): This describes a pattern that values for this field must match
+  - `validation.match.regex`: The regular expression
+  - `validation.match.explanation` (default: `${fieldLabel} must match ${validation.match.regex}`): A message shown in the Admin when a value doesn't match the regex and returned as a validation error from the GraphQL API
+- `validation.rejectCommon` (default: `false`): Rejects passwords from a list of commonly used passwords.
 - `bcrypt` (default: `require('bcryptjs')`): A module which implements the same interface as the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package, such as the native [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
   This module will be used for all encryption routines in the `password` field.
 
@@ -388,9 +396,12 @@ export default config({
     ListName: list({
       fields: {
         fieldName: password({
-          isRequired: true,
-          minLength: 10,
-          rejectCommon: true,
+          isNullable: false,
+          validation: {
+            length: { min: 10, max: 1000 },
+            isRequired: true,
+            rejectCommon: true,
+          },
           bcrypt: require('bcrypt'),
         }),
         /* ... */

@@ -35,7 +35,7 @@ These are used as our _identity_ and _secret_ fields for login.
 
 ```typescript
     email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
-    password: password({ isRequired: true }),
+    password: password({ isNullable: false, validation: { isRequired: true } }),
 ```
 
 ### Auth config
