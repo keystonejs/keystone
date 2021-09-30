@@ -56,7 +56,7 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
       /**
        * The GraphQL input **before** default values are applied
        */
-      originalInput: TGeneratedListTypes['inputs']['create'];
+      inputData: TGeneratedListTypes['inputs']['create'];
       /**
        * The GraphQL input **after** default values are applied
        */
@@ -68,7 +68,7 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
       /**
        * The GraphQL input **before** default values are applied
        */
-      originalInput: TGeneratedListTypes['inputs']['update'];
+      inputData: TGeneratedListTypes['inputs']['update'];
       /**
        * The GraphQL input **after** default values are applied
        */

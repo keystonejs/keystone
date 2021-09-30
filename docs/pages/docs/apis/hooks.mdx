@@ -69,15 +69,15 @@ For field hooks, the return value should be an updated value for that specific f
 For list hooks, the return value should be a [`resolved data`](#resolved-data-stages) object.
 The result of `resolveInput` will be passed as `resolvedData` into the next stages of the operation.
 
-| Argument        | Description                                                                                                                                                                  |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`       | The key of the list being operated on.                                                                                                                                       |
-| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                   |
-| `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                    |
-| `originalInput` | The value of `data` passed into the mutation.                                                                                                                                |
-| `existingItem`  | The currently stored item (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
-| `resolvedData`  | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, and field resolvers have been applied.              |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                              |
+| Argument       | Description                                                                                                                                                                  |
+| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                       |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                   |
+| `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                    |
+| `inputData`    | The value of `data` passed into the mutation.                                                                                                                                |
+| `existingItem` | The currently stored item (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, and field resolvers have been applied.              |
+| `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                              |
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -90,7 +90,7 @@ export default config({
         resolveInput: async ({
           listKey,
           operation,
-          originalInput,
+          inputData,
           existingItem,
           resolvedData,
           context,
@@ -106,7 +106,7 @@ export default config({
               listKey,
               fieldKey,
               operation,
-              originalInput,
+              inputData,
               existingItem,
               resolvedData,
               context,
@@ -136,7 +136,7 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `listKey`                 | The key of the list being operated on.                                                                                                                                                         |
 | `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                     |
 | `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                      |
-| `originalInput`           | The value of `data` passed into the mutation.                                                                                                                                                  |
+| `inputData`               | The value of `data` passed into the mutation.                                                                                                                                                  |
 | `existingItem`            | The current value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
 | `resolvedData`            | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                 |
 | `context`                 | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                |
@@ -153,7 +153,7 @@ export default config({
         validateInput: async ({
           listKey,
           operation,
-          originalInput,
+          inputData,
           existingItem,
           resolvedData,
           context,
@@ -167,7 +167,7 @@ export default config({
               listKey,
               fieldKey,
               operation,
-              originalInput,
+              inputData,
               existingItem,
               resolvedData,
               context,
@@ -187,15 +187,15 @@ The `beforeChange` function is used to perform side effects just before the data
 
 It is invoked after all `validateInput` hooks have been run, but before the data is saved to the database.
 
-| Argument        | Description                                                                                                                                                                                    |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`       | The key of the list being operated on.                                                                                                                                                         |
-| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                     |
-| `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                      |
-| `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                  |
-| `existingItem`  | The current value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
-| `resolvedData`  | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                 |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                |
+| Argument       | Description                                                                                                                                                                                    |
+| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                         |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                     |
+| `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                                      |
+| `inputData`    | The value of `data` passed into the mutation.                                                                                                                                                  |
+| `existingItem` | The current value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                 |
+| `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                |
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -208,7 +208,7 @@ export default config({
         beforeChange: async ({
           listKey,
           operation,
-          originalInput,
+          inputData,
           existingItem,
           resolvedData,
           context,
@@ -221,7 +221,7 @@ export default config({
               listKey,
               fieldKey,
               operation,
-              originalInput,
+              inputData,
               existingItem,
               resolvedData,
               context,
@@ -238,15 +238,15 @@ export default config({
 
 The `afterChange` function is used to perform side effects after the data for a `create` or `update` operation has been saved to the database.
 
-| Argument        | Description                                                                                                                                                                                     |
-| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`       | The key of the list being operated on.                                                                                                                                                          |
-| `fieldKey`      | The key of the field being operated on (field hooks only).                                                                                                                                      |
-| `operation`     | The operation being performed (`'create'` or `'update'`).                                                                                                                                       |
-| `originalInput` | The value of `data` passed into the mutation.                                                                                                                                                   |
-| `existingItem`  | The previous value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
-| `updatedItem`   | The new value of the item being updated or created. This object is an internal database item. [DB API](./db-items) for more details on internal database items.                                 |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                 |
+| Argument       | Description                                                                                                                                                                                     |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                          |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                      |
+| `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                                       |
+| `inputData`    | The value of `data` passed into the mutation.                                                                                                                                                   |
+| `existingItem` | The previous value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
+| `updatedItem`  | The new value of the item being updated or created. This object is an internal database item. [DB API](./db-items) for more details on internal database items.                                 |
+| `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                 |
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -259,7 +259,7 @@ export default config({
         afterChange: async ({
           listKey,
           operation,
-          originalInput,
+          inputData,
           existingItem,
           updatedItem,
           context,
@@ -272,7 +272,7 @@ export default config({
               listKey,
               fieldKey,
               operation,
-              originalInput,
+              inputData,
               existingItem,
               updatedItem,
               context,

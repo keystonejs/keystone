@@ -84,7 +84,7 @@ export default config({
 
 The `resolveInput` hook is called whenever we update or create an item.
 The value of `resolvedData` will contain the input provided to the mutation itself, along with any `defaultValues` applied on fields.
-If you just want to see what the original input before default values was, you can use the `originalInput` argument.
+If you just want to see what the original input before default values was, you can use the `inputData` argument.
 
 If you're performing an update operation, you might also want to access the current value of the item stored in the database.
 This is available as the `existingItem` argument.
@@ -133,7 +133,7 @@ There might be multiple problems with the input, so you can call `addValidationE
 
 Keystone will abort the operation and convert these error messages into GraphQL errors which will be returned to the caller.
 
-The `validateInput` hook also receives the `operation`, `originalInput`, `existingItem` and `context` arguments if you want to perform more advanced checks.
+The `validateInput` hook also receives the `operation`, `inputData`, `existingItem` and `context` arguments if you want to perform more advanced checks.
 
 ?> Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
 
