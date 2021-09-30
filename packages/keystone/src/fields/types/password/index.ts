@@ -118,7 +118,7 @@ export const password =
       hooks: {
         ...config.hooks,
         async validateInput(args) {
-          const val = args.originalInput[meta.fieldKey];
+          const val = args.inputData[meta.fieldKey];
           if (
             args.resolvedData[meta.fieldKey] === null &&
             (validation?.isRequired || isNullable === false)
