@@ -223,15 +223,15 @@ async function getResolvedData(
     context: KeystoneContext;
     listKey: string;
     operation: 'create' | 'update';
-    originalInput: Record<string, any>;
+    inputData: Record<string, any>;
     existingItem: Record<string, any> | undefined;
   },
   nestedMutationState: NestedMutationState
 ) {
-  const { context, operation, originalInput } = hookArgs;
+  const { context, operation, inputData } = hookArgs;
 
   // Start with the original input
-  let resolvedData = hookArgs.originalInput;
+  let resolvedData = hookArgs.inputData;
 
   // Apply default values
   // We don't expect any errors from here, so we can wrap all these operations
@@ -244,7 +244,7 @@ async function getResolvedData(
           if (input === undefined && field.__legacy?.defaultValue !== undefined) {
             input =
               typeof field.__legacy.defaultValue === 'function'
-                ? await field.__legacy.defaultValue({ originalInput, context })
+                ? await field.__legacy.defaultValue({ originalInput: inputData, context })
                 : field.__legacy.defaultValue;
           }
           return [fieldKey, input] as const;
@@ -352,7 +352,7 @@ async function getResolvedData(
 async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
-  originalInput: Record<string, any>,
+  inputData: Record<string, any>,
   existingItem: Record<string, any> | undefined
 ) {
   const operation: 'create' | 'update' = existingItem === undefined ? 'create' : 'update';
@@ -362,7 +362,7 @@ async function resolveInputForCreateOrUpdate(
     context,
     listKey,
     operation,
-    originalInput,
+    inputData,
     existingItem,
     resolvedData: {},
   };
