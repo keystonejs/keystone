@@ -41,15 +41,16 @@ export const supportedFilters = () => ['isSet'];
 
 export const crudTests = (keystoneTestWrapper: any) => {
   test(
-    'setting a password below the minLength fails',
+    'setting a password below the length.min fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
         context.query.Test.createOne({
           data: { password: '123' },
         })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:minLength:Test:password] Value must be at least 4 characters long.]`
-      );
+      ).rejects.toMatchInlineSnapshot(`
+              [GraphQLError: You provided invalid data for this operation.
+                - Test.password: Password must be at least 4 characters long]
+            `);
     })
   );
   test(
@@ -60,9 +61,10 @@ export const crudTests = (keystoneTestWrapper: any) => {
           data: { passwordRejectCommon: 'password' },
           query: ``,
         })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:rejectCommon:Test:passwordRejectCommon] Common and frequently-used passwords are not allowed.]`
-      );
+      ).rejects.toMatchInlineSnapshot(`
+              [GraphQLError: You provided invalid data for this operation.
+                - Test.passwordRejectCommon: Password Reject Common is too common and is not allowed]
+            `);
       const data = await context.query.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,
