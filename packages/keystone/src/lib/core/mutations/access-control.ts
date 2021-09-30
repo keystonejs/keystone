@@ -91,7 +91,7 @@ export async function getAccessControlledItemForUpdate(
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter,
-  originalInput: Record<string, any>
+  inputData: Record<string, any>
 ) {
   const operation = 'update' as const;
   // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
@@ -105,7 +105,7 @@ export async function getAccessControlledItemForUpdate(
     listKey: list.listKey,
     context,
     item,
-    originalInput,
+    inputData,
   };
 
   // List level 'item' access control
@@ -142,7 +142,7 @@ export async function getAccessControlledItemForUpdate(
   const nonBooleans = [];
   const fieldsDenied = [];
   const accessErrors = [];
-  for (const fieldKey of Object.keys(originalInput)) {
+  for (const fieldKey of Object.keys(inputData)) {
     let result;
     try {
       result =
@@ -185,7 +185,7 @@ export async function getAccessControlledItemForUpdate(
 export async function applyAccessControlForCreate(
   list: InitialisedList,
   context: KeystoneContext,
-  originalInput: Record<string, unknown>
+  inputData: Record<string, unknown>
 ) {
   const operation = 'create' as const;
 
@@ -196,7 +196,7 @@ export async function applyAccessControlForCreate(
     session: context.session,
     listKey: list.listKey,
     context,
-    originalInput,
+    inputData,
   };
 
   // List level 'item' access control
@@ -224,9 +224,7 @@ export async function applyAccessControlForCreate(
 
   if (!result) {
     throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        originalInput
-      )}'.`
+      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(inputData)}'.`
     );
   }
 
@@ -235,7 +233,7 @@ export async function applyAccessControlForCreate(
   const nonBooleans = [];
   const fieldsDenied = [];
   const accessErrors = [];
-  for (const fieldKey of Object.keys(originalInput)) {
+  for (const fieldKey of Object.keys(inputData)) {
     let result;
     try {
       result =
@@ -267,7 +265,7 @@ export async function applyAccessControlForCreate(
   if (fieldsDenied.length) {
     throw accessDeniedError(
       `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        originalInput
+        inputData
       )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
     );
   }
