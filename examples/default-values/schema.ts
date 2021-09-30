@@ -51,8 +51,8 @@ export const lists = {
       // Dynamic default: We set the due date to be 7 days in the future
       finishBy: timestamp({
         hooks: {
-          resolveInput({ resolvedData, originalInput, operation }) {
-            if (originalInput.finishBy == null && operation === 'create') {
+          resolveInput({ resolvedData, inputData, operation }) {
+            if (inputData.finishBy == null && operation === 'create') {
               const date = new Date();
               date.setUTCDate(new Date().getUTCDate() + 7);
               return date;
