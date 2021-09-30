@@ -213,3 +213,42 @@ export const expectFilterDenied = (
     }))
   );
 };
+
+export const expectResolverError = (
+  mode: 'dev' | 'production',
+  httpQuery: boolean,
+  _debug: boolean | undefined,
+  errors: readonly any[] | undefined,
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages, debug }) => {
+      const message = `An error occured while resolving input fields.\n${j(messages)}`;
+      const stacktrace = message.split('\n');
+      stacktrace[0] = `Error: ${stacktrace[0]}`;
+
+      // We expect to see debug details if:
+      //   - httpQuery is false
+      //   - graphql.debug is true or
+      //   - graphql.debug is undefined and mode !== production or
+      const expectDebug =
+        _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+      // We expect to see the Apollo exception under the same conditions, but only if
+      // httpQuery is also true.
+      const expectException = httpQuery && expectDebug;
+
+      return {
+        extensions: {
+          code: 'INTERNAL_SERVER_ERROR',
+          ...(expectException
+            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
+            : {}),
+          ...(expectDebug ? { debug } : {}),
+        },
+        path,
+        message,
+      };
+    })
+  );
+};

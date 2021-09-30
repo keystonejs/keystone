@@ -9,7 +9,7 @@ import {
   runWithPrisma,
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
-import { accessDeniedError, extensionError } from '../graphql-errors';
+import { accessDeniedError, extensionError, resolverError } from '../graphql-errors';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import {
@@ -254,18 +254,26 @@ async function getResolvedData(
   }
 
   // Apply non-relationship field type input resolvers
+  const resolverErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
+    await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
         if (inputResolver && field.dbField.kind !== 'relation') {
-          input = await inputResolver(input, context, undefined);
+          try {
+            input = await inputResolver(input, context, undefined);
+          } catch (error: any) {
+            resolverErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+          }
         }
         return [fieldKey, input] as const;
       })
     )
   );
+  if (resolverErrors.length) {
+    throw resolverError(resolverErrors);
+  }
 
   // Apply relationship field type input resolvers
   resolvedData = Object.fromEntries(
