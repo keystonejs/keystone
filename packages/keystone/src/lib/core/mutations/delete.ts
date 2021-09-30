@@ -40,8 +40,8 @@ async function deleteSingle(
     listKey: list.listKey,
     context,
     item,
-    resolvedData: null,
-    inputData: null,
+    resolvedData: undefined,
+    inputData: undefined,
   };
 
   // Apply all validation checks
@@ -56,7 +56,7 @@ async function deleteSingle(
 
   await runSideEffectOnlyHook(list, 'afterOperation', {
     ...hookArgs,
-    item: null,
+    item: undefined,
     originalItem: item,
   });
 

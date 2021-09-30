@@ -109,8 +109,8 @@ type BeforeOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
     | {
         operation: 'delete';
         item: TGeneratedListTypes['backing'];
-        inputData: null;
-        resolvedData: null;
+        inputData: undefined;
+        resolvedData: undefined;
       }
   ) &
     CommonArgs
@@ -126,8 +126,8 @@ type AfterOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
         // makes for a better experience
         // because then people will see the right type even if they haven't refined the type of operation to 'create'
         item?: TGeneratedListTypes['backing'];
-        inputData: null;
-        resolvedData: null;
+        inputData: undefined;
+        resolvedData: undefined;
       }
   ) & {
     originalItem: TGeneratedListTypes['backing'];
