@@ -52,6 +52,10 @@ function validate(value: Value, validation: Validation, fieldLabel: string): str
   return undefined;
 }
 
+function isSetText(isSet: null | undefined | boolean) {
+  return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set';
+}
+
 export const Field = ({
   field,
   value,
@@ -76,13 +80,7 @@ export const Field = ({
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
       {onChange === undefined ? (
-        value.isSet === null ? (
-          'You do not have access to whether this password is set or not'
-        ) : value.isSet ? (
-          'Password is set'
-        ) : (
-          'Password is not set'
-        )
+        isSetText(value.isSet)
       ) : value.kind === 'initial' ? (
         <Fragment>
           <Button
@@ -173,14 +171,14 @@ export const Field = ({
 };
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <CellContainer>{item[field.path]?.isSet ? 'Is set' : 'Is not set'}</CellContainer>;
+  return <CellContainer>{isSetText(item[field.path]?.isSet)}</CellContainer>;
 };
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]?.isSet ? 'Is set' : 'Is not set'}
+      {isSetText(item[field.path]?.isSet)}
     </FieldContainer>
   );
 };
