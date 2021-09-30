@@ -1,15 +1,17 @@
-import { float } from '..';
+import { float } from '../..';
 
-export const name = 'Float';
-export const typeFunction = float;
+export const name = 'Float with isNullable: false';
+export const typeFunction = (x: any) => float({ isNullable: false, ...x });
 export const exampleValue = () => 6.28;
 export const exampleValue2 = () => 6.283;
-export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 export const skipRequiredTest = true;
+export const supportsGraphQLIsNonNull = true;
 
-export const getTestFields = () => ({ testField: float({ isFilterable: true }) });
+export const getTestFields = () => ({
+  testField: float({ isFilterable: true, isNullable: false }),
+});
 
 export const initItems = () => {
   return [
@@ -18,8 +20,8 @@ export const initItems = () => {
     { name: 'post3', testField: 1.2 },
     { name: 'post4', testField: 2.3 },
     { name: 'post5', testField: 3 },
-    { name: 'post6', testField: null },
-    { name: 'post7' },
+    { name: 'post6', testField: 5 },
+    { name: 'post7', testField: 20.8 },
   ];
 };
 
@@ -29,14 +31,8 @@ export const storedValues = () => [
   { name: 'post3', testField: 1.2 },
   { name: 'post4', testField: 2.3 },
   { name: 'post5', testField: 3 },
-  { name: 'post6', testField: null },
-  { name: 'post7', testField: null },
+  { name: 'post6', testField: 5 },
+  { name: 'post7', testField: 20.8 },
 ];
 
-export const supportedFilters = () => [
-  'null_equality',
-  'equality',
-  'ordering',
-  'in_empty_null',
-  'in_equal',
-];
+export const supportedFilters = () => [];

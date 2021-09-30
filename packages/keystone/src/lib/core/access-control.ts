@@ -1,3 +1,4 @@
+import { assertInputObjectType } from 'graphql';
 import {
   BaseGeneratedListTypes,
   CreateListItemAccessControl,
@@ -12,7 +13,9 @@ import {
   ListOperationAccessControl,
   ListFilterAccessControl,
   KeystoneContext,
+  getGqlNames,
 } from '../../types';
+import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
@@ -58,7 +61,17 @@ export async function getAccessFilters(
   const access = list.access.filter[operation];
   try {
     // @ts-ignore
-    return typeof access === 'function' ? await access(args) : access;
+    let filters = typeof access === 'function' ? await access(args) : access;
+    if (typeof filters === 'boolean') {
+      return filters;
+    }
+    const schema = context.sudo().graphql.schema;
+    const whereInput = assertInputObjectType(schema.getType(getGqlNames(list).whereInputName));
+    const result = coerceAndValidateForGraphQLInput(schema, whereInput, filters);
+    if (result.kind === 'valid') {
+      return result.value;
+    }
+    throw result.error;
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${args.listKey}.access.filter.${args.operation}` },

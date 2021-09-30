@@ -25,6 +25,7 @@ export const exampleValue2 = () => prepareFile('react.jpg');
 export const createReturnedValue = 3250;
 export const updateReturnedValue = 5562;
 
+export const supportsNullInput = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'secretFile';
@@ -161,7 +162,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Either ref or upload must be passed to FileFieldInput');
+        expect(errors![0].message).toEqual(
+          'Input error: Either ref or upload must be passed to FileFieldInput'
+        );
       })
     );
     test(
@@ -192,7 +195,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
+          'Input error: Only one of ref and upload can be passed to FileFieldInput'
         );
       })
     );
@@ -216,7 +219,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         expect(data).toEqual({ createTest: null });
         expect(errors).toHaveLength(1);
         expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
+          'Input error: Only one of ref and upload can be passed to FileFieldInput'
         );
       })
     );

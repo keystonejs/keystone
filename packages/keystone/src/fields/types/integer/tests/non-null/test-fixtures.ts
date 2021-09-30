@@ -1,15 +1,17 @@
-import { integer } from '..';
+import { integer } from '../..';
 
-export const name = 'Integer';
-export const typeFunction = integer;
+export const name = 'Integer with isNullable: false';
+export const typeFunction = (x: any) => integer({ isNullable: false, ...x });
 export const exampleValue = () => 37;
 export const exampleValue2 = () => 38;
-export const supportsNullInput = true;
+export const supportsGraphQLIsNonNull = true;
 export const supportsUnique = true;
 export const skipRequiredTest = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ testField: integer({ isFilterable: true }) });
+export const getTestFields = () => ({
+  testField: integer({ isFilterable: true, isNullable: false }),
+});
 
 export const initItems = () => {
   return [
@@ -18,8 +20,8 @@ export const initItems = () => {
     { name: 'person3', testField: 2 },
     { name: 'person4', testField: 3 },
     { name: 'person5', testField: 37 },
-    { name: 'person6', testField: null },
-    { name: 'person7' },
+    { name: 'person6', testField: 10 },
+    { name: 'person7', testField: 20 },
   ];
 };
 
@@ -29,15 +31,8 @@ export const storedValues = () => [
   { name: 'person3', testField: 2 },
   { name: 'person4', testField: 3 },
   { name: 'person5', testField: 37 },
-  { name: 'person6', testField: null },
-  { name: 'person7', testField: null },
+  { name: 'person6', testField: 10 },
+  { name: 'person7', testField: 20 },
 ];
 
-export const supportedFilters = () => [
-  'null_equality',
-  'equality',
-  'ordering',
-  'in_empty_null',
-  'in_equal',
-  'unique_equality',
-];
+export const supportedFilters = () => [];

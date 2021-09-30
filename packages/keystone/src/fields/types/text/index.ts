@@ -94,7 +94,7 @@ export const text =
         ...config.hooks,
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
-          if (val === null && validation?.isRequired) {
+          if (val === null && (validation?.isRequired || config.isNullable !== true)) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {
