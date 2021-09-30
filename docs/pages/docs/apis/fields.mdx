@@ -378,7 +378,7 @@ Options:
   Unlike `isNullable`, this will require that a value is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
   If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
-- `validation.length.min` (default: `8`): This describes the minimum number allowed. If you attempt to submit a string shorter than this, you will get a validation error.
+- `validation.length.min` (default: `8`): This describes the minimum length allowed. If you attempt to submit a string shorter than this, you will get a validation error.
 - `validation.length.max` (default: `undefined`): This describes the maximum length allowed. If you attempt to submit a string longer than this, you will get a validation error.
 - `validation.match` (default: `undefined`): This describes a pattern that values for this field must match
   - `validation.match.regex`: The regular expression
