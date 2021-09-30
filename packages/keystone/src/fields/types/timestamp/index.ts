@@ -10,6 +10,7 @@ import {
 } from '../../../types';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
+import { TimestampFieldMeta } from './views';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
@@ -133,5 +134,12 @@ export const timestamp =
             : graphql.DateTime,
       }),
       views: resolveView('timestamp/views'),
+      getAdminMeta(): TimestampFieldMeta {
+        return {
+          defaultValue: defaultValue ?? null,
+          isRequired: validation?.isRequired ?? false,
+          updatedAt: config.db?.updatedAt ?? false,
+        };
+      },
     });
   };

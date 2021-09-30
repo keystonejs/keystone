@@ -1,6 +1,6 @@
 import { parse, isValid, formatISO, format } from 'date-fns';
 
-const FULL_TIME_PATTERN = 'HH:mm:ss.SSSS';
+const FULL_TIME_PATTERN = 'HH:mm:ss.SSS';
 
 function formatFullTime(date: Date) {
   return format(date, FULL_TIME_PATTERN);
@@ -18,7 +18,7 @@ export function formatTime(time: string) {
 }
 
 export function parseTime(time: string) {
-  for (const pattern of ['H:m:s.SSSS', 'H:m:s', 'H:m', 'H']) {
+  for (const pattern of ['H:m:s.SSS', 'H:m:s', 'H:m', 'H']) {
     const parsed = parse(time, pattern, new Date());
     if (isValid(parsed)) {
       return format(parsed, FULL_TIME_PATTERN);
@@ -34,13 +34,13 @@ export function constructTimestamp({
   dateValue: string;
   timeValue: string;
 }) {
-  return `${dateValue}T${timeValue}Z`;
+  return new Date(`${dateValue}T${timeValue}`).toISOString();
 }
 
-export function deconstructTimestamp(value: string) {
+export function deconstructTimestamp(value: string): InnerValue {
   return {
     dateValue: formatISO(new Date(value), { representation: 'date' }),
-    timeValue: formatFullTime(new Date(value)),
+    timeValue: { kind: 'parsed', value: formatFullTime(new Date(value)) },
   };
 }
 
