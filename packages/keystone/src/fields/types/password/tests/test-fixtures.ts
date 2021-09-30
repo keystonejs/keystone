@@ -5,6 +5,7 @@ export const typeFunction = password;
 export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
+export const supportsNullInput = true;
 export const fieldName = 'password';
 export const subfieldName = 'isSet';
 export const skipCreateTest = true;
