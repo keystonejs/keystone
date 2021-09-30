@@ -4,7 +4,7 @@ import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { humanize } from '@keystone-next/keystone/src/lib/utils';
-import { apiTestConfig, expectBadUserInput, expectValidationError } from '../utils';
+import { apiTestConfig, expectResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -200,16 +200,21 @@ testModules
                     } else {
                       expect(data).toEqual({ [updateMutationName]: null });
                       if (mod.neverNull) {
-                        expectBadUserInput(
-                          errors,
-                          [
-                            {
-                              path: [updateMutationName],
-                              message: `${mod.name} fields cannot be set to null`,
-                            },
-                          ],
-                          false
-                        );
+                        const message = `Input error: ${mod.name} fields cannot be set to null`;
+                        expectResolverError('dev', false, false, errors, [
+                          {
+                            path: [updateMutationName],
+                            messages: [`Test.${fieldName}: ${message}`],
+                            debug: [
+                              {
+                                message,
+                                stacktrace: expect.stringMatching(
+                                  new RegExp(`Error: ${message}\n`)
+                                ),
+                              },
+                            ],
+                          },
+                        ]);
                       } else {
                         expectValidationError(errors, [
                           {
