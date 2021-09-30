@@ -3,6 +3,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { useState } from 'react';
 import {
   CardValueComponent,
   CellComponent,
@@ -11,22 +12,147 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
+import { useFormattedInput } from '../../integer/views/utils';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-    {onChange ? (
+type Validation = {
+  min?: number;
+  max?: number;
+  isRequired?: boolean;
+};
+
+type Value =
+  | { kind: 'update'; initial: number | null; value: string | number | null }
+  | { kind: 'create'; value: string | number | null };
+
+function validate(value: Value, validation: Validation, label: string) {
+  const val = value.value;
+
+  // if we recieve null initially on the item view and the current value is null,
+  // we should always allow saving it because:
+  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
+  // - we might have null because of an access control error
+  if (value.kind === 'update' && value.initial === null && val === null) {
+    return undefined;
+  }
+
+  if (value.kind === 'create' && value.value === null) {
+    return undefined;
+  }
+
+  if (validation.isRequired && val === null) {
+    return `${label} is required`;
+  }
+
+  // we don't parse infinite numbers into +-Infinity/NaN so that we don't lose the text that the user wrote
+  // so we need to try parsing it again here to provide good messages
+  if (typeof val === 'string') {
+    const number = parseFloat(val);
+    if (isNaN(number)) {
+      return `${label} must be a number`;
+    }
+    return `${label} must be finite`;
+  }
+
+  if (typeof val === 'number') {
+    if (typeof validation?.min === 'number' && val < validation.min) {
+      return `${label} must be greater than or equal to ${validation.min}`;
+    }
+    if (typeof validation?.max === 'number' && val > validation?.max) {
+      return `${label} must be less than or equal to ${validation.max}`;
+    }
+  }
+
+  return undefined;
+}
+
+function FloatInput({
+  value,
+  onChange,
+  id,
+  autoFocus,
+  forceValidation,
+  validationMessage,
+  placeholder,
+}: {
+  id: string;
+  autoFocus?: boolean;
+  value: number | string | null;
+  onChange: (value: number | string | null) => void;
+  forceValidation?: boolean;
+  validationMessage?: string;
+  placeholder?: string;
+}) {
+  const [hasBlurred, setHasBlurred] = useState(false);
+  const props = useFormattedInput<number | null>(
+    {
+      format: value => (value === null ? '' : value.toString()),
+      parse: raw => {
+        raw = raw.trim();
+        if (raw === '') {
+          return null;
+        }
+        let parsed = parseFloat(raw);
+        if (Number.isFinite(parsed)) {
+          return parsed;
+        }
+        return raw;
+      },
+    },
+    {
+      value,
+      onChange,
+      onBlur: () => {
+        setHasBlurred(true);
+      },
+    }
+  );
+
+  return (
+    <span>
       <TextInput
-        id={field.path}
+        placeholder={placeholder}
+        id={id}
         autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value.replace(/[^\d\.-]/, ''))}
-        value={value}
+        inputMode="numeric"
+        {...props}
       />
-    ) : (
-      value
-    )}
-  </FieldContainer>
-);
+      {(hasBlurred || forceValidation) && validationMessage && (
+        <span css={{ color: 'red' }}>{validationMessage}</span>
+      )}
+    </span>
+  );
+}
+
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) => {
+  const message = validate(value, field.validation, field.label);
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      {onChange ? (
+        <span>
+          <FloatInput
+            id={field.path}
+            autoFocus={autoFocus}
+            onChange={val => {
+              onChange({ ...value, value: val });
+            }}
+            value={value.value}
+            forceValidation={forceValidation}
+            validationMessage={message}
+          />
+        </span>
+      ) : (
+        value
+      )}
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
@@ -43,17 +169,27 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-export const controller = (config: FieldControllerConfig): FieldController<string, string> => {
+export const controller = (
+  config: FieldControllerConfig<{ validation: Validation; defaultValue: number | null }>
+): FieldController<Value, string> & {
+  validation: Validation;
+} => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: '',
-    deserialize: data => {
-      const value = data[config.path];
-      return typeof value === 'number' ? value + '' : '';
+    validation: config.fieldMeta.validation,
+    defaultValue: {
+      kind: 'create',
+      value: config.fieldMeta.defaultValue,
     },
-    serialize: value => ({ [config.path]: value === '' ? null : parseFloat(value) }),
+    deserialize: data => ({
+      kind: 'update',
+      initial: data[config.path],
+      value: data[config.path],
+    }),
+    serialize: value => ({ [config.path]: value.value }),
+    validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
     filter: {
       Filter(props) {
         return (
