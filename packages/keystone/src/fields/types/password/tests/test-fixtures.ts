@@ -8,7 +8,6 @@ export const supportsUnique = false;
 export const supportsNullInput = true;
 export const fieldName = 'password';
 export const subfieldName = 'isSet';
-export const skipRequiredTest = true;
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
