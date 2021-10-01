@@ -112,7 +112,7 @@ describe('controller', () => {
           kind: 'create',
           value: { dateValue: '2020-10-20', timeValue: { kind: 'parsed', value: '10:00:00.000' } },
         })[STUBCONFIG.path]
-      ).toEqual('2020-10-20T00:00:00.000Z');
+      ).toEqual(new Date('2020-10-20T10:00:00.000').toISOString());
     });
   });
 });
