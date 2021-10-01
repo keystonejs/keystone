@@ -2,9 +2,8 @@
 /** @jsx jsx */
 import { useState } from 'react';
 
-import { jsx, Inline, Stack, VisuallyHidden } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
-import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
+import { jsx, Inline, Stack, VisuallyHidden, Text } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, TextInput, DatePicker } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
@@ -13,42 +12,15 @@ import {
   FieldProps,
 } from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
+import { useFormattedInput } from '../../integer/views/utils';
 import {
-  isValidDate,
-  isValidISO,
-  isValidTime,
   constructTimestamp,
   deconstructTimestamp,
   formatOutput,
+  Value,
+  parseTime,
+  formatTime,
 } from './utils';
-
-// TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
-interface TimePickerProps extends TextInputProps {
-  format: '12hr' | '24hr';
-}
-
-const TimePicker = ({
-  id,
-  autoFocus,
-  onBlur,
-  disabled,
-  onChange,
-  format = '24hr',
-  value,
-}: TimePickerProps) => {
-  return (
-    <TextInput
-      id={id}
-      autoFocus={autoFocus}
-      maxLength={format === '24hr' ? 5 : 7}
-      disabled={disabled}
-      onChange={onChange}
-      onBlur={onBlur}
-      placeholder={format === '24hr' ? '00:00' : '00:00am'}
-      value={value}
-    />
-  );
-};
 
 export const Field = ({
   field,
@@ -60,66 +32,172 @@ export const Field = ({
   const [touchedSecondInput, setTouchedSecondInput] = useState(false);
   const showValidation = (touchedFirstInput && touchedSecondInput) || forceValidation;
 
-  const showDateError = (dateValue: DateType) => {
-    if (!dateValue) {
-      return <div css={{ color: 'red' }}>Please select a date value.</div>;
-    }
-    return !isValidDate(dateValue) && <div css={{ color: 'red' }}>Incorrect date value</div>;
-  };
+  const validationMessages = showValidation
+    ? validate(value, field.fieldMeta, field.label)
+    : undefined;
 
-  const showTimeError = (timeValue: string) => {
-    if (!timeValue) {
-      return <div css={{ color: 'red' }}>Please select a time value.</div>;
+  const timeInputProps = useFormattedInput<{ kind: 'parsed'; value: string | null }>(
+    {
+      format({ value }) {
+        if (value === null) {
+          return '';
+        }
+        return formatTime(value);
+      },
+      parse(value) {
+        value = value.trim();
+        if (value === '') {
+          return { kind: 'parsed', value: null };
+        }
+        const parsed = parseTime(value);
+        if (parsed !== undefined) {
+          return { kind: 'parsed', value: parsed };
+        }
+        return value;
+      },
+    },
+    {
+      value: value.value.timeValue,
+      onChange(timeValue) {
+        onChange?.({
+          ...value,
+          value: { ...value.value, timeValue },
+        });
+      },
+      onBlur() {
+        setTouchedSecondInput(true);
+      },
     }
-    return (
-      !isValidTime(timeValue) && <div css={{ color: 'red' }}>Time must be in the form HH:mm</div>
-    );
-  };
+  );
 
   return (
     <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
-      {onChange ? (
-        <Stack>
+      <Stack>
+        <FieldLabel as="legend">{field.label}</FieldLabel>
+        {onChange ? (
           <Inline gap="small">
             <Stack>
               <DatePicker
                 onUpdate={date => {
-                  onChange({ ...value, dateValue: date || '' });
+                  onChange({
+                    ...value,
+                    value: {
+                      dateValue: date,
+                      timeValue:
+                        typeof value.value.timeValue === 'object' &&
+                        value.value.timeValue.value === null
+                          ? { kind: 'parsed', value: '00:00:00.000' }
+                          : value.value.timeValue,
+                    },
+                  });
                 }}
                 onClear={() => {
-                  onChange({ ...value, dateValue: '' });
+                  onChange({ ...value, value: { ...value.value, dateValue: null } });
                 }}
                 onBlur={() => setTouchedFirstInput(true)}
-                value={value.dateValue}
+                value={value.value.dateValue ?? ''}
               />
-              {showValidation && showDateError(value.dateValue)}
+              {validationMessages?.date && (
+                <Text color="red600" size="small">
+                  {validationMessages.date}
+                </Text>
+              )}
             </Stack>
             <Stack>
               <VisuallyHidden
                 as="label"
                 htmlFor={`${field.path}--time-input`}
               >{`${field.label} time field`}</VisuallyHidden>
-              <TimePicker
+              <TextInput
                 id={`${field.path}--time-input`}
-                onBlur={() => setTouchedSecondInput(true)}
+                {...timeInputProps}
                 disabled={onChange === undefined}
-                format="24hr"
-                onChange={event => onChange({ ...value, timeValue: event.target.value })}
-                value={value.timeValue || ''}
+                placeholder="00:00"
               />
-              {showValidation && showTimeError(value.timeValue)}
+              {validationMessages?.time && (
+                <Text color="red600" size="small">
+                  {validationMessages.time}
+                </Text>
+              )}
             </Stack>
           </Inline>
-        </Stack>
-      ) : isValidISO(value) ? (
-        formatOutput(constructTimestamp(value))
-      ) : (
-        ''
-      )}
+        ) : (
+          value.value.dateValue !== null &&
+          typeof value.value.timeValue === 'object' &&
+          value.value.timeValue.value !== null && (
+            <Text>
+              {formatOutput(
+                constructTimestamp({
+                  dateValue: value.value.dateValue,
+                  timeValue: value.value.timeValue.value,
+                })
+              )}
+            </Text>
+          )
+        )}
+        {((value.kind === 'create' &&
+          typeof field.fieldMeta.defaultValue !== 'string' &&
+          field.fieldMeta.defaultValue?.kind === 'now') ||
+          field.fieldMeta.updatedAt) && (
+          <Text>When this item is saved, this field will be set to the current date and time</Text>
+        )}
+      </Stack>
     </FieldContainer>
   );
 };
+
+function validate(
+  value: Value,
+  fieldMeta: TimestampFieldMeta,
+  label: string
+):
+  | {
+      time?: string;
+      date?: string;
+    }
+  | undefined {
+  const val = value.value;
+  const hasDateValue = val.dateValue !== null;
+  const hasTimeValue = typeof val.timeValue === 'string' || typeof val.timeValue.value === 'string';
+
+  const isValueEmpty = !hasDateValue && !hasTimeValue;
+  // if we recieve null initially on the item view and the current value is null,
+  // we should always allow saving it because:
+  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
+  // - we might have null because of an access control error
+  if (value.kind === 'update' && value.initial === null && isValueEmpty) {
+    return undefined;
+  }
+
+  if (
+    value.kind === 'create' &&
+    isValueEmpty &&
+    ((typeof fieldMeta.defaultValue === 'object' && fieldMeta.defaultValue?.kind === 'now') ||
+      fieldMeta.updatedAt)
+  ) {
+    return undefined;
+  }
+
+  if (fieldMeta.isRequired && isValueEmpty) {
+    return { date: `${label} is required` };
+  }
+
+  if (hasDateValue && !hasTimeValue) {
+    return { time: `${label} requires a time to be provided` };
+  }
+  const timeError =
+    typeof val.timeValue === 'string'
+      ? `${label} requires a valid time in the format hh:mm`
+      : undefined;
+  if (hasTimeValue && !hasDateValue) {
+    return { date: `${label} requires a date to be selected`, time: timeError };
+  }
+
+  if (timeError) {
+    return { time: timeError };
+  }
+  return undefined;
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path];
@@ -135,37 +213,48 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
+      {formatOutput(item[field.path])}
     </FieldContainer>
   );
 };
 
+export type TimestampFieldMeta = {
+  defaultValue: string | { kind: 'now' } | null;
+  updatedAt: boolean;
+  isRequired: boolean;
+};
 export const controller = (
-  config: FieldControllerConfig
-): FieldController<{ dateValue: string; timeValue: string }, string> => {
+  config: FieldControllerConfig<TimestampFieldMeta>
+): FieldController<Value, string> & { fieldMeta: TimestampFieldMeta } => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: { dateValue: '', timeValue: '' },
+    fieldMeta: config.fieldMeta,
+    defaultValue: {
+      kind: 'create',
+      value:
+        typeof config.fieldMeta.defaultValue === 'string'
+          ? deconstructTimestamp(config.fieldMeta.defaultValue)
+          : { dateValue: null, timeValue: { kind: 'parsed', value: null } },
+    },
     deserialize: data => {
       const value = data[config.path];
-      if (value) {
-        return deconstructTimestamp(value);
-      }
-      return { dateValue: '', timeValue: '' };
+      return {
+        kind: 'update',
+        initial: data[config.path],
+        value: value
+          ? deconstructTimestamp(value)
+          : { dateValue: null, timeValue: { kind: 'parsed', value: null } },
+      };
     },
-    serialize: ({ dateValue, timeValue }) => {
-      if (dateValue && isValidISO({ dateValue, timeValue })) {
-        let formattedDate = constructTimestamp({ dateValue, timeValue });
+    serialize: ({ value: { dateValue, timeValue } }) => {
+      if (dateValue && typeof timeValue === 'object' && timeValue.value !== null) {
+        let formattedDate = constructTimestamp({ dateValue, timeValue: timeValue.value });
         return { [config.path]: formattedDate };
       }
       return { [config.path]: null };
     },
-    validate({ dateValue, timeValue }) {
-      if (!dateValue && !timeValue) return true;
-      if (!dateValue) return false;
-      return isValidISO({ dateValue, timeValue });
-    },
+    validate: value => validate(value, config.fieldMeta, config.label) === undefined,
   };
 };

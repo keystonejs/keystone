@@ -51,7 +51,7 @@ type Task {
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: Person
-  finishBy: String
+  finishBy: DateTime
 }
 
 enum TaskPriorityType {
@@ -59,6 +59,9 @@ enum TaskPriorityType {
   medium
   high
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input TaskWhereUniqueInput {
   id: ID
@@ -128,13 +131,13 @@ input BooleanFilter {
 }
 
 input DateTimeNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
   not: DateTimeNullableFilter
 }
 
@@ -156,7 +159,7 @@ input TaskUpdateInput {
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneForUpdateInput
-  finishBy: String
+  finishBy: DateTime
 }
 
 input PersonRelateToOneForUpdateInput {
@@ -175,7 +178,7 @@ input TaskCreateInput {
   priority: TaskPriorityType
   isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
-  finishBy: String
+  finishBy: DateTime
 }
 
 input PersonRelateToOneForCreateInput {

@@ -19,18 +19,18 @@ model Todo {
   assignedTo   User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
-  createdAt    DateTime?
-  updatedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([assignedToId])
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @default("")
+  id        String   @id @default(cuid())
+  name      String   @default("")
+  email     String   @default("")
   password  String?
-  tasks     Todo[]    @relation("Todo_assignedTo")
-  createdAt DateTime?
-  updatedAt DateTime?
+  tasks     Todo[]   @relation("Todo_assignedTo")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

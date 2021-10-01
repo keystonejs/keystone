@@ -97,7 +97,13 @@ export type ScalarDBField<
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
-};
+} & (Scalar extends 'DateTime'
+  ? {
+      updatedAt?: boolean;
+    }
+  : {
+      updatedAt?: undefined;
+    });
 
 export const orderDirectionEnum = graphql.enum({
   name: 'OrderDirection',
