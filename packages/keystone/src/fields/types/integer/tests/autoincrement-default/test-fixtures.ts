@@ -9,7 +9,6 @@ export const exampleValue2 = () => 36;
 export const supportsUnique = true;
 export const fieldName = 'orderNumber';
 export const supportsGraphQLIsNonNull = true;
-export const skipRequiredTest = true;
 export const skipCreateTest = false;
 export const skipUpdateTest = true;
 
