@@ -1,7 +1,7 @@
 import { DatabaseProvider, KeystoneContext } from '../../../../types';
 import { timestamp } from '..';
 
-export const name = 'DateTimeUtc';
+export const name = 'Timestamp';
 export const typeFunction = timestamp;
 export const exampleValue = () => '1990-12-31T12:34:56.789Z';
 export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';

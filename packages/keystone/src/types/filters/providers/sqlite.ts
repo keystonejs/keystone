@@ -291,15 +291,15 @@ const FloatFilter: FloatFilterType = graphql.inputObject({
 
 type DateTimeNullableFilterType = graphql.InputObjectType<{
   // can be null
-  equals: graphql.Arg<typeof graphql.String>;
+  equals: graphql.Arg<typeof graphql.DateTime>;
   // can be null
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.DateTime>>>;
   // can be null
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  lt: graphql.Arg<typeof graphql.String>;
-  lte: graphql.Arg<typeof graphql.String>;
-  gt: graphql.Arg<typeof graphql.String>;
-  gte: graphql.Arg<typeof graphql.String>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.DateTime>>>;
+  lt: graphql.Arg<typeof graphql.DateTime>;
+  lte: graphql.Arg<typeof graphql.DateTime>;
+  gt: graphql.Arg<typeof graphql.DateTime>;
+  gte: graphql.Arg<typeof graphql.DateTime>;
   // can be null
   not: graphql.Arg<typeof DateTimeNullableFilter>;
 }>;
@@ -308,41 +308,41 @@ const DateTimeNullableFilter: DateTimeNullableFilterType = graphql.inputObject({
   name: 'DateTimeNullableFilter',
   fields: () => ({
     // can be null
-    equals: graphql.arg({ type: graphql.String }),
+    equals: graphql.arg({ type: graphql.DateTime }),
     // can be null
-    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.DateTime)) }),
     // can be null
-    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    lt: graphql.arg({ type: graphql.String }),
-    lte: graphql.arg({ type: graphql.String }),
-    gt: graphql.arg({ type: graphql.String }),
-    gte: graphql.arg({ type: graphql.String }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.DateTime)) }),
+    lt: graphql.arg({ type: graphql.DateTime }),
+    lte: graphql.arg({ type: graphql.DateTime }),
+    gt: graphql.arg({ type: graphql.DateTime }),
+    gte: graphql.arg({ type: graphql.DateTime }),
     // can be null
     not: graphql.arg({ type: DateTimeNullableFilter }),
   }),
 });
 
 type DateTimeFilterType = graphql.InputObjectType<{
-  equals: graphql.Arg<typeof graphql.String>;
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
-  lt: graphql.Arg<typeof graphql.String>;
-  lte: graphql.Arg<typeof graphql.String>;
-  gt: graphql.Arg<typeof graphql.String>;
-  gte: graphql.Arg<typeof graphql.String>;
+  equals: graphql.Arg<typeof graphql.DateTime>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.DateTime>>>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.DateTime>>>;
+  lt: graphql.Arg<typeof graphql.DateTime>;
+  lte: graphql.Arg<typeof graphql.DateTime>;
+  gt: graphql.Arg<typeof graphql.DateTime>;
+  gte: graphql.Arg<typeof graphql.DateTime>;
   not: graphql.Arg<typeof DateTimeFilter>;
 }>;
 
 const DateTimeFilter: DateTimeFilterType = graphql.inputObject({
   name: 'DateTimeFilter',
   fields: () => ({
-    equals: graphql.arg({ type: graphql.String }),
-    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
-    lt: graphql.arg({ type: graphql.String }),
-    lte: graphql.arg({ type: graphql.String }),
-    gt: graphql.arg({ type: graphql.String }),
-    gte: graphql.arg({ type: graphql.String }),
+    equals: graphql.arg({ type: graphql.DateTime }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.DateTime)) }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.DateTime)) }),
+    lt: graphql.arg({ type: graphql.DateTime }),
+    lte: graphql.arg({ type: graphql.DateTime }),
+    gt: graphql.arg({ type: graphql.DateTime }),
+    gte: graphql.arg({ type: graphql.DateTime }),
     not: graphql.arg({ type: DateTimeFilter }),
   }),
 });
