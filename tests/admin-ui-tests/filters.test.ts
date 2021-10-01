@@ -5,23 +5,13 @@ adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
 
   describe('relationship filters', () => {
-    afterEach(async () => {
-      await deleteAllData('./tests/test-projects/basic');
-      // Clear cookies and localStorage
-      // So we don't subsume filters
-      const context = await browser.newContext();
-      context.clearCookies();
-      page.evaluate(() => {
-        window.localStorage.clear();
-      });
-    });
     test('Lists are filterable by relationships', async () => {
       const gql = String.raw;
       const TASK_MUTATION_CREATE = gql`
@@ -129,7 +119,8 @@ adminUITests('./tests/test-projects/basic', browserType => {
     });
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await browser.close();
+    await deleteAllData('./tests/test-projects/basic');
   });
 });
