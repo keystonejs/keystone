@@ -1,4 +1,5 @@
-import { KeystoneContext, TypesForList, graphql } from '../../../types';
+import { KeystoneContext, TypesForList } from '../../../types';
+import { graphql } from '../../..';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';

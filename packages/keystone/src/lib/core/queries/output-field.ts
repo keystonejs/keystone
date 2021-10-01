@@ -5,12 +5,12 @@ import {
   IndividualFieldAccessControl,
   BaseGeneratedListTypes,
   ItemRootValue,
-  graphql,
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types';
+import { graphql } from '../../..';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';

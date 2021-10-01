@@ -2,7 +2,6 @@ import { GraphQLSchema, GraphQLObjectType, assertScalarType, assertEnumType } fr
 import {
   JSONValue,
   QueryMode,
-  graphql as graphqlBoundToKeystoneContext,
   KeystoneContext,
   KeystoneConfig,
   AdminMetaRootVal,
@@ -10,6 +9,8 @@ import {
   FieldMetaRootVal,
   ItemRootValue,
 } from '../../types';
+import { graphql as graphqlBoundToKeystoneContext } from '../..';
+
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
 const graphql = {

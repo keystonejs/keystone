@@ -8,8 +8,8 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  graphql,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { PasswordFieldMeta } from './views';
 

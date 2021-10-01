@@ -8,8 +8,8 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
-  graphql,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
