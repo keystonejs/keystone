@@ -228,7 +228,7 @@ async function getResolvedData(
   },
   nestedMutationState: NestedMutationState
 ) {
-  const { context, operation, inputData } = hookArgs;
+  const { context, operation } = hookArgs;
 
   // Start with the original input
   let resolvedData = hookArgs.inputData;

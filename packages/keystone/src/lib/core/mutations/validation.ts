@@ -11,7 +11,6 @@ export async function validateUpdateCreate({
   list: InitialisedList;
   hookArgs: Omit<UpdateCreateHookArgs, 'addValidationError'>;
 }) {
-  const { operation, resolvedData } = hookArgs;
   const messages: string[] = [];
 
   const fieldsErrors: { error: Error; tag: string }[] = [];
