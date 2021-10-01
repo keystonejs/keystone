@@ -2,13 +2,13 @@ import { FileUpload } from 'graphql-upload';
 import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   fieldType,
-  graphql,
   FieldTypeFunc,
   CommonFieldConfig,
   BaseGeneratedListTypes,
   KeystoneContext,
   FileData,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getFileRef } from './utils';
 

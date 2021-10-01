@@ -1,8 +1,8 @@
+import { graphql } from './schema';
 import {
   JSONValue,
   ItemRootValue,
   KeystoneContext,
-  graphql,
   UpdateFieldInputArg,
   ScalarDBField,
   CreateFieldInputArg,

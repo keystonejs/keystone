@@ -6,9 +6,9 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  graphql,
   filters,
 } from '../../../types';
+import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 

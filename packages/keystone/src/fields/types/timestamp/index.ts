@@ -1,13 +1,13 @@
 import {
   BaseGeneratedListTypes,
   fieldType,
-  graphql,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
   FieldDefaultValue,
   filters,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

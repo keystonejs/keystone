@@ -1,7 +1,6 @@
 import { getNamedType, isLeafType } from 'graphql';
 import {
   BaseGeneratedListTypes,
-  graphql,
   ItemRootValue,
   CommonFieldConfig,
   FieldTypeFunc,
@@ -9,6 +8,7 @@ import {
   ListInfo,
   getGqlNames,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
 type VirtualFieldGraphQLField = graphql.Field<ItemRootValue, any, graphql.OutputType, string>;

@@ -9,8 +9,8 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  graphql,
 } from '../types';
+import { graphql } from '..';
 // uid-safe is what express-session uses so let's just use it
 
 function generateSessionId() {
