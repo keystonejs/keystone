@@ -1,4 +1,5 @@
-import { getGqlNames, graphql } from '../../../types';
+import { getGqlNames } from '../../../types';
+import { graphql } from '../../..';
 import { InitialisedList } from '../types-for-lists';
 import * as queries from './resolvers';
 

@@ -4,12 +4,12 @@ import {
   FieldTypeFunc,
   BaseGeneratedListTypes,
   CommonFieldConfig,
-  graphql,
   orderDirectionEnum,
   Decimal,
   filters,
   FieldData,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 

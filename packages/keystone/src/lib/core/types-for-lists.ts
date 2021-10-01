@@ -1,6 +1,5 @@
 import { CacheHint } from 'apollo-server-types';
 import {
-  graphql,
   ItemRootValue,
   TypesForList,
   getGqlNames,
@@ -14,6 +13,7 @@ import {
   CacheHintArgs,
   MaybePromise,
 } from '../../types';
+import { graphql } from '../..';
 import { FieldHooks } from '../../types/config/hooks';
 import { FilterOrderArgs } from '../../types/config/fields';
 import {
