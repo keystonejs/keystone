@@ -228,30 +228,10 @@ async function getResolvedData(
   },
   nestedMutationState: NestedMutationState
 ) {
-  const { context, operation, inputData } = hookArgs;
+  const { context, operation } = hookArgs;
 
   // Start with the original input
   let resolvedData = hookArgs.inputData;
-
-  // Apply default values
-  // We don't expect any errors from here, so we can wrap all these operations
-  // in a generic catch-all error handler.
-  if (operation === 'create') {
-    resolvedData = Object.fromEntries(
-      await promiseAllRejectWithAllErrors(
-        Object.entries(list.fields).map(async ([fieldKey, field]) => {
-          let input = resolvedData[fieldKey];
-          if (input === undefined && field.__legacy?.defaultValue !== undefined) {
-            input =
-              typeof field.__legacy.defaultValue === 'function'
-                ? await field.__legacy.defaultValue({ originalInput: inputData, context })
-                : field.__legacy.defaultValue;
-          }
-          return [fieldKey, input] as const;
-        })
-      )
-    );
-  }
 
   // Apply non-relationship field type input resolvers
   const resolverErrors: { error: Error; tag: string }[] = [];
