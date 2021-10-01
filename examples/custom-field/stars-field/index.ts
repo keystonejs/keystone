@@ -97,8 +97,4 @@ export const stars =
       getAdminMeta() {
         return { maxStars };
       },
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });

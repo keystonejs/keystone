@@ -14,28 +14,6 @@ export async function validateUpdateCreate({
   const { operation, resolvedData } = hookArgs;
   const messages: string[] = [];
 
-  // Check isRequired
-  for (const [fieldKey, field] of Object.entries(list.fields)) {
-    // yes, this is a massive hack, it's just to make image and file fields work well enough
-    let val = resolvedData[fieldKey];
-    if (field.dbField.kind === 'multi') {
-      if (Object.values(resolvedData[fieldKey]).every(x => x === null)) {
-        val = null;
-      }
-      if (Object.values(resolvedData[fieldKey]).every(x => x === undefined)) {
-        val = undefined;
-      }
-    }
-    if (
-      field.__legacy?.isRequired &&
-      ((operation === 'create' && val == null) || (operation === 'update' && val === null))
-    ) {
-      messages.push(
-        `${list.listKey}.${fieldKey}: Required field "${fieldKey}" is null or undefined.`
-      );
-    }
-  }
-
   const fieldsErrors: { error: Error; tag: string }[] = [];
   // Field validation hooks
   for (const [fieldKey, field] of Object.entries(list.fields)) {

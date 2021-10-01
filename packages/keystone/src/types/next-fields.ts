@@ -365,10 +365,6 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: graphql.ObjectType<any>[];
-  __legacy?: {
-    isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<any, BaseGeneratedListTypes>;
-  };
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
