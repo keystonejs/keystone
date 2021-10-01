@@ -7,7 +7,6 @@ export {
   supportsUnique,
   fieldConfig,
   fieldName,
-  skipRequiredTest,
 } from '../test-fixtures';
 
 type MatrixValue = typeof testMatrix[number];

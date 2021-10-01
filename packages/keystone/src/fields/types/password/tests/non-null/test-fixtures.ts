@@ -7,7 +7,6 @@ export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
 export const fieldName = 'password';
 export const subfieldName = 'isSet';
-export const skipRequiredTest = true;
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
