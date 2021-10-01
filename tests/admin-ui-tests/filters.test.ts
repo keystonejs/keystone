@@ -10,10 +10,18 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
-  afterAll(async () => {
-    await deleteAllData('./tests/test-projects/basic');
-  });
+
   describe('relationship filters', () => {
+    afterEach(async () => {
+      await deleteAllData('./tests/test-projects/basic');
+      // Clear cookies and localStorage
+      // So we don't subsume filters
+      const context = await browser.newContext();
+      context.clearCookies();
+      page.evaluate(() => {
+        window.localStorage.clear();
+      });
+    });
     test('Lists are filterable by relationships', async () => {
       const gql = String.raw;
       const TASK_MUTATION_CREATE = gql`
@@ -69,8 +77,56 @@ adminUITests('./tests/test-projects/basic', browserType => {
       const filteredElements = await page.$$('table tbody tr');
       expect(filteredElements.length).toBe(1);
     });
-    test('One way relationships can only be filterable by the List with the relationship declared', async () => {});
-    test('Deeplinking a url with the appropriate relationship filter query params will apply the filter', async () => {});
+
+    test('Deeplinking a url with the appropriate relationship filter query params will apply the filter', async () => {
+      const gql = String.raw;
+      const TASK_MUTATION_CREATE = gql`
+        mutation TASK_MUTATION_CREATE($name: String!, $assignedTo: String!) {
+          assignedTask: createTask(
+            data: { label: $name, assignedTo: { create: { name: $assignedTo } } }
+          ) {
+            id
+            assignedTo {
+              id
+              name
+            }
+          }
+        }
+      `;
+      const CREATE_TASKS = gql`
+        mutation CREATE_TASKS_MUTATION($data: [TaskCreateInput!]!) {
+          createTasks(data: $data) {
+            id
+          }
+        }
+      `;
+      const { assignedTask } = await makeGqlRequest(TASK_MUTATION_CREATE, {
+        name: 'Task-assigned',
+        assignedTo: 'James Joyce',
+      });
+
+      await makeGqlRequest(CREATE_TASKS, {
+        data: generateDataArray(
+          key => ({
+            label: `Task-not-assigned-${key}`,
+          }),
+          20
+        ),
+      });
+
+      await page.goto('http://localhost:3000/tasks');
+      await page.waitForSelector('table tbody tr');
+      const elements = await page.$$('table tbody tr');
+      expect(elements.length).toBe(21);
+
+      await page.goto(
+        `http://localhost:3000/tasks?!assignedTo_matches="${assignedTask.assignedTo.id}"`
+      );
+
+      await page.waitForSelector('table tbody tr');
+      const filteredElements = await page.$$('table tbody tr');
+      expect(filteredElements.length).toBe(1);
+    });
   });
 
   afterAll(async () => {
