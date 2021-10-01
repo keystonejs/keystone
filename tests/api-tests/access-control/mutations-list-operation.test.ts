@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -44,10 +44,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ badAccesses: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.operation.query(). Got object',
           path: ['badAccesses'],
+          errors: [{ tag: 'BadAccess.access.operation.query', returned: 'object' }],
         },
       ]);
 
@@ -68,10 +68,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ createBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.operation.create(). Got object',
           path: ['createBadAccess'],
+          errors: [{ tag: 'BadAccess.access.operation.create', returned: 'object' }],
         },
       ]);
 
@@ -94,10 +94,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ updateBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.operation.update(). Got object',
           path: ['updateBadAccess'],
+          errors: [{ tag: 'BadAccess.access.operation.update', returned: 'object' }],
         },
       ]);
 
@@ -120,10 +120,10 @@ describe('Access control - Item', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ deleteBadAccess: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from BadAccess.access.operation.delete(). Got object',
           path: ['deleteBadAccess'],
+          errors: [{ tag: 'BadAccess.access.operation.delete', returned: 'object' }],
         },
       ]);
 

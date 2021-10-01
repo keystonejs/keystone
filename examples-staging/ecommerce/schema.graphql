@@ -4,7 +4,7 @@
 type Mutation {
   addToCart(productId: ID): CartItem
   checkout(token: String!): Order
-  sendUserPasswordResetLink(email: String!): Boolean
+  sendUserPasswordResetLink(email: String!): Boolean!
   redeemUserPasswordResetToken(
     email: String!
     token: String!
@@ -139,13 +139,16 @@ type User {
   ): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken: PasswordState
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 type PasswordState {
   isSet: Boolean!
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
@@ -157,7 +160,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  email: StringFilter
 }
 
 input IDFilter {
@@ -171,7 +174,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -182,10 +185,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -196,7 +199,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input UserOrderByInput {
@@ -217,8 +220,8 @@ input UserUpdateInput {
   role: RoleRelateToOneForUpdateInput
   products: ProductRelateToManyForUpdateInput
   passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 input CartItemRelateToManyForUpdateInput {
@@ -262,8 +265,8 @@ input UserCreateInput {
   role: RoleRelateToOneForCreateInput
   products: ProductRelateToManyForCreateInput
   passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 input CartItemRelateToManyForCreateInput {

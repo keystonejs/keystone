@@ -5,7 +5,8 @@ import { checkbox, password, relationship, text, timestamp } from '@keystone-nex
 const trackingFields = {
   createdAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    defaultValue: () => new Date().toISOString(),
+    isNullable: false,
+    defaultValue: { kind: 'now' },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },
@@ -23,9 +24,8 @@ const trackingFields = {
   // }),
   updatedAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    hooks: {
-      resolveInput: () => new Date().toISOString(),
-    },
+    isNullable: false,
+    db: { updatedAt: true },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },
@@ -52,7 +52,7 @@ export const lists = {
       },
     },
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'User.tasks' }),
       finishBy: timestamp(),
@@ -66,7 +66,7 @@ export const lists = {
       },
     },
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       email: text(),
       password: password(),
       tasks: relationship({

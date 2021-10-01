@@ -4,9 +4,10 @@ import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import {
   apiTestConfig,
+  expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
-  expectInternalServerError,
+  expectFilterDenied,
 } from '../utils';
 
 const runner = setupTestRunner({
@@ -378,7 +379,7 @@ describe('isOrderable', () => {
         query: '{ users(orderBy: [{orderFunctionFalse: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['users'],
           message:
@@ -408,11 +409,10 @@ describe('isOrderable', () => {
         query: '{ users(orderBy: [{orderFunctionOtherFalsey: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['users'],
-          message:
-            'Must return a Boolean from User.orderFunctionOtherFalsey.isOrderable(). Got object',
+          errors: [{ tag: 'User.orderFunctionOtherFalsey.isOrderable', returned: 'object' }],
         },
       ]);
     })
@@ -426,11 +426,10 @@ describe('isOrderable', () => {
         query: '{ users(orderBy: [{orderFunctionOtherTruthy: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['users'],
-          message:
-            'Must return a Boolean from User.orderFunctionOtherTruthy.isOrderable(). Got object',
+          errors: [{ tag: 'User.orderFunctionOtherTruthy.isOrderable', returned: 'object' }],
         },
       ]);
     })
@@ -445,7 +444,7 @@ describe('isOrderable', () => {
           '{ users(orderBy: [{orderFunctionTrue: asc}, {orderFunctionFalse: asc}, {orderFunctionFalseToo: asc}]) { id } }',
       });
       expect(body.data).toEqual({ users: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['users'],
           message:
@@ -509,7 +508,7 @@ describe('defaultIsOrderable', () => {
         query: '{ defaultOrderFunctionFalses(orderBy: [{a: asc}]) { id } }',
       });
       expect(body.data).toEqual({ defaultOrderFunctionFalses: null });
-      expectInternalServerError(body.errors, false, [
+      expectFilterDenied(body.errors, [
         {
           path: ['defaultOrderFunctionFalses'],
           message:
@@ -539,11 +538,10 @@ describe('defaultIsOrderable', () => {
         query: '{ defaultOrderFunctionFalseys(orderBy: [{a: asc}]) { id } }',
       });
       expect(body.data).toEqual({ defaultOrderFunctionFalseys: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['defaultOrderFunctionFalseys'],
-          message:
-            'Must return a Boolean from DefaultOrderFunctionFalsey.a.isOrderable(). Got object',
+          errors: [{ tag: 'DefaultOrderFunctionFalsey.a.isOrderable', returned: 'object' }],
         },
       ]);
     })
@@ -557,11 +555,10 @@ describe('defaultIsOrderable', () => {
         query: '{ defaultOrderFunctionTruthies(orderBy: [{a: asc}]) { id } }',
       });
       expect(body.data).toEqual({ defaultOrderFunctionTruthies: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
           path: ['defaultOrderFunctionTruthies'],
-          message:
-            'Must return a Boolean from DefaultOrderFunctionTruthy.a.isOrderable(). Got object',
+          errors: [{ tag: 'DefaultOrderFunctionTruthy.a.isOrderable', returned: 'object' }],
         },
       ]);
     })

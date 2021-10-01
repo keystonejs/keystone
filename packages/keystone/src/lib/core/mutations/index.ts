@@ -1,4 +1,5 @@
-import { DatabaseProvider, getGqlNames, graphql } from '../../../types';
+import { DatabaseProvider, getGqlNames } from '../../../types';
+import { graphql } from '../../..';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';

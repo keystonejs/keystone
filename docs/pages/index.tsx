@@ -420,7 +420,7 @@ import { document, text, timestamp, password, relationship } from '@keystone-nex
 export const lists = {
   Post: list({
     fields: {
-      title: text({ isRequired: true }),
+      title: text({ validation: { isRequired: true } }),
       content: document(),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
@@ -428,8 +428,8 @@ export const lists = {
   }),
   Author: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique' }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       password: password(),
       posts: relationship({ ref: 'Post.author', many: true }),
     },

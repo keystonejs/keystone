@@ -1,13 +1,12 @@
 import {
   BaseGeneratedListTypes,
-  FieldDefaultValue,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  graphql,
   filters,
 } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
@@ -16,8 +15,6 @@ import {
 
 export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
-    isRequired?: boolean;
     isIndexed?: boolean | 'unique';
     maxStars?: number;
   };
@@ -25,8 +22,6 @@ export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
 export const stars =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     isIndexed,
-    isRequired,
-    defaultValue,
     maxStars = 5,
     ...config
   }: StarsFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
@@ -96,9 +91,5 @@ export const stars =
       views: require.resolve('./views'),
       getAdminMeta() {
         return { maxStars };
-      },
-      __legacy: {
-        isRequired,
-        defaultValue,
       },
     });

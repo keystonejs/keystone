@@ -62,6 +62,7 @@ testModules
         if (mod.supportsGraphQLIsNonNull) {
           test('Sets the output field as non-null when graphql.read.isNonNull is set', async () => {
             const schema = await getSchema({ graphql: { read: { isNonNull: true } } });
+
             const outputType = assertObjectType(schema.getType('Test'));
             expect(outputType.getFields().testField.type).toBeInstanceOf(GraphQLNonNull);
           });

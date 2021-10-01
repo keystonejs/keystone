@@ -28,7 +28,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
         ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
       }
       type Mutation {
-        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): Boolean
+        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): Boolean!
         ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
 
@@ -70,7 +70,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
 
             await passwordResetLink.sendToken({ itemId, identity, token, context });
           }
-          return null;
+          return true;
         },
         async [gqlNames.redeemItemPasswordResetToken](
           root: any,

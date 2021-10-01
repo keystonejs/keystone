@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied, expectInternalServerError } from '../utils';
+import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -13,18 +13,18 @@ const runner = setupTestRunner({
           name: text({
             access: {
               read: () => true,
-              create: ({ originalInput }: any) => {
-                if (Array.isArray(originalInput)) {
-                  return !originalInput.some(item => item.data.name === 'bad');
+              create: ({ inputData }: any) => {
+                if (Array.isArray(inputData)) {
+                  return !inputData.some(item => item.data.name === 'bad');
                 } else {
-                  return (originalInput as any).name !== 'bad';
+                  return (inputData as any).name !== 'bad';
                 }
               },
-              update: ({ originalInput }: any) => {
-                if (Array.isArray(originalInput)) {
-                  return !originalInput.some(item => item.data.name === 'bad');
+              update: ({ inputData }: any) => {
+                if (Array.isArray(inputData)) {
+                  return !inputData.some(item => item.data.name === 'bad');
                 } else {
-                  return (originalInput as any).name !== 'bad';
+                  return (inputData as any).name !== 'bad';
                 }
               },
             },
@@ -61,10 +61,10 @@ describe('Access control', () => {
 
       // Returns the item, with null for the bad field, and an error message
       expect(body.data).toEqual({ users: [{ id: item.id, name: 'foo', badAccess: null }] });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from User.fields.badAccess.access.read(). Got string',
           path: ['users', 0, 'badAccess'],
+          errors: [{ tag: 'User.badAccess.access.read', returned: 'string' }],
         },
       ]);
     })
@@ -111,10 +111,10 @@ describe('Access control', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ createUser: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from User.fields.badAccess.access.create(). Got string',
           path: ['createUser'],
+          errors: [{ tag: 'User.badAccess.access.create', returned: 'string' }],
         },
       ]);
 
@@ -175,10 +175,10 @@ describe('Access control', () => {
 
       // Returns null and throws an error
       expect(body.data).toEqual({ updateUser: null });
-      expectInternalServerError(body.errors, false, [
+      expectAccessReturnError(body.errors, [
         {
-          message: 'Must return a Boolean from User.fields.badAccess.access.update(). Got string',
           path: ['updateUser'],
+          errors: [{ tag: 'User.badAccess.access.update', returned: 'string' }],
         },
       ]);
 

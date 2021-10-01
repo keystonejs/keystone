@@ -11,24 +11,26 @@ const runner = (debug: boolean | undefined) =>
         User: list({
           fields: { name: text({ isFilterable: true, isOrderable: true }) },
           hooks: {
-            beforeChange: ({ resolvedData }) => {
-              if (resolvedData.name === 'trigger before') {
-                throw new Error('Simulated error: beforeChange');
+            beforeOperation: ({ resolvedData, operation, item }) => {
+              if (operation === 'delete') {
+                if (item.name === 'trigger before delete') {
+                  throw new Error('Simulated error: beforeOperation');
+                }
+              } else {
+                if (resolvedData?.name === 'trigger before') {
+                  throw new Error('Simulated error: beforeOperation');
+                }
               }
             },
-            afterChange: ({ resolvedData }) => {
-              if (resolvedData.name === 'trigger after') {
-                throw new Error('Simulated error: afterChange');
-              }
-            },
-            beforeDelete: ({ existingItem }) => {
-              if (existingItem.name === 'trigger before delete') {
-                throw new Error('Simulated error: beforeDelete');
-              }
-            },
-            afterDelete: ({ existingItem }) => {
-              if (existingItem.name === 'trigger after delete') {
-                throw new Error('Simulated error: afterDelete');
+            afterOperation: ({ resolvedData, operation, originalItem }) => {
+              if (operation === 'delete') {
+                if (originalItem.name === 'trigger after delete') {
+                  throw new Error('Simulated error: afterOperation');
+                }
+              } else {
+                if (resolvedData?.name === 'trigger after') {
+                  throw new Error('Simulated error: afterOperation');
+                }
               }
             },
           },
@@ -37,48 +39,52 @@ const runner = (debug: boolean | undefined) =>
           fields: {
             title: text({
               hooks: {
-                beforeChange: ({ resolvedData }) => {
-                  if (resolvedData.title === 'trigger before') {
-                    throw new Error('Simulated error: title: beforeChange');
+                beforeOperation: ({ resolvedData, operation, item }) => {
+                  if (operation === 'delete') {
+                    if (item.title === 'trigger before delete') {
+                      throw new Error('Simulated error: title: beforeOperation');
+                    }
+                  } else {
+                    if (resolvedData?.title === 'trigger before') {
+                      throw new Error('Simulated error: title: beforeOperation');
+                    }
                   }
                 },
-                afterChange: ({ resolvedData }) => {
-                  if (resolvedData.title === 'trigger after') {
-                    throw new Error('Simulated error: title: afterChange');
-                  }
-                },
-                beforeDelete: ({ existingItem }) => {
-                  if (existingItem.title === 'trigger before delete') {
-                    throw new Error('Simulated error: title: beforeDelete');
-                  }
-                },
-                afterDelete: ({ existingItem }) => {
-                  if (existingItem.title === 'trigger after delete') {
-                    throw new Error('Simulated error: title: afterDelete');
+                afterOperation: ({ resolvedData, operation, originalItem }) => {
+                  if (operation === 'delete') {
+                    if (originalItem.title === 'trigger after delete') {
+                      throw new Error('Simulated error: title: afterOperation');
+                    }
+                  } else {
+                    if (resolvedData?.title === 'trigger after') {
+                      throw new Error('Simulated error: title: afterOperation');
+                    }
                   }
                 },
               },
             }),
             content: text({
               hooks: {
-                beforeChange: ({ resolvedData }) => {
-                  if (resolvedData.content === 'trigger before') {
-                    throw new Error('Simulated error: content: beforeChange');
+                beforeOperation: ({ resolvedData, operation, item }) => {
+                  if (operation === 'delete') {
+                    if (item.content === 'trigger before delete') {
+                      throw new Error('Simulated error: content: beforeOperation');
+                    }
+                  } else {
+                    if (resolvedData?.content === 'trigger before') {
+                      throw new Error('Simulated error: content: beforeOperation');
+                    }
                   }
                 },
-                afterChange: ({ resolvedData }) => {
-                  if (resolvedData.content === 'trigger after') {
-                    throw new Error('Simulated error: content: afterChange');
-                  }
-                },
-                beforeDelete: ({ existingItem }) => {
-                  if (existingItem.content === 'trigger before delete') {
-                    throw new Error('Simulated error: content: beforeDelete');
-                  }
-                },
-                afterDelete: ({ existingItem }) => {
-                  if (existingItem.content === 'trigger after delete') {
-                    throw new Error('Simulated error: content: afterDelete');
+                afterOperation: ({ resolvedData, operation, originalItem }) => {
+                  if (operation === 'delete') {
+                    if (originalItem.content === 'trigger after delete') {
+                      throw new Error('Simulated error: content: afterOperation');
+                    }
+                  } else {
+                    if (resolvedData?.content === 'trigger after') {
+                      throw new Error('Simulated error: content: afterOperation');
+                    }
                   }
                 },
               },
@@ -117,7 +123,7 @@ const runner = (debug: boolean | undefined) =>
         });
 
         ['before', 'after'].map(phase => {
-          describe(`List Hooks: ${phase}Change/${phase}Delete()`, () => {
+          describe(`List Hooks: ${phase}Operation`, () => {
             test(
               'createOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
@@ -132,16 +138,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ createUser: null });
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['createUser'],
-                    messages: [`User: Simulated error: ${phase}Change`],
+                    messages: [`User.hooks.${phase}Operation: Simulated error: ${phase}Operation`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -174,16 +180,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ updateUser: null });
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updateUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -216,16 +222,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ deleteUser: null });
-                const message = `Simulated error: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deleteUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -268,28 +274,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid creates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['createUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['createUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -347,28 +353,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid updates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updateUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['updateUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -421,28 +427,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid deletes should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deleteUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['deleteUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -465,7 +471,7 @@ const runner = (debug: boolean | undefined) =>
         });
 
         ['before', 'after'].map(phase => {
-          describe(`Field Hooks: ${phase}Change/${phase}Delete()`, () => {
+          describe(`Field Hooks: ${phase}Change()`, () => {
             test(
               'update',
               runner(debug)(async ({ context, graphQLRequest }) => {
@@ -480,23 +486,26 @@ const runner = (debug: boolean | undefined) =>
                     data: { title: `trigger ${phase}`, content: `trigger ${phase}` },
                   },
                 });
-                const message1 = `Simulated error: title: ${phase}Change`;
-                const message2 = `Simulated error: content: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message1 = `Simulated error: title: ${phase}Operation`;
+                const message2 = `Simulated error: content: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updatePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Operation: ${message1}`,
+                      `Post.content.hooks.${phase}Operation: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                       {
                         message: message2,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -527,23 +536,26 @@ const runner = (debug: boolean | undefined) =>
                   query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
                   variables: { id: post.id },
                 });
-                const message1 = `Simulated error: title: ${phase}Delete`;
-                const message2 = `Simulated error: content: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message1 = `Simulated error: title: ${phase}Operation`;
+                const message2 = `Simulated error: content: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deletePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Operation: ${message1}`,
+                      `Post.content.hooks.${phase}Operation: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                       {
                         message: message2,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],

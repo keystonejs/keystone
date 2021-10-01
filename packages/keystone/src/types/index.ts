@@ -6,5 +6,4 @@ export * from './admin-meta';
 export * from './context';
 export * from './next-fields';
 export * as filters from './filters';
-export * from './schema';
 export { jsonFieldTypePolyfilledForSQLite } from './json-field-type-polyfill-for-sqlite';

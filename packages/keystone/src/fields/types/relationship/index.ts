@@ -3,9 +3,9 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  graphql,
   AdminMetaRootVal,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships

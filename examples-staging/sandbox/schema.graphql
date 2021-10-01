@@ -6,10 +6,13 @@ type Todo {
   label: String
   isComplete: Boolean
   assignedTo: User
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input TodoWhereUniqueInput {
   id: ID
@@ -46,9 +49,9 @@ input TodoUpdateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneForUpdateInput
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input UserRelateToOneForUpdateInput {
@@ -66,9 +69,9 @@ input TodoCreateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input UserRelateToOneForCreateInput {
@@ -88,8 +91,8 @@ type User {
     skip: Int! = 0
   ): [Todo!]
   tasksCount(where: TodoWhereInput! = {}): Int
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type PasswordState {
@@ -116,8 +119,8 @@ input UserUpdateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForUpdateInput
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input TodoRelateToManyForUpdateInput {
@@ -137,8 +140,8 @@ input UserCreateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForCreateInput
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input TodoRelateToManyForCreateInput {

@@ -1,12 +1,13 @@
 import path from 'path';
+import { ApolloError } from 'apollo-server-errors';
 import {
   BaseGeneratedListTypes,
   CommonFieldConfig,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  graphql,
   JSONValue,
 } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -99,7 +100,7 @@ export const document =
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
-        throw new Error(`Document fields cannot be set to null`);
+        throw new ApolloError('Input error: Document fields cannot be set to null');
       }
       if (data === undefined) {
         return data;
