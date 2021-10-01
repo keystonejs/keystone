@@ -9,7 +9,7 @@ import {
   FieldMetaRootVal,
   ItemRootValue,
 } from '../../types';
-import { graphql as graphqlBoundToKeystoneContext } from '../../..';
+import { graphql as graphqlBoundToKeystoneContext } from '../..';
 
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
