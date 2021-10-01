@@ -4,6 +4,8 @@ import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectValidationError } from '../utils';
 
+// TODO: test the new validation.isRequired
+
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
