@@ -32,13 +32,10 @@ import {
   graphql,
   orderDirectionEnum,
   filters,
-  FieldDefaultValue,
 } from '@keystone-next/keystone/types';
 
 export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
-    defaultValue?: FieldDefaultValue<number, TGeneratedListTypes>;
-    isRequired?: boolean;
     isIndexed?: boolean | 'unique';
   };
 
@@ -65,10 +62,6 @@ export const myInt =
       },
       output: graphql.field({ type: graphql.Int }),
       views: require.resolve('./view.tsx'),
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });
 ```
 

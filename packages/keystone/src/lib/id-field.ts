@@ -7,8 +7,8 @@ import {
   IdFieldConfig,
   orderDirectionEnum,
   ScalarDBField,
-  graphql,
 } from '../types';
+import { graphql } from '..';
 import { packagePath } from '../package-path';
 import { userInputError } from './core/graphql-errors';
 

@@ -1,5 +1,6 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider, graphql } from '../../types';
+import { DatabaseProvider } from '../../types';
+import { graphql } from '../..';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';

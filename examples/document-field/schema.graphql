@@ -7,7 +7,7 @@ type Post {
   slug: String
   status: PostStatusType
   content: Post_content_Document
-  publishDate: String
+  publishDate: DateTime
   author: Author
 }
 
@@ -19,6 +19,9 @@ enum PostStatusType {
 type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -56,7 +59,7 @@ input PostUpdateInput {
   slug: String
   status: PostStatusType
   content: JSON
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
 }
 
@@ -76,7 +79,7 @@ input PostCreateInput {
   slug: String
   status: PostStatusType
   content: JSON
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
 }
 

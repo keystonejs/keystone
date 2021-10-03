@@ -4,8 +4,8 @@ import {
   BaseGeneratedListTypes,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  graphql,
 } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
 import cloudinary from 'cloudinary';
