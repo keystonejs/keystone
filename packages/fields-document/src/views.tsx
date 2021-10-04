@@ -53,7 +53,7 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   if (!value) return null;
   const plainText = serialize(value);
   const cutText = plainText.length > 100 ? plainText.slice(0, 100) + '...' : plainText;
-  return linkTo ? <CellLink>{cutText}</CellLink> : <CellContainer>{cutText}</CellContainer>;
+  return linkTo ? <CellLink {...linkTo}>{cutText}</CellLink> : <CellContainer>{cutText}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
 
