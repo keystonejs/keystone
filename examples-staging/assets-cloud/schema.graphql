@@ -6,7 +6,7 @@ type Post {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: Author
   hero: ImageFieldOutput
   attachment: FileFieldOutput
@@ -16,6 +16,9 @@ enum PostStatusType {
   draft
   published
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 interface ImageFieldOutput {
   id: ID!
@@ -93,7 +96,7 @@ input PostUpdateInput {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
   hero: ImageFieldInput
   attachment: FileFieldInput
@@ -129,7 +132,7 @@ input PostCreateInput {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
   hero: ImageFieldInput
   attachment: FileFieldInput

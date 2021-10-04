@@ -69,9 +69,10 @@ function printField(
     const defaultValue = field.default
       ? ` @default(${printScalarDefaultValue(field.default)})`
       : '';
+    const updatedAt = field.updatedAt ? ' @updatedAt' : '';
     return `${fieldPath} ${field.scalar}${
       modifiers[field.mode]
-    }${nativeType}${defaultValue}${index}`;
+    }${updatedAt}${nativeType}${defaultValue}${index}`;
   }
   if (field.kind === 'enum') {
     const index = printIndex(fieldPath, field.index);

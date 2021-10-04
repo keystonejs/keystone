@@ -48,7 +48,7 @@ export const lists = {
     },
     fields: {
       /* The label of the todo item */
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       /* Whether the todo item is complete */
       isComplete: checkbox({ defaultValue: false }),
       /* Private todo items are only visible to the user they are assigned to */
@@ -118,12 +118,13 @@ export const lists = {
     },
     fields: {
       /* The name of the user */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /* The email of the user, used to sign in */
-      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
       /* The password of the user */
       password: password({
-        isRequired: true,
+        isNullable: false,
+        validation: { isRequired: true },
         access: {
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session.itemId === item.id,
@@ -197,7 +198,7 @@ export const lists = {
     },
     fields: {
       /* The name of the role */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /* Create Todos means:
          - create todos (can only assign them to others with canManageAllTodos) */
       canCreateTodos: checkbox({ defaultValue: false }),

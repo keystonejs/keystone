@@ -6,9 +6,9 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  graphql,
   filters,
 } from '../../../types';
+import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
@@ -102,7 +102,7 @@ export const select =
               args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
             }
             if (
-              validation?.isRequired &&
+              (validation?.isRequired || config.isNullable === false) &&
               (value === null || (value === undefined && args.operation === 'create'))
             ) {
               args.addValidationError(`${fieldLabel} is required`);

@@ -27,44 +27,44 @@ const runner = setupTestRunner({
 //       type: PasswordAuthStrategy,
 //       list: 'User',
 //       hooks: {
-//         resolveAuthInput: ({ context, operation, originalInput }: any) => {
+//         resolveAuthInput: ({ context, operation, inputData }: any) => {
 //           expect(context).not.toBe(undefined);
 //           expect(operation).toEqual('authenticate');
 
-//           if (originalInput.email === 'triggerBadResolve') {
+//           if (inputData.email === 'triggerBadResolve') {
 //             return undefined;
 //           }
-//           if (originalInput.email === 'fixOnResolve') {
+//           if (inputData.email === 'fixOnResolve') {
 //             return { email: 'test@example.com', password: 'testing123' };
 //           }
-//           return originalInput;
+//           return inputData;
 //         },
 //         validateAuthInput: ({
 //           resolvedData,
 //           context,
-//           originalInput,
+//           inputData,
 //           operation,
 //           addValidationError,
 //         }: any) => {
 //           expect(context).not.toBe(undefined);
 //           expect(operation).toEqual('authenticate');
-//           expect(originalInput).not.toBe(undefined);
+//           expect(inputData).not.toBe(undefined);
 //           if (resolvedData.email === 'invalid') {
 //             addValidationError('INVALID EMAIL');
 //           }
 //         },
-//         beforeAuth: ({ resolvedData, context, originalInput, operation }: any) => {
+//         beforeAuth: ({ resolvedData, context, inputData, operation }: any) => {
 //           expect(context).not.toBe(undefined);
 //           expect(operation).toEqual('authenticate');
 //           expect(resolvedData.email).not.toBe(undefined);
 //           expect(resolvedData.password).not.toBe(undefined);
-//           expect(originalInput).not.toBe(undefined);
+//           expect(inputData).not.toBe(undefined);
 //         },
 //         afterAuth: ({
 //           resolvedData,
 //           context,
 //           operation,
-//           originalInput,
+//           inputData,
 //           item,
 //           success,
 //           message,
@@ -72,7 +72,7 @@ const runner = setupTestRunner({
 //         }: any) => {
 //           expect(context).not.toBe(undefined);
 //           expect(operation).toEqual('authenticate');
-//           expect(originalInput).not.toBe(undefined);
+//           expect(inputData).not.toBe(undefined);
 //           if (resolvedData.email === 'test@example.com') {
 //             expect(item.id).not.toBe(undefined);
 //             expect(success).toEqual(true);

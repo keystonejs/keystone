@@ -1,4 +1,4 @@
-import { graphql } from '../../types';
+import { graphql } from '../..';
 import { InitialisedField } from './types-for-lists';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };

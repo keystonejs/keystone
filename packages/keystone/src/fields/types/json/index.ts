@@ -4,8 +4,8 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
-  graphql,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =

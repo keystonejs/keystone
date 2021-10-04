@@ -161,14 +161,31 @@ export const expectLimitsExceededError = (
 
 export const expectBadUserInput = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[]; message: string }[],
+  httpQuery = true
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      ...(httpQuery ? { extensions: { code: 'INTERNAL_SERVER_ERROR' } } : {}),
       path,
       message: `Input error: ${message}`,
+    }))
+  );
+};
+
+export const expectAccessReturnError = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; errors: { tag: string; returned: string }[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, errors }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message: `Invalid values returned from access control function.\n${j(
+        errors.map(e => `${e.tag}: Returned: ${e.returned}. Expected: boolean.`)
+      )}`,
     }))
   );
 };
@@ -181,4 +198,57 @@ export const expectRelationshipError = (
     ...unpacked,
   }));
   expect(unpackedErrors).toEqual(args.map(({ path, message }) => ({ path, message })));
+};
+
+export const expectFilterDenied = (
+  errors: readonly any[] | undefined,
+  args: { path: any[]; message: string }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, message }) => ({
+      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      path,
+      message,
+    }))
+  );
+};
+
+export const expectResolverError = (
+  mode: 'dev' | 'production',
+  httpQuery: boolean,
+  _debug: boolean | undefined,
+  errors: readonly any[] | undefined,
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages, debug }) => {
+      const message = `An error occured while resolving input fields.\n${j(messages)}`;
+      const stacktrace = message.split('\n');
+      stacktrace[0] = `Error: ${stacktrace[0]}`;
+
+      // We expect to see debug details if:
+      //   - httpQuery is false
+      //   - graphql.debug is true or
+      //   - graphql.debug is undefined and mode !== production or
+      const expectDebug =
+        _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+      // We expect to see the Apollo exception under the same conditions, but only if
+      // httpQuery is also true.
+      const expectException = httpQuery && expectDebug;
+
+      return {
+        extensions: {
+          code: 'INTERNAL_SERVER_ERROR',
+          ...(expectException
+            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
+            : {}),
+          ...(expectDebug ? { debug } : {}),
+        },
+        path,
+        message,
+      };
+    })
+  );
 };

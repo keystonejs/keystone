@@ -14,7 +14,7 @@ generator client {
 
 model Todo {
   id           String  @id @default(cuid())
-  label        String?
+  label        String  @default("")
   isComplete   Boolean @default(false)
   isPrivate    Boolean @default(false)
   assignedTo   Person? @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
@@ -25,9 +25,9 @@ model Todo {
 
 model Person {
   id       String  @id @default(cuid())
-  name     String?
-  email    String? @unique
-  password String?
+  name     String  @default("")
+  email    String  @unique @default("")
+  password String
   role     Role?   @relation("Person_role", fields: [roleId], references: [id])
   roleId   String? @map("role")
   tasks    Todo[]  @relation("Todo_assignedTo")
@@ -37,7 +37,7 @@ model Person {
 
 model Role {
   id                 String   @id @default(cuid())
-  name               String?
+  name               String   @default("")
   canCreateTodos     Boolean  @default(false)
   canManageAllTodos  Boolean  @default(false)
   canSeeOtherPeople  Boolean  @default(false)

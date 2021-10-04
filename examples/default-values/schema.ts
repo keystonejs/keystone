@@ -5,7 +5,7 @@ import { select } from '@keystone-next/keystone/fields';
 export const lists = {
   Task: list({
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       priority: select({
         type: 'enum',
         options: [
@@ -14,9 +14,9 @@ export const lists = {
           { label: 'High', value: 'high' },
         ],
         hooks: {
-          resolveInput({ resolvedData, originalInput }) {
-            if (originalInput.priority === undefined) {
-              if (originalInput.label && originalInput.label.toLowerCase().includes('urgent')) {
+          resolveInput({ resolvedData, inputData }) {
+            if (inputData.priority === undefined) {
+              if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
                 return 'high';
               } else {
                 return 'low';
@@ -50,8 +50,16 @@ export const lists = {
       }),
       // Dynamic default: We set the due date to be 7 days in the future
       finishBy: timestamp({
-        defaultValue: () =>
-          new Date(new Date().setUTCDate(new Date().getUTCDate() + 7)).toUTCString(),
+        hooks: {
+          resolveInput({ resolvedData, inputData, operation }) {
+            if (inputData.finishBy == null && operation === 'create') {
+              const date = new Date();
+              date.setUTCDate(new Date().getUTCDate() + 7);
+              return date;
+            }
+            return resolvedData.finishBy;
+          },
+        },
       }),
     },
     defaultIsFilterable: true,
@@ -59,7 +67,7 @@ export const lists = {
   }),
   Person: list({
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
     defaultIsFilterable: true,

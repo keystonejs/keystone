@@ -6,7 +6,7 @@ type Post {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: Author
 }
 
@@ -14,6 +14,9 @@ enum PostStatusType {
   draft
   published
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -24,7 +27,7 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  title: StringNullableFilter
+  title: StringFilter
 }
 
 input IDFilter {
@@ -38,7 +41,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -49,10 +52,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -63,7 +66,7 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
 input PostOrderByInput {
@@ -79,7 +82,7 @@ input PostUpdateInput {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
 }
 
@@ -98,7 +101,7 @@ input PostCreateInput {
   title: String
   status: PostStatusType
   content: String
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
 }
 

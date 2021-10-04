@@ -33,28 +33,34 @@ async function deleteSingle(
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Filter and Item access control. Will throw an accessDeniedError if not allowed.
-  const existingItem = await getAccessControlledItemForDelete(
-    list,
-    context,
-    uniqueWhere,
-    accessFilters
-  );
+  const item = await getAccessControlledItemForDelete(list, context, uniqueWhere, accessFilters);
 
-  const hookArgs = { operation: 'delete' as const, listKey: list.listKey, context, existingItem };
+  const hookArgs = {
+    operation: 'delete' as const,
+    listKey: list.listKey,
+    context,
+    item,
+    resolvedData: undefined,
+    inputData: undefined,
+  };
 
   // Apply all validation checks
   await validateDelete({ list, hookArgs });
 
-  // Before delete
-  await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs);
+  // Before operation
+  await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs);
 
-  const item = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.delete({ where: { id: existingItem.id } }))
+  const newItem = await writeLimit(() =>
+    runWithPrisma(context, list, model => model.delete({ where: { id: item.id } }))
   );
 
-  await runSideEffectOnlyHook(list, 'afterDelete', hookArgs);
+  await runSideEffectOnlyHook(list, 'afterOperation', {
+    ...hookArgs,
+    item: undefined,
+    originalItem: item,
+  });
 
-  return item;
+  return newItem;
 }
 
 export async function deleteMany(

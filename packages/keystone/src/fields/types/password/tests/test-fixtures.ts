@@ -5,20 +5,21 @@ export const typeFunction = password;
 export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
+export const supportsNullInput = true;
 export const fieldName = 'password';
 export const subfieldName = 'isSet';
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
 export const getTestFields = () => ({
-  password: password({ minLength: 4 }),
-  passwordRejectCommon: password({ rejectCommon: true }),
+  password: password({ validation: { length: { min: 4 } } }),
+  passwordRejectCommon: password({ validation: { rejectCommon: true } }),
 });
 
 export const initItems = () => {
   return [
     { name: 'person1', password: 'pass1' },
-    { name: 'person2', password: '' },
+    { name: 'person2', password: null },
     { name: 'person3', password: 'pass3' },
     { name: 'person4', password: 'pass3' },
     { name: 'person5', password: 'pass3' },
@@ -41,15 +42,16 @@ export const supportedFilters = () => ['isSet'];
 
 export const crudTests = (keystoneTestWrapper: any) => {
   test(
-    'setting a password below the minLength fails',
+    'setting a password below the length.min fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
       await expect(
         context.query.Test.createOne({
           data: { password: '123' },
         })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:minLength:Test:password] Value must be at least 4 characters long.]`
-      );
+      ).rejects.toMatchInlineSnapshot(`
+              [GraphQLError: You provided invalid data for this operation.
+                - Test.password: Password must be at least 4 characters long]
+            `);
     })
   );
   test(
@@ -60,9 +62,10 @@ export const crudTests = (keystoneTestWrapper: any) => {
           data: { passwordRejectCommon: 'password' },
           query: ``,
         })
-      ).rejects.toMatchInlineSnapshot(
-        `[GraphQLError: [password:rejectCommon:Test:passwordRejectCommon] Common and frequently-used passwords are not allowed.]`
-      );
+      ).rejects.toMatchInlineSnapshot(`
+              [GraphQLError: You provided invalid data for this operation.
+                - Test.passwordRejectCommon: Password Reject Common is too common and is not allowed]
+            `);
       const data = await context.query.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,

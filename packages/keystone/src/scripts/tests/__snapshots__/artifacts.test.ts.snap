@@ -14,6 +14,7 @@ type Scalars = {
   readonly Int: number;
   readonly Float: number;
   readonly JSON: import('@keystone-next/keystone/types').JSONValue;
+  readonly Decimal: import('@keystone-next/keystone/types').Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {

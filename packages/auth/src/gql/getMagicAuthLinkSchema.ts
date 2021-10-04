@@ -23,7 +23,7 @@ export function getMagicAuthLinkSchema<I extends string>({
     typeDefs: `
       # Magic links
       type Mutation {
-        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): Boolean
+        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): Boolean!
         ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
@@ -65,7 +65,7 @@ export function getMagicAuthLinkSchema<I extends string>({
 
             await magicAuthLink.sendToken({ itemId, identity, token, context });
           }
-          return null;
+          return true;
         },
         async [gqlNames.redeemItemMagicAuthToken](
           root: any,

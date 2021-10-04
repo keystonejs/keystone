@@ -2,4 +2,4 @@
 '@keystone-ui/popover': patch
 ---
 
-Added workaround for bug in focus-trap `6.7.0`.
+Upgraded `focus-trap` dependency to `6.7.1` to fix bug (https://github.com/keystonejs/keystone/issues/6650).
