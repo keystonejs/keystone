@@ -40,7 +40,7 @@ These are used as our _identity_ and _secret_ fields for login.
 
 ### Auth config
 
-We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable configuration.
+We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable authentication.
 
 ```typescript
 import { createAuth } from '@keystone-next/auth';
