@@ -520,7 +520,6 @@ export const controller = (
       Filter: ({ onChange, value }) => {
         const foreignList = useList(config.fieldMeta.refListKey);
         const { filterValues, loading } = useRelationshipFilterValues({
-          many: config.fieldMeta.many,
           value,
           list: foreignList,
         });
@@ -570,7 +569,6 @@ export const controller = (
       Label({ value }) {
         const foreignList = useList(config.fieldMeta.refListKey);
         const { filterValues } = useRelationshipFilterValues({
-          many: config.fieldMeta.many,
           value,
           list: foreignList,
         });
@@ -665,17 +663,9 @@ export const controller = (
   };
 };
 
-function useRelationshipFilterValues({
-  many,
-  value,
-  list,
-}: {
-  many: boolean;
-  value: string;
-  list: ListMeta;
-}) {
+function useRelationshipFilterValues({ value, list }: { value: string; list: ListMeta }) {
   const foreignIds = getForeignIds(value);
-  const where = many ? { some: { id: { in: foreignIds } } } : { id: { in: foreignIds } };
+  const where = { id: { in: foreignIds } };
 
   const query = gql`
     query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
