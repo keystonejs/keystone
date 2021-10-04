@@ -1,17 +1,26 @@
-import { Browser, Page } from 'playwright';
+import { Browser, Page, BrowserContext } from 'playwright';
 import { adminUITests, deleteAllData, generateDataArray, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
+  let context: BrowserContext = undefined as any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     browser = await browserType.launch();
+    context = await browser.newContext();
     page = await browser.newPage();
     await page.goto('http://localhost:3000');
   });
 
   describe('relationship filters', () => {
+    afterEach(async () => {
+      context.clearCookies();
+      page.evaluate(() => {
+        window.localStorage.clear();
+      });
+      await deleteAllData('./tests/test-projects/basic');
+    });
     test('Lists are filterable by relationships', async () => {
       const gql = String.raw;
       const TASK_MUTATION_CREATE = gql`
@@ -119,8 +128,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     });
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await browser.close();
-    await deleteAllData('./tests/test-projects/basic');
   });
 });
