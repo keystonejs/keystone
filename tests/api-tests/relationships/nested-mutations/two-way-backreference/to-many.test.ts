@@ -1,6 +1,6 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../../utils';
@@ -13,7 +13,7 @@ const toStr = (items: any[]) => items.map(item => item.toString());
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Student: list({
         fields: {
           name: text(),
@@ -26,12 +26,12 @@ const runner = setupTestRunner({
           students: relationship({ ref: 'Student.teachers', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
 const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
-  context.lists.Teacher.findOne({
+  context.query.Teacher.findOne({
     where: { id: teacherId },
     query: 'id students { id }',
   });
@@ -63,12 +63,12 @@ describe('update many to many relationship back reference', () => {
       'during create mutation',
       runner(async ({ context }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+        let teacher1 = await context.query.Teacher.createOne({ data: {} });
         await new Promise(resolve => process.nextTick(resolve));
-        let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+        let teacher2 = await context.query.Teacher.createOne({ data: {} });
 
         // canaryStudent is used as a canary to make sure nothing crosses over
-        let canaryStudent = await context.lists.Student.createOne({ data: {} });
+        let canaryStudent = await context.query.Student.createOne({ data: {} });
 
         teacher1 = await getTeacher(context, teacher1.id);
         teacher2 = await getTeacher(context, teacher2.id);
@@ -80,7 +80,7 @@ describe('update many to many relationship back reference', () => {
         expect(toStr(teacher2.students)).toHaveLength(0);
 
         // Run the query to disconnect the teacher from student
-        let newStudent = await context.lists.Student.createOne({
+        let newStudent = await context.query.Student.createOne({
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
         });
@@ -102,12 +102,12 @@ describe('update many to many relationship back reference', () => {
       'during update mutation',
       runner(async ({ context }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await context.lists.Teacher.createOne({ data: {} });
-        let teacher2 = await context.lists.Teacher.createOne({ data: {} });
-        let student1 = await context.lists.Student.createOne({ data: {} });
+        let teacher1 = await context.query.Teacher.createOne({ data: {} });
+        let teacher2 = await context.query.Teacher.createOne({ data: {} });
+        let student1 = await context.query.Student.createOne({ data: {} });
         // Student2 is used as a canary to make sure things don't accidentally
         // cross over
-        let student2 = await context.lists.Student.createOne({ data: {} });
+        let student2 = await context.query.Student.createOne({ data: {} });
 
         teacher1 = await getTeacher(context, teacher1.id);
         teacher2 = await getTeacher(context, teacher2.id);
@@ -121,7 +121,7 @@ describe('update many to many relationship back reference', () => {
         expect(toStr(teacher2.students)).toHaveLength(0);
 
         // Run the query to disconnect the teacher from student
-        await context.lists.Student.updateOne({
+        await context.query.Student.updateOne({
           where: { id: student1.id },
           data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           query: 'id teachers { id }',
@@ -150,7 +150,7 @@ describe('update many to many relationship back reference', () => {
         const teacherName2 = sampleOne(alphanumGenerator);
 
         // Run the query to disconnect the teacher from student
-        let newStudent = await context.lists.Student.createOne({
+        let newStudent = await context.query.Student.createOne({
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers(orderBy: { id: asc }) { id }',
         });
@@ -171,12 +171,12 @@ describe('update many to many relationship back reference', () => {
     test(
       'during update mutation',
       runner(async ({ context }) => {
-        let student = await context.lists.Student.createOne({ data: {} });
+        let student = await context.query.Student.createOne({ data: {} });
         const teacherName1 = sampleOne(alphanumGenerator);
         const teacherName2 = sampleOne(alphanumGenerator);
 
         // Run the query to disconnect the teacher from student
-        const _student = await context.lists.Student.updateOne({
+        const _student = await context.query.Student.updateOne({
           where: { id: student.id },
           data: { teachers: { create: [{ name: teacherName1 }, { name: teacherName2 }] } },
           query: 'id teachers { id }',
@@ -200,16 +200,16 @@ describe('update many to many relationship back reference', () => {
     'nested disconnect during update mutation',
     runner(async ({ context }) => {
       // Manually setup a connected Student <-> Teacher
-      let teacher1 = await context.lists.Teacher.createOne({ data: {} });
-      let teacher2 = await context.lists.Teacher.createOne({ data: {} });
-      let student1 = await context.lists.Student.createOne({
+      let teacher1 = await context.query.Teacher.createOne({ data: {} });
+      let teacher2 = await context.query.Teacher.createOne({ data: {} });
+      let student1 = await context.query.Student.createOne({
         data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
       });
-      let student2 = await context.lists.Student.createOne({
+      let student2 = await context.query.Student.createOne({
         data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
       });
 
-      await context.lists.Teacher.updateMany({
+      await context.query.Teacher.updateMany({
         data: [
           {
             where: { id: teacher1.id },
@@ -234,7 +234,7 @@ describe('update many to many relationship back reference', () => {
       compareIds(teacher2.students, [student1, student2]);
 
       // Run the query to disconnect the teacher from student
-      await context.lists.Student.updateOne({
+      await context.query.Student.updateOne({
         where: { id: student1.id },
         data: { teachers: { disconnect: [{ id: teacher1.id }] } },
         query: 'id teachers { id }',
@@ -258,16 +258,16 @@ describe('update many to many relationship back reference', () => {
     'nested set: [] during update mutation',
     runner(async ({ context }) => {
       // Manually setup a connected Student <-> Teacher
-      let teacher1 = await context.lists.Teacher.createOne({ data: {} });
-      let teacher2 = await context.lists.Teacher.createOne({ data: {} });
-      let student1 = await context.lists.Student.createOne({
+      let teacher1 = await context.query.Teacher.createOne({ data: {} });
+      let teacher2 = await context.query.Teacher.createOne({ data: {} });
+      let student1 = await context.query.Student.createOne({
         data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
       });
-      let student2 = await context.lists.Student.createOne({
+      let student2 = await context.query.Student.createOne({
         data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
       });
 
-      await context.lists.Teacher.updateMany({
+      await context.query.Teacher.updateMany({
         data: [
           {
             where: { id: teacher1.id },
@@ -292,7 +292,7 @@ describe('update many to many relationship back reference', () => {
       compareIds(teacher2.students, [student1, student2]);
 
       // Run the query to disconnect the teacher from student
-      await context.lists.Student.updateOne({
+      await context.query.Student.updateOne({
         where: { id: student1.id },
         data: { teachers: { set: [] } },
         query: 'id teachers { id }',
@@ -317,16 +317,16 @@ test(
   'delete mutation updates back references in to-many relationship',
   runner(async ({ context }) => {
     // Manually setup a connected Student <-> Teacher
-    let teacher1 = await context.lists.Teacher.createOne({ data: {} });
-    let teacher2 = await context.lists.Teacher.createOne({ data: {} });
-    let student1 = await context.lists.Student.createOne({
+    let teacher1 = await context.query.Teacher.createOne({ data: {} });
+    let teacher2 = await context.query.Teacher.createOne({ data: {} });
+    let student1 = await context.query.Student.createOne({
       data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
     });
-    let student2 = await context.lists.Student.createOne({
+    let student2 = await context.query.Student.createOne({
       data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
     });
 
-    await context.lists.Teacher.updateMany({
+    await context.query.Teacher.updateMany({
       data: [
         {
           where: { id: teacher1.id },
@@ -351,7 +351,7 @@ test(
     compareIds(teacher2.students, [student1, student2]);
 
     // Run the query to delete the student
-    await context.lists.Student.deleteOne({ where: { id: student1.id } });
+    await context.query.Student.deleteOne({ where: { id: student1.id } });
     teacher1 = await getTeacher(context, teacher1.id);
     teacher2 = await getTeacher(context, teacher2.id);
     student1 = await getStudent(context, student1.id);

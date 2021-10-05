@@ -1,5 +1,5 @@
 import { relationship, text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list, ListSchemaConfig } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { apiTestConfig } from '../utils';
 
@@ -8,14 +8,14 @@ const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 const yesNo = (x: boolean | undefined) => (x === true ? 'Y' : x === false ? 'N' : 'U');
 
 type ListConfig = {
-  isFilterable?: true;
-  isOrderable?: true;
+  isFilterable?: false;
+  isOrderable?: false;
   omit?: true | ('query' | 'create' | 'update' | 'delete')[];
 };
 
 type FieldConfig = {
-  isFilterable?: true;
-  isOrderable?: true;
+  isFilterable?: false;
+  isOrderable?: false;
   omit?: true | ('read' | 'create' | 'update')[];
 };
 
@@ -46,8 +46,8 @@ const getListName = (config: ListConfig) => `${getListPrefix(config)}List`;
 const getFieldName = (config: FieldConfig) => getFieldPrefix(config);
 
 const listConfigVariables: ListConfig[] = [];
-for (const isFilterable of [undefined, true as const]) {
-  for (const isOrderable of [undefined, true as const]) {
+for (const isFilterable of [undefined, false as const]) {
+  for (const isOrderable of [undefined, false as const]) {
     for (const flag of [undefined, true, false]) {
       if (flag === undefined || flag === true) {
         listConfigVariables.push({ isFilterable, isOrderable, omit: flag });
@@ -68,8 +68,8 @@ for (const isFilterable of [undefined, true as const]) {
 }
 
 const fieldMatrix: FieldConfig[] = [];
-for (const isFilterable of [undefined, true as const]) {
-  for (const isOrderable of [undefined, true as const]) {
+for (const isFilterable of [undefined, false as const]) {
+  for (const isOrderable of [undefined, false as const]) {
     for (const flag of [undefined, true, false]) {
       if (flag === undefined || flag === true) {
         fieldMatrix.push({ isFilterable, isOrderable, omit: flag });
@@ -100,7 +100,7 @@ const createRelatedFields = (config: ListConfig) => ({
   [`${getListPrefix(config)}many`]: relationship({ ref: getListName(config), many: true }),
 });
 
-const lists = createSchema({});
+const lists: ListSchemaConfig = {};
 
 listConfigVariables.forEach(config => {
   lists[getListName(config)] = list({
@@ -121,6 +121,9 @@ lists.RelatedToAll = list({
 const config = apiTestConfig({
   lists,
   session: statelessSessions({ secret: COOKIE_SECRET }),
+  ui: {
+    isAccessAllowed: () => true,
+  },
 });
 
 export { getListName, listConfigVariables, fieldMatrix, getFieldName, config };

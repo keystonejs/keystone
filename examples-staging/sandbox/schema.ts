@@ -1,11 +1,12 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 
 // this implementation for createdBy and updatedBy is currently wrong so they're disabled for now
 const trackingFields = {
   createdAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    defaultValue: () => new Date().toISOString(),
+    validation: { isRequired: true },
+    defaultValue: { kind: 'now' },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },
@@ -23,9 +24,8 @@ const trackingFields = {
   // }),
   updatedAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    hooks: {
-      resolveInput: () => new Date().toISOString(),
-    },
+    db: { updatedAt: true },
+    validation: { isRequired: true },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },
@@ -44,7 +44,7 @@ const trackingFields = {
   // }),
 };
 
-export const lists = createSchema({
+export const lists = {
   Todo: list({
     ui: {
       listView: {
@@ -52,7 +52,7 @@ export const lists = createSchema({
       },
     },
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'User.tasks' }),
       finishBy: timestamp(),
@@ -66,7 +66,7 @@ export const lists = createSchema({
       },
     },
     fields: {
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       email: text(),
       password: password(),
       tasks: relationship({
@@ -79,4 +79,4 @@ export const lists = createSchema({
       ...trackingFields,
     },
   }),
-});
+};

@@ -7,16 +7,17 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model Post {
   id          String    @id @default(cuid())
-  title       String?
-  slug        String?   @unique
+  title       String    @default("")
+  slug        String    @unique @default("")
   status      String?
-  content     String?
+  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
   author      Author?   @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
@@ -25,9 +26,9 @@ model Post {
 }
 
 model Author {
-  id    String  @id @default(cuid())
-  name  String?
-  email String? @unique
-  posts Post[]  @relation("Post_author")
-  bio   String?
+  id    String @id @default(cuid())
+  name  String @default("")
+  email String @unique @default("")
+  posts Post[] @relation("Post_author")
+  bio   String @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 }

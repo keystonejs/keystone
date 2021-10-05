@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck';
 
 import { text, relationship } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../utils';
 
@@ -9,20 +9,20 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       Post: list({
         fields: {
-          title: text({ isFilterable: true, isOrderable: true }),
-          author: relationship({ ref: 'User', isFilterable: true }),
+          title: text(),
+          author: relationship({ ref: 'User' }),
         },
       }),
       User: list({
         fields: {
-          name: text({ isFilterable: true }),
-          feed: relationship({ ref: 'Post', many: true, isFilterable: true }),
+          name: text(),
+          feed: relationship({ ref: 'Post', many: true }),
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -32,10 +32,10 @@ describe('Querying with relationship filters', () => {
       'with data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const users = await context.lists.User.createMany({
+        const users = await context.query.User.createMany({
           data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
         });
-        const posts = await context.lists.Post.createMany({
+        const posts = await context.query.Post.createMany({
           data: [
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
             { author: { connect: { id: users[1].id } }, title: sampleOne(alphanumGenerator) },
@@ -46,7 +46,7 @@ describe('Querying with relationship filters', () => {
         });
 
         // Create an item that does the linking
-        const allPosts = await context.lists.Post.findMany({
+        const allPosts = await context.query.Post.findMany({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title',
         });
@@ -63,8 +63,8 @@ describe('Querying with relationship filters', () => {
       'without data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const user = await context.lists.User.createOne({ data: { name: 'Jess' } });
-        const posts = await context.lists.Post.createMany({
+        const user = await context.query.User.createOne({ data: { name: 'Jess' } });
+        const posts = await context.query.Post.createMany({
           data: [
             { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
             { title: sampleOne(alphanumGenerator) },
@@ -73,7 +73,7 @@ describe('Querying with relationship filters', () => {
         });
 
         // Create an item that does the linking
-        const _posts = await context.lists.Post.findMany({
+        const _posts = await context.query.Post.findMany({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title author { id name }',
         });
@@ -113,11 +113,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // EVERY
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         });
@@ -130,11 +130,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // SOME
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id feed(orderBy: { title: asc }) { title }',
         });
@@ -153,11 +153,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // NONE
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
         });
@@ -194,11 +194,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // EVERY
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         });
@@ -213,11 +213,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // SOME
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id name feed(orderBy: { title: asc }) { id title }',
         });
@@ -233,11 +233,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // NONE
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         });
@@ -267,11 +267,11 @@ describe('Querying with relationship filters', () => {
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // EVERY
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
         });
@@ -289,11 +289,11 @@ describe('Querying with relationship filters', () => {
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // SOME
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
           query: 'id name feed { id title }',
         });
@@ -305,11 +305,11 @@ describe('Querying with relationship filters', () => {
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: string, data: any) =>
-          context.lists[listKey].createOne({ data });
+          context.query[listKey].createOne({ data });
         const { users } = await setup(create);
 
         // NONE
-        const _users = await context.lists.User.findMany({
+        const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
         });

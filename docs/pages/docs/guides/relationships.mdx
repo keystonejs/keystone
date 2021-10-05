@@ -28,11 +28,11 @@ These topics are easier to understand by example. We’ll explore them, as well 
 Relationships are made using the [`relationship`](../apis/fields#relationship) field type within a [`list()`](../apis/schema). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({ fields: { name: text() } }),
     Post: list({
       fields: {
@@ -41,7 +41,7 @@ export default config({
         authors: relationship({ ref: 'User', many: true, }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -72,11 +72,11 @@ query {
 If we can find all the `authors` of a post, we can also find all the posts written by a particular user. To do this we need to configure a two-sided relationship in our schema:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -92,7 +92,7 @@ export default config({
         authors: relationship({ ref: 'User.posts', many: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -121,29 +121,29 @@ query {
 Keystone also lets you define one, and two-sided **relationships that refer to the same list**. To make a _one-sided_ Twitter style following relationship we do the following:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
         follows: relationship({ ref: 'User', many: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
 Or change this into a _two-sided_ relationship to also access the followers of every user:
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -151,7 +151,7 @@ export default config({
         followers: relationship({ ref: 'User.follows', many: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -184,11 +184,11 @@ Let’s explore how to set up each type of cardinality in the context of our blo
 - Users can have multiple posts
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-next/keystone';
 import { text, relationship } from '@keystone-next/keystone/fields';
 
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -201,7 +201,7 @@ export default config({
         author: relationship({ ref: 'User', many: false }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -212,7 +212,7 @@ export default config({
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -225,7 +225,7 @@ export default config({
         authors: relationship({ ref: 'User', many: true }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -240,7 +240,7 @@ export default config({
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -254,7 +254,7 @@ export default config({
         author: relationship({ ref: 'User.post', many: false }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -265,7 +265,7 @@ export default config({
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -279,7 +279,7 @@ export default config({
         author: relationship({ ref: 'User.posts', many: false }),
       },
     }),
-  }),
+  },
 });
 ```
 
@@ -292,7 +292,7 @@ export default config({
 
 ```typescript
 export default config({
-  lists: createSchema({
+  lists: {
     User: list({
       fields: {
         name: text(),
@@ -306,7 +306,7 @@ export default config({
         authors: relationship({ ref: 'User.posts', many: true }),
       },
     }),
-  }),
+  },
 });
 ```
 

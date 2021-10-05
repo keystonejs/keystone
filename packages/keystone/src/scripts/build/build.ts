@@ -1,5 +1,4 @@
 import Path from 'path';
-import prettier from 'prettier';
 import fs from 'fs-extra';
 import { AdminFileToWrite } from '../../types';
 import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
@@ -8,6 +7,8 @@ import { initConfig } from '../../lib/config/initConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
+import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
+import { formatSource } from '../../admin-ui/system/generateAdminUI';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -26,20 +27,6 @@ async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) 
     await fs.outputFile(outputFilename, formatSource(file.src));
   }
 }
-
-// FIXME: Duplicated from admin-ui package. Need to decide on a common home.
-export function serializePathForImport(path: string) {
-  // JSON.stringify is important here because it will escape windows style paths(and any thing else that might potentionally be in there)
-  return JSON.stringify(
-    path
-      // Next is unhappy about imports that include .ts/tsx in them because TypeScript is unhappy with them becasue when doing a TypeScript compilation with tsc, the imports won't be written so they would be wrong there
-      .replace(/\.tsx?$/, '')
-  );
-}
-
-// FIXME: Duplicated from admin-ui package. Need to decide on a common home.
-export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
-  prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
 const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   const projectAdminPath = getAdminPath(cwd);

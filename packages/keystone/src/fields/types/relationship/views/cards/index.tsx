@@ -296,6 +296,7 @@ export function Cards({
               list={foreignList}
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}
+              portalMenu
               state={{
                 kind: 'many',
                 async onChange(options) {
@@ -310,7 +311,7 @@ export function Cards({
                     try {
                       const { data, errors } = await client.query({
                         query: gql`query ($ids: [ID!]!) {
-                      items: ${foreignList.gqlNames.listQueryName}(where: {id_in:$ids}) {
+                      items: ${foreignList.gqlNames.listQueryName}(where: { id: { in: $ids }}) {
                         ${selectedFields}
                       }
                     }`,

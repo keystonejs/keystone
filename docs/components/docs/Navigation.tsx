@@ -157,7 +157,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/filters">
           Query Filters <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/hooks">Hooks</NavItem>
+        <NavItem href="/docs/guides/hooks">
+          Hooks <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
         <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
@@ -195,14 +197,17 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/access-control">
           Access Control API <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/apis/hooks"> Hooks API</NavItem>
+        <NavItem href="/docs/apis/hooks">
+          {' '}
+          Hooks API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
         <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
         <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>
-        <NavItem href="/docs/apis/list-items">List Item API</NavItem>
-        <NavItem href="/docs/apis/db-items">DB Item API</NavItem>
+        <NavItem href="/docs/apis/query">Query API</NavItem>
+        <NavItem href="/docs/apis/db-items">DB API</NavItem>
 
         <SubHeading>GraphQL</SubHeading>
         <NavItem href="/docs/apis/graphql">

@@ -141,14 +141,14 @@ describe(`Public schema`, () => {
           expect(updateFromMany).toContain('set');
         }
 
+        expect(types).toContain(gqlNames.whereInputName);
+
         // Queries are only accessible when reading
         if (config.omit !== true && (config.omit === undefined || !config.omit.includes('query'))) {
-          expect(types).toContain(gqlNames.whereInputName);
           expect(queries).toContain(gqlNames.itemQueryName);
           expect(queries).toContain(gqlNames.listQueryName);
           expect(queries).toContain(gqlNames.listQueryCountName);
         } else {
-          expect(types).not.toContain(gqlNames.whereInputName);
           expect(queries).not.toContain(gqlNames.itemQueryName);
           expect(queries).not.toContain(gqlNames.listQueryName);
           expect(queries).not.toContain(gqlNames.listQueryCountName);
@@ -184,8 +184,8 @@ describe(`Public schema`, () => {
     });
 
     fieldMatrix.forEach(config => {
-      for (const isFilterable of [undefined, true as const]) {
-        for (const isOrderable of [undefined, true as const]) {
+      for (const isFilterable of [undefined, false as const]) {
+        for (const isOrderable of [undefined, false as const]) {
           const listName = getListName({ isFilterable, isOrderable });
           test(`schema - ${JSON.stringify(config)} on ${listName}`, () => {
             const name = getFieldName(config);
@@ -206,7 +206,8 @@ describe(`Public schema`, () => {
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('read')) && // Can read
-              (isFilterable || config.isFilterable) // Can filter
+              isFilterable !== false &&
+              config.isFilterable !== false // Can filter
             ) {
               expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
             } else {
@@ -218,7 +219,8 @@ describe(`Public schema`, () => {
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('read')) && // Can read
-              (isOrderable || config.isOrderable) // Can orderBy
+              isOrderable !== false &&
+              config.isOrderable !== false // Can orderBy
             ) {
               expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
             } else {
@@ -248,13 +250,14 @@ describe(`Public schema`, () => {
               expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
             }
           });
-          test(`adminMeta - build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+          test(`adminMeta - isFilterable and isOrderable ${JSON.stringify(
+            config
+          )} on ${listName}`, async () => {
             const query = `
               query q($listName: String!) {
                 keystone {
                   adminMeta {
                     list(key: $listName) {
-                      key
                       fields {
                         path
                         isFilterable
@@ -265,8 +268,6 @@ describe(`Public schema`, () => {
                 }
               }`;
             const variables = { listName };
-            // @ts-ignore - Hack to allow us to query adminMeta
-            context.isAdminUIBuildProcess = true;
             const { data, errors } = await context.graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
@@ -282,7 +283,8 @@ describe(`Public schema`, () => {
                 // @ts-ignore
                 config.omit !== true && // Not excluded
                 (config.omit === undefined || !config.omit.includes('read')) && // Can read
-                (isFilterable || config.isFilterable) // Can filter
+                isFilterable !== false &&
+                config.isFilterable !== false // Can filter
               ) {
                 expect(field.isFilterable).toEqual(true);
               } else {
@@ -294,7 +296,8 @@ describe(`Public schema`, () => {
                 // @ts-ignore
                 config.omit !== true && // Not excluded
                 (config.omit === undefined || !config.omit.includes('read')) && // Can read
-                (isOrderable || config.isOrderable) // Can orderBy
+                isOrderable !== false &&
+                config.isOrderable !== false // Can orderBy
               ) {
                 expect(field.isOrderable).toEqual(true);
               } else {
@@ -304,7 +307,7 @@ describe(`Public schema`, () => {
           });
 
           test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
-            const item = await context.sudo().lists[listName].createOne({ data: {} });
+            const item = await context.sudo().query[listName].createOne({ data: {} });
             const query = `
               query q($listName: String!) {
                 keystone {
@@ -457,8 +460,8 @@ describe(`Sudo schema`, () => {
     });
 
     fieldMatrix.forEach(config => {
-      for (const isFilterable of [undefined, true as const]) {
-        for (const isOrderable of [undefined, true as const]) {
+      for (const isFilterable of [undefined, false as const]) {
+        for (const isOrderable of [undefined, false as const]) {
           const listName = getListName({ isFilterable, isOrderable });
           test(`${JSON.stringify(config)} on ${listName}`, () => {
             const name = getFieldName(config);

@@ -1,14 +1,14 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectAccessDenied } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       // Filter access control
       User: list({
-        fields: { name: text({ isOrderable: true }) },
+        fields: { name: text() },
         access: {
           filter: {
             query: () => true,
@@ -17,7 +17,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -25,13 +25,12 @@ describe('Access control - Filter', () => {
   test(
     'updateOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid name should pass
-      const user = await context.lists.User.createOne({ data: { name: 'good' } });
-      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
+      const user = await context.query.User.createOne({ data: { name: 'good' } });
+      await context.query.User.updateOne({ where: { id: user.id }, data: { name: 'better' } });
 
       // Setting up a bad name
-      await context.lists.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
+      await context.query.User.updateOne({ where: { id: user.id }, data: { name: 'bad' } });
 
       // Now it has a bad name, we can't update it.
       const { data, errors } = await context.graphql.raw({
@@ -41,10 +40,15 @@ describe('Access control - Filter', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ updateUser: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['updateUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUser'],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${user.id}"}'. It may not exist.`,
+        },
+      ]);
 
       // User should have its original name
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['bad']);
     })
   );
@@ -52,11 +56,10 @@ describe('Access control - Filter', () => {
   test(
     'deleteOne',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Valid names should pass
-      const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
-      const user2 = await context.lists.User.createOne({ data: { name: 'no delete' } });
-      await context.lists.User.deleteOne({ where: { id: user1.id } });
+      const user1 = await context.query.User.createOne({ data: { name: 'good' } });
+      const user2 = await context.query.User.createOne({ data: { name: 'no delete' } });
+      await context.query.User.deleteOne({ where: { id: user1.id } });
 
       // Invalid name
       const { data, errors } = await context.graphql.raw({
@@ -66,10 +69,15 @@ describe('Access control - Filter', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ deleteUser: null });
-      expectAccessDenied('dev', false, undefined, errors, [{ path: ['deleteUser'] }]);
+      expectAccessDenied(errors, [
+        {
+          path: ['deleteUser'],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${user2.id}"}'. It may not exist.`,
+        },
+      ]);
 
       // Bad users should still be in the database.
-      const _users = await context.lists.User.findMany({ query: 'id name' });
+      const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['no delete']);
     })
   );
@@ -77,9 +85,8 @@ describe('Access control - Filter', () => {
   test(
     'updateMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'good 2' },
@@ -91,7 +98,7 @@ describe('Access control - Filter', () => {
       });
 
       // Set up some of them with bad names
-      await context.lists.User.updateMany({
+      await context.query.User.updateMany({
         data: [
           { where: { id: users[1].id }, data: { name: 'bad' } },
           { where: { id: users[3].id }, data: { name: 'bad' } },
@@ -121,13 +128,19 @@ describe('Access control - Filter', () => {
           null,
         ],
       });
-      expectAccessDenied('dev', false, undefined, errors, [
-        { path: ['updateUsers', 1] },
-        { path: ['updateUsers', 3] },
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUsers', 1],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+        },
+        {
+          path: ['updateUsers', 3],
+          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+        },
       ]);
 
       // All users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });
@@ -144,9 +157,8 @@ describe('Access control - Filter', () => {
   test(
     'deleteMany',
     runner(async ({ context }) => {
-      context = context.exitSudo();
       // Start with some users
-      const users = await context.lists.User.createMany({
+      const users = await context.query.User.createMany({
         data: [
           { name: 'good 1' },
           { name: 'no delete 1' },
@@ -165,9 +177,15 @@ describe('Access control - Filter', () => {
         },
       });
 
-      expectAccessDenied('dev', false, undefined, errors, [
-        { path: ['deleteUsers', 1] },
-        { path: ['deleteUsers', 3] },
+      expectAccessDenied(errors, [
+        {
+          path: ['deleteUsers', 1],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+        },
+        {
+          path: ['deleteUsers', 3],
+          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+        },
       ]);
 
       // Valid users are returned, invalid come back as null
@@ -182,7 +200,7 @@ describe('Access control - Filter', () => {
       });
 
       // Three users should still exist in the database
-      const _users = await context.lists.User.findMany({
+      const _users = await context.query.User.findMany({
         orderBy: { name: 'asc' },
         query: 'id name',
       });

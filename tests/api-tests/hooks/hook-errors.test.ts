@@ -1,5 +1,5 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { GraphQLRequest, setupTestRunner } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { apiTestConfig, expectExtensionError } from '../utils';
@@ -7,28 +7,30 @@ import { apiTestConfig, expectExtensionError } from '../utils';
 const runner = (debug: boolean | undefined) =>
   setupTestRunner({
     config: apiTestConfig({
-      lists: createSchema({
+      lists: {
         User: list({
-          fields: { name: text({ isFilterable: true, isOrderable: true }) },
+          fields: { name: text() },
           hooks: {
-            beforeChange: ({ resolvedData }) => {
-              if (resolvedData.name === 'trigger before') {
-                throw new Error('Simulated error: beforeChange');
+            beforeOperation: ({ resolvedData, operation, item }) => {
+              if (operation === 'delete') {
+                if (item.name === 'trigger before delete') {
+                  throw new Error('Simulated error: beforeOperation');
+                }
+              } else {
+                if (resolvedData?.name === 'trigger before') {
+                  throw new Error('Simulated error: beforeOperation');
+                }
               }
             },
-            afterChange: ({ resolvedData }) => {
-              if (resolvedData.name === 'trigger after') {
-                throw new Error('Simulated error: afterChange');
-              }
-            },
-            beforeDelete: ({ existingItem }) => {
-              if (existingItem.name === 'trigger before delete') {
-                throw new Error('Simulated error: beforeDelete');
-              }
-            },
-            afterDelete: ({ existingItem }) => {
-              if (existingItem.name === 'trigger after delete') {
-                throw new Error('Simulated error: afterDelete');
+            afterOperation: ({ resolvedData, operation, originalItem }) => {
+              if (operation === 'delete') {
+                if (originalItem.name === 'trigger after delete') {
+                  throw new Error('Simulated error: afterOperation');
+                }
+              } else {
+                if (resolvedData?.name === 'trigger after') {
+                  throw new Error('Simulated error: afterOperation');
+                }
               }
             },
           },
@@ -37,55 +39,59 @@ const runner = (debug: boolean | undefined) =>
           fields: {
             title: text({
               hooks: {
-                beforeChange: ({ resolvedData }) => {
-                  if (resolvedData.title === 'trigger before') {
-                    throw new Error('Simulated error: title: beforeChange');
+                beforeOperation: ({ resolvedData, operation, item }) => {
+                  if (operation === 'delete') {
+                    if (item.title === 'trigger before delete') {
+                      throw new Error('Simulated error: title: beforeOperation');
+                    }
+                  } else {
+                    if (resolvedData?.title === 'trigger before') {
+                      throw new Error('Simulated error: title: beforeOperation');
+                    }
                   }
                 },
-                afterChange: ({ resolvedData }) => {
-                  if (resolvedData.title === 'trigger after') {
-                    throw new Error('Simulated error: title: afterChange');
-                  }
-                },
-                beforeDelete: ({ existingItem }) => {
-                  if (existingItem.title === 'trigger before delete') {
-                    throw new Error('Simulated error: title: beforeDelete');
-                  }
-                },
-                afterDelete: ({ existingItem }) => {
-                  if (existingItem.title === 'trigger after delete') {
-                    throw new Error('Simulated error: title: afterDelete');
+                afterOperation: ({ resolvedData, operation, originalItem }) => {
+                  if (operation === 'delete') {
+                    if (originalItem.title === 'trigger after delete') {
+                      throw new Error('Simulated error: title: afterOperation');
+                    }
+                  } else {
+                    if (resolvedData?.title === 'trigger after') {
+                      throw new Error('Simulated error: title: afterOperation');
+                    }
                   }
                 },
               },
             }),
             content: text({
               hooks: {
-                beforeChange: ({ resolvedData }) => {
-                  if (resolvedData.content === 'trigger before') {
-                    throw new Error('Simulated error: content: beforeChange');
+                beforeOperation: ({ resolvedData, operation, item }) => {
+                  if (operation === 'delete') {
+                    if (item.content === 'trigger before delete') {
+                      throw new Error('Simulated error: content: beforeOperation');
+                    }
+                  } else {
+                    if (resolvedData?.content === 'trigger before') {
+                      throw new Error('Simulated error: content: beforeOperation');
+                    }
                   }
                 },
-                afterChange: ({ resolvedData }) => {
-                  if (resolvedData.content === 'trigger after') {
-                    throw new Error('Simulated error: content: afterChange');
-                  }
-                },
-                beforeDelete: ({ existingItem }) => {
-                  if (existingItem.content === 'trigger before delete') {
-                    throw new Error('Simulated error: content: beforeDelete');
-                  }
-                },
-                afterDelete: ({ existingItem }) => {
-                  if (existingItem.content === 'trigger after delete') {
-                    throw new Error('Simulated error: content: afterDelete');
+                afterOperation: ({ resolvedData, operation, originalItem }) => {
+                  if (operation === 'delete') {
+                    if (originalItem.content === 'trigger after delete') {
+                      throw new Error('Simulated error: content: afterOperation');
+                    }
+                  } else {
+                    if (resolvedData?.content === 'trigger after') {
+                      throw new Error('Simulated error: content: afterOperation');
+                    }
                   }
                 },
               },
             }),
           },
         }),
-      }),
+      },
       graphql: { debug },
     }),
   });
@@ -117,12 +123,12 @@ const runner = (debug: boolean | undefined) =>
         });
 
         ['before', 'after'].map(phase => {
-          describe(`List Hooks: ${phase}Change/${phase}Delete()`, () => {
+          describe(`List Hooks: ${phase}Operation`, () => {
             test(
               'createOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid name should pass
-                await context.lists.User.createOne({ data: { name: 'good' } });
+                await context.query.User.createOne({ data: { name: 'good' } });
 
                 // Trigger an error
                 const { data, errors } = await runQuery(context, graphQLRequest, {
@@ -132,16 +138,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ createUser: null });
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['createUser'],
-                    messages: [`User: Simulated error: ${phase}Change`],
+                    messages: [`User.hooks.${phase}Operation: Simulated error: ${phase}Operation`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -149,7 +155,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Only the original user should exist for 'before', both exist for 'after'
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['good'] : ['good', 'trigger after']
                 );
@@ -160,8 +166,8 @@ const runner = (debug: boolean | undefined) =>
               'updateOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid name should pass
-                const user = await context.lists.User.createOne({ data: { name: 'good' } });
-                await context.lists.User.updateOne({
+                const user = await context.query.User.createOne({ data: { name: 'good' } });
+                await context.query.User.updateOne({
                   where: { id: user.id },
                   data: { name: 'better' },
                 });
@@ -174,16 +180,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ updateUser: null });
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updateUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -191,7 +197,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // User should have its original name for 'before', and the new name for 'after'.
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['better'] : ['trigger after']
                 );
@@ -202,11 +208,11 @@ const runner = (debug: boolean | undefined) =>
               'deleteOne',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Valid names should pass
-                const user1 = await context.lists.User.createOne({ data: { name: 'good' } });
-                const user2 = await context.lists.User.createOne({
+                const user1 = await context.query.User.createOne({ data: { name: 'good' } });
+                const user2 = await context.query.User.createOne({
                   data: { name: `trigger ${phase} delete` },
                 });
-                await context.lists.User.deleteOne({ where: { id: user1.id } });
+                await context.query.User.deleteOne({ where: { id: user1.id } });
 
                 // Invalid name
                 const { data, errors } = await runQuery(context, graphQLRequest, {
@@ -216,16 +222,16 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ deleteUser: null });
-                const message = `Simulated error: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deleteUser'],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -233,7 +239,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Bad users should still be in the database for 'before', deleted for 'after'.
-                const _users = await context.lists.User.findMany({ query: 'id name' });
+                const _users = await context.query.User.findMany({ query: 'id name' });
                 expect(_users.map(({ name }) => name)).toEqual(
                   phase === 'before' ? ['trigger before delete'] : []
                 );
@@ -268,28 +274,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid creates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['createUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['createUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -297,7 +303,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Three users should exist in the database for 'before,' five for 'after'.
-                const users = await context.lists.User.findMany({
+                const users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -313,7 +319,7 @@ const runner = (debug: boolean | undefined) =>
               'updateMany',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Start with some users
-                const users = await context.lists.User.createMany({
+                const users = await context.query.User.createMany({
                   data: [
                     { name: 'good 1' },
                     { name: 'good 2' },
@@ -347,28 +353,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid updates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updateUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['updateUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -376,7 +382,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // All users should still exist in the database, un-changed for `before`, changed for `after`.
-                const _users = await context.lists.User.findMany({
+                const _users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -392,7 +398,7 @@ const runner = (debug: boolean | undefined) =>
               'deleteMany',
               runner(debug)(async ({ context, graphQLRequest }) => {
                 // Start with some users
-                const users = await context.lists.User.createMany({
+                const users = await context.query.User.createMany({
                   data: [
                     { name: 'good 1' },
                     { name: `trigger ${phase} delete` },
@@ -421,28 +427,28 @@ const runner = (debug: boolean | undefined) =>
                   ],
                 });
                 // The invalid deletes should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message = `Simulated error: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deleteUsers', 1],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
                   },
                   {
                     path: ['deleteUsers', 3],
-                    messages: [`User: ${message}`],
+                    messages: [`User.hooks.${phase}Operation: ${message}`],
                     debug: [
                       {
                         message,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -450,7 +456,7 @@ const runner = (debug: boolean | undefined) =>
                 ]);
 
                 // Three users should still exist in the database for `before`, only 1 for `after`.
-                const _users = await context.lists.User.findMany({
+                const _users = await context.query.User.findMany({
                   orderBy: { name: 'asc' },
                   query: 'id name',
                 });
@@ -465,11 +471,11 @@ const runner = (debug: boolean | undefined) =>
         });
 
         ['before', 'after'].map(phase => {
-          describe(`Field Hooks: ${phase}Change/${phase}Delete()`, () => {
+          describe(`Field Hooks: ${phase}Change()`, () => {
             test(
               'update',
               runner(debug)(async ({ context, graphQLRequest }) => {
-                const post = await context.lists.Post.createOne({
+                const post = await context.query.Post.createOne({
                   data: { title: 'original title', content: 'original content' },
                 });
 
@@ -480,23 +486,26 @@ const runner = (debug: boolean | undefined) =>
                     data: { title: `trigger ${phase}`, content: `trigger ${phase}` },
                   },
                 });
-                const message1 = `Simulated error: title: ${phase}Change`;
-                const message2 = `Simulated error: content: ${phase}Change`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Change`, [
+                const message1 = `Simulated error: title: ${phase}Operation`;
+                const message2 = `Simulated error: content: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['updatePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Operation: ${message1}`,
+                      `Post.content.hooks.${phase}Operation: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                       {
                         message: message2,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Change .${__filename}`)
+                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],
@@ -505,7 +514,7 @@ const runner = (debug: boolean | undefined) =>
                 expect(data).toEqual({ updatePost: null });
 
                 // Post should have its original data for 'before', and the new data for 'after'.
-                const _post = await context.lists.Post.findOne({
+                const _post = await context.query.Post.findOne({
                   where: { id: post.id },
                   query: 'title content',
                 });
@@ -520,30 +529,33 @@ const runner = (debug: boolean | undefined) =>
             test(
               `delete`,
               runner(debug)(async ({ context, graphQLRequest }) => {
-                const post = await context.lists.Post.createOne({
+                const post = await context.query.Post.createOne({
                   data: { title: `trigger ${phase} delete`, content: `trigger ${phase} delete` },
                 });
                 const { data, errors } = await runQuery(context, graphQLRequest, {
                   query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
                   variables: { id: post.id },
                 });
-                const message1 = `Simulated error: title: ${phase}Delete`;
-                const message2 = `Simulated error: content: ${phase}Delete`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Delete`, [
+                const message1 = `Simulated error: title: ${phase}Operation`;
+                const message2 = `Simulated error: content: ${phase}Operation`;
+                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
                   {
                     path: ['deletePost'],
-                    messages: [`Post.title: ${message1}`, `Post.content: ${message2}`],
+                    messages: [
+                      `Post.title.hooks.${phase}Operation: ${message1}`,
+                      `Post.content.hooks.${phase}Operation: ${message2}`,
+                    ],
                     debug: [
                       {
                         message: message1,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                       {
                         message: message2,
                         stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Delete .${__filename}`)
+                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
                         ),
                       },
                     ],

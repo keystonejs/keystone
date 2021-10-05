@@ -31,12 +31,13 @@ export const staticAdminMetaQuery = gql`
             __typename
             path
             label
-            isOrderable
-            isFilterable
             fieldMeta
             viewsIndex
             customViewsIndex
             search
+            itemView {
+              fieldMode
+            }
           }
         }
       }
@@ -61,136 +62,51 @@ export const staticAdminMetaQuery = gql`
 
 type Maybe<T> = T | null;
 
-export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
-  keystone: { __typename: 'KeystoneMeta' } & {
-    adminMeta: { __typename: 'KeystoneAdminMeta' } & Pick<
-      KeystoneAdminMeta,
-      'enableSignout' | 'enableSessionItem'
-    > & {
-        lists: Array<
-          { __typename: 'KeystoneAdminUIListMeta' } & Pick<
-            KeystoneAdminUIListMeta,
-            | 'key'
-            | 'itemQueryName'
-            | 'listQueryName'
-            | 'path'
-            | 'label'
-            | 'singular'
-            | 'plural'
-            | 'description'
-            | 'initialColumns'
-            | 'pageSize'
-            | 'labelField'
-            | 'initialSort'
-          > & {
-              fields: Array<
-                { __typename: 'KeystoneAdminUIFieldMeta' } & Pick<
-                  KeystoneAdminUIFieldMeta,
-                  | 'path'
-                  | 'label'
-                  | 'isOrderable'
-                  | 'isFilterable'
-                  | 'fieldMeta'
-                  | 'viewsIndex'
-                  | 'customViewsIndex'
-                  | 'search'
-                >
-              >;
-            }
-        >;
-      };
+export type StaticAdminMetaQuery = {
+  keystone: {
+    __typename: 'KeystoneMeta';
+    adminMeta: {
+      __typename: 'KeystoneAdminMeta';
+      enableSignout: boolean;
+      enableSessionItem: boolean;
+      lists: Array<{
+        __typename: 'KeystoneAdminUIListMeta';
+        key: string;
+        itemQueryName: string;
+        listQueryName: string;
+        path: string;
+        label: string;
+        singular: string;
+        plural: string;
+        description: Maybe<string>;
+        initialColumns: Array<string>;
+        pageSize: number;
+        labelField: string;
+        initialSort: Maybe<{
+          __typename: 'KeystoneAdminUISort';
+          field: string;
+          direction: KeystoneAdminUISortDirection;
+        }>;
+        fields: Array<{
+          __typename: 'KeystoneAdminUIFieldMeta';
+          path: string;
+          label: string;
+          fieldMeta: Maybe<JSONValue>;
+          viewsIndex: number;
+          customViewsIndex: Maybe<number>;
+          search: Maybe<QueryMode>;
+          itemView: Maybe<{
+            __typename: 'KeystoneAdminUIFieldMetaItemView';
+            fieldMode: Maybe<KeystoneAdminUIFieldMetaItemViewFieldMode>;
+          }>;
+        }>;
+      }>;
+    };
   };
 };
 
-/** All built-in and custom scalars, mapped to their actual values */
-type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  JSON: JSONValue;
-};
-
-export type Query = {
-  __typename: 'Query';
-  keystone: KeystoneMeta;
-};
-
-type KeystoneMeta = {
-  __typename: 'KeystoneMeta';
-  adminMeta: KeystoneAdminMeta;
-};
-
-type KeystoneAdminMeta = {
-  __typename: 'KeystoneAdminMeta';
-  enableSignout: Scalars['Boolean'];
-  enableSessionItem: Scalars['Boolean'];
-  lists: Array<KeystoneAdminUIListMeta>;
-  list: Maybe<KeystoneAdminUIListMeta>;
-};
-
-type KeystoneAdminUIListMeta = {
-  __typename: 'KeystoneAdminUIListMeta';
-  key: Scalars['String'];
-  itemQueryName: Scalars['String'];
-  listQueryName: Scalars['String'];
-  hideCreate: Scalars['Boolean'];
-  hideDelete: Scalars['Boolean'];
-  path: Scalars['String'];
-  label: Scalars['String'];
-  singular: Scalars['String'];
-  plural: Scalars['String'];
-  description: Maybe<Scalars['String']>;
-  initialColumns: Array<Scalars['String']>;
-  pageSize: Scalars['Int'];
-  labelField: Scalars['String'];
-  fields: Array<KeystoneAdminUIFieldMeta>;
-  initialSort: Maybe<KeystoneAdminUISort>;
-};
-
-type KeystoneAdminUISort = {
-  __typename: 'KeystoneAdminUISort';
-  field: Scalars['String'];
-  direction: KeystoneAdminUISortDirection;
-};
-
-type KeystoneAdminUIFieldMeta = {
-  __typename: 'KeystoneAdminUIFieldMeta';
-  path: Scalars['String'];
-  label: Scalars['String'];
-  isOrderable: Scalars['Boolean'];
-  isFilterable: Scalars['Boolean'];
-  fieldMeta: Maybe<Scalars['JSON']>;
-  viewsIndex: Scalars['Int'];
-  customViewsIndex: Maybe<Scalars['Int']>;
-  createView: KeystoneAdminUIFieldMetaCreateView;
-  itemView: Maybe<KeystoneAdminUIFieldMetaItemView>;
-  listView: KeystoneAdminUIFieldMetaListView;
-  search: Maybe<QueryMode>;
-};
-
-type KeystoneAdminUIFieldMetaCreateView = {
-  __typename: 'KeystoneAdminUIFieldMetaCreateView';
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode;
-};
-
-type KeystoneAdminUIFieldMetaItemView = {
-  __typename: 'KeystoneAdminUIFieldMetaItemView';
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode;
-};
-
-type KeystoneAdminUIFieldMetaListView = {
-  __typename: 'KeystoneAdminUIFieldMetaListView';
-  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode;
-};
-
-type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
+type QueryMode = 'default' | 'insensitive';
 
 type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
 
-type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
-
 type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
-
-type QueryMode = 'default' | 'insensitive';

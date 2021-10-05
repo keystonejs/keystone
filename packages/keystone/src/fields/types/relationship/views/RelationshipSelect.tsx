@@ -75,6 +75,7 @@ export const RelationshipSelect = ({
   isLoading,
   list,
   placeholder,
+  portalMenu,
   state,
   extraSelection = '',
 }: {
@@ -84,6 +85,7 @@ export const RelationshipSelect = ({
   isLoading?: boolean;
   list: ListMeta;
   placeholder?: string;
+  portalMenu?: true | undefined;
   state:
     | {
         kind: 'many';
@@ -195,7 +197,7 @@ export const RelationshipSelect = ({
           isLoading={loading || isLoading}
           autoFocus={autoFocus}
           components={relationshipSelectComponents}
-          portalMenu
+          portalMenu={portalMenu}
           value={
             state.value
               ? {
@@ -235,7 +237,7 @@ export const RelationshipSelect = ({
         isLoading={loading || isLoading}
         autoFocus={autoFocus}
         components={relationshipSelectComponents}
-        portalMenu
+        portalMenu={portalMenu}
         value={state.value.map(value => ({
           value: value.id,
           label: value.label,

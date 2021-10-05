@@ -14,6 +14,7 @@ type Scalars = {
   readonly Int: number;
   readonly Float: number;
   readonly JSON: import('@keystone-next/keystone/types').JSONValue;
+  readonly Decimal: import('@keystone-next/keystone/types').Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {
@@ -25,6 +26,7 @@ export type TodoWhereInput = {
   readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly NOT?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
   readonly id?: IDFilter | null;
+  readonly title?: StringFilter | null;
 };
 
 export type IDFilter = {
@@ -38,8 +40,37 @@ export type IDFilter = {
   readonly not?: IDFilter | null;
 };
 
+export type StringFilter = {
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
+  readonly not?: NestedStringFilter | null;
+};
+
+export type NestedStringFilter = {
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
+  readonly not?: NestedStringFilter | null;
+};
+
 export type TodoOrderByInput = {
   readonly id?: OrderDirection | null;
+  readonly title?: OrderDirection | null;
 };
 
 export type OrderDirection = 'asc' | 'desc';
@@ -108,10 +139,10 @@ export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
 
 export type KeystoneContext = Omit<
   GenericKeystoneContext,
-  'db' | 'lists' | 'prisma'
+  'db' | 'query' | 'prisma'
 > & {
-  db: { lists: KeystoneDbAPI };
-  lists: KeystoneListsAPI;
+  db: KeystoneDbAPI;
+  query: KeystoneListsAPI;
   prisma: import('.prisma/client').PrismaClient;
 };
 

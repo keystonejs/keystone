@@ -1,16 +1,15 @@
 import { DatabaseProvider, KeystoneContext } from '../../../../types';
 import { timestamp } from '..';
 
-export const name = 'DateTimeUtc';
+export const name = 'Timestamp';
 export const typeFunction = timestamp;
 export const exampleValue = () => '1990-12-31T12:34:56.789Z';
 export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'lastOnline';
 
-export const getTestFields = () => ({
-  lastOnline: timestamp({ isFilterable: true, isOrderable: true }),
-});
+export const getTestFields = () => ({ lastOnline: timestamp() });
 
 export const initItems = () => {
   return [
@@ -49,7 +48,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     expected: any,
     orderBy: Record<string, 'asc' | 'desc'> = { name: 'asc' }
   ) =>
-    expect(await context.lists.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
+    expect(await context.query.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
       expected
     );
 

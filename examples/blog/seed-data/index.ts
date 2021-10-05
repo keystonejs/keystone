@@ -20,13 +20,13 @@ export async function insertSeedData(context: KeystoneContext) {
   const createAuthor = async (authorData: AuthorProps) => {
     let author = null;
     try {
-      author = await context.lists.Author.findOne({
+      author = await context.query.Author.findOne({
         where: { email: authorData.email },
         query: 'id',
       });
     } catch (e) {}
     if (!author) {
-      author = await context.lists.Author.createOne({
+      author = await context.query.Author.createOne({
         data: authorData,
         query: 'id',
       });
@@ -37,7 +37,7 @@ export async function insertSeedData(context: KeystoneContext) {
   const createPost = async (postData: PostProps) => {
     let authors;
     try {
-      authors = await context.lists.Author.findMany({
+      authors = await context.query.Author.findMany({
         where: { name: { equals: postData.author } },
         query: 'id',
       });
@@ -45,7 +45,7 @@ export async function insertSeedData(context: KeystoneContext) {
       authors = [];
     }
     postData.author = { connect: { id: authors[0].id } };
-    const post = await context.lists.Post.createOne({
+    const post = await context.query.Post.createOne({
       data: postData,
       query: 'id',
     });

@@ -1,5 +1,5 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectPrismaError } from '../utils';
@@ -39,7 +39,7 @@ testModules
         });
         const runner = setupTestRunner({
           config: apiTestConfig({
-            lists: createSchema({
+            lists: {
               Test: list({
                 fields: {
                   name: text(),
@@ -49,7 +49,7 @@ testModules
                   }),
                 },
               }),
-            }),
+            },
             images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
             files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           }),
@@ -57,7 +57,7 @@ testModules
         test(
           'uniqueness is enforced over multiple mutations',
           runner(async ({ context, graphQLRequest }) => {
-            await context.lists.Test.createOne({
+            await context.query.Test.createOne({
               data: { testField: mod.exampleValue(matrixValue) },
             });
 
@@ -74,7 +74,7 @@ testModules
               {
                 path: ['createTest'],
                 message: expect.stringMatching(
-                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
                 ),
                 code: 'P2002',
                 target: ['testField'],
@@ -104,7 +104,7 @@ testModules
               {
                 path: ['bar'],
                 message: expect.stringMatching(
-                  /\nInvalid `prisma\.test\.create\(\)` invocation:\n(.*\n){2}  Unique constraint failed on the fields: \(`testField`\)/
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
                 ),
                 code: 'P2002',
                 target: ['testField'],
@@ -116,7 +116,7 @@ testModules
         test(
           'Configuring uniqueness on one field does not affect others',
           runner(async ({ context }) => {
-            const items = await context.lists.Test.createMany({
+            const items = await context.query.Test.createMany({
               data: [
                 { testField: mod.exampleValue(matrixValue), name: 'jess' },
                 { testField: mod.exampleValue2(matrixValue), name: 'jess' },
@@ -147,7 +147,7 @@ testModules
           try {
             await setupTestEnv({
               config: apiTestConfig({
-                lists: createSchema({
+                lists: {
                   Test: list({
                     fields: {
                       name: text(),
@@ -157,7 +157,7 @@ testModules
                       }),
                     },
                   }),
-                }),
+                },
                 images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                 files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),

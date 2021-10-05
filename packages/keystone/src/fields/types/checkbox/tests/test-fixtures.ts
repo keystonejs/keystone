@@ -4,12 +4,13 @@ export const name = 'Checkbox';
 export const typeFunction = checkbox;
 export const exampleValue = () => true;
 export const exampleValue2 = () => false;
+export const neverNull = true;
 export const supportsUnique = false;
 export const fieldName = 'enabled';
+export const skipRequiredTest = true;
+export const supportsGraphQLIsNonNull = true;
 
-export const getTestFields = () => ({
-  enabled: checkbox({ isFilterable: true }),
-});
+export const getTestFields = () => ({ enabled: checkbox() });
 
 export const initItems = () => {
   return [
@@ -18,8 +19,8 @@ export const initItems = () => {
     { name: 'person3', enabled: false },
     { name: 'person4', enabled: true },
     { name: 'person5', enabled: false },
-    { name: 'person6', enabled: null },
-    { name: 'person7', enabled: null },
+    { name: 'person6', enabled: false },
+    { name: 'person7', enabled: false },
   ];
 };
 
@@ -29,8 +30,8 @@ export const storedValues = () => [
   { name: 'person3', enabled: false },
   { name: 'person4', enabled: true },
   { name: 'person5', enabled: false },
-  { name: 'person6', enabled: null },
-  { name: 'person7', enabled: null },
+  { name: 'person6', enabled: false },
+  { name: 'person7', enabled: false },
 ];
 
-export const supportedFilters = () => ['null_equality', 'equality'];
+export const supportedFilters = () => ['equality'];

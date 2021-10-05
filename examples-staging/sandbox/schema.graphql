@@ -6,10 +6,13 @@ type Todo {
   label: String
   isComplete: Boolean
   assignedTo: User
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input TodoWhereUniqueInput {
   id: ID
@@ -20,6 +23,12 @@ input TodoWhereInput {
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
   id: IDFilter
+  label: StringFilter
+  isComplete: BooleanFilter
+  assignedTo: UserWhereInput
+  finishBy: DateTimeNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
 }
 
 input IDFilter {
@@ -33,8 +42,68 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
 input TodoOrderByInput {
   id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  finishBy: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
 }
 
 enum OrderDirection {
@@ -46,9 +115,9 @@ input TodoUpdateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneForUpdateInput
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input UserRelateToOneForUpdateInput {
@@ -66,9 +135,9 @@ input TodoCreateInput {
   label: String
   isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
-  finishBy: String
-  createdAt: String
-  updatedAt: String
+  finishBy: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input UserRelateToOneForCreateInput {
@@ -88,8 +157,8 @@ type User {
     skip: Int! = 0
   ): [Todo!]
   tasksCount(where: TodoWhereInput! = {}): Int
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type PasswordState {
@@ -105,10 +174,30 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
+  email: StringFilter
+  password: PasswordFilter
+  tasks: TodoManyRelationFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
 }
 
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
 }
 
 input UserUpdateInput {
@@ -116,8 +205,8 @@ input UserUpdateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForUpdateInput
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input TodoRelateToManyForUpdateInput {
@@ -137,8 +226,8 @@ input UserCreateInput {
   email: String
   password: String
   tasks: TodoRelateToManyForCreateInput
-  createdAt: String
-  updatedAt: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input TodoRelateToManyForCreateInput {
@@ -229,7 +318,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -252,7 +341,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

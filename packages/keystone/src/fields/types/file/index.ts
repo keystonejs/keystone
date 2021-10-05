@@ -1,22 +1,19 @@
 import { FileUpload } from 'graphql-upload';
+import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   fieldType,
-  graphql,
   FieldTypeFunc,
   CommonFieldConfig,
   BaseGeneratedListTypes,
   KeystoneContext,
   FileData,
-  FieldDefaultValue,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getFileRef } from './utils';
 
 export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
-    isRequired?: boolean;
-    defaultValue?: FieldDefaultValue<FileFieldInputType, TGeneratedListTypes>;
-  };
+  CommonFieldConfig<TGeneratedListTypes>;
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -72,23 +69,21 @@ async function inputResolver(data: FileFieldInputType, context: KeystoneContext)
 
   if (data.ref) {
     if (data.upload) {
-      throw new Error('Only one of ref and upload can be passed to FileFieldInput');
+      throw userInputError('Only one of ref and upload can be passed to FileFieldInput');
     }
     return context.files!.getDataFromRef(data.ref);
   }
   if (!data.upload) {
-    throw new Error('Either ref or upload must be passed to FileFieldInput');
+    throw userInputError('Either ref or upload must be passed to FileFieldInput');
   }
   const upload = await data.upload;
   return context.files!.getDataFromStream(upload.createReadStream(), upload.filename);
 }
 
 export const file =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    isRequired,
-    defaultValue,
-    ...config
-  }: FileFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  <TGeneratedListTypes extends BaseGeneratedListTypes>(
+    config: FileFieldConfig<TGeneratedListTypes> = {}
+  ): FieldTypeFunc =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type file");
@@ -123,9 +118,5 @@ export const file =
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
       views: resolveView('file/views'),
-      __legacy: {
-        isRequired,
-        defaultValue,
-      },
     });
   };

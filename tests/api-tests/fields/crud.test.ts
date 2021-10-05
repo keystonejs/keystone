@@ -1,9 +1,10 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig } from '../utils';
+import { humanize } from '@keystone-next/keystone/src/lib/utils';
+import { apiTestConfig, expectResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -15,20 +16,19 @@ testModules
     ({ skipCrudTest, unSupportedAdapterList = [] }) =>
       !skipCrudTest && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
   )
-  .filter(mod => mod.name === 'Integer')
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
       const listKey = 'Test';
       const runner = setupTestRunner({
         config: apiTestConfig({
-          lists: createSchema({
+          lists: {
             [listKey]: list({
               fields: {
-                name: text({ isOrderable: true }),
+                name: text(),
                 ...mod.getTestFields(matrixValue),
               },
             }),
-          }),
+          },
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
           files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
         }),
@@ -36,8 +36,8 @@ testModules
       const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
         runner(async ({ context, ...rest }) => {
           // Populate the database before running the tests
-          for (const data of mod.initItems(matrixValue)) {
-            await context.lists[listKey].createOne({ data });
+          for (const data of mod.initItems(matrixValue, context)) {
+            await context.query[listKey].createOne({ data });
           }
           return testFn({ context, listKey, provider: process.env.TEST_ADAPTER, ...rest });
         });
@@ -114,7 +114,7 @@ testModules
             }) => void | Promise<void>
           ) => {
             return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
-              const items = await context.lists[listKey].findMany({
+              const items = await context.query[listKey].findMany({
                 orderBy: { name: 'asc' },
                 query,
               });
@@ -129,7 +129,7 @@ testModules
               'Create',
               keystoneTestWrapper(
                 withHelpers(async ({ context, listKey }) => {
-                  const data = await context.lists[listKey].createOne({
+                  const data = await context.query[listKey].createOne({
                     data: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
                     query,
                   });
@@ -147,7 +147,7 @@ testModules
               'Read',
               keystoneTestWrapper(
                 withHelpers(async ({ context, listKey, items }) => {
-                  const data = await context.lists[listKey].findOne({
+                  const data = await context.query[listKey].findOne({
                     where: { id: items[0].id },
                     query,
                   });
@@ -166,7 +166,7 @@ testModules
                 'Updating the value',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
+                    const data = await context.query[listKey].updateOne({
                       where: { id: items[0].id },
                       data: { [fieldName]: exampleValue2(matrixValue) },
                       query,
@@ -185,13 +185,45 @@ testModules
                 'Updating the value to null',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
-                      where: { id: items[0].id },
-                      data: { [fieldName]: null },
-                      query,
-                    });
-                    expect(data).not.toBe(null);
-                    expect(data?.[fieldName]).toBe(null);
+                    const updateMutationName = `update${listKey}`;
+                    const _query = `mutation { ${updateMutationName}(where: { id: "${items[0].id}" }, data: { ${fieldName}: null }) { ${query} } }`;
+                    const { data, errors } = await context.graphql.raw({ query: _query });
+                    if (mod.supportsNullInput) {
+                      expect(data).toEqual({
+                        [updateMutationName]: {
+                          id: expect.any(String),
+                          name: expect.any(String),
+                          [fieldName]: null,
+                        },
+                      });
+                      expect(errors).toBe(undefined);
+                    } else {
+                      expect(data).toEqual({ [updateMutationName]: null });
+                      if (mod.neverNull) {
+                        const message = `Input error: ${mod.name} fields cannot be set to null`;
+                        expectResolverError('dev', false, false, errors, [
+                          {
+                            path: [updateMutationName],
+                            messages: [`Test.${fieldName}: ${message}`],
+                            debug: [
+                              {
+                                message,
+                                stacktrace: expect.stringMatching(
+                                  new RegExp(`Error: ${message}\n`)
+                                ),
+                              },
+                            ],
+                          },
+                        ]);
+                      } else {
+                        expectValidationError(errors, [
+                          {
+                            path: [updateMutationName],
+                            messages: [`Test.${fieldName}: ${humanize(fieldName)} is required`],
+                          },
+                        ]);
+                      }
+                    }
                   })
                 )
               );
@@ -200,7 +232,7 @@ testModules
                 'Updating without this field',
                 keystoneTestWrapper(
                   withHelpers(async ({ context, items, listKey }) => {
-                    const data = await context.lists[listKey].updateOne({
+                    const data = await context.query[listKey].updateOne({
                       where: { id: items[0].id },
                       data: { name: 'Updated value' },
                       query,
@@ -223,7 +255,7 @@ testModules
               'Delete',
               keystoneTestWrapper(
                 withHelpers(async ({ context, items, listKey }) => {
-                  const data = await context.lists[listKey].deleteOne({
+                  const data = await context.query[listKey].deleteOne({
                     where: { id: items[0].id },
                     query,
                   });
@@ -233,7 +265,7 @@ testModules
                     subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                   ).toEqual(subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]);
 
-                  const allItems = await context.lists[listKey].findMany({ query });
+                  const allItems = await context.query[listKey].findMany({ query });
                   expect(allItems).toEqual(expect.not.arrayContaining([data]));
                 })
               )

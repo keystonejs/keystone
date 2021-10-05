@@ -13,14 +13,18 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
       field.displayMode === 'textarea' ? (
         <TextArea
           autoFocus={autoFocus}
-          onChange={event => onChange(event.target.value)}
-          value={value}
+          onChange={event => {
+            onChange({ ...value, inner: { kind: 'value', value: event.target.value } });
+          }}
+          value={value.inner.kind === 'null' ? '' : value.inner.value}
         />
       ) : (
         <TextInput
           autoFocus={autoFocus}
-          onChange={event => onChange(event.target.value)}
-          value={value}
+          onChange={event => {
+            onChange({ ...value, inner: { kind: 'value', value: event.target.value } });
+          }}
+          value={value.inner.kind === 'null' ? '' : value.inner.value}
         />
       )
     ) : (

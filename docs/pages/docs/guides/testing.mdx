@@ -67,11 +67,11 @@ This includes things like access control, hooks, virtual fields, and GraphQL API
 ### Context API
 
 The [context API](../apis/context) lets you easily manipulate data in your system.
-We can use the [list items API](../apis/list-items) to ensure that we can do basic CRUD operations.
+We can use the [Query API](../apis/query) to ensure that we can do basic CRUD operations.
 
 ```typescript
 runner(async ({ context }) => {
-  const person = await context.lists.Person.createOne({
+  const person = await context.query.Person.createOne({
     data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
     query: 'id name email password { isSet }',
   });
@@ -98,7 +98,7 @@ runner(async ({ context }) => {
   expect(errors).toHaveLength(1);
   expect(errors[0].path).toEqual(['createPerson']);
   expect(errors[0].message).toEqual(
-    'You provided invalid data for this operation.\n  - Person.name: Required field "name" is null or undefined.'
+    'You provided invalid data for this operation.\n  - Person.name: Name must not be empty'
   );
 })
 ```
@@ -110,7 +110,7 @@ In the example below, the access control only allows users to update their own t
 ```
 runner(async ({ context }) => {
   // Create some users
-  const [alice, bob] = await context.lists.Person.createMany({
+  const [alice, bob] = await context.query.Person.createMany({
     data: [
       { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
       { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
@@ -118,7 +118,7 @@ runner(async ({ context }) => {
   });
 
   // Create a task assigned to Alice
-  const task = await context.lists.Task.createOne({
+  const task = await context.query.Task.createOne({
     data: {
       label: 'Experiment with Keystone',
       priority: 'high',
@@ -141,7 +141,9 @@ runner(async ({ context }) => {
   expect(data!.updateTask).toBe(null);
   expect(errors).toHaveLength(1);
   expect(errors![0].path).toEqual(['updateTask']);
-  expect(errors![0].message).toEqual('You do not have access to this resource');
+  expect(errors![0].message).toEqual(
+    `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
+  );
 })
 ```
 
@@ -255,10 +257,10 @@ describe('Example tests using test environment', () => {
     The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
   </Well>
   <Well
-    heading="List Items API Reference"
-    href="/docs/apis/list-items"
+    heading="Query API Reference"
+    href="/docs/apis/query"
     >
-    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.lists.&lt;listName&gt;</InlineCode>.
+    A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at <InlineCode>context.query.&lt;listName&gt;</InlineCode>.
   </Well>
 </RelatedContent>
 

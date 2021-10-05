@@ -92,20 +92,20 @@ function ItemForm({
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(list.fields, itemGetter);
-    return { value, item: itemGetter.data };
+    return { value, item: itemGetter };
   });
   if (
     !loading &&
-    state.item !== itemGetter.data &&
+    state.item.data !== itemGetter.data &&
     (itemGetter.errors || []).every(x => x.path?.length !== 1)
   ) {
     const value = deserializeValue(list.fields, itemGetter);
-    setValue({ value, item: itemGetter.data });
+    setValue({ value, item: itemGetter });
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
     list.fields,
-    itemGetter,
+    state.item,
     state.value
   );
 
@@ -118,7 +118,7 @@ function ItemForm({
     setForceValidation(newForceValidation);
     if (newForceValidation) return;
 
-    update({ variables: { data: dataForUpdate, id: itemGetter.get('id').data } })
+    update({ variables: { data: dataForUpdate, id: state.item.get('id').data } })
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
       // out below. If we're happy with this, clean up the unused lines.
       .then(({ /* data, */ errors }) => {
@@ -145,8 +145,8 @@ function ItemForm({
         toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message });
       });
   });
-  const labelFieldValue = itemGetter.data?.[list.labelField];
-  const itemId = itemGetter.data?.id!;
+  const labelFieldValue = state.item.data?.[list.labelField];
+  const itemId = state.item.data?.id!;
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
@@ -172,7 +172,10 @@ function ItemForm({
         onSave={onSave}
         hasChangedFields={!!changedFields.size}
         onReset={useEventCallback(() => {
-          setValue({ item: itemGetter.data, value: deserializeValue(list.fields, itemGetter) });
+          setValue(state => ({
+            item: state.item,
+            value: deserializeValue(list.fields, state.item),
+          }));
         })}
         loading={loading}
         deleteButton={useMemo(
@@ -272,9 +275,15 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const { palette, spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
-    let selectedFields = Object.keys(list.fields)
-      .map(fieldPath => {
-        return list.fields[fieldPath].controller.graphqlSelection;
+    let selectedFields = Object.entries(list.fields)
+      .filter(
+        ([fieldKey, field]) =>
+          field.itemView.fieldMode !== 'hidden' ||
+          // the id field is hidden but we still need to fetch it
+          fieldKey === 'id'
+      )
+      .map(([fieldKey]) => {
+        return list.fields[fieldKey].controller.graphqlSelection;
       })
       .join('\n');
     return {

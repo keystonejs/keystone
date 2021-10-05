@@ -1,7 +1,8 @@
 import globby from 'globby';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { humanize } from '@keystone-next/keystone/src/lib/utils';
 import { apiTestConfig, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -39,21 +40,23 @@ testModules
 
         const runner = setupTestRunner({
           config: apiTestConfig({
-            lists: createSchema({
+            lists: {
               Test: list({
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
-                    isRequired: true,
+                    validation: { isRequired: true },
                     ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                   }),
                 },
               }),
-            }),
+            },
             images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
             files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           }),
         });
+
+        const messages = [`Test.testField: ${humanize('testField')} is required`];
 
         test(
           'Create an object without the required field',
@@ -68,7 +71,27 @@ testModules
             expectValidationError(errors, [
               {
                 path: ['createTest'],
-                messages: ['Test.testField: Required field "testField" is null or undefined.'],
+                messages:
+                  mod.name === 'Text' ? ['Test.testField: Test Field must not be empty'] : messages,
+              },
+            ]);
+          })
+        );
+
+        test(
+          'Create an object with an explicit null value',
+          runner(async ({ context }) => {
+            const { data, errors } = await context.graphql.raw({
+              query: `
+                  mutation {
+                    createTest(data: { name: "test entry", testField: null } ) { id }
+                  }`,
+            });
+            expect(data).toEqual({ createTest: null });
+            expectValidationError(errors, [
+              {
+                path: ['createTest'],
+                messages,
               },
             ]);
           })
@@ -77,7 +100,7 @@ testModules
         test(
           'Update an object with the required field having a null value',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
@@ -93,7 +116,7 @@ testModules
             expectValidationError(errors, [
               {
                 path: ['updateTest'],
-                messages: ['Test.testField: Required field "testField" is null or undefined.'],
+                messages,
               },
             ]);
           })
@@ -102,13 +125,13 @@ testModules
         test(
           'Update an object without the required field',
           runner(async ({ context }) => {
-            const data0 = await context.lists.Test.createOne({
+            const data0 = await context.query.Test.createOne({
               data: {
                 name: 'test entry',
                 testField: mod.exampleValue(matrixValue),
               },
             });
-            const data = await context.lists.Test.updateOne({
+            const data = await context.query.Test.updateOne({
               where: { id: data0.id },
               data: { name: 'updated test entry' },
               query: 'id name',

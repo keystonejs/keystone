@@ -18,16 +18,17 @@ export async function runSideEffectOnlyHook<
   },
   Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
 >(list: List, hookName: HookName, args: Args) {
-  // Runs the before/after change/delete hooks
+  // Runs the before/after operation hooks
 
-  // Only run field hooks on change operations if the field
-  // was specified in the original input.
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
-  if (hookName === 'beforeChange' || hookName === 'afterChange') {
-    const originalInputKeys = new Set(Object.keys(args.originalInput));
-    shouldRunFieldLevelHook = fieldKey => originalInputKeys.has(fieldKey);
-  } else {
+  if (args.operation === 'delete') {
+    // Always run field hooks for delete operations
     shouldRunFieldLevelHook = () => true;
+  } else {
+    // Only run field hooks on if the field was specified in the
+    // original input for create and update operations.
+    const inputDataKeys = new Set(Object.keys(args.inputData));
+    shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey);
   }
 
   // Field hooks
@@ -37,7 +38,7 @@ export async function runSideEffectOnlyHook<
       try {
         await field.hooks[hookName]?.({ fieldKey, ...args });
       } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
       }
     }
   }
@@ -49,6 +50,6 @@ export async function runSideEffectOnlyHook<
   try {
     await list.hooks[hookName]?.(args);
   } catch (error: any) {
-    throw extensionError(hookName, [{ error, tag: list.listKey }]);
+    throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }]);
   }
 }

@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-next/keystone';
 import {
   text,
   relationship,
@@ -12,7 +12,7 @@ import {
 } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneListsAPI, graphql } from '@keystone-next/keystone/types';
+import { KeystoneListsAPI } from '@keystone-next/keystone/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
@@ -34,7 +34,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-export const lists = createSchema({
+export const lists = {
   User: list({
     ui: {
       listView: {
@@ -43,9 +43,9 @@ export const lists = createSchema({
     },
     fields: {
       /** The user's first and last name. */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /** Email is used to log into the system. */
-      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
@@ -143,6 +143,10 @@ export const lists = createSchema({
         ui: {
           displayMode: 'segmented-control',
         },
+        validation: {
+          isRequired: true,
+        },
+        defaultValue: 'draft',
       }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
@@ -186,7 +190,7 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: gql`
@@ -214,8 +218,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
         // note this usage of the type is important because it tests that the generated
         // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-        const lists = context.lists as KeystoneListsAPI<KeystoneListsTypeInfo>;
-        return lists.Post.createMany({ data });
+        const query = context.query as KeystoneListsAPI<KeystoneListsTypeInfo>;
+        return query.Post.createMany({ data });
       },
     },
     Query: {

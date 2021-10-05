@@ -7,26 +7,27 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model Todo {
-  id           String   @id @default(cuid())
-  label        String?
-  isComplete   Boolean?
-  isPrivate    Boolean?
-  assignedTo   Person?  @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId String?  @map("assignedTo")
+  id           String  @id @default(cuid())
+  label        String  @default("")
+  isComplete   Boolean @default(false)
+  isPrivate    Boolean @default(false)
+  assignedTo   Person? @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId String? @map("assignedTo")
 
   @@index([assignedToId])
 }
 
 model Person {
   id       String  @id @default(cuid())
-  name     String?
-  email    String? @unique
-  password String?
+  name     String  @default("")
+  email    String  @unique @default("")
+  password String
   role     Role?   @relation("Person_role", fields: [roleId], references: [id])
   roleId   String? @map("role")
   tasks    Todo[]  @relation("Todo_assignedTo")
@@ -36,12 +37,12 @@ model Person {
 
 model Role {
   id                 String   @id @default(cuid())
-  name               String?
-  canCreateTodos     Boolean?
-  canManageAllTodos  Boolean?
-  canSeeOtherPeople  Boolean?
-  canEditOtherPeople Boolean?
-  canManagePeople    Boolean?
-  canManageRoles     Boolean?
+  name               String   @default("")
+  canCreateTodos     Boolean  @default(false)
+  canManageAllTodos  Boolean  @default(false)
+  canSeeOtherPeople  Boolean  @default(false)
+  canEditOtherPeople Boolean  @default(false)
+  canManagePeople    Boolean  @default(false)
+  canManageRoles     Boolean  @default(false)
   assignedTo         Person[] @relation("Person_role")
 }

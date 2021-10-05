@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, password, relationship, text } from '@keystone-next/keystone/fields';
 
 import { isSignedIn, permissions, rules } from './access';
@@ -12,7 +12,7 @@ import { isSignedIn, permissions, rules } from './access';
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists = createSchema({
+export const lists = {
   Todo: list({
     /*
       SPEC
@@ -48,7 +48,7 @@ export const lists = createSchema({
     },
     fields: {
       /* The label of the todo item */
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       /* Whether the todo item is complete */
       isComplete: checkbox({ defaultValue: false }),
       /* Private todo items are only visible to the user they are assigned to */
@@ -64,9 +64,16 @@ export const lists = createSchema({
             fieldMode: args => (permissions.canManageAllTodos(args) ? 'edit' : 'read'),
           },
         },
-        // Always default new todo items to the current user; this is important because users
-        // without canManageAllTodos don't see this field when creating new items
-        defaultValue: ({ context: { session } }) => ({ connect: { id: session.itemId } }),
+        hooks: {
+          resolveInput({ operation, resolvedData, context }) {
+            if (operation === 'create' && !resolvedData.assignedTo) {
+              // Always default new todo items to the current user; this is important because users
+              // without canManageAllTodos don't see this field when creating new items
+              return { connect: { id: context.session.itemId } };
+            }
+            return resolvedData.assignedTo;
+          },
+        },
       }),
     },
   }),
@@ -111,12 +118,12 @@ export const lists = createSchema({
     },
     fields: {
       /* The name of the user */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /* The email of the user, used to sign in */
-      email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       /* The password of the user */
       password: password({
-        isRequired: true,
+        validation: { isRequired: true },
         access: {
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session.itemId === item.id,
@@ -190,7 +197,7 @@ export const lists = createSchema({
     },
     fields: {
       /* The name of the role */
-      name: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
       /* Create Todos means:
          - create todos (can only assign them to others with canManageAllTodos) */
       canCreateTodos: checkbox({ defaultValue: false }),
@@ -221,4 +228,4 @@ export const lists = createSchema({
       }),
     },
   }),
-});
+};

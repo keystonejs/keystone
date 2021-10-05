@@ -3,7 +3,7 @@ import { text } from '@keystone-next/keystone/fields';
 
 export const Post = list({
   fields: {
-    title: text({ isRequired: true }),
+    title: text({ validation: { isRequired: true } }),
     slug: text(),
     content: text(),
   },

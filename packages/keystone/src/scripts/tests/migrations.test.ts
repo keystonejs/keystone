@@ -56,9 +56,7 @@ async function getGeneratedMigration(
   const migrations: {
     migration_name: string;
     finished_at: string;
-  }[] = await prismaClient.$queryRaw(
-    'SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC'
-  );
+  }[] = await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
   await prismaClient.$disconnect();
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
@@ -86,13 +84,14 @@ async function setupInitialProjectWithoutMigrations() {
 }
 
 model Todo {
-  id    String  @id
-  title String?
+  id    String @id
+  title String @default("")
 }
 `);
 
   expect(recording()).toEqual(`✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ Your database is now in sync with your schema. Done in 0ms
@@ -114,7 +113,8 @@ describe('useMigrations: false', () => {
 
     expect(recording()).toMatchInlineSnapshot(`
 "✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ The database is already in sync with the Prisma schema.
 ✨ Connecting to the database
@@ -154,7 +154,8 @@ describe('useMigrations: false', () => {
     `);
     expect(recording()).toMatchInlineSnapshot(`
 "✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 
 ⚠️  Warnings:
@@ -193,14 +194,15 @@ Prompt: Do you want to continue? Some data will be lost. true
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
 
       ⚠️  Warnings:
@@ -227,7 +229,8 @@ Prompt: Do you want to continue? Some data will be lost. true
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database has been reset
       ✨ Your database is now in sync with your schema. Done in 0ms
@@ -255,8 +258,8 @@ async function setupInitialProjectWithMigrations() {
 }
 
 model Todo {
-  id    String  @id
-  title String?
+  id    String @id
+  title String @default("")
 }
 `);
 
@@ -265,12 +268,13 @@ model Todo {
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "title" TEXT
+    "title" TEXT NOT NULL DEFAULT ''
 );
 `);
 
   expect(recording().replace(migrationName, 'migration_name')).toEqual(`✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
+⭐️ Dev Server Starting on http://localhost:3000
+⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ There has been a change to your Keystone schema that requires a migration
@@ -320,9 +324,9 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id         String   @id
-        title      String?
-        isComplete Boolean?
+        id         String  @id
+        title      String  @default(\\"\\")
+        isComplete Boolean @default(false)
       }
       "
     `);
@@ -330,14 +334,25 @@ describe('useMigrations: true', () => {
     const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete');
 
     expect(migration).toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT NOT NULL DEFAULT '',
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -410,7 +425,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -449,8 +465,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -461,7 +477,7 @@ describe('useMigrations: true', () => {
       "-- CreateTable
       CREATE TABLE \\"Todo\\" (
           \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT
+          \\"title\\" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
@@ -472,7 +488,8 @@ describe('useMigrations: true', () => {
         .replace(oldMigrationName, 'old_migration_name')
     ).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
@@ -519,7 +536,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
@@ -567,8 +585,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -580,14 +598,25 @@ describe('useMigrations: true', () => {
     );
     expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
       .toMatchInlineSnapshot(`
-      "-- AlterTable
-      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "-- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" TEXT NOT NULL PRIMARY KEY,
+          \\"title\\" TEXT NOT NULL DEFAULT '',
+          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
       "
     `);
 
     expect(recording().replace(migrationName!, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ There has been a change to your Keystone schema that requires a migration
 
@@ -615,8 +644,8 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    String  @id
-        title String?
+        id    String @id
+        title String @default(\\"\\")
       }
       "
     `);
@@ -625,7 +654,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ sqlite database \\"app.db\\" created at file:./app.db
       ✨ The following migration(s) have been applied:
@@ -658,7 +688,8 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database has been reset
       ✨ The following migration(s) have been applied:
@@ -679,7 +710,8 @@ describe('useMigrations: true', () => {
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database is up to date, no migrations need to be created or applied
       ✨ Connecting to the database

@@ -27,7 +27,7 @@ type CreateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = B
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput: GeneratedListTypes['inputs']['create'];
+  inputData: GeneratedListTypes['inputs']['create'];
 };
 
 export type CreateListItemAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -43,7 +43,7 @@ type UpdateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = B
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput: GeneratedListTypes['inputs']['update'];
+  inputData: GeneratedListTypes['inputs']['update'];
 };
 
 export type UpdateListItemAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -121,7 +121,7 @@ export type FieldCreateItemAccessArgs<GeneratedListTypes extends BaseGeneratedLi
   CreateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };
 
 export type FieldReadItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
-  BaseAccessArgs & { fieldKey: string; item: GeneratedListTypes['backing'] };
+  BaseAccessArgs & { operation: 'read'; fieldKey: string; item: GeneratedListTypes['backing'] };
 
 export type FieldUpdateItemAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> =
   UpdateItemAccessArgs<GeneratedListTypes> & { fieldKey: string };

@@ -22,7 +22,7 @@ describe(`Field access`, () => {
 
     items = {};
     for (const [listKey, _items] of Object.entries(initialData)) {
-      items[listKey] = (await context.sudo().lists[listKey].createMany({
+      items[listKey] = (await context.sudo().query[listKey].createMany({
         data: _items,
         query: 'id, name',
       })) as { id: IdType; name: string }[];
@@ -38,7 +38,7 @@ describe(`Field access`, () => {
         const item = items[listKey][0];
         const fieldName = getFieldName(access);
         const singleQueryName = context.gqlNames(listKey).itemQueryName;
-        await context.sudo().lists[listKey].updateOne({
+        await context.sudo().query[listKey].updateOne({
           where: { id: item.id },
           data: { [fieldName]: 'hello' },
         });
@@ -55,7 +55,7 @@ describe(`Field access`, () => {
         const item = items[listKey][0];
         const fieldName = getFieldName(access);
         const allQueryName = context.gqlNames(listKey).listQueryName;
-        await context.sudo().lists[listKey].updateOne({
+        await context.sudo().query[listKey].updateOne({
           where: { id: item.id },
           data: { [fieldName]: 'hello' },
         });
@@ -71,7 +71,7 @@ describe(`Field access`, () => {
           });
         } else {
           expect(data![allQueryName]).toHaveLength(2);
-          expect(data![allQueryName]).toContainEqual({ id: expect.any(String), [fieldName]: null });
+          expect(data![allQueryName]).toContainEqual({ id: expect.any(String), [fieldName]: '' });
           expect(data![allQueryName]).toContainEqual({ id: item.id, [fieldName]: 'hello' });
         }
       });
@@ -87,7 +87,12 @@ describe(`Field access`, () => {
         const { data, errors } = await context.graphql.raw({ query });
         if (!access.create) {
           expect(data).toEqual({ [createMutationName]: null });
-          expectAccessDenied('dev', false, undefined, errors, [{ path: [createMutationName] }]);
+          expectAccessDenied(errors, [
+            {
+              path: [createMutationName],
+              msg: `You cannot perform the 'create' operation on the item '{"${fieldName}":"bar"}'. You cannot create the fields ["${fieldName}"].`,
+            },
+          ]);
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {
@@ -116,7 +121,12 @@ describe(`Field access`, () => {
         const { data, errors } = await context.graphql.raw({ query });
         if (!access.update) {
           expect(data).toEqual({ [updateMutationName]: null });
-          expectAccessDenied('dev', false, undefined, errors, [{ path: [updateMutationName] }]);
+          expectAccessDenied(errors, [
+            {
+              path: [updateMutationName],
+              msg: `You cannot perform the 'update' operation on the item '{"id":"${item.id}"}'. You cannot update the fields ["${fieldName}"].`,
+            },
+          ]);
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {
