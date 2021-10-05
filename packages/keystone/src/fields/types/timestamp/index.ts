@@ -57,7 +57,7 @@ export const timestamp =
         ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue;
 
-    const resolvedIsNullable = getResolvedIsNullable(config);
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
 
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
 

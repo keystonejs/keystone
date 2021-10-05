@@ -75,7 +75,7 @@ export const select =
   }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
-    const resolvedIsNullable = getResolvedIsNullable({ ...config, validation });
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
 
     assertCreateIsNonNullAllowed(meta, config);

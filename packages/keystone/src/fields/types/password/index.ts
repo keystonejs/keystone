@@ -83,7 +83,7 @@ export const password =
       },
     };
 
-    const isNullable = getResolvedIsNullable({ ...config, validation });
+    const isNullable = getResolvedIsNullable(validation, config.db);
 
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type];

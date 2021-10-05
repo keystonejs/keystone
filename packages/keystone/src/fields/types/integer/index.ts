@@ -55,7 +55,7 @@ export const integer =
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement';
 
-    const isNullable = getResolvedIsNullable(config);
+    const isNullable = getResolvedIsNullable(validation, config.db);
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite') {

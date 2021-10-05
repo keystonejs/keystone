@@ -84,7 +84,7 @@ export const float =
       );
     }
 
-    const isNullable = getResolvedIsNullable(config);
+    const isNullable = getResolvedIsNullable(validation, config.db);
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
 

@@ -18,14 +18,14 @@ export function hasCreateAccessControl(
   return typeof access === 'function' || typeof access.create === 'function';
 }
 
-export function getResolvedIsNullable(config: {
-  validation?: { isRequired?: boolean };
-  db?: { isNullable?: boolean };
-}): boolean {
-  if (config.db?.isNullable === false) {
+export function getResolvedIsNullable(
+  validation: undefined | { isRequired?: boolean },
+  db: undefined | { isNullable?: boolean }
+): boolean {
+  if (db?.isNullable === false) {
     return false;
   }
-  if (config.db?.isNullable === undefined && config.validation?.isRequired) {
+  if (db?.isNullable === undefined && validation?.isRequired) {
     return false;
   }
   return true;

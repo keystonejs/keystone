@@ -104,7 +104,7 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, defaultValue, 'defaultValue');
 
-    const isNullable = getResolvedIsNullable(config);
+    const isNullable = getResolvedIsNullable(validation, config.db);
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
 
