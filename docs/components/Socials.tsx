@@ -4,6 +4,7 @@ import { jsx } from '@emotion/react';
 import { HTMLAttributes } from 'react';
 
 import { Twitter } from './icons/Twitter';
+import { YouTube } from './icons/YouTube';
 import { Slack } from './icons/Slack';
 
 export function Socials(props: HTMLAttributes<HTMLElement>) {
@@ -11,7 +12,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
     <div
       css={{
         display: 'inline-grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 1fr',
         gap: 'var(--space-large)',
         alignItems: 'center',
         marginLeft: 'auto',
@@ -66,6 +67,24 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
         }}
       >
         <Slack css={{ height: '1.5em' }} />
+      </a>
+      <a
+        href="https://www.youtube.com/channel/UClWScN0YMgpN7swHVaEPKuQ"
+        target="_blank"
+        rel="noopener noreferrer"
+        css={{
+          display: 'inline-flex',
+          padding: 0,
+          justifyContent: 'center',
+          borderRadius: '100%',
+          color: 'currentColor',
+          transition: 'color 0.3s ease',
+          ':hover': {
+            color: '#fb0202',
+          },
+        }}
+      >
+        <YouTube css={{ height: '2em' }} />
       </a>
     </div>
   );

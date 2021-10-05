@@ -504,9 +504,9 @@ export const componentBlocks = {
 
 ### Fields
 
-There are a variety
+There are a variety of fields you can configure.
 
-#### Child Fields
+{/* TBC: ### Child Fields */}
 
 #### Form Fields
 
@@ -637,29 +637,30 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 
 > You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
 
-### Preview Props
+{/* TBC: ### Preview Props */}
 
 ### Chromeless
 
-If you want to give your component blocks a more native feel in the editor, you can set `chromeless: true` to disable Keystone's standard generated edit form. In the [document editor demo](/docs/guides/document-field-demo), the Notice and Quote blocks are chromeless, but the Hero block has the standard chrome styling:
+If you want to hide the default UI around your component block, you can set `chromeless: true`. This removes the border, toolbar, and generated form.
 
-![Notice, Quote, and Hero component blocks demonstrating chrome, and chromeless styling](/assets/guides/document-fields/chomeless-example-docs-demo.png)
-
-You will likely want to provide a custom [toolbar](#toolbar) when you set `chromeless: true`.
-
-```tsx
-component({
-  chromeless: false,
-});
+```jsx
+quote: component({
+  component: ({ attribution, content }) => {
+    ...
+  },
+  label: 'Quote',
+  props: {
+    ...
+  },
+  chromeless: true,
+}),
 ```
 
-### Toolbar
+You can see the differences between each below:
 
-```tsx
-component({
-  chromeless: false,
-});
-```
+![Quote component blocks demonstrating chrome, and chromeless styling](/assets/guides/document-fields/chomeless-example-docs-demo.png)
+
+In the [document editor demo](/docs/guides/document-field-demo), the Notice and Quote blocks are chromeless, but the Hero block has the standard chrome styling.
 
 ### Rendering Component blocks
 

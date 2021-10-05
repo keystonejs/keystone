@@ -167,6 +167,130 @@ export default function WhyKeystonePage() {
         </Quote>
 
         <Section>
+          <Type as="h2" look="heading30">
+            Made for teams
+          </Type>
+          <Type
+            as="p"
+            look="body18"
+            color="var(--muted)"
+            css={{ maxWidth: '34rem', margin: '1rem 0' }}
+          >
+            It takes a village to build and nurture great digital experiences. Keystone enables a
+            content culture where everybody gets what they need to do their best work.
+          </Type>
+          <div
+            css={mq({
+              display: 'grid',
+              gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr'],
+              gap: ['1rem', '2rem', '2.5rem', null],
+              alignItems: 'stretch',
+              marginTop: '2.5rem',
+              '& > a': {
+                borderRadius: '1rem',
+                boxShadow: '0 0 5px var(--shadow)',
+                padding: '1.5rem',
+                color: 'var(--app-bg)',
+                transition: 'box-shadow 0.2s ease, transform 0.2s ease, padding 0.2s ease',
+                textDecoration: 'none !important',
+                '&:hover, &:focus': {
+                  boxShadow: '0 7px 21px var(--shadow)',
+                  transform: 'translateY(-4px)',
+                },
+                '& svg': {
+                  height: '2rem',
+                },
+              },
+            })}
+          >
+            <Link href="/for-developers" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad3-2), var(--grad3-1))`,
+                }}
+              >
+                <Code />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  Developer Experience →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  Built the way you’d want it made. Keystone fits with the tools you know and love.
+                </Type>
+              </a>
+            </Link>
+            <Link href="/for-content-management" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad5-2), var(--grad5-1))`,
+                }}
+              >
+                <Content />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  Editor Experience →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  The configurable editing environment you need to do your best work.
+                </Type>
+              </a>
+            </Link>
+            <Link href="/for-organisations" passHref>
+              <a
+                css={{
+                  backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+                }}
+              >
+                <Organization />
+                <Type
+                  as="h2"
+                  look="heading20bold"
+                  css={{
+                    margin: '.5rem 0 .5rem 0 !important',
+                    color: 'inherit',
+                  }}
+                >
+                  For Organisations →
+                </Type>
+                <Type
+                  as="p"
+                  look="body18"
+                  css={{
+                    color: 'inherit',
+                  }}
+                >
+                  Own your data. Start fast. Find your audience anywhere. Scale on your terms.
+                </Type>
+              </a>
+            </Link>
+          </div>
+        </Section>
+
+        <Section>
           <Pill grad="grad2" id="features">
             Features
           </Pill>
@@ -538,80 +662,6 @@ export default function WhyKeystonePage() {
             perfect balance of reliability and flexibility for backend work.
           </TweetBox>
         </Section>
-
-        <Section>
-          <Type as="h2" look="heading48">
-            We made this <Highlight look="grad2">for you</Highlight>
-          </Type>
-          <Type as="p" look="body20" margin="0.5rem 0 1.5rem 0" css={{ maxWidth: '37.5rem' }}>
-            Learn more about why Keystone is a great fit for your entire team:
-          </Type>
-          <ul
-            css={mq({
-              display: 'grid',
-              gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
-              gap: '3rem',
-              listStyle: 'none',
-              padding: 0,
-              margin: ['3rem auto 0 auto', '3rem 0 0 0'],
-              maxWidth: ['20rem', 'none'],
-              '& svg': {
-                height: '3rem',
-              },
-              '& svg, & h3, & p': {
-                marginBottom: '1rem',
-              },
-            })}
-          >
-            <li>
-              <Code grad="grad2" />
-              <Type as="h3" look="heading24">
-                Developers
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Backend superpowers for frontend devs. Built the way you’d want it made, Keystone is
-                at home with the tools you know and love.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-developers">
-                  <a>Keystone for Developers →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Content grad="grad2" />
-              <Type as="h3" look="heading24">
-                Content people
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Get the fields, forms, and workflows you need to do your best work. Tell the full
-                story with a rich text editor that can be configured for any content need.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-content-management">
-                  <a>Keystone for Content Management →</a>
-                </Link>
-              </Type>
-            </li>
-            <li>
-              <Organization grad="grad2" />
-              <Type as="h3" look="heading24">
-                Organisations
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)">
-                Realise your vision with a backend you can shape to fit your logic. Own your data,
-                cultivate a productive content culture, send your message anywhere, and scale on
-                your terms.
-              </Type>
-              <Type as="p" look="body18">
-                <Link href="/for-organisations">
-                  <a>Keystone for Organisations →</a>
-                </Link>
-              </Type>
-            </li>
-          </ul>
-        </Section>
-
         <EndCta grad="grad2" />
       </MWrapper>
     </Page>
