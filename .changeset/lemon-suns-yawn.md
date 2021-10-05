@@ -2,4 +2,4 @@
 '@keystone-next/fields-document': patch
 ---
 
-Updated package to accomodate changes to the RelationshipSelect.
+Updated package to accommodate changes to the RelationshipSelect.
