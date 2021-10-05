@@ -528,6 +528,8 @@ export const controller = (
           },
         };
 
+        console.log(state);
+
         return (
           <RelationshipSelect
             controlShouldRenderValue
@@ -680,7 +682,7 @@ function useRelationshipFilterValues({ value, list }: { value: string; list: Lis
       data?.items?.map((item: any) => {
         return {
           id: item.id,
-          label: item[list.labelField],
+          label: item[list.labelField] || item.id,
         };
       }) || foreignIds.map(f => ({ label: f, id: f })),
     loading: loading,
