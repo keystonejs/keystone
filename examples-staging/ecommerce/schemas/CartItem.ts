@@ -22,7 +22,6 @@ export const CartItem = list({
     // TODO: Custom Label in here
     quantity: integer({
       defaultValue: 1,
-      isNullable: false,
       validation: {
         isRequired: true,
       },
