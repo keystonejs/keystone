@@ -11,7 +11,11 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 
 export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
@@ -24,14 +28,9 @@ export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     scale?: number;
     defaultValue?: string;
     isIndexed?: boolean | 'unique';
-    graphql?: { create?: { isNonNull?: boolean } };
-  } & (
-      | { isNullable?: true }
-      | {
-          isNullable: false;
-          graphql?: { read?: { isNonNull?: boolean } };
-        }
-    );
+    graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
+    db?: { isNullable?: boolean };
+  };
 
 function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
   let decimal: Decimal;
@@ -105,12 +104,13 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, defaultValue, 'defaultValue');
 
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    const isNullable = getResolvedIsNullable(validation, config.db);
+
+    assertReadIsNonNullAllowed(meta, config, isNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = isNullable === false ? 'required' : 'optional';
 
     const index = isIndexed === true ? 'index' : isIndexed || undefined;
     const dbField = {
@@ -129,7 +129,7 @@ export const decimal =
         async validateInput(args) {
           const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey];
 
-          if (val === null && (validation?.isRequired || config.isNullable === false)) {
+          if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {
@@ -170,10 +170,7 @@ export const decimal =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.Decimal)
-            : graphql.Decimal,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Decimal) : graphql.Decimal,
         resolve({ value }) {
           if (value === null) {
             return null;

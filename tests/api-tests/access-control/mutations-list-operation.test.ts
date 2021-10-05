@@ -7,7 +7,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       BadAccess: list({
-        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        fields: { name: text() },
         access: {
           operation: {
             // @ts-ignore Intentionally return a filter for testing purposes

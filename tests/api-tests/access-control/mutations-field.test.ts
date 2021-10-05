@@ -28,7 +28,6 @@ const runner = setupTestRunner({
                 }
               },
             },
-            isOrderable: true,
           }),
           badAccess: text({
             access: {
@@ -39,7 +38,6 @@ const runner = setupTestRunner({
               // @ts-ignore Intentionally return a string for testing purposes
               update: () => 'non boolean value',
             },
-            isOrderable: true,
           }),
         },
       }),

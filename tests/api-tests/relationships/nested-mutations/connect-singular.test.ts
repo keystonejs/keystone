@@ -44,7 +44,7 @@ const runner = setupTestRunner({
       }),
       GroupNoCreate: list({
         fields: {
-          name: text({ isFilterable: true }),
+          name: text(),
         },
         access: {
           operation: { create: () => false },

@@ -97,19 +97,19 @@ const runner = setupTestRunner({
       Employee: list({
         fields: {
           name: text(),
-          company: relationship({ ref: 'Company.employees', many: false, isFilterable: true }),
-          role: relationship({ ref: 'Role', many: false, isFilterable: true }),
+          company: relationship({ ref: 'Company.employees', many: false }),
+          role: relationship({ ref: 'Role', many: false }),
         },
       }),
       Company: list({
         fields: {
           name: text(),
-          employees: relationship({ ref: 'Employee.company', many: true, isFilterable: true }),
+          employees: relationship({ ref: 'Employee.company', many: true }),
         },
       }),
       Role: list({
         fields: {
-          name: text({ isFilterable: true }),
+          name: text(),
           company: relationship({ ref: 'Company', many: false }),
           employees: relationship({ ref: 'Employee', many: true }),
         },

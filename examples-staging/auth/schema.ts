@@ -21,7 +21,7 @@ export const lists = {
       // The user's name
       name: text({ validation: { isRequired: true } }),
       // The user's email address, used as the identity field for auth
-      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       // The user's password, used as the secret field for auth
       password: password({
         access: {

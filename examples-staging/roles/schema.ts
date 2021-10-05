@@ -120,10 +120,9 @@ export const lists = {
       /* The name of the user */
       name: text({ validation: { isRequired: true } }),
       /* The email of the user, used to sign in */
-      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       /* The password of the user */
       password: password({
-        isNullable: false,
         validation: { isRequired: true },
         access: {
           update: ({ session, item }) =>

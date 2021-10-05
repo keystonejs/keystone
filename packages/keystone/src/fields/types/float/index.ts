@@ -9,14 +9,17 @@ import {
   filters,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: number;
     isIndexed?: boolean | 'unique';
-    isNullable?: boolean;
     validation?: {
       min?: number;
       max?: number;
@@ -26,14 +29,14 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
       create?: {
         isNonNull?: boolean;
       };
+      read?: {
+        isNonNull?: boolean;
+      };
     };
-  } & (
-      | { isNullable?: true; defaultValue?: number }
-      | {
-          isNullable: false;
-          graphql?: { read?: { isNonNull?: boolean } };
-        }
-    );
+    db?: {
+      isNullable?: boolean;
+    };
+  };
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -80,12 +83,13 @@ export const float =
       );
     }
 
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    const isNullable = getResolvedIsNullable(validation, config.db);
+
+    assertReadIsNonNullAllowed(meta, config, isNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = isNullable === false ? 'required' : 'optional';
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
@@ -103,7 +107,7 @@ export const float =
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
 
-          if ((validation?.isRequired || config.isNullable === false) && value === null) {
+          if ((validation?.isRequired || isNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 
@@ -150,10 +154,7 @@ export const float =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.Float)
-            : graphql.Float,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Float) : graphql.Float,
       }),
       views: resolveView('float/views'),
       getAdminMeta() {

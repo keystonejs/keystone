@@ -117,9 +117,12 @@ export const cloudinaryImage =
     const adapter = new CloudinaryAdapter(cloudinary);
     const resolveInput = async (
       uploadData: Promise<FileUpload> | undefined | null
-    ): Promise<StoredFile | undefined | null> => {
-      if (uploadData == null) {
-        return uploadData;
+    ): Promise<StoredFile | undefined | null | 'DbNull'> => {
+      if (uploadData === null) {
+        return meta.provider === 'postgresql' ? 'DbNull' : null;
+      }
+      if (uploadData === undefined) {
+        return undefined;
       }
 
       const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
