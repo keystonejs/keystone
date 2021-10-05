@@ -70,7 +70,7 @@ export const COLORS = {
     '--grad4-1': '#f87171',
     '--grad4-2': '#F68B27',
     '--grad5-1': '#EC4899',
-    '--grad5-2': '#F87171 ',
+    '--grad5-2': '#F87171',
   },
   dark: {
     '--theme': 'dark',
