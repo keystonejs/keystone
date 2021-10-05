@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "license": "MIT",
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
@@ -8,7 +8,7 @@
     "@babel/runtime": "^7.15.4",
     "@keystone-ui/button": "^5.0.1",
     "@keystone-ui/core": "^3.2.0",
-    "@keystone-ui/fields": "^4.1.3",
+    "@keystone-ui/fields": "^5.0.0",
     "@keystone-ui/pill": "^5.0.1",
     "@types/react": "^17.0.24",
     "cloudinary": "^1.27.0",
@@ -17,10 +17,10 @@
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^25.0.0"
+    "@keystone-next/keystone": "^26.0.0"
   },
   "devDependencies": {
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/keystone": "^26.0.0",
     "mime": "^2.5.2"
   },
   "engines": {

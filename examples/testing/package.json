@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-testing",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,8 +13,8 @@
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.15.0",
-    "@keystone-next/auth": "^32.0.0",
-    "@keystone-next/keystone": "^25.0.0"
+    "@keystone-next/auth": "^33.0.0",
+    "@keystone-next/keystone": "^26.0.0"
   },
   "devDependencies": {
     "babel-jest": "^27.2.3",

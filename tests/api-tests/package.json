@@ -2,7 +2,7 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "11.1.1",
+  "version": "11.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

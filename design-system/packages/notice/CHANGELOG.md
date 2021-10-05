@@ -1,5 +1,11 @@
 # @keystone-ui/notice
 
+## 4.1.0
+
+### Minor Changes
+
+- [#6508](https://github.com/keystonejs/keystone/pull/6508) [`3cfc2a383`](https://github.com/keystonejs/keystone/commit/3cfc2a3839142dd3ccdbf1dd86768257e9acc0dc) Thanks [@JedWatson](https://github.com/JedWatson)! - Add Margin to error messages in the Admin UI Item Form
+
 ## 4.0.2
 
 ### Patch Changes

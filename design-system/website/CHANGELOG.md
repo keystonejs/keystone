@@ -1,5 +1,16 @@
 # @keystone-ui/website
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`3cfc2a383`](https://github.com/keystonejs/keystone/commit/3cfc2a3839142dd3ccdbf1dd86768257e9acc0dc), [`6d3798fdb`](https://github.com/keystonejs/keystone/commit/6d3798fdbd0a9f1567821e90b7176cf7dd208fda), [`f963966ab`](https://github.com/keystonejs/keystone/commit/f963966ab138a315a8f18d83ed7a676f7423a51d), [`7f5caff60`](https://github.com/keystonejs/keystone/commit/7f5caff60308112ded832db4703f33eaae00ce24), [`409fd04b8`](https://github.com/keystonejs/keystone/commit/409fd04b8c8b9a847ec288972dc8918c7604f011)]:
+  - @keystone-ui/notice@4.1.0
+  - @keystone-ui/popover@4.0.4
+  - @keystone-ui/fields@5.0.0
+  - @keystone-ui/segmented-control@5.0.0
+  - @keystone-ui/options@4.0.3
+
 ## 3.0.2
 
 ### Patch Changes

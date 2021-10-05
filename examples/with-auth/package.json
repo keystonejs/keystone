@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-with-auth",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/auth": "^32.0.0",
-    "@keystone-next/keystone": "^25.0.0"
+    "@keystone-next/auth": "^33.0.0",
+    "@keystone-next/keystone": "^26.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.3"

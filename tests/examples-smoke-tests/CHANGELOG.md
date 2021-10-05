@@ -1,5 +1,11 @@
 # @keystonejs/examples-smoke-tests
 
+## 2.0.1
+
+### Patch Changes
+
+- [#6634](https://github.com/keystonejs/keystone/pull/6634) [`be039eca4`](https://github.com/keystonejs/keystone/commit/be039eca4b99a39d4016d2b38783631ad9e1a6fe) Thanks [@JedWatson](https://github.com/JedWatson)! - REST API example
+
 ## 2.0.0
 
 ### Major Changes

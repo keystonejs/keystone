@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/session-store-redis",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "license": "MIT",
   "main": "dist/session-store-redis.cjs.js",
   "module": "dist/session-store-redis.esm.js",
@@ -12,10 +12,10 @@
     "@types/redis": "^2.8.32"
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^25.0.0"
+    "@keystone-next/keystone": "^26.0.0"
   },
   "devDependencies": {
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/keystone": "^26.0.0",
     "redis": "^3.1.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/session-store-redis"
