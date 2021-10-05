@@ -689,7 +689,7 @@ function useRelationshipFilterValues({ value, list }: { value: string; list: Lis
           id: item.id,
           label: item[list.labelField],
         };
-      }) || foreignIds,
+      }) || foreignIds.map(f => ({ label: f, id: f })),
     loading: loading,
   };
 }
