@@ -22,7 +22,6 @@ export function getResolvedIsNullable(config: {
   validation?: { isRequired?: boolean };
   db?: { isNullable?: boolean };
 }): boolean {
-  console.log(config.db?.isNullable, config.validation?.isRequired);
   if (config.db?.isNullable === false) {
     return false;
   }
