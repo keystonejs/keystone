@@ -143,7 +143,6 @@ export const lists = {
         ui: {
           displayMode: 'segmented-control',
         },
-        isNullable: false,
         validation: {
           isRequired: true,
         },

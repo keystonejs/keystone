@@ -1,7 +1,7 @@
 import { integer } from '../..';
 
 export const name = 'Integer with isNullable: false';
-export const typeFunction = (x: any) => integer({ isNullable: false, ...x });
+export const typeFunction = (x: any) => integer({ ...x, db: { isNullable: false } });
 export const exampleValue = () => 37;
 export const exampleValue2 = () => 38;
 export const supportsGraphQLIsNonNull = true;
@@ -9,7 +9,7 @@ export const supportsUnique = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({
-  testField: integer({ isFilterable: true, isNullable: false }),
+  testField: integer({ isFilterable: true, db: { isNullable: false } }),
 });
 
 export const initItems = () => {

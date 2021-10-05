@@ -8,7 +8,11 @@ import {
   filters,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 import { TimestampFieldMeta } from './views';
 
@@ -20,20 +24,14 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
     };
     defaultValue?: string | { kind: 'now' };
     graphql?: {
-      create?: {
-        isNonNull?: boolean;
-      };
+      create?: { isNonNull?: boolean };
+      read?: { isNonNull?: boolean };
     };
     db?: {
       updatedAt?: boolean;
+      isNullable?: boolean;
     };
-  } & (
-      | { isNullable?: true }
-      | {
-          isNullable: false;
-          graphql?: { read?: { isNonNull?: boolean } };
-        }
-    );
+  };
 
 export const timestamp =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -58,12 +56,14 @@ export const timestamp =
       typeof defaultValue === 'string'
         ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue;
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
+
+    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = resolvedIsNullable === false ? 'required' : 'optional';
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
@@ -88,7 +88,7 @@ export const timestamp =
         ...config.hooks,
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
-          if ((validation?.isRequired || config.isNullable === false) && value === null) {
+          if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 
@@ -128,10 +128,9 @@ export const timestamp =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.DateTime)
-            : graphql.DateTime,
+        type: config.graphql?.read?.isNonNull
+          ? graphql.nonNull(graphql.DateTime)
+          : graphql.DateTime,
       }),
       views: resolveView('timestamp/views'),
       getAdminMeta(): TimestampFieldMeta {
