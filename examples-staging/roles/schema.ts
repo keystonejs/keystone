@@ -123,7 +123,6 @@ export const lists = {
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       /* The password of the user */
       password: password({
-        isNullable: false,
         validation: { isRequired: true },
         access: {
           update: ({ session, item }) =>

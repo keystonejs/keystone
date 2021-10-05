@@ -3,7 +3,7 @@ import { integer } from '../../index';
 
 export const name = 'Integer with autoincrement default';
 export const typeFunction = (config: any) =>
-  integer({ ...config, isNullable: false, defaultValue: { kind: 'autoincrement' } });
+  integer({ ...config, db: { isNullable: false }, defaultValue: { kind: 'autoincrement' } });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;
 export const supportsUnique = true;
@@ -16,7 +16,7 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  orderNumber: integer({ isNullable: false, defaultValue: { kind: 'autoincrement' } }),
+  orderNumber: integer({ db: { isNullable: false }, defaultValue: { kind: 'autoincrement' } }),
 });
 
 export const initItems = () => {
