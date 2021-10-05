@@ -1,7 +1,7 @@
 import { decimal } from '../..';
 
 export const name = 'Decimal with isNullable: false';
-export const typeFunction = (x: any) => decimal({ validation: { isRequired: true }, ...x });
+export const typeFunction = (x: any) => decimal({ ...x, db: { isNullable: false } });
 export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsGraphQLIsNonNull = true;
@@ -13,7 +13,7 @@ export const getTestFields = () => ({
   price: decimal({
     scale: 2,
     isFilterable: true,
-    validation: { isRequired: true },
+    db: { isNullable: false },
   }),
 });
 

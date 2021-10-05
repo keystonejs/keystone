@@ -20,7 +20,6 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: number;
     isIndexed?: boolean | 'unique';
-    isNullable?: boolean;
     validation?: {
       min?: number;
       max?: number;
@@ -90,7 +89,7 @@ export const float =
 
     assertCreateIsNonNullAllowed(meta, config);
 
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = isNullable === false ? 'required' : 'optional';
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
@@ -108,7 +107,7 @@ export const float =
         async validateInput(args) {
           const value = args.resolvedData[meta.fieldKey];
 
-          if ((validation?.isRequired || config.isNullable === false) && value === null) {
+          if ((validation?.isRequired || isNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`);
           }
 
@@ -155,10 +154,7 @@ export const float =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.Float)
-            : graphql.Float,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Float) : graphql.Float,
       }),
       views: resolveView('float/views'),
       getAdminMeta() {

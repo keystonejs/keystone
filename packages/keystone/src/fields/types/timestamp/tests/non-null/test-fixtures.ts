@@ -1,7 +1,7 @@
 import { timestamp } from '../..';
 
 export const name = 'Timestamp with isNullable: false';
-export const typeFunction = (x: any) => timestamp({ ...x, validation: { isRequired: true } });
+export const typeFunction = (x: any) => timestamp({ ...x, db: { isNullable: false } });
 export const exampleValue = () => '1990-12-31T12:34:56.789Z';
 export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';
 export const supportsUnique = true;
@@ -12,7 +12,7 @@ export const getTestFields = () => ({
   lastOnline: timestamp({
     isFilterable: true,
     isOrderable: true,
-    validation: { isRequired: true },
+    db: { isNullable: false },
   }),
 });
 

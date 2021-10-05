@@ -2,7 +2,7 @@ import { DatabaseProvider } from '../../../../../types';
 import { text } from '../..';
 
 export const name = 'Text with isNullable: true';
-export const typeFunction = (config: any) => text({ ...config, isNullable: true });
+export const typeFunction = (config: any) => text({ ...config, db: { isNullable: true } });
 export const exampleValue = () => 'foo';
 export const exampleValue2 = () => 'bar';
 export const supportsNullInput = true;
@@ -10,7 +10,7 @@ export const supportsUnique = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({
-  testField: text({ isFilterable: true, isNullable: true }),
+  testField: text({ isFilterable: true, db: { isNullable: true } }),
 });
 
 export const initItems = () => {

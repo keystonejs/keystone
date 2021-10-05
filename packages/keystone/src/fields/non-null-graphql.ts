@@ -42,7 +42,7 @@ export function assertReadIsNonNullAllowed(
   if (config.graphql?.read?.isNonNull) {
     if (resolvedIsNullable) {
       throw new Error(
-        `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.read.isNonNull: true and but not validation.isRequired: true or db.isNullable: false.\n` +
+        `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.read.isNonNull: true but not validation.isRequired: true or db.isNullable: false.\n` +
           `Set validation.isRequired: true or db.isNullable: false or disable graphql.read.isNonNull`
       );
     }

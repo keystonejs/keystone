@@ -94,7 +94,7 @@ export const text =
         ...config.hooks,
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
-          if (val === null && (validation?.isRequired || config.isNullable !== true)) {
+          if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {
@@ -149,10 +149,7 @@ export const text =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable !== true && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.String)
-            : graphql.String,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.String) : graphql.String,
       }),
       views: resolveView('text/views'),
       getAdminMeta(): TextFieldMeta {
