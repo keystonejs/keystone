@@ -178,7 +178,7 @@ export type FilesContext = {
 
 // Images API
 
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
+export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif' | 'svg';
 
 export type ImageMetadata = {
   extension: ImageExtension;

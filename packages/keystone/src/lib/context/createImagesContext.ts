@@ -25,7 +25,8 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
     fileType.ext !== 'jpg' &&
     fileType.ext !== 'png' &&
     fileType.ext !== 'webp' &&
-    fileType.ext !== 'gif'
+    fileType.ext !== 'gif' &&
+    fileType.ext !== 'svg'
   ) {
     throw new Error(`${fileType.ext} is not a supported image type`);
   }

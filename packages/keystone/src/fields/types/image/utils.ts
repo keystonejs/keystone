@@ -5,7 +5,7 @@ const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|we
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;
 
-export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
+export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif', 'svg'];
 
 export const parseImageRef = (
   ref: string
