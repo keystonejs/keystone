@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 26.0.1
+
+### Patch Changes
+
+- [#6711](https://github.com/keystonejs/keystone/pull/6711) [`1a0614351`](https://github.com/keystonejs/keystone/commit/1a0614351808d4cb024840308fcc8288860e1de5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fix `KeystoneContext` type exported from `.keystone/types`
+
 ## 26.0.0
 
 ### Major Changes
