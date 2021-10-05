@@ -61,21 +61,7 @@ export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListType
   itemData?: Partial<GeneratedListTypes['inputs']['create']>;
 };
 
-export type AuthTokenRequestErrorCode = 'IDENTITY_NOT_FOUND' | 'MULTIPLE_IDENTITY_MATCHES';
-
-export type PasswordAuthErrorCode =
-  | AuthTokenRequestErrorCode
-  | 'FAILURE' // Generic
-  | 'SECRET_NOT_SET'
-  | 'SECRET_MISMATCH';
-
-export type AuthTokenRedemptionErrorCode =
-  | AuthTokenRequestErrorCode
-  | 'FAILURE' // Generic
-  | 'TOKEN_NOT_SET'
-  | 'TOKEN_MISMATCH'
-  | 'TOKEN_EXPIRED'
-  | 'TOKEN_REDEEMED';
+export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED';
 
 export type SecretFieldImpl = {
   generateHash: (secret: string) => Promise<string>;

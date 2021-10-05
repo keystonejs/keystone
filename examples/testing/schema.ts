@@ -1,13 +1,13 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-next/keystone/fields';
 import { select } from '@keystone-next/keystone/fields';
 
-export const lists = createSchema({
+export const lists = {
   Task: list({
     fields: {
-      label: text({ isRequired: true }),
+      label: text({ validation: { isRequired: true } }),
       priority: select({
-        dataType: 'enum',
+        type: 'enum',
         options: [
           { label: 'Low', value: 'low' },
           { label: 'Medium', value: 'medium' },
@@ -23,7 +23,7 @@ export const lists = createSchema({
     access: {
       item: {
         update: async ({ session, item, context }) => {
-          const task = await context.lists.Task.findOne({
+          const task = await context.query.Task.findOne({
             where: { id: item.id },
             query: 'assignedTo { id }',
           });
@@ -31,17 +31,13 @@ export const lists = createSchema({
         },
       },
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true, isIndexed: 'unique' }),
-      password: password({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
+      password: password({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
-});
+};

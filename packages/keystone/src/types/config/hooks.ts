@@ -1,6 +1,14 @@
 import type { KeystoneContext } from '..';
 import type { BaseGeneratedListTypes } from '../utils';
 
+type CommonArgs = {
+  context: KeystoneContext;
+  /**
+   * The key of the list that the operation is occurring on
+   */
+  listKey: string;
+};
+
 export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
@@ -11,25 +19,17 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
    */
   validateInput?: ValidateInputHook<TGeneratedListTypes>;
   /**
-   * Used to **cause side effects** before a create or update operation once all validateInput hooks have resolved
-   */
-  beforeChange?: BeforeChangeHook<TGeneratedListTypes>;
-  /**
-   * Used to **cause side effects** after a create or update operation operation has occurred
-   */
-  afterChange?: AfterChangeHook<TGeneratedListTypes>;
-  /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
   validateDelete?: ValidateDeleteHook<TGeneratedListTypes>;
   /**
-   * Used to **cause side effects** before a delete operation operation has occurred
+   * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeDelete?: BeforeOrAfterDeleteHook<TGeneratedListTypes>;
+  beforeOperation?: BeforeOperationHook<TGeneratedListTypes>;
   /**
-   * Used to **cause side effects** after a delete operation operation has occurred
+   * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterDelete?: BeforeOrAfterDeleteHook<TGeneratedListTypes>;
+  afterOperation?: AfterOperationHook<TGeneratedListTypes>;
 };
 
 // TODO: probably maybe don't do this and write it out manually
@@ -45,18 +45,18 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
 export type FieldHooks<TGeneratedListTypes extends BaseGeneratedListTypes> =
   AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
 
-type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> =
   | {
       operation: 'create';
       // technically this will never actually exist for a create
       // but making it optional rather than not here
       // makes for a better experience
       // because then people will see the right type even if they haven't refined the type of operation to 'create'
-      existingItem?: TGeneratedListTypes['backing'];
+      item?: TGeneratedListTypes['backing'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      originalInput: TGeneratedListTypes['inputs']['create'];
+      inputData: TGeneratedListTypes['inputs']['create'];
       /**
        * The GraphQL input **after** default values are applied
        */
@@ -64,30 +64,19 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
     }
   | {
       operation: 'update';
-      existingItem: TGeneratedListTypes['backing'];
+      item: TGeneratedListTypes['backing'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      originalInput: TGeneratedListTypes['inputs']['update'];
+      inputData: TGeneratedListTypes['inputs']['update'];
       /**
        * The GraphQL input **after** default values are applied
        */
       resolvedData: TGeneratedListTypes['inputs']['update'];
-    }
-) & {
-  context: KeystoneContext;
-  /**
-   * The key of the list that the operation is occurring on
-   */
-  listKey: string;
-};
-
-type ValidationArgs = {
-  addValidationError: (error: string, data?: {}, internalData?: {}) => void;
-};
+    };
 
 type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & CommonArgs
 ) =>
   | Promise<TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update']>
   | TGeneratedListTypes['inputs']['create']
@@ -101,30 +90,46 @@ type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   | null;
 
 type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & ValidationArgs
-) => Promise<void> | void;
-
-type BeforeChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
-) => Promise<void> | void;
-
-type AfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
-    updatedItem: TGeneratedListTypes['backing'];
-  }
+    addValidationError: (error: string) => void;
+  } & CommonArgs
 ) => Promise<void> | void;
-
-type ArgsForDeleteOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  operation: 'delete';
-  existingItem: TGeneratedListTypes['backing'];
-  context: KeystoneContext;
-  listKey: string;
-};
 
 type ValidateDeleteHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForDeleteOperation<TGeneratedListTypes> & ValidationArgs
+  args: {
+    operation: 'delete';
+    item: TGeneratedListTypes['backing'];
+    addValidationError: (error: string) => void;
+  } & CommonArgs
 ) => Promise<void> | void;
 
-type BeforeOrAfterDeleteHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForDeleteOperation<TGeneratedListTypes>
+type BeforeOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+  args: (
+    | ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+    | {
+        operation: 'delete';
+        item: TGeneratedListTypes['backing'];
+        inputData: undefined;
+        resolvedData: undefined;
+      }
+  ) &
+    CommonArgs
+) => Promise<void> | void;
+
+type AfterOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+  args: (
+    | ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+    | {
+        operation: 'delete';
+        // technically this will never actually exist for a create
+        // but making it optional rather than not here
+        // makes for a better experience
+        // because then people will see the right type even if they haven't refined the type of operation to 'create'
+        item?: TGeneratedListTypes['backing'];
+        inputData: undefined;
+        resolvedData: undefined;
+      }
+  ) & {
+    originalItem: TGeneratedListTypes['backing'];
+  } & CommonArgs
 ) => Promise<void> | void;

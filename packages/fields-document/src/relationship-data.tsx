@@ -49,30 +49,23 @@ export function addRelationshipData(
       const id = data?.id;
       if (id != null) {
         const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
-        let val;
-        try {
-          val = await graphQLAPI.run({
-            query: `query($id: ID!) {item:${
-              gqlNames(relationship.listKey).itemQueryName
-            }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${
-              relationship.selection || ''
-            }}}`,
-            variables: { id },
-          });
-          if (val.item === null) {
-            if (!process.env.TEST_ADAPTER) {
-              // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
-              // then simply return { id } and leave `label` and `data` undefined.
-              const r = JSON.stringify(relationship);
-              console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
-            }
-            return { id };
+        // An exception here indicates something wrong with either the system or the
+        // configuration (e.g. a bad selection field). These will surface as system
+        // errors from the GraphQL field resolver.
+        const val = await graphQLAPI.run({
+          query: `query($id: ID!) {item:${
+            gqlNames(relationship.listKey).itemQueryName
+          }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${relationship.selection || ''}}}`,
+          variables: { id },
+        });
+        if (val.item === null) {
+          if (!process.env.TEST_ADAPTER) {
+            // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
+            // then simply return { id } and leave `label` and `data` undefined.
+            const r = JSON.stringify(relationship);
+            console.error(`Unable to fetch relationship data: relationship: ${r}, id: ${id} `);
           }
-        } catch (err) {
-          // Errors indicate something wrong with either the system or the
-          // configuration (e.g. a bad selection field) and they should be surfaced as a
-          // GraphQL error.
-          throw err;
+          return { id };
         }
         return {
           id,

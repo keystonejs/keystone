@@ -5,11 +5,12 @@ export const name = 'Decimal';
 export const typeFunction = decimal;
 export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
+export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({ price: decimal({ scale: 2, isFilterable: true }) });
+export const getTestFields = () => ({ price: decimal({ scale: 2 }) });
 
 export const initItems = () => {
   return [

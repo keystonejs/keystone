@@ -7,23 +7,24 @@ datasource sqlite {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model Package {
-  id        String   @id @default(cuid())
-  label     String?
+  id        String  @id @default(cuid())
+  label     String  @default("")
   pkgjson   String?
-  isPrivate Boolean?
-  ownedBy   Person?  @relation("Package_ownedBy", fields: [ownedById], references: [id])
-  ownedById String?  @map("ownedBy")
+  isPrivate Boolean @default(false)
+  ownedBy   Person? @relation("Package_ownedBy", fields: [ownedById], references: [id])
+  ownedById String? @map("ownedBy")
 
   @@index([ownedById])
 }
 
 model Person {
   id       String    @id @default(cuid())
-  name     String?
+  name     String    @default("")
   packages Package[] @relation("Package_ownedBy")
 }

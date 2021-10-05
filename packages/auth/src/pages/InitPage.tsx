@@ -27,7 +27,7 @@ import { SigninContainer } from '../components/SigninContainer';
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
-  const [subscribe, setSubscribe] = useState<boolean>(true);
+  const [subscribe, setSubscribe] = useState<boolean>(false);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -217,7 +217,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   return mode === 'init' ? (
     <SigninContainer>
       <H1>Welcome to KeystoneJS</H1>
-      <p>Create your first user to get started:</p>
+      <p>Create your first user to get started</p>
       <form
         onSubmit={event => {
           event.preventDefault();

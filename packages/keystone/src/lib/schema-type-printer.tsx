@@ -84,6 +84,7 @@ export function printGeneratedTypes(
     Int: 'number',
     Float: 'number',
     JSON: 'import("@keystone-next/keystone/types").JSONValue',
+    Decimal: 'import("@keystone-next/keystone/types").Decimal | string',
   };
 
   let prelude = `import {
@@ -168,9 +169,9 @@ export type ${listKey}ListFn = (
 export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
 export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
 
-export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'lists' | 'prisma'> & {
-  db: { lists: KeystoneDbAPI };
-  lists: KeystoneListsAPI;
+export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'prisma'> & {
+  db: KeystoneDbAPI;
+  query: KeystoneListsAPI;
   prisma: import('.prisma/client').PrismaClient;
 };
 `;

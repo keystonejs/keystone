@@ -1,8 +1,10 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
+import { createSessionContext } from '../../session';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -16,7 +18,7 @@ so the CLI can bring up the dev server early to handle GraphQL requests.
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MiB
 
-const addApolloServer = ({
+const addApolloServer = async ({
   server,
   config,
   graphQLSchema,
@@ -40,10 +42,15 @@ const addApolloServer = ({
 
   const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
   server.use(graphqlUploadExpress({ maxFileSize }));
+  await apolloServer.start();
   apolloServer.applyMiddleware({
     app: server,
     path: config.graphql?.path || '/api/graphql',
-    cors: false,
+    cors:
+      config.graphql?.cors ||
+      (process.env.NODE_ENV !== 'production'
+        ? { origin: 'https://studio.apollographql.com', credentials: true }
+        : undefined),
   });
 };
 
@@ -67,10 +74,18 @@ export const createExpressServer = async (
   addHealthCheck({ config, server });
 
   if (config.server?.extendExpressApp) {
-    config.server?.extendExpressApp(server);
+    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
+      createContext({
+        sessionContext: config.session
+          ? await createSessionContext(config.session, req, res, createContext)
+          : undefined,
+        req,
+      });
+
+    config.server?.extendExpressApp(server, createRequestContext);
   }
 
-  addApolloServer({
+  await addApolloServer({
     server,
     config,
     graphQLSchema,

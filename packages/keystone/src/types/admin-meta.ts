@@ -74,14 +74,18 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type FieldMeta = {
   path: string;
   label: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
   fieldMeta: JSONValue;
   viewsIndex: number;
   customViewsIndex: number | null;
   views: FieldViews[number];
   controller: FieldController<unknown, JSONValue>;
   search: 'default' | 'insensitive' | null;
+  itemView: {
+    /**
+     * `null` indicates that the value is dynamic and must be fetched for any given item
+     */
+    fieldMode: 'edit' | 'read' | 'hidden' | null;
+  };
 };
 
 export type ListMeta = {
@@ -154,8 +158,6 @@ export type CardValueComponent<
 export type FieldMetaRootVal = {
   path: string;
   label: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
   fieldMeta: JSONValue | null;
   viewsIndex: number;
   customViewsIndex: number | null;

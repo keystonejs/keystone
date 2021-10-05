@@ -3,10 +3,9 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  graphql,
   AdminMetaRootVal,
-  FieldDefaultValue,
 } from '../../../types';
+import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships
@@ -56,16 +55,12 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
-    defaultValue?: FieldDefaultValue<Record<string, any>, TGeneratedListTypes>;
-    withMeta?: boolean;
   } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     many = false,
     ref,
-    defaultValue,
-    withMeta = true,
     ...config
   }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
@@ -109,6 +104,7 @@ export const relationship =
           }
         }
         return {
+          refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,
@@ -173,23 +169,18 @@ export const relationship =
             return value.findMany(args);
           },
         }),
-        extraOutputFields: withMeta
-          ? {
-              [`${meta.fieldKey}Count`]: graphql.field({
-                type: graphql.Int,
-                args: {
-                  where: graphql.arg({ type: graphql.nonNull(listTypes.where), defaultValue: {} }),
-                },
-                resolve({ value }, args) {
-                  return value.count({
-                    where: args.where,
-                  });
-                },
-              }),
-            }
-          : {},
-        __legacy: {
-          defaultValue,
+        extraOutputFields: {
+          [`${meta.fieldKey}Count`]: graphql.field({
+            type: graphql.Int,
+            args: {
+              where: graphql.arg({ type: graphql.nonNull(listTypes.where), defaultValue: {} }),
+            },
+            resolve({ value }, args) {
+              return value.count({
+                where: args.where,
+              });
+            },
+          }),
         },
       });
     }
@@ -227,8 +218,5 @@ export const relationship =
           return value();
         },
       }),
-      __legacy: {
-        defaultValue,
-      },
     });
   };

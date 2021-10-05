@@ -7,7 +7,7 @@ type Post {
   status: PostStatusType
   content: String
   rating: Int
-  publishDate: String
+  publishDate: DateTime
   author: Author
 }
 
@@ -15,6 +15,9 @@ enum PostStatusType {
   draft
   published
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -25,6 +28,12 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  title: StringFilter
+  status: PostStatusTypeNullableFilter
+  content: StringFilter
+  rating: IntNullableFilter
+  publishDate: DateTimeNullableFilter
+  author: AuthorWhereInput
 }
 
 input IDFilter {
@@ -38,8 +47,70 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input PostStatusTypeNullableFilter {
+  equals: PostStatusType
+  in: [PostStatusType!]
+  notIn: [PostStatusType!]
+  not: PostStatusTypeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  rating: OrderDirection
+  publishDate: OrderDirection
 }
 
 enum OrderDirection {
@@ -52,7 +123,7 @@ input PostUpdateInput {
   status: PostStatusType
   content: String
   rating: Int
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
 }
 
@@ -72,7 +143,7 @@ input PostCreateInput {
   status: PostStatusType
   content: String
   rating: Int
-  publishDate: String
+  publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
 }
 
@@ -96,6 +167,7 @@ type Author {
 
 input AuthorWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input AuthorWhereInput {
@@ -103,10 +175,21 @@ input AuthorWhereInput {
   OR: [AuthorWhereInput!]
   NOT: [AuthorWhereInput!]
   id: IDFilter
+  name: StringFilter
+  email: StringFilter
+  posts: PostManyRelationFilter
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input AuthorOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 input AuthorUpdateInput {
@@ -221,7 +304,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -244,7 +327,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

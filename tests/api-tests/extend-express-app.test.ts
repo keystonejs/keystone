@@ -1,4 +1,4 @@
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import supertest from 'supertest';
@@ -6,7 +6,7 @@ import { apiTestConfig } from './utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({ User: list({ fields: { name: text() } }) }),
+    lists: { User: list({ fields: { name: text() } }) },
     server: {
       extendExpressApp: app => {
         app.get('/magic', (req, res) => {

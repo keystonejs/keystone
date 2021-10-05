@@ -1,5 +1,11 @@
 # @keystone-ui/segmented-control
 
+## 5.0.0
+
+### Major Changes
+
+- [#6638](https://github.com/keystonejs/keystone/pull/6638) [`7f5caff60`](https://github.com/keystonejs/keystone/commit/7f5caff60308112ded832db4703f33eaae00ce24) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed uncontrolled input behaviour
+
 ## 4.0.3
 
 ### Patch Changes

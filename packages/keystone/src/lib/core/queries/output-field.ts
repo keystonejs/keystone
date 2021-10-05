@@ -1,24 +1,21 @@
+import { CacheHint } from 'apollo-server-types';
 import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
-  CacheHint,
   IndividualFieldAccessControl,
   BaseGeneratedListTypes,
   ItemRootValue,
-  graphql,
   FindManyArgsValue,
   KeystoneContext,
   TypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types';
-import {
-  checkOperationAccess,
-  getAccessFilters,
-  validateFieldAccessControl,
-} from '../access-control';
+import { graphql } from '../../..';
+import { getOperationAccess, getAccessFilters } from '../access-control';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
+import { accessReturnError, extensionError } from '../graphql-errors';
 import { accessControlledFilter } from './resolvers';
 import * as queries from './resolvers';
 
@@ -27,14 +24,16 @@ function getRelationVal(
   id: IdType,
   foreignList: InitialisedList,
   context: KeystoneContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
+  fk?: IdType
 ) {
   const oppositeDbField = foreignList.resolvedDbFields[dbField.field];
   if (oppositeDbField.kind !== 'relation') throw new Error('failed assert');
-  const relationFilter = {
-    [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
-  };
+
   if (dbField.mode === 'many') {
+    const relationFilter = {
+      [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id },
+    };
     return {
       findMany: async (args: FindManyArgsValue) =>
         queries.findMany(args, foreignList, context, info, relationFilter),
@@ -43,27 +42,53 @@ function getRelationVal(
     };
   } else {
     return async () => {
+      if (fk === null) {
+        // If the foreign key is explicitly null, there's no need to anything else,
+        // since we know the related item doesn't exist.
+        return null;
+      }
       // Check operation permission to pass into single operation
-      const operationAccess = await checkOperationAccess(foreignList, context, 'query');
+      const operationAccess = await getOperationAccess(foreignList, context, 'query');
       if (!operationAccess) {
         return null;
       }
-
       const accessFilters = await getAccessFilters(foreignList, context, 'query');
       if (accessFilters === false) {
         return null;
       }
 
-      const resolvedWhere = await accessControlledFilter(
-        foreignList,
-        context,
-        relationFilter,
-        accessFilters
-      );
+      if (accessFilters === true && fk !== undefined) {
+        // We know the exact item we're looking for, and there are no other filters to apply,
+        // so we can use findUnique to get the item. This allows Prisma to group multiple
+        // findUnique operations into a single database query, which solves the N+1 problem
+        // in this specific case.
+        return runWithPrisma(context, foreignList, model =>
+          model.findUnique({ where: { id: fk } })
+        );
+      } else {
+        // Either we have access filters to apply, or we don't have a foreign key to use.
+        // If we have a foreign key, we'll search directly on this ID, and merge in the access filters.
+        // If we don't have a foreign key, we'll use the general solution, which is a filter based
+        // on the original item's ID, merged with any access control filters.
+        const relationFilter =
+          fk !== undefined
+            ? { id: fk }
+            : { [dbField.field]: oppositeDbField.mode === 'many' ? { some: { id } } : { id } };
 
-      return runWithPrisma(context, foreignList, model =>
-        model.findFirst({ where: resolvedWhere })
-      );
+        // There's no need to check isFilterable access here (c.f. `findOne()`), as
+        // the filter has been constructed internally, not as part of user input.
+
+        // Apply access control
+        const resolvedWhere = await accessControlledFilter(
+          foreignList,
+          context,
+          relationFilter,
+          accessFilters
+        );
+        return runWithPrisma(context, foreignList, model =>
+          model.findFirst({ where: resolvedWhere })
+        );
+      }
     };
   }
 }
@@ -86,7 +111,12 @@ function getValueForDBField(
     );
   }
   if (dbField.kind === 'relation') {
-    return getRelationVal(dbField, id, lists[dbField.list], context, info);
+    // If we're holding a foreign key value, let's take advantage of that.
+    let fk: IdType | undefined;
+    if (dbField.mode === 'one' && dbField.foreignIdField !== 'none') {
+      fk = rootVal[`${fieldPath}Id`] as IdType;
+    }
+    return getRelationVal(dbField, id, lists[dbField.list], context, info, fk);
   } else {
     return rootVal[fieldPath] as any;
   }
@@ -111,24 +141,36 @@ export function outputTypeField(
       const id = (rootVal as any).id as IdType;
 
       // Check access
-      const canAccess = await validateFieldAccessControl({
-        access,
-        args: {
-          context,
-          fieldKey,
-          item: rootVal,
-          listKey,
-          operation: 'query',
-          session: context.session,
-        },
-      });
+      let canAccess;
+      try {
+        canAccess =
+          typeof access === 'function'
+            ? await access({
+                context,
+                fieldKey,
+                item: rootVal,
+                listKey,
+                operation: 'read',
+                session: context.session,
+              })
+            : access;
+      } catch (error: any) {
+        throw extensionError('Access control', [
+          { error, tag: `${listKey}.${fieldKey}.access.read` },
+        ]);
+      }
+      if (typeof canAccess !== 'boolean') {
+        throw accessReturnError([
+          { tag: `${listKey}.${fieldKey}.access.read`, returned: typeof canAccess },
+        ]);
+      }
       if (!canAccess) {
         return null;
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
       if (cacheHint && info && info.cacheControl) {
-        info.cacheControl.setCacheHint(cacheHint as any);
+        info.cacheControl.setCacheHint(cacheHint);
       }
 
       const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info);

@@ -41,7 +41,13 @@ const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
     );
   },
 };
-export function FilterAdd({ listKey }: { listKey: string }) {
+export function FilterAdd({
+  listKey,
+  filterableFields,
+}: {
+  listKey: string;
+  filterableFields: Set<string>;
+}) {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
@@ -74,6 +80,7 @@ export function FilterAdd({ listKey }: { listKey: string }) {
               setOpen(false);
             }}
             listKey={listKey}
+            filterableFields={filterableFields}
           />
         )}
       </PopoverDialog>
@@ -81,7 +88,15 @@ export function FilterAdd({ listKey }: { listKey: string }) {
   );
 }
 
-function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; listKey: string }) {
+function FilterAddPopoverContent({
+  onClose,
+  listKey,
+  filterableFields,
+}: {
+  onClose: () => void;
+  listKey: string;
+  filterableFields: Set<string>;
+}) {
   const list = useList(listKey);
   const router = useRouter();
   const fieldsWithFilters = useMemo(() => {
@@ -91,13 +106,12 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
     > = {};
     Object.keys(list.fields).forEach(fieldPath => {
       const field = list.fields[fieldPath];
-      if (field.isFilterable && field.controller.filter) {
-        // TODO: make all the things readonly so this works
+      if (filterableFields.has(fieldPath) && field.controller.filter) {
         fieldsWithFilters[fieldPath] = field as any;
       }
     });
     return fieldsWithFilters;
-  }, [list.fields]);
+  }, [list.fields, filterableFields]);
   const filtersByFieldThenType = useMemo(() => {
     const filtersByFieldThenType: Record<string, Record<string, string>> = {};
     Object.keys(fieldsWithFilters).forEach(fieldPath => {

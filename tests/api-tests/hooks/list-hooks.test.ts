@@ -1,11 +1,11 @@
 import { text } from '@keystone-next/keystone/fields';
-import { createSchema, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: createSchema({
+    lists: {
       User: list({
         fields: {
           name: text({
@@ -31,7 +31,7 @@ const runner = setupTestRunner({
           },
         },
       }),
-    }),
+    },
   }),
 });
 
@@ -39,7 +39,7 @@ describe('List Hooks: #resolveInput()', () => {
   test(
     'resolves fields first, then passes them to the list',
     runner(async ({ context }) => {
-      const user = await context.lists.User.createOne({ data: { name: 'jess' }, query: 'name' });
+      const user = await context.query.User.createOne({ data: { name: 'jess' }, query: 'name' });
       // Field should be executed first, appending `-field`, then the list
       // should be executed which appends `-list`, and finally that total
       // result should be stored.
@@ -61,7 +61,7 @@ describe('List Hooks: #resolveInput()', () => {
       expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
         {
           path: ['createUser'],
-          messages: [`User: ${message}`],
+          messages: [`User.hooks.resolveInput: ${message}`],
           debug: [
             {
               message,
@@ -89,7 +89,7 @@ describe('List Hooks: #resolveInput()', () => {
       expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
         {
           path: ['createUser'],
-          messages: [`User.name: ${message}`],
+          messages: [`User.name.hooks.resolveInput: ${message}`],
           debug: [
             {
               message,

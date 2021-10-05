@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { file } from '..';
+import { expectResolverError } from '../../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -25,7 +26,9 @@ export const exampleValue2 = () => prepareFile('react.jpg');
 export const createReturnedValue = 3250;
 export const updateReturnedValue = 5562;
 
+export const supportsNullInput = true;
 export const supportsUnique = false;
+export const skipRequiredTest = true;
 export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
 
@@ -64,7 +67,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       'upload values should match expected',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const filename = 'keystone.jpeg';
-        const data = await context.lists.Test.createOne({
+        const data = await context.query.Test.createOne({
           data: { secretFile: prepareFile(filename) },
           query: `
               secretFile {
@@ -89,7 +92,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       'From existing item succeeds',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         // Create an initial item
-        const initialItem = await context.lists.Test.createOne({
+        const initialItem = await context.query.Test.createOne({
           data: { secretFile: prepareFile('keystone.jpg') },
           query: `
             secretFile {
@@ -105,7 +108,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         // Create a new item base on the first items ref
         const ref = initialItem.secretFile.ref;
-        const newItem = await context.lists.Test.createOne({
+        const newItem = await context.query.Test.createOne({
           data: { secretFile: { ref } },
           query: `
             secretFile {
@@ -139,8 +142,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { secretFile: { ref: 'Invalid ref!' } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Invalid file reference');
+        const message = `Invalid file reference`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.secretFile: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -159,14 +170,22 @@ export const crudTests = (keystoneTestWrapper: any) => {
           variables: { item: { secretFile: { ref: null } } },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Either ref or upload must be passed to FileFieldInput');
+        const message = `Input error: Either ref or upload must be passed to FileFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.secretFile: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
       'Both upload and ref fails - valid ref',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const initialItem = await context.lists.Test.createOne({
+        const initialItem = await context.query.Test.createOne({
           data: { secretFile: prepareFile('keystone.jpg') },
           query: `secretFile { ref }`,
         });
@@ -189,10 +208,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
-        );
+        const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.secretFile: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
     test(
@@ -213,10 +238,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
           },
         });
         expect(data).toEqual({ createTest: null });
-        expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual(
-          'Only one of ref and upload can be passed to FileFieldInput'
-        );
+        const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
+        expectResolverError('dev', false, false, errors, [
+          {
+            path: ['createTest'],
+            messages: [`Test.secretFile: ${message}`],
+            debug: [
+              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
+            ],
+          },
+        ]);
       })
     );
   });

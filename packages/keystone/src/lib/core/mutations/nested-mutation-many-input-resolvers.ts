@@ -1,7 +1,9 @@
-import { KeystoneContext, TypesForList, graphql } from '../../../types';
+import { KeystoneContext, TypesForList } from '../../../types';
+import { graphql } from '../../..';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
+import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
@@ -27,7 +29,7 @@ function getResolvedUniqueWheres(
     // Validate and resolve the input filter
     const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
     // Check whether the item exists
-    const item = await context.db.lists[foreignList.listKey].findOne({ where: uniqueInput });
+    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
     if (item === null) {
       throw new Error('Unable to find item to connect to.');
     }
@@ -43,7 +45,7 @@ export function resolveRelateToManyForCreateInput(
 ) {
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
-      throw new Error(
+      throw userInputError(
         `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
@@ -90,12 +92,12 @@ export function resolveRelateToManyForUpdateInput(
       !Array.isArray(value.disconnect) &&
       !Array.isArray(value.set)
     ) {
-      throw new Error(
+      throw userInputError(
         `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
       );
     }
     if (value.set && value.disconnect) {
-      throw new Error(
+      throw userInputError(
         `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
       );
     }

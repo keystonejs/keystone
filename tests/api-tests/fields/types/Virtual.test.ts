@@ -1,20 +1,19 @@
 import { integer, relationship, text, virtual } from '@keystone-next/keystone/fields';
-import { BaseFields, createSchema, list } from '@keystone-next/keystone';
-import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { graphql } from '@keystone-next/keystone/types';
+import { BaseFields, list, graphql } from '@keystone-next/keystone';
+import { setupTestEnv, setupTestRunner } from '@keystone-next/keystone/testing';
 import { apiTestConfig } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
     config: apiTestConfig({
-      lists: createSchema({
+      lists: {
         Post: list({
           fields: {
             value: integer(),
             ...fields,
           },
         }),
-      }),
+      },
     }),
   });
 }
@@ -32,7 +31,7 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo',
       });
@@ -55,7 +54,7 @@ describe('Virtual field type', () => {
         }),
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo(x: 10, y: 20)',
       });
@@ -65,51 +64,20 @@ describe('Virtual field type', () => {
   );
 
   test(
-    'args - use defaults',
-    makeRunner({
-      foo: virtual({
-        field: graphql.field({
-          type: graphql.Int,
-          args: {
-            x: graphql.arg({ type: graphql.Int }),
-            y: graphql.arg({ type: graphql.Int }),
-          },
-          resolve: (item, { x = 5, y = 6 }) => x! * y!,
-        }),
-      }),
-    })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
-        data: { value: 1 },
-        query: 'value foo',
-      });
-      expect(data.value).toEqual(1);
-      expect(data.foo).toEqual(30);
-    })
-  );
-
-  test(
     'referencing other list type',
     setupTestRunner({
       config: apiTestConfig({
-        lists: createSchema({
+        lists: {
           Organisation: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({
-                ref: 'Post.organisationAuthor',
-                many: true,
-                isFilterable: true,
-              }),
+              authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
             },
           }),
           Person: list({
             fields: {
               name: text(),
-              authoredPosts: relationship({
-                ref: 'Post.personAuthor',
-                many: true,
-                isFilterable: true,
-              }),
+              authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
             },
           }),
           Post: list({
@@ -117,6 +85,7 @@ describe('Virtual field type', () => {
               organisationAuthor: relationship({ ref: 'Organisation.authoredPosts' }),
               personAuthor: relationship({ ref: 'Person.authoredPosts' }),
               author: virtual({
+                ui: { listView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'hidden' } },
                 field: lists =>
                   graphql.field({
                     type: graphql.union({
@@ -125,12 +94,12 @@ describe('Virtual field type', () => {
                     }),
                     async resolve(rootVal, args, context) {
                       const [personAuthors, organisationAuthors] = await Promise.all([
-                        context.db.lists.Person.findMany({
+                        context.db.Person.findMany({
                           where: {
                             authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
                           },
                         }),
-                        context.db.lists.Organisation.findMany({
+                        context.db.Organisation.findMany({
                           where: {
                             authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
                           },
@@ -147,10 +116,10 @@ describe('Virtual field type', () => {
               }),
             },
           }),
-        }),
+        },
       }),
     })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
+      const data = await context.query.Post.createOne({
         data: { personAuthor: { create: { name: 'person author' } } },
         query: `
                 author {
@@ -166,7 +135,7 @@ describe('Virtual field type', () => {
       });
       expect(data.author.name).toEqual('person author');
       expect(data.author.__typename).toEqual('Person');
-      const data2 = await context.lists.Post.createOne({
+      const data2 = await context.query.Post.createOne({
         data: { organisationAuthor: { create: { name: 'organisation author' } } },
         query: `
                 author {
@@ -185,32 +154,37 @@ describe('Virtual field type', () => {
     })
   );
 
-  test(
-    'graphQLReturnFragment',
-    makeRunner({
-      foo: virtual({
-        field: graphql.field({
-          type: graphql.list(
-            graphql.object<{ title: string; rating: number }>()({
-              name: 'Movie',
+  test("errors when a non leaf type is used but the field isn't hidden in the Admin UI and ui.query isn't provided", async () => {
+    await expect(
+      setupTestEnv({
+        config: apiTestConfig({
+          lists: {
+            Post: list({
               fields: {
-                title: graphql.field({ type: graphql.String }),
-                rating: graphql.field({ type: graphql.Int }),
+                virtual: virtual({
+                  field: graphql.field({
+                    type: graphql.object<any>()({
+                      name: 'Something',
+                      fields: {
+                        something: graphql.field({ type: graphql.String }),
+                      },
+                    }),
+                  }),
+                }),
               },
-            })
-          ),
-          resolve() {
-            return [{ title: 'CATS!', rating: 100 }];
+            }),
           },
         }),
-      }),
-    })(async ({ context }) => {
-      const data = await context.lists.Post.createOne({
-        data: { value: 1 },
-        query: 'value foo { title rating }',
-      });
-      expect(data.value).toEqual(1);
-      expect(data.foo).toEqual([{ title: 'CATS!', rating: 100 }]);
-    })
-  );
+      })
+    ).rejects.toMatchInlineSnapshot(`
+            [Error: The virtual field at Post.virtual requires a selection for the Admin UI but ui.query is unspecified and ui.listView.fieldMode and ui.itemView.fieldMode are not both set to 'hidden'.
+            Either set ui.query with what the Admin UI should fetch or hide the field from the Admin UI by setting ui.listView.fieldMode and ui.itemView.fieldMode to 'hidden'.
+            When setting ui.query, it is interpolated into a GraphQL query like this:
+            query {
+              post(where: { id: "..." }) {
+                virtual\${ui.query}
+              }
+            }]
+          `);
+  });
 });

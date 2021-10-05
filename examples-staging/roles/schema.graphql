@@ -48,16 +48,7 @@ type PersonAuthenticationWithPasswordSuccess {
 }
 
 type PersonAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
   message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
 }
 
 type Todo {
@@ -77,6 +68,10 @@ input TodoWhereInput {
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
   id: IDFilter
+  label: StringFilter
+  isComplete: BooleanFilter
+  isPrivate: BooleanFilter
+  assignedTo: PersonWhereInput
 }
 
 input IDFilter {
@@ -90,8 +85,44 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input TodoOrderByInput {
   id: OrderDirection
+  label: OrderDirection
+  isComplete: OrderDirection
+  isPrivate: OrderDirection
 }
 
 enum OrderDirection {
@@ -158,39 +189,22 @@ input PersonWhereInput {
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  name: StringFilter
+  email: StringFilter
+  role: RoleWhereInput
+  tasks: TodoManyRelationFilter
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
 }
 
 input PersonOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 input PersonUpdateInput {
@@ -264,10 +278,31 @@ input RoleWhereInput {
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
   id: IDFilter
+  name: StringFilter
+  canCreateTodos: BooleanFilter
+  canManageAllTodos: BooleanFilter
+  canSeeOtherPeople: BooleanFilter
+  canEditOtherPeople: BooleanFilter
+  canManagePeople: BooleanFilter
+  canManageRoles: BooleanFilter
+  assignedTo: PersonManyRelationFilter
+}
+
+input PersonManyRelationFilter {
+  every: PersonWhereInput
+  some: PersonWhereInput
+  none: PersonWhereInput
 }
 
 input RoleOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  canCreateTodos: OrderDirection
+  canManageAllTodos: OrderDirection
+  canSeeOtherPeople: OrderDirection
+  canEditOtherPeople: OrderDirection
+  canManagePeople: OrderDirection
+  canManageRoles: OrderDirection
 }
 
 input RoleUpdateInput {
@@ -386,7 +421,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -409,7 +444,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

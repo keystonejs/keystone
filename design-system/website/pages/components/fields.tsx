@@ -53,6 +53,7 @@ const BasicDatePicker = () => {
 export default function FieldsPage() {
   const { spacing } = useTheme();
   const [selectVal, setSelectVal] = useState<{ label: string; value: string } | null>(null);
+  const [segmentedControlVal, setSegmentedControlVal] = useState<number | undefined>(undefined);
   return (
     <Page>
       <h1>Form Fields</h1>
@@ -110,7 +111,14 @@ export default function FieldsPage() {
       </FieldWrapper>
       <h2>Segmented Controls</h2>
       <FieldWrapper>
-        <SegmentedControl animate segments={['one', 'two', 'three']} />
+        <SegmentedControl
+          animate
+          segments={['one', 'two', 'three']}
+          selectedIndex={segmentedControlVal}
+          onChange={val => {
+            setSegmentedControlVal(val);
+          }}
+        />
       </FieldWrapper>
       <h2>Checkboxes</h2>
       <FieldWrapper>

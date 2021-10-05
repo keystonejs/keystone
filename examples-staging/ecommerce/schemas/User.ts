@@ -21,8 +21,8 @@ export const User = list({
     hideDelete: args => !permissions.canManageUsers(args),
   },
   fields: {
-    name: text({ isRequired: true }),
-    email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
+    name: text({ validation: { isRequired: true } }),
+    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     password: password(),
     cart: relationship({
       ref: 'CartItem.user',

@@ -17,7 +17,7 @@ export const skipRequiredTest = true;
 export const skipUniqueTest = true;
 
 const getIDs = async (context: KeystoneContext) => {
-  const items = await context.lists.Test.findMany({ query: 'id name' });
+  const items = await context.query.Test.findMany({ query: 'id name' });
   return Object.fromEntries(items.map(({ id, name }) => [name, id]));
 };
 
@@ -28,7 +28,7 @@ export const filterTests = (withKeystone: any) => {
     expected: any[]
   ) =>
     expect(
-      await context.lists.Test.findMany({ where, orderBy: { name: 'asc' }, query: 'id name' })
+      await context.query.Test.findMany({ where, orderBy: { name: 'asc' }, query: 'id name' })
     ).toEqual(expected);
 
   test(

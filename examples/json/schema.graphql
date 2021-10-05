@@ -18,6 +18,9 @@ input PackageWhereInput {
   OR: [PackageWhereInput!]
   NOT: [PackageWhereInput!]
   id: IDFilter
+  label: StringFilter
+  isPrivate: BooleanFilter
+  ownedBy: PersonWhereInput
 }
 
 input IDFilter {
@@ -31,8 +34,43 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input PackageOrderByInput {
   id: OrderDirection
+  label: OrderDirection
+  isPrivate: OrderDirection
 }
 
 enum OrderDirection {
@@ -91,10 +129,19 @@ input PersonWhereInput {
   OR: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
   id: IDFilter
+  name: StringFilter
+  packages: PackageManyRelationFilter
+}
+
+input PackageManyRelationFilter {
+  every: PackageWhereInput
+  some: PackageWhereInput
+  none: PackageWhereInput
 }
 
 input PersonOrderByInput {
   id: OrderDirection
+  name: OrderDirection
 }
 
 input PersonUpdateInput {
@@ -210,7 +257,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -233,7 +280,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

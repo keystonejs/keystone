@@ -42,7 +42,6 @@ export const getSchemaExtension =
   ({
     identityField,
     listKey,
-    protectIdentities,
     secretField,
     gqlNames,
     initFirstItem,
@@ -51,7 +50,6 @@ export const getSchemaExtension =
   }: {
     identityField: string;
     listKey: string;
-    protectIdentities: boolean;
     secretField: string;
     gqlNames: AuthGqlNames;
     initFirstItem?: InitFirstItemConfig<any>;
@@ -70,7 +68,7 @@ export const getSchemaExtension =
       throw new Error(
         `createAuth was called with an identityField of ${identityField} on the list ${listKey} ` +
           `but that field doesn't allow being searched uniquely with a String or ID. ` +
-          `You should likely add \`isIndexed: 'unique'\, isFilterable: true\` ` +
+          `You should likely add \`isIndexed: 'unique'\` ` +
           `to the field at ${listKey}.${identityField}`
       );
     }
@@ -78,7 +76,6 @@ export const getSchemaExtension =
       getBaseAuthSchema({
         identityField,
         listKey,
-        protectIdentities,
         secretField,
         gqlNames,
         secretFieldImpl: getSecretFieldImpl(schema, listKey, secretField),
@@ -95,7 +92,6 @@ export const getSchemaExtension =
         getPasswordResetSchema({
           identityField,
           listKey,
-          protectIdentities,
           secretField,
           passwordResetLink,
           gqlNames,
@@ -109,7 +105,6 @@ export const getSchemaExtension =
         getMagicAuthLinkSchema({
           identityField,
           listKey,
-          protectIdentities,
           magicAuthLink,
           gqlNames,
           magicAuthTokenSecretFieldImpl: getSecretFieldImpl(schema, listKey, 'magicAuthToken'),

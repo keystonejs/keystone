@@ -250,6 +250,7 @@ export function Header() {
           '& a:hover': {
             color: 'var(--link)',
           },
+          marginBottom: '2rem',
         })}
       >
         <Logo />

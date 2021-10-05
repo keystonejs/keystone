@@ -14,7 +14,7 @@ yarn dev
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
 You can use the Admin UI to create items in your database.
 
-You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
+You can also access a Apollo Sandbox at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
 ## Features
 
@@ -34,13 +34,13 @@ We add two new fields, `email` and `password`, to the `Person` list.
 These are used as our _identity_ and _secret_ fields for login.
 
 ```typescript
-    email: text({ isRequired: true, isIndexed: 'unique', isFilterable: true }),
-    password: password({ isRequired: true }),
+    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
+    password: password({ isNullable: false, validation: { isRequired: true } }),
 ```
 
 ### Auth config
 
-We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable configuration.
+We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable authentication.
 
 ```typescript
 import { createAuth } from '@keystone-next/auth';

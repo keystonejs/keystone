@@ -7,23 +7,24 @@ datasource postgresql {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  provider   = "prisma-client-js"
+  output     = "node_modules/.prisma/client"
+  engineType = "binary"
 }
 
 model User {
   id       String  @id @default(cuid())
-  name     String?
-  email    String? @unique
+  name     String  @default("")
+  email    String  @unique @default("")
   password String?
   posts    Post[]  @relation("Post_author")
 }
 
 model Post {
   id          String    @id @default(cuid())
-  title       String?
+  title       String    @default("")
   status      String?
-  content     Json?
+  content     Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
@@ -33,7 +34,7 @@ model Post {
 }
 
 model Tag {
-  id    String  @id @default(cuid())
-  name  String?
-  posts Post[]  @relation("Post_tags_Tag_posts")
+  id    String @id @default(cuid())
+  name  String @default("")
+  posts Post[] @relation("Post_tags_Tag_posts")
 }

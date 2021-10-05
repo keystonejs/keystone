@@ -4,7 +4,7 @@
 type Mutation {
   addToCart(productId: ID): CartItem
   checkout(token: String!): Order
-  sendUserPasswordResetLink(email: String!): SendUserPasswordResetLinkResult
+  sendUserPasswordResetLink(email: String!): Boolean!
   redeemUserPasswordResetToken(
     email: String!
     token: String!
@@ -74,16 +74,6 @@ type Mutation {
   endSession: Boolean!
 }
 
-type SendUserPasswordResetLinkResult {
-  code: PasswordResetRequestErrorCode!
-  message: String!
-}
-
-enum PasswordResetRequestErrorCode {
-  IDENTITY_NOT_FOUND
-  MULTIPLE_IDENTITY_MATCHES
-}
-
 type ValidateUserPasswordResetTokenResult {
   code: PasswordResetRedemptionErrorCode!
   message: String!
@@ -96,10 +86,6 @@ type RedeemUserPasswordResetTokenResult {
 
 enum PasswordResetRedemptionErrorCode {
   FAILURE
-  IDENTITY_NOT_FOUND
-  MULTIPLE_IDENTITY_MATCHES
-  TOKEN_NOT_SET
-  TOKEN_MISMATCH
   TOKEN_EXPIRED
   TOKEN_REDEEMED
 }
@@ -122,16 +108,7 @@ type UserAuthenticationWithPasswordSuccess {
 }
 
 type UserAuthenticationWithPasswordFailure {
-  code: PasswordAuthErrorCode!
   message: String!
-}
-
-enum PasswordAuthErrorCode {
-  FAILURE
-  IDENTITY_NOT_FOUND
-  SECRET_NOT_SET
-  MULTIPLE_IDENTITY_MATCHES
-  SECRET_MISMATCH
 }
 
 type User {
@@ -162,13 +139,16 @@ type User {
   ): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
   passwordResetToken: PasswordState
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 type PasswordState {
   isSet: Boolean!
 }
+
+scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
@@ -180,7 +160,16 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  email: StringNullableFilter
+  name: StringFilter
+  email: StringFilter
+  password: PasswordFilter
+  cart: CartItemManyRelationFilter
+  orders: OrderManyRelationFilter
+  role: RoleWhereInput
+  products: ProductManyRelationFilter
+  passwordResetToken: PasswordFilter
+  passwordResetIssuedAt: DateTimeNullableFilter
+  passwordResetRedeemedAt: DateTimeNullableFilter
 }
 
 input IDFilter {
@@ -194,7 +183,7 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringNullableFilter {
+input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -205,10 +194,10 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
 }
 
-input NestedStringNullableFilter {
+input NestedStringFilter {
   equals: String
   in: [String!]
   notIn: [String!]
@@ -219,11 +208,48 @@ input NestedStringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
+  not: NestedStringFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input CartItemManyRelationFilter {
+  every: CartItemWhereInput
+  some: CartItemWhereInput
+  none: CartItemWhereInput
+}
+
+input OrderManyRelationFilter {
+  every: OrderWhereInput
+  some: OrderWhereInput
+  none: OrderWhereInput
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
 }
 
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  passwordResetIssuedAt: OrderDirection
+  passwordResetRedeemedAt: OrderDirection
 }
 
 enum OrderDirection {
@@ -240,8 +266,8 @@ input UserUpdateInput {
   role: RoleRelateToOneForUpdateInput
   products: ProductRelateToManyForUpdateInput
   passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 input CartItemRelateToManyForUpdateInput {
@@ -285,8 +311,8 @@ input UserCreateInput {
   role: RoleRelateToOneForCreateInput
   products: ProductRelateToManyForCreateInput
   passwordResetToken: String
-  passwordResetIssuedAt: String
-  passwordResetRedeemedAt: String
+  passwordResetIssuedAt: DateTime
+  passwordResetRedeemedAt: DateTime
 }
 
 input CartItemRelateToManyForCreateInput {
@@ -328,10 +354,59 @@ input ProductWhereInput {
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]
   id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  photo: ProductImageWhereInput
+  status: StringNullableFilter
+  price: IntNullableFilter
+  user: UserWhereInput
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input ProductOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  price: OrderDirection
 }
 
 input ProductUpdateInput {
@@ -444,10 +519,13 @@ input ProductImageWhereInput {
   OR: [ProductImageWhereInput!]
   NOT: [ProductImageWhereInput!]
   id: IDFilter
+  altText: StringFilter
+  product: ProductWhereInput
 }
 
 input ProductImageOrderByInput {
   id: OrderDirection
+  altText: OrderDirection
 }
 
 input ProductImageUpdateInput {
@@ -499,12 +577,25 @@ input CartItemWhereInput {
   OR: [CartItemWhereInput!]
   NOT: [CartItemWhereInput!]
   id: IDFilter
+  quantity: IntFilter
   product: ProductWhereInput
   user: UserWhereInput
 }
 
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
 input CartItemOrderByInput {
   id: OrderDirection
+  quantity: OrderDirection
 }
 
 input CartItemUpdateInput {
@@ -543,11 +634,20 @@ input OrderItemWhereInput {
   OR: [OrderItemWhereInput!]
   NOT: [OrderItemWhereInput!]
   id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  photo: ProductImageWhereInput
+  price: IntNullableFilter
+  quantity: IntNullableFilter
+  order: OrderWhereInput
 }
 
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  quantity: OrderDirection
 }
 
 input OrderItemUpdateInput {
@@ -608,10 +708,22 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
+  total: IntNullableFilter
+  items: OrderItemManyRelationFilter
+  user: UserWhereInput
+  charge: StringFilter
+}
+
+input OrderItemManyRelationFilter {
+  every: OrderItemWhereInput
+  some: OrderItemWhereInput
+  none: OrderItemWhereInput
 }
 
 input OrderOrderByInput {
   id: OrderDirection
+  total: OrderDirection
+  charge: OrderDirection
 }
 
 input OrderUpdateInput {
@@ -672,10 +784,36 @@ input RoleWhereInput {
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
   id: IDFilter
+  name: StringFilter
+  canManageProducts: BooleanFilter
+  canSeeOtherUsers: BooleanFilter
+  canManageUsers: BooleanFilter
+  canManageRoles: BooleanFilter
+  canManageCart: BooleanFilter
+  canManageOrders: BooleanFilter
+  assignedTo: UserManyRelationFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input RoleOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  canManageProducts: OrderDirection
+  canSeeOtherUsers: OrderDirection
+  canManageUsers: OrderDirection
+  canManageRoles: OrderDirection
+  canManageCart: OrderDirection
+  canManageOrders: OrderDirection
 }
 
 input RoleUpdateInput {
@@ -830,7 +968,7 @@ type KeystoneAdminUIFieldMeta {
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -853,7 +991,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

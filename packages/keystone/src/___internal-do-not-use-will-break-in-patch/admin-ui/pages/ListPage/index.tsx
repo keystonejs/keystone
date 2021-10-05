@@ -35,6 +35,13 @@ import { useSort } from './useSort';
 
 type ListPageProps = { listKey: string };
 
+type FetchedFieldMeta = {
+  path: string;
+  isOrderable: boolean;
+  isFilterable: boolean;
+  listView: { fieldMode: 'read' | 'hidden' };
+};
+
 let listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
@@ -42,7 +49,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list: {
           hideCreate: boolean;
           hideDelete: boolean;
-          fields: { path: string; listView: { fieldMode: 'read' | 'hidden' } }[];
+          fields: FetchedFieldMeta[];
         } | null;
       };
     };
@@ -57,6 +64,8 @@ let listMetaGraphqlQuery: TypedDocumentNode<
           hideCreate
           fields {
             path
+            isOrderable
+            isFilterable
             listView {
               fieldMode
             }
@@ -133,19 +142,28 @@ const ListPage = ({ listKey }: ListPageProps) => {
       ? parseInt(query.pageSize)
       : list.pageSize;
 
-  const sort = useSort(list);
-
-  const filters = useFilters(list);
-
   let metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
 
-  let listViewFieldModesByField = useMemo(() => {
-    let listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
-    metaQuery.data?.keystone.adminMeta.list?.fields.forEach(field => {
+  let { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
+    const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
+    const orderableFields = new Set<string>();
+    const filterableFields = new Set<string>();
+    for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
       listViewFieldModesByField[field.path] = field.listView.fieldMode;
-    });
-    return listViewFieldModesByField;
+      if (field.isOrderable) {
+        orderableFields.add(field.path);
+      }
+      if (field.isFilterable) {
+        filterableFields.add(field.path);
+      }
+    }
+
+    return { listViewFieldModesByField, orderableFields, filterableFields };
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+
+  const sort = useSort(list, orderableFields);
+
+  const filters = useFilters(list, filterableFields);
 
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
@@ -181,6 +199,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
+      skip: !metaQuery.data,
       variables: {
         where: filters.where,
         take: pageSize,
@@ -221,6 +240,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const theme = useTheme();
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
+
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
@@ -230,7 +250,9 @@ const ListPage = ({ listKey }: ListPageProps) => {
         <Fragment>
           <Stack across gap="medium" align="center" marginTop="xlarge">
             {showCreate && <CreateButton listKey={listKey} />}
-            {data.count || filters.filters.length ? <FilterAdd listKey={listKey} /> : null}
+            {data.count || filters.filters.length ? (
+              <FilterAdd listKey={listKey} filterableFields={filterableFields} />
+            ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
             {Boolean(Object.keys(query).length) && (
               <Button size="small" onClick={resetToDefaults}>
@@ -269,7 +291,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         singular={list.singular}
                         total={data.count}
                       />
-                      , sorted by <SortSelection list={list} />
+                      , sorted by <SortSelection list={list} orderableFields={orderableFields} />
                       with{' '}
                       <FieldSelection
                         list={list}
@@ -297,6 +319,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                     selectedItems,
                   });
                 }}
+                orderableFields={orderableFields}
               />
             </Fragment>
           ) : (
@@ -541,6 +564,7 @@ function ListTable({
   pageSize,
   selectedItems,
   onSelectedItemsChange,
+  orderableFields,
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>;
   listKey: string;
@@ -551,6 +575,7 @@ function ListTable({
   pageSize: number;
   selectedItems: ReadonlySet<string>;
   onSelectedItemsChange(selectedItems: ReadonlySet<string>): void;
+  orderableFields: Set<string>;
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
@@ -597,7 +622,7 @@ function ListTable({
           {shouldShowLinkIcon && <TableHeaderCell />}
           {[...selectedFields].map(path => {
             const label = list.fields[path].label;
-            if (!list.fields[path].isOrderable) {
+            if (!orderableFields.has(path)) {
               return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
             }
             return (
