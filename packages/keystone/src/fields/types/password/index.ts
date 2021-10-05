@@ -64,8 +64,6 @@ export const password =
       throw Error("isIndexed: 'unique' is not a supported option for field type password");
     }
 
-    const isNullable = getResolvedIsNullable(config);
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
     const validation = {
@@ -84,6 +82,8 @@ export const password =
         max: _validation?.length?.max ?? null,
       },
     };
+
+    const isNullable = getResolvedIsNullable({ ...config, validation });
 
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type];
