@@ -9,7 +9,11 @@ import {
   filters,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -26,14 +30,14 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
       create?: {
         isNonNull?: boolean;
       };
+      read?: {
+        isNonNull?: boolean;
+      };
     };
-  } & (
-      | { isNullable?: true; defaultValue?: number }
-      | {
-          isNullable: false;
-          graphql?: { read?: { isNonNull?: boolean } };
-        }
-    );
+    db?: {
+      isNullable?: boolean;
+    };
+  };
 
 export const float =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -80,9 +84,10 @@ export const float =
       );
     }
 
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    const isNullable = getResolvedIsNullable(config);
+
+    assertReadIsNonNullAllowed(meta, config, isNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
     const mode = config.isNullable === false ? 'required' : 'optional';

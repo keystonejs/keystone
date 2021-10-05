@@ -8,12 +8,17 @@ import {
   filters,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     isIndexed?: boolean | 'unique';
+    defaultValue?: number | { kind: 'autoincrement' };
     validation?: {
       isRequired?: boolean;
       min?: number;
@@ -23,15 +28,14 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
       create?: {
         isNonNull?: boolean;
       };
+      read?: {
+        isNonNull?: boolean;
+      };
     };
-  } & (
-      | { isNullable?: true; defaultValue?: number }
-      | {
-          isNullable: false;
-          defaultValue?: number | { kind: 'autoincrement' };
-          graphql?: { read?: { isNonNull?: boolean } };
-        }
-    );
+    db?: {
+      isNullable?: boolean;
+    };
+  };
 
 // These are the max and min values available to a 32 bit signed integer
 const MAX_INT = 2147483647;
@@ -50,17 +54,18 @@ export const integer =
       typeof defaultValue == 'object' &&
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement';
+
+    const isNullable = getResolvedIsNullable(config);
+
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite') {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
         );
       }
-      // our types technically enforce this but it's the kind of thing where i could totally imagine people going
-      // ughhh, why is TS complaining about this!?!?!?!?! when TS is indeed correct
-      if (config.isNullable !== false) {
+      if (isNullable !== false) {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify isNullable: false.\n` +
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
         );
@@ -99,12 +104,11 @@ export const integer =
       );
     }
 
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    assertReadIsNonNullAllowed(meta, config, isNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = isNullable === false ? 'required' : 'optional';
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
@@ -128,7 +132,7 @@ export const integer =
           const value = args.resolvedData[meta.fieldKey];
 
           if (
-            (validation?.isRequired || config.isNullable === false) &&
+            (validation?.isRequired || isNullable === false) &&
             (value === null ||
               (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
           ) {
@@ -177,10 +181,7 @@ export const integer =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable === false && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.Int)
-            : graphql.Int,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
       }),
       views: resolveView('integer/views'),
       getAdminMeta() {
