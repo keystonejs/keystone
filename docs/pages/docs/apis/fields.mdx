@@ -60,12 +60,12 @@ All options are optional.
 
 Options:
 
-- `isFilterable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support filtering by this field.
-  If `true`, the GraphQL API and Admin UI will support filtering by this field.
+- `isFilterable` (default: `true`): If `false`, the GraphQL API and admin UI will not support filtering by this field.
+  If `true` (default), the GraphQL API and Admin UI will support filtering by this field.
   If a function is provided, it will be evaluated dynamically each time this field is used as a filter in a GraphQL operation.
   If the function returns `false`, the operation will return an error indicating that filtering on this field is not allowed.
-- `isOrderable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support ordering by this field.
-  If `true`, the GraphQL API and Admin UI will support ordering by this field.
+- `isOrderable` (default: `true`): If `false`, the GraphQL API and admin UI will not support ordering by this field.
+  If `true` (default), the GraphQL API and Admin UI will support ordering by this field.
   If a function is provided, it will be evaluated dynamically each time this field is used as an ordering field in a GraphQL operation.
   If the function returns `false`, the operation will return an error indicating this ordering by this field is not allowed.
 - `access`: Defines the [Access Control](../guides/access-control) rules for the field.

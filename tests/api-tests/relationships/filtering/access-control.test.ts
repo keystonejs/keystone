@@ -24,7 +24,7 @@ const runner = setupTestRunner({
       }),
       PostLimitedRead: list({
         fields: {
-          name: text({ isFilterable: true }),
+          name: text(),
           content: text(),
           author: relationship({ ref: 'UserToPostLimitedRead.posts', many: false }),
         },

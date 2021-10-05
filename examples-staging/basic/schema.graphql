@@ -141,7 +141,13 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
   email: StringFilter
+  password: PasswordFilter
+  isAdmin: BooleanFilter
+  roles: StringFilter
+  phoneNumbers: PhoneNumberManyRelationFilter
+  posts: PostManyRelationFilter
 }
 
 input IDFilter {
@@ -183,8 +189,33 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input PhoneNumberManyRelationFilter {
+  every: PhoneNumberWhereInput
+  some: PhoneNumberWhereInput
+  none: PhoneNumberWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  isAdmin: OrderDirection
+  roles: OrderDirection
 }
 
 enum OrderDirection {
@@ -277,10 +308,43 @@ input PhoneNumberWhereInput {
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
   id: IDFilter
+  user: UserWhereInput
+  type: StringNullableFilter
+  value: StringFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input PhoneNumberOrderByInput {
   id: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
 }
 
 input PhoneNumberUpdateInput {
@@ -336,10 +400,28 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  title: StringFilter
+  status: StringFilter
+  publishDate: DateTimeNullableFilter
+  author: UserWhereInput
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
 }
 
 input PostOrderByInput {
   id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
 }
 
 input PostUpdateInput {

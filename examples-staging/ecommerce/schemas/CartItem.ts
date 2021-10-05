@@ -26,7 +26,7 @@ export const CartItem = list({
         isRequired: true,
       },
     }),
-    product: relationship({ ref: 'Product', isFilterable: true }),
-    user: relationship({ ref: 'User.cart', isFilterable: true }),
+    product: relationship({ ref: 'Product' }),
+    user: relationship({ ref: 'User.cart' }),
   },
 });

@@ -9,13 +9,7 @@ export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
 
-export const getTestFields = () => ({
-  price: decimal({
-    scale: 2,
-    isFilterable: true,
-    db: { isNullable: false },
-  }),
-});
+export const getTestFields = () => ({ price: decimal({ scale: 2, db: { isNullable: false } }) });
 
 export const initItems = () => {
   return [

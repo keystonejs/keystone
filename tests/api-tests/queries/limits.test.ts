@@ -9,13 +9,13 @@ const runner = setupTestRunner({
     lists: {
       Post: list({
         fields: {
-          title: text({ isFilterable: true, isOrderable: true }),
+          title: text(),
           author: relationship({ ref: 'User.posts', many: true }),
         },
       }),
       User: list({
         fields: {
-          name: text({ isFilterable: true, isOrderable: true }),
+          name: text(),
           favNumber: integer(),
           posts: relationship({ ref: 'Post.author', many: true }),
         },
