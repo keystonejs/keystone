@@ -1,5 +1,19 @@
 # @keystonejs/api-tests
 
+## 11.1.2
+
+### Patch Changes
+
+- [#6409](https://github.com/keystonejs/keystone/pull/6409) [`3ece149e5`](https://github.com/keystonejs/keystone/commit/3ece149e53066661c57c56fdd1467003c5b11c06) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Apollo Server to [Version 3](https://www.apollographql.com/docs/apollo-server/migration/).
+
+  The Apollo documentation contains a full list of breaking changes introduced by this update.
+  You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/apis/config#graphql) configuration option.
+
+  The most prominant change for most users will be that the GraphQL Playground has been replaced by the Apollo Sandbox.
+  If you prefer to keep the GraphQL Playground, you can configure your server by [following these instructions](https://www.apollographql.com/docs/apollo-server/migration/#graphql-playground).
+
+* [#6505](https://github.com/keystonejs/keystone/pull/6505) [`398c08529`](https://github.com/keystonejs/keystone/commit/398c085295d992658a9e7e22aae037f55528c258) Thanks [@timleslie](https://github.com/timleslie)! - Improved error message for bad relationship filter inputs.
+
 ## 11.1.1
 
 ### Patch Changes

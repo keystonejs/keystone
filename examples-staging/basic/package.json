@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/examples-app-basic",
-  "version": "4.0.7",
+  "version": "4.0.8",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@keystone-next/auth": "^32.0.0",
+    "@keystone-next/auth": "^33.0.0",
     "@keystone-next/document-renderer": "^4.0.0",
-    "@keystone-next/fields-document": "^9.0.0",
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/fields-document": "^10.0.0",
+    "@keystone-next/keystone": "^26.0.0",
     "@keystone-ui/core": "^3.2.0",
-    "@keystone-ui/fields": "^4.1.3",
+    "@keystone-ui/fields": "^5.0.0",
     "@keystone-ui/icons": "^4.0.1",
     "@keystone-ui/tooltip": "^4.0.2",
     "@preconstruct/next": "^3.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-custom-admin-ui-logo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/keystone": "^26.0.0",
     "@keystone-ui/core": "^3.2.0",
     "next": "^11.1.0",
     "react": "^17.0.2"

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/test-projects-basic",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^25.0.0"
+    "@keystone-next/keystone": "^26.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.3"
