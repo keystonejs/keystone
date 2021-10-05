@@ -139,10 +139,10 @@ export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
 
 export type KeystoneContext = Omit<
   GenericKeystoneContext,
-  'db' | 'lists' | 'prisma'
+  'db' | 'query' | 'prisma'
 > & {
-  db: { lists: KeystoneDbAPI };
-  lists: KeystoneListsAPI;
+  db: KeystoneDbAPI;
+  query: KeystoneListsAPI;
   prisma: import('.prisma/client').PrismaClient;
 };
 

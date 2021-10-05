@@ -19,7 +19,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^26.0.0"
+    "@keystone-next/keystone": "^26.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
