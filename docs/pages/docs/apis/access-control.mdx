@@ -2,6 +2,8 @@ import { Markdown } from '../../../components/Markdown';
 
 # Access Control API
 
+?> We recently improved this API so it’s easier to program, and makes it harder to introduce security gaps in your system. If you were using it prior to September 6th 2021, [read this guide](/updates/new-access-control) for info on how to upgrade.
+
 The `access` property of the [list configuration](./schema) object configures who can query, create, update, and delete items in your Keystone system.
 The `access` property of the [field configuration](./fields) object configures who can read, create, and update specific field values of an item.
 
@@ -21,9 +23,6 @@ export default config({
 });
 ```
 
-!> This document covers the complete access control API.
-Our [access control guide](../guides/access-control) shows you how to apply this API to common patterns.
-
 ## List Access Control
 
 Keystone lets you apply access control on a per-list basis.
@@ -34,8 +33,8 @@ List-level access control can be specified in three ways.
 
 - [`operation`](#operation) access control lets you check the information in the `context` and `session` objects to decide if the
   user is allowed to access the list.
-- [`filter`](#filter) access control lets you provide a GraphQL filter to restrict the items the user is allowed to access.
-- [`item`](#item) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
+- [`filter`](#filter) access control lets you provide a [GraphQL filter](./filters) to restrict the items the user is allowed to access.
+- [`item`](#item-mutations-only) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
   and make a decision based on this extra data.
 
 !> **Access denied:** **Mutations** return `null` data with an access denied error. **Queries** never return access denied errors, and instead treat items as if they didn't exist.
@@ -83,7 +82,7 @@ You should ensure that your `create`, `update`, and `delete` are also configured
 
 ### Filter
 
-Filter-level access control lets you restrict which items can be operated on by providing a function which returns a GraphQL filter.
+Filter-level access control lets you restrict which items can be operated on by providing a function which returns a [GraphQL filter](./filters).
 
 - For **mutations**, the access control filter will be combined with the unique identifier provided to the operation, and access will be denied if no item is found with this combined filter.
 - For **queries**, the access control filter will be combined with the query filter and only items which match both filters will be returned.
@@ -175,7 +174,7 @@ List-level access control functions are passed a collection of arguments which c
 ## Field Access Control
 
 Keystone also allows you to set up access control on a per-field basis.
-Rules can be set for `read`, `update` and `delete` operations.
+Rules can be set for `read`, `create` and `update` operations.
 
 !> Each operation is defined by a function which returns `true` if access is allowed and `false` if access is not allowed.
 
@@ -215,7 +214,7 @@ export default config({
 });
 ```
 
-!> Field-level access control is not available for `delete` operations. To restrict `create` operations configure either `access.operation.delete`, `access.filter.delete` or `access.item.delete` at the list level.
+!> Field-level access control is not available for `delete` operations. Restrict `delete` operations at the List-level instead with `access.operation.delete`, `access.filter.delete` or `access.item.delete`.
 
 ### Function Arguments
 
