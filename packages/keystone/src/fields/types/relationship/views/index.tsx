@@ -17,18 +17,40 @@ import {
 } from '../../../../types';
 import { Link } from '../../../../admin-ui/router';
 import { useKeystone, useList } from '../../../../admin-ui/context';
+import { gql, useQuery } from '../../../../admin-ui/apollo';
 import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components';
 
 import { Cards } from './cards';
 import { RelationshipSelect } from './RelationshipSelect';
 
 function LinkToRelatedItems({
+  itemId,
+  isDoubleSided,
   value,
   list,
 }: {
+  itemId: string | null;
+  isDoubleSided: boolean;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
+  function constructQuery({
+    isDoubleSided,
+    itemId,
+    value,
+  }: {
+    isDoubleSided?: boolean;
+    itemId: string | null;
+    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
+  }) {
+    if (isDoubleSided && itemId) {
+      return `!assignedTo_matches="${itemId}"`;
+    }
+    return `!id_in="${(value?.value as { id: string; label: string }[])
+      .slice(0, 100)
+      .map(({ id }: { id: string }) => id)
+      .join(',')}"`;
+  }
   const commonProps = {
     size: 'small',
     tone: 'active',
@@ -36,18 +58,9 @@ function LinkToRelatedItems({
   } as const;
 
   if (value.kind === 'many') {
+    const query = constructQuery({ isDoubleSided, value, itemId });
     return (
-      <Button
-        {...commonProps}
-        as={Link}
-        // What happens when there are 10,000 ids? The URL would be too
-        // big, so we arbitrarily limit it to the first 100
-        // TODO: we should be able to filter by this, no?
-        href={`/${list.path}?!id_in="${value.value
-          .slice(0, 100)
-          .map(({ id }) => id)
-          .join(',')}"`}
-      >
+      <Button {...commonProps} as={Link} href={`/${list.path}?${query}`}>
         View related {list.plural}
       </Button>
     );
@@ -154,6 +167,7 @@ export const Field = ({
               autoFocus={autoFocus}
               isDisabled={onChange === undefined}
               list={foreignList}
+              portalMenu
               state={
                 value.kind === 'many'
                   ? {
@@ -224,7 +238,12 @@ export const Field = ({
               {!!(value.kind === 'many'
                 ? value.value.length
                 : value.kind === 'one' && value.value) && (
-                <LinkToRelatedItems list={foreignList} value={value} />
+                <LinkToRelatedItems
+                  itemId={value.id}
+                  isDoubleSided={!!field.refFieldKey}
+                  list={foreignList}
+                  value={value}
+                />
               )}
             </Stack>
           </Stack>
@@ -321,11 +340,13 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 
 type SingleRelationshipValue = {
   kind: 'one';
+  id: null | string;
   initialValue: { label: string; id: string } | null;
   value: { label: string; id: string } | null;
 };
 type ManyRelationshipValue = {
   kind: 'many';
+  id: null | string;
   initialValue: { label: string; id: string }[];
   value: { label: string; id: string }[];
 };
@@ -339,11 +360,13 @@ type CardsRelationshipValue = {
 };
 type CountRelationshipValue = {
   kind: 'count';
+  id: null | string;
   count: number;
 };
 
 type RelationshipController = FieldController<
-  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue
+  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue,
+  string
 > & {
   display:
     | {
@@ -362,6 +385,7 @@ type RelationshipController = FieldController<
     | { mode: 'count' };
   listKey: string;
   refListKey: string;
+  refFieldKey?: string;
   hideCreate: boolean;
   many: boolean;
 };
@@ -369,6 +393,7 @@ type RelationshipController = FieldController<
 export const controller = (
   config: FieldControllerConfig<
     {
+      refFieldKey?: string;
       refListKey: string;
       many: boolean;
       hideCreate: boolean;
@@ -392,6 +417,7 @@ export const controller = (
   >
 ): RelationshipController => {
   return {
+    refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
     listKey: config.listKey,
     path: config.path,
@@ -416,29 +442,28 @@ export const controller = (
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'cards'
-        ? // TODO: namespace this stuff at the Keystone level
-          `${config.path}__id: id
-           ${config.path} {
+        ? `${config.path} {
             id
             label: ${config.fieldMeta.refLabelField}
-           }`
+          }`
         : config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
         : `${config.path} {
-             id
-             label: ${config.fieldMeta.refLabelField}
-           }`,
+              id
+              label: ${config.fieldMeta.refLabelField}
+            }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
       ? {
+          id: null,
           kind: 'many',
           initialValue: [],
           value: [],
         }
-      : { kind: 'one', value: null, initialValue: null },
+      : { id: null, kind: 'one', value: null, initialValue: null },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'count') {
-        return { kind: 'count', count: data[`${config.path}Count`] ?? 0 };
+        return { id: data.id, kind: 'count', count: data[`${config.path}Count`] ?? 0 };
       }
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
@@ -451,7 +476,7 @@ export const controller = (
         );
         return {
           kind: 'cards-view',
-          id: data[`${config.path}__id`],
+          id: data.id,
           itemsBeingEdited: new Set(),
           itemBeingCreated: false,
           initialIds,
@@ -465,6 +490,7 @@ export const controller = (
         }));
         return {
           kind: 'many',
+          id: data.id,
           initialValue: value,
           value,
         };
@@ -478,9 +504,83 @@ export const controller = (
       }
       return {
         kind: 'one',
+        id: data.id,
         value,
         initialValue: value,
       };
+    },
+    filter: {
+      Filter: ({ onChange, value }) => {
+        const foreignList = useList(config.fieldMeta.refListKey);
+        const { filterValues, loading } = useRelationshipFilterValues({
+          value,
+          list: foreignList,
+        });
+        const state: {
+          kind: 'many';
+          value: { label: string; id: string }[];
+          onChange: (newItems: { label: string; id: string }[]) => void;
+        } = {
+          kind: 'many',
+          value: filterValues,
+          onChange(newItems) {
+            onChange(newItems.map(item => item.id).join(','));
+          },
+        };
+        return (
+          <RelationshipSelect
+            controlShouldRenderValue
+            list={foreignList}
+            isLoading={loading}
+            isDisabled={onChange === undefined}
+            state={state}
+          />
+        );
+      },
+      graphql: ({ value }) => {
+        const foreignIds = getForeignIds(value);
+        if (config.fieldMeta.many) {
+          return {
+            [config.path]: {
+              some: {
+                id: {
+                  in: foreignIds,
+                },
+              },
+            },
+          };
+        }
+        return {
+          [config.path]: {
+            id: {
+              in: foreignIds,
+            },
+          },
+        };
+      },
+      Label({ value }) {
+        const foreignList = useList(config.fieldMeta.refListKey);
+        const { filterValues } = useRelationshipFilterValues({
+          value,
+          list: foreignList,
+        });
+
+        if (!filterValues.length) {
+          return `has no value`;
+        }
+        if (filterValues.length > 1) {
+          const values = filterValues.map((i: any) => i.label).join(', ');
+          return `is in [${values}]`;
+        }
+        const optionLabel = filterValues[0].label;
+        return `is ${optionLabel}`;
+      },
+      types: {
+        matches: {
+          label: 'Matches',
+          initialValue: '',
+        },
+      },
     },
     validate(value) {
       return (
@@ -554,3 +654,41 @@ export const controller = (
     },
   };
 };
+
+function useRelationshipFilterValues({ value, list }: { value: string; list: ListMeta }) {
+  const foreignIds = getForeignIds(value);
+  const where = { id: { in: foreignIds } };
+
+  const query = gql`
+    query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
+      items: ${list.gqlNames.listQueryName}(where: $where) {
+        id 
+        ${list.labelField}
+      }
+    }
+  `;
+
+  const { data, loading } = useQuery(query, {
+    variables: {
+      where,
+    },
+  });
+
+  return {
+    filterValues:
+      data?.items?.map((item: any) => {
+        return {
+          id: item.id,
+          label: item[list.labelField] || item.id,
+        };
+      }) || foreignIds.map(f => ({ label: f, id: f })),
+    loading: loading,
+  };
+}
+
+function getForeignIds(value: string) {
+  if (typeof value === 'string' && value.length > 0) {
+    return value.split(',');
+  }
+  return [];
+}
