@@ -29,11 +29,11 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
-  graphql,
   orderDirectionEnum,
   filters,
   FieldDefaultValue,
 } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 
 export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
