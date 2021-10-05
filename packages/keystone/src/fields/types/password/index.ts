@@ -11,6 +11,7 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
+import { getResolvedIsNullable } from '../../non-null-graphql';
 import { PasswordFieldMeta } from './views';
 
 export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -29,7 +30,9 @@ export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
         max?: number;
       };
     };
-    isNullable?: boolean;
+    db?: {
+      isNullable?: boolean;
+    };
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>;
   };
 
@@ -54,7 +57,6 @@ export const password =
     bcrypt = bcryptjs,
     workFactor = 10,
     validation: _validation,
-    isNullable = true,
     ...config
   }: PasswordFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
@@ -80,6 +82,8 @@ export const password =
         max: _validation?.length?.max ?? null,
       },
     };
+
+    const isNullable = getResolvedIsNullable(validation, config.db);
 
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type];

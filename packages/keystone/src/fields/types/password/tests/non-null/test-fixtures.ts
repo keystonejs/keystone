@@ -1,7 +1,7 @@
 import { password } from '../..';
 
 export const name = 'Password with isNullable: false';
-export const typeFunction = (x: any) => password({ isNullable: false, ...x });
+export const typeFunction = (x: any) => password({ ...x, db: { isNullable: false } });
 export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
@@ -11,7 +11,7 @@ export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
 export const getTestFields = () => ({
-  password: password({ isNullable: false, validation: { length: { min: 4 } } }),
+  password: password({ validation: { length: { min: 4 } }, db: { isNullable: false } }),
 });
 
 export const initItems = () => {
