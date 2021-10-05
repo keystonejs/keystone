@@ -41,7 +41,7 @@ export const relationshipError = (things: { error: Error; tag: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n');
   return new ApolloError(
     `An error occured while resolving relationship fields.\n${s}`,
-    'KS_RELATIONSHIP_ERROR',
+    'INTERNAL_SERVER_ERROR',
     // Make the original stack traces available.
     { debug: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })) }
   );

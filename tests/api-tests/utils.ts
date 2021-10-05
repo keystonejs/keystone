@@ -269,7 +269,7 @@ export const expectRelationshipError = (
 
       return {
         extensions: {
-          code: 'KS_RELATIONSHIP_ERROR',
+          code: 'INTERNAL_SERVER_ERROR',
           ...(expectException
             ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),
