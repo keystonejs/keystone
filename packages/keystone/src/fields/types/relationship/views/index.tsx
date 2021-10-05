@@ -60,14 +60,7 @@ function LinkToRelatedItems({
   if (value.kind === 'many') {
     const query = constructQuery({ isDoubleSided, value, itemId });
     return (
-      <Button
-        {...commonProps}
-        as={Link}
-        // What happens when there are 10,000 ids? The URL would be too
-        // big, so we arbitrarily limit it to the first 100
-        // TODO: we should be able to filter by this, no?
-        href={`/${list.path}?${query}`}
-      >
+      <Button {...commonProps} as={Link} href={`/${list.path}?${query}`}>
         View related {list.plural}
       </Button>
     );
