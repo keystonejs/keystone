@@ -11,6 +11,7 @@ import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -143,7 +144,11 @@ export default function WhatsNew() {
           <a>release notes</a>
         </Link>
         , and subscribe to notifications on
-        <a href="https://github.com/keystonejs/keystone"> GitHub</a>.
+        <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noopener noreferrer">
+          {' '}
+          GitHub
+        </a>
+        .
       </Type>
 
       <Alert look="tip" css={{ margin: '2rem 0' }}>
@@ -167,7 +172,171 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="17th August 2021" isLatest />
+        <Timeline date="21st September 2021" isLatest />
+        <Box heading="Keystone Community Q&A + YouTube launch">
+          <Stack orientation="horizontal">
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing title"
+                src="/assets/updates/qanda-1.png"
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing Keystone team"
+                src="/assets/updates/qanda-2.png"
+              />
+            </a>
+          </Stack>
+          <Stack orientation="horizontal">
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing roadmap screenshot"
+                src="/assets/updates/qanda-3.png"
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                width="100%"
+                alt="Community Q&A thumbnail showing community question"
+                src="/assets/updates/qanda-4.png"
+              />
+            </a>
+          </Stack>
+          Taking the chance to introduce the core team and address some community questions in
+          person, the team held an online Q&A event and launched a YouTube channel at the same time.{' '}
+          <a
+            href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Watch it online here
+          </a>
+          .
+        </Box>
+        <Timeline date="16th September 2021" />
+        <Box heading="create-keystone-app now uses SQLite">
+          Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to
+          spend time on DB config when trying out new ideas. We also updated the{' '}
+          <Link href="/docs/walkthroughs/getting-started-with-create-keystone-app">
+            <a>getting started walkthrough</a>
+          </Link>{' '}
+          to reflect this improvement.
+        </Box>
+        <Timeline date="15th September 2021" />
+        <Box heading="Deployment examples for Heroku and Railway">
+          Learn how to get your Keystone project on the web with our new one-click starters for{' '}
+          <a
+            href="https://github.com/keystonejs/keystone-6-heroku-example"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Heroku
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://github.com/keystonejs/keystone-6-railway-example"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Railway
+          </a>
+          .
+        </Box>
+        <Timeline date="9th September 2021" />
+        <Box heading="Prisma Meetup Korea">
+          Jed spoke at Prisma Meetup Korea, covering V6 general availability, user-facing
+          management, UI authentication, access control, business logic integrations and more.{' '}
+          <a href="https://youtu.be/qKqSRTtOlmw?t=4101" target="_blank" rel="noopener noreferrer">
+            Watch it online here
+          </a>
+          .
+        </Box>
+        <Timeline date="7th September 2021" />
+        <Box heading="Next 11, Faster Startups, Custom Servers">
+          Major release #2 of #3 planned ahead of Keystone 6 General Availability includes:
+          <ul>
+            <li>
+              A better{' '}
+              <Link href="/updates/new-access-control">
+                <a>Access Control API</a>
+              </Link>
+            </li>
+            <li>Customisable Express + GraphQL API paths</li>
+            <li>Apollo Server introspection</li>
+            <li>Omit GraphQL operations</li>
+            <li>Faster startups in local dev</li>
+            <li>Keystone has been updated to Next.js v11</li>
+          </ul>
+        </Box>
+        <Timeline date="6th September 2021" />
+        <Box heading="New & Improved Access Control API">
+          Access Control is now easier to program, and makes it harder to introduce security gaps in
+          your system.
+          <ul>
+            <li>
+              The <strong>static</strong> approach to access control has been replaced. Now access
+              control <strong>never</strong> effects the operations in your GraphQL API.
+            </li>
+            <li>
+              Keystone used to return an <InlineCode>access denied</InlineCode> error from a{' '}
+              <strong>query</strong> if an item couldn't be found, or explicitly had access denied.
+              The improved API never returns that error type on a <strong>query</strong>.
+            </li>
+            <li>
+              Access <strong>rules</strong> are now more explicit, and support fewer variations so
+              you're less likely to introduce security gaps.
+            </li>
+          </ul>
+          To securely upgrade your system, follow the instructions in our{' '}
+          <Link href="/updates/new-access-control">
+            <a>Access Control upgrade guide</a>
+          </Link>
+          .
+        </Box>
+        <Timeline date="6th September 2021" />
+        <Box heading="Customisable Express App">
+          A long awaited feature, the Express App that Keystone creates is now{' '}
+          <Link href="/docs/apis/config#server">
+            <a>customisable</a>
+          </Link>{' '}
+          with the new <InlineCode>extendExpressApp</InlineCode> option:
+          <ul>
+            <li>Add your own custom server routes</li>
+            <li>Host two apps on separate ports</li>
+            <li>And more...</li>
+          </ul>
+        </Box>
+        <Timeline date="6th September 2021" />
+        <Box heading="GraphQL Path Customisation">
+          The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with
+          the new option <InlineCode>config.graphql.path</InlineCode>. You can find this and all
+          other options in our{' '}
+          <Link href="/docs/apis/config#graphql">
+            <a>GraphQL API docs</a>
+          </Link>
+          .
+        </Box>
+        <Timeline date="17th August 2021" />
         <Box heading="New & improved GraphQL API">
           A major milestone in the path to a <InlineCode>General Availability</InlineCode> status
           for <strong>Keystone 6</strong>, we've just released a new and improved GraphQL API.{' '}
@@ -183,10 +352,7 @@ export default function WhatsNew() {
           <Link href="/updates/new-graphql-api#upgrade-checklist">
             <a>checklist of the steps you need to take to upgrade your Keystone projects</a>
           </Link>
-          .
-          <br />
-          <br />
-          Be sure to check it out!
+          . Be sure to check it out!
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
@@ -250,7 +416,11 @@ export default function WhatsNew() {
               allowFullScreen
             />
           </div>
-          <a href="https://github.com/keystonejs/prisma-day-2021-workshop">
+          <a
+            href="https://github.com/keystonejs/prisma-day-2021-workshop"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Follow along in with the repo
           </a>{' '}
           as Jed builds a front and back-end for a Blog app with Prisma, KeystoneJS, GraphQL,
@@ -282,7 +452,11 @@ export default function WhatsNew() {
         <Timeline date="29th June 2021" />
         <Box heading="New example: Custom Field Views">
           Learn how to create a{' '}
-          <a href="https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view">
+          <a
+            href="https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             custom field view
           </a>{' '}
           for a <InlineCode>JSON</InlineCode> field that lets users users add, edit and remove
@@ -410,7 +584,11 @@ export default function WhatsNew() {
         <Box heading="New JSON field">
           You can now use JSON blobs in your backend, and provide your own React UI components to
           edit them. Try it out in this{' '}
-          <a href="https://github.com/keystonejs/keystone/tree/master/examples/json">
+          <a
+            href="https://github.com/keystonejs/keystone/tree/master/examples/json"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             example project
           </a>
           . It accepts any valid JSON node including:
@@ -432,7 +610,11 @@ export default function WhatsNew() {
         <Timeline date="1st June 2021" />
         <Box heading="Example projects collection">
           We now have a{' '}
-          <a href="https://github.com/keystonejs/keystone/tree/master/examples">
+          <a
+            href="https://github.com/keystonejs/keystone/tree/master/examples"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             collection of example projects
           </a>{' '}
           you can run locally to learn more about a particular feature of Keystone. Each project
