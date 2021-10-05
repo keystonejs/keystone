@@ -7,7 +7,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       BadAccess: list({
-        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        fields: { name: text() },
         access: {
           filter: {
             query: () => {
@@ -19,7 +19,7 @@ const runner = setupTestRunner({
         },
       }),
       Coercion: list({
-        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        fields: { name: text() },
         access: {
           filter: {
             query: () => {

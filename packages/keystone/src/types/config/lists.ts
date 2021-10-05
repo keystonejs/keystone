@@ -51,8 +51,8 @@ export type ListConfig<
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
   // Defaults to apply to all fields.
-  defaultIsFilterable?: true | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
-  defaultIsOrderable?: true | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+  defaultIsFilterable?: false | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?: false | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
 
   /**
    * The label used for the list

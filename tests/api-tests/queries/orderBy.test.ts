@@ -15,8 +15,8 @@ const runner = setupTestRunner({
     lists: {
       User: list({
         fields: {
-          a: integer({ isOrderable: true }),
-          b: integer({ isOrderable: true }),
+          a: integer(),
+          b: integer(),
           orderFalse: integer({ isOrderable: false }),
           orderTrue: integer({ isOrderable: true }),
           orderFunctionFalse: integer({ isOrderable: () => false }),
@@ -31,11 +31,11 @@ const runner = setupTestRunner({
       DefaultOrderUndefined: list({ fields: { a: integer(), b: integer({ isOrderable: true }) } }),
       DefaultOrderFalse: list({
         fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-ignore
         defaultIsOrderable: false,
       }),
       DefaultOrderTrue: list({
         fields: { a: integer(), b: integer({ isOrderable: true }) },
+        // @ts-ignore
         defaultIsOrderable: true,
       }),
       DefaultOrderFunctionFalse: list({
@@ -463,12 +463,8 @@ describe('defaultIsOrderable', () => {
       const { body } = await graphQLRequest({
         query: '{ defaultOrderUndefineds(orderBy: [{a: asc}]) { id } }',
       });
-      expectGraphQLValidationError(body.errors, [
-        {
-          message:
-            'Field "a" is not defined by type "DefaultOrderUndefinedOrderByInput". Did you mean "b"?',
-        },
-      ]);
+      expect(body.data.defaultOrderUndefineds).toHaveLength(9);
+      expect(body.errors).toBe(undefined);
     })
   );
 

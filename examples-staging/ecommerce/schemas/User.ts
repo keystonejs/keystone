@@ -22,7 +22,7 @@ export const User = list({
   },
   fields: {
     name: text({ validation: { isRequired: true } }),
-    email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
+    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     password: password(),
     cart: relationship({
       ref: 'CartItem.user',

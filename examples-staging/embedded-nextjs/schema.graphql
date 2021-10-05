@@ -17,6 +17,9 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  title: StringFilter
+  slug: StringFilter
+  content: StringFilter
 }
 
 input IDFilter {
@@ -30,8 +33,39 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  content: OrderDirection
 }
 
 enum OrderDirection {

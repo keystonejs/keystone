@@ -220,10 +220,14 @@ input SecretPlanWhereInput {
   OR: [SecretPlanWhereInput!]
   NOT: [SecretPlanWhereInput!]
   id: IDFilter
+  label: StringFilter
+  description: StringFilter
 }
 
 input SecretPlanOrderByInput {
   id: OrderDirection
+  label: OrderDirection
+  description: OrderDirection
 }
 
 input SecretPlanUpdateInput {

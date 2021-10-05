@@ -12,14 +12,14 @@ const runner = setupTestRunner({
     lists: {
       Post: list({
         fields: {
-          title: text({ isFilterable: true, isOrderable: true }),
-          author: relationship({ ref: 'User', isFilterable: true }),
+          title: text(),
+          author: relationship({ ref: 'User' }),
         },
       }),
       User: list({
         fields: {
-          name: text({ isFilterable: true }),
-          feed: relationship({ ref: 'Post', many: true, isFilterable: true }),
+          name: text(),
+          feed: relationship({ ref: 'Post', many: true }),
         },
       }),
     },

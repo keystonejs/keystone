@@ -13,7 +13,6 @@ export const supportsUnique = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
-      isFilterable: true as const,
       type: matrixValue,
       options:
         matrixValue === 'enum'
@@ -35,7 +34,6 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
     };
   }
   return {
-    isFilterable: true as const,
     type: matrixValue,
     options: [
       { label: 'One', value: 1 },
