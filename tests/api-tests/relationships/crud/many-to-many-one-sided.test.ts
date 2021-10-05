@@ -92,10 +92,10 @@ const runner = setupTestRunner({
       Company: list({
         fields: {
           name: text(),
-          locations: relationship({ ref: 'Location', many: true, isFilterable: true }),
+          locations: relationship({ ref: 'Location', many: true }),
         },
       }),
-      Location: list({ fields: { name: text({ isFilterable: true }) } }),
+      Location: list({ fields: { name: text() } }),
     },
   }),
 });

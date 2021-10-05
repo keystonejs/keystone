@@ -107,7 +107,7 @@ const lists: ListSchemaConfig = {
   User: list({
     fields: {
       name: text(),
-      email: text({ isIndexed: 'unique', isFilterable: true }),
+      email: text({ isIndexed: 'unique' }),
       password: password(),
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),

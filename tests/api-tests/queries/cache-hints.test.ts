@@ -19,7 +19,7 @@ const runner = setupTestRunner({
       }),
       User: list({
         fields: {
-          name: text({ graphql: { cacheHint: { maxAge: 80 } }, isFilterable: true }),
+          name: text({ graphql: { cacheHint: { maxAge: 80 } } }),
           favNumber: integer({
             graphql: { cacheHint: { maxAge: 10, scope: CacheScope.Private } },
           }),

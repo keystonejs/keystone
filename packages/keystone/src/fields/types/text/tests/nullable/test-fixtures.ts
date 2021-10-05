@@ -9,9 +9,7 @@ export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({
-  testField: text({ isFilterable: true, isNullable: true }),
-});
+export const getTestFields = () => ({ testField: text({ isNullable: true }) });
 
 export const initItems = () => {
   return [

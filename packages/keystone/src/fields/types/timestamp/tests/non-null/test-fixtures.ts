@@ -8,9 +8,7 @@ export const supportsUnique = true;
 export const supportsGraphQLIsNonNull = true;
 export const fieldName = 'lastOnline';
 
-export const getTestFields = () => ({
-  lastOnline: timestamp({ isFilterable: true, isOrderable: true, isNullable: false }),
-});
+export const getTestFields = () => ({ lastOnline: timestamp({ isNullable: false }) });
 
 export const initItems = () => {
   return [

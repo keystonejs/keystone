@@ -15,9 +15,9 @@ const runner = setupTestRunner({
     lists: {
       User: list({
         fields: {
-          noDash: text({ isFilterable: true, isOrderable: true }),
-          single_dash: text({ isFilterable: true }),
-          many_many_many_dashes: text({ isFilterable: true }),
+          noDash: text(),
+          single_dash: text(),
+          many_many_many_dashes: text(),
           multi____dash: text({ isFilterable: true }),
           email: text({ isIndexed: 'unique', isFilterable: true, isNullable: true }),
 
@@ -44,11 +44,11 @@ const runner = setupTestRunner({
       }),
       DefaultFilterFalse: list({
         fields: { a: integer(), b: integer({ isFilterable: true }) },
-        // @ts-ignore
         defaultIsFilterable: false,
       }),
       DefaultFilterTrue: list({
         fields: { a: integer(), b: integer({ isFilterable: true }) },
+        // @ts-ignore
         defaultIsFilterable: true,
       }),
       DefaultFilterFunctionFalse: list({
@@ -375,12 +375,8 @@ describe('defaultIsFilterable', () => {
       const { body } = await graphQLRequest({
         query: '{ defaultFilterUndefineds(where: { a: { equals: 10 } }) { id } }',
       });
-      expectGraphQLValidationError(body.errors, [
-        {
-          message:
-            'Field "a" is not defined by type "DefaultFilterUndefinedWhereInput". Did you mean "b"?',
-        },
-      ]);
+      expect(body.data.defaultFilterUndefineds).toHaveLength(0);
+      expect(body.errors).toBe(undefined);
     })
   );
 

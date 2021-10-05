@@ -31,8 +31,6 @@ export const lists = {
         },
       },
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
@@ -41,7 +39,5 @@ export const lists = {
       password: password({ isNullable: false, validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
 };

@@ -8,9 +8,7 @@ export const supportsUnique = true;
 export const fieldName = 'testField';
 export const supportsGraphQLIsNonNull = true;
 
-export const getTestFields = () => ({
-  testField: float({ isFilterable: true, isNullable: false }),
-});
+export const getTestFields = () => ({ testField: float({ isNullable: false }) });
 
 export const initItems = () => {
   return [
