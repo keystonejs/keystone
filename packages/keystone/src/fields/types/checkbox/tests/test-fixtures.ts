@@ -10,9 +10,7 @@ export const fieldName = 'enabled';
 export const skipRequiredTest = true;
 export const supportsGraphQLIsNonNull = true;
 
-export const getTestFields = () => ({
-  enabled: checkbox({ isFilterable: true }),
-});
+export const getTestFields = () => ({ enabled: checkbox() });
 
 export const initItems = () => {
   return [

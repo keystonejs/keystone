@@ -9,7 +9,11 @@ import {
   filters,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import {
+  assertCreateIsNonNullAllowed,
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+} from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
 export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -48,18 +52,14 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
         create?: {
           isNonNull?: boolean;
         };
+        read?: {
+          isNonNull?: boolean;
+        };
       };
-    } & (
-      | { isNullable?: true }
-      | {
-          isNullable: false;
-          graphql?: {
-            read?: {
-              isNonNull?: boolean;
-            };
-          };
-        }
-    );
+      db?: {
+        isNullable?: boolean;
+      };
+    };
 
 // These are the max and min values available to a 32 bit signed integer
 const MAX_INT = 2147483647;
@@ -75,9 +75,9 @@ export const select =
   }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
-    if (config.isNullable === false) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
+    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
     const commonConfig = (
       options: { value: string | number; label: string }[]
@@ -102,7 +102,7 @@ export const select =
               args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
             }
             if (
-              (validation?.isRequired || config.isNullable === false) &&
+              (validation?.isRequired || resolvedIsNullable === false) &&
               (value === null || (value === undefined && args.operation === 'create'))
             ) {
               args.addValidationError(`${fieldLabel} is required`);
@@ -120,7 +120,7 @@ export const select =
         }),
       };
     };
-    const mode = config.isNullable === false ? 'required' : 'optional';
+    const mode = resolvedIsNullable === false ? 'required' : 'optional';
     const commonDbFieldConfig = {
       mode,
       index: isIndexed === true ? 'index' : isIndexed || undefined,
@@ -138,12 +138,10 @@ export const select =
     };
 
     const output = <T extends graphql.NullableOutputType>(type: T) =>
-      config.isNullable === false && config.graphql?.read?.isNonNull === true
-        ? graphql.nonNull(type)
-        : type;
+      config.graphql?.read?.isNonNull ? graphql.nonNull(type) : type;
 
     const create = <T extends graphql.NullableInputType>(type: T) => {
-      const isNonNull = config.isNullable === false && config.graphql?.read?.isNonNull === true;
+      const isNonNull = config.graphql?.read?.isNonNull === true;
       return graphql.arg({
         type: isNonNull ? graphql.nonNull(type) : type,
         defaultValue: isNonNull ? defaultValue : undefined,

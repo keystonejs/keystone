@@ -7,7 +7,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
-        fields: { name: text({ isOrderable: true }) },
+        fields: { name: text() },
         hooks: {
           validateInput: ({ resolvedData, addValidationError }) => {
             if (resolvedData.name === 'bad') {

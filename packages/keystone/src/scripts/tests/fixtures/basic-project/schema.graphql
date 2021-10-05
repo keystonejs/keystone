@@ -15,6 +15,7 @@ input TodoWhereInput {
   OR: [TodoWhereInput!]
   NOT: [TodoWhereInput!]
   id: IDFilter
+  title: StringFilter
 }
 
 input IDFilter {
@@ -28,8 +29,37 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
 input TodoOrderByInput {
   id: OrderDirection
+  title: OrderDirection
 }
 
 enum OrderDirection {

@@ -31,17 +31,13 @@ export const lists = {
         },
       },
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
   Person: list({
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      password: password({ isNullable: false, validation: { isRequired: true } }),
+      password: password({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
   }),
 };

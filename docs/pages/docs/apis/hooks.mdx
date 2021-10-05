@@ -278,16 +278,16 @@ export default config({
 
 The `afterOperation` function is used to perform side effects after the data has been saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
-| Argument       | Description                                                                                                                                                                                                |
-| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`      | The key of the list being operated on.                                                                                                                                                                     |
-| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                                 |
-| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                     |
-| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                                         |
+| Argument       | Description                                                                                                                                                                                               |
+| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                                    |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                                |
+| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                    |
+| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                                        |
 | `originalItem` | The original value of the item being updated or deleted, `undefined` for `create` operations. This object is an internal database item. [DB API](./db-items) for more details on internal database items. |
-| `item`         | The new value of the item being updated or created, `undefined` for `delete` operations. This object is an internal database item. [DB API](./db-items) for more details on internal database items.                                            |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                           |
-| `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                            |
+| `item`         | The new value of the item being updated or created, `undefined` for `delete` operations. This object is an internal database item. [DB API](./db-items) for more details on internal database items.      |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                                       |
+| `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                           |
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
