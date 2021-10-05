@@ -4,10 +4,7 @@ import { FieldController } from '../../../types';
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {
-    if (
-      selection.kind === 'Field' &&
-      selection.name.value !== 'someFieldBecauseGraphQLRequiresAtLeastOneSelection'
-    ) {
+    if (selection.kind === 'Field') {
       selectedFields.add(selection.alias ? selection.alias.value : selection.name.value);
     }
     if (selection.kind === 'InlineFragment') {
@@ -20,7 +17,7 @@ function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionS
 export const getRootGraphQLFieldsFromFieldController = weakMemoize(
   (controller: FieldController<any, any>) => {
     const ast = parse(`fragment X on Y {
-  someFieldBecauseGraphQLRequiresAtLeastOneSelection
+  id
   ${controller.graphqlSelection}
   }`);
     const selectedFields = new Set<string>();
