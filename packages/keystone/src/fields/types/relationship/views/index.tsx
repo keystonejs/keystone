@@ -527,9 +527,6 @@ export const controller = (
             onChange(newItems.map(item => item.id).join(','));
           },
         };
-
-        console.log(state);
-
         return (
           <RelationshipSelect
             controlShouldRenderValue
