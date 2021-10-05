@@ -24,7 +24,7 @@ testModules
           lists: {
             [listKey]: list({
               fields: {
-                name: text({ isOrderable: true }),
+                name: text(),
                 ...mod.getTestFields(matrixValue),
               },
             }),

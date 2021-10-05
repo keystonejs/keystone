@@ -28,6 +28,12 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  title: StringFilter
+  status: PostStatusTypeNullableFilter
+  content: StringFilter
+  rating: IntNullableFilter
+  publishDate: DateTimeNullableFilter
+  author: AuthorWhereInput
 }
 
 input IDFilter {
@@ -41,8 +47,70 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input PostStatusTypeNullableFilter {
+  equals: PostStatusType
+  in: [PostStatusType!]
+  notIn: [PostStatusType!]
+  not: PostStatusTypeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  content: OrderDirection
+  rating: OrderDirection
+  publishDate: OrderDirection
 }
 
 enum OrderDirection {
@@ -99,6 +167,7 @@ type Author {
 
 input AuthorWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input AuthorWhereInput {
@@ -106,10 +175,21 @@ input AuthorWhereInput {
   OR: [AuthorWhereInput!]
   NOT: [AuthorWhereInput!]
   id: IDFilter
+  name: StringFilter
+  email: StringFilter
+  posts: PostManyRelationFilter
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input AuthorOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 input AuthorUpdateInput {

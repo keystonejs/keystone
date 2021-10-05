@@ -24,7 +24,7 @@ const runner = setupTestRunner({
       }),
       Author: list({
         fields: {
-          name: text({ isFilterable: true }),
+          name: text(),
           bio: document({
             relationships: {
               mention: {

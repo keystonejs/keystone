@@ -45,7 +45,7 @@ export const lists = {
       /** The user's first and last name. */
       name: text({ validation: { isRequired: true } }),
       /** Email is used to log into the system. */
-      email: text({ isIndexed: 'unique', isFilterable: true, validation: { isRequired: true } }),
+      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
       attachment: file(),
@@ -143,7 +143,6 @@ export const lists = {
         ui: {
           displayMode: 'segmented-control',
         },
-        isNullable: false,
         validation: {
           isRequired: true,
         },

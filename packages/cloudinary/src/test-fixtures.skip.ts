@@ -31,6 +31,7 @@ export const name = 'CloudinaryImage';
 export const typeFunction = cloudinaryImage;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
+export const supportsNullInput = true;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
 

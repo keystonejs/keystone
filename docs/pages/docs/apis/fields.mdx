@@ -60,12 +60,12 @@ All options are optional.
 
 Options:
 
-- `isFilterable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support filtering by this field.
-  If `true`, the GraphQL API and Admin UI will support filtering by this field.
+- `isFilterable` (default: `true`): If `false`, the GraphQL API and admin UI will not support filtering by this field.
+  If `true` (default), the GraphQL API and Admin UI will support filtering by this field.
   If a function is provided, it will be evaluated dynamically each time this field is used as a filter in a GraphQL operation.
   If the function returns `false`, the operation will return an error indicating that filtering on this field is not allowed.
-- `isOrderable` (default: `false`): If `false` (default), the GraphQL API and admin UI will not support ordering by this field.
-  If `true`, the GraphQL API and Admin UI will support ordering by this field.
+- `isOrderable` (default: `true`): If `false`, the GraphQL API and admin UI will not support ordering by this field.
+  If `true` (default), the GraphQL API and Admin UI will support ordering by this field.
   If a function is provided, it will be evaluated dynamically each time this field is used as an ordering field in a GraphQL operation.
   If the function returns `false`, the operation will return an error indicating this ordering by this field is not allowed.
 - `access`: Defines the [Access Control](../guides/access-control) rules for the field.
@@ -186,11 +186,10 @@ Options:
 
 - `defaultValue` (default: `undefined`): Can be either an integer value or `{ kind: 'autoincrement' }`.
   This value will be used for the field when creating items if no explicit value is set.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `validation.min` (default: `-2147483647`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
 - `validation.max` (default: `2147483647`): This describes the maximum number allowed. If you attempt to submit a number over this, you will get a validation error.
   - If you want to specify a range within which the numbers must fall, specify both a minimum and a maximum value.
@@ -266,11 +265,10 @@ Options:
 
 - `defaultValue` (default: `undefined`): Can be a finite float value.
   This value will be used for the field when creating items if no explicit value is set.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `validation.min` (default: `undefined`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
 - `validation.max` (default: `undefined`): This describes the maximum number allowed. If you attempt to submit a number over this, you will get a validation error.
 - `isIndexed` (default: `false`)
@@ -319,11 +317,10 @@ Options:
   This value will be used for the field when creating items if no explicit value is set.
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `validation.min` (default: `undefined`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
 - `validation.max` (default: `undefined`): This describes the maximum number allowed. If you attempt to submit a number over this, you will get a validation error.
   - If you want to specify a range within which the numbers must fall, specify both a minimum and a maximum value.
@@ -373,11 +370,10 @@ A `password` field represents an encrypted password value.
 
 Options:
 
-- `isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `validation.length.min` (default: `8`): This describes the minimum length allowed. If you attempt to submit a string shorter than this, you will get a validation error.
 - `validation.length.max` (default: `undefined`): This describes the maximum length allowed. If you attempt to submit a string longer than this, you will get a validation error.
 - `validation.match` (default: `undefined`): This describes a pattern that values for this field must match
@@ -396,7 +392,6 @@ export default config({
     ListName: list({
       fields: {
         fieldName: password({
-          isNullable: false,
           validation: {
             length: { min: 10, max: 1000 },
             isRequired: true,
@@ -428,12 +423,11 @@ Options:
   `label` is a string to be displayed in the Admin UI.
   `value` is either a `string` (for `{ type: 'string' }` or `{ type: 'enum' }`), or a `number` (for `{ type: 'integer' }`).
   The `value` will be used in the GraphQL API and stored in the database.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `defaultValue` (default: `undefined`): This value will be used for the field when creating items if no explicit value is set.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `isIndexed` (default: `false`)
   - If `true` then this field will be indexed by the database.
   - If `'unique'` then all values of this field must be unique.
@@ -464,7 +458,6 @@ export default config({
           ],
           defaultValue: '...',
           validation: { isRequired: true, },
-          isNullable: false,
           isIndexed: 'unique',
           ui: { displayMode: 'select' },
         }),
@@ -483,12 +476,11 @@ A `text` field represents a string value.
 
 Options:
 
-- `isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
-- `defaultValue` (default: `isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
+- `db.isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
+- `defaultValue` (default: `db.isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` or an empty string.
-  Unlike `isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
+  Unlike `db.isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
 - `validation.length.min` (default: `0`): This describes the minimum number allowed. If you attempt to submit a string shorter than this, you will get a validation error.
 - `validation.length.max` (default: `undefined`): This describes the maximum length allowed. If you attempt to submit a string longer than this, you will get a validation error.
 - `validation.match` (default: `undefined`): This describes a pattern that values for this field must match
@@ -518,7 +510,7 @@ export default config({
       fields: {
         fieldName: text({
           defaultValue: '...',
-          isRequired: true,
+          validation: { isRequired: true },
           isIndexed: 'unique',
           ui: { displayMode: 'textarea' },
         }),
@@ -539,11 +531,10 @@ Options:
 
 - `defaultValue` (default: `undefined`): Can be either a string value with a date time string in ISO8601 format or `{ kind: 'now' }`.
   This value will be used for the field when creating items if no explicit value is set.
-- `isNullable` (default: `true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-  Unlike `isNullable`, this will require that a value is provided in the Admin UI.
-  It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
-  If you would like to enforce it being non-null at the database-level and in the Admin UI, you can set both `isNullable: false` and `validation.isRequired: true`.
+  It validate this when creating and updating an item through the GraphQL API or the Admin UI.
+  It will also default `db.isNullable` to false.
 - `db.createdAt` (default: `false`) If `true` then this field will add the `@updatedAt` attribute to this field in the Prisma schema.
   This will update this field to the current time whenever an item is created/updated with the GraphQL API or any other usage of the Prisma Client if this field is not explicitly set in the request.
   Note this happens at the Prisma Client level, not at the database so if you update an item in your database directly, fields with `db.updatedAt: true` will not automatically update.

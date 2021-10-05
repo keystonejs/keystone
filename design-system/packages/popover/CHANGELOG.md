@@ -1,5 +1,11 @@
 # @keystone-ui/popover
 
+## 4.0.4
+
+### Patch Changes
+
+- [#6652](https://github.com/keystonejs/keystone/pull/6652) [`6d3798fdb`](https://github.com/keystonejs/keystone/commit/6d3798fdbd0a9f1567821e90b7176cf7dd208fda) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded `focus-trap` dependency to `6.7.1` to fix bug (https://github.com/keystonejs/keystone/issues/6650).
+
 ## 4.0.3
 
 ### Patch Changes

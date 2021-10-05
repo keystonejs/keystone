@@ -10,7 +10,7 @@ const setupList = (fields: BaseFields<any>) =>
 describe('defaultValue field config', () => {
   test(
     'text with isNullable: true has no default by default',
-    setupList({ name: text({ isNullable: true }) })(async ({ context }) => {
+    setupList({ name: text({ db: { isNullable: true } }) })(async ({ context }) => {
       const result = await context.query.User.createOne({ data: {}, query: 'name' });
       expect(result).toMatchObject({ name: null });
     })

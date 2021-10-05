@@ -8,7 +8,7 @@ const runner = setupTestRunner({
     lists: {
       // Filter access control
       User: list({
-        fields: { name: text({ isOrderable: true }) },
+        fields: { name: text() },
         access: {
           filter: {
             query: () => true,

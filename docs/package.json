@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/website",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -18,7 +18,7 @@
     "@emotion/react": "^11.4.1",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-next/fields-document": "^9.0.0",
+    "@keystone-next/fields-document": "^10.0.0",
     "@mdx-js/loader": "next",
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^11.1.0",

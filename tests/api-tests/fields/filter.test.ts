@@ -21,7 +21,7 @@ testModules
         config: apiTestConfig({
           lists: {
             [listKey]: list({
-              fields: { name: text({ isOrderable: true }), ...mod.getTestFields(matrixValue) },
+              fields: { name: text(), ...mod.getTestFields(matrixValue) },
             }),
           },
           images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
@@ -413,7 +413,7 @@ testModules
                     lists: {
                       [listKey]: list({
                         fields: {
-                          field: mod.typeFunction({ isIndexed: 'unique', isFilterable: true }),
+                          field: mod.typeFunction({ isIndexed: 'unique' }),
                         },
                       }),
                     },

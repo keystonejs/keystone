@@ -13,7 +13,7 @@ const runner = setupTestRunner({
     lists: {
       Note: list({
         fields: {
-          content: text({ isOrderable: true }),
+          content: text(),
         },
       }),
       User: list({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
       }),
       NoteNoCreate: list({
         fields: {
-          content: text({ isFilterable: true }),
+          content: text(),
         },
         access: {
           operation: { create: () => false },
@@ -46,7 +46,7 @@ const runner = setupTestRunner({
       }),
       UserToNotesNoCreate: list({
         fields: {
-          username: text({ isFilterable: true }),
+          username: text(),
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
@@ -61,7 +61,7 @@ const runner2 = setupTestRunner({
     lists: {
       Note: list({
         fields: {
-          content: text({ isOrderable: true }),
+          content: text(),
         },
         hooks: {
           afterOperation() {
