@@ -30,7 +30,9 @@ export function executeGraphQLFieldWithSelection(
   const field = rootType.getFields()[fieldName];
   if (field === undefined) {
     return () => {
-      throw new Error('You do not have access to this resource');
+      // This will be triggered if the field is missing due to `omit` configuration.
+      // The GraphQL equivalent would be a bad user input error.
+      throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`);
     };
   }
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
