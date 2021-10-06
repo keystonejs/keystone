@@ -257,7 +257,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      const message = 'Unable to create and/or connect 1 User.notes<Note>';
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createUser'],
@@ -299,7 +299,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      const message = 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>';
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
@@ -378,7 +378,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        const message = 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>';
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoRead'],
@@ -425,8 +425,7 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        const message =
-          'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>';
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoRead'],

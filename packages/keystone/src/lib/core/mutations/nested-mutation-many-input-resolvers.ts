@@ -3,7 +3,7 @@ import { graphql } from '../../..';
 import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
-import { userInputError } from '../graphql-errors';
+import { accessDeniedError, userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
 
 type _CreateValueType = Exclude<
@@ -23,15 +23,29 @@ type _UpdateValueType = Exclude<
 function getResolvedUniqueWheres(
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
-  foreignList: InitialisedList
+  foreignList: InitialisedList,
+  operation: string,
 ): Promise<UniquePrismaFilter>[] {
   return uniqueInputs.map(async uniqueInput => {
     // Validate and resolve the input filter
     const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
-    // Check whether the item exists
-    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
-    if (item === null) {
-      throw new Error('Unable to find item to connect to.');
+    // Check whether the item exists (from this users POV).
+    try {
+      const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
+      if (item === null) {
+        // Use the same error message pattern as getFilteredItem()
+        throw accessDeniedError(
+          `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+            uniqueWhere
+          )}'. It may not exist.`
+        );
+      }
+    } catch (err) {
+      throw accessDeniedError(
+        `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+          uniqueWhere
+        )}'. It may not exist.`
+      );
     }
     return uniqueWhere;
   });
@@ -41,7 +55,8 @@ export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  target: string
+  relationshipErrors: { error: Error; tag: string }[],
+  tag: string
 ) {
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
@@ -52,7 +67,7 @@ export function resolveRelateToManyForCreateInput(
 
     // Perform queries for the connections
     const connects = Promise.allSettled(
-      getResolvedUniqueWheres(value.connect || [], context, foreignList)
+      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
     );
 
     // Perform nested mutations for the creations
@@ -67,7 +82,7 @@ export function resolveRelateToManyForCreateInput(
       x => x.reason
     );
     if (errors.length) {
-      throw new Error(`Unable to create and/or connect ${errors.length} ${target}`);
+      relationshipErrors.push(...errors.map((error: Error) => ({ error, tag })));
     }
 
     const result = {
@@ -83,7 +98,8 @@ export function resolveRelateToManyForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  target: string
+  relationshipErrors: { error: Error; tag: string }[],
+  tag: string
 ) {
   return async (value: _UpdateValueType) => {
     if (
@@ -104,14 +120,14 @@ export function resolveRelateToManyForUpdateInput(
 
     // Perform queries for the connections
     const connects = Promise.allSettled(
-      getResolvedUniqueWheres(value.connect || [], context, foreignList)
+      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
     );
 
     const disconnects = Promise.allSettled(
-      getResolvedUniqueWheres(value.disconnect || [], context, foreignList)
+      getResolvedUniqueWheres(value.disconnect || [], context, foreignList, 'disconnect')
     );
 
-    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList));
+    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList, 'set'));
 
     // Perform nested mutations for the creations
     const creates = Promise.allSettled(
@@ -131,11 +147,9 @@ export function resolveRelateToManyForUpdateInput(
       ...createResult.filter(isRejected),
       ...disconnectResult.filter(isRejected),
       ...setResult.filter(isRejected),
-    ];
+    ].map(x => x.reason);
     if (errors.length) {
-      throw new Error(
-        `Unable to create, connect, disconnect and/or set ${errors.length} ${target}`
-      );
+      relationshipErrors.push(...errors.map((error: Error) => ({ error, tag })));
     }
 
     return {

@@ -268,6 +268,7 @@ async function getResolvedData(
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
         if (inputResolver && field.dbField.kind === 'relation') {
+          const tag = `${list.listKey}.${fieldKey}`;
           try {
             input = await inputResolver(
               input,
@@ -282,7 +283,6 @@ async function getResolvedData(
                   // No-op: Should this be UserInputError?
                   return () => undefined;
                 }
-                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
                 const foreignList = list.lists[field.dbField.list];
                 let resolver;
                 if (field.dbField.mode === 'many') {
@@ -298,11 +298,11 @@ async function getResolvedData(
                     resolver = resolveRelateToOneForUpdateInput;
                   }
                 }
-                return resolver(nestedMutationState, context, foreignList, target);
+                return resolver(nestedMutationState, context, foreignList, relationshipErrors, tag);
               })()
             );
           } catch (error: any) {
-            relationshipErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+            relationshipErrors.push({ error, tag });
           }
         }
         return [fieldKey, input] as const;
