@@ -155,7 +155,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      const message = 'Unable to connect a Event.group<Group>';
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createEvent'],
@@ -196,7 +196,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      const message = 'Unable to connect a Event.group<Group>';
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateEvent'],
@@ -353,7 +353,7 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            const message = `Unable to connect a EventTo${group.name}.group<${group.name}>`;
+            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${groupModel.id}"}'. It may not exist.`;
             expectRelationshipError('dev', false, false, errors, [
               {
                 path: [`updateEventTo${group.name}`],
@@ -394,7 +394,7 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            const message = `Unable to connect a EventTo${group.name}.group<${group.name}>`;
+            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${id}"}'. It may not exist.`;
             expectRelationshipError('dev', false, false, errors, [
               {
                 path: [`createEventTo${group.name}`],
