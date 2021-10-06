@@ -155,8 +155,18 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectRelationshipError(errors, [
-        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
+      const message = 'Unable to connect a Event.group<Group>';
+      expectRelationshipError('dev', false, false, errors, [
+        {
+          path: ['createEvent'],
+          messages: [`Event.group: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
+        },
       ]);
     })
   );
@@ -186,8 +196,18 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectRelationshipError(errors, [
-        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
+      const message = 'Unable to connect a Event.group<Group>';
+      expectRelationshipError('dev', false, false, errors, [
+        {
+          path: ['updateEvent'],
+          messages: [`Event.group: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
+        },
       ]);
     })
   );
@@ -211,10 +231,17 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectRelationshipError(errors, [
+      const message = `Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`;
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateEvent'],
-          message: `Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
+          messages: [`Event.group: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })
@@ -326,10 +353,17 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            expectRelationshipError(errors, [
+            const message = `Unable to connect a EventTo${group.name}.group<${group.name}>`;
+            expectRelationshipError('dev', false, false, errors, [
               {
                 path: [`updateEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                messages: [`EventTo${group.name}.group: ${message}`],
+                debug: [
+                  {
+                    message,
+                    stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+                  },
+                ],
               },
             ]);
           })
@@ -360,10 +394,17 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            expectRelationshipError(errors, [
+            const message = `Unable to connect a EventTo${group.name}.group<${group.name}>`;
+            expectRelationshipError('dev', false, false, errors, [
               {
                 path: [`createEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
+                messages: [`EventTo${group.name}.group: ${message}`],
+                debug: [
+                  {
+                    message,
+                    stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+                  },
+                ],
               },
             ]);
           })

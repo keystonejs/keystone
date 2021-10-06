@@ -143,11 +143,18 @@ describe('no access control', () => {
         variables: { id: createUser.id },
       });
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
+      const message =
+        'Input error: The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at User.notes<Note>';
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
-          message:
-            'Input error: The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at User.notes<Note>',
+          messages: [`User.notes: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })

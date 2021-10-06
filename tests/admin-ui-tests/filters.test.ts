@@ -15,8 +15,8 @@ adminUITests('./tests/test-projects/basic', browserType => {
 
   describe('relationship filters', () => {
     afterEach(async () => {
-      context.clearCookies();
-      page.evaluate(() => {
+      await context.clearCookies();
+      await page.evaluate(() => {
         window.localStorage.clear();
       });
       await deleteAllData('./tests/test-projects/basic');
