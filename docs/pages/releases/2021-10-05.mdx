@@ -236,68 +236,6 @@ Note that Keystone continues to use the "binary" query engine, rather than the n
 
 [#6574](https://github.com/keystonejs/keystone/pull/6574) Thanks [@Nikitoring](https://github.com/Nikitoring)! - Added support for [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) via the `config.db.prismaPreviewFeatures` configuration option.
 
-## 🙅‍♀️ Unworthy (will not be referenced at all in release notes)
-
-### Unworthy Removals
-
-[#6490](https://github.com/keystonejs/keystone/pull/6490) - Removed `filters.postgresql.Json` export from `@keystone-next/keystone/types`. Note this is unrelated to the `json` field type. The `json` field type did not have filters and still does not.
-
-[#6638](https://github.com/keystonejs/keystone/pull/6638) - Removed uncontrolled input behaviour
-
-[#6488](https://github.com/keystonejs/keystone/pull/6488) - Removed unnecessary try/catch block in relationship data resolver.
-
-[#6559](https://github.com/keystonejs/keystone/pull/6559) - Removed unnecessary dependency on `typescript`
-
-[#6521](https://github.com/keystonejs/keystone/pull/6521) - Removed unused `BaseKeystone` type.
-
-[#6520](https://github.com/keystonejs/keystone/pull/6520) - Removed `context.schemaName` from the `context` object. This value was an internal API which is no longer required.
-
-### Unworthy Renames
-
-[#6537](https://github.com/keystonejs/keystone/pull/6537) - Renamed internal function `checkOperationAccess` to `getOperationAccess`.
-
-### Unworthy Misc
-
-[#6526](https://github.com/keystonejs/keystone/pull/6526) - Fixed Relationship field inline connect throwing 400 errors when selecting a value.
-
-[#6685](https://github.com/keystonejs/keystone/pull/6685) - Updated field-type resolver error handling to catch and group errors from all fields.
-
-[#6487](https://github.com/keystonejs/keystone/pull/6487) - Fixed type definition of `ValidationArgs['addValidationError']`.
-
-[#6500](https://github.com/keystonejs/keystone/pull/6500) - Fixed a bug in `context.db` API when finding items that don't exist.
-
-[#6658](https://github.com/keystonejs/keystone/pull/6658) - Refactored internals to simplify codepaths.
-
-[#6564](https://github.com/keystonejs/keystone/pull/6564) - Added `dbFieldConfig` parameter to `jsonFieldTypePolyfilledForSQLite`
-
-[#6512](https://github.com/keystonejs/keystone/pull/6512) - Fixed lists with `graphql.omit: ['query']` causing issues in the Admin UI.
-
-[#6532](https://github.com/keystonejs/keystone/pull/6532) - Updated schema export message to accurately reflect required import changes.
-
-[#6524](https://github.com/keystonejs/keystone/pull/6524) - Updated system setup to only check for a valid `config.db.provider` once during `initConfig`.
-
-[#6674](https://github.com/keystonejs/keystone/pull/6674) - The `onBlur` prop on `DatePicker` now actually works and it does not recieve an actual blur event.
-
-[#6618](https://github.com/keystonejs/keystone/pull/6618) - Refactored internals of the package to remove inaccessible code.
-
-[#6675](https://github.com/keystonejs/keystone/pull/6675) - Updated newsletter opt-in to unchecked by default when starting Keystone when no users are detected (triggering the create first user flow).
-
-[#6649](https://github.com/keystonejs/keystone/pull/6649) - Fixed typo in first user screen.
-
-[#6652](https://github.com/keystonejs/keystone/pull/6652) - Upgraded `focus-trap` dependency to `6.7.1` to fix bug (https://github.com/keystonejs/keystone/issues/6650).
-
-[#6508](https://github.com/keystonejs/keystone/pull/6508) - Add Margin to error messages in the Admin UI Item Form
-
-[#6627](https://github.com/keystonejs/keystone/pull/6627) - Keystone Cloud assets integration has been fixed
-
-[#6571](https://github.com/keystonejs/keystone/pull/6571) - Fixed pagination bug on deletion of items.
-
-[#6587](https://github.com/keystonejs/keystone/pull/6587) - Fixed `@keystone-next/keystone/testing` not respecting Admin UI config
-
-[#6592](https://github.com/keystonejs/keystone/pull/6592) - Removed check for access denied on count operations in the Admin UI databoard queries, as these errors are no longer returned.
-
-[#6667](https://github.com/keystonejs/keystone/pull/6667) - Simplified logic of validation hook execution code.
-
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-10-05) on GitHub.
 
 export default ({ children, ...props }) => <Markdown description="2021-10-05" {...props}>{children}</Markdown>;
