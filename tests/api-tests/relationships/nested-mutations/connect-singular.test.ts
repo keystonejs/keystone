@@ -231,7 +231,8 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      const message = `Input error: You must provide one of \"connect\", \"create\" or \"disconnect\" in to-one relationship inputs for 'update' operations.`;
+      const message =
+        'Input error: You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateEvent'],

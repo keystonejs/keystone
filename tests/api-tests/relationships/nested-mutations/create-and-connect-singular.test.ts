@@ -37,7 +37,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createEvent: null });
       const message =
-        'Input error: You must provide "connect" or "create" in to-one relationship inputs for \'create\' operations.';
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createEvent'],
@@ -71,7 +71,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createEvent: null });
       const message =
-        'Input error: You must provide "connect" or "create" in to-one relationship inputs for \'create\' operations.';
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createEvent'],

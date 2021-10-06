@@ -61,7 +61,7 @@ export function resolveRelateToOneForCreateInput(
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
       throw userInputError(
-        `You must provide "connect" or "create" in to-one relationship inputs for 'create' operations.`
+        `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
       );
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
@@ -76,7 +76,7 @@ export function resolveRelateToOneForUpdateInput(
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
       throw userInputError(
-        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for 'update' operations.`
+        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
       );
     }
 

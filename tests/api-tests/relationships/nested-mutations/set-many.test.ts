@@ -144,7 +144,7 @@ describe('no access control', () => {
       });
       expect(data).toEqual({ updateUser: null });
       const message =
-        'Input error: The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for \'update\' operations.';
+        'Input error: The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
