@@ -56,36 +56,34 @@ export function resolveRelateToOneForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  target: string
+  target: string,
+  value: _CreateValueType
 ) {
-  return async (value: _CreateValueType) => {
-    const numOfKeys = Object.keys(value).length;
-    if (numOfKeys !== 1) {
-      throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
-      );
-    }
-    return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
-  };
+  const numOfKeys = Object.keys(value).length;
+  if (numOfKeys !== 1) {
+    throw userInputError(
+      `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+    );
+  }
+  return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
 }
 
 export function resolveRelateToOneForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  target: string
+  target: string,
+  value: _UpdateValueType
 ) {
-  return async (value: _UpdateValueType) => {
-    if (Object.keys(value).length !== 1) {
-      throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
-      );
-    }
+  if (Object.keys(value).length !== 1) {
+    throw userInputError(
+      `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+    );
+  }
 
-    if (value.connect || value.create) {
-      return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
-    } else if (value.disconnect) {
-      return { disconnect: true };
-    }
-  };
+  if (value.connect || value.create) {
+    return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
+  } else if (value.disconnect) {
+    return { disconnect: true };
+  }
 }

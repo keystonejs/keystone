@@ -201,6 +201,7 @@ export const relationship =
         create: listTypes.relateTo.one.create && {
           arg: graphql.arg({ type: listTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
+            // This code path no longer gets used
             return resolve(value);
           },
         },
@@ -208,6 +209,7 @@ export const relationship =
         update: listTypes.relateTo.one.update && {
           arg: graphql.arg({ type: listTypes.relateTo.one.update }),
           async resolve(value, context, resolve) {
+            // This code path no longer gets used
             return resolve(value);
           },
         },

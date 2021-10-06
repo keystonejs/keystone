@@ -265,42 +265,33 @@ async function getResolvedData(
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
-        if (inputResolver && field.dbField.kind === 'relation') {
+        if (field.dbField.kind === 'relation') {
           try {
-            input = await inputResolver(
-              input,
-              context,
-              // This third argument only applies to relationship fields
-              (() => {
-                if (input === undefined) {
-                  // No-op: This is what we want
-                  return () => undefined;
-                }
-                if (input === null) {
-                  // No-op: Should this be UserInputError?
-                  return () => undefined;
-                }
-                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
-                const foreignList = list.lists[field.dbField.list];
-                let resolver;
-                if (field.dbField.mode === 'many') {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToManyForCreateInput;
-                  } else {
-                    resolver = resolveRelateToManyForUpdateInput;
-                  }
+            if (input === undefined) {
+              // No-op: This is what we want
+            } else if (input === null) {
+              // No-op: Should this be UserInputError?
+              input = undefined;
+            } else {
+              const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
+              const foreignList = list.lists[field.dbField.list];
+              let resolver;
+              if (field.dbField.mode === 'many') {
+                if (operation === 'create') {
+                  resolver = resolveRelateToManyForCreateInput;
                 } else {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToOneForCreateInput;
-                  } else {
-                    resolver = resolveRelateToOneForUpdateInput;
-                  }
+                  resolver = resolveRelateToManyForUpdateInput;
                 }
-                return resolver(nestedMutationState, context, foreignList, target);
-              })()
-            );
+              } else {
+                if (operation === 'create') {
+                  resolver = resolveRelateToOneForCreateInput;
+                } else {
+                  resolver = resolveRelateToOneForUpdateInput;
+                }
+              }
+              input = await resolver(nestedMutationState, context, foreignList, target, input);
+            }
           } catch (error: any) {
             relationshipErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
           }
