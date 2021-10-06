@@ -1,5 +1,14 @@
 # @keystone-ui/options
 
+## 4.0.3
+
+### Patch Changes
+
+- [#6658](https://github.com/keystonejs/keystone/pull/6658) [`409fd04b8`](https://github.com/keystonejs/keystone/commit/409fd04b8c8b9a847ec288972dc8918c7604f011) Thanks [@renovate](https://github.com/apps/renovate)! - Refactored internals to simplify codepaths.
+
+- Updated dependencies [[`f963966ab`](https://github.com/keystonejs/keystone/commit/f963966ab138a315a8f18d83ed7a676f7423a51d)]:
+  - @keystone-ui/fields@5.0.0
+
 ## 4.0.2
 
 ### Patch Changes

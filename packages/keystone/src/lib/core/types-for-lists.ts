@@ -121,8 +121,8 @@ export function initialiseLists(
         create: true,
         update: true,
         delete: true,
-        filter: defaultIsFilterable || false,
-        orderBy: defaultIsOrderable || false,
+        filter: defaultIsFilterable ?? true,
+        orderBy: defaultIsOrderable ?? true,
       };
     } else {
       isEnabled[listKey] = {
@@ -131,8 +131,8 @@ export function initialiseLists(
         create: !omit.includes('create'),
         update: !omit.includes('update'),
         delete: !omit.includes('delete'),
-        filter: defaultIsFilterable || false,
-        orderBy: defaultIsOrderable || false,
+        filter: defaultIsFilterable ?? true,
+        orderBy: defaultIsOrderable ?? true,
       };
     }
   }

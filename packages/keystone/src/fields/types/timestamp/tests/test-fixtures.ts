@@ -9,9 +9,7 @@ export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'lastOnline';
 
-export const getTestFields = () => ({
-  lastOnline: timestamp({ isFilterable: true, isOrderable: true }),
-});
+export const getTestFields = () => ({ lastOnline: timestamp() });
 
 export const initItems = () => {
   return [

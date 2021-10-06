@@ -8,7 +8,7 @@ const runner = setupTestRunner({
     lists: {
       // Item access control
       User: list({
-        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        fields: { name: text() },
         access: {
           item: {
             create: ({ inputData }) => {
@@ -24,7 +24,7 @@ const runner = setupTestRunner({
         },
       }),
       BadAccess: list({
-        fields: { name: text({ isFilterable: true, isOrderable: true }) },
+        fields: { name: text() },
         access: {
           item: {
             // @ts-ignore Intentionally return a filter for testing purposes

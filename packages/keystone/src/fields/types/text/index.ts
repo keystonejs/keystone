@@ -26,8 +26,9 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
       length?: { min?: number; max?: number };
     };
     defaultValue?: string;
-    graphql?: { create?: { isNonNull?: boolean } };
-  } & ({ isNullable?: false; graphql?: { read?: { isNonNull?: boolean } } } | { isNullable: true });
+    graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
+    db?: { isNullable?: boolean };
+  };
 
 export const text =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
@@ -37,8 +38,6 @@ export const text =
     ...config
   }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
   meta => {
-    const { isNullable = false } = config;
-
     for (const type of ['min', 'max'] as const) {
       const val = _validation?.length?.[type];
       if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
@@ -71,11 +70,12 @@ export const text =
       },
     };
 
+    const isNullable = config.db?.isNullable ?? false;
+
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
-    if (!config.isNullable) {
-      assertReadIsNonNullAllowed(meta, config);
-    }
+    assertReadIsNonNullAllowed(meta, config, isNullable);
+
     assertCreateIsNonNullAllowed(meta, config);
 
     const mode = isNullable ? 'optional' : 'required';
@@ -94,7 +94,7 @@ export const text =
         ...config.hooks,
         async validateInput(args) {
           const val = args.resolvedData[meta.fieldKey];
-          if (val === null && (validation?.isRequired || config.isNullable !== true)) {
+          if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`);
           }
           if (val != null) {
@@ -149,10 +149,7 @@ export const text =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type:
-          config.isNullable !== true && config.graphql?.read?.isNonNull
-            ? graphql.nonNull(graphql.String)
-            : graphql.String,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.String) : graphql.String,
       }),
       views: resolveView('text/views'),
       getAdminMeta(): TextFieldMeta {

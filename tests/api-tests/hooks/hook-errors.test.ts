@@ -9,7 +9,7 @@ const runner = (debug: boolean | undefined) =>
     config: apiTestConfig({
       lists: {
         User: list({
-          fields: { name: text({ isFilterable: true, isOrderable: true }) },
+          fields: { name: text() },
           hooks: {
             beforeOperation: ({ resolvedData, operation, item }) => {
               if (operation === 'delete') {

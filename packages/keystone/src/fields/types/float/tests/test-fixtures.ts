@@ -8,7 +8,7 @@ export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ testField: float({ isFilterable: true }) });
+export const getTestFields = () => ({ testField: float() });
 
 export const initItems = () => {
   return [

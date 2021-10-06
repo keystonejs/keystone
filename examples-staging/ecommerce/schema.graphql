@@ -160,7 +160,16 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
   email: StringFilter
+  password: PasswordFilter
+  cart: CartItemManyRelationFilter
+  orders: OrderManyRelationFilter
+  role: RoleWhereInput
+  products: ProductManyRelationFilter
+  passwordResetToken: PasswordFilter
+  passwordResetIssuedAt: DateTimeNullableFilter
+  passwordResetRedeemedAt: DateTimeNullableFilter
 }
 
 input IDFilter {
@@ -202,8 +211,45 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input CartItemManyRelationFilter {
+  every: CartItemWhereInput
+  some: CartItemWhereInput
+  none: CartItemWhereInput
+}
+
+input OrderManyRelationFilter {
+  every: OrderWhereInput
+  some: OrderWhereInput
+  none: OrderWhereInput
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  passwordResetIssuedAt: OrderDirection
+  passwordResetRedeemedAt: OrderDirection
 }
 
 enum OrderDirection {
@@ -308,10 +354,59 @@ input ProductWhereInput {
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]
   id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  photo: ProductImageWhereInput
+  status: StringNullableFilter
+  price: IntNullableFilter
+  user: UserWhereInput
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input ProductOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  price: OrderDirection
 }
 
 input ProductUpdateInput {
@@ -424,10 +519,13 @@ input ProductImageWhereInput {
   OR: [ProductImageWhereInput!]
   NOT: [ProductImageWhereInput!]
   id: IDFilter
+  altText: StringFilter
+  product: ProductWhereInput
 }
 
 input ProductImageOrderByInput {
   id: OrderDirection
+  altText: OrderDirection
 }
 
 input ProductImageUpdateInput {
@@ -479,12 +577,25 @@ input CartItemWhereInput {
   OR: [CartItemWhereInput!]
   NOT: [CartItemWhereInput!]
   id: IDFilter
+  quantity: IntFilter
   product: ProductWhereInput
   user: UserWhereInput
 }
 
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
 input CartItemOrderByInput {
   id: OrderDirection
+  quantity: OrderDirection
 }
 
 input CartItemUpdateInput {
@@ -523,11 +634,20 @@ input OrderItemWhereInput {
   OR: [OrderItemWhereInput!]
   NOT: [OrderItemWhereInput!]
   id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  photo: ProductImageWhereInput
+  price: IntNullableFilter
+  quantity: IntNullableFilter
+  order: OrderWhereInput
 }
 
 input OrderItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  quantity: OrderDirection
 }
 
 input OrderItemUpdateInput {
@@ -588,10 +708,22 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
+  total: IntNullableFilter
+  items: OrderItemManyRelationFilter
+  user: UserWhereInput
+  charge: StringFilter
+}
+
+input OrderItemManyRelationFilter {
+  every: OrderItemWhereInput
+  some: OrderItemWhereInput
+  none: OrderItemWhereInput
 }
 
 input OrderOrderByInput {
   id: OrderDirection
+  total: OrderDirection
+  charge: OrderDirection
 }
 
 input OrderUpdateInput {
@@ -652,10 +784,36 @@ input RoleWhereInput {
   OR: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
   id: IDFilter
+  name: StringFilter
+  canManageProducts: BooleanFilter
+  canSeeOtherUsers: BooleanFilter
+  canManageUsers: BooleanFilter
+  canManageRoles: BooleanFilter
+  canManageCart: BooleanFilter
+  canManageOrders: BooleanFilter
+  assignedTo: UserManyRelationFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input RoleOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  canManageProducts: OrderDirection
+  canSeeOtherUsers: OrderDirection
+  canManageUsers: OrderDirection
+  canManageRoles: OrderDirection
+  canManageCart: OrderDirection
+  canManageOrders: OrderDirection
 }
 
 input RoleUpdateInput {

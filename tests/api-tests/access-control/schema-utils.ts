@@ -8,14 +8,14 @@ const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 const yesNo = (x: boolean | undefined) => (x === true ? 'Y' : x === false ? 'N' : 'U');
 
 type ListConfig = {
-  isFilterable?: true;
-  isOrderable?: true;
+  isFilterable?: false;
+  isOrderable?: false;
   omit?: true | ('query' | 'create' | 'update' | 'delete')[];
 };
 
 type FieldConfig = {
-  isFilterable?: true;
-  isOrderable?: true;
+  isFilterable?: false;
+  isOrderable?: false;
   omit?: true | ('read' | 'create' | 'update')[];
 };
 
@@ -46,8 +46,8 @@ const getListName = (config: ListConfig) => `${getListPrefix(config)}List`;
 const getFieldName = (config: FieldConfig) => getFieldPrefix(config);
 
 const listConfigVariables: ListConfig[] = [];
-for (const isFilterable of [undefined, true as const]) {
-  for (const isOrderable of [undefined, true as const]) {
+for (const isFilterable of [undefined, false as const]) {
+  for (const isOrderable of [undefined, false as const]) {
     for (const flag of [undefined, true, false]) {
       if (flag === undefined || flag === true) {
         listConfigVariables.push({ isFilterable, isOrderable, omit: flag });
@@ -68,8 +68,8 @@ for (const isFilterable of [undefined, true as const]) {
 }
 
 const fieldMatrix: FieldConfig[] = [];
-for (const isFilterable of [undefined, true as const]) {
-  for (const isOrderable of [undefined, true as const]) {
+for (const isFilterable of [undefined, false as const]) {
+  for (const isOrderable of [undefined, false as const]) {
     for (const flag of [undefined, true, false]) {
       if (flag === undefined || flag === true) {
         fieldMatrix.push({ isFilterable, isOrderable, omit: flag });

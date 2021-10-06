@@ -5,7 +5,7 @@ import { checkbox, password, relationship, text, timestamp } from '@keystone-nex
 const trackingFields = {
   createdAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    isNullable: false,
+    validation: { isRequired: true },
     defaultValue: { kind: 'now' },
     ui: {
       createView: { fieldMode: 'hidden' },
@@ -24,8 +24,8 @@ const trackingFields = {
   // }),
   updatedAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
-    isNullable: false,
     db: { updatedAt: true },
+    validation: { isRequired: true },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },

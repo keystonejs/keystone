@@ -9,7 +9,12 @@ import {
   runWithPrisma,
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
-import { accessDeniedError, extensionError, resolverError } from '../graphql-errors';
+import {
+  accessDeniedError,
+  extensionError,
+  relationshipError,
+  resolverError,
+} from '../graphql-errors';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import {
@@ -256,49 +261,57 @@ async function getResolvedData(
   }
 
   // Apply relationship field type input resolvers
+  const relationshipErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
-    await promiseAllRejectWithAllErrors(
+    await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve;
         let input = resolvedData[fieldKey];
         if (inputResolver && field.dbField.kind === 'relation') {
-          input = await inputResolver(
-            input,
-            context,
-            // This third argument only applies to relationship fields
-            (() => {
-              if (input === undefined) {
-                // No-op: This is what we want
-                return () => undefined;
-              }
-              if (input === null) {
-                // No-op: Should this be UserInputError?
-                return () => undefined;
-              }
-              const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
-              const foreignList = list.lists[field.dbField.list];
-              let resolver;
-              if (field.dbField.mode === 'many') {
-                if (operation === 'create') {
-                  resolver = resolveRelateToManyForCreateInput;
-                } else {
-                  resolver = resolveRelateToManyForUpdateInput;
+          try {
+            input = await inputResolver(
+              input,
+              context,
+              // This third argument only applies to relationship fields
+              (() => {
+                if (input === undefined) {
+                  // No-op: This is what we want
+                  return () => undefined;
                 }
-              } else {
-                if (operation === 'create') {
-                  resolver = resolveRelateToOneForCreateInput;
-                } else {
-                  resolver = resolveRelateToOneForUpdateInput;
+                if (input === null) {
+                  // No-op: Should this be UserInputError?
+                  return () => undefined;
                 }
-              }
-              return resolver(nestedMutationState, context, foreignList, target);
-            })()
-          );
+                const target = `${list.listKey}.${fieldKey}<${field.dbField.list}>`;
+                const foreignList = list.lists[field.dbField.list];
+                let resolver;
+                if (field.dbField.mode === 'many') {
+                  if (operation === 'create') {
+                    resolver = resolveRelateToManyForCreateInput;
+                  } else {
+                    resolver = resolveRelateToManyForUpdateInput;
+                  }
+                } else {
+                  if (operation === 'create') {
+                    resolver = resolveRelateToOneForCreateInput;
+                  } else {
+                    resolver = resolveRelateToOneForUpdateInput;
+                  }
+                }
+                return resolver(nestedMutationState, context, foreignList, target);
+              })()
+            );
+          } catch (error: any) {
+            relationshipErrors.push({ error, tag: `${list.listKey}.${fieldKey}` });
+          }
         }
         return [fieldKey, input] as const;
       })
     )
   );
+  if (relationshipErrors.length) {
+    throw relationshipError(relationshipErrors);
+  }
 
   // Resolve input hooks
   const hookName = 'resolveInput';
