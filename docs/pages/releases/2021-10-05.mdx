@@ -1,0 +1,304 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 5th October 2021
+
+?> This release contains breaking changes, please see below!
+
+```json
+"@keystone-ui/fields": "5.0.0",
+"@keystone-ui/notice": "4.1.0",
+"@keystone-ui/options": "4.0.3",
+"@keystone-ui/popover": "4.0.4",
+"@keystone-ui/segmented-control": "5.0.0",
+"@keystone-next/auth": "33.0.0",
+"@keystone-next/cloudinary": "8.0.0",
+"@keystone-next/fields-document": "10.0.0",
+"@keystone-next/keystone": "26.0.1",
+"@keystone-next/session-store-redis": "5.0.0",
+```
+
+## Fields Overhaul <Emoji symbol="🚀" alt="Rocket" />
+
+[#6638](https://github.com/keystonejs/keystone/pull/6638) - In the `select` field, `dataType` has been renamed to `type`, `defaultValue` is now a static value and `isRequired` has moved to `validation.isRequired`. The `select` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. `graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable. The `select` can now also be cleared in the Admin UI when `ui.displayMode` is `segmented-control`.
+
+[#6663](https://github.com/keystonejs/keystone/pull/6663) - In the `decimal` field, `defaultValue` is now a static number written as a string, `isRequired` has moved to `validation.isRequired` and now also requires the input isn't `NaN`, along with new `validation.min` and `validation.max` options. The `decimal` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. `graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+
+[#6461](https://github.com/keystonejs/keystone/pull/6461) - In the `text` field, `defaultValue` is now a static value, `isRequired` has moved to `validation.isRequired` and also requires that the value has a length of at least one, along with new `validation.lenght.min`, `validation.length.max` and `validation.match` options. The `text` field is also now non-nullable at the database-level by default and can be made nullable by setting the `isNullable` option to `true`. `graphql.read.isNonNull` can also be set if the field does not have `isNullable: true` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+
+[#6674](https://github.com/keystonejs/keystone/pull/6674) - In the `timestamp` field, `defaultValue` is now a static date time value in an ISO8601 string or `{ kind: 'now' }` and `isRequired` has moved to `validation.isRequired`. The `timestamp` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. `graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable. The field can also be automatically set to the current time on a create/update by setting `db.updatedAt: true`, this will add Prisma's `@updatedAt` attribute to the field. The `timestamp` field also now uses a custom GraphQL scalar type named `DateTime` which requires inputs as full ISO8601 date-time strings such as `"2021-01-30T00:00:00.000Z"`, using `new Date().toISOString()` will give you a string in the correct format.
+
+[#6683](https://github.com/keystonejs/keystone/pull/6683) - In the `password` field, `defaultValue` has been removed, `isRequired` has moved to `validation.isRequired`, `rejectCommon` has moved to `validation.rejectCommon`, `minLength` has moved to `validation.length.min` along with with the new `validation.length.max` and `validation.match` options. The `password` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. Also, providing `''` to the field will now result in an error instead of silently setting null. `validation.length.min` also must be `1` or above, though it still defaults to `8`. If `workFactor` is outside of the range of `6` to `31`, an error will now be thrown instead of the previous behaviour of clamping the value to `4` to `31` and warning if it's below `6`.
+
+[#6656](https://github.com/keystonejs/keystone/pull/6656) - In the `float` field, `defaultValue` is now a static number, `isRequired` has moved to `validation.isRequired`, along with new `validation.min` and `validation.max` options. The `float` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. `graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+
+[#6588](https://github.com/keystonejs/keystone/pull/6588) - In the `integer` field, `defaultValue` is now a static number or `{ kind: 'autoincrement' }`, `isRequired` has moved to `validation.isRequired`, along with new `validation.min` and `validation.max` options. The `integer` field can also be made non-nullable at the database-level with the `isNullable` option which defaults to `true`. `graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+
+The `autoIncrement` field has also been removed, use the integer field with a `defaultValue` of `{ kind: 'autoincrement' }`
+
+[#6513](https://github.com/keystonejs/keystone/pull/6513) - Removed `isRequired` and `defaultValue` from the `image` and `file` fields. If you were using these options, the same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively.
+
+[#6513](https://github.com/keystonejs/keystone/pull/6513) - Removed `isRequired` and `defaultValue` from the `cloudinaryImage` field. If you were using these options, the same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively.
+
+[#6607](https://github.com/keystonejs/keystone/pull/6607) - Removed `isRequired` and `defaultValue` can no longer be dynamic in the `json` field. If you were using `isRequired`, the same behaviour can be re-created with the `validateInput` hook.
+
+[#6514](https://github.com/keystonejs/keystone/pull/6514) - Removed `defaultValue` and the undocumented `withMeta` option from the `relationship` field. To re-create `defaultValue`, you can use `resolveInput` though note that if you're using autoincrement ids, you need to return the id as number, not a string like you would provide to GraphQL, e.g. `{ connect: { id: 1 } }` rather than `{ connect: { id: "1" } }`. If you were using `withMeta: false`, please open an issue with your use case.
+
+[#6448](https://github.com/keystonejs/keystone/pull/6448) - The `checkbox` field is now non-nullable in the database, if you need three states, you should use `select()`. The field no longer accepts dynamic default values and it will default to `false` unless a different `defaultValue` is specified. `graphql.read.isNonNull` can also be set if you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable. `graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+
+If you're using SQLite, Prisma will generate a migration that makes the column non-nullable and sets any rows that have null values to the `defaultValue`.
+
+If you're using PostgreSQL, Prisma will generate a migration but you'll need to modify it if you have nulls in a checkbox field. Keystone will say that the migration cannot be executed:
+
+```
+✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ There has been a change to your Keystone schema that requires a migration
+
+⚠️ We found changes that cannot be executed:
+
+  • Made the column `isAdmin` on table `User` required, but there are 1 existing NULL values.
+
+✔ Name of migration … make-is-admin-non-null
+✨ A migration has been created at migrations/20210906053141_make_is_admin_non_null
+Please edit the migration and run keystone-next dev again to apply the migration
+```
+
+The generated migration will look like this:
+
+```sql
+/*
+  Warnings:
+
+  - Made the column `isAdmin` on table `User` required. This step will fail if there are existing NULL values in that column.
+
+*/
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "isAdmin" SET NOT NULL,
+ALTER COLUMN "isAdmin" SET DEFAULT false;
+```
+
+To make it set any null values to false in your database, you need to modify it so that it looks like this but with the table and column names replaced.
+
+```sql
+ALTER TABLE "User" ALTER COLUMN "isAdmin" SET DEFAULT false;
+UPDATE "User" SET "isAdmin" = DEFAULT WHERE "isAdmin" IS NULL;
+ALTER TABLE "User" ALTER COLUMN "isAdmin" SET NOT NULL;
+```
+
+[#6564](https://github.com/keystonejs/keystone/pull/6564) - The `document` field is now non-nullable in the database. The field no longer has `defaultValue` or `isRequired` options. The same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively. The field will default to `[{ "type": "paragraph", "children": [{ "text": "" }] }]`. The output type has also been renamed to `ListKey_fieldKey_Document`
+
+If you're using SQLite, Prisma will generate a migration that makes the column non-nullable and sets any rows that have null values to an empty paragraph.
+
+If you're using PostgreSQL, Prisma will generate a migration but you'll need to modify it if you have nulls in a `document` field. Keystone will say that the migration cannot be executed:
+
+```
+✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ There has been a change to your Keystone schema that requires a migration
+
+⚠️ We found changes that cannot be executed:
+
+  • Made the column `content` on table `Post` required, but there are 1 existing NULL values.
+
+✔ Name of migration … make_document_field_non_null
+✨ A migration has been created at migrations/20210915050920_make_document_field_non_null
+Please edit the migration and run keystone-next dev again to apply the migration
+```
+
+The generated migration will look like this:
+
+```sql
+/*
+  Warnings:
+
+  - Made the column `content` on table `Post` required. This step will fail if there are existing NULL values in that column.
+
+*/
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "content" SET NOT NULL,
+ALTER COLUMN "content" SET DEFAULT E'[{"type":"paragraph","children":[{"text":""}]}]';
+```
+
+To make it set any null values to an empty paragraph in your database, you need to modify it so that it looks like this but with the table and column names replaced.
+
+```sql
+ALTER TABLE "Post" ALTER COLUMN "content" SET DEFAULT E'[{"type":"paragraph","children":[{"text":""}]}]';
+UPDATE "Post" SET "content" = DEFAULT WHERE "content" IS NULL;
+ALTER TABLE "Post" ALTER COLUMN "content" SET NOT NULL;
+```
+
+## Removed <Emoji symbol="🚫" alt="Removed" />
+
+[#6518](https://github.com/keystonejs/keystone/pull/6518) - Removed the deprecated `config.db.adapter` option. Please use `config.db.provider` to indicate the database provider for your system.
+
+[#6645](https://github.com/keystonejs/keystone/pull/6645) - Removed unused return types, and unused values from enum definitions.
+
+- `sendUserPasswordResetLink` and `sendUserMagicAuthLink` only ever return `null`, so now have return types of `Boolean`.
+- `UserAuthenticationWithPasswordFailure` no longer has a `code` value.
+- `MagicLinkRedemptionErrorCode` and `PasswordResetRedemptionErrorCode` no longer have the values `IDENTITY_NOT_FOUND`, `MULTIPLE_IDENTITY_MATCHES`, `TOKEN_NOT_SET`, or `TOKEN_MISMATCH`.
+
+[#6542](https://github.com/keystonejs/keystone/pull/6542) - Removed `createSchema` function, you can remove the call to `createSchema` and pass the lists directly to the `lists` property
+
+[#6606](https://github.com/keystonejs/keystone/pull/6606) - Removed the internal `protectIdentities` variable.
+
+## Renamed <Emoji symbol="📛" alt="Name Badge" />
+
+[#6520](https://github.com/keystonejs/keystone/pull/6520) - Renamed the `skipAccessControl` argument to `createContext` to `sudo` for consistency with `context.sudo()`.
+
+[#6680](https://github.com/keystonejs/keystone/pull/6680) - Renamed the `originalInput` argument for access control functions to `inputData`.
+
+[#6684](https://github.com/keystonejs/keystone/pull/6684) - Consolidated the `beforeChange`/`beforeDelete` and `afterChange`/`afterDelete` hooks into `beforeOperation` and `afterOperation`.
+
+- Renamed the `existingItem` argument for all hooks (except `afterOperation`) to `item`.
+- Renamed the `existingItem` argument for `afterOperation` to `originalItem`.
+- Renamed the `updatedItem` argument for `afterOperation` to `item`.
+
+See the [Hooks API docs](https://keystonejs.com/docs/apis/hooks) for a complete reference for the updated API.
+
+[#6535](https://github.com/keystonejs/keystone/pull/6535) - The API `context.lists` has been renamed to `context.query`, and `context.db.lists` has been renamed to `context.db`.
+
+When using the experimental option `config.experimental.generateNodeAPI`, the `api` module now exports `query` rather than `lists`.
+
+[#6538](https://github.com/keystonejs/keystone/pull/6538) - Renamed `graphQLReturnFragment` to `ui.query` in the virtual field options. The virtual field now checks if `ui.query` is required for the GraphQL output type, and throws an error if it is missing. If you don't want want the Admin UI to fetch the field, you can set `ui.itemView.fieldMode` and `ui.listView.fieldMode` to `'hidden'` instead of providing `ui.query`.
+
+[#6681](https://github.com/keystonejs/keystone/pull/6681) - Renamed the `originalInput` argument for hook functions to `inputData`.
+
+## Moved <Emoji symbol="🚚" alt="Moving Truck" />
+
+[#6689](https://github.com/keystonejs/keystone/pull/6689) - Moved `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`
+
+## Apollo Server Upgrade <Emoji symbol="👩‍🚀" alt="Astronaut" />
+
+[#6409](https://github.com/keystonejs/keystone/pull/6409) - Upgraded Apollo Server to [Version 3](https://www.apollographql.com/docs/apollo-server/migration/).
+
+The Apollo documentation contains a full list of breaking changes introduced by this update.
+You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/apis/config#graphql) configuration option.
+
+The most prominant change for most users will be that the GraphQL Playground has been replaced by the Apollo Sandbox.
+If you prefer to keep the GraphQL Playground, you can configure your server by [following these instructions](https://www.apollographql.com/docs/apollo-server/migration/#graphql-playground).
+
+## Improved Messaging / Errors <Emoji symbol="📟" alt="Message" />
+
+[#6617](https://github.com/keystonejs/keystone/pull/6617) - Improved messaging around keystone startup a little
+
+[#6591](https://github.com/keystonejs/keystone/pull/6591) - Improved the error message returned when access is denied.
+
+[#6505](https://github.com/keystonejs/keystone/pull/6505) - Improved error message for bad relationship filter inputs.
+
+[#6565](https://github.com/keystonejs/keystone/pull/6565) - Updated error messages to indicate user input errors.
+
+[#6664](https://github.com/keystonejs/keystone/pull/6664) - Improved error messages when access control functions return invalid values.
+
+[#6672](https://github.com/keystonejs/keystone/pull/6672) - Improved the error messages provided from the GraphQL API when extension code (e.g access control functions, hooks, etc) throw exceptions.
+
+[#6482](https://github.com/keystonejs/keystone/pull/6482) - Cleaned up the formatting of GraphQL error messages result from Prisma errors.
+
+[#6593](https://github.com/keystonejs/keystone/pull/6593) - Fixed bug with incorrect errors being returned on invalid auth attempts.
+
+[#6678](https://github.com/keystonejs/keystone/pull/6678) - Fixed returning filters like `{ NOT: [{ name: { equals: 'blah' } }] }` from filter access control and improve error messages when returning bad filters from filter access control
+
+## Performance <Emoji symbol="🏃‍♀️" alt="Runner" />
+
+[#6523](https://github.com/keystonejs/keystone/pull/6523) - The item view page will only fetch the item once to determine the field modes rather than once per field.
+
+[#6519](https://github.com/keystonejs/keystone/pull/6519) - The Admin UI will skip fetching fields that have a statically set `itemView.fieldMode: 'hidden'` on the item view. The `id` argument to the `KeystoneAdminUIFieldMeta.itemView` GraphQL field can now be omitted which will make `KeystoneAdminUIFieldMetaItemView.fieldMode` return null when there isn't a static field mode. The `itemView` also no longer uses a sudo context when fetching the item in the `KeystoneAdminUIFieldMetaItemView.fieldMode`. Previously, if someone had access to the Admin UI(`ui.isAccessAllowed`) and a field had a `itemView.fieldMode` function that used the `item` argument, someone could bypass access control to determine whether or not an item with a given id exists.
+
+[#6639](https://github.com/keystonejs/keystone/pull/6639) - Improved query generation performance when querying single relationships without filter-based access control.
+
+## REST API <Emoji symbol="👩‍🏫" alt="Teacher" />
+
+[#6634](https://github.com/keystonejs/keystone/pull/6634) - REST API example
+
+[#6616](https://github.com/keystonejs/keystone/pull/6616) - Added a `createContext` argument to the `config.server.extendExpressApp` option, allowing access to the full context API.
+
+## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
+
+[#6625](https://github.com/keystonejs/keystone/pull/6625) - Update Prisma dependency to `3.1.1`.
+
+Note that Keystone continues to use the "binary" query engine, rather than the new "node-API" query engine, which is now the Prisma default. We are still performing tests to ensure that the node-API query engine will work well with Keystone.
+
+## More
+
+[#6587](https://github.com/keystonejs/keystone/pull/6587) - The `KeystoneAdminUIFieldMeta.isOrderable` and `KeystoneAdminUIFieldMeta.isFilterable` fields are no longer statically resolvable and will now take into account the context/session. This also means `isOrderable` and `isFilterable` are no longer accessible on `useList().fields[fieldKey].isOrderable/isFilterable`, they can be fetched through GraphQL if you need them in the Admin UI.
+
+[#6682](https://github.com/keystonejs/keystone/pull/6682) - The `sendItemMagicAuthLink` and `sendItemPasswordResetLink` mutations now always return `true` instead of always returning `null`
+
+[#6560](https://github.com/keystonejs/keystone/pull/6560) - Added support for dynamic `isFilterable` and `isOrderable` field config values. If a function is provided for these config option, it will be dynamically evaluated each time the field is used for filtering and ordering, and an error will be returned if the function returns `false`.
+
+## Credits <Emoji symbol="💫" alt="circle star" />
+
+[#6481](https://github.com/keystonejs/keystone/pull/6481) Thanks [@gautamsi](https://github.com/gautamsi)! - Exported Field types to help in updating contrib packages
+
+[#6530](https://github.com/keystonejs/keystone/pull/6530) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed remaining windows issue where it creates invalid import path. This removes some duplicate code which caused this.
+
+[#6574](https://github.com/keystonejs/keystone/pull/6574) Thanks [@Nikitoring](https://github.com/Nikitoring)! - Added support for [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) via the `config.db.prismaPreviewFeatures` configuration option.
+
+## 🙅‍♀️ Unworthy (will not be referenced at all in release notes)
+
+### Unworthy Removals
+
+[#6490](https://github.com/keystonejs/keystone/pull/6490) - Removed `filters.postgresql.Json` export from `@keystone-next/keystone/types`. Note this is unrelated to the `json` field type. The `json` field type did not have filters and still does not.
+
+[#6638](https://github.com/keystonejs/keystone/pull/6638) - Removed uncontrolled input behaviour
+
+[#6488](https://github.com/keystonejs/keystone/pull/6488) - Removed unnecessary try/catch block in relationship data resolver.
+
+[#6559](https://github.com/keystonejs/keystone/pull/6559) - Removed unnecessary dependency on `typescript`
+
+[#6521](https://github.com/keystonejs/keystone/pull/6521) - Removed unused `BaseKeystone` type.
+
+[#6520](https://github.com/keystonejs/keystone/pull/6520) - Removed `context.schemaName` from the `context` object. This value was an internal API which is no longer required.
+
+### Unworthy Renames
+
+[#6537](https://github.com/keystonejs/keystone/pull/6537) - Renamed internal function `checkOperationAccess` to `getOperationAccess`.
+
+### Unworthy Misc
+
+[#6526](https://github.com/keystonejs/keystone/pull/6526) - Fixed Relationship field inline connect throwing 400 errors when selecting a value.
+
+[#6685](https://github.com/keystonejs/keystone/pull/6685) - Updated field-type resolver error handling to catch and group errors from all fields.
+
+[#6487](https://github.com/keystonejs/keystone/pull/6487) - Fixed type definition of `ValidationArgs['addValidationError']`.
+
+[#6500](https://github.com/keystonejs/keystone/pull/6500) - Fixed a bug in `context.db` API when finding items that don't exist.
+
+[#6658](https://github.com/keystonejs/keystone/pull/6658) - Refactored internals to simplify codepaths.
+
+[#6564](https://github.com/keystonejs/keystone/pull/6564) - Added `dbFieldConfig` parameter to `jsonFieldTypePolyfilledForSQLite`
+
+[#6512](https://github.com/keystonejs/keystone/pull/6512) - Fixed lists with `graphql.omit: ['query']` causing issues in the Admin UI.
+
+[#6532](https://github.com/keystonejs/keystone/pull/6532) - Updated schema export message to accurately reflect required import changes.
+
+[#6524](https://github.com/keystonejs/keystone/pull/6524) - Updated system setup to only check for a valid `config.db.provider` once during `initConfig`.
+
+[#6674](https://github.com/keystonejs/keystone/pull/6674) - The `onBlur` prop on `DatePicker` now actually works and it does not recieve an actual blur event.
+
+[#6618](https://github.com/keystonejs/keystone/pull/6618) - Refactored internals of the package to remove inaccessible code.
+
+[#6675](https://github.com/keystonejs/keystone/pull/6675) - Updated newsletter opt-in to unchecked by default when starting Keystone when no users are detected (triggering the create first user flow).
+
+[#6649](https://github.com/keystonejs/keystone/pull/6649) - Fixed typo in first user screen.
+
+[#6652](https://github.com/keystonejs/keystone/pull/6652) - Upgraded `focus-trap` dependency to `6.7.1` to fix bug (https://github.com/keystonejs/keystone/issues/6650).
+
+[#6508](https://github.com/keystonejs/keystone/pull/6508) - Add Margin to error messages in the Admin UI Item Form
+
+[#6627](https://github.com/keystonejs/keystone/pull/6627) - Keystone Cloud assets integration has been fixed
+
+[#6571](https://github.com/keystonejs/keystone/pull/6571) - Fixed pagination bug on deletion of items.
+
+[#6587](https://github.com/keystonejs/keystone/pull/6587) - Fixed `@keystone-next/keystone/testing` not respecting Admin UI config
+
+[#6592](https://github.com/keystonejs/keystone/pull/6592) - Removed check for access denied on count operations in the Admin UI databoard queries, as these errors are no longer returned.
+
+[#6667](https://github.com/keystonejs/keystone/pull/6667) - Simplified logic of validation hook execution code.
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-10-05) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="2021-10-05" {...props}>{children}</Markdown>;
+export { getStaticProps }
