@@ -26,7 +26,7 @@
     "keystone-next": "bin/cli.js"
   },
   "dependencies": {
-    "@apollo/client": "^3.4.15",
+    "@apollo/client": "^3.4.16",
     "@babel/core": "^7.15.5",
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@babel/runtime": "^7.15.4",
@@ -66,7 +66,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.4.1",
     "@types/prompts": "^2.0.14",
-    "@types/react": "^17.0.24",
+    "@types/react": "^17.0.27",
     "@types/source-map-support": "^0.5.4",
     "@types/supertest": "^2.0.11",
     "@types/uid-safe": "^2.1.2",
@@ -94,7 +94,7 @@
     "filenamify": "^4.3.0",
     "form-data": "4.0.0",
     "fs-extra": "^10.0.0",
-    "graphql": "^15.6.0",
+    "graphql": "^15.6.1",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^12.0.0",
     "image-size": "^1.0.0",
@@ -123,7 +123,7 @@
   },
   "devDependencies": {
     "@testing-library/dom": "^8.7.2",
-    "@testing-library/react": "^12.1.1",
+    "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.2.1",
     "@types/bytes": "^3.1.1",
     "fixturez": "^1.1.0",
