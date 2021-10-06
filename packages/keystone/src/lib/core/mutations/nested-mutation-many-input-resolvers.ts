@@ -46,7 +46,7 @@ export function resolveRelateToManyForCreateInput(
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
       throw userInputError(
-        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
+        `You must provide "connect" or "create" in to-many relationship inputs for 'create' operations.`
       );
     }
 
@@ -93,12 +93,12 @@ export function resolveRelateToManyForUpdateInput(
       !Array.isArray(value.set)
     ) {
       throw userInputError(
-        `You must provide at least one field in to-many relationship inputs but none were provided at ${target}`
+        `You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for 'update' operations.`
       );
     }
     if (value.set && value.disconnect) {
       throw userInputError(
-        `The set and disconnect fields cannot both be provided to to-many relationship inputs but both were provided at ${target}`
+        `The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for 'update' operations.`
       );
     }
 

@@ -55,14 +55,13 @@ async function handleCreateAndUpdate(
 export function resolveRelateToOneForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
+  foreignList: InitialisedList
 ) {
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
       throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+        `You must provide "connect" or "create" in to-one relationship inputs for 'create' operations.`
       );
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
@@ -72,13 +71,12 @@ export function resolveRelateToOneForCreateInput(
 export function resolveRelateToOneForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
+  foreignList: InitialisedList
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
       throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for 'update' operations.`
       );
     }
 
