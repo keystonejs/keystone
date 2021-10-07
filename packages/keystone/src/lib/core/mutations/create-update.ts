@@ -18,6 +18,7 @@ import {
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import {
+  RelationshipErrors,
   resolveRelateToManyForCreateInput,
   resolveRelateToManyForUpdateInput,
 } from './nested-mutation-many-input-resolvers';
@@ -298,11 +299,15 @@ async function getResolvedData(
                     resolver = resolveRelateToOneForUpdateInput;
                   }
                 }
-                return resolver(nestedMutationState, context, foreignList, relationshipErrors, tag);
+                return resolver(nestedMutationState, context, foreignList, tag);
               })()
             );
           } catch (error: any) {
-            relationshipErrors.push({ error, tag });
+            if (error instanceof RelationshipErrors) {
+              relationshipErrors.push(...error.errors);
+            } else {
+              relationshipErrors.push({ error, tag });
+            }
           }
         }
         return [fieldKey, input] as const;

@@ -20,6 +20,14 @@ type _UpdateValueType = Exclude<
   null | undefined
 >;
 
+export class RelationshipErrors extends Error {
+  errors: { error: Error; tag: string }[];
+  constructor(errors: { error: Error; tag: string }[]) {
+    super('Multiple relationship errors');
+    this.errors = errors;
+  }
+}
+
 function getResolvedUniqueWheres(
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
@@ -55,7 +63,6 @@ export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  relationshipErrors: { error: Error; tag: string }[],
   tag: string
 ) {
   return async (value: _CreateValueType) => {
@@ -82,7 +89,7 @@ export function resolveRelateToManyForCreateInput(
       x => x.reason
     );
     if (errors.length) {
-      relationshipErrors.push(...errors.map((error: Error) => ({ error, tag })));
+      throw new RelationshipErrors(errors.map((error: Error) => ({ error, tag })));
     }
 
     const result = {
@@ -98,7 +105,6 @@ export function resolveRelateToManyForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
-  relationshipErrors: { error: Error; tag: string }[],
   tag: string
 ) {
   return async (value: _UpdateValueType) => {
@@ -151,7 +157,7 @@ export function resolveRelateToManyForUpdateInput(
       ...setResult.filter(isRejected),
     ].map(x => x.reason);
     if (errors.length) {
-      relationshipErrors.push(...errors.map((error: Error) => ({ error, tag })));
+      throw new RelationshipErrors(errors.map((error: Error) => ({ error, tag })));
     }
 
     return {
