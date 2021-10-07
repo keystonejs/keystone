@@ -86,7 +86,7 @@ The `autoIncrement` field has also been removed, use the integer field with a `d
 
 The field can also be automatically set to the current time on a create/update by setting `db.updatedAt: true`, this will add Prisma's `@updatedAt` attribute to the field.
 
-The `timestamp` field also now uses a custom GraphQL scalar type named `DateTime` which requires inputs as full ISO8601 date-time strings such as `"2021-01-30T00:00:00.000Z"`, using `new Date().toISOString()` will give you a string in the correct format.
+The `timestamp` field also now uses a custom GraphQL scalar type named `DateTime` which requires inputs as full ISO8601 date-time strings such as `"2021-01-30T00:00:00.000Z"`. Using `new Date().toISOString()` will give you a string in the correct format.
 
 ### select
 
