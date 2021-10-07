@@ -1,10 +1,11 @@
 import { KeystoneContext, TypesForList } from '../../../types';
 import { graphql } from '../../..';
-import { resolveUniqueWhereInput, UniqueInputFilter, UniquePrismaFilter } from '../where-inputs';
+import { UniqueInputFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { isRejected, isFulfilled } from '../utils';
-import { accessDeniedError, userInputError } from '../graphql-errors';
+import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
+import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
@@ -33,30 +34,10 @@ function getResolvedUniqueWheres(
   context: KeystoneContext,
   foreignList: InitialisedList,
   operation: string
-): Promise<UniquePrismaFilter>[] {
-  return uniqueInputs.map(async uniqueInput => {
-    // Validate and resolve the input filter
-    const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
-    // Check whether the item exists (from this users POV).
-    try {
-      const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
-      if (item === null) {
-        // Use the same error message pattern as getFilteredItem()
-        throw accessDeniedError(
-          `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-            uniqueWhere
-          )}'. It may not exist.`
-        );
-      }
-    } catch (err) {
-      throw accessDeniedError(
-        `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-          uniqueWhere
-        )}'. It may not exist.`
-      );
-    }
-    return uniqueWhere;
-  });
+) {
+  return uniqueInputs.map(uniqueInput =>
+    checkUniqueItemExists(uniqueInput, foreignList, context, operation)
+  );
 }
 
 export function resolveRelateToManyForCreateInput(
@@ -85,11 +66,9 @@ export function resolveRelateToManyForCreateInput(
     const [connectResult, createResult] = await Promise.all([connects, creates]);
 
     // Collect all the errors
-    const errors = [...connectResult.filter(isRejected), ...createResult.filter(isRejected)].map(
-      x => x.reason
-    );
+    const errors = [...connectResult, ...createResult].filter(isRejected);
     if (errors.length) {
-      throw new RelationshipErrors(errors.map((error: Error) => ({ error, tag })));
+      throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag })));
     }
 
     const result = {
@@ -150,14 +129,11 @@ export function resolveRelateToManyForUpdateInput(
     ]);
 
     // Collect all the errors
-    const errors = [
-      ...connectResult.filter(isRejected),
-      ...createResult.filter(isRejected),
-      ...disconnectResult.filter(isRejected),
-      ...setResult.filter(isRejected),
-    ].map(x => x.reason);
+    const errors = [...connectResult, ...createResult, ...disconnectResult, ...setResult].filter(
+      isRejected
+    );
     if (errors.length) {
-      throw new RelationshipErrors(errors.map((error: Error) => ({ error, tag })));
+      throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag })));
     }
 
     return {
