@@ -33,17 +33,21 @@ We're got further improvements to messaging and performance to come in the next 
 "@keystone-next/session-store-redis": "5.0.0",
 ```
 
+## Upgrade Guide <Emoji symbol="👇" alt="Finger Pointing Down" />
+
+Be sure to read the entire release notes below for everything you need to know about this new release.
+
+The main things to kind in mind are:
+
+- `defaultValue` config is now static, if you have dynamic defaults, use the `resolveInput` hook
+- `isRequired` for fields is now `validation: { isRequired }` and we have new validation options including `min`, `max` for some fields
+- We've made it clearer which fields are nullable in the database and tweaked the defaults, you now have more control but may need to migrate your database (more details below)
+- The `hooks` API has new arguments, and we’ve consolidated update and delete events into `beforeOperation` and `afterOperation`
+- `context.lists` has been renamed to `context.query`
+
 ## Fields Overhaul <Emoji symbol="🚀" alt="Rocket" />
 
 Keystones field types have been given a big overhaul - which includes several breaking changes, read on below to see how fields have changed.
-
-Be sure to read the entire release notes below for all the things you need to know, but the main things to watch out for are:
-
-- All fields `defaultValue` config is now static, if you have dynamic defaults use the `resolveInput` hook
-- `isRequired` for fields is now `validation: { isRequired }` and we have new validation options
-- We made it clearer which fields are nullable in the database and tweaked the defaults, you now have more control but may need to migrate your database (more details below)
-- The `hooks` API has new arguments, and we’ve consolidated update and delete events into `beforeOperation` and `afterOperation`
-- `context.lists` has been renamed to `context.query`
 
 ?> Some of these API changes are **breaking** and you will be required to update your project.
 
@@ -143,7 +147,7 @@ If you were using `withMeta: false`, please [open an issue](https://github.com/k
 
 ### checkbox
 
-The `checkbox` field is now non-nullable in the database, if you need three states, you should use the `select` field
+The `checkbox` field is now non-nullable in the database, if you need three states, you should use the `select` field.
 
 The field no longer accepts dynamic default values and it will default to `false` unless a different `defaultValue` is specified.
 
@@ -242,13 +246,13 @@ ALTER TABLE "Post" ALTER COLUMN "content" SET NOT NULL;
 
 `text`, `float`, `integer`, `decimal`, `timestamp`, `select`, `password` can be made non-nullable at the database-level with the `isNullable` option which defaults to `true`.
 
-!> Does password also support the next 2 lines?
+All fields except `password` can also have:
 
-`graphql.read.isNonNull` can also be set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable.
+- `graphql.read.isNonNull` set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable.
 
-`graphql.create.isNonNull` can also be set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
+- `graphql.create.isNonNull` set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
 
-However, `checkbox` is always non-nullable.
+Keep in mind, `checkbox` is  now [always non-nullable](#checkbox).
 
 ## Hook Updates <Emoji symbol="🪝" alt="Hook" />
 
@@ -306,7 +310,7 @@ We've removed the deprecated `config.db.adapter` option. Please use `config.db.p
 
 Finally, the internal `protectIdentities` variable which was previously hardcoded to `true` to protect user data, there are no immediate plans to implement this as a configurable option.
 
-## Renames <Emoji symbol="📛" alt="Name Badge" />
+## Renames <Emoji symbol="📇" alt="Card Index" />
 
 The API `context.lists` has been renamed to `context.query`, and `context.db.lists` has been renamed to `context.db`.
 
@@ -317,18 +321,6 @@ When using the experimental option `config.experimental.generateNodeAPI`, the `a
 Renamed `graphQLReturnFragment` to `ui.query` in the virtual field options. The virtual field now checks if `ui.query` is required for the GraphQL output type, and throws an error if it is missing. If you don't want want the Admin UI to fetch the field, you can set `ui.itemView.fieldMode` and `ui.listView.fieldMode` to `'hidden'` instead of providing `ui.query`.
 
 Also, we've moved the `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`.
-
-## Apollo Server Upgrade <Emoji symbol="👩‍🚀" alt="Astronaut" />
-
-Apollo Server has had a major upgrade to [Version 3](https://www.apollographql.com/docs/apollo-server/migration/).
-
-The Apollo documentation contains a full list of breaking changes introduced by this update.
-
-You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/apis/config#graphql) configuration option.
-
-The most prominant change for most users will be that the **GraphQL Playground** has been replaced by the **Apollo Sandbox**.
-
-If you prefer to keep the **GraphQL Playground**, you can configure your server by [following these instructions](https://www.apollographql.com/docs/apollo-server/migration/#graphql-playground).
 
 ## Improved Messaging <Emoji symbol="📟" alt="Message" />
 
@@ -344,7 +336,7 @@ Error messages has been improved across the board, in summary:
 - Clearer sign in errors when logging into the Admin UI
 - Improved error messages when returning bad filters from filter access control
 
-## Performance <Emoji symbol="🏃‍♀️" alt="Runner" />
+## Performance <Emoji symbol="🚅" alt="High Speed Train" />
 
 ### Field Mode
 
@@ -381,6 +373,18 @@ You can find all of our examples in our [examples folder](https://github.com/key
 - The `sendItemMagicAuthLink` and `sendItemPasswordResetLink` mutations now always return `true` instead of always returning `null`
 
 - Added support for dynamic `isFilterable` and `isOrderable` field config values. If a function is provided for these config option, it will be dynamically evaluated each time the field is used for filtering and ordering, and an error will be returned if the function returns `false`.
+
+## Apollo Server Upgrade <Emoji symbol="👩‍🚀" alt="Astronaut" />
+
+Apollo Server has had a major upgrade to [Version 3](https://www.apollographql.com/docs/apollo-server/migration/).
+
+The Apollo documentation contains a full list of breaking changes introduced by this update.
+
+You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/apis/config#graphql) configuration option.
+
+The most prominant change for most users will be that the **GraphQL Playground** has been replaced by the **Apollo Sandbox**.
+
+If you prefer to keep the **GraphQL Playground**, you can configure your server by [following these instructions](https://www.apollographql.com/docs/apollo-server/migration/#graphql-playground).
 
 ## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
 
