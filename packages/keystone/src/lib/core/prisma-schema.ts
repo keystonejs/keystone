@@ -213,14 +213,15 @@ datasource ${provider} {
     prismaSchema += `generator client {
   provider = "prisma-client-js"
   previewFeatures = ["mongoDb"]
-  output = "${clientDir}"
+  output = "${clientDir}"${prismaFlags}
   engineType = "binary"
 }
 \n`;
   } else {
     prismaSchema += `generator client {
     provider = "prisma-client-js"
-    output = "${clientDir}"
+  output = "${clientDir}"${prismaFlags}
+  engineType = "binary"
   }
   \n`;
   }
