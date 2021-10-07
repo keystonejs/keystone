@@ -8,25 +8,7 @@ import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
 import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
-import { formatSource } from '../../admin-ui/system/generateAdminUI';
-
-// FIXME: Duplicated from admin-ui package. Need to decide on a common home.
-async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
-  const outputFilename = Path.join(projectAdminPath, file.outputPath);
-  if (file.mode === 'copy') {
-    if (!Path.isAbsolute(file.inputPath)) {
-      throw new Error(
-        `An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`
-      );
-    }
-    await fs.ensureDir(Path.dirname(outputFilename));
-    // TODO: should we use copyFile or copy?
-    await fs.copyFile(file.inputPath, outputFilename);
-  }
-  if (file.mode === 'write') {
-    await fs.outputFile(outputFilename, formatSource(file.src));
-  }
-}
+import { writeAdminFile } from '../../admin-ui/system/generateAdminUI';
 
 const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   const projectAdminPath = getAdminPath(cwd);
