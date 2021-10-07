@@ -41,6 +41,7 @@ function RelationshipFormInput({
         isDisabled={false}
         list={keystone.adminMeta.lists[relationship.listKey]}
         extraSelection={relationship.selection || ''}
+        portalMenu
         state={
           relationship.many
             ? {

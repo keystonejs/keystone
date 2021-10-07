@@ -11,7 +11,6 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
-import prettier from 'prettier';
 import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
@@ -169,15 +168,11 @@ export type ${listKey}ListFn = (
 export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
 export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
 
-export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'lists' | 'prisma'> & {
-  db: { lists: KeystoneDbAPI };
-  lists: KeystoneListsAPI;
+export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'prisma'> & {
+  db: KeystoneDbAPI;
+  query: KeystoneListsAPI;
   prisma: import('.prisma/client').PrismaClient;
 };
 `;
-  return prettier.format(prelude + printedTypes + allListsStr + postlude, {
-    parser: 'babel-ts',
-    trailingComma: 'es5',
-    singleQuote: true,
-  });
+  return prelude + printedTypes + allListsStr + postlude;
 }

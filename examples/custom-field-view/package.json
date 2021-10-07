@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-custom-field-view",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@emotion/css": "^11.1.3",
-    "@keystone-next/keystone": "^25.0.0",
+    "@keystone-next/keystone": "^26.0.0",
     "@keystone-ui/button": "^5.0.1",
     "@keystone-ui/core": "^3.2.0",
-    "@keystone-ui/fields": "^4.1.3",
+    "@keystone-ui/fields": "^5.0.0",
     "@keystone-ui/icons": "^4.0.1",
     "react": "^17.0.2"
   },

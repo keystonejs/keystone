@@ -104,6 +104,7 @@ export const relationship =
           }
         }
         return {
+          refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,

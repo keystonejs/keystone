@@ -156,7 +156,9 @@ describe(`Custom mutations`, () => {
         const { data, errors } = await graphql.raw({ query, variables: { productId } });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual(
+          `An error occured while resolving relationship fields.\n  - CartItem.product: Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.\n  - CartItem.user: Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`
+        );
       })
     );
 
@@ -196,7 +198,9 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual(
+          `An error occured while resolving relationship fields.\n  - CartItem.product: Access denied: You cannot perform the 'connect' operation on the item '{"id":"${product.id}"}'. It may not exist.`
+        );
       })
     );
 
@@ -221,7 +225,9 @@ describe(`Custom mutations`, () => {
         });
         expect(data).toEqual({ addToCart: null });
         expect(errors).toHaveLength(1);
-        expect(errors![0].message).toEqual('Unable to connect a CartItem.product<Product>');
+        expect(errors![0].message).toEqual(
+          `An error occured while resolving relationship fields.\n  - CartItem.product: Access denied: You cannot perform the 'connect' operation on the item '{"id":"${product.id}"}'. It may not exist.`
+        );
       })
     );
 

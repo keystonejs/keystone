@@ -112,15 +112,15 @@ describe('useMigrations: false', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-"✨ Starting Keystone
-⭐️ Dev Server Starting on http://localhost:3000
-⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
-✨ Generating GraphQL and Prisma schemas
-✨ The database is already in sync with the Prisma schema.
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready"
-`);
+      "✨ Starting Keystone
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ The database is already in sync with the Prisma schema.
+      ✨ Connecting to the database
+      ✨ Creating server
+      ✅ GraphQL API ready"
+    `);
   });
   test('warns when dropping field that has data in it', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -153,20 +153,20 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-"✨ Starting Keystone
-⭐️ Dev Server Starting on http://localhost:3000
-⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
-✨ Generating GraphQL and Prisma schemas
+      "✨ Starting Keystone
+      ⭐️ Dev Server Starting on http://localhost:3000
+      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+      ✨ Generating GraphQL and Prisma schemas
 
-⚠️  Warnings:
+      ⚠️  Warnings:
 
-  • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-Prompt: Do you want to continue? Some data will be lost. true
-✨ Your database is now in sync with your schema. Done in 0ms
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready"
-`);
+        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+      Prompt: Do you want to continue? Some data will be lost. true
+      ✨ Your database is now in sync with your schema. Done in 0ms
+      ✨ Connecting to the database
+      ✨ Creating server
+      ✅ GraphQL API ready"
+    `);
   });
   test('exits when refusing data loss prompt', async () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
@@ -264,7 +264,6 @@ model Todo {
 `);
 
   const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
-
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
     "id" TEXT NOT NULL PRIMARY KEY,
@@ -272,7 +271,8 @@ CREATE TABLE "Todo" (
 );
 `);
 
-  expect(recording().replace(migrationName, 'migration_name')).toEqual(`✨ Starting Keystone
+  expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
+    .toEqual(`✨ Starting Keystone
 ⭐️ Dev Server Starting on http://localhost:3000
 ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
@@ -282,6 +282,7 @@ CREATE TABLE "Todo" (
 Prompt: Name of migration init
 ✨ A migration has been created at migrations/migration_name
 Prompt: Would you like to apply this migration? true
+Applying migration \`migration_name\`
 ✅ The migration has been applied
 ✨ Connecting to the database
 ✨ Creating server
@@ -349,7 +350,8 @@ describe('useMigrations: true', () => {
       "
     `);
 
-    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
+      .toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
@@ -359,6 +361,7 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration add-is-complete
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
+      Applying migration \`migration_name\`
       ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
@@ -423,7 +426,8 @@ describe('useMigrations: true', () => {
       "
     `);
 
-    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
+      .toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
@@ -437,6 +441,7 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration remove all fields except id
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
+      Applying migration \`migration_name\`
       ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
@@ -484,7 +489,7 @@ describe('useMigrations: true', () => {
 
     expect(
       recording()
-        .replace(migrationName, 'migration_name')
+        .replace(new RegExp(migrationName, 'g'), 'migration_name')
         .replace(oldMigrationName, 'old_migration_name')
     ).toMatchInlineSnapshot(`
       "✨ Starting Keystone
@@ -511,6 +516,7 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration init
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
+      Applying migration \`migration_name\`
       ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
@@ -652,12 +658,14 @@ describe('useMigrations: true', () => {
 
     const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
 
-    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
+      .toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ sqlite database \\"app.db\\" created at file:./app.db
+      Applying migration \`migration_name\`
       ✨ The following migration(s) have been applied:
 
       migrations/
@@ -686,12 +694,14 @@ describe('useMigrations: true', () => {
 
     const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
 
-    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
+      .toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ Your database has been reset
+      Applying migration \`migration_name\`
       ✨ The following migration(s) have been applied:
 
       migrations/

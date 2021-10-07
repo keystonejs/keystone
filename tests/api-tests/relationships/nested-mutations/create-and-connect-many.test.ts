@@ -149,11 +149,19 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createUser: null });
-      expectRelationshipError(errors, [
+      const message =
+        'Input error: You must provide "connect" or "create" in to-many relationship inputs for "create" operations.';
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createUser'],
-          message:
-            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+          messages: [`User.notes: ${message}`],
+
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })
@@ -190,10 +198,17 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: [`UserToNotesNoRead.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
       })
@@ -235,11 +250,17 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: [`UserToNotesNoRead.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
       })

@@ -79,7 +79,10 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
   email: StringFilter
+  password: PasswordFilter
+  posts: PostManyRelationFilter
 }
 
 input IDFilter {
@@ -127,8 +130,20 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
 }
 
 enum OrderDirection {
@@ -199,10 +214,64 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  title: StringFilter
+  status: StringNullableFilter
+  publishDate: DateTimeNullableFilter
+  author: UserWhereInput
+  tags: TagManyRelationFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
 }
 
 input PostOrderByInput {
   id: OrderDirection
+  title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
 }
 
 input PostUpdateInput {
@@ -272,10 +341,13 @@ input TagWhereInput {
   OR: [TagWhereInput!]
   NOT: [TagWhereInput!]
   id: IDFilter
+  name: StringFilter
+  posts: PostManyRelationFilter
 }
 
 input TagOrderByInput {
   id: OrderDirection
+  name: OrderDirection
 }
 
 input TagUpdateInput {

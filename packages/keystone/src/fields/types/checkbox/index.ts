@@ -30,7 +30,7 @@ export const checkbox =
       throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
     }
 
-    assertReadIsNonNullAllowed(meta, config);
+    assertReadIsNonNullAllowed(meta, config, false);
     assertCreateIsNonNullAllowed(meta, config);
 
     return fieldType({

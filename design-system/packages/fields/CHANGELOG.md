@@ -1,5 +1,16 @@
 # @keystone-ui/fields
 
+## 5.0.0
+
+### Major Changes
+
+- [#6674](https://github.com/keystonejs/keystone/pull/6674) [`f963966ab`](https://github.com/keystonejs/keystone/commit/f963966ab138a315a8f18d83ed7a676f7423a51d) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `onBlur` prop on `DatePicker` now actually works and it does not recieve an actual blur event.
+
+### Patch Changes
+
+- Updated dependencies [[`6d3798fdb`](https://github.com/keystonejs/keystone/commit/6d3798fdbd0a9f1567821e90b7176cf7dd208fda)]:
+  - @keystone-ui/popover@4.0.4
+
 ## 4.1.3
 
 ### Patch Changes

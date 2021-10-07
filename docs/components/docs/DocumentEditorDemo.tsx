@@ -296,8 +296,9 @@ export const DocumentEditorDemo = () => {
         'blockquote, p, pre': {
           marginTop: '1em',
           marginBottom: '1em',
+          lineHeight: 1.75,
         },
-        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold', margin: 0 },
+        'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold', margin: 0, lineHeight: 1.75 },
         h1: { fontSize: 'var(--font-xxlarge)' },
         h2: { fontSize: 'var(--font-large)' },
         h3: { fontSize: 'var(--font-medium)' },
@@ -305,6 +306,7 @@ export const DocumentEditorDemo = () => {
         h6: { fontSize: 'var(--font-xxsmall)' },
         'ul, ol': {
           paddingLeft: 40,
+          lineHeight: 1.75,
         },
       }}
     >

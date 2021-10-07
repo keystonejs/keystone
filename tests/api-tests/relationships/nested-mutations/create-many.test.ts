@@ -13,7 +13,7 @@ const runner = setupTestRunner({
     lists: {
       Note: list({
         fields: {
-          content: text({ isOrderable: true }),
+          content: text(),
         },
       }),
       User: list({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
       }),
       NoteNoCreate: list({
         fields: {
-          content: text({ isFilterable: true }),
+          content: text(),
         },
         access: {
           operation: { create: () => false },
@@ -46,7 +46,7 @@ const runner = setupTestRunner({
       }),
       UserToNotesNoCreate: list({
         fields: {
-          username: text({ isFilterable: true }),
+          username: text(),
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
         },
       }),
@@ -61,7 +61,7 @@ const runner2 = setupTestRunner({
     lists: {
       Note: list({
         fields: {
-          content: text({ isOrderable: true }),
+          content: text(),
         },
         hooks: {
           afterOperation() {
@@ -298,10 +298,18 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
-        expectRelationshipError(errors, [
+        const message =
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoCreate'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            messages: [`UserToNotesNoCreate.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
 
@@ -345,11 +353,18 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
-        expectRelationshipError(errors, [
+        const message =
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoCreate'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+            messages: [`UserToNotesNoCreate.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
 
