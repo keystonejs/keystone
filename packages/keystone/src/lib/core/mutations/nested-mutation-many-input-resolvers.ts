@@ -24,7 +24,7 @@ function getResolvedUniqueWheres(
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList,
-  operation: string,
+  operation: string
 ): Promise<UniquePrismaFilter>[] {
   return uniqueInputs.map(async uniqueInput => {
     // Validate and resolve the input filter
@@ -127,7 +127,9 @@ export function resolveRelateToManyForUpdateInput(
       getResolvedUniqueWheres(value.disconnect || [], context, foreignList, 'disconnect')
     );
 
-    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList, 'set'));
+    const sets = Promise.allSettled(
+      getResolvedUniqueWheres(value.set || [], context, foreignList, 'set')
+    );
 
     // Perform nested mutations for the creations
     const creates = Promise.allSettled(
