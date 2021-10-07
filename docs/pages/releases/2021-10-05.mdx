@@ -40,7 +40,7 @@ Be sure to read the entire release notes below for everything you need to know a
 The main things to kind in mind are:
 
 - `defaultValue` config is now static, if you have dynamic defaults, use the `resolveInput` hook
-- `isRequired` for fields is now `validation: { isRequired }` and we have new validation options including `min`, `max` for some fields
+- `isRequired` for fields is now `validation: { isRequired }` and we have new validation options such as `min` and `max` for some fields
 - We've made it clearer which fields are nullable in the database and tweaked the defaults, you now have more control but may need to migrate your database (more details below)
 - The `hooks` API has new arguments, and we’ve consolidated update and delete events into `beforeOperation` and `afterOperation`
 - `context.lists` has been renamed to `context.query`
