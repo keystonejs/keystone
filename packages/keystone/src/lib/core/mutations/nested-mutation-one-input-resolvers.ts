@@ -1,9 +1,9 @@
 import { KeystoneContext, TypesForList } from '../../../types';
 import { graphql } from '../../..';
-import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
-import { accessDeniedError, userInputError } from '../graphql-errors';
+import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
+import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
@@ -25,27 +25,7 @@ async function handleCreateAndUpdate(
   foreignList: InitialisedList
 ) {
   if (value.connect) {
-    // Validate and resolve the input filter
-    const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
-    // Check whether the item exists (from this users POV).
-    try {
-      const item = await context.db[foreignList.listKey].findOne({ where: value.connect });
-      if (item === null) {
-        // Use the same error message pattern as getFilteredItem()
-        throw accessDeniedError(
-          `You cannot perform the 'connect' operation on the item '${JSON.stringify(
-            uniqueWhere
-          )}'. It may not exist.`
-        );
-      }
-    } catch (err) {
-      throw accessDeniedError(
-        `You cannot perform the 'connect' operation on the item '${JSON.stringify(
-          uniqueWhere
-        )}'. It may not exist.`
-      );
-    }
-    return { connect: uniqueWhere };
+    return { connect: await checkUniqueItemExists(value.connect, foreignList, context, 'connect') };
   } else if (value.create) {
     const { id } = await nestedMutationState.create(value.create, foreignList);
     return { connect: { id } };
