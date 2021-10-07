@@ -298,7 +298,8 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
-        const message = 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>';
+        const message =
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoCreate'],
@@ -353,7 +354,7 @@ describe('with access control', () => {
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
         const message =
-          'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>';
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoCreate'],
