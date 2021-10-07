@@ -244,9 +244,9 @@ ALTER TABLE "Post" ALTER COLUMN "content" SET NOT NULL;
 ```
 ### general
 
-`text`, `float`, `integer`, `decimal`, `timestamp`, `select`, `password` can be made non-nullable at the database-level with the `isNullable` option which defaults to `true`.
+`text`, `float`, `integer`, `decimal`, `timestamp`, `select`, `password` can be made non-nullable at the database-level with the `isNullable` option which defaults to `true`, except for `text` which defaults to `false`.
 
-All fields except `password` can also have:
+All fields above except `password` can also have:
 
 - `graphql.read.isNonNull` set if the field has `isNullable: false` and you have no read access control and you don't intend to add any in the future, it will make the GraphQL output field non-nullable.
 
