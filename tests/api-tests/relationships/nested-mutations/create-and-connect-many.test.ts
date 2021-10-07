@@ -150,7 +150,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createUser: null });
       const message =
-        'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>';
+        'Input error: You must provide "connect" or "create" in to-many relationship inputs for "create" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createUser'],
@@ -198,7 +198,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        const message = 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>';
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoRead'],
@@ -250,8 +250,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        const message =
-          'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>';
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
         expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoRead'],

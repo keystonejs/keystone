@@ -37,7 +37,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createEvent: null });
       const message =
-        "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not";
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createEvent'],
@@ -71,7 +71,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createEvent: null });
       const message =
-        "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not";
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['createEvent'],

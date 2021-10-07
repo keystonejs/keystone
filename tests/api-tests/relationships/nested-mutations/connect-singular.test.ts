@@ -231,7 +231,8 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      const message = `Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`;
+      const message =
+        'Input error: You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateEvent'],
