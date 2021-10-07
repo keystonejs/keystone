@@ -16,6 +16,8 @@ We're nearly at **Gold Master** status for the Keystone 6 GA release! Here's wha
 - Other Notable Changes to be aware of <Emoji symbol="🛎️" alt="Bell" />
 - Prisma Update from 2.x to 3.x <Emoji symbol="🗃" alt="Card File Box" />
 
+
+
 We're got further improvements to messaging and performance to come in the next release!
 
 ?> This release contains breaking changes, please see below!
@@ -36,6 +38,14 @@ We're got further improvements to messaging and performance to come in the next 
 ## Fields Overhaul <Emoji symbol="🚀" alt="Rocket" />
 
 Keystones field types have been given a big overhaul - which includes several breaking changes, read on below to see how fields have changed.
+
+Be sure to read the entire release notes below for all the things you need to know, but the main things to watch out for are:
+
+- All fields `defaultValue` config is now static, if you have dynamic defaults use the `resolveInput` hook
+- `isRequired` for fields is now `validation: { isRequired }` and we have new validation options
+- We made it clearer which fields are nullable in the database and tweaked the defaults, you now have more control but may need to migrate your database (more details below)
+- The `hooks` API has new arguments, and we’ve consolidated update and delete events into `beforeOperation` and `afterOperation`
+- `context.lists` has been renamed to `context.query`
 
 ?> Some of these API changes are **breaking** and you will be required to update your project.
 
