@@ -336,7 +336,7 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ updateUser: null });
       const message =
-        'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>';
+        'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.';
       expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
