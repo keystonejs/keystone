@@ -9,7 +9,6 @@ import * as babel from '@babel/core';
 import sourceMapSupport from 'source-map-support';
 
 const EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
-const babelPlugins = [require.resolve('@babel/plugin-transform-modules-commonjs')];
 
 const hook = () => {
   let compiling = false;
@@ -37,26 +36,13 @@ const hook = () => {
     }
     try {
       compiling = true;
-      const partialConfig = babel.loadPartialConfig({
-        plugins: babelPlugins,
+      const output = babel.transformSync(code, {
         filename,
+        presets: [require.resolve('next/babel')],
+        configFile: false,
+        babelrc: false,
         sourceMaps: 'both',
-        rootMode: 'upward-optional',
       })!;
-      let options = partialConfig.options;
-      if (!partialConfig.hasFilesystemConfig()) {
-        options = {
-          ...options,
-          // note that we're explicitly removing the plugin(@babel/plugin-transform-modules-commonjs)
-          // we added above because for some reason, it interacts poorly with next/babel
-          // and results in stray ESM imports of React when they should be CJS
-          // note that we're never going to be removing a consumer's Babel config since
-          // that would make hasFilesystemConfig() return true
-          plugins: [],
-          presets: [require.resolve('next/babel')],
-        };
-      }
-      const output = babel.transformSync(code, options)!;
       sourceMaps[filename] = output.map;
       return output.code!;
     } finally {
