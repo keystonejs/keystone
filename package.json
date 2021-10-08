@@ -135,6 +135,9 @@
     ],
     "distFilenameStrategy": "unscoped-package-name"
   },
+  "manypkg": {
+    "defaultBranch": "main"
+  },
   "jest": {
     "setupFilesAfterEnv": [
       "./tests/jest/setup.ts"
