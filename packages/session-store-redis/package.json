@@ -18,5 +18,5 @@
     "@keystone-next/keystone": "^26.0.0",
     "redis": "^3.1.2"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/session-store-redis"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/session-store-redis"
 }
