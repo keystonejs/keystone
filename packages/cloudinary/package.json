@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "license": "MIT",
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
@@ -17,10 +17,10 @@
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^26.0.0"
+    "@keystone-next/keystone": "^26.1.0"
   },
   "devDependencies": {
-    "@keystone-next/keystone": "^26.0.0",
+    "@keystone-next/keystone": "^26.1.0",
     "mime": "^2.5.2"
   },
   "engines": {

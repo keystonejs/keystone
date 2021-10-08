@@ -1,5 +1,12 @@
 # @keystone-next/website
 
+## 3.1.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-next/fields-document@11.0.0
+
 ## 3.1.6
 
 ### Patch Changes
