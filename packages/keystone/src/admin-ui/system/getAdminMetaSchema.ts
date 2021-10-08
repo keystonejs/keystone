@@ -126,7 +126,10 @@ export function getAdminMetaSchema({
                   const sessionFunction =
                     lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.createView?.fieldMode ??
                     listConfig.ui?.createView?.defaultFieldMode;
-                  return runMaybeFunction(sessionFunction, 'edit', { session: context.session });
+                  return runMaybeFunction(sessionFunction, 'edit', {
+                    session: context.session,
+                    context,
+                  });
                 },
               }),
             },
@@ -161,7 +164,10 @@ export function getAdminMetaSchema({
                   const sessionFunction =
                     lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.listView?.fieldMode ??
                     listConfig.ui?.listView?.defaultFieldMode;
-                  return runMaybeFunction(sessionFunction, 'read', { session: context.session });
+                  return runMaybeFunction(sessionFunction, 'read', {
+                    session: context.session,
+                    context,
+                  });
                 },
               }),
             },
@@ -225,6 +231,7 @@ export function getAdminMetaSchema({
                   }
                   return runMaybeFunction(sessionFunction, 'edit', {
                     session: context.session,
+                    context,
                     item,
                   });
                 });
@@ -274,7 +281,10 @@ export function getAdminMetaSchema({
             );
           }
           const listConfig = config.lists[rootVal.key];
-          return runMaybeFunction(listConfig.ui?.hideCreate, false, { session: context.session });
+          return runMaybeFunction(listConfig.ui?.hideCreate, false, {
+            session: context.session,
+            context,
+          });
         },
       }),
       hideDelete: graphql.field({
@@ -286,7 +296,10 @@ export function getAdminMetaSchema({
             );
           }
           const listConfig = config.lists[rootVal.key];
-          return runMaybeFunction(listConfig.ui?.hideDelete, false, { session: context.session });
+          return runMaybeFunction(listConfig.ui?.hideDelete, false, {
+            session: context.session,
+            context,
+          });
         },
       }),
       path: graphql.field({ type: graphql.nonNull(graphql.String) }),
@@ -312,7 +325,10 @@ export function getAdminMetaSchema({
             );
           }
           const listConfig = config.lists[rootVal.key];
-          return runMaybeFunction(listConfig.ui?.isHidden, false, { session: context.session });
+          return runMaybeFunction(listConfig.ui?.isHidden, false, {
+            session: context.session,
+            context,
+          });
         },
       }),
     },
