@@ -160,5 +160,5 @@
       "types/index.ts"
     ]
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/keystone"
 }

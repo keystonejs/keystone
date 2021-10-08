@@ -347,7 +347,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -552,7 +552,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/task-manager"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -575,7 +575,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -604,7 +604,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18">
               <a
-                href="https://github.com/keystonejs/keystone/tree/master/examples-staging/ecommerce"
+                href="https://github.com/keystonejs/keystone/tree/main/examples-staging/ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >

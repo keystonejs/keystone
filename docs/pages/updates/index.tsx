@@ -453,7 +453,7 @@ export default function WhatsNew() {
         <Box heading="New example: Custom Field Views">
           Learn how to create a{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view"
+            href="https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -585,7 +585,7 @@ export default function WhatsNew() {
           You can now use JSON blobs in your backend, and provide your own React UI components to
           edit them. Try it out in this{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples/json"
+            href="https://github.com/keystonejs/keystone/tree/main/examples/json"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -611,7 +611,7 @@ export default function WhatsNew() {
         <Box heading="Example projects collection">
           We now have a{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples"
+            href="https://github.com/keystonejs/keystone/tree/main/examples"
             target="_blank"
             rel="noopener noreferrer"
           >
