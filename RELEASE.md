@@ -4,9 +4,9 @@ These instructions capture the internal process for making releases of the Keyst
 
 ## npm release
 
-Merge the PR named `Version Packages` into `master` on GitHub once tests are passing.
+Merge the PR named `Version Packages` into `main` on GitHub once tests are passing.
 
-Get latest from `master`:
+Get latest from `main`:
 
 ```sh
 git pull
@@ -157,17 +157,17 @@ Copy over the GitHub markdown content from the GitHub release into this document
 
 Add release to release page index under `/docs/pages/releases/index.mdx` with a summarised heading.
 
-Commit website update and open PR to add to `master`.
+Commit website update and open PR to add to `main`.
 
-Have PR reviewed and merged into `master`.
+Have PR reviewed and merged into `main`.
 
 ## GitHub branch sync
 
-When we do a release we need to make sure `master` and `website_live` are both in sync with each other, this is done by:
+When we do a release we need to make sure `main` and `website_live` are both in sync with each other, this is done by:
 
-Creating a branch off `master` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
+Creating a branch off `main` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
 
-Then the other way around, create a branch off `website_live` such as `bring-in-latest-master-changes`, and merging in `master` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
+Then the other way around, create a branch off `website_live` such as `bring-in-latest-main-changes`, and merging in `main` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
 
 Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
 
@@ -177,13 +177,13 @@ Go to the `website_live` branch
 
 `git checkout website_live`
 
-Check that we're identical to master
+Check that we're identical to main
 
-`git diff master`
+`git diff main`
 
 Do a merge that should just update the parents of the new commit
 
-`git merge master`
+`git merge main`
 
 This should be empty
 
@@ -191,7 +191,7 @@ This should be empty
 
 This should be empty
 
-`git diff master`
+`git diff main`
 
 Force push `website_live` (after turning off branch protection in github)
 

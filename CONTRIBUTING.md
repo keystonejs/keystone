@@ -89,17 +89,17 @@ Releasing is a two-step process. The first step updates the packages, and the se
 ##### Update Packages (automatic)
 
 This step is handled for us by the Changesets GitHub Action. As PRs are opened
-against `master`, the bot will open and update a PR which generates the
+against `main`, the bot will open and update a PR which generates the
 appropriate `CHANGELOG.md` entries and `package.json` version bumps.
 
-Once ready for a release, merge the bot's PR into `master`.
+Once ready for a release, merge the bot's PR into `main`.
 
 > _NOTE: For information on manually updating packages, see [Update Packages
 > (manual)](#update-packages-manual)_
 
 ##### Publish Packages
 
-Once the version changes are merged back in to master, to do a manual release:
+Once the version changes are merged back in to main, to do a manual release:
 
 ```sh
 yarn fresh && \
@@ -123,7 +123,7 @@ The `yarn version-packages` command will generate a release commit, which will b
 The commands to run are:
 
 ```sh
-git checkout master && \
+git checkout main && \
 git pull && \
 git branch -D temp-release-branch && \
 git checkout -b temp-release-branch && \
@@ -136,12 +136,12 @@ git commit -m "Version packages" && \
 git push --set-upstream origin temp-release-branch
 ```
 
-Once you have run this you will need to make a pull request to merge this back into master.
+Once you have run this you will need to make a pull request to merge this back into main.
 
 Finally, make sure you've got the latest of everything locally
 
 ```sh
-git checkout master && \
+git checkout main && \
 git pull && \
 yarn
 ```
@@ -221,7 +221,7 @@ Now, for each release we want to backport to, we follow this process:
 
 4. Do _NOT_ open a PR
 
-   This change is not going to be PR'd into master. Instead we'll later push
+   This change is not going to be PR'd into main. Instead we'll later push
    the tag which contains the commits.
 
    To confirm everything is as expected, look at the git log:

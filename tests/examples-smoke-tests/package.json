@@ -8,7 +8,7 @@
   "engines": {
     "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/examples-smoke-tests",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/tests/examples-smoke-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
     "@types/tough-cookie": "^4.0.1",

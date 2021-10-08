@@ -32,5 +32,5 @@
       "pages/*.tsx"
     ]
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/auth"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/auth"
 }

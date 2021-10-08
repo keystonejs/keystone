@@ -16,5 +16,5 @@
     "@keystone-next/fields-document": "^11.0.0",
     "@keystone-next/keystone": "^26.1.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-staging/graphql-api-endpoint"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples-staging/graphql-api-endpoint"
 }
