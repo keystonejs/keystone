@@ -53,7 +53,7 @@
     "slate-history": "^0.60.4",
     "slate-react": "^0.60.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-document",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
     "@keystone-next/keystone": "*",
     "@testing-library/react": "^12.1.2",

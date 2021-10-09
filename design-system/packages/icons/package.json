@@ -36,5 +36,5 @@
       "icons/*.tsx"
     ]
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/icons"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/icons"
 }

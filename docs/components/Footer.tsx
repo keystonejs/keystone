@@ -136,7 +136,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md"
+                  href="https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -145,7 +145,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/keystonejs/keystone/blob/master/CODE-OF-CONDUCT.md"
+                  href="https://github.com/keystonejs/keystone/blob/main/CODE-OF-CONDUCT.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

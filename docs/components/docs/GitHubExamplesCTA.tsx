@@ -21,7 +21,7 @@ export function GitHubExamplesCTA() {
         as="a"
         look="secondary"
         size="small"
-        href="https://github.com/keystonejs/keystone/tree/master/examples"
+        href="https://github.com/keystonejs/keystone/tree/main/examples"
         target="_blank"
         rel="noopener noreferrer"
       >
