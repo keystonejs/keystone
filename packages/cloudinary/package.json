@@ -2,8 +2,8 @@
   "name": "@keystone-next/cloudinary",
   "version": "8.0.0",
   "license": "MIT",
-  "main": "dist/cloudinary.cjs.js",
-  "module": "dist/cloudinary.esm.js",
+  "main": "dist/keystone-next-cloudinary.cjs.js",
+  "module": "dist/keystone-next-cloudinary.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@keystone-ui/button": "^5.0.1",

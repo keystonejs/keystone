@@ -2,8 +2,8 @@
   "name": "@keystone-ui/toast",
   "version": "4.0.3",
   "license": "MIT",
-  "main": "dist/toast.cjs.js",
-  "module": "dist/toast.esm.js",
+  "main": "dist/keystone-ui-toast.cjs.js",
+  "module": "dist/keystone-ui-toast.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.27",
     "react": "^17.0.2"

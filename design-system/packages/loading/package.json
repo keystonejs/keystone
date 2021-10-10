@@ -2,8 +2,8 @@
   "name": "@keystone-ui/loading",
   "version": "4.0.1",
   "license": "MIT",
-  "main": "dist/loading.cjs.js",
-  "module": "dist/loading.esm.js",
+  "main": "dist/keystone-ui-loading.cjs.js",
+  "module": "dist/keystone-ui-loading.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.27"
   },
