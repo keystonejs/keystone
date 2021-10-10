@@ -137,9 +137,9 @@ export default function WhatsNew() {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        A snapshot of improvements we've landed recently in Keystone.
+        A snapshot of Keystone improvements and community happenings.
         <br />
-        For more detail see our{' '}
+        For more on updates see our{' '}
         <Link href="/releases">
           <a>release notes</a>
         </Link>
@@ -158,7 +158,7 @@ export default function WhatsNew() {
             margin: '0 0.8rem 0.5rem 0',
           }}
         >
-          Where are we up to, and what we're working on next? Check out our
+          What are we working on next? Check out our
         </span>
         <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
           Roadmap <ArrowR />
