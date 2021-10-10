@@ -242,6 +242,7 @@ ALTER TABLE "Post" ALTER COLUMN "content" SET DEFAULT E'[{"type":"paragraph","ch
 UPDATE "Post" SET "content" = DEFAULT WHERE "content" IS NULL;
 ALTER TABLE "Post" ALTER COLUMN "content" SET NOT NULL;
 ```
+
 ### general
 
 `text`, `float`, `integer`, `decimal`, `timestamp`, `select`, `password` can be made non-nullable at the database-level with the `isNullable` option which defaults to `true`, except for `text` which defaults to `false`.
@@ -252,7 +253,7 @@ All fields above except `password` can also have:
 
 - `graphql.create.isNonNull` set if you have no create access control and you don't intend to add any in the future, it will make the GraphQL create input field non-nullable.
 
-Keep in mind, `checkbox` is  now [always non-nullable](#checkbox).
+Keep in mind, `checkbox` is now [always non-nullable](#checkbox).
 
 ## Hook Updates <Emoji symbol="🪝" alt="Hook" />
 

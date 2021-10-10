@@ -174,11 +174,13 @@ export default function WhatsNew() {
       >
         <Timeline date="5th October 2021" isLatest />
         <Box heading="New example: REST API endpoint">
-            <a
+          <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
             target="_blank"
             rel="noopener noreferrer"
-            >This example</a>{' '}
+          >
+            This example
+          </a>{' '}
           shows you how to create REST endpoints by extending Keystone’s express app so you can use
           the Query API to execute queries against the schema.
         </Box>
@@ -255,16 +257,21 @@ export default function WhatsNew() {
         <Timeline date="15th September 2021" />
         <Box heading="Deployment examples for Heroku and Railway">
           Learn how to get your Keystone project on the web with our new one-click starters for{' '}
-            <a href="https://github.com/keystonejs/keystone-6-heroku-example"
+          <a
+            href="https://github.com/keystonejs/keystone-6-heroku-example"
             target="_blank"
             rel="noopener noreferrer"
-            >Heroku</a>{' '}
+          >
+            Heroku
+          </a>{' '}
           and{' '}
-            <a
+          <a
             href="https://github.com/keystonejs/keystone-6-railway-example"
             target="_blank"
             rel="noopener noreferrer"
-            >Railway</a>
+          >
+            Railway
+          </a>
           .
         </Box>
         <Timeline date="9th September 2021" />
