@@ -2,8 +2,8 @@
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
   "version": "10.0.0",
-  "main": "dist/fields-document.cjs.js",
-  "module": "dist/fields-document.esm.js",
+  "main": "dist/keystone-next-fields-document.cjs.js",
+  "module": "dist/keystone-next-fields-document.esm.js",
   "files": [
     "dist",
     "component-blocks",

@@ -132,8 +132,7 @@
       "packages/*",
       "design-system/packages/*",
       "prisma-utils"
-    ],
-    "distFilenameStrategy": "unscoped-package-name"
+    ]
   },
   "manypkg": {
     "defaultBranch": "main"

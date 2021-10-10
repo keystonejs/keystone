@@ -2,8 +2,8 @@
   "name": "@keystone-ui/button",
   "version": "5.0.1",
   "license": "MIT",
-  "main": "dist/button.cjs.js",
-  "module": "dist/button.esm.js",
+  "main": "dist/keystone-ui-button.cjs.js",
+  "module": "dist/keystone-ui-button.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.27"
   },

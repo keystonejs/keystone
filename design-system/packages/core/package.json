@@ -2,8 +2,8 @@
   "name": "@keystone-ui/core",
   "version": "3.2.0",
   "license": "MIT",
-  "main": "dist/core.cjs.js",
-  "module": "dist/core.esm.js",
+  "main": "dist/keystone-ui-core.cjs.js",
+  "module": "dist/keystone-ui-core.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.27",
     "react": "^17.0.2",

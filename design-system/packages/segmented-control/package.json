@@ -2,8 +2,8 @@
   "name": "@keystone-ui/segmented-control",
   "version": "5.0.0",
   "license": "MIT",
-  "main": "dist/segmented-control.cjs.js",
-  "module": "dist/segmented-control.esm.js",
+  "main": "dist/keystone-ui-segmented-control.cjs.js",
+  "module": "dist/keystone-ui-segmented-control.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.27",
     "react": "^17.0.2"
