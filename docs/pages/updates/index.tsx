@@ -172,7 +172,19 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="21st September 2021" isLatest />
+        <Timeline date="5th October 2021" isLatest />
+        <Box heading="New example: REST API endpoint">
+          <Link
+            href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <a>This example</a>
+          </Link>{' '}
+          shows you how to create REST endpoints by extending Keystone’s express app so you can use
+          the Query API to execute queries against the schema.
+        </Box>
+        <Timeline date="21st September 2021" />
         <Box heading="Keystone Community Q&A + YouTube launch">
           <Stack orientation="horizontal">
             <a
@@ -245,21 +257,21 @@ export default function WhatsNew() {
         <Timeline date="15th September 2021" />
         <Box heading="Deployment examples for Heroku and Railway">
           Learn how to get your Keystone project on the web with our new one-click starters for{' '}
-          <a
+          <Link
             href="https://github.com/keystonejs/keystone-6-heroku-example"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Heroku
-          </a>{' '}
+            <a>Heroku</a>
+          </Link>{' '}
           and{' '}
-          <a
+          <Link
             href="https://github.com/keystonejs/keystone-6-railway-example"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Railway
-          </a>
+            <a>Railway</a>
+          </Link>
           .
         </Box>
         <Timeline date="9th September 2021" />
