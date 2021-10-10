@@ -93,7 +93,7 @@ export default function Docs() {
                   color: 'inherit',
                 }}
               >
-                Learn how Keystone’s leading a new paradigm generation of content management tools.
+                Learn how Keystone’s leading a new generation of content management tools.
               </Type>
             </a>
           </Link>
