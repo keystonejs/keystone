@@ -151,38 +151,43 @@ Have PR reviewed and merged into `main`.
 
 ## GitHub branch sync
 
-When we do a release we need to make sure `main` and `website_live` are both in sync with each other, this is done by:
+When we do a release we need to make sure `main` and `website_live` are both in sync with each other.
 
-Creating a branch off `main` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
+Before doing this, ensure nothing is merged into `main` or `website_live` for the time it takes to complete the following (around 15 minutes).
 
-Then the other way around, create a branch off `website_live` such as `bring-in-latest-main-changes`, and merging in `main` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
+Create a branch off `main` such as `bring-in-latest-website-changes` and merge in `website_live` changes, open a PR and get it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
 
-Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
+Then the other way around, create a branch off `website_live` such as `bring-in-latest-main-changes`, and merge in `main` changes, open a PR and get it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
 
-To resolve this in the CLI:
+Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind and x commits ahead, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
+
+To resolve this in the CLI (on the `website_live` side):
 
 Go to the `website_live` branch
-
 `git checkout website_live`
 
 Check that we're identical to main
-
 `git diff main`
 
 Do a merge that should just update the parents of the new commit
-
 `git merge main`
 
 This should be empty
-
 `git diff origin/website_live`
 
 This should be empty
-
 `git diff main`
 
 Force push `website_live` (after turning off branch protection in github)
-
 `git push --force`
 
-Branches should now be nicely aligned.
+Do this again once again for the opposite direction:
+
+`git checkout main`
+`git diff website_live`
+`git merge website_live`
+`git diff origin/main`
+`git diff website_live`
+`git push --force`
+
+Branches should now be nicely aligned and show `0 | 0` on the branches page <https://github.com/keystonejs/keystone/branches>.
