@@ -209,6 +209,14 @@ export default function Docs() {
           Adds a custom Navigation component to the Admin UI. Builds on the Task Manager starter
           project.
         </Well>
+        <Well
+          grad="grad2"
+          heading="REST API endpoint"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
+        >
+          Demonstrates how to create REST endpoints by extending Keystone's express app and using
+          the Query API to execute queries against the schema.
+        </Well>
       </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="deployment-projects">

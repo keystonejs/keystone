@@ -1,5 +1,25 @@
 # @keystone-ui/website
 
+## 3.0.4
+
+### Patch Changes
+
+- [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
+
+- Updated dependencies [[`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd), [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35)]:
+  - @keystone-ui/button@5.0.2
+  - @keystone-ui/core@3.2.1
+  - @keystone-ui/fields@5.0.1
+  - @keystone-ui/loading@4.0.2
+  - @keystone-ui/modals@4.0.2
+  - @keystone-ui/notice@4.1.1
+  - @keystone-ui/options@4.0.4
+  - @keystone-ui/pill@5.0.2
+  - @keystone-ui/popover@4.0.5
+  - @keystone-ui/segmented-control@5.0.1
+  - @keystone-ui/toast@4.0.4
+  - @keystone-ui/tooltip@4.0.3
+
 ## 3.0.3
 
 ### Patch Changes
