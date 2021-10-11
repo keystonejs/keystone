@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone.cjs.js",
-  "module": "dist/keystone.esm.js"
+  "main": "dist/keystone-next-keystone-admin-ui-apollo.cjs.js",
+  "module": "dist/keystone-next-keystone-admin-ui-apollo.esm.js"
 }

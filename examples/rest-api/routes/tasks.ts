@@ -22,7 +22,7 @@ export async function getTasks(req: Request, res: Response) {
     isComplete = { equals: false };
   }
   // Now we can use it to query the Keystone Schema
-  const users = await context.query.Task.findMany({
+  const tasks = await context.query.Task.findMany({
     where: {
       isComplete,
     },
@@ -38,5 +38,5 @@ export async function getTasks(req: Request, res: Response) {
     `,
   });
   // And return the result as JSON
-  res.json(users);
+  res.json(tasks);
 }

@@ -1,11 +1,11 @@
 {
   "name": "@keystone-next/prisma-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "main": "dist/prisma-utils.cjs.js",
+  "main": "dist/keystone-next-prisma-utils.cjs.js",
   "dependencies": {
-    "@prisma/generator-helper": "3.1.1",
-    "@prisma/sdk": "3.1.1",
+    "@prisma/generator-helper": "3.2.0",
+    "@prisma/sdk": "3.2.0",
     "fs-extra": "^10.0.0",
     "prettier": "^2.4.1"
   },
@@ -13,5 +13,5 @@
     "generate": "node .",
     "verify": "VERIFY=1 node ."
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/prisma-utils"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/prisma-utils"
 }

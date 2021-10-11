@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLField } from 'graphql';
+import { GraphQLSchema } from 'graphql';
 import {
   BaseGeneratedListTypes,
   KeystoneDbAPI,
@@ -19,26 +19,29 @@ export function getDbAPIFactory(
   gqlNames: GqlNames,
   schema: GraphQLSchema
 ): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  const queryFields = schema.getQueryType()!.getFields();
-  const mutationFields = schema.getMutationType()!.getFields();
-  const f = (field: GraphQLField<any, any> | undefined) => {
+  const f = (operation: 'query' | 'mutation', fieldName: string) => {
+    const rootType = operation === 'mutation' ? schema.getMutationType()! : schema.getQueryType()!;
+    const field = rootType.getFields()[fieldName];
+
     if (field === undefined) {
       return (): never => {
-        throw new Error('You do not have access to this resource');
+        // This will be triggered if the field is missing due to `omit` configuration.
+        // The GraphQL equivalent would be a bad user input error.
+        throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`);
       };
     }
     return executeGraphQLFieldToRootVal(field);
   };
   const api = {
-    findOne: f(queryFields[gqlNames.itemQueryName]),
-    findMany: f(queryFields[gqlNames.listQueryName]),
-    count: f(queryFields[gqlNames.listQueryCountName]),
-    createOne: f(mutationFields[gqlNames.createMutationName]),
-    createMany: f(mutationFields[gqlNames.createManyMutationName]),
-    updateOne: f(mutationFields[gqlNames.updateMutationName]),
-    updateMany: f(mutationFields[gqlNames.updateManyMutationName]),
-    deleteOne: f(mutationFields[gqlNames.deleteMutationName]),
-    deleteMany: f(mutationFields[gqlNames.deleteManyMutationName]),
+    findOne: f('query', gqlNames.itemQueryName),
+    findMany: f('query', gqlNames.listQueryName),
+    count: f('query', gqlNames.listQueryCountName),
+    createOne: f('mutation', gqlNames.createMutationName),
+    createMany: f('mutation', gqlNames.createManyMutationName),
+    updateOne: f('mutation', gqlNames.updateMutationName),
+    updateMany: f('mutation', gqlNames.updateManyMutationName),
+    deleteOne: f('mutation', gqlNames.deleteMutationName),
+    deleteMany: f('mutation', gqlNames.deleteManyMutationName),
   };
   return (context: KeystoneContext) =>
     Object.fromEntries(

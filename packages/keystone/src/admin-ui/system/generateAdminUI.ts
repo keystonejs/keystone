@@ -2,15 +2,11 @@ import Path from 'path';
 import fs from 'fs-extra';
 
 import fastGlob from 'fast-glob';
-import prettier from 'prettier';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
-
-export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
-  prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
 function getDoesAdminConfigExist() {
   try {
@@ -25,7 +21,7 @@ function getDoesAdminConfigExist() {
   }
 }
 
-async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
+export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath);
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
@@ -38,7 +34,7 @@ async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) 
     await fs.copyFile(file.inputPath, outputFilename);
   }
   if (file.mode === 'write') {
-    await fs.outputFile(outputFilename, formatSource(file.src));
+    await fs.outputFile(outputFilename, file.src);
   }
   return Path.normalize(outputFilename);
 }
@@ -49,8 +45,19 @@ export const generateAdminUI = async (
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string
 ) => {
-  // Nuke any existing files in our target directory
-  await fs.remove(projectAdminPath);
+  const dir = await fs.readdir(projectAdminPath).catch(err => {
+    if (err.code === 'ENOENT') {
+      return [];
+    }
+    throw err;
+  });
+
+  await Promise.all(
+    dir.map(x => {
+      if (x === '.next') return;
+      return fs.remove(Path.join(projectAdminPath, x));
+    })
+  );
   const publicDirectory = Path.join(projectAdminPath, 'public');
 
   if (config.images || config.files) {

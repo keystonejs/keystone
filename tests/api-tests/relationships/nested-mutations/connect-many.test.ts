@@ -257,8 +257,18 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      expectRelationshipError(errors, [
-        { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
+      expectRelationshipError('dev', false, false, errors, [
+        {
+          path: ['createUser'],
+          messages: [`User.notes: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
+        },
       ]);
     })
   );
@@ -289,10 +299,17 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
-          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+          messages: [`User.notes: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })
@@ -318,11 +335,18 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
+      const message =
+        'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.';
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
-          message:
-            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
+          messages: [`User.notes: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })
@@ -354,10 +378,17 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['createUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: [`UserToNotesNoRead.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
       })
@@ -394,11 +425,17 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+        expectRelationshipError('dev', false, false, errors, [
           {
             path: ['updateUserToNotesNoRead'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+            messages: [`UserToNotesNoRead.notes: ${message}`],
+            debug: [
+              {
+                message,
+                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+              },
+            ],
           },
         ]);
       })

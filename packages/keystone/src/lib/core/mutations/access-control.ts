@@ -3,7 +3,20 @@ import { accessDeniedError, accessReturnError, extensionError } from '../graphql
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
-import { InputFilter, resolveWhereInput, UniquePrismaFilter } from '../where-inputs';
+import {
+  InputFilter,
+  resolveUniqueWhereInput,
+  resolveWhereInput,
+  UniqueInputFilter,
+  UniquePrismaFilter,
+} from '../where-inputs';
+
+const missingItem = (operation: string, uniqueWhere: UniquePrismaFilter) =>
+  accessDeniedError(
+    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+      uniqueWhere
+    )}'. It may not exist.`
+  );
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -26,14 +39,29 @@ async function getFilteredItem(
   }
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
   if (item === null) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        uniqueWhere
-      )}'. It may not exist.`
-    );
+    throw missingItem(operation, uniqueWhere);
   }
-
   return item;
+}
+
+export async function checkUniqueItemExists(
+  uniqueInput: UniqueInputFilter,
+  foreignList: InitialisedList,
+  context: KeystoneContext,
+  operation: string
+) {
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+  // Check whether the item exists (from this users POV).
+  try {
+    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
+    if (item === null) {
+      throw missingItem(operation, uniqueWhere);
+    }
+  } catch (err) {
+    throw missingItem(operation, uniqueWhere);
+  }
+  return uniqueWhere;
 }
 
 export async function getAccessControlledItemForDelete(

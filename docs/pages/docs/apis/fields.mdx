@@ -79,15 +79,15 @@ Options:
 - `ui`: Controls how the field is displayed in the Admin UI.
   - `views`: A [resolved](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) path to a module containing code to replace or extend the default Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
   - `createView` (default: `'edit'`): Controls the create view page of the Admin UI.
-    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
+    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
     Defaults to the list's `ui.createView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
   - `itemView` (default: `'edit'`): Controls the item view page of the Admin UI.
-    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, item }` that returns one of `['edit', 'read', 'hidden']`.
+    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
   - `listView` (default: `'read'`): Controls the list view page of the Admin UI.
-    Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
+    Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
 - `graphql`: Configures certain aspects of the GraphQL API.
@@ -111,13 +111,13 @@ export default config({
           ui: {
             views: require.resolve('path/to/viewsModule.tsx'),
             createView: {
-              fieldMode: ({ session }) => 'edit',
+              fieldMode: ({ session, context }) => 'edit',
             },
             itemView: {
-              fieldMode: ({ session, item }) => 'read',
+              fieldMode: ({ session, context, item }) => 'read',
             },
             listView: {
-              fieldMode: ({ session }) => 'read',
+              fieldMode: ({ session, context }) => 'read',
             },
           },
           graphql: {

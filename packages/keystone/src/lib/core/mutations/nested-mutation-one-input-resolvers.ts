@@ -1,9 +1,9 @@
 import { KeystoneContext, TypesForList } from '../../../types';
 import { graphql } from '../../..';
-import { resolveUniqueWhereInput } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
 import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
+import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
@@ -22,69 +22,46 @@ async function handleCreateAndUpdate(
   value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
+  foreignList: InitialisedList
 ) {
   if (value.connect) {
-    // Validate and resolve the input filter
-    const uniqueWhere = await resolveUniqueWhereInput(value.connect, foreignList.fields, context);
-    // Check whether the item exists
-    try {
-      const item = await context.db[foreignList.listKey].findOne({ where: value.connect });
-      if (item === null) {
-        throw new Error(`Unable to connect a ${target}`);
-      }
-    } catch (err) {
-      throw new Error(`Unable to connect a ${target}`);
-    }
-    return { connect: uniqueWhere };
+    return { connect: await checkUniqueItemExists(value.connect, foreignList, context, 'connect') };
   } else if (value.create) {
-    const createInput = value.create;
-    let create = await (async () => {
-      try {
-        // Perform the nested create operation
-        return await nestedMutationState.create(createInput, foreignList);
-      } catch (err) {
-        throw new Error(`Unable to create a ${target}`);
-      }
-    })();
-
-    return { connect: { id: create.id } };
+    const { id } = await nestedMutationState.create(value.create, foreignList);
+    return { connect: { id } };
   }
 }
 
 export function resolveRelateToOneForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
+  foreignList: InitialisedList
 ) {
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
     if (numOfKeys !== 1) {
       throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+        `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
       );
     }
-    return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
+    return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
   };
 }
 
 export function resolveRelateToOneForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList,
-  target: string
+  foreignList: InitialisedList
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
       throw userInputError(
-        `Nested to-one mutations must provide exactly one field if they're provided but ${target} did not`
+        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
       );
     }
 
     if (value.connect || value.create) {
-      return handleCreateAndUpdate(value, nestedMutationState, context, foreignList, target);
+      return handleCreateAndUpdate(value, nestedMutationState, context, foreignList);
     } else if (value.disconnect) {
       return { disconnect: true };
     }

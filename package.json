@@ -30,7 +30,7 @@
     "version-packages": "changeset version",
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && cd examples-staging/basic && yarn keystone-next postinstall",
-    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
+    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
@@ -55,6 +55,7 @@
     "@preconstruct/cli": "2.1.4",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
     "@testing-library/jest-dom": "^5.14.1",
+    "@types/babel__core": "^7.1.16",
     "@types/jest": "^27.0.2",
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -64,7 +65,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jest": "^24.4.3",
+    "eslint-plugin-jest": "^24.7.0",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "is-ci": "^3.0.0",
@@ -131,8 +132,10 @@
       "packages/*",
       "design-system/packages/*",
       "prisma-utils"
-    ],
-    "distFilenameStrategy": "unscoped-package-name"
+    ]
+  },
+  "manypkg": {
+    "defaultBranch": "main"
   },
   "jest": {
     "setupFilesAfterEnv": [
