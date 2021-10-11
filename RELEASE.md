@@ -26,25 +26,13 @@ yarn publish-changed
 
 ## GitHub tags
 
-Publish all new tags to GitHub:
-
-```sh
-git push --tags
-```
-
-Checkout merge commit as a result of the `Version Packages` PR:
-
-```sh
-git checkout sha123
-```
-
 Create git tag relevant to release date:
 
 ```sh
 git tag -a "YYYY-MM-DD" -m "YYYY-MM-DD"
 ```
 
-Push tag to GitHub:
+Publish all new tags (releases plus release date version) to GitHub:
 
 ```sh
 git push --tags
