@@ -161,7 +161,7 @@ Then the other way around, create a branch off `website_live` such as `bring-in-
 
 Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind and x commits ahead, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
 
-To resolve this in the CLI (on the `website_live` side):
+To resolve this in the CLI (first on the `website_live` side):
 
 Go to the `website_live` branch
 `git checkout website_live`
