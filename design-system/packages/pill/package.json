@@ -1,9 +1,9 @@
 {
   "name": "@keystone-ui/pill",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "license": "MIT",
-  "main": "dist/pill.cjs.js",
-  "module": "dist/pill.esm.js",
+  "main": "dist/keystone-ui-pill.cjs.js",
+  "module": "dist/keystone-ui-pill.esm.js",
   "peerDependencies": {
     "react": "^17.0.2"
   },
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@keystone-ui/core": "^3.2.0",
-    "@keystone-ui/icons": "^4.0.1"
+    "@keystone-ui/core": "^3.2.1",
+    "@keystone-ui/icons": "^4.0.2"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
