@@ -55,11 +55,11 @@ This release fixes this to simply return `null` for the missing item. This also 
 
 A variety of UI fixes are in this release when rendering fields in the Admin UI:
 
--   The value of `data` passed to the inline relationship renderer now matches the data returned by the GraphQL query.
--   Falsey values of `data.label` are no longer set to `data.id` and falsey values of `data.data` are no longer set to `{}`.
--   Fixed the relationship name not being passed to the inline relationship renderer.
--   Fixed confusing error when providing fields that don't exist to `ui.cardFields`, `ui.inlineCreate.fields` and `ui.inlineEdit.fields`.
--   Fixed `relationship` field with `displayMode: 'cards'` not using labels for related items in the cell view.
+- The value of `data` passed to the inline relationship renderer now matches the data returned by the GraphQL query.
+- Falsey values of `data.label` are no longer set to `data.id` and falsey values of `data.data` are no longer set to `{}`.
+- Fixed the relationship name not being passed to the inline relationship renderer.
+- Fixed confusing error when providing fields that don't exist to `ui.cardFields`, `ui.inlineCreate.fields` and `ui.inlineEdit.fields`.
+- Fixed `relationship` field with `displayMode: 'cards'` not using labels for related items in the cell view.
 
 ## Types for `KeystoneContext`, `KeystoneListsAPI` and `KeystoneDbAPI` <Emoji symbol="🪢" alt="Knot" />
 
