@@ -13,9 +13,6 @@ A major milestone in the path to a `General Availability` status for **Keystone 
 **⚠️ &nbsp; This release contains breaking changes, please see below!**
 
 ```json
-"@keystone-ui/notice": "4.0.1",
-"@keystone-ui/segmented-control": "4.0.2",
-"@keystone-ui/toast": "4.0.2",
 "@keystone-next/admin-ui-utils": "5.0.6",
 "@keystone-next/auth": "31.0.0",
 "@keystone-next/cloudinary": "6.0.6",
@@ -42,19 +39,31 @@ We've [written a complete guide](https://keystonejs.com/updates/new-graphql-api)
 
 !> <Emoji symbol="💡" alt="Lightbulb" /> While there are a lot of changes to this API, we've put a lot of effort into making the upgrade process as smooth as possible. If you get stuck or have questions, reach out to us in the [Keystone community slack](https://community.keystonejs.com) to get the help you need.
 
-<img width="1091" alt="Screen Shot 2021-08-17 at 11 28 56 am" src="https://user-images.githubusercontent.com/737821/129649252-ababdd69-2649-4027-9189-c8f908e59946.png" />
+<img
+	width="1091"
+	alt="Screen Shot 2021-08-17 at 11 28 56 am"
+	src="https://user-images.githubusercontent.com/737821/129649252-ababdd69-2649-4027-9189-c8f908e59946.png"
+/>
 
 ## Custom Admin UI Pages <Emoji symbol="📃" alt="Paper" />
 
 Our [Custom Admin UI Pages](https://keystonejs.com/docs/guides/custom-admin-ui-pages) guide has been expanded, with an example to make your custom pages look more like the Admin UI, as well as adding links to your custom pages from the Admin UI Navigation!
 
-<img width="1091" alt="Screen Shot 2021-08-17 at 11 30 39 am" src="https://user-images.githubusercontent.com/737821/129649357-c292252a-f202-449d-a7e1-b0f765738b0b.png" />
+<img
+	width="1091"
+	alt="Screen Shot 2021-08-17 at 11 30 39 am"
+	src="https://user-images.githubusercontent.com/737821/129649357-c292252a-f202-449d-a7e1-b0f765738b0b.png"
+/>
 
 ## Improved Deletion Notifications <Emoji symbol="🗑" alt="Trashcan" />
 
 When items are deleted via the Admin UI, we now display all the items that were successfully deleted, and any that failed, instead of displaying multiple notifications without any context.
 
-<img width="1091" alt="Screen Shot 2021-08-17 at 11 04 47 am" src="https://user-images.githubusercontent.com/737821/129647660-32d421f4-a060-4b65-b17d-c446149906ee.png" />
+<img
+	width="1091"
+	alt="Screen Shot 2021-08-17 at 11 04 47 am"
+	src="https://user-images.githubusercontent.com/737821/129647660-32d421f4-a060-4b65-b17d-c446149906ee.png"
+/>
 
 ## Deeper GraphQL Errors <Emoji symbol="🚧" alt="Roadblock" />
 
@@ -70,5 +79,12 @@ Added option for `Bearer` token auth when using session, thanks to [@gautamsi](h
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-08-17) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="A major milestone in the path to a General Availability status for Keystone 6." {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+	<Markdown
+		description="A major milestone in the path to a General Availability status for Keystone 6."
+		{...props}
+	>
+		{children}
+	</Markdown>
+);
+export { getStaticProps };

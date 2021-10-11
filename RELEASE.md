@@ -80,7 +80,7 @@ Copy the successful output of the published packages from above npm release, exa
 
 Convert to a `package.json` style syntax for ease of copying, example conversion:
 
-```sh
+```json
 "@keystone-next/admin-ui-utils": "5.0.2",
 "@keystone-next/auth": "27.0.0",
 "@keystone-next/cloudinary": "6.0.0",
@@ -90,10 +90,9 @@ Convert to a `package.json` style syntax for ease of copying, example conversion
 "@keystone-next/test-utils-legacy": "21.0.0",
 "@keystone-next/types": "20.0.0",
 "@keystone-next/utils-legacy": "12.0.0",
-"@keystone-ui/core": "3.1.0",
-"@keystone-ui/fields": "4.1.1",
-"@keystone-ui/segmented-control": "4.0.1",
 ```
+
+You can safely remove references to `@keystone-ui` as they are primarily for internal use in the Admin UI.
 
 Place this directly under the `## What's New` heading.
 
