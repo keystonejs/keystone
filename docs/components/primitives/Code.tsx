@@ -6,52 +6,31 @@ import { ReactNode, useState } from 'react';
 
 import theme from '../../lib/prism-theme';
 
-type Range = { start: number; end: number; isCollapsed?: boolean };
-type collapseRange = { start: number; end: number; isCollapsed?: boolean };
+type Range = { start: number; end: number };
+type CollapseRange = Range & { isCollapsed: boolean };
 
-const getHighlightedLines = (lineHighlights: string): Range[] => {
+const getRanges = (lines: string): Range[] => {
   let ranges: Range[] = [];
 
-  lineHighlights.split(',').forEach(something => {
-    if (something.length) {
-      const [a, b] = something.split('-');
+  lines.split(',').forEach(lineRange => {
+    if (lineRange.length) {
+      const [range1, range2] = lineRange.split('-');
 
-      let aye = parseInt(a);
-      let bee = parseInt(b);
+      let parsedRange1 = parseInt(range1);
+      let parsedRange2 = parseInt(range2);
 
-      if (isNaN(aye)) {
-        throw new Error(`When trying to do highlighting, error in {${lineHighlights}}`);
+      if (isNaN(parsedRange1)) {
+        throw new Error(`When trying to do highlighting, error in {${lines}}`);
       }
 
-      if (!isNaN(bee)) {
-        ranges.push({ start: aye - 1, end: bee - 1 });
-        while (aye <= bee) {
-          aye++;
+      if (!isNaN(parsedRange2)) {
+        ranges.push({ start: parsedRange1 - 1, end: parsedRange2 - 1 });
+        while (parsedRange1 <= parsedRange2) {
+          parsedRange1++;
         }
       } else {
-        ranges.push({ start: aye - 1, end: aye - 1 });
+        ranges.push({ start: parsedRange1 - 1, end: parsedRange1 - 1 });
       }
-    }
-  });
-
-  return ranges;
-};
-
-const getCollapsedRanges = (lineHighlights: string): collapseRange[] => {
-  let ranges: collapseRange[] = [];
-
-  lineHighlights.split(',').forEach(something => {
-    if (something.length) {
-      const [a, b] = something.split('-');
-
-      let aye = parseInt(a);
-      let bee = parseInt(b);
-
-      if (isNaN(aye) || isNaN(bee)) {
-        throw new Error(`When trying to get code collapse blocks, error in {${lineHighlights}}`);
-      }
-
-      ranges.push({ start: aye - 1, end: bee - 1, isCollapsed: true });
     }
   });
 
@@ -60,7 +39,7 @@ const getCollapsedRanges = (lineHighlights: string): collapseRange[] => {
 
 const parseClassName = (
   className?: string
-): { highlightRanges: Array<Range>; collapseRanges: Array<collapseRange>; language: string } => {
+): { highlightRanges: Range[]; collapseRanges: CollapseRange[]; language: string } => {
   let trimmedLanguage = (className || '').replace(/language-/, '');
   let language, highlights, collapses;
 
@@ -84,13 +63,18 @@ const parseClassName = (
 
   return {
     language: (language as any) || 'typescript',
-    highlightRanges: getHighlightedLines(highlights?.replace('}', '') || ''),
-    collapseRanges: getCollapsedRanges(collapses?.replace(']', '') || ''),
+    highlightRanges: getRanges(highlights?.replace('}', '') || ''),
+    collapseRanges: getRanges(collapses?.replace(']', '') || '').map(range => ({
+      ...range,
+      isCollapsed: true,
+    })),
   };
 };
 
-const isInARange = (ranges: Range[], num: number): Range | undefined =>
-  ranges.find(({ start, end }) => start <= num && end >= num);
+const findRange = <TRange extends Range | CollapseRange>(
+  ranges: TRange[],
+  num: number
+): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num);
 
 export function Code({ children, className }: { children: string; className?: string }) {
   let { language, highlightRanges, collapseRanges } = parseClassName(className);
@@ -132,7 +116,7 @@ export function Code({ children, className }: { children: string; className?: st
                 );
               }
 
-              if (isInARange(collapseState, i)?.isCollapsed) {
+              if (findRange(collapseState, i)?.isCollapsed) {
                 return undefined;
               }
 
@@ -141,7 +125,7 @@ export function Code({ children, className }: { children: string; className?: st
                   key={i}
                   {...getLineProps({ line, key: i })}
                   css={
-                    isInARange(highlightRanges, i) && {
+                    findRange(highlightRanges, i) && {
                       backgroundColor: 'var(--info-bg)',
                       margin: '0 -1.1em',
                       padding: '0 1.1em',
