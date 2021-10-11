@@ -130,10 +130,18 @@ describe('non-matching filter', () => {
         variables: { id: createUser.id },
       });
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
+      const message =
+        'Access denied: You cannot perform the \'disconnect\' operation on the item \'{"id":"c5b84f38256d3c2df59a0d9bf"}\'. It may not exist.';
+      expectRelationshipError('dev', false, false, errors, [
         {
           path: ['updateUser'],
-          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
+          messages: [`User.notes: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+            },
+          ],
         },
       ]);
     })
@@ -174,11 +182,17 @@ describe('with access control', () => {
             variables: { id: createUser.id, idToDisconnect: createNote.id },
           });
           expect(data).toEqual({ updateUserToNotesNoRead: null });
-          expectRelationshipError(errors, [
+          const message = `Access denied: You cannot perform the 'disconnect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+          expectRelationshipError('dev', false, false, errors, [
             {
               path: ['updateUserToNotesNoRead'],
-              message:
-                'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
+              messages: [`UserToNotesNoRead.notes: ${message}`],
+              debug: [
+                {
+                  message,
+                  stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
+                },
+              ],
             },
           ]);
         }

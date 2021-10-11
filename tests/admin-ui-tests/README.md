@@ -28,4 +28,4 @@ strategy:
 ```
 
 Remember to commit this change and validate that the tests are running remotely.
-Once your PR is merged, update the branch protection rules on `master` to require the admin UI test.
+Once your PR is merged, update the branch protection rules on `main` to require the admin UI test.

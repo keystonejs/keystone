@@ -44,18 +44,23 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     // Generate the Artifacts
     console.log('✨ Generating GraphQL and Prisma schemas');
     const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
-    await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
+    let keystonePromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd).then(() => {
+      const prismaClient = requirePrismaClient(cwd);
+      return getKeystone(prismaClient);
+    });
+
+    let migrationPromise: Promise<void>;
 
     // Set up the Database
     if (config.db.useMigrations) {
-      await devMigrations(
+      migrationPromise = devMigrations(
         config.db.url,
         prismaSchema,
         getSchemaPaths(cwd).prisma,
         shouldDropDatabase
       );
     } else {
-      await pushPrismaSchemaToDatabase(
+      migrationPromise = pushPrismaSchemaToDatabase(
         config.db.url,
         prismaSchema,
         getSchemaPaths(cwd).prisma,
@@ -63,8 +68,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       );
     }
 
-    const prismaClient = requirePrismaClient(cwd);
-    const keystone = getKeystone(prismaClient);
+    const [keystone] = await Promise.all([keystonePromise, migrationPromise]);
     const { createContext } = keystone;
 
     // Connect to the Database

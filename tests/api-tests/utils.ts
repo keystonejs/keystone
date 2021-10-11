@@ -63,7 +63,7 @@ export const expectAccessDenied = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path, msg }) => ({
-      extensions: { code: undefined },
+      extensions: { code: 'KS_ACCESS_DENIED' },
       path,
       message: `Access denied: ${msg}`,
     }))
@@ -79,7 +79,7 @@ export const expectValidationError = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages }) => ({
-      extensions: { code: undefined },
+      extensions: { code: 'KS_VALIDATION_FAILURE' },
       path,
       message: `You provided invalid data for this operation.\n${j(messages)}`,
     }))
@@ -113,7 +113,7 @@ export const expectExtensionError = (
 
       return {
         extensions: {
-          code: 'INTERNAL_SERVER_ERROR',
+          code: 'KS_EXTENSION_ERROR',
           ...(expectException
             ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),
@@ -134,8 +134,8 @@ export const expectPrismaError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message, code, target }) => ({
       extensions: {
-        code: 'INTERNAL_SERVER_ERROR',
-        prisma: { clientVersion: '3.1.1', code, meta: { target } },
+        code: 'KS_PRISMA_ERROR',
+        prisma: { clientVersion: '3.2.0', code, meta: { target } },
       },
       path,
       message,
@@ -152,7 +152,7 @@ export const expectLimitsExceededError = (
   }));
   expect(unpackedErrors).toEqual(
     args.map(({ path }) => ({
-      extensions: { code: undefined },
+      extensions: { code: 'KS_LIMITS_EXCEEDED' },
       path,
       message: 'Your request exceeded server limits',
     }))
@@ -161,13 +161,12 @@ export const expectLimitsExceededError = (
 
 export const expectBadUserInput = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[],
-  httpQuery = true
+  args: { path: any[]; message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      ...(httpQuery ? { extensions: { code: 'INTERNAL_SERVER_ERROR' } } : {}),
+      extensions: { code: 'KS_USER_INPUT_ERROR' },
       path,
       message: `Input error: ${message}`,
     }))
@@ -181,23 +180,13 @@ export const expectAccessReturnError = (
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, errors }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      extensions: { code: 'KS_ACCESS_RETURN_ERROR' },
       path,
       message: `Invalid values returned from access control function.\n${j(
         errors.map(e => `${e.tag}: Returned: ${e.returned}. Expected: boolean.`)
       )}`,
     }))
   );
-};
-
-export const expectRelationshipError = (
-  errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; message: string }[]
-) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
-  expect(unpackedErrors).toEqual(args.map(({ path, message }) => ({ path, message })));
 };
 
 export const expectFilterDenied = (
@@ -207,7 +196,7 @@ export const expectFilterDenied = (
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
-      extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      extensions: { code: 'KS_FILTER_DENIED' },
       path,
       message,
     }))
@@ -240,7 +229,46 @@ export const expectResolverError = (
 
       return {
         extensions: {
-          code: 'INTERNAL_SERVER_ERROR',
+          code: 'KS_RESOLVER_ERROR',
+          ...(expectException
+            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
+            : {}),
+          ...(expectDebug ? { debug } : {}),
+        },
+        path,
+        message,
+      };
+    })
+  );
+};
+
+export const expectRelationshipError = (
+  mode: 'dev' | 'production',
+  httpQuery: boolean,
+  _debug: boolean | undefined,
+  errors: readonly any[] | undefined,
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
+) => {
+  const unpackedErrors = unpackErrors(errors);
+  expect(unpackedErrors).toEqual(
+    args.map(({ path, messages, debug }) => {
+      const message = `An error occured while resolving relationship fields.\n${j(messages)}`;
+      const stacktrace = message.split('\n');
+      stacktrace[0] = `Error: ${stacktrace[0]}`;
+
+      // We expect to see debug details if:
+      //   - httpQuery is false
+      //   - graphql.debug is true or
+      //   - graphql.debug is undefined and mode !== production or
+      const expectDebug =
+        _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
+      // We expect to see the Apollo exception under the same conditions, but only if
+      // httpQuery is also true.
+      const expectException = httpQuery && expectDebug;
+
+      return {
+        extensions: {
+          code: 'KS_RELATIONSHIP_ERROR',
           ...(expectException
             ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
             : {}),

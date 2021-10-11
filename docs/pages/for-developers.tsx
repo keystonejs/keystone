@@ -400,7 +400,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/master/examples/blog"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"
@@ -411,7 +411,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/master/examples/task-manager"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/task-manager"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"
@@ -422,7 +422,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/master/examples/default-values"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/default-values"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"
@@ -433,7 +433,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/master/examples/extend-graphql-schema"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"

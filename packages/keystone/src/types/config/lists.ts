@@ -1,5 +1,6 @@
 import type { CacheHint } from 'apollo-server-types';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
+import type { KeystoneContext } from '../context';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
@@ -172,12 +173,13 @@ export type ListAdminUIConfig<
 
 export type MaybeSessionFunction<T extends string | boolean> =
   | T
-  | ((args: { session: any }) => MaybePromise<T>);
+  | ((args: { session: any; context: KeystoneContext }) => MaybePromise<T>);
 
 export type MaybeItemFunction<T> =
   | T
   | ((args: {
       session: any;
+      context: KeystoneContext;
       item: { id: string | number; [path: string]: any };
     }) => MaybePromise<T>);
 

@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { setupTestRunner, TestArgs } from '@keystone-next/keystone/testing';
 import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectInternalServerError } from './utils';
+import { apiTestConfig, expectInternalServerError, expectValidationError } from './utils';
 
 const initialData = {
   User: [
@@ -240,11 +240,10 @@ describe('Auth testing', () => {
           h.startsWith('keystonejs-session')
         );
         expect(sessionHeader).toBe(undefined);
-        expectInternalServerError(body.errors, false, [
+        expectValidationError(body.errors, [
           {
             path: ['createUser'], // I don't like this!
-            message:
-              'You provided invalid data for this operation.\n  - User.email: Email must not be empty',
+            messages: ['User.email: Email must not be empty'],
           },
         ]);
         expect(body.data).toEqual(null);

@@ -264,7 +264,7 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
           &nbsp; New Core
         </NavItem>
         <NavItem
-          href="https://github.com/keystonejs/keystone/tree/master/examples"
+          href="https://github.com/keystonejs/keystone/tree/main/examples"
           target="_blank"
           rel="noopener noreferrer"
         >

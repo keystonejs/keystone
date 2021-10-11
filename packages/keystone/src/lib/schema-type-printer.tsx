@@ -11,7 +11,6 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
-import prettier from 'prettier';
 import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
@@ -175,9 +174,5 @@ export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'pri
   prisma: import('.prisma/client').PrismaClient;
 };
 `;
-  return prettier.format(prelude + printedTypes + allListsStr + postlude, {
-    parser: 'babel-ts',
-    trailingComma: 'es5',
-    singleQuote: true,
-  });
+  return prelude + printedTypes + allListsStr + postlude;
 }
