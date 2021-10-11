@@ -32,6 +32,27 @@ type Mutation {
 
 union AuthenticatedItem = Person
 
+type Query {
+  authenticatedItem: AuthenticatedItem
+  tasks(
+    where: TaskWhereInput! = {}
+    orderBy: [TaskOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Task!]
+  task(where: TaskWhereUniqueInput!): Task
+  tasksCount(where: TaskWhereInput! = {}): Int
+  people(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Person!]
+  person(where: PersonWhereUniqueInput!): Person
+  peopleCount(where: PersonWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 union PersonAuthenticationWithPasswordResult =
     PersonAuthenticationWithPasswordSuccess
   | PersonAuthenticationWithPasswordFailure
@@ -269,27 +290,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type Query {
-  authenticatedItem: AuthenticatedItem
-  tasks(
-    where: TaskWhereInput! = {}
-    orderBy: [TaskOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Task!]
-  task(where: TaskWhereUniqueInput!): Task
-  tasksCount(where: TaskWhereInput! = {}): Int
-  people(
-    where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Person!]
-  person(where: PersonWhereUniqueInput!): Person
-  peopleCount(where: PersonWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
