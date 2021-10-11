@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import Highlight, { Prism } from 'prism-react-renderer';
 import { jsx } from '@emotion/react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import theme from '../../lib/prism-theme';
 
@@ -43,7 +43,10 @@ const parseClassName = (
   let trimmedLanguage = (className || '').replace(/language-/, '');
   let language, highlights, collapses;
 
-  if (trimmedLanguage.indexOf('{') < trimmedLanguage.indexOf('[')) {
+  if (
+    !trimmedLanguage.includes('[') ||
+    trimmedLanguage.indexOf('{') < trimmedLanguage.indexOf('[')
+  ) {
     let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('{');
 
     let [scopedHighlights, scopedCollapses] = modifiers.split('[');
@@ -77,9 +80,16 @@ const findRange = <TRange extends Range | CollapseRange>(
 ): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num);
 
 export function Code({ children, className }: { children: string; className?: string }) {
-  let { language, highlightRanges, collapseRanges } = parseClassName(className);
+  const [collapseState, updateCollapseState] = useState<CollapseRange[]>([]);
 
-  const [collapseState, updateCollapseState] = useState(collapseRanges);
+  let { language, highlightRanges, collapseRanges } = useMemo(
+    () => parseClassName(className),
+    [className]
+  );
+
+  useEffect(() => {
+    updateCollapseState(collapseRanges);
+  }, [collapseRanges]);
 
   return (
     <Highlight Prism={Prism} code={children.trim()} language={language as any} theme={theme}>
