@@ -20,6 +20,35 @@ type Mutation {
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
 }
 
+type Query {
+  """
+   Return all posts for a user from the last <days> days
+  """
+  recentPosts(id: ID!, days: Int! = 7): [Post]
+
+  """
+   Compute statistics for a user
+  """
+  stats(id: ID!): Statistics
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  post(where: PostWhereUniqueInput!): Post
+  postsCount(where: PostWhereInput! = {}): Int
+  authors(
+    where: AuthorWhereInput! = {}
+    orderBy: [AuthorOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Author!]
+  author(where: AuthorWhereUniqueInput!): Author
+  authorsCount(where: AuthorWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 """
  A custom type to represent statistics for a user
 """
@@ -240,35 +269,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type Query {
-  """
-   Return all posts for a user from the last <days> days
-  """
-  recentPosts(id: ID!, days: Int! = 7): [Post]
-
-  """
-   Compute statistics for a user
-  """
-  stats(id: ID!): Statistics
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
-  post(where: PostWhereUniqueInput!): Post
-  postsCount(where: PostWhereInput! = {}): Int
-  authors(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
-  author(where: AuthorWhereUniqueInput!): Author
-  authorsCount(where: AuthorWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

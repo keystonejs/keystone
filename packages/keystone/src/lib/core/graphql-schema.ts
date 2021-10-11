@@ -8,11 +8,19 @@ import { getQueriesForList } from './queries';
 
 export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
-  provider: DatabaseProvider
+  provider: DatabaseProvider,
+  extraFields: {
+    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
+    query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
+  }
 ) {
   const query = graphql.object()({
     name: 'Query',
-    fields: Object.assign({}, ...Object.values(lists).map(list => getQueriesForList(list))),
+    fields: Object.assign(
+      {},
+      ...Object.values(lists).map(list => getQueriesForList(list)),
+      extraFields.query
+    ),
   });
 
   const updateManyByList: Record<string, graphql.InputObjectType<any>> = {};
@@ -25,13 +33,15 @@ export function getGraphQLSchema(
         const { mutations, updateManyInput } = getMutationsForList(list, provider);
         updateManyByList[list.listKey] = updateManyInput;
         return mutations;
-      })
+      }),
+      extraFields.mutation
     ),
   });
   const graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    types: collectTypes(lists, updateManyByList),
+    // not about behaviour, only ordering
+    types: [...collectTypes(lists, updateManyByList), mutation.graphQLType],
   });
   return graphQLSchema;
 }
