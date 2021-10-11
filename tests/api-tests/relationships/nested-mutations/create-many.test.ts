@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -300,18 +300,12 @@ describe('with access control', () => {
         expect(data).toEqual({ createUserToNotesNoCreate: null });
         const message =
           "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
-        expectRelationshipError('dev', false, false, errors, [
-          {
-            path: ['createUserToNotesNoCreate'],
-            messages: [`UserToNotesNoCreate.notes: ${message}`],
-            debug: [
-              {
-                message,
-                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-              },
-            ],
-          },
-        ]);
+        expectSingleRelationshipError(
+          errors,
+          'createUserToNotesNoCreate',
+          'UserToNotesNoCreate.notes',
+          message
+        );
 
         // Confirm it didn't insert either of the records anyway
         const allNoteNoCreates = await context.query.NoteNoCreate.findMany({
@@ -355,18 +349,12 @@ describe('with access control', () => {
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
         const message =
           "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
-        expectRelationshipError('dev', false, false, errors, [
-          {
-            path: ['updateUserToNotesNoCreate'],
-            messages: [`UserToNotesNoCreate.notes: ${message}`],
-            debug: [
-              {
-                message,
-                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-              },
-            ],
-          },
-        ]);
+        expectSingleRelationshipError(
+          errors,
+          'updateUserToNotesNoCreate',
+          'UserToNotesNoCreate.notes',
+          message
+        );
 
         // Confirm it didn't insert the record anyway
         const items = await context.query.NoteNoCreate.findMany({

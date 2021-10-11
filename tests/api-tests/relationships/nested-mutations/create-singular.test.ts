@@ -2,7 +2,11 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
+import {
+  apiTestConfig,
+  expectGraphQLValidationError,
+  expectSingleRelationshipError,
+} from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -257,18 +261,12 @@ describe('with access control', () => {
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
               const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
-              expectRelationshipError('dev', false, false, errors, [
-                {
-                  path: [`createEventTo${group.name}`],
-                  messages: [`EventTo${group.name}.group: ${message}`],
-                  debug: [
-                    {
-                      message,
-                      stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-                    },
-                  ],
-                },
-              ]);
+              expectSingleRelationshipError(
+                errors,
+                `createEventTo${group.name}`,
+                `EventTo${group.name}.group`,
+                message
+              );
             }
             // Confirm it didn't insert either of the records anyway
             const data1 = await context.sudo().query[group.name].findMany({
@@ -324,18 +322,12 @@ describe('with access control', () => {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
               const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
-              expectRelationshipError('dev', false, false, errors, [
-                {
-                  path: [`updateEventTo${group.name}`],
-                  messages: [`EventTo${group.name}.group: ${message}`],
-                  debug: [
-                    {
-                      message,
-                      stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-                    },
-                  ],
-                },
-              ]);
+              expectSingleRelationshipError(
+                errors,
+                `updateEventTo${group.name}`,
+                `EventTo${group.name}.group`,
+                message
+              );
             }
 
             // Confirm it didn't insert the record anyway

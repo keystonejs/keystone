@@ -142,13 +142,13 @@ describe('filtering on field name', () => {
 describe('filtering on relationships', () => {
   test(
     'findMany throws error with null relationship query',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ secondaryLists(where: { otherUsers: null }) { id } }',
       });
       // Returns null and throws an error
-      expect(body.data).toEqual({ secondaryLists: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ secondaryLists: null });
+      expectBadUserInput(errors, [
         {
           message: 'A many relation filter cannot be set to null',
           path: ['secondaryLists'],
@@ -159,13 +159,13 @@ describe('filtering on relationships', () => {
 
   test(
     'findMany throws error with null relationship query value',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ secondaryLists(where: { otherUsers: { some: null } }) { id } }',
       });
       // Returns null and throws an error
-      expect(body.data).toEqual({ secondaryLists: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ secondaryLists: null });
+      expectBadUserInput(errors, [
         {
           message: 'The key "some" in a many relation filter cannot be set to null',
           path: ['secondaryLists'],
@@ -176,17 +176,17 @@ describe('filtering on relationships', () => {
 
   test(
     'findMany returns all items with empty relationship query value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await context.query.SecondaryList.createOne({
         data: { otherUsers: { create: [{ noDash: 'a' }, { noDash: 'b' }] } },
       });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query:
           '{ secondaryLists(where: { otherUsers: {} }) { otherUsers(orderBy: { noDash: asc }) { noDash } } }',
       });
       // Returns all the data
-      expect(body.errors).toBe(undefined);
-      expect(body.data).toEqual({
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({
         secondaryLists: [{ otherUsers: [{ noDash: 'a' }, { noDash: 'b' }] }],
       });
     })
@@ -208,11 +208,13 @@ describe('searching by unique fields', () => {
 
   test(
     'findOne throws error with zero where values',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({ query: '{ user(where: {}) { id email } }' });
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: '{ user(where: {}) { id email } }',
+      });
       // Returns null and throws an error
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
         {
           message: 'Exactly one key must be passed in a unique where input but 0 keys were passed',
           path: ['user'],
@@ -223,14 +225,14 @@ describe('searching by unique fields', () => {
 
   test(
     'findOne throws error with more than one where values',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const item = await context.query.User.createOne({ data: { email: 'test@example.com' } });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "${item.id}" email: "test@example.com" }) { id email } }`,
       });
       // Returns null and throws an error
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
         {
           message: 'Exactly one key must be passed in a unique where input but 2 keys were passed',
           path: ['user'],
@@ -241,13 +243,13 @@ describe('searching by unique fields', () => {
 
   test(
     'findOne throws error with null where values',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: null }) { id email } }',
       });
       // Returns null and throws an error
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
         {
           message: 'The unique value provided in a unique where input must not be null',
           path: ['user'],
@@ -275,23 +277,23 @@ describe('isFilterable', () => {
 
   test(
     'isFilterable: true',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(where: { filterTrue: { equals: 10 } }) { id } }',
       });
-      expect(body.data.users).toHaveLength(0);
-      expect(body.errors).toBe(undefined);
+      expect(data).toEqual({ users: [] });
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'isFilterable: () => false',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(where: { filterFunctionFalse: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectFilterDenied(errors, [
         {
           path: ['users'],
           message:
@@ -303,23 +305,23 @@ describe('isFilterable', () => {
 
   test(
     'isFilterable: () => true',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(where: { filterFunctionTrue: { equals: 10 } }) { id } }',
       });
-      expect(body.data.users).toHaveLength(0);
-      expect(body.errors).toBe(undefined);
+      expect(data).toEqual({ users: [] });
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'isFilterable: () => null',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(where: { filterFunctionOtherFalsey: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectAccessReturnError(errors, [
         {
           path: ['users'],
           errors: [{ tag: 'User.filterFunctionOtherFalsey.isFilterable', returned: 'object' }],
@@ -330,12 +332,12 @@ describe('isFilterable', () => {
 
   test(
     'isFilterable: () => ({})',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(where: { filterFunctionOtherTruthy: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectAccessReturnError(errors, [
         {
           path: ['users'],
           errors: [{ tag: 'User.filterFunctionOtherTruthy.isFilterable', returned: 'object' }],
@@ -346,8 +348,8 @@ describe('isFilterable', () => {
 
   test(
     'isFilterable: multiple () => false',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ secondaryLists(where: {
           OR: [
             { filterFunctionFalse: { gt: 10 } }
@@ -356,8 +358,8 @@ describe('isFilterable', () => {
           ]
         } ) { id } }`,
       });
-      expect(body.data).toEqual({ secondaryLists: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ secondaryLists: null });
+      expectFilterDenied(errors, [
         {
           path: ['secondaryLists'],
           message:
@@ -371,12 +373,12 @@ describe('isFilterable', () => {
 describe('defaultIsFilterable', () => {
   test(
     'defaultIsFilterable: undefined',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterUndefineds(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data.defaultFilterUndefineds).toHaveLength(0);
-      expect(body.errors).toBe(undefined);
+      expect(data).toEqual({ defaultFilterUndefineds: [] });
+      expect(errors).toBe(undefined);
     })
   );
 
@@ -397,23 +399,23 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: true',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterTrues(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data.defaultFilterTrues).toHaveLength(0);
-      expect(body.errors).toBe(undefined);
+      expect(data).toEqual({ defaultFilterTrues: [] });
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'defaultIsFilterable: () => false',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterFunctionFalses(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ defaultFilterFunctionFalses: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ defaultFilterFunctionFalses: null });
+      expectFilterDenied(errors, [
         {
           path: ['defaultFilterFunctionFalses'],
           message:
@@ -425,24 +427,24 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: () => true',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterFunctionTrues(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data.defaultFilterFunctionTrues).toHaveLength(0);
-      expect(body.errors).toBe(undefined);
+      expect(data).toEqual({ defaultFilterFunctionTrues: [] });
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'defaultIsFilterable: () => null',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterFunctionFalseys(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ defaultFilterFunctionFalseys: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ defaultFilterFunctionFalseys: null });
+      expectAccessReturnError(errors, [
         {
           path: ['defaultFilterFunctionFalseys'],
           errors: [{ tag: 'DefaultFilterFunctionFalsey.a.isFilterable', returned: 'object' }],
@@ -453,12 +455,12 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: () => ({})',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterFunctionTruthies(where: { a: { equals: 10 } }) { id } }',
       });
-      expect(body.data).toEqual({ defaultFilterFunctionTruthies: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ defaultFilterFunctionTruthies: null });
+      expectAccessReturnError(errors, [
         {
           path: ['defaultFilterFunctionTruthies'],
           errors: [{ tag: 'DefaultFilterFunctionTruthy.a.isFilterable', returned: 'object' }],
