@@ -1,6 +1,4 @@
-import { GraphQLSchema, GraphQLObjectType, assertScalarType, assertEnumType } from 'graphql';
 import {
-  JSONValue,
   QueryMode,
   KeystoneContext,
   KeystoneConfig,
@@ -22,27 +20,18 @@ const graphql = {
 
 export function getAdminMetaSchema({
   config,
-  graphQLSchema,
   lists,
   adminMeta: adminMetaRoot,
 }: {
   adminMeta: AdminMetaRootVal;
   config: KeystoneConfig;
   lists: Record<string, InitialisedList>;
-  graphQLSchema: GraphQLSchema;
 }) {
   const isAccessAllowed =
     config.session === undefined
       ? undefined
       : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
-  const jsonScalarType = graphQLSchema.getType('JSON');
-  const jsonScalar = jsonScalarType
-    ? graphql.scalar<JSONValue>(assertScalarType(jsonScalarType))
-    : graphqlBoundToKeystoneContext.JSON;
-  const queryModeEnumType = graphQLSchema.getType('QueryMode');
-  const queryModeEnum = queryModeEnumType
-    ? { ...QueryMode, graphQLType: assertEnumType(graphQLSchema.getType('QueryMode')) }
-    : QueryMode;
+  const jsonScalar = graphqlBoundToKeystoneContext.JSON;
 
   const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
@@ -242,7 +231,7 @@ export function getAdminMetaSchema({
         }),
       }),
       search: graphql.field({
-        type: queryModeEnum,
+        type: QueryMode,
       }),
     },
   });
@@ -361,7 +350,7 @@ export function getAdminMetaSchema({
   });
 
   const KeystoneMeta = graphql.nonNull(
-    graphql.object<{ adminMeta: AdminMetaRootVal }>()({
+    graphql.object<{}>()({
       name: 'KeystoneMeta',
       fields: {
         adminMeta: graphql.field({
@@ -383,24 +372,14 @@ export function getAdminMetaSchema({
       },
     })
   );
-  const schemaConfig = graphQLSchema.toConfig();
-  const queryTypeConfig = graphQLSchema.getQueryType()!.toConfig();
-  return new GraphQLSchema({
-    ...schemaConfig,
-    types: schemaConfig.types.filter(x => x.name !== 'Query'),
-    query: new GraphQLObjectType({
-      ...queryTypeConfig,
-      fields: {
-        ...queryTypeConfig.fields,
-        keystone: {
-          type: KeystoneMeta.graphQLType,
-          resolve() {
-            return {};
-          },
-        },
+  return {
+    keystone: graphql.field({
+      type: KeystoneMeta,
+      resolve() {
+        return {};
       },
     }),
-  });
+  };
 }
 
 type FieldIdentifier = { listKey: string; fieldPath: string };

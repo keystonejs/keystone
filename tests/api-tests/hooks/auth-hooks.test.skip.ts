@@ -1,5 +1,4 @@
 import { AddressInfo } from 'net';
-// @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
 import { list } from '@keystone-next/keystone';
