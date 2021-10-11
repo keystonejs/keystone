@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/keystone",
-  "version": "26.1.0",
+  "version": "26.1.1",
   "license": "MIT",
   "main": "dist/keystone-next-keystone.cjs.js",
   "module": "dist/keystone-next-keystone.esm.js",
