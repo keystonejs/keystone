@@ -7,6 +7,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
+    db: { enableLogging: true },
     lists: {
       User: list({
         fields: {
@@ -46,7 +47,7 @@ describe('relationship filtering', () => {
     })
   );
 
-  test(
+  test.only(
     'nested to-many relationships can be limited',
     runner(async ({ context }) => {
       const ids = await context.query.Post.createMany({
