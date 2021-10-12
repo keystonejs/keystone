@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -38,18 +38,7 @@ describe('errors on incomplete data', () => {
       expect(data).toEqual({ createEvent: null });
       const message =
         'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['createEvent'],
-          messages: [`Event.group: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 
@@ -72,18 +61,7 @@ describe('errors on incomplete data', () => {
       expect(data).toEqual({ createEvent: null });
       const message =
         'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['createEvent'],
-          messages: [`Event.group: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 });

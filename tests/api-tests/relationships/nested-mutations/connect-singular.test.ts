@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -156,18 +156,7 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ createEvent: null });
       const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['createEvent'],
-          messages: [`Event.group: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 
@@ -197,18 +186,7 @@ describe('non-matching filter', () => {
       });
       expect(data).toEqual({ updateEvent: null });
       const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['updateEvent'],
-          messages: [`Event.group: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
 
@@ -233,18 +211,7 @@ describe('non-matching filter', () => {
       expect(data).toEqual({ updateEvent: null });
       const message =
         'Input error: You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.';
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['updateEvent'],
-          messages: [`Event.group: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
 });
@@ -355,18 +322,12 @@ describe('with access control', () => {
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
             const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${groupModel.id}"}'. It may not exist.`;
-            expectRelationshipError('dev', false, false, errors, [
-              {
-                path: [`updateEventTo${group.name}`],
-                messages: [`EventTo${group.name}.group: ${message}`],
-                debug: [
-                  {
-                    message,
-                    stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-                  },
-                ],
-              },
-            ]);
+            expectSingleRelationshipError(
+              errors,
+              `updateEventTo${group.name}`,
+              `EventTo${group.name}.group`,
+              message
+            );
           })
         );
 
@@ -396,18 +357,12 @@ describe('with access control', () => {
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
             const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${id}"}'. It may not exist.`;
-            expectRelationshipError('dev', false, false, errors, [
-              {
-                path: [`createEventTo${group.name}`],
-                messages: [`EventTo${group.name}.group: ${message}`],
-                debug: [
-                  {
-                    message,
-                    stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-                  },
-                ],
-              },
-            ]);
+            expectSingleRelationshipError(
+              errors,
+              `createEventTo${group.name}`,
+              `EventTo${group.name}.group`,
+              message
+            );
           })
         );
       }

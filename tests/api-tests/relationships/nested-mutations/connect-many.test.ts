@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -258,18 +258,7 @@ describe('non-matching filter', () => {
       });
       expect(data).toEqual({ createUser: null });
       const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['createUser'],
-          messages: [`User.notes: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'createUser', 'User.notes', message);
     })
   );
 
@@ -300,18 +289,7 @@ describe('non-matching filter', () => {
 
       expect(data).toEqual({ updateUser: null });
       const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['updateUser'],
-          messages: [`User.notes: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 
@@ -337,18 +315,7 @@ describe('non-matching filter', () => {
       expect(data).toEqual({ updateUser: null });
       const message =
         'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.';
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['updateUser'],
-          messages: [`User.notes: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 });
@@ -379,18 +346,12 @@ describe('with access control', () => {
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
         const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
-        expectRelationshipError('dev', false, false, errors, [
-          {
-            path: ['createUserToNotesNoRead'],
-            messages: [`UserToNotesNoRead.notes: ${message}`],
-            debug: [
-              {
-                message,
-                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-              },
-            ],
-          },
-        ]);
+        expectSingleRelationshipError(
+          errors,
+          'createUserToNotesNoRead',
+          'UserToNotesNoRead.notes',
+          message
+        );
       })
     );
 
@@ -426,18 +387,12 @@ describe('with access control', () => {
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
         const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
-        expectRelationshipError('dev', false, false, errors, [
-          {
-            path: ['updateUserToNotesNoRead'],
-            messages: [`UserToNotesNoRead.notes: ${message}`],
-            debug: [
-              {
-                message,
-                stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-              },
-            ],
-          },
-        ]);
+        expectSingleRelationshipError(
+          errors,
+          'updateUserToNotesNoRead',
+          'UserToNotesNoRead.notes',
+          message
+        );
       })
     );
   });
