@@ -92,8 +92,8 @@ export const Field = ({
               </span>
             ))}
         </Stack>
-      ) : (
-        value
+      ) : value.inner.kind === 'null' ? null : (
+        value.inner.value
       )}
     </FieldContainer>
   );

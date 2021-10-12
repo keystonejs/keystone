@@ -5,7 +5,6 @@ import autoLinkLiteralFromMarkdownExtension from 'mdast-util-gfm-autolink-litera
 import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-literal';
 // @ts-ignore
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown';
-// @ts-ignore
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough';
 import definitions from 'mdast-util-definitions';
 import { Descendant } from 'slate';

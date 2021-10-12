@@ -2,7 +2,7 @@
   "name": "@keystone-next/admin-ui-tests",
   "description": "A set of tests for the KeystoneJS Admin UI.",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,7 +15,7 @@
     "@keystone-next/keystone": "*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
-    "playwright": "^1.15.1",
+    "playwright": "^1.15.2",
     "treekill": "^1.0.0"
   },
   "scripts": {
