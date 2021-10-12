@@ -143,6 +143,9 @@ jobs:
       - name: Install Dependencies
         run: yarn
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+      - name: foo
+        run: psql -l
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand api-tests
