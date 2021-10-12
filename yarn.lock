@@ -12295,10 +12295,10 @@ strip-outer@^1.0.1:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.179.0:
-  version "8.179.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.179.0.tgz#d1571dec66aa41bfe51dc7de555914971a544bc5"
-  integrity sha512-1G/s4iPB8bBsleXK5ztb+y1vqieFBAAPS8Bm77FKOlyq7k1LmvyFYZUKVggKd2iG7buYzg+icG3MvV2Z8vFSIg==
+stripe@^8.180.0:
+  version "8.180.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.180.0.tgz#2787aebd31d9879da5b5eae389daa29db77fea92"
+  integrity sha512-iqqlEQZDmKZ7FX/05JXRTD3Z5X+Oq+ggDpyvaXtDZI4oxI4xjEoVJIwm1y8C0d9FMhfkxGJqGPpQsieChC2/rg==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
