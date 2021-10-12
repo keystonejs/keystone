@@ -46,9 +46,7 @@ describe('relationship filtering', () => {
     })
   );
 
-  // this is failing on GitHub Actions rn for some unknown reason so going to disable it for now
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip(
+  test(
     'nested to-many relationships can be limited',
     runner(async ({ context }) => {
       const ids = await context.query.Post.createMany({
