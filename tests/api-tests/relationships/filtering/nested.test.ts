@@ -51,7 +51,7 @@ describe('relationship filtering', () => {
     'nested to-many relationships can be limited',
     runner(async ({ context }) => {
       const ids = await context.query.Post.createMany({
-        data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hello? Or hi?' }],
+        data: [{ content: 'Hello world' }, { content: 'hi world' }, { content: 'Hellox Or hi?' }],
       });
 
       const [user, user2] = await context.query.User.createMany({
