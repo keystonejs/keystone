@@ -65,6 +65,22 @@ describe('relationship filtering', () => {
         query: 'id posts(orderBy: { content: asc }) { id content }',
       });
       console.log(foo.map(u=>u.posts));
+
+      const fob = await context.query.User.findMany({
+        query: 'id posts(take: 1, orderBy: { content: asc }) { id content }',
+      });
+      console.log(fob.map(u=>u.posts));
+
+      const bar = await context.query.User.findMany({
+        query: 'id posts(orderBy: { content: desc }) { id content }',
+      });
+      console.log(bar.map(u=>u.posts));
+
+      const baz = await context.query.User.findMany({
+        query: 'id posts(take: 1, orderBy: { content: desc }) { id content }',
+      });
+      console.log(baz.map(u=>u.posts));
+
       const users = await context.query.User.findMany({
         query: 'id posts(take: 1, orderBy: { content: asc }) { id }',
       });
