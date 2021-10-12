@@ -7,10 +7,7 @@
     "dev": "next -p 8000",
     "build": "next build && yarn sitemap",
     "start": "next start -p 8000",
-    "sitemap": "yarn next-sitemap",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
+    "sitemap": "yarn next-sitemap"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
@@ -30,7 +27,6 @@
     "@types/react-dom": "^17.0.9",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
-    "cypress": "^5.6.0",
     "date-fns": "^2.25.0",
     "facepaint": "^1.2.1",
     "lodash.debounce": "^4.0.8",
