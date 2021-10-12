@@ -7,7 +7,6 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    db: { enableLogging: true },
     lists: {
       User: list({
         fields: {
@@ -47,7 +46,7 @@ describe('relationship filtering', () => {
     })
   );
 
-  test.only(
+  test(
     'nested to-many relationships can be limited',
     runner(async ({ context }) => {
       const ids = await context.query.Post.createMany({
@@ -60,26 +59,6 @@ describe('relationship filtering', () => {
           { posts: { connect: [ids[0]] } }, // Create a dummy user to make sure we're actually filtering it out
         ],
       });
-
-      const foo = await context.query.User.findMany({
-        query: 'id posts(orderBy: { content: asc }) { id content }',
-      });
-      console.log(foo.map(u=>u.posts));
-
-      const fob = await context.query.User.findMany({
-        query: 'id posts(take: 1, orderBy: { content: asc }) { id content }',
-      });
-      console.log(fob.map(u=>u.posts));
-
-      const bar = await context.query.User.findMany({
-        query: 'id posts(orderBy: { content: desc }) { id content }',
-      });
-      console.log(bar.map(u=>u.posts));
-
-      const baz = await context.query.User.findMany({
-        query: 'id posts(take: 1, orderBy: { content: desc }) { id content }',
-      });
-      console.log(baz.map(u=>u.posts));
 
       const users = await context.query.User.findMany({
         query: 'id posts(take: 1, orderBy: { content: asc }) { id }',
