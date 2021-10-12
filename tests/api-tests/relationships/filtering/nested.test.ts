@@ -61,6 +61,10 @@ describe('relationship filtering', () => {
         ],
       });
 
+      const foo = await context.query.User.findMany({
+        query: 'id posts(orderBy: { content: asc }) { id content }',
+      });
+      console.log(foo.map(u=>u.posts));
       const users = await context.query.User.findMany({
         query: 'id posts(take: 1, orderBy: { content: asc }) { id }',
       });
