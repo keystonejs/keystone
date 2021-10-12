@@ -80,12 +80,12 @@ const findRange = <TRange extends Range | CollapseRange>(
 ): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num);
 
 export function Code({ children, className }: { children: string; className?: string }) {
-  const [collapseState, updateCollapseState] = useState<CollapseRange[]>([]);
-
   let { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
     [className]
   );
+
+  const [collapseState, updateCollapseState] = useState<CollapseRange[]>(collapseRanges);
 
   useEffect(() => {
     updateCollapseState(collapseRanges);
