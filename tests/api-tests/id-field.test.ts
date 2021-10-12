@@ -20,36 +20,38 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'Fetching an item uniquely with an invalid id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ user(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
-      expect(body.data).toEqual({ user: null });
+      expect(data).toEqual({ user: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(body.errors, [
+      expectBadUserInput(errors, [
         { path: ['user'], message: `Only ${s} can be passed to id filters` },
       ]);
     })
   );
   test(
     'Filtering an item with an invalid id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
       });
-      expect(body.data).toEqual({ users: null });
+      expect(data).toEqual({ users: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(body.errors, [
+      expectBadUserInput(errors, [
         { path: ['users'], message: `Only ${s} can be passed to id filters` },
       ]);
     })
   );
   test(
     'Fetching an item uniquely with a null id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({ query: `{ user(where: { id: null}) { id } }` });
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: `{ user(where: { id: null}) { id } }`,
+      });
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
         {
           path: ['user'],
           message: `The unique value provided in a unique where input must not be null`,
@@ -59,47 +61,45 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   );
   test(
     'Filtering an item with a null id throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({ query: `{ users(where: { id: null }) { id } }` });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [{ path: ['users'], message: `id filter cannot be null` }]);
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: `{ users(where: { id: null }) { id } }`,
+      });
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [{ path: ['users'], message: `id filter cannot be null` }]);
     })
   );
   test(
     'Filtering an item with { equals: null } throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ users(where: { id: { equals: null } }) { id } }`,
       });
-      expect(body.data).toEqual({ users: null });
+      expect(data).toEqual({ users: null });
       const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(body.errors, [
+      expectBadUserInput(errors, [
         { path: ['users'], message: `Only ${s} can be passed to id filters` },
       ]);
     })
   );
   test(
     'Filtering an item with a in: null throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ users(where: { id: { in: null } }) { id } }`,
       });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [
-        { path: ['users'], message: `in id filter cannot be null` },
-      ]);
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [{ path: ['users'], message: `in id filter cannot be null` }]);
     })
   );
   test(
     'Filtering an item with a notIn: null throws an error',
-    runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
         query: `{ users(where: { id: { notIn: null } }) { id } }`,
       });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [
-        { path: ['users'], message: `notIn id filter cannot be null` },
-      ]);
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [{ path: ['users'], message: `notIn id filter cannot be null` }]);
     })
   );
   test(
@@ -162,17 +162,17 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
   });
   test(
     'searching for uppercased cuid does not work',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const { id } = (await context.query.User.createOne({
         data: { name: 'something' },
       })) as { id: string };
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `query q($id: ID!){ user(where: { id: $id }) { id } }`,
         variables: { id: id.toUpperCase() },
       });
-      expect(body.data).toEqual({ user: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ user: null });
+      expectBadUserInput(errors, [
         { path: ['user'], message: `Only a cuid can be passed to id filters` },
       ]);
     })
