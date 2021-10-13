@@ -3480,16 +3480,7 @@ apollo-server-plugin-base@^3.2.0:
   dependencies:
     apollo-server-types "^3.2.0"
 
-apollo-server-types@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/apollo-server-types/-/apollo-server-types-3.2.0.tgz#6243b34d35fbb09ded2cc84bf7e5f59968ccfa21"
-  integrity sha512-Fh7QP84ufDZHbLzoLyyxyzznlW8cpgEZYYkGsS1i36zY4VaAt5OUOp1f+FxWdLGehq0Arwb6D1W7y712IoZ/JQ==
-  dependencies:
-    apollo-reporting-protobuf "^3.0.0"
-    apollo-server-caching "^3.1.0"
-    apollo-server-env "^4.0.3"
-
-apollo-server-types@^3.3.0:
+apollo-server-types@^3.2.0, apollo-server-types@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/apollo-server-types/-/apollo-server-types-3.3.0.tgz#20448e2c88e2045764a5fe82ab66069e79c4a834"
   integrity sha512-m+GyuXyuZ7YdZO1NIMJdJoOKsocCPx/WRVzBjDegYxNcAa/lDvNYU3hFyX87UGXt8Xsd9VIHxdhO88S6jkgCmw==
