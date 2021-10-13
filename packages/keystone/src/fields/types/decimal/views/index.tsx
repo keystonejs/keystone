@@ -60,7 +60,11 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      {onChange ? <TextInput id={field.path} autoFocus={autoFocus} {...inputProps} /> : value}
+      {onChange ? (
+        <TextInput id={field.path} autoFocus={autoFocus} {...inputProps} />
+      ) : (
+        value.value?.toString()
+      )}
       {(hasBlurred || forceValidation) && validationMessage && (
         <span css={{ color: 'red' }}>{validationMessage}</span>
       )}

@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone.cjs.js",
-  "module": "dist/keystone.esm.js"
+  "main": "dist/keystone-next-keystone-artifacts.cjs.js",
+  "module": "dist/keystone-next-keystone-artifacts.esm.js"
 }

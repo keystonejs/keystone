@@ -193,7 +193,9 @@ export function DocsNavigation() {
         <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
         <NavItem href="/docs/apis/schema">Schema API</NavItem>
-        <NavItem href="/docs/apis/fields">Fields API</NavItem>
+        <NavItem href="/docs/apis/fields">
+          Fields API <Badge look="success">Updated</Badge>
+        </NavItem>
         <NavItem href="/docs/apis/access-control">
           Access Control API <Badge look="success">Updated</Badge>
         </NavItem>
@@ -262,7 +264,7 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
           &nbsp; New Core
         </NavItem>
         <NavItem
-          href="https://github.com/keystonejs/keystone/tree/master/examples"
+          href="https://github.com/keystonejs/keystone/tree/main/examples"
           target="_blank"
           rel="noopener noreferrer"
         >

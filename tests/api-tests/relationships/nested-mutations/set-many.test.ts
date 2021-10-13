@@ -2,7 +2,11 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
+import {
+  apiTestConfig,
+  expectGraphQLValidationError,
+  expectSingleRelationshipError,
+} from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -145,18 +149,7 @@ describe('no access control', () => {
       expect(data).toEqual({ updateUser: null });
       const message =
         'Input error: The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.';
-      expectRelationshipError('dev', false, false, errors, [
-        {
-          path: ['updateUser'],
-          messages: [`User.notes: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)),
-            },
-          ],
-        },
-      ]);
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 

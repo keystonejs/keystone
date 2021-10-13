@@ -19,7 +19,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Blog"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/blog"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/blog"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -29,7 +29,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Task Manager"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/task-manager"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/task-manager"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -39,7 +39,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Extend GraphQL Schema"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/extend-graphql-schema"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/extend-graphql-schema"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -49,7 +49,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Default Values"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/default-values"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/default-values"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -59,7 +59,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Virtual fields"
-        href="https://github.com/keystonejs/keystone/tree/master/examples/virtual-field"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -68,7 +68,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Document field"
-        href="https://github.com/keystonejs/keystone/tree/master/examples/document-field"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -78,7 +78,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Testing"
-        href="https://github.com/keystonejs/keystone/tree/master/examples/testing"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/testing"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -88,7 +88,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Authentication"
-        href="https://github.com/keystonejs/keystone/tree/master/examples/with-auth"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -97,7 +97,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="JSON Field"
-        href="https://github.com/keystonejs/keystone/tree/master/examples/json"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/json"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -107,7 +107,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Custom Field View"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-field-view"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field-view"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -117,7 +117,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Custom Field Type"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-field"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -127,7 +127,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Custom Admin UI Pages"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-pages"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-pages"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -136,7 +136,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Custom Admin UI Logo"
-        href="https://github.com/keystonejs/keystone/blob/master/examples/custom-admin-ui-logo"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-logo"
         target="_blank"
         rel="noopener noreferrer"
       >

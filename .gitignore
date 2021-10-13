@@ -78,11 +78,6 @@ junit.xml
 *.sublime-workspace
 *.vscode
 
-# Cypress
-cypress/screenshots
-cypress/videos
-cypress/mock
-
 package-lock.json
 
 dist/

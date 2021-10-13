@@ -38,6 +38,35 @@ type Mutation {
 
 union AuthenticatedItem = Person
 
+type Query {
+  authenticatedItem: AuthenticatedItem
+  todos(
+    where: TodoWhereInput! = {}
+    orderBy: [TodoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Todo!]
+  todo(where: TodoWhereUniqueInput!): Todo
+  todosCount(where: TodoWhereInput! = {}): Int
+  people(
+    where: PersonWhereInput! = {}
+    orderBy: [PersonOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Person!]
+  person(where: PersonWhereUniqueInput!): Person
+  peopleCount(where: PersonWhereInput! = {}): Int
+  roles(
+    where: RoleWhereInput! = {}
+    orderBy: [RoleOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Role!]
+  role(where: RoleWhereUniqueInput!): Role
+  rolesCount(where: RoleWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+}
+
 union PersonAuthenticationWithPasswordResult =
     PersonAuthenticationWithPasswordSuccess
   | PersonAuthenticationWithPasswordFailure
@@ -351,35 +380,6 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
-
-type Query {
-  authenticatedItem: AuthenticatedItem
-  todos(
-    where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Todo!]
-  todo(where: TodoWhereUniqueInput!): Todo
-  todosCount(where: TodoWhereInput! = {}): Int
-  people(
-    where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Person!]
-  person(where: PersonWhereUniqueInput!): Person
-  peopleCount(where: PersonWhereInput! = {}): Int
-  roles(
-    where: RoleWhereInput! = {}
-    orderBy: [RoleOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Role!]
-  role(where: RoleWhereUniqueInput!): Role
-  rolesCount(where: RoleWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

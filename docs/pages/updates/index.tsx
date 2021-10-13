@@ -137,9 +137,9 @@ export default function WhatsNew() {
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        A snapshot of improvements we've landed recently in Keystone.
+        A snapshot of Keystone improvements and community happenings.
         <br />
-        For more detail see our{' '}
+        For more on updates see our{' '}
         <Link href="/releases">
           <a>release notes</a>
         </Link>
@@ -158,7 +158,7 @@ export default function WhatsNew() {
             margin: '0 0.8rem 0.5rem 0',
           }}
         >
-          Where are we up to, and what we're working on next? Check out our
+          What are we working on next? Check out our
         </span>
         <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
           Roadmap <ArrowR />
@@ -172,7 +172,19 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="21st September 2021" isLatest />
+        <Timeline date="5th October 2021" isLatest />
+        <Box heading="New example: REST API endpoint">
+          <a
+            href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            This example
+          </a>{' '}
+          shows you how to create REST endpoints by extending Keystone’s express app so you can use
+          the Query API to execute queries against the schema.
+        </Box>
+        <Timeline date="21st September 2021" />
         <Box heading="Keystone Community Q&A + YouTube launch">
           <Stack orientation="horizontal">
             <a
@@ -453,7 +465,7 @@ export default function WhatsNew() {
         <Box heading="New example: Custom Field Views">
           Learn how to create a{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples/custom-field-view"
+            href="https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -585,7 +597,7 @@ export default function WhatsNew() {
           You can now use JSON blobs in your backend, and provide your own React UI components to
           edit them. Try it out in this{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples/json"
+            href="https://github.com/keystonejs/keystone/tree/main/examples/json"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -611,7 +623,7 @@ export default function WhatsNew() {
         <Box heading="Example projects collection">
           We now have a{' '}
           <a
-            href="https://github.com/keystonejs/keystone/tree/master/examples"
+            href="https://github.com/keystonejs/keystone/tree/main/examples"
             target="_blank"
             rel="noopener noreferrer"
           >
