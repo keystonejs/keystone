@@ -298,14 +298,14 @@ describe('Ordering by Multiple', () => {
 
   test(
     'Multi filter, multiple keys throws error ',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: 'query { users(orderBy: [{ a: asc, b: asc }]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [
         { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
       ]);
     })
@@ -313,14 +313,14 @@ describe('Ordering by Multiple', () => {
 
   test(
     'Multi filter, zero keys throws error ',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: 'query { users(orderBy: [{}]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [
         { path: ['users'], message: 'Only a single key must be passed to UserOrderByInput' },
       ]);
     })
@@ -328,14 +328,14 @@ describe('Ordering by Multiple', () => {
 
   test(
     'Multi filter, null values throws error ',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: 'query { users(orderBy: [{ a: null }]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectBadUserInput(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectBadUserInput(errors, [
         { path: ['users'], message: 'null cannot be passed as an order direction' },
       ]);
     })
@@ -361,25 +361,25 @@ describe('isOrderable', () => {
 
   test(
     'isOrderable: true',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(orderBy: [{orderTrue: asc}]) { id } }',
       });
-      expect(body.data.users).toHaveLength(9);
-      expect(body.errors).toBe(undefined);
+      expect(data!.users).toHaveLength(9);
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'isOrderable: () => false',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(orderBy: [{orderFunctionFalse: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectFilterDenied(errors, [
         {
           path: ['users'],
           message:
@@ -391,25 +391,25 @@ describe('isOrderable', () => {
 
   test(
     'isOrderable: () => true',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(orderBy: [{orderFunctionTrue: asc}]) { id } }',
       });
-      expect(body.data.users).toHaveLength(9);
-      expect(body.errors).toBe(undefined);
+      expect(data!.users).toHaveLength(9);
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'isOrderable: () => null',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(orderBy: [{orderFunctionOtherFalsey: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectAccessReturnError(errors, [
         {
           path: ['users'],
           errors: [{ tag: 'User.orderFunctionOtherFalsey.isOrderable', returned: 'object' }],
@@ -420,13 +420,13 @@ describe('isOrderable', () => {
 
   test(
     'isOrderable: () => ({})',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ users(orderBy: [{orderFunctionOtherTruthy: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectAccessReturnError(errors, [
         {
           path: ['users'],
           errors: [{ tag: 'User.orderFunctionOtherTruthy.isOrderable', returned: 'object' }],
@@ -437,14 +437,14 @@ describe('isOrderable', () => {
 
   test(
     'isOrderable: multiple () => false',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query:
           '{ users(orderBy: [{orderFunctionTrue: asc}, {orderFunctionFalse: asc}, {orderFunctionFalseToo: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ users: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ users: null });
+      expectFilterDenied(errors, [
         {
           path: ['users'],
           message:
@@ -458,13 +458,13 @@ describe('isOrderable', () => {
 describe('defaultIsOrderable', () => {
   test(
     'defaultIsOrderable: undefined',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderUndefineds(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data.defaultOrderUndefineds).toHaveLength(9);
-      expect(body.errors).toBe(undefined);
+      expect(data!.defaultOrderUndefineds).toHaveLength(9);
+      expect(errors).toBe(undefined);
     })
   );
 
@@ -486,25 +486,25 @@ describe('defaultIsOrderable', () => {
 
   test(
     'defaultIsOrderable: true',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderTrues(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data.defaultOrderTrues).toHaveLength(9);
-      expect(body.errors).toBe(undefined);
+      expect(data!.defaultOrderTrues).toHaveLength(9);
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'defaultIsOrderable: () => false',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderFunctionFalses(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ defaultOrderFunctionFalses: null });
-      expectFilterDenied(body.errors, [
+      expect(data).toEqual({ defaultOrderFunctionFalses: null });
+      expectFilterDenied(errors, [
         {
           path: ['defaultOrderFunctionFalses'],
           message:
@@ -516,25 +516,25 @@ describe('defaultIsOrderable', () => {
 
   test(
     'defaultIsOrderable: () => true',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderFunctionTrues(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data.defaultOrderFunctionTrues).toHaveLength(9);
-      expect(body.errors).toBe(undefined);
+      expect(data!.defaultOrderFunctionTrues).toHaveLength(9);
+      expect(errors).toBe(undefined);
     })
   );
 
   test(
     'defaultIsOrderable: () => null',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderFunctionFalseys(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ defaultOrderFunctionFalseys: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ defaultOrderFunctionFalseys: null });
+      expectAccessReturnError(errors, [
         {
           path: ['defaultOrderFunctionFalseys'],
           errors: [{ tag: 'DefaultOrderFunctionFalsey.a.isOrderable', returned: 'object' }],
@@ -545,13 +545,13 @@ describe('defaultIsOrderable', () => {
 
   test(
     'defaultIsOrderable: () => ({})',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       await initialiseData({ context });
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: '{ defaultOrderFunctionTruthies(orderBy: [{a: asc}]) { id } }',
       });
-      expect(body.data).toEqual({ defaultOrderFunctionTruthies: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ defaultOrderFunctionTruthies: null });
+      expectAccessReturnError(errors, [
         {
           path: ['defaultOrderFunctionTruthies'],
           errors: [{ tag: 'DefaultOrderFunctionTruthy.a.isOrderable', returned: 'object' }],

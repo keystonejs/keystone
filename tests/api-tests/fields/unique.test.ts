@@ -56,12 +56,12 @@ testModules
         });
         test(
           'uniqueness is enforced over multiple mutations',
-          runner(async ({ context, graphQLRequest }) => {
+          runner(async ({ context }) => {
             await context.query.Test.createOne({
               data: { testField: mod.exampleValue(matrixValue) },
             });
 
-            const { body } = await graphQLRequest({
+            const { data, errors } = await context.graphql.raw({
               query: `
                   mutation($data: TestCreateInput!) {
                     createTest(data: $data) { id }
@@ -69,8 +69,8 @@ testModules
                 `,
               variables: { data: { testField: mod.exampleValue(matrixValue) } },
             });
-            expect(body.data).toEqual({ createTest: null });
-            expectPrismaError(body.errors, [
+            expect(data).toEqual({ createTest: null });
+            expectPrismaError(errors, [
               {
                 path: ['createTest'],
                 message: expect.stringMatching(
@@ -85,8 +85,8 @@ testModules
 
         test(
           'uniqueness is enforced over single mutation',
-          runner(async ({ graphQLRequest }) => {
-            const { body } = await graphQLRequest({
+          runner(async ({ context }) => {
+            const { data, errors } = await context.graphql.raw({
               query: `
                   mutation($fooData: TestCreateInput!, $barData: TestCreateInput!) {
                     foo: createTest(data: $fooData) { id }
@@ -99,8 +99,8 @@ testModules
               },
             });
 
-            expect(body.data).toEqual({ foo: { id: expect.any(String) }, bar: null });
-            expectPrismaError(body.errors, [
+            expect(data).toEqual({ foo: { id: expect.any(String) }, bar: null });
+            expectPrismaError(errors, [
               {
                 path: ['bar'],
                 message: expect.stringMatching(

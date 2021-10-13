@@ -7,10 +7,7 @@
     "dev": "next -p 8000",
     "build": "next build && yarn sitemap",
     "start": "next start -p 8000",
-    "sitemap": "yarn next-sitemap",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
+    "sitemap": "yarn next-sitemap"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
@@ -26,11 +23,10 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.7",
     "@types/mdx-js__react": "^1.5.4",
-    "@types/react": "^17.0.27",
+    "@types/react": "^17.0.29",
     "@types/react-dom": "^17.0.9",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
-    "cypress": "^5.6.0",
     "date-fns": "^2.25.0",
     "facepaint": "^1.2.1",
     "lodash.debounce": "^4.0.8",
@@ -46,9 +42,9 @@
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
-    "next-sitemap": "^1.6.168",
+    "next-sitemap": "^1.6.179",
     "start-server-and-test": "^1.14.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

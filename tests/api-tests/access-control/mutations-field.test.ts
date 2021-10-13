@@ -48,18 +48,18 @@ const runner = setupTestRunner({
 describe('Access control', () => {
   test(
     'findMany - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const item = await context
         .sudo()
         .query.User.createOne({ data: { name: 'foo', badAccess: 'bar' } });
 
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `query { users { id name badAccess } }`,
       });
 
       // Returns the item, with null for the bad field, and an error message
-      expect(body.data).toEqual({ users: [{ id: item.id, name: 'foo', badAccess: null }] });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ users: [{ id: item.id, name: 'foo', badAccess: null }] });
+      expectAccessReturnError(errors, [
         {
           path: ['users', 0, 'badAccess'],
           errors: [{ tag: 'User.badAccess.access.read', returned: 'string' }],
@@ -97,19 +97,19 @@ describe('Access control', () => {
 
   test(
     'createOne - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       // Valid name should pass
       await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
 
       // Invalid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `mutation ($data: UserCreateInput!) { createUser(data: $data) { id } }`,
         variables: { data: { name: 'fine', other: 'b', badAccess: 'bar' } },
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ createUser: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ createUser: null });
+      expectAccessReturnError(errors, [
         {
           path: ['createUser'],
           errors: [{ tag: 'User.badAccess.access.create', returned: 'string' }],
@@ -157,7 +157,7 @@ describe('Access control', () => {
 
   test(
     'updateOne - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       // Valid name should pass
       const user = await context.query.User.createOne({ data: { name: 'good', other: 'a' } });
       await context.query.User.updateOne({
@@ -166,14 +166,14 @@ describe('Access control', () => {
       });
 
       // Invalid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
         variables: { id: user.id, data: { name: 'bad', other: 'c', badAccess: 'bar' } },
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ updateUser: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ updateUser: null });
+      expectAccessReturnError(errors, [
         {
           path: ['updateUser'],
           errors: [{ tag: 'User.badAccess.access.update', returned: 'string' }],
