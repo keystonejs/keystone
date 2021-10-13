@@ -1,5 +1,7 @@
-import type { GraphQLSchemaExtension } from '@keystone-next/keystone/types';
-import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema, printType } from 'graphql';
+import { wrap } from '@graphql-ts/extend';
+import { graphql } from '@keystone-next/keystone';
+import { ItemRootValue } from '@keystone-next/keystone/types';
+import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'graphql';
 
 import { AuthGqlNames, InitFirstItemConfig } from '../types';
 
@@ -9,18 +11,23 @@ export function getInitFirstItemSchema({
   itemData,
   gqlNames,
   graphQLSchema,
+  ItemAuthenticationWithPasswordSuccess,
 }: {
   listKey: string;
   fields: InitFirstItemConfig<any>['fields'];
   itemData: InitFirstItemConfig<any>['itemData'];
   gqlNames: AuthGqlNames;
   graphQLSchema: GraphQLSchema;
-}): GraphQLSchemaExtension {
+  ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
+    item: ItemRootValue;
+    sessionToken: string;
+  }>;
+}) {
   const createInputConfig = assertInputObjectType(
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig();
   const fieldsSet = new Set(fields);
-  const initialCreateInput = printType(
+  const initialCreateInput = wrap.inputObject(
     new GraphQLInputObjectType({
       ...createInputConfig,
       fields: Object.fromEntries(
@@ -30,19 +37,11 @@ export function getInitFirstItemSchema({
     })
   );
   return {
-    typeDefs: `
-        ${initialCreateInput}
-        type Mutation {
-          ${gqlNames.createInitialItem}(data: ${gqlNames.CreateInitialInput}!): ${gqlNames.ItemAuthenticationWithPasswordSuccess}!
-        }
-      `,
-    resolvers: {
-      Mutation: {
-        async [gqlNames.createInitialItem](
-          root: any,
-          { data }: { data: Record<string, any> },
-          context
-        ) {
+    mutation: {
+      [gqlNames.createInitialItem]: graphql.field({
+        type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
+        args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
+        async resolve(rootVal, { data }, context) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
@@ -61,7 +60,7 @@ export function getInitFirstItemSchema({
           const sessionToken = await context.startSession({ listKey, itemId: item.id.toString() });
           return { item, sessionToken };
         },
-      },
+      }),
     },
   };
 }

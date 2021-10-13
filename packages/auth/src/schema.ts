@@ -1,4 +1,3 @@
-import { mergeSchemas } from '@graphql-tools/schema';
 import { ExtendGraphqlSchema } from '@keystone-next/keystone/types';
 
 import {
@@ -8,6 +7,7 @@ import {
   GraphQLString,
   GraphQLID,
 } from 'graphql';
+import { extend } from '@graphql-ts/extend';
 import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
@@ -72,44 +72,62 @@ export const getSchemaExtension =
           `to the field at ${listKey}.${identityField}`
       );
     }
-    return [
-      getBaseAuthSchema({
+    return extend(base => {
+      const baseSchema = getBaseAuthSchema({
         identityField,
         listKey,
         secretField,
         gqlNames,
         secretFieldImpl: getSecretFieldImpl(schema, listKey, secretField),
-      }),
-      initFirstItem &&
-        getInitFirstItemSchema({
+        base,
+      });
+      const extension = {
+        mutation: {
+          ...baseSchema.mutation,
+        },
+        query: {
+          ...baseSchema.query,
+        },
+      };
+
+      if (initFirstItem) {
+        const initFirst = getInitFirstItemSchema({
           listKey,
           fields: initFirstItem.fields,
           itemData: initFirstItem.itemData,
           gqlNames,
           graphQLSchema: schema,
-        }),
-      passwordResetLink &&
-        getPasswordResetSchema({
+          ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
+        });
+        Object.assign(extension.mutation, initFirst.mutation);
+      }
+      if (passwordResetLink) {
+        const passwordReset = getPasswordResetSchema({
           identityField,
           listKey,
           secretField,
           passwordResetLink,
           gqlNames,
           passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
-            schema,
+            base.schema,
             listKey,
             'passwordResetToken'
           ),
-        }),
-      magicAuthLink &&
-        getMagicAuthLinkSchema({
+        });
+        Object.assign(extension.mutation, passwordReset.mutation);
+        Object.assign(extension.query, passwordReset.query);
+      }
+      if (magicAuthLink) {
+        const magicAuth = getMagicAuthLinkSchema({
           identityField,
           listKey,
           magicAuthLink,
           gqlNames,
           magicAuthTokenSecretFieldImpl: getSecretFieldImpl(schema, listKey, 'magicAuthToken'),
-        }),
-    ]
-      .filter(x => x)
-      .reduce((s, extension) => mergeSchemas({ schemas: [s], ...extension }), schema);
+          base,
+        });
+        Object.assign(extension.mutation, magicAuth.mutation);
+      }
+      return extension;
+    })(schema);
   };

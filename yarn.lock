@@ -1487,10 +1487,17 @@
   dependencies:
     tslib "~2.3.0"
 
-"@graphql-ts/schema@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.3.1.tgz#d98eefce24212c20808a43338ce014ebae1ca6d7"
-  integrity sha512-sPK1dXo0HEk4+DkMm9eE1MeylcDxtjK/sAKJJ4FJbYKK5F0gew7ohszVfgidVwk1nrjcT2/SWncdwM3plBX28g==
+"@graphql-ts/extend@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.2.0.tgz#e0ee421ec528a9525c949fc2baa2c1ba64196a9f"
+  integrity sha512-Vf8VAfoMKF+WnRFOJV1QRDVqk6eJWg6j3g5+e1OPWwSp+W/qtH1l+16uwtEc4S12zHUcxppxWEQZFdjSgDsobg==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
+"@graphql-ts/schema@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.4.0.tgz#c6367e3ea53f2311297eae2bf963042d9d4cc356"
+  integrity sha512-4bl/1C3V7HnfNLJpUibMUHxK+QIXcfnsosN3obqtB84Q/pBfofYHc9+F7x67jJ/hxXJOYBhenTUoihkDDharBg==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
