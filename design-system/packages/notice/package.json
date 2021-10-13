@@ -5,7 +5,7 @@
   "main": "dist/keystone-ui-notice.cjs.js",
   "module": "dist/keystone-ui-notice.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.27"
+    "@types/react": "^17.0.29"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",

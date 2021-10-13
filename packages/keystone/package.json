@@ -64,7 +64,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.4.1",
     "@types/prompts": "^2.0.14",
-    "@types/react": "^17.0.27",
+    "@types/react": "^17.0.29",
     "@types/source-map-support": "^0.5.4",
     "@types/supertest": "^2.0.11",
     "@types/uid-safe": "^2.1.2",
@@ -122,7 +122,7 @@
   "devDependencies": {
     "@testing-library/dom": "^8.7.2",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.2.1",
+    "@testing-library/user-event": "^13.3.0",
     "@types/bytes": "^3.1.1",
     "fixturez": "^1.1.0",
     "mime": "^2.5.2",
