@@ -38,27 +38,26 @@ export function getSecretFieldImpl(schema: GraphQLSchema, listKey: string, field
   return secretFieldImpl;
 }
 
-export const getSchemaExtension =
-  ({
-    identityField,
-    listKey,
-    secretField,
-    gqlNames,
-    initFirstItem,
-    passwordResetLink,
-    magicAuthLink,
-  }: {
-    identityField: string;
-    listKey: string;
-    secretField: string;
-    gqlNames: AuthGqlNames;
-    initFirstItem?: InitFirstItemConfig<any>;
-    passwordResetLink?: AuthTokenTypeConfig;
-    magicAuthLink?: AuthTokenTypeConfig;
-  }): ExtendGraphqlSchema =>
-  schema => {
+export const getSchemaExtension = ({
+  identityField,
+  listKey,
+  secretField,
+  gqlNames,
+  initFirstItem,
+  passwordResetLink,
+  magicAuthLink,
+}: {
+  identityField: string;
+  listKey: string;
+  secretField: string;
+  gqlNames: AuthGqlNames;
+  initFirstItem?: InitFirstItemConfig<any>;
+  passwordResetLink?: AuthTokenTypeConfig;
+  magicAuthLink?: AuthTokenTypeConfig;
+}): ExtendGraphqlSchema =>
+  extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
-      schema.getType(`${listKey}WhereUniqueInput`)
+      base.schema.getType(`${listKey}WhereUniqueInput`)
     );
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField];
     if (
@@ -72,37 +71,28 @@ export const getSchemaExtension =
           `to the field at ${listKey}.${identityField}`
       );
     }
-    return extend(base => {
-      const baseSchema = getBaseAuthSchema({
-        identityField,
-        listKey,
-        secretField,
-        gqlNames,
-        secretFieldImpl: getSecretFieldImpl(schema, listKey, secretField),
-        base,
-      });
-      const extension = {
-        mutation: {
-          ...baseSchema.mutation,
-        },
-        query: {
-          ...baseSchema.query,
-        },
-      };
+    const baseSchema = getBaseAuthSchema({
+      identityField,
+      listKey,
+      secretField,
+      gqlNames,
+      secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
+      base,
+    });
 
-      if (initFirstItem) {
-        const initFirst = getInitFirstItemSchema({
+    return [
+      baseSchema.extension,
+      initFirstItem &&
+        getInitFirstItemSchema({
           listKey,
           fields: initFirstItem.fields,
           itemData: initFirstItem.itemData,
           gqlNames,
-          graphQLSchema: schema,
+          graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
-        });
-        Object.assign(extension.mutation, initFirst.mutation);
-      }
-      if (passwordResetLink) {
-        const passwordReset = getPasswordResetSchema({
+        }),
+      passwordResetLink &&
+        getPasswordResetSchema({
           identityField,
           listKey,
           secretField,
@@ -113,21 +103,15 @@ export const getSchemaExtension =
             listKey,
             'passwordResetToken'
           ),
-        });
-        Object.assign(extension.mutation, passwordReset.mutation);
-        Object.assign(extension.query, passwordReset.query);
-      }
-      if (magicAuthLink) {
-        const magicAuth = getMagicAuthLinkSchema({
+        }),
+      magicAuthLink &&
+        getMagicAuthLinkSchema({
           identityField,
           listKey,
           magicAuthLink,
           gqlNames,
-          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(schema, listKey, 'magicAuthToken'),
+          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
           base,
-        });
-        Object.assign(extension.mutation, magicAuth.mutation);
-      }
-      return extension;
-    })(schema);
-  };
+        }),
+    ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
+  });

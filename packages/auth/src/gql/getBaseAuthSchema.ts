@@ -47,7 +47,6 @@ export function getBaseAuthSchema<I extends string, S extends string>({
     },
   });
   const extension = {
-    ItemAuthenticationWithPasswordSuccess,
     query: {
       authenticatedItem: graphql.field({
         type: graphql.union({
@@ -99,5 +98,5 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       }),
     },
   };
-  return extension;
+  return { extension, ItemAuthenticationWithPasswordSuccess };
 }
