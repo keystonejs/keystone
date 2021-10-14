@@ -60,7 +60,6 @@ export const crudTests = (keystoneTestWrapper: any) => {
       await expect(
         context.query.Test.createOne({
           data: { passwordRejectCommon: 'password' },
-          query: ``,
         })
       ).rejects.toMatchInlineSnapshot(`
               [GraphQLError: You provided invalid data for this operation.

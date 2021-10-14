@@ -24,7 +24,7 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
            * When a value is provided as just a string, it will be formatted in the same way
            * as field labels are to create the label.
            */
-          options: ({ label: string; value: string } | string)[];
+          options: readonly ({ label: string; value: string } | string)[];
           /**
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
@@ -32,7 +32,7 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
           defaultValue?: string;
         }
       | {
-          options: { label: string; value: number }[];
+          options: readonly { label: string; value: number }[];
           type: 'integer';
           defaultValue?: number;
         }
@@ -80,7 +80,7 @@ export const select =
 
     assertCreateIsNonNullAllowed(meta, config);
     const commonConfig = (
-      options: { value: string | number; label: string }[]
+      options: readonly { value: string | number; label: string }[]
     ): CommonFieldConfig<TGeneratedListTypes> & {
       views: string;
       getAdminMeta: () => import('./views').AdminSelectFieldMeta;

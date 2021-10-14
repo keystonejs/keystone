@@ -58,7 +58,7 @@ export type DatabaseConfig = {
   enableLogging?: boolean;
   idField?: IdFieldConfig;
   provider: 'postgresql' | 'sqlite';
-  prismaPreviewFeatures?: string[]; // https://www.prisma.io/docs/concepts/components/preview-features
+  prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 };
 
 // config.ui
@@ -71,11 +71,13 @@ export type AdminUIConfig = {
   /** A function that can be run to validate that the current session should have access to the Admin UI */
   isAccessAllowed?: (context: KeystoneContext) => MaybePromise<boolean>;
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
-  publicPages?: string[];
+  publicPages?: readonly string[];
   /** The basePath for the Admin UI App */
   // FIXME: currently unused
   // path?: string;
-  getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: readonly ((
+    config: KeystoneConfig
+  ) => MaybePromise<readonly AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     context: KeystoneContext;
     isValidSession: boolean;
