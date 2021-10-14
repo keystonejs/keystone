@@ -2,7 +2,7 @@ import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../typ
 import { ResolvedDBField, ListsWithResolvedRelations } from './resolve-relationships';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
-function areArraysEqual(a: unknown[], b: unknown[]) {
+function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
   if (a.length !== b.length) {
     return false;
   }
@@ -116,7 +116,7 @@ function printField(
 }
 
 function collectEnums(lists: ListsWithResolvedRelations) {
-  const enums: Record<string, { values: string[]; firstDefinedByRef: string }> = {};
+  const enums: Record<string, { values: readonly string[]; firstDefinedByRef: string }> = {};
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       const fields =
@@ -195,7 +195,7 @@ export function printPrismaSchema(
   lists: ListsWithResolvedRelations,
   provider: DatabaseProvider,
   clientDir: string,
-  prismaPreviewFeatures?: string[]
+  prismaPreviewFeatures: readonly string[] | undefined
 ) {
   let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
