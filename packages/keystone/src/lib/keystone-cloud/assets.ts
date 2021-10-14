@@ -104,7 +104,7 @@ export const buildKeystoneCloudFileSrc = async ({
 }) => {
   const { bucketName, prefix, region } = await getS3Bucket({ apiKey, graphqlApiEndpoint });
 
-  return `https://${bucketName}.s3.${region}.amazonaws.com/${prefix}/${filename}`;
+  return `https://${bucketName}.s3.${region}.amazonaws.com/${prefix}/files/${filename}`;
 };
 
 export const getImageMetadataFromKeystoneCloud = async ({
