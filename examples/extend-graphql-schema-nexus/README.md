@@ -32,3 +32,5 @@ This project demonstrates how to integrate Nexus with Keystone and use it to ext
 ## Current Limitations
 
 Ideally, we could tell Nexus about the GraphQL types Keystone generates so you could write Nexus fields that return Keystone types. Making this work requires more research, so the example currently creates a separate `NexusPost` type and uses Prisma to query posts from the database.
+
+Nexus also has a Prisma plugin, which this example doesn't use yet. It would be good to integrate that as well, based on the Prisma schema Keystone generates.
