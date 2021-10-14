@@ -94,7 +94,7 @@ export type ListAdminUIConfig<
    * It is always possible to search by id and `id` should not be specified in this option.
    * @default The `labelField` if it has a string `contains` filter, otherwise none.
    */
-  searchFields?: Extract<keyof Fields, string>[];
+  searchFields?: readonly Extract<keyof Fields, string>[];
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.
@@ -162,7 +162,7 @@ export type ListAdminUIConfig<
      * Users of the Admin UI can select different columns to show in the UI.
      * @default the first three fields in the list
      */
-    initialColumns?: ('id' | keyof Fields)[];
+    initialColumns?: readonly ('id' | keyof Fields)[];
     // was previously top-level defaultSort
     initialSort?: { field: 'id' | keyof Fields; direction: 'ASC' | 'DESC' };
     // was previously defaultPageSize
@@ -211,7 +211,7 @@ export type ListGraphQLConfig = {
   // including from the point of view of relationships to this list.
   //
   // Default: undefined
-  omit?: true | ('query' | 'create' | 'update' | 'delete')[];
+  omit?: true | readonly ('query' | 'create' | 'update' | 'delete')[];
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
