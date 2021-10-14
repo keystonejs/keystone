@@ -87,13 +87,6 @@ type ResolveFields = {
    * @default 'id'
    */
   readonly query?: string;
-  /**
-   * @deprecated
-   *
-   * resolveFields has been deprecated. Please use the `query` param to query fields,
-   * or `context.db.{List}` instead of passing `resolveFields: false`
-   */
-  readonly resolveFields?: false | string;
 };
 
 export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> = {

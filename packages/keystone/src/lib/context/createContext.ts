@@ -105,7 +105,7 @@ export function makeCreateContext({
     const dbAPIFactories = sudo ? sudoDbApiFactories : publicDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
-      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
+      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn);
     }
     return contextToReturn;
   };
