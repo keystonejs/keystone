@@ -45,19 +45,19 @@ export const generateAdminUI = async (
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string
 ) => {
-  const dir = await fs.readdir(projectAdminPath).catch(err => {
-    if (err.code === 'ENOENT') {
-      return [];
-    }
-    throw err;
-  });
+  // const dir = await fs.readdir(projectAdminPath).catch(err => {
+  //   if (err.code === 'ENOENT') {
+  //     return [];
+  //   }
+  //   throw err;
+  // });
 
-  await Promise.all(
-    dir.map(x => {
-      if (x === '.next') return;
-      return fs.remove(Path.join(projectAdminPath, x));
-    })
-  );
+  // await Promise.all(
+  //   dir.map(x => {
+  //     if (x === '.next') return;
+  //     return fs.remove(Path.join(projectAdminPath, x));
+  //   })
+  // );
   const publicDirectory = Path.join(projectAdminPath, 'public');
 
   if (config.images || config.files) {
