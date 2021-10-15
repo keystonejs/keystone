@@ -36,15 +36,15 @@ const runner = setupTestRunner({
 describe('Access control - Item', () => {
   test(
     'findMany - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       // Valid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `query { badAccesses { id } }`,
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ badAccesses: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ badAccesses: null });
+      expectAccessReturnError(errors, [
         {
           path: ['badAccesses'],
           errors: [{ tag: 'BadAccess.access.operation.query', returned: 'object' }],
@@ -59,16 +59,16 @@ describe('Access control - Item', () => {
 
   test(
     'createOne - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       // Valid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `mutation ($data: BadAccessCreateInput!) { createBadAccess(data: $data) { id } }`,
         variables: { data: { name: 'better' } },
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ createBadAccess: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ createBadAccess: null });
+      expectAccessReturnError(errors, [
         {
           path: ['createBadAccess'],
           errors: [{ tag: 'BadAccess.access.operation.create', returned: 'object' }],
@@ -83,18 +83,18 @@ describe('Access control - Item', () => {
 
   test(
     'updateOne - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const item = await context.sudo().query.BadAccess.createOne({ data: { name: 'good' } });
 
       // Valid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `mutation ($id: ID! $data: BadAccessUpdateInput!) { updateBadAccess(where: { id: $id }, data: $data) { id } }`,
         variables: { id: item.id, data: { name: 'better' } },
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ updateBadAccess: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ updateBadAccess: null });
+      expectAccessReturnError(errors, [
         {
           path: ['updateBadAccess'],
           errors: [{ tag: 'BadAccess.access.operation.update', returned: 'object' }],
@@ -109,18 +109,18 @@ describe('Access control - Item', () => {
 
   test(
     'deleteOne - Bad function return value',
-    runner(async ({ context, graphQLRequest }) => {
+    runner(async ({ context }) => {
       const item = await context.sudo().query.BadAccess.createOne({ data: { name: 'good' } });
 
       // Valid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `mutation ($id: ID!) { deleteBadAccess(where: { id: $id }) { id } }`,
         variables: { id: item.id },
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ deleteBadAccess: null });
-      expectAccessReturnError(body.errors, [
+      expect(data).toEqual({ deleteBadAccess: null });
+      expectAccessReturnError(errors, [
         {
           path: ['deleteBadAccess'],
           errors: [{ tag: 'BadAccess.access.operation.delete', returned: 'object' }],

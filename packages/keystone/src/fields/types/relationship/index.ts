@@ -26,15 +26,15 @@ type CardsDisplayConfig = {
     // Sets the relationship to display as a list of Cards
     displayMode: 'cards';
     /* The set of fields to render in the default Card component **/
-    cardFields: string[];
+    cardFields: readonly string[];
     /** Causes the default Card component to render as a link to navigate to the related item */
     linkToItem?: boolean;
     /** Determines whether removing a related item in the UI will delete or unlink it */
     removeMode?: 'disconnect' | 'none'; // | 'delete';
     /** Configures inline create mode for cards (alternative to opening the create modal) */
-    inlineCreate?: { fields: string[] };
+    inlineCreate?: { fields: readonly string[] };
     /** Configures inline edit mode for cards */
-    inlineEdit?: { fields: string[] };
+    inlineEdit?: { fields: readonly string[] };
     /** Configures whether a select to add existing items should be shown or not */
     inlineConnect?: boolean;
   };

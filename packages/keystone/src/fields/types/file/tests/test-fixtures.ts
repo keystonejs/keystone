@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { file } from '..';
-import { expectResolverError } from '../../../../../../../tests/api-tests/utils';
+import { expectSingleResolverError } from '../../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -143,15 +143,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Invalid file reference`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.secretFile: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
       })
     );
     test(
@@ -171,15 +163,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Either ref or upload must be passed to FileFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.secretFile: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
       })
     );
     test(
@@ -209,15 +193,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.secretFile: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
       })
     );
     test(
@@ -239,15 +215,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.secretFile: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
       })
     );
   });

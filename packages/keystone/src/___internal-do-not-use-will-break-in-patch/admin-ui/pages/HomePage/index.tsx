@@ -17,6 +17,7 @@ import { useRouter, Link } from '../../../../admin-ui/router';
 
 type ListCardProps = {
   listKey: string;
+  hideCreate: boolean;
   count:
     | { type: 'success'; count: number }
     | { type: 'no-access' }
@@ -24,7 +25,7 @@ type ListCardProps = {
     | { type: 'loading' };
 };
 
-const ListCard = ({ listKey, count }: ListCardProps) => {
+const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
   const { colors, palette, radii, spacing } = useTheme();
   const list = useList(listKey);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -65,16 +66,18 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
           'No access'
         )}
       </Link>
-      <CreateButton
-        title={`Create ${list.singular}`}
-        disabled={isCreateModalOpen}
-        onClick={() => {
-          setIsCreateModalOpen(true);
-        }}
-      >
-        <PlusIcon size="large" />
-        <VisuallyHidden>Create {list.singular}</VisuallyHidden>
-      </CreateButton>
+      {hideCreate === false && (
+        <CreateButton
+          title={`Create ${list.singular}`}
+          disabled={isCreateModalOpen}
+          onClick={() => {
+            setIsCreateModalOpen(true);
+          }}
+        >
+          <PlusIcon size="large" />
+          <VisuallyHidden>Create {list.singular}</VisuallyHidden>
+        </CreateButton>
+      )}
       <DrawerController isOpen={isCreateModalOpen}>
         <CreateItemDrawer
           listKey={list.key}
@@ -132,12 +135,7 @@ export const HomePage = () => {
         adminMeta {
           lists {
             key
-            fields {
-              path
-              createView {
-                fieldMode
-              }
-            }
+            hideCreate
           }
         }
       }
@@ -190,6 +188,10 @@ export const HomePage = () => {
                         ? { type: 'error', message: result.errors[0].message }
                         : { type: 'success', count: data[key] }
                       : { type: 'loading' }
+                  }
+                  hideCreate={
+                    data?.keystone.adminMeta.lists.find((list: any) => list.key === key)
+                      ?.hideCreate ?? false
                   }
                   key={key}
                   listKey={key}

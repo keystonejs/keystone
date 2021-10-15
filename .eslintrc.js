@@ -10,13 +10,11 @@ module.exports = {
     es6: true,
     node: true,
     jest: true,
-    'cypress/globals': true,
   },
   plugins: [
     'react',
     'react-hooks',
     'jest',
-    'cypress',
     'import',
     '@typescript-eslint',
     '@preconstruct/format-js-tag',

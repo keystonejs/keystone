@@ -14,7 +14,7 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
-    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
+    "clean": "rimraf \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx}\"",
     "lint:markdown": "remark . --frail --quiet",
@@ -33,7 +33,6 @@
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
-    "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn",
     "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone-next postinstall --fix; cd ../../..; done",
     "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone-next postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../../..; done",
     "generate-filters": "cd prisma-utils && yarn generate",
@@ -58,14 +57,13 @@
     "@types/babel__core": "^7.1.16",
     "@types/jest": "^27.0.2",
     "@types/node-fetch": "^2.5.12",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "chalk-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
-    "eslint-plugin-cypress": "^2.12.1",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jest": "^24.7.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.0.5",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "is-ci": "^3.0.0",
@@ -78,7 +76,7 @@
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "terminal-link-cli": "^3.0.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "prettier": {
     "proseWrap": "preserve",
@@ -122,9 +120,6 @@
       "tests/examples-smoke-tests",
       "tests/test-projects/*",
       "prisma-utils"
-    ],
-    "nohoist": [
-      "**/cypress-multi-reporters"
     ]
   },
   "preconstruct": {

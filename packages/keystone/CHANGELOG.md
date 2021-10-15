@@ -1,5 +1,11 @@
 # @keystone-next/keystone
 
+## 26.1.1
+
+### Patch Changes
+
+- [#6774](https://github.com/keystonejs/keystone/pull/6774) [`d67066e6d`](https://github.com/keystonejs/keystone/commit/d67066e6d6bc46119279f5e382581d46658cb39d) Thanks [@bladey](https://github.com/bladey)! - Fixed `text`, `integer`, `float` and `decimal` on the item view when using `ui.itemView.fieldMode: 'read'`.
+
 ## 26.1.0
 
 ### Minor Changes
