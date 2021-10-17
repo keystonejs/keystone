@@ -54,7 +54,7 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
 
 export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   /** Array of fields to collect, e.g ['name', 'email', 'password'] */
-  fields: GeneratedListTypes['fields'][];
+  fields: readonly GeneratedListTypes['fields'][];
   /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
   skipKeystoneWelcome?: boolean;
   /** Extra input to add for the create mutation */

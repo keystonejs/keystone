@@ -39,7 +39,7 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     // If `true` then the field will be completely removed from all types.
     //
     // Default: undefined
-    omit?: true | ('read' | 'create' | 'update')[];
+    omit?: true | readonly ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
   isFilterable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);

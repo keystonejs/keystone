@@ -29,7 +29,7 @@ export type JSONValue =
   | number
   | boolean
   | null
-  | Array<JSONValue>
+  | readonly JSONValue[]
   | { [key: string]: JSONValue };
 
 export type GqlNames = {

@@ -9,8 +9,6 @@ export { Decimal };
 
 export type ItemRootValue = { id: { toString(): string }; [key: string]: unknown };
 
-export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
-
 export type ListInfo = { types: TypesForList };
 
 export type FieldData = {
@@ -125,7 +123,7 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
   kind: 'enum';
   name: string;
-  values: Value[];
+  values: readonly Value[];
   mode: Mode;
   default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
@@ -155,7 +153,7 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   ? {
       optional: ScalarPrismaTypes[Scalar] | null | undefined;
       required: ScalarPrismaTypes[Scalar] | undefined;
-      many: ScalarPrismaTypes[Scalar][] | undefined;
+      many: readonly ScalarPrismaTypes[Scalar][] | undefined;
     }[Mode]
   : TDBField extends RelationDBField<'many' | 'one'>
   ? { connect?: {}; disconnect?: boolean } | undefined
@@ -163,7 +161,7 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   ? {
       optional: Value | null | undefined;
       required: Value | undefined;
-      many: Value[] | undefined;
+      many: readonly Value[] | undefined;
     }[Mode]
   : TDBField extends NoDBField
   ? undefined
@@ -191,7 +189,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? {
       optional: ScalarPrismaTypes[Scalar] | null;
       required: ScalarPrismaTypes[Scalar];
-      many: ScalarPrismaTypes[Scalar][];
+      many: readonly ScalarPrismaTypes[Scalar][];
     }[Mode]
   : TDBField extends RelationDBField<infer Mode>
   ? {
@@ -205,7 +203,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? {
       optional: Value | null;
       required: Value;
-      many: Value[];
+      many: readonly Value[];
     }[Mode]
   : TDBField extends NoDBField
   ? undefined
@@ -370,7 +368,7 @@ export type FieldTypeWithoutDBField<
   views: string;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
-  unreferencedConcreteInterfaceImplementations?: graphql.ObjectType<any>[];
+  unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
 } & CommonFieldConfig<BaseGeneratedListTypes>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;

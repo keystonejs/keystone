@@ -375,11 +375,11 @@ type RelationshipController = FieldController<
       }
     | {
         mode: 'cards';
-        cardFields: string[];
+        cardFields: readonly string[];
         linkToItem: boolean;
         removeMode: 'disconnect' | 'none';
-        inlineCreate: { fields: string[] } | null;
-        inlineEdit: { fields: string[] } | null;
+        inlineCreate: { fields: readonly string[] } | null;
+        inlineEdit: { fields: readonly string[] } | null;
         inlineConnect: boolean;
       }
     | { mode: 'count' };
@@ -404,11 +404,11 @@ export const controller = (
         }
       | {
           displayMode: 'cards';
-          cardFields: string[];
+          cardFields: readonly string[];
           linkToItem: boolean;
           removeMode: 'disconnect' | 'none';
-          inlineCreate: { fields: string[] } | null;
-          inlineEdit: { fields: string[] } | null;
+          inlineCreate: { fields: readonly string[] } | null;
+          inlineEdit: { fields: readonly string[] } | null;
           inlineConnect: boolean;
           refLabelField: string;
         }
