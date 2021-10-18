@@ -175,7 +175,7 @@ const nextGraphQLAPIDTS = `export const config: any;
 export default config;
 `;
 
-export async function generateNodeModulesArtifacts(
+export async function generateNodeModulesArtifactsWithoutPrismaClient(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig,
   cwd: string
@@ -185,7 +185,6 @@ export async function generateNodeModulesArtifacts(
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
-    generatePrismaClient(cwd),
     fs.outputFile(
       path.join(dotKeystoneDir, 'types.d.ts'),
       printGeneratedTypes(printedSchema, graphQLSchema, lists)
@@ -206,6 +205,17 @@ export async function generateNodeModulesArtifacts(
           fs.outputFile(path.join(dotKeystoneDir, 'next/graphql-api.d.ts'), nextGraphQLAPIDTS),
         ]
       : []),
+  ]);
+}
+
+export async function generateNodeModulesArtifacts(
+  graphQLSchema: GraphQLSchema,
+  config: KeystoneConfig,
+  cwd: string
+) {
+  await Promise.all([
+    generatePrismaClient(cwd),
+    generateNodeModulesArtifactsWithoutPrismaClient(graphQLSchema, config, cwd),
   ]);
 }
 

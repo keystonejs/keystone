@@ -1,9 +1,10 @@
 import path from 'path';
 import url from 'url';
-import { Module } from 'module';
+import { inspect } from 'util';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import fs from 'fs-extra';
+import chalk from 'chalk';
 import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
@@ -15,6 +16,7 @@ import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddlewar
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
+  generateNodeModulesArtifactsWithoutPrismaClient,
   getSchemaPaths,
   requirePrismaClient,
 } from '../../artifacts';
@@ -47,18 +49,19 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     const p = serializePathForImport(
       path.relative(path.join(getAdminPath(cwd), 'pages', 'api'), `${cwd}/keystone`)
     );
+    // this exports a function which dynamically imports the config
+    // rather than directly
+    // this allows us to control exactly _when_ the gets evaluated
+    // so that we can handle errors
     await fs.outputFile(
       `${getAdminPath(cwd)}/pages/api/__keystone_api_build.js`,
-      `export { default as config } from ${p};
+      `export const getConfig = () => import(${p});
 const x = Math.random();
 export default function (req, res) { return res.send(x.toString()) }
 `
     );
-    const { adminMeta, graphQLSchema, createContext, ...rest } = await thing(
-      config,
-      cwd,
-      shouldDropDatabase
-    );
+    const { adminMeta, graphQLSchema, createContext, prismaSchema, prismaClient, ...rest } =
+      await thing(config, cwd, shouldDropDatabase);
     ({ disconnect, expressServer } = rest);
 
     const adminUIMiddleware = await initAdminUI(
@@ -72,6 +75,7 @@ export default function (req, res) { return res.send(x.toString()) }
     hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
     let lastVersion = '';
+    let lastError = undefined;
     while (true) {
       await wait(500);
       try {
@@ -79,26 +83,52 @@ export default function (req, res) { return res.send(x.toString()) }
           x.text()
         );
         if (lastVersion !== version) {
-          console.log('changed thing');
           lastVersion = version;
-          await disconnect?.();
           const resolved = require.resolve(
             `${getAdminPath(cwd)}/.next/server/pages/api/__keystone_api_build`
           );
           delete require.cache[resolved];
-          const config = initConfig(require(resolved).config);
-          const { graphQLSchema, getKeystone } = createSystem(config);
-          const keystone = getKeystone(requirePrismaClient(cwd));
-          await keystone.connect();
-          ({ disconnect, expressServer } = rest);
+          const newConfig = initConfig((await require(resolved).getConfig()).default);
+          const { graphQLSchema, getKeystone } = createSystem(newConfig);
+          const newPrismaSchema = (await generateCommittedArtifacts(graphQLSchema, newConfig, cwd))
+            .prisma;
 
-          expressServer = await createExpressServer(config, graphQLSchema, createContext);
+          if (prismaSchema !== newPrismaSchema) {
+            console.log('Your prisma schema has changed, please restart Keystone');
+            process.exit(1);
+          }
+
+          // we only need to test for the things which influence the prisma client creation
+          // and aren't written into the prisma schema
+          if (
+            newConfig.db.enableLogging !== config.db.enableLogging ||
+            newConfig.db.url !== config.db.url ||
+            newConfig.db.useMigrations !== config.db.useMigrations
+          ) {
+            console.log('Your db config has changed, please restart Keystone');
+            process.exit(1);
+          }
+
+          await generateNodeModulesArtifactsWithoutPrismaClient(graphQLSchema, newConfig, cwd);
+          await generateAdminUI(newConfig, graphQLSchema, adminMeta, getAdminPath(cwd));
+          const keystone = getKeystone(function fakePrismaClientClass() {
+            return createContext().prisma;
+          });
+          expressServer = await createExpressServer(
+            newConfig,
+            graphQLSchema,
+            keystone.createContext
+          );
           expressServer.use(adminUIMiddleware);
-
-          console.log('finished updating');
+          lastError = undefined;
         }
       } catch (err) {
-        console.log(err);
+        const printed = inspect(err);
+        if (printed !== lastError) {
+          console.log('🚨', chalk.red('There was an error loading your Keystone config'));
+          console.log(printed);
+          lastError = printed;
+        }
       }
     }
   };
@@ -203,7 +233,7 @@ async function thing(config: KeystoneConfig, cwd: string, shouldDropDatabase: bo
   const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
   let keystonePromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd).then(() => {
     const prismaClient = requirePrismaClient(cwd);
-    return getKeystone(prismaClient);
+    return { keystone: getKeystone(prismaClient), prismaClient };
   });
 
   let migrationPromise: Promise<void>;
@@ -225,7 +255,7 @@ async function thing(config: KeystoneConfig, cwd: string, shouldDropDatabase: bo
     );
   }
 
-  const [keystone] = await Promise.all([keystonePromise, migrationPromise]);
+  const [{ keystone, prismaClient }] = await Promise.all([keystonePromise, migrationPromise]);
   const { createContext } = keystone;
 
   // Connect to the Database
@@ -242,6 +272,8 @@ async function thing(config: KeystoneConfig, cwd: string, shouldDropDatabase: bo
     expressServer,
     graphQLSchema,
     createContext,
+    prismaSchema,
+    prismaClient,
   };
 }
 
