@@ -41,7 +41,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const app = express();
   let expressServer: express.Express | null = null;
   let hasAddedAdminUIMiddleware = false;
-  const ready = () => !!(expressServer && hasAddedAdminUIMiddleware);
 
   let disconnect: null | (() => Promise<void>) = null;
 
@@ -54,6 +53,9 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // this will get the GraphQL API up earlier
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
+  const ready = () =>
+    expressServer !== null && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true);
+
   const initKeystone = async () => {
     await fs.remove(getAdminPath(cwd));
     const p = serializePathForImport(
@@ -64,8 +66,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
     if (config.ui?.isDisabled) {
-      hasAddedAdminUIMiddleware = true;
-
       initKeystonePromiseResolve();
       return;
     }
@@ -203,7 +203,9 @@ export default function (req, res) { return res.send(x.toString()) }
   // Pass the request the express server, or serve the loading page
   app.use((req, res, next) => {
     // If both the express server and Admin UI Middleware are ready, we're go!
-    if (expressServer && hasAddedAdminUIMiddleware) return expressServer(req, res, next);
+    if (expressServer && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true)) {
+      return expressServer(req, res, next);
+    }
     // Otherwise, we may be able to serve the GraphQL API
     const { pathname } = url.parse(req.url);
     if (expressServer && pathname === (config.graphql?.path || '/api/graphql')) {

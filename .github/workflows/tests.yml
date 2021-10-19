@@ -176,6 +176,7 @@ jobs:
     needs: should_run_tests
     env:
       DATABASE_URL: 'file:./test.db'
+      VERBOSE: true
     strategy:
       matrix:
         test:
@@ -245,6 +246,7 @@ jobs:
     needs: should_run_tests
     env:
       DATABASE_URL: 'file:./test.db'
+      VERBOSE: true
     strategy:
       matrix:
         test: ['init.test.ts', 'filters.test.ts', 'list-view-crud.test.ts', 'navigation.test.ts']
