@@ -63,6 +63,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       await setupInitialKeystone(config, cwd, shouldDropDatabase);
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
+    hasAddedAdminUIMiddleware = true;
+    if (config.ui?.isDisabled) {
+      initKeystonePromiseResolve();
+      return;
+    }
     const adminUIMiddleware = await initAdminUI(
       config,
       graphQLSchema,
@@ -71,12 +76,10 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       createContext
     );
     expressServer.use(adminUIMiddleware);
-    hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
-    // this exports a function which dynamically imports the config
-    // rather than directly
-    // this allows us to control exactly _when_ the gets evaluated
-    // so that we can handle errors
+
+    // this exports a function which dynamically imports the config rather than directly importing it.
+    // this allows us to control exactly _when_ the gets evaluated so that we can handle errors ourselves.
     await fs.outputFile(
       `${getAdminPath(cwd)}/pages/api/__keystone_api_build.js`,
       `export const getConfig = () => import(${p});
