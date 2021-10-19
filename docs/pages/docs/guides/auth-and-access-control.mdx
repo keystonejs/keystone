@@ -1,0 +1,151 @@
+import { ComingSoon } from '../../../components/docs/ComingSoon';
+import { Markdown } from '../../../components/Markdown';
+
+# Authentication and Access Control
+
+Keystone comes with several features that work together to control access to the Admin UI and GraphQL API:
+
+- **Session Management** – a set of APIs for starting and ending user sessions, as well as initialising the session data for each request ([docs](../apis/session))
+- **The `auth` package** – an opinionated implementation of authentication features for Keystone apps ([docs](../apis/auth))
+- **Access Control** – a powerful framework for restricting access to specific lists, operations, and fields ([docs](../apis/access-control))
+- **Dynamic UI Config and Field Modes** – options for the Admin UI that work similarly to Access Control, and let you dyamically configure the Admin UI based on user permissions ([docs](../apis/schema#ui))
+
+Session Management and Auth are extremely flexible in Keystone, and it's possible to replace the default implementations we provide with your own (or integrate an entirely separate auth system), but in this guide we'll focus on how all these features are designed to work together.
+
+## Setting up Users, Auth and Session
+
+Keystone is designed to make as few assumptions about your schema and system design as possible, which means it doesn't come with a built-in concept of **Users**. In your app, Users are just another List that you create and specify fields for – you can set them up however you like.
+
+### Create a list for users
+
+To use the `auth` package, you need to nominate a list that stores your user accounts, and that lists needs at least two fields: an **identity** field (e.g username or email address, it should be unique) that users are looked up by when they sign in; and a **secret** field (i.e password) that is used to verify them.
+
+You can add any other fields you want to your users list, including contact information, permissions, roles, and relationships to other entities in your database.
+
+Here's an example:
+
+```ts
+const Person = list({
+  fields: {
+    name: text(),
+    email: text({ isIndexed: 'unique' }),
+    password: password(),
+    isAdmin: checkbox(),
+  },
+});
+```
+
+!> Read more about creating lists in the [schema](../apis/schema) and [fields](../apis/schema) API Docs
+
+### Configure authentication
+
+With our users list in place, we can start configuring our authentication:
+
+```ts
+const { withAuth } = createAuth({
+  listKey: 'Person',
+  identityField: 'email',
+  secretField: 'password',
+});
+```
+
+The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the auth package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of auth and build your own (this is true for session management as well)
+
+!> Read more about `createAuth` in the [Auth API Docs](../apis/auth)
+
+### Configure sessions
+
+Finally we need to tell Keystone how to track sessions. The simplest method is to use **stateless sessions**, which use an encrypted cookie to store enough information for Keystone to identify the item on each request. They're like JWTs, but without the downsides.
+
+```ts
+const session = statelessSessions({
+  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+});
+```
+
+Keystone also comes with a Redis session adapter, which uses a cookie to store a session ID that is looked up in a Redis database; or you can use your own session adapter (for example, if you are using OAuth sessions).
+
+!> Read more about [Session Stores in the Session API Docs](../apis/session#session-stores)
+
+### Putting it all together
+
+Your entire Keystone config should now look like this:
+
+```ts
+import { config, list } from '@keystone-next/keystone';
+import { checkbox, password, text } from '@keystone-next/keystone/fields';
+import { statelessSessions } from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-next/auth';
+
+const db = {
+  provider: 'sqlite',
+  url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+};
+
+const { withAuth } = createAuth({
+  listKey: 'Person',
+  identityField: 'email',
+  secretField: 'password',
+});
+
+const session = statelessSessions({
+  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+});
+
+const lists = {
+  Person: list({
+    fields: {
+      name: text(),
+      email: text({ isIndexed: 'unique' }),
+      password: password(),
+      isAdmin: checkbox(),
+    },
+  }),
+};
+
+export default withAuth(
+  config({
+    db,
+    lists,
+    session,
+  })
+);
+```
+
+## Loading Session Data
+
+At the start of every request, Keystone will initialise in-memory session data for the request. When you're using the `auth` package, a session cookie is used to identify an item in the database that represents the current user, and then a query is run to load data about that item.
+
+The result of the query is stored in `context.session`, and available to almost every function and hook in Keystone – including access control.
+
+In this initialisation phase, you'll want to load any data you'll need to work out what the user should be able to do (and what they should not be able to do).
+
+If no session cookie is present, or no matching item can be found, `context.session` will be `undefined`.
+
+### Add a sessionData query
+
+In our example above, we probably want to know the current user's ID and the value of the `isAdmin` checkbox. The auth package makes this simple by providing a `sessionData` option, which should contain the fields to query when a session is found.
+
+You configure it like this:
+
+```ts
+const { withAuth } = createAuth({
+  // ...
+  sessionData: 'name isAdmin',
+});
+```
+
+Think of this like the field selection in a GraphQL query. You can load any fields you need to have at hand when writing Access Control methods, including virtual fields and relationships.
+
+The equivalent GraphQL query would look like this:
+
+```graphql
+query {
+  person(where: { id: $session.itemId }) {
+    name
+    isAdmin
+  }
+}
+```
+
+export default ({ children }) => <Markdown description="Learn how to use Keystone's built-in Authentication and Access Control systems.">{children}</Markdown>;
