@@ -13,7 +13,7 @@ const nexusSchema = makeSchema({
   // This binds the Keystone Context with correctly generated types for the
   // Keystone `db` and `query` args, as well as the prisma client
   contextType: {
-    module: require.resolve('.keystone/types'),
+    module: '.keystone/types',
     export: 'KeystoneContext',
   },
 });

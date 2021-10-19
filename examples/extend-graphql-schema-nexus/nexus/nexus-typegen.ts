@@ -3,7 +3,7 @@
  * Do not make changes to this file directly
  */
 
-import type { KeystoneContext } from './../node_modules/.keystone/types.js';
+import type { KeystoneContext } from '.keystone/types.js';
 
 declare global {
   interface NexusGen extends NexusGenTypes {}
