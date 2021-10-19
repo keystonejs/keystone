@@ -73,6 +73,7 @@ export const exampleProjectTests = (
         cwd: projectDir,
         env: process.env,
       });
+      let hasGotAdminUIReadyMessage = false;
       let adminUIReady = promiseSignal();
       let listener = (chunk: any) => {
         let stringified = chunk.toString('utf8');
@@ -80,6 +81,9 @@ export const exampleProjectTests = (
           console.log(stringified);
         }
         if (stringified.includes('Admin UI ready')) {
+          hasGotAdminUIReadyMessage = true;
+        }
+        if (hasGotAdminUIReadyMessage && stringified.includes('event - compiled successfully')) {
           adminUIReady.resolve();
         }
       };
