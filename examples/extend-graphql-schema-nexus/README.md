@@ -37,4 +37,6 @@ The resulting schema is then merged into Keystone's schema using [`@graphql-tool
 
 Ideally, we could tell Nexus about the GraphQL types Keystone generates so you could write Nexus fields that return Keystone types. Making this work requires more research, so the example currently creates a separate `NexusPost` type and uses Prisma to query posts from the database.
 
-Nexus also has a Prisma plugin, which this example doesn't use yet. It would be good to integrate that as well, based on the Prisma schema Keystone generates.
+There's also a Prisma plugin for Nexus in development here: https://github.com/prisma/nexus-prisma
+
+When it's ready, it would make a good addition to this example (showing how to integrate the Prisma plugin with the Keystone-generated Prisma schema to auto-generate Nexus schema)
