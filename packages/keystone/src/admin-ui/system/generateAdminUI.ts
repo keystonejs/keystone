@@ -124,7 +124,10 @@ export const generateAdminUI = async (
   const userPagesEntries = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
   for (const filename of userPagesEntries) {
     const outputFilename = Path.join('pages', filename);
-    const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
+    const path = Path.relative(
+      Path.dirname(Path.join(projectAdminPath, outputFilename)),
+      Path.join(userPagesDir, filename)
+    );
     const importPath = serializePathForImport(path);
     adminFiles.push({
       mode: 'write',
