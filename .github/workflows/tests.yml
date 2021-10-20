@@ -177,6 +177,7 @@ jobs:
     env:
       DATABASE_URL: 'file:./test.db'
       VERBOSE: true
+      DEBUG: pw:api
     strategy:
       matrix:
         test:
@@ -247,6 +248,7 @@ jobs:
     env:
       DATABASE_URL: 'file:./test.db'
       VERBOSE: true
+      DEBUG: pw:apu
     strategy:
       matrix:
         test: ['init.test.ts', 'filters.test.ts', 'list-view-crud.test.ts', 'navigation.test.ts']
