@@ -4,7 +4,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
 import { jsx, Box } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, MultiSelect, Options } from '@keystone-ui/fields';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -50,7 +50,7 @@ export function UpdateItemsDrawer({
     { errorPolicy: 'all' }
   );
 
-  const [selectedFields, setSelectedFields] = useState<{ label: string; value: FieldMeta }[]>([]);
+  const [selectedFields, setSelectedFields] = useState<Options>([]);
   const [value, setValue] = useState(() => {
     const value: ValueWithoutServerSideErrors = {};
     Object.keys(list.fields).forEach(fieldPath => {
@@ -61,12 +61,15 @@ export function UpdateItemsDrawer({
 
   const options = useMemo(
     // remove the `options` key from select type fields
-    () => Object.entries(list.fields).map(([label, value]) => ({ label, value })),
+    () =>
+      Object.values(list.fields)
+        .filter(field => field.itemView.fieldMode !== 'hidden')
+        .map(({ label, path }) => ({ label, value: path })),
     [list.fields]
   );
 
   const renderedFields: Record<string, FieldMeta> = selectedFields.reduce(
-    (fields, { label, value }) => ({ ...fields, [label]: value }),
+    (fields, { value }) => ({ ...fields, [value]: list.fields[value] }),
     {}
   );
   const invalidFields = useMemo(() => {
@@ -90,7 +93,9 @@ export function UpdateItemsDrawer({
 
   return (
     <Drawer
-      title={`Create ${list.singular}`}
+      title={`Update ${selectedItems.size} ${
+        selectedItems.size === 1 ? list.singular : list.plural
+      }`}
       width="narrow"
       actions={{
         confirm: {
@@ -124,8 +129,7 @@ export function UpdateItemsDrawer({
                   tone: 'positive',
                 });
               })
-              // .catch(() => {});
-              .catch(console.log);
+              .catch(() => {});
           },
         },
         cancel: {
@@ -144,7 +148,7 @@ export function UpdateItemsDrawer({
           }
         />
       )}
-      {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
+      {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading update form" />}
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
@@ -163,9 +167,8 @@ export function UpdateItemsDrawer({
           }}
           portalMenu
           menuPortalTarget={document.body}
-          onChange={o => {
-            console.log(o);
-            setSelectedFields(o);
+          onChange={value => {
+            setSelectedFields(value);
           }}
         />
       </FieldContainer>

@@ -400,18 +400,19 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
 };
 
 const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
-  <p
+  <div
     css={{
       // TODO: don't do this
       // (this is to make it so things don't move when a user selects an item)
       minHeight: 38,
-
+      marginTop: '1em',
+      marginBottom: '1em',
       display: 'flex',
       alignItems: 'center',
     }}
   >
     {children}
-  </p>
+  </div>
 );
 
 const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {

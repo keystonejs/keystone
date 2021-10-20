@@ -16,6 +16,7 @@ export { Switch } from './Switch';
 export { TextArea } from './TextArea';
 export { TextInput } from './TextInput';
 export { Select, MultiSelect, selectComponents } from './Select';
+export type { Options } from './Select';
 export { useIndicatorTokens, useIndicatorStyles } from './hooks/indicators';
 export { useInputTokens, useInputStyles } from './hooks/inputs';
 export { DatePicker } from './DatePicker';
