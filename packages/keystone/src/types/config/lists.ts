@@ -116,6 +116,12 @@ export type ListAdminUIConfig<
    * @default false
    */
   hideCreate?: MaybeSessionFunction<boolean>;
+    /**
+   * Hides the update button in the Admin UI.
+   * Note that this does **not** disable updating items through the GraphQL API, it only hides the button to update an item for this list in the Admin UI.
+   * @default false
+   */
+  hideUpdate?: MaybeSessionFunction<boolean>;
   /**
    * Hides the delete button in the Admin UI.
    * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.

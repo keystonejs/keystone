@@ -291,6 +291,21 @@ export function getAdminMetaSchema({
           });
         },
       }),
+      hideUpdate: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIListMeta.hideUpdate cannot be resolved during the build process'
+            );
+          }
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideUpdate, false, {
+            session: context.session,
+            context,
+          });
+        },
+      }),
       path: graphql.field({ type: graphql.nonNull(graphql.String) }),
       label: graphql.field({ type: graphql.nonNull(graphql.String) }),
       singular: graphql.field({ type: graphql.nonNull(graphql.String) }),

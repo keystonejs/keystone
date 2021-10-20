@@ -23,6 +23,7 @@ import { CellLink } from '../../../../admin-ui/components';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
+import { UpdateItemsDrawer } from '../../../../admin-ui/components/UpdateItemsDrawer';
 import { useList } from '../../../../admin-ui/context';
 import { Link, useRouter } from '../../../../admin-ui/router';
 import { FieldSelection } from './FieldSelection';
@@ -49,6 +50,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list: {
           hideCreate: boolean;
           hideDelete: boolean;
+          hideUpdate: boolean;
           fields: FetchedFieldMeta[];
         } | null;
       };
@@ -62,6 +64,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list(key: $listKey) {
           hideDelete
           hideCreate
+          hideUpdate
           fields {
             path
             isOrderable
@@ -272,13 +275,22 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         <span css={{ marginRight: theme.spacing.small }}>
                           Selected {selectedItemsCount} of {data.items.length}
                         </span>
-                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                          <DeleteManyButton
-                            list={list}
-                            selectedItems={selectedItems}
-                            refetch={refetch}
-                          />
-                        )}
+                        <Stack across gap="small" align="center" marginTop="none">
+                          {!(metaQuery.data?.keystone.adminMeta.list?.hideUpdate ?? true) && (
+                            <UpdateManyButton
+                              list={list}
+                              selectedItems={selectedItems}
+                              refetch={refetch}
+                            />
+                          )}
+                          {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                            <DeleteManyButton
+                              list={list}
+                              selectedItems={selectedItems}
+                              refetch={refetch}
+                            />
+                          )}
+                        </Stack>
                       </Fragment>
                     );
                   }
@@ -421,6 +433,43 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
     />
   );
 };
+
+function UpdateManyButton({
+  selectedItems,
+  list,
+  refetch,
+}: {
+  selectedItems: ReadonlySet<string>;
+  list: ListMeta;
+  refetch: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Fragment>
+      <Button
+        tone="active"
+        onClick={async () => {
+          setIsOpen(true);
+        }}
+      >
+        Update
+      </Button>
+      <DrawerController isOpen={isOpen}>
+        <UpdateItemsDrawer
+          selectedItems={selectedItems}
+          listKey={list.key}
+          onUpdate={() => {
+            refetch();
+            setIsOpen(false);
+          }}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+        />
+      </DrawerController>
+    </Fragment>
+  );
+}
 
 function DeleteManyButton({
   selectedItems,

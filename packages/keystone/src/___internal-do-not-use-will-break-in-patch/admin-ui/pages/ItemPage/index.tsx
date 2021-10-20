@@ -298,6 +298,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
               list(key: $listKey) {
                 hideCreate
                 hideDelete
+                hideUpdate
                 fields {
                   path
                   itemView(id: $id) {
