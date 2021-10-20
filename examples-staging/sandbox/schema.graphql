@@ -295,6 +295,7 @@ type KeystoneAdminUIListMeta {
   listQueryName: String!
   hideCreate: Boolean!
   hideDelete: Boolean!
+  hideUpdate: Boolean!
   path: String!
   label: String!
   singular: String!
