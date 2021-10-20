@@ -65,6 +65,9 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       await setupInitialKeystone(config, cwd, shouldDropDatabase);
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
+    // if you've disabled the Admin UI, sorry, no live reloading
+    // the chance that someone is actually using this is probably quite low
+    // and starting Next in tests where we don't care about it would slow things down quite a bit
     if (config.ui?.isDisabled) {
       initKeystonePromiseResolve();
       return;
@@ -131,7 +134,7 @@ export default function (req, res) { return res.send(x.toString()) }
           }
 
           // we only need to test for the things which influence the prisma client creation
-          // and aren't written into the prisma schema
+          // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
             newConfig.db.enableLogging !== config.db.enableLogging ||
             newConfig.db.url !== config.db.url ||
@@ -141,6 +144,10 @@ export default function (req, res) { return res.send(x.toString()) }
             process.exit(1);
           }
           const { graphQLSchema, getKeystone } = createSystem(newConfig);
+          // we're not using generateCommittedArtifacts or any of the similar functions
+          // because we will never need to write a new prisma schema here
+          // and formatting the prisma schema leaves some listeners on the process
+          // which means you get a "there's probably a memory leak" warning from node
           const newPrintedGraphQLSchema = printSchema(graphQLSchema);
           if (newPrintedGraphQLSchema !== lastPrintedGraphQLSchema) {
             await fs.writeFile(
