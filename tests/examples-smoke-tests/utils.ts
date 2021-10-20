@@ -4,6 +4,19 @@ import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
+export async function loadIndex(page: playwright.Page) {
+  await page.goto('http://localhost:3000');
+  try {
+    // sometimes Next will fail to load the page the first time
+    // this is probably because Keystone is fetching the API route to compile Keystone
+    // while we're fetching an Admin UI page
+    // and Next doesn't handle fetching two pages at the same time well
+    await page.waitForSelector(':has-text("Dashboard")', { timeout: 2000 });
+  } catch {
+    await page.goto('http://localhost:3000');
+  }
+}
+
 async function deleteAllData(projectDir: string) {
   /**
    * As of @prisma/client@3.1.1 it appears that the prisma client runtime tries to resolve the path to the prisma schema
@@ -61,7 +74,7 @@ export const exampleProjectTests = (
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
-  describe.each(['dev', 'prod'] as const)('%s', mode => {
+  describe.each(['dev'] as ('dev' | 'prod')[])('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
     afterAll(async () => {
@@ -124,12 +137,12 @@ export const exampleProjectTests = (
 
     describe.each([
       'chromium',
-      'firefox',
-      // we don't run the tests on webkit in production
-      // because unlike chromium and firefox
-      // webkit doesn't treat localhost as a secure context
-      // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      // 'firefox',
+      // // we don't run the tests on webkit in production
+      // // because unlike chromium and firefox
+      // // webkit doesn't treat localhost as a secure context
+      // // and we enable secure cookies in production
+      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);

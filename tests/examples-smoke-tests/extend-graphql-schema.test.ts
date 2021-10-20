@@ -7,7 +7,7 @@ exampleProjectTests('extend-graphql-schema', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
