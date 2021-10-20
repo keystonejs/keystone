@@ -25,17 +25,18 @@ export default config({
 
 ## List Access Control
 
-Keystone lets you apply access control on a per-list basis.
-By default it allows all operations for all users.
-Access control is applied to the generated CRUD operations and mutations in the [GraphQL API](./graphql), and is applied before any [hooks](./hooks) are executed.
+Keystone provides support for access control and filtering on a per-list basis.
+By default, all lists and fields are public without additional configuration.
 
-List-level access control can be specified in three ways.
+There are three types of access control that can be configured on the `access` object:
 
-- [`operation`](#operation) access control lets you check the information in the `context` and `session` objects to decide if the
-  user is allowed to access the list.
-- [`filter`](#filter) access control lets you provide a [GraphQL filter](./filters) to restrict the items the user is allowed to access.
-- [`item`](#item-mutations-only) access control lets you write a function which inspects the provided input data and the existing object (if it exists)
-  and make a decision based on this extra data.
+- [`operation`](#operation), functions which provide the `context` and `session` to help decide if a request should be granted access to the list; this happens prior to any GraphQL query being executed.
+- [`filter`](#filter), functions which return a [filter](./filters) that is applied to database queries on this list.
+- [`item`](#item-mutations-only), functions which provides the `context` and `session` to determine if a request can execute the respective mutative action.
+
+Each of these types of access control are applied before [hooks](./hooks).
+
+?> Please note that Keystone does not automatically configure nor leverage database row security policies or row level security
 
 !> **Access denied:** **Mutations** return `null` data with an access denied error. **Queries** never return access denied errors, and instead treat items as if they didn't exist.
 
