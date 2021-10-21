@@ -148,4 +148,261 @@ query {
 }
 ```
 
+## Adding Access Control
+
+Now that we have information about the current user, lets put it to good use and add some security to our API with **Access Control**.
+
+The way to think about access control is –
+
+- With **Session Data**, you know who the user is, and what they should have access to (whether that's permissions granted by a role, or items related to them)
+- For each **List** you can restrict which operations they can perform, filter the items they have access to, and control which fields they can read and update.
+
+!> In other words: **Step 1** load data about the current user; **Step 2** use that data to limit what they can do.
+
+You define access control for each List (and field) individually; the rules you specify will always be run, even when the list being queried or mutated through a relationship.
+
+### Example
+
+Let's say we have a list of Blog Posts, which have a published status. We want Admin users to see all blog posts and be able to crete and update them, but anonymous (public) users can only see published posts and can't write to the API. Our Post list might look like this:
+
+```ts
+const Post = list({
+  fields: {
+    title: text(),
+    isPublished: checkbox(),
+    publishDate: timestamp(),
+    // more content fields would go here
+  },
+});
+```
+
+And the Session Data we set up above would look like this:
+
+```ts
+type Session = {
+  data: {
+    id: string;
+    isAdmin: boolean;
+  }
+}
+```
+
+We can now set up operational access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
+
+```ts
+const onlyAdmins = ({ session }: { session: Session }) => session?.data.isAdmin;
+
+const Post = list({
+  access: {
+    operation: {
+      create: onlyAdmins,
+      update: onlyAdmins,
+      delete: onlyAdmins,
+    },
+  },
+  fields: {
+    title: text(),
+    isPublished: checkbox(),
+    publishDate: timestamp(),
+  },
+});
+```
+
+We can also use **filter** access control to make sure that unauthenticated users can only see published posts:
+
+```ts
+const filterPosts = ({ session }: { session: Session }) => {
+  // if the user is an Admin, they can access all the records
+  if (session?.data.isAdmin) return true;
+  // otherwise, filter for published posts
+  return { isPublished: { equals: true } };
+}
+
+const Post = list({
+  access: {
+    operation: {
+      // see above
+    },
+    filter: {
+      query: filterPosts,
+    }
+  },
+  fields: {
+    title: text(),
+    isPublished: checkbox(),
+    publishDate: timestamp(),
+  },
+});
+```
+
+See that object we return when the session data doesn't say there's a user with `isAdmin`? It's the same format as `where` arguments you can provide to the `posts` query through the GraphQL API:
+
+```graphql
+query {
+  posts(where: { isPublished: { equals: true } }) {
+    title
+  }
+}
+```
+
+!> An easy way to set up Access Control filters is to write them as queries in the GraphQL Playground, then test them to make sure they return the results you expect. When you're happy, copy and paste the `where` argument into your access control function.
+
+You can also return a boolean value to switch on or off access to a list entirely:
+
+- `true` allows access to all items in the list
+- `false` prevents access to all items in the list
+
+In the example above, if the user has `isAdmin` we return `true` allowing them to access all posts.
+
+!> Access control filters are **combined** with any filters provided through the GraphQL API, and there is no way to circumvent them when making HTTP Requests.
+
+Access control is always applied when querying or mutating items in a list, regardless of how GraphQL queries are written. For example, if we also had a **Tags** list that relates to **Posts**:
+
+```ts
+const Tag = list({
+  fields: {
+    label: text(),
+    posts: relationship({ ref: 'Post', many: true }),
+  },
+});
+```
+
+You can query all the posts linked to each tag, but the filters we've defined above on `Post` will still be applied.
+
+```graphql
+query {
+  tags {
+    posts {
+      title
+    }
+  }
+}
+```
+
+Unauthenticated users won't be able to find unpublished posts by querying the relationship field on tags, and you don't have to do anything special to make this work.
+
+### Different levels of Access Control
+
+Keystone provides three different levels of access control for lists, as well as field-level access control. Here are all the available functions:
+
+```ts
+type Filter = Record<string, any>; // the GraphQL Filters for the List
+
+type Access = {
+  operation: {
+    query: ({ session, context, listKey, operation }) => boolean;
+    create: ({ session, context, listKey, operation }) => boolean;
+    update: ({ session, context, listKey, operation }) => boolean;
+    delete: ({ session, context, listKey, operation }) => boolean;
+  };
+  filter: {
+    query: ({ session, context, listKey, operation }) => Filter | boolean;
+    update: ({ session, context, listKey, operation }) => Filter | boolean;
+    delete: ({ session, context, listKey, operation }) => Filter | boolean;
+  };
+  item: {
+    create: ({ session, context, listKey, operation, inputData }) => boolean;
+    update: ({ session, context, listKey, operation, inputData, item }) => boolean;
+    delete: ({ session, context, listKey, operation, item }) => boolean;
+  };
+};
+```
+
+You'll generally only need to use a subset of the available options:
+
+- If you want to block an operation based on Session Data, use `operation`
+- If you want to filter items based on Session Data, use `filter`
+- If you need to check some logic based on the item or input data, use `item`
+
+!> You might need to _either_ block or allow an operation entirely, _or_ return a filter, based on Session Data. In this case it's usually easier to write a single `filter` function, rather than specifying both `filter` and `operation` access control.
+
+### Notes about the levels
+
+There isn't much difference between using `operation` and returning a boolean from `filter` access control. In either case, if your function returns `false` the operation won't be run at all.
+
+If you need to limit access to some items in a list, `filter` access control is usually the best option. `item` access control requires Keystone to load data from the database before the access control rule can be evaluated, and should only be used if you have logic that can't be expressed as a filter, or if you need to check the `inputData` provided to the mutation.
+
+Although Keystone doesn't implement database-level security, the design and effect of `filter` access control is similar to [Row Level Security](https://www.postgresql.org/docs/9.5/ddl-rowsecurity.html) in Postgres, with the benefit of being expressed declaratively in TypeScript and using the same filter syntax as the GraphQL API. This makes it easier to reason about in the context of your schema, session data, and other logic in your application.
+
+!> For more information, see the [Access Control API Docs](../apis/access-control)
+
+### Access Control in Hooks and Extensions
+
+Because the current request (including Session Data) is bound to the **Keystone Context**, any queries or mutations you run inside Hooks, Virtual Fields, and GraphQL Extensions will respect access control.
+
+For example, if we have a custom query that returns all posts written in the last week, sorted by publish date:
+
+```ts
+const extendGraphqlSchema = graphQLSchemaExtension({
+  typeDefs: `
+    type Query {
+      recentPosts: [Post!]
+    }`,
+  resolvers: {
+    Query: {
+      recentPosts: (root, args, context) => {
+        var oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        return context.db.Post.findMany({
+          where: { publishDate: { gt: oneWeekAgo.toUTCString() } },
+          orderBy: { publishDate: 'desc' },
+        });
+      },
+    },
+  },
+});
+```
+
+The query will respect the access control rules for the `Post` list, and unauthenticated users will only see published posts.
+
+### Circumventing Access Control
+
+Sometimes, you need to bypass access control. For example, you may have a hook that needs to query or mutate data the user making the request doesn't have access to; or you might have blocked access to creating new User items and instead written a custom signup mutation.
+
+When you need it, you can call `context.sudo()` to create a new context with elevated privileges that will bypass access control. Combining this with GraphQL extensions is a great way to keep your access control rules relatively simple, while carefully exposing specific functionality through your API.
+
+For example, we probably want to block all public access to querying users in our system:
+
+```ts
+const onlyAdmins = ({ session }: { session: Session }) => session?.data.isAdmin;
+
+const Person = list({
+  access: {
+    query: onlyAdmins,
+  },
+  fields: {
+    name: text(),
+    email: text({ isIndexed: 'unique' }),
+    password: password(),
+    isAdmin: checkbox(),
+  },
+}),
+```
+
+But if we have a signup form in our app, we may want to be able to check whether an email address is in use so we can do client-side validation, without giving away any other information.
+
+We can create a custom query for this, and use `context.sudo()` to bypass access control and find a matching user, while only returning a boolean from the query:
+
+```ts
+const extendGraphqlSchema = graphQLSchemaExtension({
+  typeDefs: `
+    type Query {
+      isEmailInUse(email: String!): Boolean!
+    }`,
+  resolvers: {
+    Query: {
+      isEmailInUse: async (root, { email }, context) => {
+        const sudoContext = context.sudo();
+        const emailCount = await sudoContext.db.User.count({
+          where: {
+            email: { equals: email, mode: 'insensitive' },
+          },
+        });
+        return !!emailCount;
+      },
+    },
+  },
+});
+```
+
 export default ({ children }) => <Markdown description="Learn how to use Keystone's built-in Authentication and Access Control systems.">{children}</Markdown>;
