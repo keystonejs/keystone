@@ -13,7 +13,7 @@ export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
 type WellProps = {
   grad?: WellGradient;
   heading?: ReactNode;
-  badge: string;
+  badge?: string;
   href: string;
   children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
