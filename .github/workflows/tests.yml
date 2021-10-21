@@ -241,7 +241,7 @@ jobs:
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
-    runs-on: ${{matrix.platform}}
+    runs-on: ubuntu-latest
     needs: should_run_tests
     env:
       DATABASE_URL: 'file:./test.db'
@@ -255,9 +255,6 @@ jobs:
             'navigation.test.ts',
             'live-reloading.test.ts',
           ]
-        platform:
-          - ubuntu-latest
-          - windows-latest
       fail-fast: false
     steps:
       - name: Checkout Repo
