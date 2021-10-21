@@ -20,7 +20,7 @@ type WellProps = {
 
 export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
   const mq = useMediaQuery();
-
+  
   return (
     <Link href={href} passHref>
       <a
@@ -62,17 +62,7 @@ export function Well({ grad = 'grad1', heading, badge, href, children, ...props 
           {heading} →
         </Type>
         {badge && (
-          <Badge
-            look="info"
-            css={{
-              position: 'absolute',
-              top: '2rem',
-              right: '1.2rem',
-              transform: 'rotate(15deg)',
-            }}
-          >
-            {badge}
-          </Badge>
+          <Badge look="info" css={{ position: 'absolute', top: '2.1rem', right: '2.1rem' }}>{badge}</Badge>
         )}
         <Type as="p" look="body16">
           {children}
