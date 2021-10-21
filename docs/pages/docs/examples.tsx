@@ -263,6 +263,7 @@ export default function Docs() {
         <Well
           grad="grad4"
           heading="Microsoft Azure"
+          badge="Third Party"
           href="https://github.com/aaronpowell/keystone-6-azure-example"
           target="_blank"
           rel="noopener noreferrer"
