@@ -1,5 +1,4 @@
 import type { ItemRootValue } from '@keystone-next/keystone/types';
-import { BaseSchemaInfo } from '@graphql-ts/extend';
 import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
@@ -18,7 +17,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretField: S;
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
-  base: BaseSchemaInfo;
+  base: graphql.BaseSchemaMeta;
 }) {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
     sessionToken: string;

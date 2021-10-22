@@ -1,6 +1,5 @@
 import type { ItemRootValue } from '@keystone-next/keystone/types';
 import { graphql } from '@keystone-next/keystone';
-import { BaseSchemaInfo } from '@graphql-ts/extend';
 import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
@@ -27,7 +26,7 @@ export function getMagicAuthLinkSchema<I extends string>({
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
   magicAuthTokenSecretFieldImpl: SecretFieldImpl;
-  base: BaseSchemaInfo;
+  base: graphql.BaseSchemaMeta;
 }) {
   const RedeemItemMagicAuthTokenFailure = graphql.object<{
     code: typeof errorCodes[number];

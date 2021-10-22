@@ -7,7 +7,7 @@ import {
   GraphQLString,
   GraphQLID,
 } from 'graphql';
-import { extend } from '@graphql-ts/extend';
+import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
@@ -55,7 +55,7 @@ export const getSchemaExtension = ({
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
 }): ExtendGraphqlSchema =>
-  extend(base => {
+  graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
       base.schema.getType(`${listKey}WhereUniqueInput`)
     );

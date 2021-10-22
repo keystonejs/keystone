@@ -1,4 +1,3 @@
-import { wrap } from '@graphql-ts/extend';
 import { graphql } from '@keystone-next/keystone';
 import { ItemRootValue } from '@keystone-next/keystone/types';
 import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'graphql';
@@ -27,7 +26,7 @@ export function getInitFirstItemSchema({
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig();
   const fieldsSet = new Set(fields);
-  const initialCreateInput = wrap.inputObject(
+  const initialCreateInput = graphql.wrap.inputObject(
     new GraphQLInputObjectType({
       ...createInputConfig,
       fields: Object.fromEntries(
