@@ -116,7 +116,8 @@ export const generateAdminUI = async (
     graphQLSchema,
     adminMeta,
     configFileExists,
-    projectAdminPath
+    projectAdminPath,
+    isLiveReload
   );
 
   // Add files to pages/ which point to any files which exist in admin/pages
