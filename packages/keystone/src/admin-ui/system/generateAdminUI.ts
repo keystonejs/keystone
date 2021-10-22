@@ -5,7 +5,6 @@ import fastGlob from 'fast-glob';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
 import normalizePath from 'normalize-path';
-import { normalize } from '@keystone-ui/core/src/normalize';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
