@@ -87,9 +87,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     // this allows us to control exactly _when_ the gets evaluated so that we can handle errors ourselves.
     await fs.outputFile(
       `${getAdminPath(cwd)}/pages/api/__keystone_api_build.js`,
-      `export const getConfig = () => import(${p});
+      `
+
+exports.getConfig = () => require(${p}).default;
 const x = Math.random();
-export default function (req, res) { return res.send(x.toString()) }
+exports.default = function (req, res) { return res.send(x.toString()) }
 `
     );
     let lastVersion = '';
@@ -122,7 +124,7 @@ export default function (req, res) { return res.send(x.toString()) }
             `${getAdminPath(cwd)}/.next/server/pages/api/__keystone_api_build`
           );
           delete require.cache[resolved];
-          const newConfig = initConfig((await require(resolved).getConfig()).default);
+          const newConfig = initConfig(require(resolved).getConfig());
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(config.lists, config.db.provider),
             config.db.provider,
