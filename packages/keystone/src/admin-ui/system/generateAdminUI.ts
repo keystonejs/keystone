@@ -4,6 +4,8 @@ import fs from 'fs-extra';
 import fastGlob from 'fast-glob';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
+import normalizePath from 'normalize-path';
+import { normalize } from '@keystone-ui/core/src/normalize';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
@@ -150,12 +152,15 @@ export const generateAdminUI = async (
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
-    const ignore = adminFiles.map(x => x.outputPath);
+    // fast-glob expects unix style paths/globs in ignore so we need to normalize to that
+    const ignore = adminFiles.map(x => normalizePath(x.outputPath));
     ignore.push('.next');
     ignore.push('next-env.d.ts');
     ignore.push('public');
-    ignore.push(Path.join('pages', 'api', '__keystone_api_build.js'));
-    ignore.push(...uniqueFiles);
+    ignore.push('pages/api/__keystone_api_build.js');
+    for (const filename of uniqueFiles) {
+      ignore.push(normalizePath(filename));
+    }
     const filesToDelete = await fastGlob(['**/*'], {
       cwd: projectAdminPath,
       ignore,
