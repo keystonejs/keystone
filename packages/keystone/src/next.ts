@@ -14,27 +14,25 @@ export const withKeystone =
       | 'phase-development-server',
     thing: any
   ) => {
+    const cliPath = require.resolve('@keystone-next/keystone/bin/cli.js');
+
     if (phase === 'phase-production-build') {
-      execa.sync('node', [require.resolve('@keystone-next/keystone/bin/cli.js'), 'postinstall'], {
+      execa.sync('node', [cliPath, 'postinstall'], {
         stdio: 'inherit',
       });
     }
+
     if (phase === 'phase-development-server' && !hasAlreadyStarted) {
       hasAlreadyStarted = true;
-
-      const cliPath = require.resolve('@keystone-next/keystone/bin/cli.js');
 
       execa.sync('node', [cliPath, 'postinstall', '--fix'], {
         stdio: 'inherit',
       });
-      // for some reason things blow up with EADDRINUSE if the dev call happens synchronously here
-      // so we wait a sec and then do it
-      setTimeout(() => {
-        execa('node', [cliPath], {
-          stdio: 'inherit',
-          env: { ...process.env, PORT: process.env.PORT || '8000' },
-        });
-      }, 100);
+
+      execa('node', [cliPath], {
+        stdio: 'inherit',
+        env: { ...process.env, PORT: process.env.PORT || '8000' },
+      });
     }
     let internalConfigObj =
       typeof internalConfig === 'function' ? internalConfig(phase, thing) : internalConfig;
