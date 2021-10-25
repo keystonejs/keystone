@@ -65,7 +65,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <DocumentRenderer document={item[field.path].document} />
+      <DocumentRenderer document={item[field.path]?.document || []} />
     </FieldContainer>
   );
 };
