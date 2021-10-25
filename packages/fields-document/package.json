@@ -25,6 +25,7 @@
     "@babel/runtime": "^7.15.4",
     "@braintree/sanitize-url": "^5.0.2",
     "@emotion/weak-memoize": "^0.2.5",
+    "@keystone-next/document-renderer": "^4.0.1",
     "@keystone-ui/button": "^5.0.2",
     "@keystone-ui/core": "^3.2.1",
     "@keystone-ui/fields": "^5.0.1",
